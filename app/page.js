@@ -382,7 +382,7 @@ function LandingPage({ onLogin }) {
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Reminder automatici</li>
                 </ul>
                 <Button className="w-full mt-6 bg-coral-500 hover:bg-coral-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-                  Prova gratis 14 giorni
+                  Richiedi pilot gratuito
                 </Button>
               </CardContent>
             </Card>
@@ -401,7 +401,7 @@ function LandingPage({ onLogin }) {
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Report avanzati</li>
                 </ul>
                 <Button className="w-full mt-6 bg-coral-500 hover:bg-coral-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-                  Prova gratis 14 giorni
+                  Richiedi pilot gratuito
                 </Button>
               </CardContent>
             </Card>
