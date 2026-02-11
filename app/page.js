@@ -300,123 +300,15 @@ function LandingPage({ onLogin }) {
         </div>
       </section>
 
-      {/* Altre Funzionalità */}
-      <section className="py-4 px-4 bg-white">
+      {/* Altre Funzionalità - Carousel */}
+      <section className="py-6 px-4 bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">E molto altro...</h2>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Feature - Geolocalizzazione */}
-            <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white hover:shadow-lg transition">
-              <CardHeader>
-                <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3">
-                  <MapPin className="h-6 w-6 text-blue-600" />
-                </div>
-                <CardTitle className="text-lg">Trova clinica vicina</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-3">I clienti trovano la tua clinica su mappa con distanza in tempo reale e indicazioni stradali.</p>
-                <ul className="space-y-1 text-sm text-gray-500">
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Geolocalizzazione GPS</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Calcolo distanza automatico</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Integrazione Google Maps</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Feature - Prenotazioni */}
-            <Card className="border-2 border-coral-200 bg-gradient-to-br from-coral-50 to-white hover:shadow-lg transition">
-              <CardHeader>
-                <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mb-3">
-                  <Calendar className="h-6 w-6 text-coral-600" />
-                </div>
-                <CardTitle className="text-lg">Prenotazioni online 24/7</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-3">I clienti prenotano quando vogliono, tu ricevi tutto organizzato in agenda.</p>
-                <ul className="space-y-1 text-sm text-gray-500">
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Visite, vaccini, video-consulti</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Promemoria automatici</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Sync Google Calendar</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Feature 3 - Documenti */}
-            <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-white hover:shadow-lg transition relative">
-              <div className="absolute -top-2 right-4 bg-purple-500 text-white text-xs px-2 py-1 rounded-full">Più richiesto</div>
-              <CardHeader>
-                <div className="h-12 w-12 bg-purple-100 rounded-xl flex items-center justify-center mb-3">
-                  <FileText className="h-6 w-6 text-purple-600" />
-                </div>
-                <CardTitle className="text-lg">Documenti digitali</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-3">Carica referti, prescrizioni e fatture. Il cliente li riceve via email e li ritrova in app.</p>
-                <ul className="space-y-1 text-sm text-gray-500">
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Upload PDF con 1 click</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Email automatica</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Archivio per animale</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Feature 4 - Cartella clinica */}
-            <Card className="border-2 border-green-200 bg-gradient-to-br from-green-50 to-white hover:shadow-lg transition">
-              <CardHeader>
-                <div className="h-12 w-12 bg-green-100 rounded-xl flex items-center justify-center mb-3">
-                  <PawPrint className="h-6 w-6 text-green-600" />
-                </div>
-                <CardTitle className="text-lg">Cartella clinica digitale</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-3">Ogni animale ha il suo profilo completo con storico visite, vaccini, allergie e terapie.</p>
-                <ul className="space-y-1 text-sm text-gray-500">
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Profilo animale completo</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Storico visite e vaccini</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Tracciamento spese</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Feature 5 - Pagamenti */}
-            <Card className="border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-white hover:shadow-lg transition">
-              <CardHeader>
-                <div className="h-12 w-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-3">
-                  <CreditCard className="h-6 w-6 text-emerald-600" />
-                </div>
-                <CardTitle className="text-lg">Pagamenti integrati</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-3">Ricevi pagamenti online con Stripe. Il cliente paga, tu incassi direttamente.</p>
-                <ul className="space-y-1 text-sm text-gray-500">
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Stripe integrato</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Pagamento visite online</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Report finanziari</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Feature 6 - Team Inbox */}
-            <Card className="border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-white hover:shadow-lg transition">
-              <CardHeader>
-                <div className="h-12 w-12 bg-amber-100 rounded-xl flex items-center justify-center mb-3">
-                  <Inbox className="h-6 w-6 text-amber-600" />
-                </div>
-                <CardTitle className="text-lg">Team Inbox</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-3">Un'unica inbox per tutto il team. Niente più messaggi persi o risposte duplicate.</p>
-                <ul className="space-y-1 text-sm text-gray-500">
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Assegnazione ticket</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Anti-doppioni</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Template risposte</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Carousel Container */}
+          <FeatureCarousel />
         </div>
       </section>
 
