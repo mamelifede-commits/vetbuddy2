@@ -200,7 +200,7 @@ function LandingPage({ onLogin }) {
               <h3 className="font-bold text-lg text-gray-900 mb-2">Per Proprietari di Animali</h3>
               <p className="text-sm text-gray-600 mb-3">Prenota visite, ricevi documenti, invita la tua clinica.</p>
               <p className="text-xs text-blue-600 font-semibold mb-3">🆓 Gratis per sempre • Invita la tua clinica</p>
-              <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
+              <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg">
                 Esplora la Demo →
               </Button>
             </div>
