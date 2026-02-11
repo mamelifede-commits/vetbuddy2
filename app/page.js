@@ -161,9 +161,9 @@ function LandingPage({ onLogin }) {
       {/* Hero - Milano Focus */}
       <section className="pt-16 pb-20 px-4 bg-gradient-to-b from-white to-coral-50/30">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-6">
-            <Zap className="h-4 w-4" />
-            <span className="font-medium">Beta Test attivo</span>
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 px-4 py-2 rounded-full mb-6 border border-blue-200">
+            <MapPin className="h-4 w-4" />
+            <span className="font-medium">Pilot attivo a Milano e provincia</span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             La piattaforma veterinaria<br /><span className="text-coral-500">che i tuoi clienti ameranno</span>
@@ -174,19 +174,35 @@ function LandingPage({ onLogin }) {
           <p className="text-lg text-coral-600 font-semibold mb-10">
             Tutto in un'unica piattaforma. Zero carta, zero caos.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button size="lg" className="bg-coral-500 hover:bg-coral-600 text-white px-8 h-14 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <Building2 className="h-5 w-5 mr-2" /> Candidati al Pilot
-            </Button>
-            <Button size="lg" variant="outline" className="px-8 h-14 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <PawPrint className="h-5 w-5 mr-2" /> Trova una clinica
-            </Button>
+          
+          {/* CTA Buttons - Clear separation for Clinics vs Pet Owners */}
+          <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-12">
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-coral-200 hover:border-coral-400 transition cursor-pointer group" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+              <div className="h-14 w-14 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
+                <Building2 className="h-7 w-7 text-coral-600" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Sei una Clinica?</h3>
+              <p className="text-sm text-gray-600 mb-4">Candidati al Pilot gratuito a Milano. Digitalizza la tua clinica.</p>
+              <Button className="w-full bg-coral-500 hover:bg-coral-600 text-white">
+                Candidati al Pilot →
+              </Button>
+            </div>
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-200 hover:border-blue-400 transition cursor-pointer group" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+              <div className="h-14 w-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
+                <PawPrint className="h-7 w-7 text-blue-600" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Sei un Proprietario?</h3>
+              <p className="text-sm text-gray-600 mb-4">Trova cliniche vicine, prenota visite e gestisci i tuoi animali.</p>
+              <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
+                Trova una Clinica →
+              </Button>
+            </div>
           </div>
           
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
-              { icon: Zap, title: 'Beta', desc: 'Fase di test attiva' },
+              { icon: MapPin, title: 'Milano', desc: 'Pilot attivo in città' },
               { icon: Building2, title: 'Gratis', desc: 'Per le cliniche in beta' },
               { icon: Heart, title: 'Gratis', desc: 'Per sempre per i pet owner' },
               { icon: MessageCircle, title: 'Feedback', desc: 'Costruisci con noi il prodotto' }
