@@ -169,6 +169,9 @@ export async function GET(request, { params }) {
       const query = searchParams.get('q') || '';
       const city = searchParams.get('city') || '';
       const service = searchParams.get('service') || '';
+      const userLat = parseFloat(searchParams.get('lat')) || null;
+      const userLng = parseFloat(searchParams.get('lng')) || null;
+      const maxDistance = parseFloat(searchParams.get('maxDistance')) || 50; // km
       
       const users = await getCollection('users');
       const filter = { role: 'clinic' };
@@ -185,17 +188,41 @@ export async function GET(request, { params }) {
       
       const clinics = await users.find(filter, { projection: { password: 0, resetToken: 0, resetExpiry: 0 } }).toArray();
       
-      // Get reviews for each clinic
+      // Get reviews for each clinic and calculate distance
       const reviews = await getCollection('reviews');
       const clinicsWithReviews = await Promise.all(clinics.map(async (clinic) => {
         const clinicReviews = await reviews.find({ clinicId: clinic.id }).toArray();
         const avgRating = clinicReviews.length > 0 
           ? clinicReviews.reduce((sum, r) => sum + r.overallRating, 0) / clinicReviews.length 
           : 0;
-        return { ...clinic, reviewCount: clinicReviews.length, avgRating: Math.round(avgRating * 10) / 10 };
+        
+        // Calculate distance if user location provided
+        let distance = null;
+        if (userLat && userLng && clinic.latitude && clinic.longitude) {
+          distance = calculateDistance(userLat, userLng, clinic.latitude, clinic.longitude);
+        }
+        
+        return { 
+          ...clinic, 
+          reviewCount: clinicReviews.length, 
+          avgRating: Math.round(avgRating * 10) / 10,
+          distance: distance ? Math.round(distance * 10) / 10 : null
+        };
       }));
       
-      return NextResponse.json(clinicsWithReviews, { headers: corsHeaders });
+      // Filter by distance if user location provided
+      let filteredClinics = clinicsWithReviews;
+      if (userLat && userLng) {
+        filteredClinics = clinicsWithReviews
+          .filter(c => c.distance === null || c.distance <= maxDistance)
+          .sort((a, b) => {
+            if (a.distance === null) return 1;
+            if (b.distance === null) return -1;
+            return a.distance - b.distance;
+          });
+      }
+      
+      return NextResponse.json(filteredClinics, { headers: corsHeaders });
     }
 
     // Get clinic reviews
