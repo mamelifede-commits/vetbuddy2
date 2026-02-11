@@ -154,3 +154,15 @@ CREDENZIALI_VETBUDDY.md
 *.env.*
 GUIDA_VETBUDDY_COMPLETA.md
 seed-admin*.js
+-e 
+# Environment files
+*.env
+*.env.*
+-e 
+# Environment files
+*.env
+*.env.*
+-e 
+# Environment files
+*.env
+*.env.*
