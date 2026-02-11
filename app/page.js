@@ -327,7 +327,10 @@ function LandingPage({ onLogin }) {
 function AuthForm({ mode, setMode, onLogin }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [formData, setFormData] = useState({ email: '', password: '', name: '', role: 'owner', clinicName: '', phone: '', city: '' });
+  const [success, setSuccess] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [formData, setFormData] = useState({ email: '', password: '', name: '', role: 'owner', clinicName: '', phone: '', city: '', vatNumber: '', website: '' });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -340,6 +343,40 @@ function AuthForm({ mode, setMode, onLogin }) {
       onLogin(data.user);
     } catch (err) { setError(err.message); } finally { setLoading(false); }
   };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    try {
+      const data = await api.post('auth/forgot-password', { email: forgotEmail });
+      setSuccess(data.message);
+    } catch (err) { setError(err.message); } finally { setLoading(false); }
+  };
+
+  if (showForgotPassword) {
+    return (
+      <div>
+        <DialogHeader className="text-center">
+          <div className="flex justify-center mb-4"><VetBuddyLogo size={50} /></div>
+          <DialogTitle className="text-2xl text-coral-500">Password dimenticata?</DialogTitle>
+          <DialogDescription>Inserisci la tua email per ricevere un link di reset</DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleForgotPassword} className="mt-6 space-y-4">
+          <div><Label>Email</Label><Input type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} required placeholder="La tua email" /></div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {success && <p className="text-green-600 text-sm">{success}</p>}
+          <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600" disabled={loading}>
+            {loading ? 'Invio...' : 'Invia link di reset'}
+          </Button>
+          <Button type="button" variant="ghost" className="w-full" onClick={() => setShowForgotPassword(false)}>
+            Torna al login
+          </Button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -368,14 +405,25 @@ function AuthForm({ mode, setMode, onLogin }) {
               </div>
               <div><Label>{formData.role === 'clinic' ? 'Nome responsabile' : 'Nome completo'}</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required /></div>
               {formData.role === 'clinic' && (
-                <><div><Label>Nome Clinica</Label><Input value={formData.clinicName} onChange={(e) => setFormData({...formData, clinicName: e.target.value})} required /></div>
-                <div><Label>Città</Label><Input value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} /></div></>
+                <>
+                  <div><Label>Nome Clinica</Label><Input value={formData.clinicName} onChange={(e) => setFormData({...formData, clinicName: e.target.value})} required /></div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div><Label>Città</Label><Input value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} placeholder="Es. Roma" /></div>
+                    <div><Label>Partita IVA</Label><Input value={formData.vatNumber} onChange={(e) => setFormData({...formData, vatNumber: e.target.value})} placeholder="IT01234567890" /></div>
+                  </div>
+                  <div><Label>Sito web</Label><Input value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} placeholder="https://..." /></div>
+                </>
               )}
               <div><Label>Telefono</Label><Input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} /></div>
             </>
           )}
           <div><Label>Email</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required /></div>
           <div><Label>Password</Label><Input type="password" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} required /></div>
+          {mode === 'login' && (
+            <button type="button" onClick={() => setShowForgotPassword(true)} className="text-sm text-coral-500 hover:underline">
+              Password dimenticata?
+            </button>
+          )}
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600" disabled={loading}>
             {loading ? 'Caricamento...' : (mode === 'login' ? 'Accedi' : (formData.role === 'clinic' ? 'Richiedi accesso Pilot' : 'Registrati gratis'))}
