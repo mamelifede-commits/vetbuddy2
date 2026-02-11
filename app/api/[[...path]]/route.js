@@ -47,7 +47,7 @@ export async function GET(request, { params }) {
       return NextResponse.json(userData, { headers: corsHeaders });
     }
 
-    // Get appointments for clinic
+    // Get appointments for clinic or staff
     if (path === 'appointments') {
       const user = getUserFromRequest(request);
       if (!user) {
