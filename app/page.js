@@ -1844,7 +1844,7 @@ function ClinicInbox({ messages, owners, pets, onRefresh }) {
 
 // Document Upload Form
 function DocumentUploadForm({ owners, pets, onSuccess }) {
-  const [formData, setFormData] = useState({ type: 'prescrizione', ownerEmail: '', petName: '', title: '', file: null, fileName: '', notes: '', sendEmail: true, amount: '' });
+  const [formData, setFormData] = useState({ type: 'prescrizione', ownerEmail: '', petName: '', title: '', file: null, fileName: '', fileType: '', notes: '', sendEmail: true, amount: '' });
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -1853,40 +1853,59 @@ function DocumentUploadForm({ owners, pets, onSuccess }) {
     { value: 'referto', label: 'Referto / Esami', icon: FileCheck, color: 'text-blue-600' },
     { value: 'fattura', label: 'Fattura', icon: Receipt, color: 'text-emerald-600' },
     { value: 'istruzioni', label: 'Istruzioni post-visita', icon: ClipboardList, color: 'text-green-600' },
+    { value: 'foto', label: 'Foto / Immagine', icon: ImageIcon, color: 'text-pink-600' },
     { value: 'altro', label: 'Altro documento', icon: FileText, color: 'text-gray-600' },
   ];
 
+  const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+  const allowedExtensions = '.pdf,.jpg,.jpeg,.png';
+
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
-    if (file && file.type === 'application/pdf') {
+    if (file && allowedTypes.includes(file.type)) {
       const reader = new FileReader();
-      reader.onload = () => { setFormData({ ...formData, file: reader.result, fileName: file.name, title: formData.title || file.name.replace('.pdf', '') }); };
+      reader.onload = () => { 
+        const ext = file.name.split('.').pop().toLowerCase();
+        setFormData({ 
+          ...formData, 
+          file: reader.result, 
+          fileName: file.name, 
+          fileType: file.type,
+          title: formData.title || file.name.replace(/\.(pdf|jpg|jpeg|png)$/i, '') 
+        }); 
+      };
       reader.readAsDataURL(file);
-    } else { alert('Per favore seleziona un file PDF'); }
+    } else { 
+      alert('Per favore seleziona un file PDF, JPG o PNG'); 
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.file) { alert('Seleziona un file PDF'); return; }
+    if (!formData.file) { alert('Seleziona un file (PDF, JPG o PNG)'); return; }
     setUploading(true);
     try { 
       await api.post('documents', { 
         name: formData.title, 
         type: formData.type, 
         content: formData.file, 
-        fileName: formData.fileName, 
+        fileName: formData.fileName,
+        fileType: formData.fileType,
         petName: formData.petName, 
         ownerEmail: formData.ownerEmail, 
         notes: formData.notes, 
         sendEmail: formData.sendEmail,
-        amount: formData.type === 'fattura' ? parseFloat(formData.amount) || 0 : null
+        amount: formData.type === 'fattura' ? parseFloat(formData.amount) || 0 : null,
+        status: 'bozza'
       }); 
       onSuccess?.(); 
     } catch (error) { alert(error.message); } finally { setUploading(false); }
   };
 
+  const isImage = formData.fileType?.startsWith('image/');
+
   return (
-    <><DialogHeader><DialogTitle>Carica documento</DialogTitle><DialogDescription>Il documento verrà salvato e opzionalmente inviato via email con PDF allegato.</DialogDescription></DialogHeader>
+    <><DialogHeader><DialogTitle>Carica documento</DialogTitle><DialogDescription>Il documento verrà salvato e opzionalmente inviato via email.</DialogDescription></DialogHeader>
     <form onSubmit={handleSubmit} className="space-y-4 mt-4">
       <div>
         <Label>Tipo documento</Label>
@@ -1920,13 +1939,23 @@ function DocumentUploadForm({ owners, pets, onSuccess }) {
       )}
       
       <div>
-        <Label>File PDF</Label>
-        <input type="file" accept=".pdf" ref={fileInputRef} onChange={handleFileSelect} className="hidden" />
+        <Label>File (PDF, JPG, PNG)</Label>
+        <input type="file" accept={allowedExtensions} ref={fileInputRef} onChange={handleFileSelect} className="hidden" />
         <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-coral-400 transition">
           {formData.fileName ? (
-            <div className="flex items-center justify-center gap-2 text-coral-600"><FileText className="h-5 w-5" /><span className="font-medium">{formData.fileName}</span></div>
+            <div className="space-y-2">
+              {isImage && formData.file ? (
+                <img src={formData.file} alt="Preview" className="max-h-32 mx-auto rounded-lg" />
+              ) : (
+                <FileText className="h-8 w-8 mx-auto text-coral-600" />
+              )}
+              <div className="flex items-center justify-center gap-2 text-coral-600">
+                <span className="font-medium">{formData.fileName}</span>
+                <Badge variant="outline" className="text-xs">{isImage ? 'Immagine' : 'PDF'}</Badge>
+              </div>
+            </div>
           ) : (
-            <><Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" /><p className="text-sm text-gray-500">Clicca per selezionare un PDF</p><p className="text-xs text-gray-400 mt-1">Prescrizioni, referti, fatture...</p></>
+            <><Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" /><p className="text-sm text-gray-500">Clicca per selezionare un file</p><p className="text-xs text-gray-400 mt-1">PDF, JPG o PNG</p></>
           )}
         </div>
       </div>
@@ -1936,7 +1965,7 @@ function DocumentUploadForm({ owners, pets, onSuccess }) {
       <div className="flex items-center justify-between p-4 bg-coral-50 rounded-lg">
         <div>
           <p className="font-medium text-sm">Invia via email automaticamente</p>
-          <p className="text-xs text-gray-500">Il proprietario riceverà il PDF come allegato</p>
+          <p className="text-xs text-gray-500">Il proprietario riceverà il file come allegato</p>
         </div>
         <Switch checked={formData.sendEmail} onCheckedChange={(v) => setFormData({...formData, sendEmail: v})} />
       </div>
