@@ -158,64 +158,76 @@ function LandingPage({ onLogin }) {
         )}
       </header>
 
-      {/* Hero - Milano Focus */}
-      <section className="pt-16 pb-20 px-4 bg-gradient-to-b from-white to-coral-50/30">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 px-4 py-2 rounded-full mb-6 border border-blue-200">
+      {/* Hero - Messaggio chiaro per cliniche e proprietari */}
+      <section className="pt-12 pb-16 px-4 bg-gradient-to-b from-white to-coral-50/30">
+        <div className="max-w-5xl mx-auto text-center">
+          {/* Badge Pilot */}
+          <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-4 py-2 rounded-full mb-6 border border-amber-200">
             <MapPin className="h-4 w-4" />
-            <span className="font-medium">Pilot attivo a Milano e provincia</span>
+            <span className="font-semibold">Pilot Milano — Accesso su invito</span>
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            La piattaforma veterinaria<br /><span className="text-coral-500">che i tuoi clienti ameranno</span>
+          
+          {/* Headline principale */}
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+            La piattaforma per <span className="text-coral-500">cliniche veterinarie</span> e <span className="text-blue-500">proprietari di animali</span>
           </h1>
-          <p className="text-xl text-gray-600 mb-4 max-w-2xl mx-auto">
-            Prenotazioni online, cartelle cliniche digitali, pagamenti e comunicazione automatizzata.
-          </p>
-          <p className="text-lg text-coral-600 font-semibold mb-10">
-            Tutto in un'unica piattaforma. Zero carta, zero caos.
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            Gestisci appuntamenti, documenti e comunicazione in un'unica piattaforma. Zero carta, zero caos.
           </p>
           
-          {/* CTA Buttons - Clear separation for Clinics vs Pet Owners */}
-          <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-12">
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-coral-200 hover:border-coral-400 transition cursor-pointer group" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <div className="h-14 w-14 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
-                <Building2 className="h-7 w-7 text-coral-600" />
+          {/* 3 Proof Points */}
+          <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-10">
+            <div className="bg-white rounded-xl p-5 shadow-sm border text-left">
+              <div className="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+                <Inbox className="h-5 w-5 text-purple-600" />
               </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Sei una Clinica?</h3>
-              <p className="text-sm text-gray-600 mb-2">Candidati al Pilot gratuito a Milano. Digitalizza la tua clinica.</p>
-              <p className="text-xs text-coral-600 font-medium mb-4">🏥 Gratis durante la fase beta</p>
+              <h3 className="font-bold text-gray-900 mb-1">Team Inbox</h3>
+              <p className="text-sm text-gray-600">Assegnazione ticket allo staff, anti-doppioni, niente messaggi persi.</p>
+            </div>
+            <div className="bg-white rounded-xl p-5 shadow-sm border text-left">
+              <div className="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center mb-3">
+                <FileText className="h-5 w-5 text-green-600" />
+              </div>
+              <h3 className="font-bold text-gray-900 mb-1">Documenti Automatici</h3>
+              <p className="text-sm text-gray-600">Upload PDF e invio automatico via email: referti, prescrizioni, fatture.</p>
+            </div>
+            <div className="bg-white rounded-xl p-5 shadow-sm border text-left">
+              <div className="h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                <CalendarCheck className="h-5 w-5 text-blue-600" />
+              </div>
+              <h3 className="font-bold text-gray-900 mb-1">Prenotazioni + Video</h3>
+              <p className="text-sm text-gray-600">Sync Google Calendar, video-consulti, reminder automatici ai clienti.</p>
+            </div>
+          </div>
+          
+          {/* CTA Buttons */}
+          <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-8">
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-coral-200 hover:border-coral-400 transition cursor-pointer group" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+              <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                <Building2 className="h-6 w-6 text-coral-600" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Per Cliniche Veterinarie</h3>
+              <p className="text-sm text-gray-600 mb-3">Dashboard completa, inbox team, documenti, reportistica.</p>
+              <p className="text-xs text-amber-600 font-semibold mb-3">🎫 Pilot: 6 mesi gratuiti su invito</p>
               <Button className="w-full bg-coral-500 hover:bg-coral-600 text-white">
-                Candidati al Pilot →
+                Richiedi Invito →
               </Button>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-200 hover:border-blue-400 transition cursor-pointer group" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <div className="h-14 w-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
-                <PawPrint className="h-7 w-7 text-blue-600" />
+              <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                <PawPrint className="h-6 w-6 text-blue-600" />
               </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Sei un Proprietario?</h3>
-              <p className="text-sm text-gray-600 mb-2">Esplora le funzionalità e invita la tua clinica di fiducia a unirsi.</p>
-              <p className="text-xs text-blue-600 font-medium mb-4">🎯 Registrati gratis per vedere la demo</p>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Per Proprietari di Animali</h3>
+              <p className="text-sm text-gray-600 mb-3">Prenota visite, ricevi documenti, gestisci i tuoi pet.</p>
+              <p className="text-xs text-blue-600 font-semibold mb-3">🆓 Gratis per sempre • Demo disponibile</p>
               <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
-                Esplora gratis →
+                Esplora la Demo →
               </Button>
             </div>
           </div>
           
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-            {[
-              { icon: MapPin, title: 'Milano', desc: 'Pilot attivo in città' },
-              { icon: Building2, title: 'Gratis', desc: 'Per le cliniche in beta' },
-              { icon: Heart, title: 'Gratis', desc: 'Per sempre per i pet owner' },
-              { icon: MessageCircle, title: 'Feedback', desc: 'Costruisci con noi il prodotto' }
-            ].map((item, i) => (
-              <div key={i} className="bg-white rounded-xl p-4 shadow-sm border text-center">
-                <item.icon className="h-5 w-5 text-coral-500 mx-auto mb-2" />
-                <div className="font-bold text-coral-500 text-lg">{item.title}</div>
-                <div className="text-xs text-gray-500">{item.desc}</div>
-              </div>
-            ))}
-          </div>
+          {/* Trust indicators */}
+          <p className="text-sm text-gray-400">Pilot attivo a Milano e provincia • Accesso prioritario per cliniche selezionate</p>
         </div>
       </section>
 
