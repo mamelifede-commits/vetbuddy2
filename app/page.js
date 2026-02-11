@@ -5270,6 +5270,9 @@ function InviteClinic({ user }) {
             <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600" disabled={sending}>
               {sending ? <><Clock className="h-4 w-4 mr-2 animate-spin" />Invio in corso...</> : <><Mail className="h-4 w-4 mr-2" />Invia invito</>}
             </Button>
+            {error && (
+              <p className="text-red-500 text-sm text-center mt-2">{error}</p>
+            )}
           </form>
         </CardContent>
       </Card>
