@@ -360,40 +360,40 @@ function LandingPage({ onLogin }) {
         </div>
       </section>
 
-      {/* Pilot Milano */}
+      {/* Beta Test Section */}
       <section id="pilot" className="py-20 px-4 bg-gray-50">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-4">
-              <MapPin className="h-4 w-4" />
-              <span className="font-semibold">Pilot Milano 2025</span>
+              <Zap className="h-4 w-4" />
+              <span className="font-semibold">Beta Test 2025</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Unisciti alle prime 20 cliniche</h2>
-            <p className="text-gray-600 max-w-xl mx-auto">Stiamo selezionando cliniche veterinarie a Milano e provincia per il nostro programma pilota. <strong>Accesso gratuito per 6 mesi.</strong></p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Prova VetBuddy gratis</h2>
+            <p className="text-gray-600 max-w-xl mx-auto">Stiamo testando l'app con cliniche veterinarie selezionate. <strong>Provalo gratis e aiutaci a migliorare con il tuo feedback.</strong></p>
           </div>
 
-          {/* Pilot Benefits */}
+          {/* Beta Benefits */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             <div className="bg-white rounded-xl p-6 border-2 border-coral-200 text-center">
               <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Star className="h-6 w-6 text-coral-500" />
               </div>
-              <h3 className="font-bold mb-2">Accesso prioritario</h3>
-              <p className="text-gray-600 text-sm">6 mesi gratuiti di tutte le funzionalità Pro</p>
+              <h3 className="font-bold mb-2">Accesso gratuito</h3>
+              <p className="text-gray-600 text-sm">Tutte le funzionalità Pro gratis durante la fase beta</p>
             </div>
             <div className="bg-white rounded-xl p-6 border-2 border-coral-200 text-center">
               <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <MessageCircle className="h-6 w-6 text-coral-500" />
               </div>
-              <h3 className="font-bold mb-2">Supporto dedicato</h3>
-              <p className="text-gray-600 text-sm">Onboarding personalizzato e assistenza prioritaria</p>
+              <h3 className="font-bold mb-2">Supporto diretto</h3>
+              <p className="text-gray-600 text-sm">Canale dedicato per assistenza e suggerimenti</p>
             </div>
             <div className="bg-white rounded-xl p-6 border-2 border-coral-200 text-center">
               <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Zap className="h-6 w-6 text-coral-500" />
               </div>
-              <h3 className="font-bold mb-2">Influenza il prodotto</h3>
-              <p className="text-gray-600 text-sm">Le tue richieste diventano feature prioritarie</p>
+              <h3 className="font-bold mb-2">Costruisci con noi</h3>
+              <p className="text-gray-600 text-sm">Il tuo feedback diventa nuove funzionalità</p>
             </div>
           </div>
 
