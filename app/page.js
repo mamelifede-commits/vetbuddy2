@@ -455,7 +455,7 @@ function AgendaSection({ appointments, owners, pets, onRefresh }) {
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Clock className="h-5 w-5 text-emerald-600" />
+              <Clock className="h-5 w-5 text-coral-600" />
               Oggi ({todayAppts.length})
             </CardTitle>
           </CardHeader>
@@ -468,7 +468,7 @@ function AgendaSection({ appointments, owners, pets, onRefresh }) {
                   <div key={appt.id} className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
-                        <PawPrint className="h-5 w-5 text-emerald-600" />
+                        <PawPrint className="h-5 w-5 text-coral-600" />
                       </div>
                       <div>
                         <p className="font-medium">{appt.petName}</p>
@@ -729,7 +729,7 @@ function DocumentsSection({ documents, pets, owners, onRefresh }) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 bg-coral-100 rounded-lg flex items-center justify-center">
-                      <FileText className="h-5 w-5 text-emerald-600" />
+                      <FileText className="h-5 w-5 text-coral-600" />
                     </div>
                     <div>
                       <p className="font-medium">{doc.name}</p>
@@ -864,7 +864,7 @@ function StaffSection({ staff, onRefresh }) {
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 bg-coral-100 rounded-full flex items-center justify-center">
-                    <User className="h-6 w-6 text-emerald-600" />
+                    <User className="h-6 w-6 text-coral-600" />
                   </div>
                   <div>
                     <p className="font-medium">{member.name}</p>
@@ -1011,11 +1011,11 @@ function PatientsSection({ pets, owners, onRefresh }) {
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 bg-coral-100 rounded-full flex items-center justify-center">
                     {pet.species === 'dog' ? (
-                      <Dog className="h-6 w-6 text-emerald-600" />
+                      <Dog className="h-6 w-6 text-coral-600" />
                     ) : pet.species === 'cat' ? (
-                      <Cat className="h-6 w-6 text-emerald-600" />
+                      <Cat className="h-6 w-6 text-coral-600" />
                     ) : (
-                      <PawPrint className="h-6 w-6 text-emerald-600" />
+                      <PawPrint className="h-6 w-6 text-coral-600" />
                     )}
                   </div>
                   <div>
@@ -1231,7 +1231,7 @@ function OwnerDashboard({ user, onLogout }) {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
-                            <PawPrint className="h-5 w-5 text-emerald-600" />
+                            <PawPrint className="h-5 w-5 text-coral-600" />
                           </div>
                           <div>
                             <p className="font-medium">{appt.petName}</p>
@@ -1268,7 +1268,7 @@ function OwnerDashboard({ user, onLogout }) {
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 bg-coral-100 rounded-lg flex items-center justify-center">
-                          <FileText className="h-5 w-5 text-emerald-600" />
+                          <FileText className="h-5 w-5 text-coral-600" />
                         </div>
                         <div>
                           <p className="font-medium">{doc.name}</p>
@@ -1329,11 +1329,11 @@ function OwnerDashboard({ user, onLogout }) {
                       <div className="flex items-center gap-3">
                         <div className="h-12 w-12 bg-coral-100 rounded-full flex items-center justify-center">
                           {pet.species === 'dog' ? (
-                            <Dog className="h-6 w-6 text-emerald-600" />
+                            <Dog className="h-6 w-6 text-coral-600" />
                           ) : pet.species === 'cat' ? (
-                            <Cat className="h-6 w-6 text-emerald-600" />
+                            <Cat className="h-6 w-6 text-coral-600" />
                           ) : (
-                            <PawPrint className="h-6 w-6 text-emerald-600" />
+                            <PawPrint className="h-6 w-6 text-coral-600" />
                           )}
                         </div>
                         <div>
