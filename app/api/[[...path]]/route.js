@@ -949,6 +949,139 @@ export async function POST(request, { params }) {
       return NextResponse.json(appointment, { headers: corsHeaders });
     }
 
+    // Send appointment email to owner
+    if (path === 'appointments/send-email') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { appointmentId, recipientEmail } = body;
+      const appointments = await getCollection('appointments');
+      const appt = await appointments.findOne({ id: appointmentId });
+      
+      if (!appt) {
+        return NextResponse.json({ error: 'Appuntamento non trovato' }, { status: 404, headers: corsHeaders });
+      }
+
+      // Get clinic info
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: user.clinicId || user.id });
+      const clinicName = clinic?.clinicName || 'Clinica Veterinaria';
+      const clinicPhone = clinic?.phone || '';
+      const clinicAddress = clinic?.address || '';
+
+      // Get appointment type label
+      const typeLabels = {
+        visita: 'Visita generale',
+        vaccino: 'Vaccino',
+        chirurgia: 'Chirurgia / Operazione',
+        emergenza: 'Emergenza',
+        controllo: 'Controllo / Follow-up',
+        sterilizzazione: 'Sterilizzazione',
+        dentale: 'Pulizia dentale',
+        esami: 'Esami / Analisi',
+        videoconsulto: 'Video-consulto'
+      };
+      const typeLabel = typeLabels[appt.type] || appt.type || 'Appuntamento';
+
+      // Get staff name if assigned
+      let staffName = '';
+      if (appt.staffId) {
+        const staffCollection = await getCollection('staff');
+        const staffMember = await staffCollection.findOne({ id: appt.staffId });
+        if (staffMember) staffName = staffMember.name;
+      }
+
+      const formattedDate = new Date(appt.date).toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+      await sendEmail({
+        to: recipientEmail,
+        subject: `📅 ${typeLabel} - ${appt.petName} | ${clinicName}`,
+        html: `
+          <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+            <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 32px; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 28px;">🐾 ${clinicName}</h1>
+              <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 16px;">Conferma Appuntamento</p>
+            </div>
+            
+            <div style="padding: 32px;">
+              <div style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+                <table style="width: 100%;">
+                  <tr>
+                    <td style="padding: 8px 0;">
+                      <span style="color: #64748b; font-size: 14px;">🐕 Paziente</span><br/>
+                      <strong style="font-size: 18px; color: #1e293b;">${appt.petName}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0;">
+                      <span style="color: #64748b; font-size: 14px;">📋 Tipo</span><br/>
+                      <strong style="font-size: 16px; color: #1e293b;">${typeLabel}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0;">
+                      <span style="color: #64748b; font-size: 14px;">📅 Data e ora</span><br/>
+                      <strong style="font-size: 18px; color: #FF6B6B;">${formattedDate}</strong><br/>
+                      <strong style="font-size: 24px; color: #1e293b;">🕐 ${appt.time}</strong>
+                    </td>
+                  </tr>
+                  ${staffName ? `
+                  <tr>
+                    <td style="padding: 8px 0;">
+                      <span style="color: #64748b; font-size: 14px;">👨‍⚕️ Con</span><br/>
+                      <strong style="font-size: 16px; color: #1e293b;">${staffName}</strong>
+                    </td>
+                  </tr>
+                  ` : ''}
+                  ${appt.duration ? `
+                  <tr>
+                    <td style="padding: 8px 0;">
+                      <span style="color: #64748b; font-size: 14px;">⏱️ Durata prevista</span><br/>
+                      <strong style="font-size: 16px; color: #1e293b;">${appt.duration} minuti</strong>
+                    </td>
+                  </tr>
+                  ` : ''}
+                </table>
+              </div>
+
+              ${appt.reason ? `
+              <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin-bottom: 24px; border-radius: 0 8px 8px 0;">
+                <p style="margin: 0; font-size: 14px; color: #92400e;"><strong>Note:</strong> ${appt.reason}</p>
+              </div>
+              ` : ''}
+
+              <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                <h3 style="margin: 0 0 12px; color: #334155; font-size: 16px;">📍 Dove trovarci</h3>
+                <p style="margin: 0; color: #64748b; font-size: 14px;">
+                  <strong>${clinicName}</strong><br/>
+                  ${clinicAddress ? `${clinicAddress}<br/>` : ''}
+                  ${clinicPhone ? `📞 ${clinicPhone}` : ''}
+                </p>
+              </div>
+
+              <p style="color: #64748b; font-size: 13px; text-align: center; margin-top: 24px;">
+                Per modificare o cancellare l'appuntamento, contatta la clinica.
+              </p>
+            </div>
+            
+            <div style="background: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
+              <p style="color: #94a3b8; font-size: 12px; margin: 0;">Inviato tramite <strong>VetBuddy</strong> - La piattaforma veterinaria</p>
+            </div>
+          </div>
+        `
+      });
+
+      // Update appointment with email sent info
+      await appointments.updateOne(
+        { id: appointmentId },
+        { $set: { emailSentAt: new Date().toISOString(), emailSentTo: recipientEmail } }
+      );
+
+      return NextResponse.json({ success: true, message: 'Email inviata con successo' }, { headers: corsHeaders });
+    }
+
     // Upload document
     if (path === 'documents') {
       const user = getUserFromRequest(request);
