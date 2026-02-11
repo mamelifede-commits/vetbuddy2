@@ -1961,6 +1961,501 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
   );
 }
 
+// ==================== PET PROFILE (Cartella Clinica) ====================
+function PetProfile({ petId, onBack, appointments, documents }) {
+  const [pet, setPet] = useState(null);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadPetData();
+  }, [petId]);
+
+  const loadPetData = async () => {
+    try {
+      const data = await api.get(`pets/${petId}`);
+      setPet(data);
+    } catch (error) {
+      console.error('Error loading pet:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return 'N/D';
+    const birth = new Date(birthDate);
+    const now = new Date();
+    const years = now.getFullYear() - birth.getFullYear();
+    const months = now.getMonth() - birth.getMonth();
+    if (years < 1) return `${months + (months < 0 ? 12 : 0)} mesi`;
+    return `${years} ann${years === 1 ? 'o' : 'i'}`;
+  };
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64"><div className="text-center"><RefreshCw className="h-8 w-8 animate-spin text-blue-500 mx-auto" /><p className="mt-2 text-gray-500">Caricamento...</p></div></div>;
+  }
+
+  if (!pet) {
+    return <div className="text-center py-12"><AlertCircle className="h-12 w-12 text-gray-300 mx-auto" /><p className="mt-2 text-gray-500">Animale non trovato</p></div>;
+  }
+
+  const petAppointments = appointments?.filter(a => a.petId === petId || a.petName === pet.name) || [];
+  const petDocuments = documents?.filter(d => d.petId === petId || d.petName === pet.name) || [];
+  const nextAppointment = petAppointments.find(a => new Date(a.date) >= new Date());
+  const lastDocument = petDocuments[0];
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="mb-6">
+        <Button variant="ghost" onClick={onBack} className="mb-4">
+          <ChevronLeft className="h-4 w-4 mr-1" />Torna ai miei animali
+        </Button>
+        
+        <Card className="bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200">
+          <CardContent className="p-6">
+            <div className="flex items-start gap-6">
+              <div className="h-24 w-24 bg-white rounded-full flex items-center justify-center shadow-md">
+                {pet.species === 'dog' ? <Dog className="h-12 w-12 text-blue-600" /> : pet.species === 'cat' ? <Cat className="h-12 w-12 text-blue-600" /> : <PawPrint className="h-12 w-12 text-blue-600" />}
+              </div>
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-gray-800">{pet.name}</h1>
+                <p className="text-gray-600">{pet.breed || (pet.species === 'dog' ? 'Cane' : pet.species === 'cat' ? 'Gatto' : 'Animale')} • {calculateAge(pet.birthDate)}</p>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {pet.sterilized && <Badge className="bg-green-100 text-green-700 border-green-300">✓ Sterilizzato</Badge>}
+                  {pet.microchip && <Badge className="bg-blue-100 text-blue-700 border-blue-300">Microchip: {pet.microchip}</Badge>}
+                  {pet.allergies && <Badge className="bg-red-100 text-red-700 border-red-300"><AlertTriangle className="h-3 w-3 mr-1" />Allergie</Badge>}
+                  {pet.medications && <Badge className="bg-purple-100 text-purple-700 border-purple-300">In terapia</Badge>}
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button className="bg-blue-500 hover:bg-blue-600"><Calendar className="h-4 w-4 mr-2" />Prenota visita</Button>
+                <Button variant="outline"><Upload className="h-4 w-4 mr-2" />Carica documento</Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="mb-4">
+          <TabsTrigger value="overview">Panoramica</TabsTrigger>
+          <TabsTrigger value="visits">Visite</TabsTrigger>
+          <TabsTrigger value="documents">Documenti</TabsTrigger>
+          <TabsTrigger value="vaccines">Vaccini & Terapie</TabsTrigger>
+          <TabsTrigger value="data">Dati & Spese</TabsTrigger>
+        </TabsList>
+
+        {/* Panoramica */}
+        <TabsContent value="overview">
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Prossimo appuntamento */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><Calendar className="h-4 w-4 text-blue-500" />Prossimo appuntamento</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {nextAppointment ? (
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{nextAppointment.reason || 'Visita'}</p>
+                      <p className="text-sm text-gray-500">{new Date(nextAppointment.date).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })} alle {nextAppointment.time}</p>
+                    </div>
+                    <Button size="sm" variant="outline">Gestisci</Button>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-sm">Nessun appuntamento programmato</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Ultimo documento */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><FileText className="h-4 w-4 text-blue-500" />Ultimo documento</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {lastDocument ? (
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{lastDocument.name}</p>
+                      <p className="text-sm text-gray-500">{new Date(lastDocument.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <Button size="sm" variant="outline"><Eye className="h-4 w-4 mr-1" />Apri</Button>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-sm">Nessun documento</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Note importanti */}
+            <Card className="md:col-span-2">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2"><AlertCircle className="h-4 w-4 text-amber-500" />Note importanti</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="p-3 bg-red-50 rounded-lg">
+                    <p className="text-sm font-medium text-red-800">Allergie</p>
+                    <p className="text-sm text-red-600 mt-1">{pet.allergies || 'Nessuna nota'}</p>
+                  </div>
+                  <div className="p-3 bg-purple-50 rounded-lg">
+                    <p className="text-sm font-medium text-purple-800">Farmaci in corso</p>
+                    <p className="text-sm text-purple-600 mt-1">{pet.medications || 'Nessuno'}</p>
+                  </div>
+                  <div className="p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm font-medium text-blue-800">Note comportamentali</p>
+                    <p className="text-sm text-blue-600 mt-1">{pet.notes || 'Nessuna nota'}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Visite */}
+        <TabsContent value="visits">
+          <Card>
+            <CardHeader><CardTitle>Storico visite</CardTitle></CardHeader>
+            <CardContent>
+              {petAppointments.length === 0 ? (
+                <p className="text-gray-500 text-center py-8">Nessuna visita registrata</p>
+              ) : (
+                <div className="space-y-3">
+                  {petAppointments.map((appt, i) => (
+                    <div key={i} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-4">
+                        <div className={`h-10 w-10 rounded-full flex items-center justify-center ${new Date(appt.date) >= new Date() ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                          {appt.type === 'videoconsulto' ? <Video className="h-5 w-5 text-blue-600" /> : <Stethoscope className="h-5 w-5 text-gray-600" />}
+                        </div>
+                        <div>
+                          <p className="font-medium">{appt.reason || 'Visita'}</p>
+                          <p className="text-sm text-gray-500">{new Date(appt.date).toLocaleDateString()} - {appt.time}</p>
+                        </div>
+                      </div>
+                      <Badge variant="outline">{new Date(appt.date) >= new Date() ? 'Programmato' : 'Completato'}</Badge>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Documenti */}
+        <TabsContent value="documents">
+          <Tabs defaultValue="clinic">
+            <TabsList className="mb-4">
+              <TabsTrigger value="clinic">Dalla clinica</TabsTrigger>
+              <TabsTrigger value="mine">Caricati da me</TabsTrigger>
+            </TabsList>
+            <TabsContent value="clinic">
+              {petDocuments.filter(d => !d.fromClient).length === 0 ? (
+                <Card><CardContent className="p-8 text-center text-gray-500">Nessun documento dalla clinica</CardContent></Card>
+              ) : (
+                <div className="space-y-2">
+                  {petDocuments.filter(d => !d.fromClient).map((doc, i) => (
+                    <Card key={i}>
+                      <CardContent className="p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <FileText className="h-5 w-5 text-blue-500" />
+                          <div>
+                            <p className="font-medium">{doc.name}</p>
+                            <p className="text-sm text-gray-500">{new Date(doc.createdAt).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="outline"><Download className="h-4 w-4 mr-1" />Scarica</Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+            <TabsContent value="mine">
+              {petDocuments.filter(d => d.fromClient).length === 0 ? (
+                <Card><CardContent className="p-8 text-center text-gray-500">Nessun documento caricato</CardContent></Card>
+              ) : (
+                <div className="space-y-2">
+                  {petDocuments.filter(d => d.fromClient).map((doc, i) => (
+                    <Card key={i}>
+                      <CardContent className="p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <FileText className="h-5 w-5 text-green-500" />
+                          <div>
+                            <p className="font-medium">{doc.name}</p>
+                            <p className="text-sm text-gray-500">{new Date(doc.createdAt).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="text-green-600">Inviato</Badge>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        </TabsContent>
+
+        {/* Vaccini & Terapie */}
+        <TabsContent value="vaccines">
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><Syringe className="h-5 w-5 text-blue-500" />Vaccini</CardTitle></CardHeader>
+              <CardContent>
+                {(pet.vaccinations || []).length === 0 ? (
+                  <p className="text-gray-500 text-center py-4">Nessun vaccino registrato</p>
+                ) : (
+                  <div className="space-y-3">
+                    {pet.vaccinations.map((vax, i) => (
+                      <div key={i} className="p-3 border rounded-lg">
+                        <div className="flex justify-between">
+                          <p className="font-medium">{vax.name}</p>
+                          <Badge variant={new Date(vax.nextDue) < new Date() ? 'destructive' : 'outline'}>
+                            {new Date(vax.nextDue) < new Date() ? 'Scaduto' : 'Valido'}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-500">Fatto: {new Date(vax.date).toLocaleDateString()}</p>
+                        <p className="text-sm text-gray-500">Prossimo: {new Date(vax.nextDue).toLocaleDateString()}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><ClipboardList className="h-5 w-5 text-purple-500" />Terapie in corso</CardTitle></CardHeader>
+              <CardContent>
+                {pet.medications ? (
+                  <div className="p-3 bg-purple-50 rounded-lg">
+                    <p className="text-purple-800">{pet.medications}</p>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-4">Nessuna terapia in corso</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Dati & Spese */}
+        <TabsContent value="data">
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader><CardTitle>Dati anagrafici</CardTitle></CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div><Label className="text-gray-500">Microchip</Label><p className="font-medium">{pet.microchip || 'Non registrato'}</p></div>
+                  <div><Label className="text-gray-500">Peso</Label><p className="font-medium">{pet.weight ? `${pet.weight} kg` : 'N/D'}</p></div>
+                  <div><Label className="text-gray-500">Data nascita</Label><p className="font-medium">{pet.birthDate ? new Date(pet.birthDate).toLocaleDateString() : 'N/D'}</p></div>
+                  <div><Label className="text-gray-500">Sterilizzato</Label><p className="font-medium">{pet.sterilized ? 'Sì' : 'No'}</p></div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+              <CardHeader><CardTitle className="flex items-center gap-2"><Euro className="h-5 w-5 text-green-600" />Spese veterinarie</CardTitle></CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-4 bg-white rounded-lg text-center">
+                    <p className="text-3xl font-bold text-green-600">€{pet.spending?.currentYear || 0}</p>
+                    <p className="text-sm text-gray-500">Speso quest'anno</p>
+                  </div>
+                  <div className="p-4 bg-white rounded-lg text-center">
+                    <p className="text-xl font-semibold text-gray-700">€{pet.spending?.total || 0}</p>
+                    <p className="text-sm text-gray-500">Totale storico</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+// ==================== FIND CLINIC (Ricerca Cliniche) ====================
+function FindClinic({ user }) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchCity, setSearchCity] = useState('');
+  const [clinics, setClinics] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedClinic, setSelectedClinic] = useState(null);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewForm, setReviewForm] = useState({ overallRating: 5, punctuality: 5, competence: 5, price: 5, comment: '' });
+
+  const searchClinics = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (searchQuery) params.append('q', searchQuery);
+      if (searchCity) params.append('city', searchCity);
+      const results = await api.get(`clinics/search?${params.toString()}`);
+      setClinics(results);
+    } catch (error) {
+      console.error('Search error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { searchClinics(); }, []);
+
+  const submitReview = async () => {
+    try {
+      await api.post('reviews', { ...reviewForm, clinicId: selectedClinic.id });
+      alert('Recensione inviata con successo!');
+      setShowReviewForm(false);
+      setReviewForm({ overallRating: 5, punctuality: 5, competence: 5, price: 5, comment: '' });
+      searchClinics();
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const StarRating = ({ value, onChange, readonly }) => (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button key={star} type="button" disabled={readonly} onClick={() => onChange?.(star)} className={`${readonly ? '' : 'hover:scale-110'} transition`}>
+          <Star className={`h-5 w-5 ${star <= value ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+        </button>
+      ))}
+    </div>
+  );
+
+  return (
+    <div>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Trova una clinica</h2>
+        <p className="text-gray-500 text-sm">Cerca cliniche veterinarie nella tua zona</p>
+      </div>
+
+      {/* Search Form */}
+      <Card className="mb-6">
+        <CardContent className="p-4">
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <Label className="sr-only">Nome clinica</Label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input 
+                  placeholder="Nome clinica o veterinario..." 
+                  value={searchQuery} 
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <div className="w-48">
+              <Label className="sr-only">Città</Label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input 
+                  placeholder="Città..." 
+                  value={searchCity} 
+                  onChange={(e) => setSearchCity(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <Button onClick={searchClinics} className="bg-blue-500 hover:bg-blue-600">
+              <Search className="h-4 w-4 mr-2" />Cerca
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Results */}
+      {loading ? (
+        <div className="text-center py-12"><RefreshCw className="h-8 w-8 animate-spin text-blue-500 mx-auto" /></div>
+      ) : clinics.length === 0 ? (
+        <Card><CardContent className="p-12 text-center text-gray-500"><Building2 className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessuna clinica trovata</p><p className="text-sm mt-2">Prova con altri criteri di ricerca</p></CardContent></Card>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4">
+          {clinics.map((clinic) => (
+            <Card key={clinic.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-5">
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h3 className="font-semibold text-lg">{clinic.clinicName}</h3>
+                    <p className="text-sm text-gray-500">{clinic.name}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <span className="font-medium">{clinic.avgRating || 'N/D'}</span>
+                    </div>
+                    <p className="text-xs text-gray-500">{clinic.reviewCount} recensioni</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 text-sm text-gray-600 mb-4">
+                  {clinic.city && <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-gray-400" />{clinic.city}</div>}
+                  {clinic.phone && <div className="flex items-center gap-2"><Phone className="h-4 w-4 text-gray-400" />{clinic.phone}</div>}
+                  {clinic.website && <div className="flex items-center gap-2"><Globe className="h-4 w-4 text-gray-400" /><a href={clinic.website} target="_blank" className="text-blue-500 hover:underline">{clinic.website}</a></div>}
+                </div>
+
+                <div className="flex gap-2">
+                  <Button size="sm" className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={() => setSelectedClinic(clinic)}>
+                    Dettagli
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => { setSelectedClinic(clinic); setShowReviewForm(true); }}>
+                    <Star className="h-4 w-4 mr-1" />Recensisci
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Review Dialog */}
+      <Dialog open={showReviewForm} onOpenChange={setShowReviewForm}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Recensisci {selectedClinic?.clinicName}</DialogTitle>
+            <DialogDescription>Condividi la tua esperienza</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <Label className="mb-2 block">Valutazione generale</Label>
+              <StarRating value={reviewForm.overallRating} onChange={(v) => setReviewForm({...reviewForm, overallRating: v})} />
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label className="text-sm text-gray-500">Puntualità</Label>
+                <StarRating value={reviewForm.punctuality} onChange={(v) => setReviewForm({...reviewForm, punctuality: v})} />
+              </div>
+              <div>
+                <Label className="text-sm text-gray-500">Competenza</Label>
+                <StarRating value={reviewForm.competence} onChange={(v) => setReviewForm({...reviewForm, competence: v})} />
+              </div>
+              <div>
+                <Label className="text-sm text-gray-500">Prezzo</Label>
+                <StarRating value={reviewForm.price} onChange={(v) => setReviewForm({...reviewForm, price: v})} />
+              </div>
+            </div>
+            <div>
+              <Label>Il tuo commento</Label>
+              <Textarea 
+                value={reviewForm.comment} 
+                onChange={(e) => setReviewForm({...reviewForm, comment: e.target.value})}
+                placeholder="Racconta la tua esperienza..."
+                rows={4}
+              />
+            </div>
+            <Button onClick={submitReview} className="w-full bg-blue-500 hover:bg-blue-600">
+              Invia recensione
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
 // ==================== MAIN APP ====================
 export default function App() {
   const [user, setUser] = useState(null);
