@@ -217,9 +217,9 @@ function LandingPage({ onLogin }) {
           
           <div className="grid md:grid-cols-2 gap-5 mb-6">
             {/* Feature 1 - Team Inbox */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-purple-200">
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-purple-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="h-14 w-14 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0 animate-float" style={{animationDelay: '0s'}}>
                   <Inbox className="h-7 w-7 text-purple-600" />
                 </div>
                 <div>
@@ -235,9 +235,9 @@ function LandingPage({ onLogin }) {
             </div>
             
             {/* Feature 2 - Documenti automatici */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-green-200">
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-green-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="h-14 w-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0 animate-float" style={{animationDelay: '0.5s'}}>
                   <FileText className="h-7 w-7 text-green-600" />
                 </div>
                 <div>
@@ -253,9 +253,9 @@ function LandingPage({ onLogin }) {
             </div>
             
             {/* Feature 3 - Prenotazioni + Video */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-200">
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="h-14 w-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 animate-float" style={{animationDelay: '1s'}}>
                   <CalendarCheck className="h-7 w-7 text-blue-600" />
                 </div>
                 <div>
@@ -271,9 +271,9 @@ function LandingPage({ onLogin }) {
             </div>
             
             {/* Feature 4 - Reportistica */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-amber-200">
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-amber-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="h-14 w-14 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 animate-float" style={{animationDelay: '1.5s'}}>
                   <TrendingUp className="h-7 w-7 text-amber-600" />
                 </div>
                 <div>
