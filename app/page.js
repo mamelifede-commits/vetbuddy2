@@ -944,7 +944,7 @@ function ClinicDashboard({ user, onLogout }) {
         {activeTab === 'owners' && <ClinicOwners owners={owners} onRefresh={loadData} />}
         {activeTab === 'staff' && <ClinicStaff staff={staff} onRefresh={loadData} />}
         {activeTab === 'reports' && <ClinicReports appointments={appointments} documents={documents} messages={messages} owners={owners} />}
-        {activeTab === 'templates' && <ClinicTemplates />}
+        {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} />}
         {activeTab === 'settings' && <ClinicSettings user={user} />}
       </main>
     </div>
