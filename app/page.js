@@ -3512,8 +3512,8 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
     a.click();
   };
 
-  const StatCard = ({ title, value, subtitle, icon: Icon, color = 'coral', trend }) => (
-    <Card>
+  const StatCard = ({ title, value, subtitle, icon: Icon, color = 'coral', trend, onClick }) => (
+    <Card className={onClick ? 'cursor-pointer hover:shadow-md transition' : ''} onClick={onClick}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div>
@@ -3534,6 +3534,8 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
       </CardContent>
     </Card>
   );
+
+  const [activeReportTab, setActiveReportTab] = useState('overview');
 
   return (
     <div className="space-y-6">
