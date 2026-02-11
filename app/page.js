@@ -159,7 +159,7 @@ function LandingPage({ onLogin }) {
       </header>
 
       {/* Hero - Messaggio chiaro per cliniche e proprietari */}
-      <section className="pt-12 pb-16 px-4 bg-gradient-to-b from-white to-coral-50/30">
+      <section className="pt-12 pb-12 px-4 bg-gradient-to-b from-white to-coral-50/30">
         <div className="max-w-5xl mx-auto text-center">
           {/* Badge Pilot */}
           <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-4 py-2 rounded-full mb-6 border border-amber-200">
@@ -175,33 +175,8 @@ function LandingPage({ onLogin }) {
             Gestisci appuntamenti, documenti e comunicazione in un'unica piattaforma. Zero carta, zero caos.
           </p>
           
-          {/* 3 Proof Points */}
-          <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-10">
-            <div className="bg-white rounded-xl p-5 shadow-sm border text-left">
-              <div className="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
-                <Inbox className="h-5 w-5 text-purple-600" />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-1">Team Inbox</h3>
-              <p className="text-sm text-gray-600">Assegnazione ticket allo staff, anti-doppioni, niente messaggi persi.</p>
-            </div>
-            <div className="bg-white rounded-xl p-5 shadow-sm border text-left">
-              <div className="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center mb-3">
-                <FileText className="h-5 w-5 text-green-600" />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-1">Documenti Automatici</h3>
-              <p className="text-sm text-gray-600">Upload PDF e invio automatico via email: referti, prescrizioni, fatture.</p>
-            </div>
-            <div className="bg-white rounded-xl p-5 shadow-sm border text-left">
-              <div className="h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
-                <CalendarCheck className="h-5 w-5 text-blue-600" />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-1">Prenotazioni + Video</h3>
-              <p className="text-sm text-gray-600">Sync Google Calendar, video-consulti, reminder automatici ai clienti.</p>
-            </div>
-          </div>
-          
           {/* CTA Buttons */}
-          <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-8">
+          <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-6">
             <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-coral-200 hover:border-coral-400 transition cursor-pointer group" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
               <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
                 <Building2 className="h-6 w-6 text-coral-600" />
