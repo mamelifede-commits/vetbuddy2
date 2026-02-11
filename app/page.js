@@ -4786,41 +4786,48 @@ function ClinicSettings({ user, onNavigate }) {
       </div>
       
       <div className="space-y-6 max-w-2xl">
-        {/* Abbonamento VetBuddy */}
-        <Card className="border-coral-200 bg-gradient-to-r from-coral-50 to-white">
+        {/* Abbonamento VetBuddy - Pilot */}
+        <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-white">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Star className="h-5 w-5 text-coral-500" />Abbonamento VetBuddy
+              <Star className="h-5 w-5 text-amber-500" />Abbonamento VetBuddy
+              <Badge className="bg-amber-500 text-white">Pilot Milano</Badge>
             </CardTitle>
-            <CardDescription>Scegli il piano più adatto alla tua clinica</CardDescription>
+            <CardDescription>Accesso su invito — 6 mesi gratuiti per cliniche selezionate</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4">
               {/* Starter */}
               <div className="border rounded-lg p-4 bg-white">
                 <h3 className="font-semibold">Starter</h3>
-                <p className="text-2xl font-bold text-coral-500 mt-2">Gratis</p>
-                <p className="text-xs text-gray-500">per iniziare</p>
+                <p className="text-2xl font-bold text-gray-400 mt-2">Gratis</p>
+                <p className="text-xs text-gray-500">Funzionalità base</p>
                 <ul className="text-sm text-gray-600 mt-3 space-y-1">
                   <li>• 1 sede, 1 utente</li>
                   <li>• 30 richieste/mese</li>
                 </ul>
-                <Button variant="outline" className="w-full mt-4" disabled>Piano attuale</Button>
+                <Badge variant="outline" className="w-full justify-center mt-3 text-amber-700 border-amber-300">Solo con Pilot</Badge>
+                <Button variant="outline" className="w-full mt-2" disabled>Piano attuale</Button>
               </div>
               
-              {/* Pro */}
-              <div className="border-2 border-coral-500 rounded-lg p-4 bg-white relative">
-                <Badge className="absolute -top-2 right-2 bg-coral-500">Consigliato</Badge>
+              {/* Pro - Pilot */}
+              <div className="border-2 border-amber-500 rounded-lg p-4 bg-white relative">
+                <Badge className="absolute -top-2 right-2 bg-amber-500">PILOT ATTIVO</Badge>
                 <h3 className="font-semibold">Pro</h3>
-                <p className="text-2xl font-bold text-coral-500 mt-2">€129<span className="text-sm font-normal text-gray-500">/mese</span></p>
-                <p className="text-xs text-gray-500">+ IVA</p>
+                <div className="mt-2">
+                  <span className="text-2xl font-bold text-coral-500">€0</span>
+                  <span className="text-lg text-gray-400 line-through ml-2">€129/mese</span>
+                </div>
+                <p className="text-xs text-amber-600 font-semibold">6 mesi gratuiti su invito</p>
                 <ul className="text-sm text-gray-600 mt-3 space-y-1">
-                  <li>• Fino a 10 staff</li>
+                  <li>• Team Inbox + ticket</li>
                   <li>• Documenti + email auto</li>
                   <li>• Google Calendar sync</li>
+                  <li>• Report e analytics</li>
                 </ul>
-                <Button className="w-full mt-4 bg-coral-500 hover:bg-coral-600" onClick={() => handleSubscribe('pro')} disabled={subscriptionLoading}>
-                  {subscriptionLoading ? 'Caricamento...' : 'Abbonati'}
+                <Badge variant="outline" className="w-full justify-center mt-3 text-amber-700 border-amber-300">Solo con Pilot</Badge>
+                <Button className="w-full mt-2 bg-amber-500 hover:bg-amber-600" disabled>
+                  ✓ Attivo nel Pilot
                 </Button>
               </div>
               
@@ -4828,14 +4835,17 @@ function ClinicSettings({ user, onNavigate }) {
               <div className="border rounded-lg p-4 bg-white">
                 <h3 className="font-semibold">Enterprise</h3>
                 <p className="text-2xl font-bold text-coral-500 mt-2">Custom</p>
-                <p className="text-xs text-gray-500">gruppi e catene</p>
+                <p className="text-xs text-gray-500">Gruppi e catene</p>
                 <ul className="text-sm text-gray-600 mt-3 space-y-1">
                   <li>• Multi-sede illimitate</li>
                   <li>• API dedicata</li>
+                  <li>• SLA garantito</li>
                 </ul>
-                <Button variant="outline" className="w-full mt-4">Contattaci</Button>
+                <Badge variant="outline" className="w-full justify-center mt-3 text-amber-700 border-amber-300">Solo con Pilot</Badge>
+                <Button variant="outline" className="w-full mt-2">Contattaci</Button>
               </div>
             </div>
+            <p className="text-xs text-gray-500 text-center mt-4">Prezzi IVA esclusa. Gli abbonamenti vengono fatturati da VetBuddy.</p>
           </CardContent>
         </Card>
 
