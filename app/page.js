@@ -1060,9 +1060,36 @@ function AuthForm({ mode, setMode, onLogin }) {
   const [forgotEmail, setForgotEmail] = useState('');
   const [formData, setFormData] = useState({ 
     email: '', password: '', name: '', role: 'owner', clinicName: '', phone: '', city: '', vatNumber: '', website: '',
-    staffCount: '' // Per cliniche
+    staffCount: '', services: [] // Per cliniche
   });
   const [pilotRequestSent, setPilotRequestSent] = useState(false);
+  const [serviceCatalog, setServiceCatalog] = useState({});
+  const [showServicesStep, setShowServicesStep] = useState(false);
+
+  // Load services catalog when clinic is selected
+  useEffect(() => {
+    if (formData.role === 'clinic' && Object.keys(serviceCatalog).length === 0) {
+      loadServiceCatalog();
+    }
+  }, [formData.role]);
+
+  const loadServiceCatalog = async () => {
+    try {
+      const catalog = await api.get('services');
+      setServiceCatalog(catalog);
+    } catch (error) {
+      console.error('Error loading services:', error);
+    }
+  };
+
+  const toggleService = (serviceId) => {
+    setFormData(prev => ({
+      ...prev,
+      services: prev.services.includes(serviceId) 
+        ? prev.services.filter(id => id !== serviceId)
+        : [...prev.services, serviceId]
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
