@@ -2063,7 +2063,7 @@ function ClinicSettings({ user }) {
     }
   };
 
-  // Geocode address using Google Maps Geocoding
+  // Geocode address using backend API (secure)
   const geocodeAddress = async () => {
     if (!locationForm.address || !locationForm.city) {
       alert('Inserisci indirizzo e città');
@@ -2071,17 +2071,14 @@ function ClinicSettings({ user }) {
     }
     setDetectingLocation(true);
     try {
-      const address = encodeURIComponent(`${locationForm.address}, ${locationForm.city}, Italia`);
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`);
-      const data = await response.json();
+      const address = `${locationForm.address}, ${locationForm.city}, Italia`;
+      const data = await api.get(`geocode?address=${encodeURIComponent(address)}`);
       
-      if (data.results && data.results.length > 0) {
-        const { lat, lng } = data.results[0].geometry.location;
+      if (data.success) {
         setLocationForm(prev => ({
           ...prev,
-          latitude: lat,
-          longitude: lng
+          latitude: data.latitude,
+          longitude: data.longitude
         }));
         alert('Coordinate trovate con successo!');
       } else {
