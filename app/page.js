@@ -1162,7 +1162,7 @@ function LandingPage({ onLogin }) {
       </section>
 
       {/* CTA - Invita la tua clinica */}
-      <section className="py-16 px-4 bg-gradient-to-r from-coral-500 to-orange-500">
+      <section className="py-10 px-4 bg-gradient-to-r from-coral-500 to-orange-500">
         <div className="max-w-3xl mx-auto text-center text-white">
           <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full mb-6">
             <MapPin className="h-4 w-4" />
