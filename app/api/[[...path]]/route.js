@@ -165,6 +165,43 @@ export async function GET(request, { params }) {
       }, { headers: corsHeaders });
     }
 
+    // Geocoding endpoint (secure - uses backend API key)
+    if (path === 'geocode') {
+      const { searchParams } = new URL(request.url);
+      const address = searchParams.get('address');
+      
+      if (!address) {
+        return NextResponse.json({ error: 'Indirizzo richiesto' }, { status: 400, headers: corsHeaders });
+      }
+      
+      try {
+        const apiKey = process.env.GOOGLE_GEOCODING_API_KEY;
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`
+        );
+        const data = await response.json();
+        
+        if (data.results && data.results.length > 0) {
+          const { lat, lng } = data.results[0].geometry.location;
+          const formattedAddress = data.results[0].formatted_address;
+          return NextResponse.json({ 
+            success: true, 
+            latitude: lat, 
+            longitude: lng,
+            formattedAddress 
+          }, { headers: corsHeaders });
+        } else {
+          return NextResponse.json({ 
+            success: false, 
+            error: 'Indirizzo non trovato' 
+          }, { headers: corsHeaders });
+        }
+      } catch (error) {
+        console.error('Geocoding error:', error);
+        return NextResponse.json({ error: 'Errore durante la geocodifica' }, { status: 500, headers: corsHeaders });
+      }
+    }
+
     // Get owners (for clinic)
     if (path === 'owners') {
       const user = getUserFromRequest(request);
