@@ -928,7 +928,7 @@ function LandingPage({ onLogin }) {
       </section>
 
       {/* Potenzialità / Vision */}
-      <section className="py-20 px-4 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <section className="py-12 px-4 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-coral-400 font-semibold mb-2">LA NOSTRA VISIONE</p>
