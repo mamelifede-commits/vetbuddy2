@@ -1995,15 +1995,20 @@ export async function PUT(request, { params }) {
     // Update clinic services only
     if (path === 'clinic/services') {
       const users = await getCollection('users');
-      const { services } = body;
+      const { services, customServices } = body;
       
-      if (!Array.isArray(services)) {
-        return NextResponse.json({ error: 'services deve essere un array' }, { status: 400, headers: corsHeaders });
+      const updateData = { updatedAt: new Date().toISOString() };
+      
+      if (services !== undefined) {
+        updateData.services = services; // Array of { id, price } objects
+      }
+      if (customServices !== undefined) {
+        updateData.customServices = customServices; // Array of custom service objects
       }
       
       await users.updateOne(
         { id: user.id }, 
-        { $set: { services, updatedAt: new Date().toISOString() } }
+        { $set: updateData }
       );
       const updated = await users.findOne({ id: user.id }, { projection: { password: 0 } });
       return NextResponse.json(updated, { headers: corsHeaders });
