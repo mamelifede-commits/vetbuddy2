@@ -592,7 +592,7 @@ function LandingPage({ onLogin }) {
             <Button size="lg" className="bg-white text-coral-500 hover:bg-coral-50 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
               <Building2 className="h-5 w-5 mr-2" />Prova gratis
             </Button>
-            <Button size="lg" className="bg-white/20 text-white border-2 border-white hover:bg-white/30 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+            <Button size="lg" className="bg-white text-coral-500 hover:bg-coral-50 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
               <PawPrint className="h-5 w-5 mr-2" />Sono un proprietario
             </Button>
           </div>
