@@ -1134,7 +1134,7 @@ function ClinicControlRoom({ appointments, documents, messages, owners, setupPro
           )}
 
           {/* Mini Inbox */}
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition" onClick={() => onNavigate('inbox')}>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center justify-between">
                 <span className="flex items-center gap-2"><Inbox className="h-4 w-4" />Inbox</span>
@@ -1159,7 +1159,7 @@ function ClinicControlRoom({ appointments, documents, messages, owners, setupPro
           </Card>
 
           {/* Mini Documents */}
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition" onClick={() => onNavigate('documents')}>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2"><FileText className="h-4 w-4" />Documenti</CardTitle>
             </CardHeader>
