@@ -475,7 +475,7 @@ function AgendaSection({ appointments, owners, pets, onRefresh }) {
                         <p className="text-sm text-gray-500">{appt.ownerName} - {appt.reason}</p>
                       </div>
                     </div>
-                    <Badge variant="outline" className="text-coral-700 border-emerald-300">
+                    <Badge variant="outline" className="text-coral-700 border-coral-300">
                       {appt.time}
                     </Badge>
                   </div>
