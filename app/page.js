@@ -1272,6 +1272,7 @@ function ClinicDashboard({ user, onLogout }) {
   const [pets, setPets] = useState([]);
   const [owners, setOwners] = useState([]);
   const [setupProgress, setSetupProgress] = useState({ payments: false, video: false, team: false, automations: false });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -1294,7 +1295,7 @@ function ClinicDashboard({ user, onLogout }) {
   };
 
   const NavItem = ({ icon: Icon, label, value, badge }) => (
-    <button onClick={() => setActiveTab(value)} 
+    <button onClick={() => { setActiveTab(value); setMobileMenuOpen(false); }} 
       className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${activeTab === value ? 'bg-coral-100 text-coral-700 font-medium' : 'text-gray-600 hover:bg-gray-100'}`}>
       <div className="flex items-center gap-3"><Icon className="h-5 w-5" />{label}</div>
       {badge > 0 && <Badge className="bg-coral-500 text-white text-xs">{badge}</Badge>}
@@ -1306,9 +1307,45 @@ function ClinicDashboard({ user, onLogout }) {
   const totalSteps = 4;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r p-4 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+      {/* Mobile Header */}
+      <div className="md:hidden bg-white border-b p-4 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-3">
+          <VetBuddyLogo size={32} />
+          <div>
+            <h1 className="font-bold text-coral-500 text-sm">VetBuddy</h1>
+            <p className="text-xs text-gray-500 truncate max-w-[120px]">{user.clinicName || 'Clinica'}</p>
+          </div>
+        </div>
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 hover:bg-gray-100 rounded-lg">
+          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 top-[73px] bg-white z-40 p-4 overflow-auto">
+          <div className="mb-2"><RoleBadge role="clinic" /></div>
+          <Badge variant="outline" className="mb-4 justify-center text-amber-600 border-amber-300 bg-amber-50 w-full"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
+          <nav className="space-y-1">
+            <NavItem icon={LayoutDashboard} label="Dashboard" value="dashboard" />
+            <NavItem icon={Calendar} label="Agenda" value="agenda" />
+            <NavItem icon={Inbox} label="Team Inbox" value="inbox" badge={unreadMessages} />
+            <NavItem icon={FileText} label="Documenti" value="documents" />
+            <NavItem icon={Stethoscope} label="Servizi" value="services" />
+            <NavItem icon={PawPrint} label="Pazienti" value="patients" />
+            <NavItem icon={User} label="Proprietari" value="owners" />
+            <NavItem icon={Users} label="Staff" value="staff" />
+            <NavItem icon={TrendingUp} label="Report" value="reports" />
+            <NavItem icon={ClipboardList} label="Template" value="templates" />
+            <NavItem icon={Settings} label="Impostazioni" value="settings" />
+          </nav>
+          <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
+        </div>
+      )}
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex w-64 bg-white border-r p-4 flex-col flex-shrink-0">
         <div className="flex items-center gap-3 mb-2">
           <VetBuddyLogo size={36} />
           <div>
@@ -1337,7 +1374,7 @@ function ClinicDashboard({ user, onLogout }) {
       </aside>
 
       {/* Main */}
-      <main className="flex-1 p-6 overflow-auto">
+      <main className="flex-1 p-4 md:p-6 overflow-auto">
         {activeTab === 'dashboard' && <ClinicControlRoom appointments={appointments} documents={documents} messages={messages} owners={owners} setupProgress={setupProgress} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'agenda' && <ClinicAgenda appointments={appointments} staff={staff} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'inbox' && <ClinicInbox messages={messages} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
