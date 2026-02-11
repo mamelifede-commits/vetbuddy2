@@ -5764,6 +5764,8 @@ function PetProfile({ petId, onBack, appointments, documents }) {
 function FindClinic({ user }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchCity, setSearchCity] = useState('');
+  const [searchService, setSearchService] = useState('');
+  const [serviceCatalog, setServiceCatalog] = useState([]);
   const [clinics, setClinics] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedClinic, setSelectedClinic] = useState(null);
@@ -5773,9 +5775,23 @@ function FindClinic({ user }) {
   const [locationError, setLocationError] = useState(null);
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'map'
   const [maxDistance, setMaxDistance] = useState(50); // km
-  const [mapCenter, setMapCenter] = useState({ lat: 41.9028, lng: 12.4964 }); // Rome default
+  const [mapCenter, setMapCenter] = useState({ lat: 45.4642, lng: 9.1900 }); // Milan default for Pilot
   const [mapLoaded, setMapLoaded] = useState(false);
   const mapRef = useRef(null);
+
+  // Load service catalog
+  useEffect(() => {
+    loadServiceCatalog();
+  }, []);
+
+  const loadServiceCatalog = async () => {
+    try {
+      const flat = await api.get('services/flat');
+      setServiceCatalog(flat);
+    } catch (error) {
+      console.error('Error loading services:', error);
+    }
+  };
 
   // Get user's location
   const getUserLocation = () => {
@@ -5807,6 +5823,7 @@ function FindClinic({ user }) {
       const params = new URLSearchParams();
       if (searchQuery) params.append('q', searchQuery);
       if (searchCity) params.append('city', searchCity);
+      if (searchService) params.append('service', searchService);
       if (userLocation) {
         params.append('lat', userLocation.lat.toString());
         params.append('lng', userLocation.lng.toString());
