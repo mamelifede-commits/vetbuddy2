@@ -5132,6 +5132,22 @@ function OwnerDashboard({ user, onLogout }) {
 
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-6 overflow-auto">
+        {/* Banner Pilot Info */}
+        <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-amber-50 rounded-xl border border-blue-200">
+          <div className="flex items-start gap-3">
+            <div className="h-10 w-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <MapPin className="h-5 w-5 text-amber-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-gray-800 mb-1">Benvenuto nel Pilot Milano! 🏙️</h3>
+              <p className="text-sm text-gray-600">
+                Stai esplorando VetBuddy in modalità demo. Le cliniche del pilot verranno attivate a breve a Milano. 
+                Nel frattempo, <button onClick={() => setActiveTab('inviteClinic')} className="text-coral-600 font-medium underline">invita la tua clinica</button> per accelerare l'attivazione!
+              </p>
+            </div>
+          </div>
+        </div>
+
         {activeTab === 'appointments' && <OwnerAppointments appointments={appointments} pets={pets} />}
         {activeTab === 'documents' && <OwnerDocuments documents={documents} pets={pets} onRefresh={loadData} />}
         {activeTab === 'messages' && <OwnerMessages messages={messages} />}
