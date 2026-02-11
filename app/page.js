@@ -1458,16 +1458,38 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
   const [showUpload, setShowUpload] = useState(false);
   const [selectedClientDoc, setSelectedClientDoc] = useState(null);
   const [replyText, setReplyText] = useState('');
+  const [filters, setFilters] = useState({ type: 'all', status: 'all', search: '' });
+  
   const docTypes = { 
-    prescrizione: { label: 'Prescrizione', color: 'bg-purple-100 text-purple-700' }, 
-    referto: { label: 'Referto', color: 'bg-blue-100 text-blue-700' }, 
-    fattura: { label: 'Fattura', color: 'bg-emerald-100 text-emerald-700' },
-    istruzioni: { label: 'Istruzioni', color: 'bg-green-100 text-green-700' }, 
-    altro: { label: 'Altro', color: 'bg-gray-100 text-gray-700' }, 
-    foto: { label: 'Foto', color: 'bg-pink-100 text-pink-700' }, 
-    video: { label: 'Video', color: 'bg-indigo-100 text-indigo-700' }, 
-    esame: { label: 'Esame', color: 'bg-cyan-100 text-cyan-700' } 
+    prescrizione: { label: 'Prescrizione', color: 'bg-purple-100 text-purple-700', icon: FileText }, 
+    referto: { label: 'Referto', color: 'bg-blue-100 text-blue-700', icon: ClipboardList }, 
+    fattura: { label: 'Fattura', color: 'bg-emerald-100 text-emerald-700', icon: Receipt },
+    istruzioni: { label: 'Istruzioni', color: 'bg-green-100 text-green-700', icon: FileText }, 
+    altro: { label: 'Altro', color: 'bg-gray-100 text-gray-700', icon: FileText }, 
+    foto: { label: 'Foto', color: 'bg-pink-100 text-pink-700', icon: Eye }, 
+    video: { label: 'Video', color: 'bg-indigo-100 text-indigo-700', icon: PlayCircle }, 
+    esame: { label: 'Esame', color: 'bg-cyan-100 text-cyan-700', icon: FileText } 
   };
+  
+  const statusConfig = {
+    bozza: { label: 'Bozza', color: 'bg-gray-100 text-gray-600' },
+    inviato: { label: 'Inviato', color: 'bg-green-100 text-green-700' },
+    visualizzato: { label: 'Visualizzato', color: 'bg-blue-100 text-blue-700' },
+    scaricato: { label: 'Scaricato', color: 'bg-purple-100 text-purple-700' }
+  };
+
+  // Filter documents
+  const filteredDocs = documents.filter(doc => {
+    if (filters.type !== 'all' && doc.type !== filters.type) return false;
+    if (filters.status !== 'all' && doc.status !== filters.status) return false;
+    if (filters.search) {
+      const search = filters.search.toLowerCase();
+      if (!doc.name?.toLowerCase().includes(search) && 
+          !doc.petName?.toLowerCase().includes(search) &&
+          !doc.ownerEmail?.toLowerCase().includes(search)) return false;
+    }
+    return true;
+  });
 
   // Mock data for client-uploaded documents
   const [clientDocs, setClientDocs] = useState([
@@ -1486,6 +1508,20 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
     setSelectedClientDoc(null);
     markAsRead(doc.id);
   };
+  
+  const resendEmail = async (doc) => {
+    if (!doc.ownerEmail) {
+      alert('Email proprietario non disponibile');
+      return;
+    }
+    try {
+      await api.post('documents/send-email', { documentId: doc.id, recipientEmail: doc.ownerEmail });
+      alert('Email reinviata con successo!');
+      onRefresh();
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    }
+  };
 
   const unreadCount = clientDocs.filter(d => !d.read).length;
 
@@ -1499,7 +1535,7 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
       
       <Tabs defaultValue="dalla-clinica">
         <TabsList>
-          <TabsTrigger value="dalla-clinica">Dalla clinica</TabsTrigger>
+          <TabsTrigger value="dalla-clinica">Dalla clinica ({filteredDocs.length})</TabsTrigger>
           <TabsTrigger value="dai-clienti" className="relative">
             Caricati dai clienti
             {unreadCount > 0 && <Badge className="ml-2 bg-coral-500 text-white text-xs h-5 w-5 p-0 flex items-center justify-center rounded-full">{unreadCount}</Badge>}
@@ -1507,11 +1543,107 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
         </TabsList>
         
         <TabsContent value="dalla-clinica" className="mt-4">
+          {/* Filters */}
+          <Card className="mb-4">
+            <CardContent className="p-4">
+              <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex-1 min-w-[200px]">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input 
+                      placeholder="Cerca per nome, animale, email..." 
+                      value={filters.search}
+                      onChange={(e) => setFilters({...filters, search: e.target.value})}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+                <Select value={filters.type} onValueChange={(v) => setFilters({...filters, type: v})}>
+                  <SelectTrigger className="w-40"><SelectValue placeholder="Tipo" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tutti i tipi</SelectItem>
+                    <SelectItem value="prescrizione">Prescrizione</SelectItem>
+                    <SelectItem value="referto">Referto</SelectItem>
+                    <SelectItem value="fattura">Fattura</SelectItem>
+                    <SelectItem value="altro">Altro</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={filters.status} onValueChange={(v) => setFilters({...filters, status: v})}>
+                  <SelectTrigger className="w-40"><SelectValue placeholder="Stato" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tutti gli stati</SelectItem>
+                    <SelectItem value="bozza">Bozza</SelectItem>
+                    <SelectItem value="inviato">Inviato</SelectItem>
+                    <SelectItem value="visualizzato">Visualizzato</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="space-y-3">
-            {documents.length === 0 ? (
-              <Card><CardContent className="p-12 text-center text-gray-500"><FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessun documento</p></CardContent></Card>
-            ) : documents.map((doc) => (
-              <Card key={doc.id}><CardContent className="p-4"><div className="flex items-center justify-between"><div className="flex items-center gap-4"><div className="h-12 w-12 bg-coral-100 rounded-lg flex items-center justify-center"><FileText className="h-6 w-6 text-coral-600" /></div><div><p className="font-medium">{doc.name}</p><p className="text-sm text-gray-500">{doc.petName || 'N/A'} • {new Date(doc.createdAt).toLocaleDateString()}</p></div></div><div className="flex items-center gap-3"><Badge className={docTypes[doc.type]?.color || docTypes.altro.color}>{docTypes[doc.type]?.label || 'Altro'}</Badge>{doc.emailSent ? <Badge variant="outline" className="text-green-600 border-green-300"><Mail className="h-3 w-3 mr-1" />Inviata</Badge> : <Badge variant="outline" className="text-gray-500">Non inviata</Badge>}<Button size="sm" variant="outline"><Eye className="h-4 w-4" /></Button></div></div></CardContent></Card>
+            {filteredDocs.length === 0 ? (
+              <Card><CardContent className="p-12 text-center text-gray-500"><FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessun documento</p><p className="text-sm mt-2">{filters.search || filters.type !== 'all' || filters.status !== 'all' ? 'Prova a modificare i filtri' : 'Carica il tuo primo documento'}</p></CardContent></Card>
+            ) : filteredDocs.map((doc) => (
+              <Card key={doc.id} className="hover:shadow-md transition">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${docTypes[doc.type]?.color?.split(' ')[0] || 'bg-gray-100'}`}>
+                        <FileText className={`h-6 w-6 ${docTypes[doc.type]?.color?.split(' ')[1] || 'text-gray-600'}`} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium">{doc.name}</p>
+                          {doc.content && <Badge variant="outline" className="text-xs">PDF</Badge>}
+                        </div>
+                        <p className="text-sm text-gray-500">
+                          {doc.petName || 'N/A'} • {doc.ownerEmail || 'Email N/A'} • {new Date(doc.createdAt).toLocaleDateString('it-IT')}
+                        </p>
+                        {doc.amount && <p className="text-xs text-gray-500 mt-0.5">Importo: €{doc.amount.toFixed(2)}</p>}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge className={docTypes[doc.type]?.color || docTypes.altro.color}>
+                        {docTypes[doc.type]?.label || 'Altro'}
+                      </Badge>
+                      <Badge className={statusConfig[doc.status]?.color || statusConfig.bozza.color}>
+                        {statusConfig[doc.status]?.label || 'Bozza'}
+                      </Badge>
+                      {doc.status !== 'bozza' && doc.lastSentAt && (
+                        <span className="text-xs text-gray-400">
+                          Inviato {new Date(doc.lastSentAt).toLocaleDateString('it-IT')}
+                        </span>
+                      )}
+                      <div className="flex gap-1 ml-2">
+                        {doc.ownerEmail && (
+                          <Button size="sm" variant="outline" onClick={() => resendEmail(doc)} title="Reinvia email">
+                            <Mail className="h-4 w-4" />
+                          </Button>
+                        )}
+                        {doc.content && (
+                          <Button size="sm" variant="outline" onClick={() => {
+                            const link = document.createElement('a');
+                            link.href = doc.content;
+                            link.download = doc.fileName || doc.name;
+                            link.click();
+                          }} title="Scarica">
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        )}
+                        <Button size="sm" variant="outline" title="Anteprima">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  {doc.notes && (
+                    <div className="mt-3 p-2 bg-amber-50 rounded text-sm text-amber-700">
+                      <strong>Note:</strong> {doc.notes}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             ))}
           </div>
         </TabsContent>
