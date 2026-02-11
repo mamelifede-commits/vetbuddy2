@@ -162,22 +162,22 @@ function LandingPage({ onLogin }) {
       <section className="pt-12 pb-12 px-4 bg-gradient-to-b from-white to-coral-50/30">
         <div className="max-w-5xl mx-auto text-center">
           {/* Badge Pilot */}
-          <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-4 py-2 rounded-full mb-6 border border-amber-200">
+          <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-4 py-2 rounded-full mb-6 border border-amber-200 animate-fade-in-up">
             <MapPin className="h-4 w-4" />
             <span className="font-semibold">Pilot Milano — Accesso su invito</span>
           </div>
           
           {/* Headline principale */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight animate-fade-in-up animate-delay-100">
             La piattaforma per <span className="text-coral-500">cliniche veterinarie</span> e <span className="text-blue-500">proprietari di animali</span>
           </h1>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto animate-fade-in-up animate-delay-200">
             Gestisci appuntamenti, documenti e comunicazione in un'unica piattaforma. Zero carta, zero caos.
           </p>
           
           {/* CTA Buttons */}
           <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-6">
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-coral-200 hover:border-coral-400 transition cursor-pointer group" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-coral-200 hover:border-coral-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in-left animate-delay-300" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
               <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
                 <Building2 className="h-6 w-6 text-coral-600" />
               </div>
@@ -188,7 +188,7 @@ function LandingPage({ onLogin }) {
                 Richiedi Invito →
               </Button>
             </div>
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-200 hover:border-blue-400 transition cursor-pointer group" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-200 hover:border-blue-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in-right animate-delay-300" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
               <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
                 <PawPrint className="h-6 w-6 text-blue-600" />
               </div>
