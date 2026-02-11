@@ -3597,7 +3597,7 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
               </CardContent>
             </Card>
             
-            <Card>
+            <Card className="cursor-pointer hover:shadow-md transition" onClick={() => setActiveReportTab('documents')}>
               <CardHeader>
                 <CardTitle className="text-base">Documenti - Tasso apertura</CardTitle>
               </CardHeader>
