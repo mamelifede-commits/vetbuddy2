@@ -1138,7 +1138,7 @@ function LandingPage({ onLogin }) {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-20 px-4">
+      <section id="faq" className="py-12 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12"><h2 className="text-3xl font-bold text-gray-900 mb-4">Domande frequenti</h2></div>
           <Accordion type="single" collapsible className="space-y-4">
