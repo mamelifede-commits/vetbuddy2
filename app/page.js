@@ -998,48 +998,38 @@ function LandingPage({ onLogin }) {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4 bg-gradient-to-r from-coral-500 to-orange-500">
+      {/* CTA - Invita la tua clinica */}
+      <section className="py-16 px-4 bg-gradient-to-r from-coral-500 to-orange-500">
         <div className="max-w-3xl mx-auto text-center text-white">
           <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full mb-6">
-            <Zap className="h-4 w-4" />
-            <span className="font-medium">Beta Test Attivo</span>
+            <MapPin className="h-4 w-4" />
+            <span className="font-medium">Pilot Milano</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">La tua clinica merita di più</h2>
-          <p className="text-coral-100 mb-8 text-lg">Meno burocrazia, più tempo per curare. Prova VetBuddy gratis e dacci il tuo feedback.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-coral-500 hover:bg-coral-50 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <Building2 className="h-5 w-5 mr-2" />Prova gratis
-            </Button>
-            <Button size="lg" className="bg-white text-coral-500 hover:bg-coral-50 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <PawPrint className="h-5 w-5 mr-2" />Sono un proprietario
-            </Button>
-          </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Non trovi la tua clinica?</h2>
+          <p className="text-coral-100 mb-8 text-lg">Siamo in fase pilot a Milano. Invita il tuo veterinario a unirsi a VetBuddy!</p>
+          <Button size="lg" className="bg-white text-coral-500 hover:bg-coral-50 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+            <Mail className="h-5 w-5 mr-2" />Invita la tua clinica
+          </Button>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
+      {/* Footer - Semplificato */}
+      <footer className="bg-gray-900 text-white py-8 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
-            <div className="flex items-center gap-2"><VetBuddyLogo size={32} /><span className="font-bold text-xl">VetBuddy</span></div>
-            <div className="flex items-center gap-4 text-sm text-gray-400">
-              <span>🧪 Beta Test attivo</span>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2"><VetBuddyLogo size={28} /><span className="font-bold text-lg">VetBuddy</span></div>
+            <div className="flex items-center gap-3 text-sm text-gray-400">
+              <span>🏙️ Pilot Milano</span>
               <span>•</span>
               <span>🇮🇹 Made in Italy</span>
-              <span>•</span>
-              <a href="https://www.vetbuddy.it" className="hover:text-white">www.vetbuddy.it</a>
             </div>
-          </div>
-          <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-sm">© 2025 VetBuddy. Tutti i diritti riservati.</p>
             <div className="flex gap-4 text-sm text-gray-400">
-              <a href="#" className="hover:text-white">Privacy Policy</a>
-              <a href="#" className="hover:text-white">Termini di Servizio</a>
-              <a href="#" className="hover:text-white">GDPR</a>
+              <a href="#" className="hover:text-white">Privacy</a>
+              <a href="#" className="hover:text-white">Termini</a>
               <a href="mailto:info@vetbuddy.it" className="hover:text-white">info@vetbuddy.it</a>
             </div>
           </div>
+          <p className="text-center text-gray-500 text-xs mt-4">© 2025 VetBuddy. Tutti i diritti riservati.</p>
         </div>
       </footer>
 
