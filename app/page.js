@@ -1853,6 +1853,7 @@ function ClinicInbox({ messages, owners, pets, onRefresh, onNavigate }) {
 
   return (
     <div>
+      {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
       <div className="flex justify-between items-center mb-6">
         <div><h2 className="text-2xl font-bold text-gray-800">Team Inbox</h2><p className="text-gray-500 text-sm">Gestisci messaggi e richieste</p></div>
         <Select value={filter} onValueChange={setFilter}><SelectTrigger className="w-[150px]"><Filter className="h-4 w-4 mr-2" /><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Tutti</SelectItem><SelectItem value="unread">Non letti</SelectItem><SelectItem value="assigned">Assegnati</SelectItem></SelectContent></Select>
