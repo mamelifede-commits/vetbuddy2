@@ -5297,11 +5297,22 @@ function OwnerAppointments({ appointments, pets }) {
       </div>
       
       {appointments.length === 0 ? (
-        <Card>
-          <CardContent className="p-12 text-center text-gray-500">
-            <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-            <p className="font-medium">Nessun appuntamento</p>
-            <p className="text-sm mt-2">Prenota la tua prima visita!</p>
+        <Card className="border-dashed border-2 border-blue-200 bg-blue-50/30">
+          <CardContent className="p-8 text-center">
+            <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full mb-4">
+              <MapPin className="h-4 w-4" />
+              <span className="text-sm font-medium">Pilot Milano</span>
+            </div>
+            <Calendar className="h-16 w-16 mx-auto mb-4 text-blue-300" />
+            <h3 className="font-bold text-xl text-gray-800 mb-2">Nessun appuntamento ancora</h3>
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              Siamo in fase pilot a Milano. Per prenotare una visita, trova prima una clinica nella sezione "Trova clinica" o invita il tuo veterinario di fiducia!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => setShowBooking(true)}>
+                <Plus className="h-4 w-4 mr-2" />Prenota una visita
+              </Button>
+            </div>
           </CardContent>
         </Card>
       ) : (
