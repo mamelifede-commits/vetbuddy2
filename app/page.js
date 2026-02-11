@@ -2001,7 +2001,7 @@ function DocumentUploadForm({ owners, pets, onSuccess }) {
 }
 
 // Clinic Documents
-function ClinicDocuments({ documents, owners, pets, onRefresh }) {
+function ClinicDocuments({ documents, owners, pets, onRefresh, onNavigate }) {
   const [showUpload, setShowUpload] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [previewDoc, setPreviewDoc] = useState(null);
