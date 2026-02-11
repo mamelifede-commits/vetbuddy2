@@ -274,29 +274,93 @@ backend:
         comment: "Role-based access control working correctly. Clinic and owner roles properly differentiated. Staff management restricted to clinic users. Data filtering based on user roles working. Proper authorization checks in place."
 
 frontend:
-  - task: "Frontend Integration"
-    implemented: false
+  - task: "Landing Page UI"
+    implemented: true
     working: "NA"
     file: "/app/app/page.js"
     stuck_count: 0
-    priority: "low"
-    needs_retesting: false
+    priority: "high"
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "testing"
-        comment: "Frontend testing not performed as per testing protocol. Backend APIs are fully functional and ready for frontend integration."
+        comment: "Ready for testing. Need to verify landing page loads, banner, cards, and modals work correctly."
+
+  - task: "Registration Modal - Clinic"
+    implemented: true
+    working: "NA"
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test clinic registration modal, service selection, and form fields."
+
+  - task: "Clinic Login & Dashboard"
+    implemented: true
+    working: "NA"
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test login with demo@vetbuddy.it / DemoVet2025! and verify dashboard functionality."
+
+  - task: "Services Management"
+    implemented: true
+    working: "NA"
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test services page with catalog of 31 services, pricing, and custom service creation."
+
+  - task: "Clinic Search Functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test clinic search with filters and star ratings display."
+
+  - task: "Owner Dashboard (If Available)"
+    implemented: true
+    working: "NA"
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test owner dashboard features if demo credentials are available."
 
 metadata:
   created_by: "testing_agent"
-  version: "1.0"
+  version: "2.0"
   test_sequence: 1
-  run_ui: false
+  run_ui: true
 
 test_plan:
   current_focus:
-    - "All backend tasks completed"
+    - "Landing Page UI"
+    - "Registration Modal - Clinic"
+    - "Clinic Login & Dashboard"
+    - "Services Management"
+    - "Clinic Search Functionality"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
