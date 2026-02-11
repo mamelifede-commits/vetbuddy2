@@ -467,8 +467,11 @@ function LandingPage({ onLogin }) {
           <Accordion type="single" collapsible className="space-y-4">
             {[
               { q: 'Cos\'è il Pilot?', a: 'VetBuddy è in fase Pilot: stiamo testando con un numero limitato di cliniche. Le cliniche visibili nell\'app demo non sono ancora affiliate.' },
-              { q: 'Quanto costa per i proprietari?', a: 'VetBuddy è e sarà sempre gratuito per i proprietari di animali.' },
-              { q: 'Come funziona l\'invio documenti?', a: 'La clinica carica un PDF, seleziona proprietario e animale, e il documento viene inviato via email come allegato.' },
+              { q: 'Quanto costa per i proprietari?', a: 'VetBuddy è e sarà sempre gratuito per i proprietari di animali. Nessun costo nascosto.' },
+              { q: 'Come funziona la geolocalizzazione?', a: 'I clienti possono cercare cliniche vicine sulla mappa, vedere la distanza in km e ottenere indicazioni stradali con un tap.' },
+              { q: 'Cosa include il piano Pro nel Pilot?', a: 'Per i 6 mesi del Pilot Milano: team inbox, documenti automatici, Google Calendar sync, pagamenti Stripe, report finanziari e supporto dedicato.' },
+              { q: 'Come funziona l\'invio documenti?', a: 'La clinica carica un PDF (referto, prescrizione, fattura), seleziona il cliente e l\'animale, e il documento viene inviato via email come allegato. Il cliente lo ritrova anche nell\'app.' },
+              { q: 'Posso provare prima di candidarmi?', a: 'Sì! Puoi registrarti come proprietario e esplorare l\'app. Per le cliniche, il piano Starter è sempre gratuito. Il piano Pro è gratuito per chi entra nel Pilot Milano.' },
             ].map((item, i) => (
               <AccordionItem key={i} value={`item-${i}`} className="bg-white rounded-lg px-6 border">
                 <AccordionTrigger className="text-left font-medium">{item.q}</AccordionTrigger>
@@ -480,22 +483,44 @@ function LandingPage({ onLogin }) {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4 bg-coral-500">
+      <section className="py-20 px-4 bg-gradient-to-r from-coral-500 to-orange-500">
         <div className="max-w-3xl mx-auto text-center text-white">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Pronto a semplificare la tua clinica?</h2>
-          <p className="text-coral-100 mb-8">Richiedi l'accesso al Pilot e scopri come VetBuddy può aiutarti.</p>
+          <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full mb-6">
+            <MapPin className="h-4 w-4" />
+            <span className="font-medium">Pilot Milano 2025</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">La tua clinica merita di più</h2>
+          <p className="text-coral-100 mb-8 text-lg">Meno burocrazia, più tempo per curare. Unisciti alle prime 20 cliniche a Milano.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-coral-500 hover:bg-coral-50" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi accesso Pilot</Button>
-            <Button size="lg" variant="outline" className="border-white text-coral-500 bg-white hover:bg-coral-50" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Esplora la demo</Button>
+            <Button size="lg" className="bg-white text-coral-500 hover:bg-coral-50 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+              <Building2 className="h-5 w-5 mr-2" />Candidati al Pilot
+            </Button>
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+              <PawPrint className="h-5 w-5 mr-2" />Sono un proprietario
+            </Button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2"><VetBuddyLogo size={32} /><span className="font-bold text-xl">VetBuddy</span></div>
-          <p className="text-gray-400 text-sm">© 2025 VetBuddy. Tutti i diritti riservati. GDPR Compliant.</p>
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+            <div className="flex items-center gap-2"><VetBuddyLogo size={32} /><span className="font-bold text-xl">VetBuddy</span></div>
+            <div className="flex items-center gap-4 text-sm text-gray-400">
+              <span>🏙️ Pilot attivo a Milano</span>
+              <span>•</span>
+              <span>🇮🇹 Made in Italy</span>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400 text-sm">© 2025 VetBuddy. Tutti i diritti riservati.</p>
+            <div className="flex gap-4 text-sm text-gray-400">
+              <a href="#" className="hover:text-white">Privacy Policy</a>
+              <a href="#" className="hover:text-white">Termini di Servizio</a>
+              <a href="#" className="hover:text-white">GDPR</a>
+            </div>
+          </div>
         </div>
       </footer>
 
