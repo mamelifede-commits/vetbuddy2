@@ -2824,13 +2824,284 @@ function ServiceCard({ service, onToggle }) {
 }
 
 function ClinicTemplates() {
-  const templates = [
-    { id: 1, name: 'Conferma appuntamento', type: 'email', vars: ['nome_cliente', 'nome_pet', 'data', 'ora'] },
-    { id: 2, name: 'Reminder 24h', type: 'reminder', vars: ['nome_pet', 'data', 'ora', 'nome_clinica'] },
-    { id: 3, name: 'Follow-up post visita', type: 'email', vars: ['nome_cliente', 'nome_pet', 'nome_medico'] },
-    { id: 4, name: 'Prescrizione pronta', type: 'email', vars: ['nome_cliente', 'nome_pet'] },
+  const [activeTab, setActiveTab] = useState('tutti');
+  const [showNewDialog, setShowNewDialog] = useState(false);
+  const [editingTemplate, setEditingTemplate] = useState(null);
+  const [templates, setTemplates] = useState([
+    { 
+      id: 1, 
+      name: 'Conferma Appuntamento', 
+      type: 'messaggio', 
+      content: 'Gentile {{nome_cliente}}, confermiamo il suo appuntamento per {{nome_pet}} il {{data}} alle {{ora}} presso {{nome_clinica}}.',
+      icon: 'message'
+    },
+    { 
+      id: 2, 
+      name: 'Reminder 24h', 
+      type: 'reminder', 
+      content: 'Promemoria: domani {{data}} alle {{ora}} ha un appuntamento per {{nome_pet}}. Per disdire, risponda a questo messaggio.',
+      icon: 'bell'
+    },
+    { 
+      id: 3, 
+      name: 'Reminder 1h', 
+      type: 'reminder', 
+      content: 'Tra 1 ora: appuntamento per {{nome_pet}} alle {{ora}}. Vi aspettiamo!',
+      icon: 'bell'
+    },
+    { 
+      id: 4, 
+      name: 'Prescrizione Pronta', 
+      type: 'messaggio', 
+      content: 'Gentile {{nome_cliente}}, la prescrizione per {{nome_pet}} è pronta. Può ritirarla in clinica o richiederla via email.',
+      icon: 'message'
+    },
+    { 
+      id: 5, 
+      name: 'Follow-up Post Visita', 
+      type: 'email', 
+      content: 'Gentile {{nome_cliente}}, Grazie per aver scelto {{nome_clinica}} per la cura di {{nome_pet}}. Di seguito il riepilogo della visita del {{data}}: {{riepilogo_visita}} Per qualsiasi domanda, non esiti a contattarci.',
+      icon: 'email'
+    },
+    { 
+      id: 6, 
+      name: 'Referto Pronto', 
+      type: 'messaggio', 
+      content: 'Gentile {{nome_cliente}}, il referto di {{nome_pet}} relativo a {{servizio}} del {{data}} è pronto. Può visualizzarlo nella sezione Documenti dell\'app o richiederlo via email a {{email_clinica}}. Per qualsiasi chiarimento, il Dr. {{nome_medico}} è a disposizione.',
+      icon: 'document'
+    },
+  ]);
+
+  const [newTemplate, setNewTemplate] = useState({ name: '', type: 'messaggio', content: '' });
+
+  const availableVars = [
+    '{{nome_cliente}}', '{{nome_pet}}', '{{data}}', '{{ora}}', 
+    '{{nome_clinica}}', '{{nome_medico}}', '{{servizio}}', '{{email_clinica}}',
+    '{{riepilogo_visita}}', '{{importo}}'
   ];
-  return <div><div className="mb-6"><h2 className="text-2xl font-bold">Template</h2><p className="text-gray-500 text-sm">Messaggi, email e reminder automatici</p></div><Tabs defaultValue="tutti"><TabsList><TabsTrigger value="tutti">Tutti</TabsTrigger><TabsTrigger value="email">Email</TabsTrigger><TabsTrigger value="reminder">Reminder</TabsTrigger></TabsList><TabsContent value="tutti" className="mt-4"><div className="space-y-3">{templates.map((t) => <Card key={t.id}><CardContent className="p-4"><div className="flex items-center justify-between"><div className="flex items-center gap-4"><div className="h-10 w-10 bg-coral-100 rounded-lg flex items-center justify-center">{t.type === 'email' ? <Mail className="h-5 w-5 text-coral-600" /> : <Bell className="h-5 w-5 text-coral-600" />}</div><div><p className="font-medium">{t.name}</p><p className="text-sm text-gray-500">Variabili: {t.vars.map(v => `{{${v}}}`).join(', ')}</p></div></div><Button variant="outline" size="sm">Modifica</Button></div></CardContent></Card>)}</div></TabsContent></Tabs></div>;
+
+  const typeConfig = {
+    messaggio: { label: 'Messaggio', color: 'bg-blue-50 text-blue-600', iconBg: 'bg-blue-100', iconColor: 'text-blue-500' },
+    email: { label: 'Email', color: 'bg-green-50 text-green-600', iconBg: 'bg-green-100', iconColor: 'text-green-500' },
+    reminder: { label: 'Reminder', color: 'bg-amber-50 text-amber-600', iconBg: 'bg-amber-100', iconColor: 'text-amber-500' },
+  };
+
+  const getIcon = (iconType, className) => {
+    switch(iconType) {
+      case 'message': return <MessageCircle className={className} />;
+      case 'bell': return <Bell className={className} />;
+      case 'email': return <Mail className={className} />;
+      case 'document': return <FileText className={className} />;
+      default: return <MessageCircle className={className} />;
+    }
+  };
+
+  const filteredTemplates = activeTab === 'tutti' 
+    ? templates 
+    : templates.filter(t => t.type === activeTab.replace('messaggi', 'messaggio'));
+
+  const copyToClipboard = (content) => {
+    navigator.clipboard.writeText(content);
+    alert('✅ Template copiato negli appunti!');
+  };
+
+  const handleSaveTemplate = () => {
+    if (!newTemplate.name || !newTemplate.content) {
+      alert('Compila tutti i campi');
+      return;
+    }
+    if (editingTemplate) {
+      setTemplates(templates.map(t => t.id === editingTemplate.id ? { ...t, ...newTemplate } : t));
+    } else {
+      setTemplates([...templates, { ...newTemplate, id: Date.now(), icon: newTemplate.type === 'email' ? 'email' : newTemplate.type === 'reminder' ? 'bell' : 'message' }]);
+    }
+    setShowNewDialog(false);
+    setEditingTemplate(null);
+    setNewTemplate({ name: '', type: 'messaggio', content: '' });
+  };
+
+  const openEditDialog = (template) => {
+    setEditingTemplate(template);
+    setNewTemplate({ name: template.name, type: template.type, content: template.content });
+    setShowNewDialog(true);
+  };
+
+  const deleteTemplate = (id) => {
+    if (confirm('Eliminare questo template?')) {
+      setTemplates(templates.filter(t => t.id !== id));
+    }
+  };
+
+  const insertVariable = (variable) => {
+    setNewTemplate({ ...newTemplate, content: newTemplate.content + variable });
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Template Messaggi</h2>
+          <p className="text-gray-500 text-sm">Gestisci i template per messaggi, email e reminder</p>
+        </div>
+        <Button className="bg-coral-500 hover:bg-coral-600" onClick={() => { setEditingTemplate(null); setNewTemplate({ name: '', type: 'messaggio', content: '' }); setShowNewDialog(true); }}>
+          <Plus className="h-4 w-4 mr-2" />Nuovo Template
+        </Button>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-6 border-b">
+        {['tutti', 'messaggi', 'email', 'reminder'].map(tab => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`pb-3 text-sm font-medium transition border-b-2 ${
+              activeTab === tab 
+                ? 'text-coral-600 border-coral-500' 
+                : 'text-gray-500 border-transparent hover:text-gray-700'
+            }`}
+          >
+            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      {/* Templates Grid */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredTemplates.map(template => {
+          const config = typeConfig[template.type];
+          return (
+            <Card key={template.id} className="hover:shadow-md transition">
+              <CardContent className="p-5">
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${config.iconBg}`}>
+                    {getIcon(template.icon, `h-5 w-5 ${config.iconColor}`)}
+                  </div>
+                  <Badge className={config.color}>
+                    {config.label}
+                  </Badge>
+                </div>
+                
+                <h3 className="font-semibold text-gray-900 mb-2">{template.name}</h3>
+                <p className="text-sm text-gray-600 line-clamp-3 mb-4">{template.content}</p>
+                
+                <div className="flex items-center justify-between pt-3 border-t">
+                  <button 
+                    onClick={() => copyToClipboard(template.content)}
+                    className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-coral-600 transition"
+                  >
+                    <ClipboardList className="h-4 w-4" />
+                    Copia
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => openEditDialog(template)}
+                      className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-coral-600 transition"
+                    >
+                      <Edit className="h-4 w-4" />
+                      Modifica
+                    </button>
+                    <button 
+                      onClick={() => deleteTemplate(template.id)}
+                      className="text-gray-400 hover:text-red-500 transition"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Variables Info */}
+      <Card className="bg-blue-50 border-blue-200">
+        <CardContent className="p-5">
+          <h4 className="font-semibold text-blue-800 mb-2">Variabili disponibili</h4>
+          <p className="text-sm text-blue-600 mb-3">Usa queste variabili nei tuoi template. Verranno sostituite automaticamente con i dati reali.</p>
+          <div className="flex flex-wrap gap-2">
+            {availableVars.map(v => (
+              <Badge key={v} variant="outline" className="bg-white text-blue-700 border-blue-300 font-mono text-xs">
+                {v}
+              </Badge>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* New/Edit Template Dialog */}
+      <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{editingTemplate ? 'Modifica Template' : 'Nuovo Template'}</DialogTitle>
+            <DialogDescription>Crea un template per messaggi automatici</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <Label>Nome template</Label>
+              <Input 
+                value={newTemplate.name} 
+                onChange={(e) => setNewTemplate({...newTemplate, name: e.target.value})} 
+                placeholder="Es: Conferma appuntamento"
+              />
+            </div>
+            
+            <div>
+              <Label>Tipo</Label>
+              <div className="flex gap-2 mt-2">
+                {Object.entries(typeConfig).map(([key, config]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setNewTemplate({...newTemplate, type: key})}
+                    className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition ${
+                      newTemplate.type === key 
+                        ? 'border-coral-500 bg-coral-50 text-coral-700' 
+                        : 'border-gray-200 text-gray-600 hover:border-coral-300'
+                    }`}
+                  >
+                    {config.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <Label>Contenuto</Label>
+              <Textarea 
+                value={newTemplate.content} 
+                onChange={(e) => setNewTemplate({...newTemplate, content: e.target.value})} 
+                rows={4}
+                placeholder="Scrivi il messaggio... Usa le variabili come {{nome_cliente}}"
+              />
+              <div className="flex flex-wrap gap-1 mt-2">
+                {availableVars.slice(0, 6).map(v => (
+                  <button 
+                    key={v} 
+                    type="button"
+                    onClick={() => insertVariable(v)}
+                    className="text-xs px-2 py-1 bg-gray-100 hover:bg-coral-100 text-gray-600 hover:text-coral-600 rounded transition"
+                  >
+                    {v}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <div className="flex gap-3 pt-2">
+              <Button variant="outline" className="flex-1" onClick={() => setShowNewDialog(false)}>
+                Annulla
+              </Button>
+              <Button className="flex-1 bg-coral-500 hover:bg-coral-600" onClick={handleSaveTemplate}>
+                {editingTemplate ? 'Salva modifiche' : 'Crea template'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }
 
 // ==================== CLINIC REPORTS ====================
