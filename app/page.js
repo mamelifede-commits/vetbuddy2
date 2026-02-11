@@ -3281,6 +3281,9 @@ function StaffDashboard({ user, onLogout }) {
   const [appointments, setAppointments] = useState([]);
   const [owners, setOwners] = useState([]);
   const [showUpload, setShowUpload] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(user.mustChangePassword || false);
+  const [passwordForm, setPasswordForm] = useState({ newPassword: '', confirmPassword: '' });
+  const [changingPassword, setChangingPassword] = useState(false);
 
   useEffect(() => { loadData(); }, []);
   
@@ -3295,6 +3298,38 @@ function StaffDashboard({ user, onLogout }) {
       setAppointments(appts);
       setOwners(ownersList);
     } catch (error) { console.error('Error:', error); }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      alert('Le password non coincidono');
+      return;
+    }
+    if (passwordForm.newPassword.length < 6) {
+      alert('La password deve avere almeno 6 caratteri');
+      return;
+    }
+    setChangingPassword(true);
+    try {
+      await api.post('auth/change-password', { newPassword: passwordForm.newPassword });
+      setShowChangePassword(false);
+      alert('Password cambiata con successo!');
+    } catch (error) { alert(error.message); } finally { setChangingPassword(false); }
+  };
+
+  const handleExportInvoices = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/export/invoices`, {
+        headers: { 'Authorization': `Bearer ${api.getToken()}` }
+      });
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'fatture.csv';
+      a.click();
+    } catch (error) { alert('Errore export: ' + error.message); }
   };
 
   // Calculate financial stats
