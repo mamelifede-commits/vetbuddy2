@@ -497,6 +497,207 @@ export async function POST(request, { params }) {
   try {
     const body = await request.json().catch(() => ({}));
 
+    // Disconnect Google Calendar
+    if (path === 'google-calendar/disconnect') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const users = await getCollection('users');
+      await users.updateOne(
+        { id: user.clinicId || user.id },
+        { $unset: { googleCalendar: '' } }
+      );
+      
+      return NextResponse.json({ success: true, message: 'Google Calendar disconnesso' }, { headers: corsHeaders });
+    }
+
+    // Sync appointment to Google Calendar
+    if (path === 'google-calendar/sync-event') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const { appointmentId } = body;
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: user.clinicId || user.id });
+      
+      if (!clinic?.googleCalendar?.connected) {
+        return NextResponse.json({ error: 'Google Calendar non connesso' }, { status: 400, headers: corsHeaders });
+      }
+      
+      const appointments = await getCollection('appointments');
+      const appointment = await appointments.findOne({ id: appointmentId });
+      
+      if (!appointment) {
+        return NextResponse.json({ error: 'Appuntamento non trovato' }, { status: 404, headers: corsHeaders });
+      }
+      
+      // Refresh token if expired
+      let accessToken = clinic.googleCalendar.accessToken;
+      if (new Date(clinic.googleCalendar.expiresAt) < new Date()) {
+        const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            client_id: GOOGLE_CLIENT_ID,
+            client_secret: GOOGLE_CLIENT_SECRET,
+            refresh_token: clinic.googleCalendar.refreshToken,
+            grant_type: 'refresh_token'
+          })
+        });
+        const refreshData = await refreshResponse.json();
+        
+        if (refreshData.access_token) {
+          accessToken = refreshData.access_token;
+          await users.updateOne(
+            { id: clinic.id },
+            { 
+              $set: { 
+                'googleCalendar.accessToken': accessToken,
+                'googleCalendar.expiresAt': new Date(Date.now() + refreshData.expires_in * 1000).toISOString()
+              }
+            }
+          );
+        }
+      }
+      
+      // Get staff color
+      const staff = await getCollection('staff');
+      const staffMember = appointment.staffId ? await staff.findOne({ id: appointment.staffId }) : null;
+      const colorId = staffMember?.calendarColorId || '1';
+      
+      // Create event in Google Calendar
+      const event = {
+        summary: `🐾 ${appointment.petName || 'Visita'} - ${appointment.ownerName || 'Cliente'}`,
+        description: `Tipo: ${appointment.type || 'Visita'}\nNote: ${appointment.notes || 'Nessuna nota'}\n\nCreato da VetBuddy`,
+        start: {
+          dateTime: appointment.date,
+          timeZone: 'Europe/Rome'
+        },
+        end: {
+          dateTime: new Date(new Date(appointment.date).getTime() + (appointment.duration || 30) * 60000).toISOString(),
+          timeZone: 'Europe/Rome'
+        },
+        colorId: colorId,
+        reminders: {
+          useDefault: false,
+          overrides: [
+            { method: 'popup', minutes: 30 },
+            { method: 'popup', minutes: 10 }
+          ]
+        }
+      };
+      
+      const calendarResponse = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/${clinic.googleCalendar.calendarId || 'primary'}/events`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(event)
+        }
+      );
+      
+      const createdEvent = await calendarResponse.json();
+      
+      if (createdEvent.error) {
+        console.error('Google Calendar error:', createdEvent.error);
+        return NextResponse.json({ error: createdEvent.error.message }, { status: 400, headers: corsHeaders });
+      }
+      
+      // Update appointment with Google Calendar event ID
+      await appointments.updateOne(
+        { id: appointmentId },
+        { $set: { googleEventId: createdEvent.id, googleCalendarSynced: true } }
+      );
+      
+      // Update last sync time
+      await users.updateOne(
+        { id: clinic.id },
+        { $set: { 'googleCalendar.lastSync': new Date().toISOString() } }
+      );
+      
+      return NextResponse.json({ 
+        success: true, 
+        eventId: createdEvent.id,
+        eventLink: createdEvent.htmlLink
+      }, { headers: corsHeaders });
+    }
+
+    // Check Google Calendar availability (busy times)
+    if (path === 'google-calendar/busy') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const { startDate, endDate } = body;
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: user.clinicId || user.id });
+      
+      if (!clinic?.googleCalendar?.connected) {
+        return NextResponse.json({ busy: [] }, { headers: corsHeaders });
+      }
+      
+      // Refresh token if needed
+      let accessToken = clinic.googleCalendar.accessToken;
+      if (new Date(clinic.googleCalendar.expiresAt) < new Date()) {
+        const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            client_id: GOOGLE_CLIENT_ID,
+            client_secret: GOOGLE_CLIENT_SECRET,
+            refresh_token: clinic.googleCalendar.refreshToken,
+            grant_type: 'refresh_token'
+          })
+        });
+        const refreshData = await refreshResponse.json();
+        if (refreshData.access_token) accessToken = refreshData.access_token;
+      }
+      
+      // Get busy times from Google Calendar
+      const busyResponse = await fetch('https://www.googleapis.com/calendar/v3/freeBusy', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          timeMin: startDate,
+          timeMax: endDate,
+          items: [{ id: clinic.googleCalendar.calendarId || 'primary' }]
+        })
+      });
+      
+      const busyData = await busyResponse.json();
+      const busy = busyData.calendars?.[clinic.googleCalendar.calendarId || 'primary']?.busy || [];
+      
+      return NextResponse.json({ busy }, { headers: corsHeaders });
+    }
+
+    // Update staff calendar color
+    if (path === 'staff/calendar-color') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const { staffId, colorId } = body;
+      const staff = await getCollection('staff');
+      await staff.updateOne(
+        { id: staffId },
+        { $set: { calendarColorId: colorId } }
+      );
+      
+      return NextResponse.json({ success: true }, { headers: corsHeaders });
+    }
+
     // Register
     if (path === 'auth/register') {
       const { email, password, name, role, clinicName, phone, address, city, vatNumber, website, latitude, longitude } = body;
