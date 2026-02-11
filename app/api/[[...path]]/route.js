@@ -613,23 +613,107 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
       }
 
-      const { name, type, content, petId, petName, ownerId } = body;
+      const { name, type, content, fileName, petId, petName, ownerId, ownerEmail, notes, amount, sendEmail: shouldSendEmail } = body;
       const documents = await getCollection('documents');
       
       const document = {
         id: uuidv4(),
         name,
-        type, // 'vaccination', 'medical_record', 'prescription', 'other'
-        content, // base64 content or text
+        type, // 'prescrizione', 'referto', 'fattura', 'altro'
+        content, // base64 content (PDF)
+        fileName, // original file name
         petId,
         petName,
-        clinicId: user.role === 'clinic' ? user.id : body.clinicId,
+        clinicId: user.role === 'clinic' ? user.id : (user.clinicId || body.clinicId),
         ownerId: user.role === 'owner' ? user.id : ownerId,
+        ownerEmail: ownerEmail || null,
+        notes: notes || null, // Internal notes (clinic only)
+        amount: amount ? parseFloat(amount) : null, // For invoices
+        status: 'bozza', // bozza, inviato, visualizzato, scaricato
         createdBy: user.id,
-        createdAt: new Date().toISOString()
+        createdByName: user.name || user.clinicName,
+        createdAt: new Date().toISOString(),
+        auditLog: [{
+          action: 'created',
+          by: user.id,
+          byName: user.name || user.clinicName,
+          at: new Date().toISOString()
+        }]
       };
 
       await documents.insertOne(document);
+
+      // Auto-send email if requested and email is provided
+      if (shouldSendEmail && ownerEmail) {
+        try {
+          // Get clinic info
+          const users = await getCollection('users');
+          const clinic = await users.findOne({ id: document.clinicId });
+          const clinicName = clinic?.clinicName || 'La tua clinica veterinaria';
+
+          // Prepare attachments
+          const attachments = [];
+          if (content && content.startsWith('data:')) {
+            const base64Data = content.split(',')[1];
+            const mimeType = content.split(';')[0].split(':')[1];
+            attachments.push({
+              filename: fileName || `${name}.pdf`,
+              content: base64Data,
+              type: mimeType || 'application/pdf'
+            });
+          }
+
+          // Template based on type
+          const templates = {
+            prescrizione: { subject: `📋 Prescrizione per ${petName || 'il tuo animale'}`, color: '#10B981' },
+            referto: { subject: `📄 Referto di ${petName || 'il tuo animale'}`, color: '#3B82F6' },
+            fattura: { subject: `🧾 Fattura - ${clinicName}`, color: '#F59E0B' }
+          };
+          const tpl = templates[type] || { subject: `📎 Documento - ${clinicName}`, color: '#6B7280' };
+
+          await sendEmail({
+            to: ownerEmail,
+            subject: `${tpl.subject} - ${clinicName}`,
+            html: `
+              <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: ${tpl.color}; padding: 24px; text-align: center;">
+                  <h1 style="color: white; margin: 0;">🐾 ${clinicName}</h1>
+                </div>
+                <div style="padding: 32px;">
+                  <p>Ti inviamo il documento richiesto per <strong>${petName || 'il tuo animale'}</strong>.</p>
+                  <div style="background: #f9fafb; border-radius: 12px; padding: 20px; margin: 20px 0;">
+                    <p style="margin: 0;"><strong>${name}</strong></p>
+                    <p style="margin: 8px 0 0; color: #666; text-transform: capitalize;">${type}</p>
+                    ${amount ? `<p style="margin: 8px 0 0; font-weight: bold;">Importo: €${parseFloat(amount).toFixed(2)}</p>` : ''}
+                  </div>
+                  ${attachments.length > 0 ? '<p style="color: #059669;">📎 <strong>Il documento è allegato a questa email.</strong></p>' : ''}
+                  ${notes ? `<div style="background: #fef3c7; padding: 12px; border-radius: 8px; margin-top: 16px;"><small><strong>Note:</strong> ${notes}</small></div>` : ''}
+                </div>
+                <div style="background: #f9fafb; padding: 16px; text-align: center; font-size: 12px; color: #666;">
+                  Inviato tramite <strong>VetBuddy</strong>
+                </div>
+              </div>
+            `,
+            attachments: attachments.length > 0 ? attachments : undefined
+          });
+
+          // Update document status
+          await documents.updateOne(
+            { id: document.id },
+            { 
+              $set: { status: 'inviato', lastSentAt: new Date().toISOString(), lastSentTo: ownerEmail },
+              $push: { auditLog: { action: 'email_sent', to: ownerEmail, at: new Date().toISOString(), hasAttachment: attachments.length > 0 } }
+            }
+          );
+
+          document.status = 'inviato';
+          document.emailSent = true;
+        } catch (emailError) {
+          console.error('Error sending document email:', emailError);
+          document.emailError = emailError.message;
+        }
+      }
+
       return NextResponse.json(document, { headers: corsHeaders });
     }
 
