@@ -1232,6 +1232,42 @@ function AuthForm({ mode, setMode, onLogin }) {
                   </div>
                   <div><Label>Partita IVA</Label><Input value={formData.vatNumber} onChange={(e) => setFormData({...formData, vatNumber: e.target.value})} placeholder="IT01234567890" /></div>
                   <div><Label>Sito web</Label><Input value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} placeholder="https://..." /></div>
+                  
+                  {/* Sezione Servizi */}
+                  <div className="border-t pt-4 mt-2">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <Label className="text-base font-semibold">Servizi offerti</Label>
+                        <p className="text-xs text-gray-500">Seleziona i servizi che offri (opzionale)</p>
+                      </div>
+                      <Badge variant="outline" className="bg-coral-50 text-coral-700">
+                        {formData.services.length} selezionati
+                      </Badge>
+                    </div>
+                    <div className="max-h-48 overflow-y-auto border rounded-lg p-3 bg-gray-50">
+                      {Object.entries(serviceCatalog).map(([catId, category]) => (
+                        <div key={catId} className="mb-3 last:mb-0">
+                          <p className="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wider">{category.name}</p>
+                          <div className="grid grid-cols-2 gap-1">
+                            {category.services.map((service) => (
+                              <label key={service.id} className={`flex items-center gap-2 p-2 rounded cursor-pointer text-sm transition ${formData.services.includes(service.id) ? 'bg-coral-100 text-coral-800' : 'hover:bg-white'}`}>
+                                <input 
+                                  type="checkbox" 
+                                  checked={formData.services.includes(service.id)}
+                                  onChange={() => toggleService(service.id)}
+                                  className="h-4 w-4 text-coral-500 rounded border-gray-300 focus:ring-coral-500"
+                                />
+                                <span className="truncate">{service.name}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      {Object.keys(serviceCatalog).length === 0 && (
+                        <p className="text-center text-gray-400 py-4 text-sm">Caricamento servizi...</p>
+                      )}
+                    </div>
+                  </div>
                 </>
               )}
               <div><Label>Telefono</Label><Input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} placeholder="+39 02 1234567" /></div>
