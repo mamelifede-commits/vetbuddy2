@@ -124,7 +124,7 @@ function LandingPage({ onLogin }) {
     <div className="min-h-screen bg-white">
       {/* Pilot Banner - Milano */}
       <div className="bg-gradient-to-r from-coral-500 to-orange-500 text-white text-center py-3 px-4 text-sm">
-        <span className="font-semibold">🏙️ Pilot Milano</span> — Stiamo testando l'app con cliniche selezionate a Milano e provincia. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Unisciti gratis →</button>
+        <span className="font-semibold">🏙️ Pilot Milano</span> — Accesso su invito per cliniche selezionate a Milano e provincia. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Candidati al Pilot →</button>
       </div>
 
       {/* Header */}
@@ -915,8 +915,8 @@ function LandingPage({ onLogin }) {
               <Zap className="h-4 w-4" />
               <span className="font-semibold">Beta Test 2025</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Prova VetBuddy gratis</h2>
-            <p className="text-gray-600 max-w-xl mx-auto">Stiamo testando l'app con cliniche veterinarie selezionate. <strong>Provalo gratis e aiutaci a migliorare con il tuo feedback.</strong></p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Accedi al Pilot VetBuddy</h2>
+            <p className="text-gray-600 max-w-xl mx-auto">Stiamo testando l'app con cliniche veterinarie selezionate a Milano. <strong>Candidati per 6 mesi gratuiti e aiutaci a costruire il futuro.</strong></p>
           </div>
 
           {/* Beta Benefits */}
