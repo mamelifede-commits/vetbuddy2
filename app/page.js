@@ -292,10 +292,10 @@ function LandingPage({ onLogin }) {
       </section>
 
       {/* Altre Funzionalità */}
-      <section className="py-8 px-4 bg-white">
+      <section className="py-4 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">E molto altro...</h2>
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">E molto altro...</h2>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
