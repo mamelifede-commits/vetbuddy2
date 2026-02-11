@@ -246,6 +246,60 @@ export async function GET(request, { params }) {
       const list = await documents.find({}).sort({ createdAt: -1 }).toArray();
       return NextResponse.json(list, { headers: corsHeaders });
     }
+
+    // Get admin dashboard stats
+    if (path === 'admin/stats') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'admin') {
+        return NextResponse.json({ error: 'Accesso negato' }, { status: 403, headers: corsHeaders });
+      }
+      
+      const users = await getCollection('users');
+      const pets = await getCollection('pets');
+      const appointments = await getCollection('appointments');
+      const documents = await getCollection('documents');
+      
+      // Count by role
+      const allUsers = await users.find({}, { projection: { password: 0 } }).toArray();
+      const clinics = allUsers.filter(u => u.role === 'clinic');
+      const owners = allUsers.filter(u => u.role === 'owner');
+      
+      // Count totals
+      const totalPets = await pets.countDocuments({});
+      const totalAppointments = await appointments.countDocuments({});
+      const totalDocuments = await documents.countDocuments({});
+      
+      // Recent registrations (last 7 days)
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      const recentUsers = allUsers.filter(u => new Date(u.createdAt) > sevenDaysAgo);
+      
+      // Appointments by status
+      const appointmentStats = await appointments.aggregate([
+        { $group: { _id: '$status', count: { $sum: 1 } } }
+      ]).toArray();
+      
+      // Recent appointments
+      const recentAppointments = await appointments.find({})
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .toArray();
+      
+      return NextResponse.json({
+        counts: {
+          totalUsers: allUsers.length,
+          clinics: clinics.length,
+          owners: owners.length,
+          pets: totalPets,
+          appointments: totalAppointments,
+          documents: totalDocuments
+        },
+        recentRegistrations: recentUsers.length,
+        appointmentsByStatus: appointmentStats,
+        recentAppointments,
+        recentUsers: allUsers.slice(0, 10)
+      }, { headers: corsHeaders });
+    }
     // ==================== END ADMIN API ====================
 
     // Get appointments for clinic or staff
