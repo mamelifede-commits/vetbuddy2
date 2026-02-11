@@ -220,7 +220,7 @@ function AuthPage({ onLogin }) {
                 <p className="text-red-500 text-sm">{error}</p>
               )}
               
-              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading}>
+              <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600" disabled={loading}>
                 {loading ? 'Caricamento...' : (isLogin ? 'Accedi' : 'Registrati')}
               </Button>
             </form>
@@ -379,7 +379,7 @@ function AgendaSection({ appointments, owners, pets, onRefresh }) {
         <h2 className="text-2xl font-bold text-gray-800">Agenda</h2>
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
           <DialogTrigger asChild>
-            <Button className="bg-emerald-600 hover:bg-emerald-700">
+            <Button className="bg-coral-500 hover:bg-coral-600">
               <Plus className="h-4 w-4 mr-2" />
               Nuovo Appuntamento
             </Button>
@@ -443,7 +443,7 @@ function AgendaSection({ appointments, owners, pets, onRefresh }) {
                   onChange={(e) => setFormData({...formData, notes: e.target.value})}
                 />
               </div>
-              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700">
+              <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">
                 Crea Appuntamento
               </Button>
             </form>
@@ -632,7 +632,7 @@ function DocumentsSection({ documents, pets, owners, onRefresh }) {
         <h2 className="text-2xl font-bold text-gray-800">Documenti</h2>
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
           <DialogTrigger asChild>
-            <Button className="bg-emerald-600 hover:bg-emerald-700">
+            <Button className="bg-coral-500 hover:bg-coral-600">
               <Plus className="h-4 w-4 mr-2" />
               Nuovo Documento
             </Button>
@@ -679,7 +679,7 @@ function DocumentsSection({ documents, pets, owners, onRefresh }) {
                   rows={4}
                 />
               </div>
-              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700">
+              <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">
                 Salva Documento
               </Button>
             </form>
@@ -706,7 +706,7 @@ function DocumentsSection({ documents, pets, owners, onRefresh }) {
                 placeholder="email@esempio.com"
               />
             </div>
-            <Button onClick={handleSendEmail} className="w-full bg-emerald-600 hover:bg-emerald-700">
+            <Button onClick={handleSendEmail} className="w-full bg-coral-500 hover:bg-coral-600">
               <Send className="h-4 w-4 mr-2" />
               Invia Email
             </Button>
@@ -795,7 +795,7 @@ function StaffSection({ staff, onRefresh }) {
         <h2 className="text-2xl font-bold text-gray-800">Staff</h2>
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
           <DialogTrigger asChild>
-            <Button className="bg-emerald-600 hover:bg-emerald-700">
+            <Button className="bg-coral-500 hover:bg-coral-600">
               <Plus className="h-4 w-4 mr-2" />
               Aggiungi Membro
             </Button>
@@ -842,7 +842,7 @@ function StaffSection({ staff, onRefresh }) {
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
                 />
               </div>
-              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700">
+              <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">
                 Aggiungi
               </Button>
             </form>
@@ -920,7 +920,7 @@ function PatientsSection({ pets, owners, onRefresh }) {
         <h2 className="text-2xl font-bold text-gray-800">Pazienti</h2>
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
           <DialogTrigger asChild>
-            <Button className="bg-emerald-600 hover:bg-emerald-700">
+            <Button className="bg-coral-500 hover:bg-coral-600">
               <Plus className="h-4 w-4 mr-2" />
               Nuovo Paziente
             </Button>
@@ -988,7 +988,7 @@ function PatientsSection({ pets, owners, onRefresh }) {
                   onChange={(e) => setFormData({...formData, notes: e.target.value})}
                 />
               </div>
-              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700">
+              <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">
                 Aggiungi Paziente
               </Button>
             </form>
@@ -1062,7 +1062,7 @@ function OwnersSection({ owners, onRefresh }) {
         <h2 className="text-2xl font-bold text-gray-800">Proprietari</h2>
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
           <DialogTrigger asChild>
-            <Button className="bg-emerald-600 hover:bg-emerald-700">
+            <Button className="bg-coral-500 hover:bg-coral-600">
               <Plus className="h-4 w-4 mr-2" />
               Aggiungi Proprietario
             </Button>
@@ -1097,7 +1097,7 @@ function OwnersSection({ owners, onRefresh }) {
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
                 />
               </div>
-              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700">
+              <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">
                 Aggiungi
               </Button>
             </form>
