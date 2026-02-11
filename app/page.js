@@ -159,10 +159,15 @@ function LandingPage({ onLogin }) {
       </header>
 
       {/* Hero - Messaggio chiaro per cliniche e proprietari */}
-      <section className="pt-12 pb-12 px-4 bg-gradient-to-b from-white to-coral-50/30">
-        <div className="max-w-5xl mx-auto text-center">
+      <section className="pt-12 pb-12 px-4 bg-gradient-to-br from-white via-coral-50/30 to-blue-50/30 relative overflow-hidden">
+        {/* Decorative blobs */}
+        <div className="absolute top-0 left-0 w-72 h-72 bg-coral-300/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute top-1/2 right-0 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl translate-x-1/2"></div>
+        <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-purple-300/20 rounded-full blur-3xl"></div>
+        
+        <div className="max-w-5xl mx-auto text-center relative z-10">
           {/* Badge Pilot */}
-          <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-4 py-2 rounded-full mb-6 border border-amber-200 animate-fade-in-up">
+          <div className="inline-flex items-center gap-2 bg-white/70 backdrop-blur-md text-amber-800 px-4 py-2 rounded-full mb-6 border border-amber-200/50 shadow-lg animate-fade-in-up">
             <MapPin className="h-4 w-4" />
             <span className="font-semibold">Pilot Milano — Accesso su invito</span>
           </div>
@@ -175,22 +180,22 @@ function LandingPage({ onLogin }) {
             Gestisci appuntamenti, documenti e comunicazione in un'unica piattaforma. Zero carta, zero caos.
           </p>
           
-          {/* CTA Buttons */}
+          {/* CTA Buttons - Glassmorphism */}
           <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-6">
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-coral-200 hover:border-coral-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in-left animate-delay-300" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
-                <Building2 className="h-6 w-6 text-coral-600" />
+            <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-coral-200/50 hover:bg-white/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group animate-fade-in-left animate-delay-300" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+              <div className="h-14 w-14 bg-gradient-to-br from-coral-400 to-coral-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition shadow-lg">
+                <Building2 className="h-7 w-7 text-white" />
               </div>
               <h3 className="font-bold text-lg text-gray-900 mb-2">Per Cliniche Veterinarie</h3>
               <p className="text-sm text-gray-600 mb-3">Dashboard completa, inbox team, documenti, reportistica.</p>
               <p className="text-xs text-amber-600 font-semibold mb-3">🎫 Pilot: 6 mesi gratuiti su invito</p>
-              <Button className="w-full bg-coral-500 hover:bg-coral-600 text-white">
+              <Button className="w-full bg-gradient-to-r from-coral-500 to-coral-600 hover:from-coral-600 hover:to-coral-700 text-white shadow-lg">
                 Richiedi Invito →
               </Button>
             </div>
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-200 hover:border-blue-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in-right animate-delay-300" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
-                <PawPrint className="h-6 w-6 text-blue-600" />
+            <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-blue-200/50 hover:bg-white/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group animate-fade-in-right animate-delay-300" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+              <div className="h-14 w-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition shadow-lg">
+                <PawPrint className="h-7 w-7 text-white" />
               </div>
               <h3 className="font-bold text-lg text-gray-900 mb-2">Per Proprietari di Animali</h3>
               <p className="text-sm text-gray-600 mb-3">Prenota visite, ricevi documenti, invita la tua clinica.</p>
