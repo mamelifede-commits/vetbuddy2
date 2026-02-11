@@ -1179,7 +1179,7 @@ function ClinicControlRoom({ appointments, documents, messages, owners, setupPro
           </Card>
 
           {/* Monthly Summary Widget */}
-          <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-green-200">
+          <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-green-200 cursor-pointer hover:shadow-md transition" onClick={() => onNavigate('reports')}>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2 text-green-700">
                 <TrendingUp className="h-4 w-4" />Questo mese
