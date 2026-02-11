@@ -124,7 +124,7 @@ function AuthPage({ onLogin }) {
           <div className="flex justify-center mb-4">
             <VetBuddyLogo size={60} />
           </div>
-          <CardTitle className="text-2xl font-bold text-emerald-700">VetBuddy</CardTitle>
+          <CardTitle className="text-2xl font-bold text-coral-700">VetBuddy</CardTitle>
           <CardDescription>Piattaforma gestione cliniche veterinarie</CardDescription>
         </CardHeader>
         <CardContent>
@@ -274,7 +274,7 @@ function ClinicDashboard({ user, onLogout }) {
       onClick={() => setActiveTab(value)}
       className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-colors ${
         activeTab === value 
-          ? 'bg-emerald-100 text-emerald-700 font-medium' 
+          ? 'bg-emerald-100 text-coral-700 font-medium' 
           : 'text-gray-600 hover:bg-gray-100'
       }`}
     >
@@ -290,7 +290,7 @@ function ClinicDashboard({ user, onLogout }) {
         <div className="flex items-center gap-3 mb-8">
           <VetBuddyLogo size={40} />
           <div>
-            <h1 className="font-bold text-emerald-700">VetBuddy</h1>
+            <h1 className="font-bold text-coral-700">VetBuddy</h1>
             <p className="text-xs text-gray-500">{user.clinicName || 'Clinica'}</p>
           </div>
         </div>
@@ -475,7 +475,7 @@ function AgendaSection({ appointments, owners, pets, onRefresh }) {
                         <p className="text-sm text-gray-500">{appt.ownerName} - {appt.reason}</p>
                       </div>
                     </div>
-                    <Badge variant="outline" className="text-emerald-700 border-emerald-300">
+                    <Badge variant="outline" className="text-coral-700 border-emerald-300">
                       {appt.time}
                     </Badge>
                   </div>
@@ -1177,7 +1177,7 @@ function OwnerDashboard({ user, onLogout }) {
       onClick={() => setActiveTab(value)}
       className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-colors ${
         activeTab === value 
-          ? 'bg-emerald-100 text-emerald-700 font-medium' 
+          ? 'bg-emerald-100 text-coral-700 font-medium' 
           : 'text-gray-600 hover:bg-gray-100'
       }`}
     >
@@ -1193,7 +1193,7 @@ function OwnerDashboard({ user, onLogout }) {
         <div className="flex items-center gap-3 mb-8">
           <VetBuddyLogo size={40} />
           <div>
-            <h1 className="font-bold text-emerald-700">VetBuddy</h1>
+            <h1 className="font-bold text-coral-700">VetBuddy</h1>
             <p className="text-xs text-gray-500">{user.name}</p>
           </div>
         </div>
@@ -1387,7 +1387,7 @@ export default function App() {
       <div className="min-h-screen flex items-center justify-center bg-emerald-50">
         <div className="text-center">
           <VetBuddyLogo size={60} />
-          <p className="mt-4 text-emerald-700">Caricamento...</p>
+          <p className="mt-4 text-coral-700">Caricamento...</p>
         </div>
       </div>
     );
