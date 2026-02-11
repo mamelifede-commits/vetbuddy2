@@ -3354,6 +3354,41 @@ function StaffDashboard({ user, onLogout }) {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+      {/* Modal cambio password obbligatorio */}
+      <Dialog open={showChangePassword} onOpenChange={() => {}}>
+        <DialogContent className="max-w-md" onPointerDownOutside={(e) => e.preventDefault()}>
+          <DialogHeader>
+            <DialogTitle>Cambia la tua password</DialogTitle>
+            <DialogDescription>Per sicurezza, devi impostare una nuova password al primo accesso.</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleChangePassword} className="space-y-4 mt-4">
+            <div>
+              <Label>Nuova password *</Label>
+              <Input 
+                type="password" 
+                value={passwordForm.newPassword} 
+                onChange={(e) => setPasswordForm({...passwordForm, newPassword: e.target.value})} 
+                required 
+                placeholder="Min. 6 caratteri"
+              />
+            </div>
+            <div>
+              <Label>Conferma password *</Label>
+              <Input 
+                type="password" 
+                value={passwordForm.confirmPassword} 
+                onChange={(e) => setPasswordForm({...passwordForm, confirmPassword: e.target.value})} 
+                required 
+                placeholder="Ripeti la password"
+              />
+            </div>
+            <Button type="submit" className="w-full bg-amber-500 hover:bg-amber-600" disabled={changingPassword}>
+              {changingPassword ? 'Salvataggio...' : 'Imposta nuova password'}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r p-4 flex flex-col">
         <div className="flex items-center gap-3 mb-2">
