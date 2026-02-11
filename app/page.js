@@ -341,7 +341,7 @@ function LandingPage({ onLogin }) {
             <p className="text-coral-500 font-semibold mb-2">PREZZI TRASPARENTI</p>
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Scegli il piano adatto alla tua clinica</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Inizia gratis, scala quando cresci.
+              Inizia gratis, scala quando cresci. <strong>Sempre gratis per i proprietari di animali.</strong>
             </p>
           </div>
 
