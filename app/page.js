@@ -1788,7 +1788,7 @@ function OwnerDocuments({ documents, pets, onRefresh }) {
                     </Badge>
                   </CardContent>
                 </Card>
-              ))}
+              )})}
             </div>
           )}
         </TabsContent>
