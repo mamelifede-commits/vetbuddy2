@@ -1880,6 +1880,24 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
     }
 
+    // Admin delete user
+    if (path.startsWith('admin/users/')) {
+      if (user.role !== 'admin') {
+        return NextResponse.json({ error: 'Accesso negato' }, { status: 403, headers: corsHeaders });
+      }
+      const id = path.split('/')[2];
+      const users = await getCollection('users');
+      await users.deleteOne({ id });
+      // Also delete related data
+      const pets = await getCollection('pets');
+      const appointments = await getCollection('appointments');
+      const documents = await getCollection('documents');
+      await pets.deleteMany({ ownerId: id });
+      await appointments.deleteMany({ $or: [{ ownerId: id }, { clinicId: id }] });
+      await documents.deleteMany({ $or: [{ ownerId: id }, { clinicId: id }] });
+      return NextResponse.json({ success: true }, { headers: corsHeaders });
+    }
+
     // Delete appointment
     if (path.startsWith('appointments/')) {
       const id = path.split('/')[1];
