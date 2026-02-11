@@ -115,23 +115,9 @@ const api = {
 
 // ==================== ECOSYSTEM TOGGLE ====================
 function EcosystemToggle() {
-  const [activeTab, setActiveTab] = useState('proprietari');
+  const [activeTab, setActiveTab] = useState('cliniche');
   
   const tabs = {
-    proprietari: {
-      icon: PawPrint,
-      title: 'Per i Proprietari',
-      subtitle: '100% Gratis, per sempre',
-      color: 'blue',
-      features: [
-        'Trova cliniche vicine con distanza in km',
-        'Prenota visite e video-consulti in 2 tap',
-        'Ricevi referti e prescrizioni via email',
-        'Cartella clinica digitale per ogni animale',
-        'Storico spese veterinarie annuali',
-        'Invita la tua clinica su VetBuddy'
-      ]
-    },
     cliniche: {
       icon: Building2,
       title: 'Per le Cliniche',
@@ -145,29 +131,32 @@ function EcosystemToggle() {
         'Report finanziari e analytics',
         '6 mesi gratuiti nel Pilot'
       ]
+    },
+    proprietari: {
+      icon: PawPrint,
+      title: 'Per i Proprietari',
+      subtitle: '100% Gratis, per sempre',
+      color: 'blue',
+      features: [
+        'Trova cliniche vicine con distanza in km',
+        'Prenota visite e video-consulti in 2 tap',
+        'Ricevi referti e prescrizioni via email',
+        'Cartella clinica digitale per ogni animale',
+        'Storico spese veterinarie annuali',
+        'Invita la tua clinica su VetBuddy'
+      ]
     }
   };
 
   const current = tabs[activeTab];
   const Icon = current.icon;
-  const isBlue = current.color === 'blue';
+  const isCoral = current.color === 'coral';
 
   return (
     <div className="relative">
       {/* Toggle Button */}
       <div className="flex justify-center mb-8">
         <div className="bg-gray-100 p-1 rounded-full inline-flex">
-          <button
-            onClick={() => setActiveTab('proprietari')}
-            className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-              activeTab === 'proprietari' 
-                ? 'bg-white shadow-lg text-blue-600' 
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            <PawPrint className="h-5 w-5" />
-            Proprietari
-          </button>
           <button
             onClick={() => setActiveTab('cliniche')}
             className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
@@ -178,6 +167,17 @@ function EcosystemToggle() {
           >
             <Building2 className="h-5 w-5" />
             Cliniche
+          </button>
+          <button
+            onClick={() => setActiveTab('proprietari')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+              activeTab === 'proprietari' 
+                ? 'bg-white shadow-lg text-blue-600' 
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <PawPrint className="h-5 w-5" />
+            Proprietari
           </button>
         </div>
       </div>
