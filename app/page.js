@@ -776,7 +776,7 @@ function LandingPage({ onLogin }) {
           </div>
 
           {/* Feature 4 - Google Calendar Sync */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-12">
             <div className="bg-white rounded-2xl shadow-xl p-4 border">
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4">
                 <div className="flex items-center gap-3 mb-4">
