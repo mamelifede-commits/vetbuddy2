@@ -213,7 +213,7 @@ backend:
         agent: "testing"
         comment: "Authentication middleware working perfectly. JWT token validation, password hashing/comparison, and user extraction from requests all functional. Proper 401 responses for unauthenticated requests. Token expiration (7 days) configured correctly."
 
-  - task: "Role-Based Access Control"
+  - task: "VetBuddy Services API"
     implemented: true
     working: true
     file: "/app/app/api/[[...path]]/route.js"
@@ -223,7 +223,43 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "Role-based access control working correctly. Clinic and owner roles properly differentiated. Staff management restricted to clinic users. Data filtering based on user roles working. Proper authorization checks in place."
+        comment: "Services API endpoints working correctly. GET /api/services returns complete veterinary services catalog with 5 categories (visite_generali, visite_specialistiche, chirurgia, diagnostica, altri_servizi). GET /api/services/flat returns flat list of 31 services with categoryId and categoryName fields. Both endpoints properly structured and responding."
+
+  - task: "Invite Clinic API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Invite clinic API working correctly. POST /api/invite-clinic accepts clinicName, clinicEmail, message, inviterName, inviterEmail. Successfully saves invitation to database and sends email to clinic with VetBuddy invitation template. Returns success:true message. Email functionality working with Resend API."
+
+  - task: "Clinic Search API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Clinic search API working correctly. GET /api/clinics/search returns list of clinics. Supports filtering by city (?city=Milano) and service (?service=visita_clinica). Returns clinic data with reviewCount, avgRating, and distance calculations. Currently 6 clinics total, 2 in Milano. Service filtering working but no clinics have services configured yet."
+
+  - task: "Demo Authentication Credentials"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Demo clinic authentication working. Login with demo@vetbuddy.it / DemoVet2025! successful - returns user data and JWT token. Demo owner account (anna.bianchi@email.com) not found in system - credentials not configured. Clinic demo fully functional for testing."
 
 frontend:
   - task: "Frontend Integration"
