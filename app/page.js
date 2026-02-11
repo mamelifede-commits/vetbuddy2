@@ -1833,7 +1833,222 @@ function ClinicReports({ appointments, documents, messages, owners }) {
 
 function ClinicSettings({ user }) {
   const [googleConnected, setGoogleConnected] = useState(false);
-  return <div><div className="mb-6"><h2 className="text-2xl font-bold">Impostazioni</h2><p className="text-gray-500 text-sm">Configura la tua clinica</p></div><div className="space-y-6 max-w-2xl"><Card><CardHeader><CardTitle className="text-lg flex items-center gap-2"><CreditCard className="h-5 w-5 text-coral-500" />Pagamenti (Stripe)</CardTitle><CardDescription>Collega Stripe per video-consulti a pagamento</CardDescription></CardHeader><CardContent><div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"><div><p className="font-medium">Non connesso</p><p className="text-sm text-gray-500">Connetti per abilitare incassi prestazioni</p></div><Button className="bg-coral-500 hover:bg-coral-600">Connetti Stripe</Button></div></CardContent></Card><Card><CardHeader><CardTitle className="text-lg flex items-center gap-2"><CalendarCheck className="h-5 w-5 text-coral-500" />Google Calendar</CardTitle><CardDescription>Sincronizza appuntamenti in tempo reale</CardDescription></CardHeader><CardContent>{googleConnected ? <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg"><div className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-green-600" /><div><p className="font-medium text-green-800">Connesso</p><p className="text-sm text-green-600">Calendario sincronizzato</p></div></div><Button variant="outline" size="sm">Disconnetti</Button></div> : <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"><div><p className="font-medium">Non connesso</p><p className="text-sm text-gray-500">Connetti per evitare doppie prenotazioni</p></div><Button className="bg-coral-500 hover:bg-coral-600" onClick={() => setGoogleConnected(true)}><ExternalLink className="h-4 w-4 mr-2" />Connetti</Button></div>}</CardContent></Card><Card><CardHeader><CardTitle className="text-lg">Profilo clinica</CardTitle></CardHeader><CardContent className="space-y-4"><div><Label>Nome clinica</Label><Input value={user.clinicName || ''} disabled /></div><div><Label>Email</Label><Input value={user.email || ''} disabled /></div></CardContent></Card></div></div>;
+  const [stripeSettings, setStripeSettings] = useState({ stripePublishableKey: '', stripeSecretKey: '', stripeConfigured: false });
+  const [showStripeForm, setShowStripeForm] = useState(false);
+  const [stripeForm, setStripeForm] = useState({ publishableKey: '', secretKey: '' });
+  const [saving, setSaving] = useState(false);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+
+  useEffect(() => { loadStripeSettings(); }, []);
+
+  const loadStripeSettings = async () => {
+    try {
+      const settings = await api.get('clinic/stripe-settings');
+      setStripeSettings(settings);
+    } catch (error) { console.error('Error loading Stripe settings:', error); }
+  };
+
+  const saveStripeSettings = async () => {
+    setSaving(true);
+    try {
+      await api.post('clinic/stripe-settings', {
+        stripePublishableKey: stripeForm.publishableKey,
+        stripeSecretKey: stripeForm.secretKey
+      });
+      setShowStripeForm(false);
+      loadStripeSettings();
+      alert('Configurazione Stripe salvata!');
+    } catch (error) { alert(error.message); } finally { setSaving(false); }
+  };
+
+  const handleSubscribe = async (planId) => {
+    setSubscriptionLoading(true);
+    try {
+      const { url } = await api.post('stripe/checkout/subscription', {
+        planId,
+        originUrl: window.location.origin
+      });
+      window.location.href = url;
+    } catch (error) { alert(error.message); setSubscriptionLoading(false); }
+  };
+
+  return (
+    <div>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold">Impostazioni</h2>
+        <p className="text-gray-500 text-sm">Configura la tua clinica</p>
+      </div>
+      
+      <div className="space-y-6 max-w-2xl">
+        {/* Abbonamento VetBuddy */}
+        <Card className="border-coral-200 bg-gradient-to-r from-coral-50 to-white">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Star className="h-5 w-5 text-coral-500" />Abbonamento VetBuddy
+            </CardTitle>
+            <CardDescription>Scegli il piano più adatto alla tua clinica</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-3 gap-4">
+              {/* Starter */}
+              <div className="border rounded-lg p-4 bg-white">
+                <h3 className="font-semibold">Starter</h3>
+                <p className="text-2xl font-bold text-coral-500 mt-2">Gratis</p>
+                <p className="text-xs text-gray-500">per iniziare</p>
+                <ul className="text-sm text-gray-600 mt-3 space-y-1">
+                  <li>• 1 sede, 1 utente</li>
+                  <li>• 30 richieste/mese</li>
+                </ul>
+                <Button variant="outline" className="w-full mt-4" disabled>Piano attuale</Button>
+              </div>
+              
+              {/* Pro */}
+              <div className="border-2 border-coral-500 rounded-lg p-4 bg-white relative">
+                <Badge className="absolute -top-2 right-2 bg-coral-500">Consigliato</Badge>
+                <h3 className="font-semibold">Pro</h3>
+                <p className="text-2xl font-bold text-coral-500 mt-2">€129<span className="text-sm font-normal text-gray-500">/mese</span></p>
+                <p className="text-xs text-gray-500">+ IVA</p>
+                <ul className="text-sm text-gray-600 mt-3 space-y-1">
+                  <li>• Fino a 10 staff</li>
+                  <li>• Documenti + email auto</li>
+                  <li>• Google Calendar sync</li>
+                </ul>
+                <Button className="w-full mt-4 bg-coral-500 hover:bg-coral-600" onClick={() => handleSubscribe('pro')} disabled={subscriptionLoading}>
+                  {subscriptionLoading ? 'Caricamento...' : 'Abbonati'}
+                </Button>
+              </div>
+              
+              {/* Enterprise */}
+              <div className="border rounded-lg p-4 bg-white">
+                <h3 className="font-semibold">Enterprise</h3>
+                <p className="text-2xl font-bold text-coral-500 mt-2">Custom</p>
+                <p className="text-xs text-gray-500">gruppi e catene</p>
+                <ul className="text-sm text-gray-600 mt-3 space-y-1">
+                  <li>• Multi-sede illimitate</li>
+                  <li>• API dedicata</li>
+                </ul>
+                <Button variant="outline" className="w-full mt-4">Contattaci</Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Stripe per pagamenti clienti */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-coral-500" />Pagamenti clienti (Stripe)
+            </CardTitle>
+            <CardDescription>Configura il tuo Stripe per ricevere pagamenti dai clienti</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {stripeSettings.stripeConfigured ? (
+              <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <div>
+                    <p className="font-medium text-green-800">Stripe configurato</p>
+                    <p className="text-sm text-green-600">Chiave: {stripeSettings.stripeSecretKey}</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => setShowStripeForm(true)}>Modifica</Button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium">Non configurato</p>
+                  <p className="text-sm text-gray-500">Configura per ricevere pagamenti online</p>
+                </div>
+                <Button className="bg-coral-500 hover:bg-coral-600" onClick={() => setShowStripeForm(true)}>
+                  Configura Stripe
+                </Button>
+              </div>
+            )}
+            
+            {showStripeForm && (
+              <div className="mt-4 p-4 border rounded-lg space-y-4">
+                <div>
+                  <Label>Publishable Key (pk_...)</Label>
+                  <Input 
+                    value={stripeForm.publishableKey} 
+                    onChange={(e) => setStripeForm({...stripeForm, publishableKey: e.target.value})}
+                    placeholder="pk_test_... o pk_live_..."
+                  />
+                </div>
+                <div>
+                  <Label>Secret Key (sk_...)</Label>
+                  <Input 
+                    type="password"
+                    value={stripeForm.secretKey} 
+                    onChange={(e) => setStripeForm({...stripeForm, secretKey: e.target.value})}
+                    placeholder="sk_test_... o sk_live_..."
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={saveStripeSettings} disabled={saving} className="bg-coral-500 hover:bg-coral-600">
+                    {saving ? 'Salvataggio...' : 'Salva'}
+                  </Button>
+                  <Button variant="outline" onClick={() => setShowStripeForm(false)}>Annulla</Button>
+                </div>
+                <p className="text-xs text-gray-500">
+                  Trova le tue chiavi su <a href="https://dashboard.stripe.com/apikeys" target="_blank" className="text-coral-500 hover:underline">dashboard.stripe.com/apikeys</a>
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Google Calendar */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <CalendarCheck className="h-5 w-5 text-coral-500" />Google Calendar
+            </CardTitle>
+            <CardDescription>Sincronizza appuntamenti in tempo reale</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {googleConnected ? (
+              <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <div>
+                    <p className="font-medium text-green-800">Connesso</p>
+                    <p className="text-sm text-green-600">Calendario sincronizzato</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm">Disconnetti</Button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium">Non connesso</p>
+                  <p className="text-sm text-gray-500">Connetti per evitare doppie prenotazioni</p>
+                </div>
+                <Button className="bg-coral-500 hover:bg-coral-600" onClick={() => setGoogleConnected(true)}>
+                  <ExternalLink className="h-4 w-4 mr-2" />Connetti
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Profilo */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Profilo clinica</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div><Label>Nome clinica</Label><Input value={user.clinicName || ''} disabled /></div>
+              <div><Label>P.IVA</Label><Input value={user.vatNumber || ''} disabled /></div>
+            </div>
+            <div><Label>Email</Label><Input value={user.email || ''} disabled /></div>
+            <div><Label>Sito web</Label><Input value={user.website || ''} disabled /></div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
 }
 
 // ==================== OWNER DASHBOARD ====================
