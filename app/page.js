@@ -130,10 +130,10 @@ function LandingPage({ onLogin }) {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
-              { icon: MapPin, title: 'Milano', desc: 'Area del Pilot 2025' },
-              { icon: Building2, title: '20', desc: 'Cliniche selezionate' },
+              { icon: Zap, title: 'Beta', desc: 'Fase di test attiva' },
+              { icon: Building2, title: 'Gratis', desc: 'Per le cliniche in beta' },
               { icon: Heart, title: 'Gratis', desc: 'Per sempre per i pet owner' },
-              { icon: Zap, title: '< 2 min', desc: 'Per prenotare una visita' }
+              { icon: MessageCircle, title: 'Feedback', desc: 'Costruisci con noi il prodotto' }
             ].map((item, i) => (
               <div key={i} className="bg-white rounded-xl p-4 shadow-sm border text-center">
                 <item.icon className="h-5 w-5 text-coral-500 mx-auto mb-2" />
