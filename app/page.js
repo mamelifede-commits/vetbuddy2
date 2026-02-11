@@ -2875,6 +2875,13 @@ function ClinicTemplates({ owners = [], pets = [], staff = [], appointments = []
       content: 'Gentile {{nome_cliente}}, il referto di {{nome_pet}} relativo a {{servizio}} del {{data}} è pronto. Può visualizzarlo nella sezione Documenti dell\'app o richiederlo via email a {{email_clinica}}. Per qualsiasi chiarimento, il Dr. {{nome_medico}} è a disposizione.',
       icon: 'document'
     },
+    { 
+      id: 7, 
+      name: 'Promemoria Vaccinazione', 
+      type: 'reminder', 
+      content: 'Gentile {{nome_cliente}}, è il momento di vaccinare {{nome_pet}}! 💉\n\nIl richiamo del vaccino è previsto per {{data}}.\n\nPrenota subito il tuo appuntamento presso {{nome_clinica}} chiamando o rispondendo a questo messaggio.\n\nLa vaccinazione è importante per proteggere {{nome_pet}} da malattie pericolose. Non rimandare!',
+      icon: 'bell'
+    },
   ]);
 
   const [newTemplate, setNewTemplate] = useState({ name: '', type: 'messaggio', content: '' });
