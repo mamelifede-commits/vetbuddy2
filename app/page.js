@@ -7252,3 +7252,4 @@ export default function App() {
   return <OwnerDashboard user={user} onLogout={handleLogout} />;
 }
 // Mobile responsive update Wed Feb 11 18:07:23 UTC 2026
+// Admin panel deploy Wed Feb 11 19:34:40 UTC 2026
