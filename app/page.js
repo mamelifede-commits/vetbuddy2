@@ -616,7 +616,7 @@ function LandingPage({ onLogin }) {
           </div>
 
           {/* Feature 2 - Template Automatici */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-12">
             <div className="bg-white rounded-2xl shadow-xl p-4 border">
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-4">
