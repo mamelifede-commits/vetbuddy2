@@ -261,6 +261,18 @@ backend:
         agent: "testing"
         comment: "Demo clinic authentication working. Login with demo@vetbuddy.it / DemoVet2025! successful - returns user data and JWT token. Demo owner account (anna.bianchi@email.com) not found in system - credentials not configured. Clinic demo fully functional for testing."
 
+  - task: "Role-Based Access Control"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Role-based access control working correctly. Clinic and owner roles properly differentiated. Staff management restricted to clinic users. Data filtering based on user roles working. Proper authorization checks in place."
+
 frontend:
   - task: "Frontend Integration"
     implemented: false
