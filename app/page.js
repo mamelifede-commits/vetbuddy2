@@ -231,17 +231,100 @@ function LandingPage({ onLogin }) {
         </div>
       </section>
 
-      {/* Funzionalità Chiave */}
-      <section id="funzionalita" className="py-20 px-4 bg-white">
+      {/* Perché VetBuddy - Feature distintive */}
+      <section id="funzionalita" className="py-16 px-4 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-coral-500 font-semibold mb-2">FUNZIONALITÀ PRINCIPALI</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Tutto quello che serve alla tua clinica</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Una piattaforma completa per gestire la clinica, comunicare con i clienti e far crescere il business.</p>
+          <div className="text-center mb-12">
+            <p className="text-coral-500 font-semibold mb-2">PERCHÉ VETBUDDY</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Le feature che ci distinguono</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Strumenti progettati per semplificare il lavoro quotidiano della clinica e migliorare l'esperienza dei tuoi clienti.</p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            {/* Feature 1 - Team Inbox */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-purple-200">
+              <div className="flex items-start gap-4">
+                <div className="h-14 w-14 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Inbox className="h-7 w-7 text-purple-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-xl text-gray-900 mb-2">Team Inbox con assegnazione ticket</h3>
+                  <p className="text-gray-600 mb-3">Una inbox condivisa per tutto lo staff. Assegna richieste, evita doppioni, traccia chi risponde. Niente messaggi persi.</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline" className="text-purple-600 border-purple-300">Anti-doppioni</Badge>
+                    <Badge variant="outline" className="text-purple-600 border-purple-300">Assegnazione staff</Badge>
+                    <Badge variant="outline" className="text-purple-600 border-purple-300">Storico completo</Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Feature 2 - Documenti automatici */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-green-200">
+              <div className="flex items-start gap-4">
+                <div className="h-14 w-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <FileText className="h-7 w-7 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-xl text-gray-900 mb-2">Documenti: upload e invio automatico</h3>
+                  <p className="text-gray-600 mb-3">Carica PDF (referti, prescrizioni, fatture) e inviali automaticamente via email al proprietario. Tutto tracciato.</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline" className="text-green-600 border-green-300">Upload PDF</Badge>
+                    <Badge variant="outline" className="text-green-600 border-green-300">Email automatica</Badge>
+                    <Badge variant="outline" className="text-green-600 border-green-300">Archivio clinico</Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Feature 3 - Prenotazioni + Video */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-200">
+              <div className="flex items-start gap-4">
+                <div className="h-14 w-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <CalendarCheck className="h-7 w-7 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-xl text-gray-900 mb-2">Prenotazioni + Video + Google Calendar</h3>
+                  <p className="text-gray-600 mb-3">Agenda sincronizzata, video-consulti integrati, reminder automatici via email/SMS. I clienti prenotano 24/7.</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline" className="text-blue-600 border-blue-300">Sync Google Calendar</Badge>
+                    <Badge variant="outline" className="text-blue-600 border-blue-300">Video-consulti</Badge>
+                    <Badge variant="outline" className="text-blue-600 border-blue-300">Reminder auto</Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Feature 4 - Reportistica */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-amber-200">
+              <div className="flex items-start gap-4">
+                <div className="h-14 w-14 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <TrendingUp className="h-7 w-7 text-amber-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-xl text-gray-900 mb-2">Reportistica clinica completa</h3>
+                  <p className="text-gray-600 mb-3">Dashboard con metriche chiave: clienti attivi, fatturato, tempi di risposta, no-show. Prendi decisioni basate sui dati.</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline" className="text-amber-600 border-amber-300">Analytics</Badge>
+                    <Badge variant="outline" className="text-amber-600 border-amber-300">Report no-show</Badge>
+                    <Badge variant="outline" className="text-amber-600 border-amber-300">Trend fatturato</Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Altre Funzionalità */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">E molto altro...</h2>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Feature 1 - Geolocalizzazione */}
+            {/* Feature - Geolocalizzazione */}
             <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white hover:shadow-lg transition">
               <CardHeader>
                 <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3">
@@ -258,16 +341,6 @@ function LandingPage({ onLogin }) {
                 </ul>
               </CardContent>
             </Card>
-
-            {/* Feature 2 - Prenotazioni */}
-            <Card className="border-2 border-coral-200 bg-gradient-to-br from-coral-50 to-white hover:shadow-lg transition">
-              <CardHeader>
-                <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mb-3">
-                  <Calendar className="h-6 w-6 text-coral-600" />
-                </div>
-                <CardTitle className="text-lg">Prenotazioni online 24/7</CardTitle>
-              </CardHeader>
-              <CardContent>
                 <p className="text-gray-600 text-sm mb-3">I clienti prenotano quando vogliono, tu ricevi tutto organizzato in agenda.</p>
                 <ul className="space-y-1 text-sm text-gray-500">
                   <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Visite, vaccini, video-consulti</li>
