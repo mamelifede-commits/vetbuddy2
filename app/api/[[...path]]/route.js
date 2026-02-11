@@ -1054,6 +1054,41 @@ export async function PUT(request, { params }) {
       return NextResponse.json(updated, { headers: corsHeaders });
     }
 
+    // Update clinic profile (including location)
+    if (path === 'clinic/profile') {
+      const users = await getCollection('users');
+      const { address, city, latitude, longitude, phone, website } = body;
+      
+      const updateData = { updatedAt: new Date().toISOString() };
+      if (address !== undefined) updateData.address = address;
+      if (city !== undefined) updateData.city = city;
+      if (latitude !== undefined) updateData.latitude = latitude;
+      if (longitude !== undefined) updateData.longitude = longitude;
+      if (phone !== undefined) updateData.phone = phone;
+      if (website !== undefined) updateData.website = website;
+      
+      await users.updateOne({ id: user.id }, { $set: updateData });
+      const updated = await users.findOne({ id: user.id }, { projection: { password: 0 } });
+      return NextResponse.json(updated, { headers: corsHeaders });
+    }
+
+    // Update owner profile (including location)
+    if (path === 'owner/profile') {
+      const users = await getCollection('users');
+      const { address, city, latitude, longitude, phone } = body;
+      
+      const updateData = { updatedAt: new Date().toISOString() };
+      if (address !== undefined) updateData.address = address;
+      if (city !== undefined) updateData.city = city;
+      if (latitude !== undefined) updateData.latitude = latitude;
+      if (longitude !== undefined) updateData.longitude = longitude;
+      if (phone !== undefined) updateData.phone = phone;
+      
+      await users.updateOne({ id: user.id }, { $set: updateData });
+      const updated = await users.findOne({ id: user.id }, { projection: { password: 0 } });
+      return NextResponse.json(updated, { headers: corsHeaders });
+    }
+
     return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
   } catch (error) {
     console.error('PUT Error:', error);
