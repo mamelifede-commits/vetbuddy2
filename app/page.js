@@ -975,7 +975,7 @@ function LandingPage({ onLogin }) {
       </section>
 
       {/* Come Funziona */}
-      <section id="come-funziona" className="py-16 px-4 bg-gradient-to-b from-white to-gray-50">
+      <section id="come-funziona" className="py-12 px-4 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-coral-500 font-semibold mb-2">COME FUNZIONA</p>
