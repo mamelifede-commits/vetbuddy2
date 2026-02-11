@@ -124,7 +124,7 @@ function LandingPage({ onLogin }) {
     <div className="min-h-screen bg-white">
       {/* Pilot Banner - Milano */}
       <div className="bg-gradient-to-r from-coral-500 to-orange-500 text-white text-center py-3 px-4 text-sm">
-        <span className="font-semibold">🧪 Beta Test</span> — Stiamo testando l'app con cliniche selezionate. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Provalo gratis →</button>
+        <span className="font-semibold">🏙️ Pilot Milano</span> — Stiamo testando l'app con cliniche selezionate a Milano e provincia. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Unisciti gratis →</button>
       </div>
 
       {/* Header */}
