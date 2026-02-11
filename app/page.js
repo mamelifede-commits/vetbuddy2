@@ -3774,6 +3774,10 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
 
         {/* PAYMENTS */}
         <TabsContent value="payments" className="mt-6">
+          <button onClick={() => setActiveReportTab('overview')} className="flex items-center gap-2 text-gray-500 hover:text-coral-600 transition mb-4 group">
+            <ChevronLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+            <span className="text-sm font-medium">Torna alla Panoramica</span>
+          </button>
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             <StatCard title="Incassi questo mese" value={`€${monthlyRevenue}`} icon={Euro} color="emerald" />
             <StatCard title="Transazioni" value={monthlyAppts.filter(a => a.price > 0).length} icon={Receipt} color="blue" />
