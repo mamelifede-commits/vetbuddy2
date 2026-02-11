@@ -1376,8 +1376,200 @@ function OwnerDashboard({ user, onLogout }) {
   );
 }
 
-function OwnerAppointments({ appointments }) {
-  return <div><h2 className="text-2xl font-bold text-gray-800 mb-2">I miei appuntamenti</h2><p className="text-gray-500 text-sm mb-6">Visite e consulti prenotati</p>{appointments.length === 0 ? <Card><CardContent className="p-12 text-center text-gray-500"><Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessun appuntamento</p></CardContent></Card> : <div className="space-y-3">{appointments.map((appt) => <Card key={appt.id}><CardContent className="p-4 flex items-center justify-between"><div className="flex items-center gap-4"><div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">{appt.type === 'videoconsulto' ? <Video className="h-6 w-6 text-blue-600" /> : <PawPrint className="h-6 w-6 text-blue-600" />}</div><div><p className="font-medium">{appt.petName}</p><p className="text-sm text-gray-500">{appt.reason || 'Visita'}</p></div></div><div className="text-right"><p className="font-medium">{appt.date}</p><p className="text-sm text-gray-500">{appt.time}</p></div></CardContent></Card>)}</div>}</div>;
+function OwnerAppointments({ appointments, pets }) {
+  const [showBooking, setShowBooking] = useState(false);
+  const [formData, setFormData] = useState({ petId: '', serviceId: '', date: '', time: '', notes: '' });
+  
+  // Available services from clinic
+  const availableServices = [
+    { id: 1, name: 'Visita generale', duration: 30, price: 50, type: 'in_sede' },
+    { id: 2, name: 'Video-consulto', duration: 20, price: 35, type: 'online' },
+    { id: 3, name: 'Vaccinazione', duration: 15, price: 40, type: 'in_sede' },
+    { id: 4, name: 'Controllo post-operatorio', duration: 20, price: 30, type: 'in_sede' },
+    { id: 5, name: 'Esami del sangue', duration: 20, price: 60, type: 'in_sede' },
+    { id: 6, name: 'Ecografia', duration: 30, price: 80, type: 'in_sede' },
+    { id: 8, name: 'Consulto specialistico', duration: 30, price: 60, type: 'online' },
+  ];
+  
+  const selectedService = availableServices.find(s => s.id === parseInt(formData.serviceId));
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const service = availableServices.find(s => s.id === parseInt(formData.serviceId));
+    const pet = pets.find(p => p.id === formData.petId);
+    try {
+      await api.post('appointments', {
+        petName: pet?.name || 'Animale',
+        ownerName: 'Proprietario',
+        date: formData.date,
+        time: formData.time,
+        type: service?.type === 'online' ? 'videoconsulto' : 'visita',
+        reason: service?.name || 'Visita',
+        notes: formData.notes
+      });
+      setShowBooking(false);
+      setFormData({ petId: '', serviceId: '', date: '', time: '', notes: '' });
+    } catch (error) { alert(error.message); }
+  };
+  
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">I miei appuntamenti</h2>
+          <p className="text-gray-500 text-sm">Visite e consulti prenotati</p>
+        </div>
+        <Dialog open={showBooking} onOpenChange={setShowBooking}>
+          <DialogTrigger asChild>
+            <Button className="bg-blue-500 hover:bg-blue-600">
+              <Plus className="h-4 w-4 mr-2" />Prenota visita
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>Prenota una visita</DialogTitle>
+              <DialogDescription>Scegli il servizio e l'orario preferito</DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              {/* Pet Selection */}
+              <div>
+                <Label>Per quale animale?</Label>
+                <Select value={formData.petId} onValueChange={(v) => setFormData({...formData, petId: v})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleziona animale" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {pets.map(pet => (
+                      <SelectItem key={pet.id} value={pet.id}>
+                        <div className="flex items-center gap-2">
+                          {pet.species === 'dog' ? <Dog className="h-4 w-4" /> : pet.species === 'cat' ? <Cat className="h-4 w-4" /> : <PawPrint className="h-4 w-4" />}
+                          {pet.name}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Service Selection */}
+              <div>
+                <Label>Tipo di visita</Label>
+                <div className="grid grid-cols-1 gap-2 mt-2">
+                  {availableServices.map(service => (
+                    <div 
+                      key={service.id}
+                      onClick={() => setFormData({...formData, serviceId: service.id.toString()})}
+                      className={`p-3 border rounded-lg cursor-pointer transition ${formData.serviceId === service.id.toString() ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`h-8 w-8 rounded-full flex items-center justify-center ${service.type === 'online' ? 'bg-blue-100' : 'bg-coral-100'}`}>
+                            {service.type === 'online' ? <Video className="h-4 w-4 text-blue-600" /> : <Stethoscope className="h-4 w-4 text-coral-600" />}
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">{service.name}</p>
+                            <p className="text-xs text-gray-500">{service.duration} min • {service.type === 'online' ? 'Online' : 'In sede'}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-blue-600">€{service.price}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Date/Time */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Data</Label>
+                  <Input type="date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} required min={new Date().toISOString().split('T')[0]} />
+                </div>
+                <div>
+                  <Label>Ora</Label>
+                  <Input type="time" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} required />
+                </div>
+              </div>
+              
+              {/* Notes */}
+              <div>
+                <Label>Note per il veterinario (opzionale)</Label>
+                <Textarea 
+                  value={formData.notes} 
+                  onChange={(e) => setFormData({...formData, notes: e.target.value})} 
+                  placeholder="Descrivi brevemente il motivo della visita..."
+                  rows={2}
+                />
+              </div>
+              
+              {/* Summary */}
+              {selectedService && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-medium text-blue-800 mb-2">Riepilogo</h4>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Servizio:</span>
+                      <span className="font-medium">{selectedService.name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Durata:</span>
+                      <span>{selectedService.duration} minuti</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Costo:</span>
+                      <span className="font-semibold text-blue-600">€{selectedService.price}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600" disabled={!formData.petId || !formData.serviceId || !formData.date || !formData.time}>
+                Prenota appuntamento
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+      
+      {appointments.length === 0 ? (
+        <Card>
+          <CardContent className="p-12 text-center text-gray-500">
+            <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <p className="font-medium">Nessun appuntamento</p>
+            <p className="text-sm mt-2">Prenota la tua prima visita!</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          {appointments.map((appt) => (
+            <Card key={appt.id}>
+              <CardContent className="p-4 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${appt.type === 'videoconsulto' ? 'bg-blue-100' : 'bg-coral-100'}`}>
+                    {appt.type === 'videoconsulto' ? <Video className="h-6 w-6 text-blue-600" /> : <PawPrint className="h-6 w-6 text-coral-600" />}
+                  </div>
+                  <div>
+                    <p className="font-medium">{appt.petName}</p>
+                    <p className="text-sm text-gray-500">{appt.reason || 'Visita'}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium">{appt.date}</p>
+                  <p className="text-sm text-gray-500">{appt.time}</p>
+                  {appt.type === 'videoconsulto' && (
+                    <Button size="sm" className="mt-2 bg-blue-500 hover:bg-blue-600">
+                      <Video className="h-3 w-3 mr-1" />Entra
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function OwnerDocuments({ documents }) {
