@@ -1254,7 +1254,7 @@ function KPICard({ icon: Icon, label, value, color, highlight, onClick }) {
 }
 
 // Workflow Card Component
-function WorkflowCard({ step, title, icon: Icon, color, items, nextVideo }) {
+function WorkflowCard({ step, title, icon: Icon, color, items, nextVideo, onClick }) {
   const colors = {
     blue: { bg: 'bg-blue-50', border: 'border-blue-200', icon: 'bg-blue-100 text-blue-600', badge: 'bg-blue-500' },
     coral: { bg: 'bg-coral-50', border: 'border-coral-200', icon: 'bg-coral-100 text-coral-600', badge: 'bg-coral-500' },
@@ -1263,7 +1263,7 @@ function WorkflowCard({ step, title, icon: Icon, color, items, nextVideo }) {
   const c = colors[color];
 
   return (
-    <Card className={`${c.bg} ${c.border}`}>
+    <Card className={`${c.bg} ${c.border} ${onClick ? 'cursor-pointer hover:shadow-md transition' : ''}`} onClick={onClick}>
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-3">
           <div className={`h-6 w-6 rounded-full ${c.icon} flex items-center justify-center text-xs font-bold`}>{step}</div>
