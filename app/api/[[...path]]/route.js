@@ -1976,7 +1976,7 @@ export async function PUT(request, { params }) {
     // Update clinic profile (including location and services)
     if (path === 'clinic/profile') {
       const users = await getCollection('users');
-      const { address, city, latitude, longitude, phone, website, services } = body;
+      const { address, city, latitude, longitude, phone, website, services, googlePlaceId, googleRating } = body;
       
       const updateData = { updatedAt: new Date().toISOString() };
       if (address !== undefined) updateData.address = address;
@@ -1986,6 +1986,8 @@ export async function PUT(request, { params }) {
       if (phone !== undefined) updateData.phone = phone;
       if (website !== undefined) updateData.website = website;
       if (services !== undefined) updateData.services = services; // Array of service IDs
+      if (googlePlaceId !== undefined) updateData.googlePlaceId = googlePlaceId;
+      if (googleRating !== undefined) updateData.googleRating = googleRating;
       
       await users.updateOne({ id: user.id }, { $set: updateData });
       const updated = await users.findOne({ id: user.id }, { projection: { password: 0 } });
