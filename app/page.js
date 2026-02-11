@@ -2846,7 +2846,7 @@ function ServiceCard({ service, onToggle }) {
   );
 }
 
-function ClinicTemplates({ owners = [], pets = [], staff = [], appointments = [], user }) {
+function ClinicTemplates({ owners = [], pets = [], staff = [], appointments = [], user, onNavigate }) {
   const [activeTab, setActiveTab] = useState('tutti');
   const [showNewDialog, setShowNewDialog] = useState(false);
   const [showUseDialog, setShowUseDialog] = useState(false);
