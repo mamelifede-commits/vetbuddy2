@@ -1,104 +1,475 @@
-import { MongoClient } from 'mongodb'
-import { v4 as uuidv4 } from 'uuid'
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
+import { getCollection } from '@/lib/db';
+import { hashPassword, comparePassword, generateToken, getUserFromRequest } from '@/lib/auth';
+import { sendEmail } from '@/lib/email';
 
-// MongoDB connection
-let client
-let db
+// CORS headers
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
 
-async function connectToMongo() {
-  if (!client) {
-    client = new MongoClient(process.env.MONGO_URL)
-    await client.connect()
-    db = client.db(process.env.DB_NAME)
-  }
-  return db
-}
-
-// Helper function to handle CORS
-function handleCORS(response) {
-  response.headers.set('Access-Control-Allow-Origin', process.env.CORS_ORIGINS || '*')
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  response.headers.set('Access-Control-Allow-Credentials', 'true')
-  return response
-}
-
-// OPTIONS handler for CORS
 export async function OPTIONS() {
-  return handleCORS(new NextResponse(null, { status: 200 }))
+  return NextResponse.json({}, { headers: corsHeaders });
 }
 
-// Route handler function
-async function handleRoute(request, { params }) {
-  const { path = [] } = params
-  const route = `/${path.join('/')}`
-  const method = request.method
-
+// Route handler
+export async function GET(request, { params }) {
+  const path = params?.path?.join('/') || '';
+  
   try {
-    const db = await connectToMongo()
-
-    // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
-    if (route === '/root' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Hello World" }))
-    }
-    // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
-    if (route === '/' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Hello World" }))
+    // Health check
+    if (path === 'health') {
+      return NextResponse.json({ status: 'ok', app: 'VetBuddy API' }, { headers: corsHeaders });
     }
 
-    // Status endpoints - POST /api/status
-    if (route === '/status' && method === 'POST') {
-      const body = await request.json()
-      
-      if (!body.client_name) {
-        return handleCORS(NextResponse.json(
-          { error: "client_name is required" }, 
-          { status: 400 }
-        ))
+    // Get current user
+    if (path === 'auth/me') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
       }
+      const users = await getCollection('users');
+      const userData = await users.findOne({ id: user.id }, { projection: { password: 0 } });
+      return NextResponse.json(userData, { headers: corsHeaders });
+    }
 
-      const statusObj = {
-        id: uuidv4(),
-        client_name: body.client_name,
-        timestamp: new Date()
+    // Get appointments for clinic
+    if (path === 'appointments') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
       }
-
-      await db.collection('status_checks').insertOne(statusObj)
-      return handleCORS(NextResponse.json(statusObj))
+      const appointments = await getCollection('appointments');
+      const query = user.role === 'clinic' ? { clinicId: user.id } : { ownerId: user.id };
+      const list = await appointments.find(query).sort({ date: 1 }).toArray();
+      return NextResponse.json(list, { headers: corsHeaders });
     }
 
-    // Status endpoints - GET /api/status
-    if (route === '/status' && method === 'GET') {
-      const statusChecks = await db.collection('status_checks')
-        .find({})
-        .limit(1000)
-        .toArray()
-
-      // Remove MongoDB's _id field from response
-      const cleanedStatusChecks = statusChecks.map(({ _id, ...rest }) => rest)
-      
-      return handleCORS(NextResponse.json(cleanedStatusChecks))
+    // Get documents
+    if (path === 'documents') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const documents = await getCollection('documents');
+      const query = user.role === 'clinic' ? { clinicId: user.id } : { ownerId: user.id };
+      const list = await documents.find(query).sort({ createdAt: -1 }).toArray();
+      return NextResponse.json(list, { headers: corsHeaders });
     }
 
-    // Route not found
-    return handleCORS(NextResponse.json(
-      { error: `Route ${route} not found` }, 
-      { status: 404 }
-    ))
+    // Get messages/inbox
+    if (path === 'messages') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const messages = await getCollection('messages');
+      const list = await messages.find({
+        $or: [{ senderId: user.id }, { receiverId: user.id }]
+      }).sort({ createdAt: -1 }).toArray();
+      return NextResponse.json(list, { headers: corsHeaders });
+    }
 
+    // Get staff (clinic only)
+    if (path === 'staff') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const staff = await getCollection('staff');
+      const list = await staff.find({ clinicId: user.id }).toArray();
+      return NextResponse.json(list, { headers: corsHeaders });
+    }
+
+    // Get pets (owner only)
+    if (path === 'pets') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const pets = await getCollection('pets');
+      const query = user.role === 'owner' ? { ownerId: user.id } : { clinicId: user.id };
+      const list = await pets.find(query).toArray();
+      return NextResponse.json(list, { headers: corsHeaders });
+    }
+
+    // Get owners (for clinic)
+    if (path === 'owners') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const users = await getCollection('users');
+      const list = await users.find({ role: 'owner', clinicId: user.id }, { projection: { password: 0 } }).toArray();
+      return NextResponse.json(list, { headers: corsHeaders });
+    }
+
+    return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
   } catch (error) {
-    console.error('API Error:', error)
-    return handleCORS(NextResponse.json(
-      { error: "Internal server error" }, 
-      { status: 500 }
-    ))
+    console.error('GET Error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
   }
 }
 
-// Export all HTTP methods
-export const GET = handleRoute
-export const POST = handleRoute
-export const PUT = handleRoute
-export const DELETE = handleRoute
-export const PATCH = handleRoute
+export async function POST(request, { params }) {
+  const path = params?.path?.join('/') || '';
+  
+  try {
+    const body = await request.json().catch(() => ({}));
+
+    // Register
+    if (path === 'auth/register') {
+      const { email, password, name, role, clinicName, phone, address } = body;
+      if (!email || !password || !name || !role) {
+        return NextResponse.json({ error: 'Campi obbligatori mancanti' }, { status: 400, headers: corsHeaders });
+      }
+      
+      const users = await getCollection('users');
+      const existing = await users.findOne({ email });
+      if (existing) {
+        return NextResponse.json({ error: 'Email già registrata' }, { status: 400, headers: corsHeaders });
+      }
+
+      const user = {
+        id: uuidv4(),
+        email,
+        password: hashPassword(password),
+        name,
+        role, // 'clinic' or 'owner'
+        clinicName: role === 'clinic' ? clinicName : null,
+        phone: phone || '',
+        address: address || '',
+        createdAt: new Date().toISOString()
+      };
+
+      await users.insertOne(user);
+      const token = generateToken({ id: user.id, email: user.email, role: user.role });
+      const { password: _, ...userWithoutPassword } = user;
+      
+      return NextResponse.json({ user: userWithoutPassword, token }, { headers: corsHeaders });
+    }
+
+    // Login
+    if (path === 'auth/login') {
+      const { email, password } = body;
+      if (!email || !password) {
+        return NextResponse.json({ error: 'Email e password richiesti' }, { status: 400, headers: corsHeaders });
+      }
+
+      const users = await getCollection('users');
+      const user = await users.findOne({ email });
+      if (!user || !comparePassword(password, user.password)) {
+        return NextResponse.json({ error: 'Credenziali non valide' }, { status: 401, headers: corsHeaders });
+      }
+
+      const token = generateToken({ id: user.id, email: user.email, role: user.role });
+      const { password: _, ...userWithoutPassword } = user;
+      
+      return NextResponse.json({ user: userWithoutPassword, token }, { headers: corsHeaders });
+    }
+
+    // Create appointment
+    if (path === 'appointments') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { petId, petName, ownerName, ownerId, date, time, reason, notes } = body;
+      const appointments = await getCollection('appointments');
+      
+      const appointment = {
+        id: uuidv4(),
+        clinicId: user.role === 'clinic' ? user.id : body.clinicId,
+        ownerId: user.role === 'owner' ? user.id : ownerId,
+        petId,
+        petName,
+        ownerName,
+        date,
+        time,
+        reason,
+        notes: notes || '',
+        status: 'scheduled',
+        createdAt: new Date().toISOString()
+      };
+
+      await appointments.insertOne(appointment);
+      return NextResponse.json(appointment, { headers: corsHeaders });
+    }
+
+    // Upload document
+    if (path === 'documents') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { name, type, content, petId, petName, ownerId } = body;
+      const documents = await getCollection('documents');
+      
+      const document = {
+        id: uuidv4(),
+        name,
+        type, // 'vaccination', 'medical_record', 'prescription', 'other'
+        content, // base64 content or text
+        petId,
+        petName,
+        clinicId: user.role === 'clinic' ? user.id : body.clinicId,
+        ownerId: user.role === 'owner' ? user.id : ownerId,
+        createdBy: user.id,
+        createdAt: new Date().toISOString()
+      };
+
+      await documents.insertOne(document);
+      return NextResponse.json(document, { headers: corsHeaders });
+    }
+
+    // Send message
+    if (path === 'messages') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { receiverId, content, subject } = body;
+      const messages = await getCollection('messages');
+      
+      const message = {
+        id: uuidv4(),
+        senderId: user.id,
+        receiverId,
+        subject: subject || 'Nuovo messaggio',
+        content,
+        read: false,
+        createdAt: new Date().toISOString()
+      };
+
+      await messages.insertOne(message);
+      return NextResponse.json(message, { headers: corsHeaders });
+    }
+
+    // Add staff member
+    if (path === 'staff') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { name, role, email, phone } = body;
+      const staff = await getCollection('staff');
+      
+      const member = {
+        id: uuidv4(),
+        clinicId: user.id,
+        name,
+        role, // 'vet', 'assistant', 'receptionist'
+        email,
+        phone,
+        createdAt: new Date().toISOString()
+      };
+
+      await staff.insertOne(member);
+      return NextResponse.json(member, { headers: corsHeaders });
+    }
+
+    // Add pet
+    if (path === 'pets') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { name, species, breed, birthDate, weight, notes, ownerId } = body;
+      const pets = await getCollection('pets');
+      
+      const pet = {
+        id: uuidv4(),
+        name,
+        species,
+        breed,
+        birthDate,
+        weight,
+        notes: notes || '',
+        ownerId: user.role === 'owner' ? user.id : ownerId,
+        clinicId: user.role === 'clinic' ? user.id : body.clinicId,
+        createdAt: new Date().toISOString()
+      };
+
+      await pets.insertOne(pet);
+      return NextResponse.json(pet, { headers: corsHeaders });
+    }
+
+    // Send document via email
+    if (path === 'documents/send-email') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { documentId, recipientEmail } = body;
+      const documents = await getCollection('documents');
+      const doc = await documents.findOne({ id: documentId });
+      
+      if (!doc) {
+        return NextResponse.json({ error: 'Documento non trovato' }, { status: 404, headers: corsHeaders });
+      }
+
+      const result = await sendEmail({
+        to: recipientEmail,
+        subject: `VetBuddy - Documento: ${doc.name}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #10B981;">🐾 VetBuddy</h2>
+            <p>Hai ricevuto un nuovo documento dalla clinica veterinaria.</p>
+            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="margin: 0 0 10px;">${doc.name}</h3>
+              <p style="margin: 0; color: #666;">Tipo: ${doc.type}</p>
+              <p style="margin: 10px 0 0; color: #666;">Animale: ${doc.petName || 'N/A'}</p>
+            </div>
+            <p style="color: #666; font-size: 14px;">Documento inviato tramite VetBuddy - La piattaforma per la gestione delle cliniche veterinarie.</p>
+          </div>
+        `
+      });
+
+      return NextResponse.json(result, { headers: corsHeaders });
+    }
+
+    // Register owner to clinic
+    if (path === 'owners') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { email, name, phone } = body;
+      const users = await getCollection('users');
+      
+      // Check if owner exists
+      let owner = await users.findOne({ email });
+      
+      if (owner) {
+        // Link existing owner to clinic
+        await users.updateOne({ email }, { $set: { clinicId: user.id } });
+        owner = await users.findOne({ email }, { projection: { password: 0 } });
+      } else {
+        // Create new owner with temporary password
+        const tempPassword = Math.random().toString(36).slice(-8);
+        owner = {
+          id: uuidv4(),
+          email,
+          password: hashPassword(tempPassword),
+          name,
+          role: 'owner',
+          phone: phone || '',
+          clinicId: user.id,
+          createdAt: new Date().toISOString()
+        };
+        await users.insertOne(owner);
+        delete owner.password;
+      }
+
+      return NextResponse.json(owner, { headers: corsHeaders });
+    }
+
+    return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
+  } catch (error) {
+    console.error('POST Error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
+  }
+}
+
+export async function PUT(request, { params }) {
+  const path = params?.path?.join('/') || '';
+  
+  try {
+    const user = getUserFromRequest(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    }
+
+    const body = await request.json();
+
+    // Update appointment
+    if (path.startsWith('appointments/')) {
+      const id = path.split('/')[1];
+      const appointments = await getCollection('appointments');
+      await appointments.updateOne({ id }, { $set: { ...body, updatedAt: new Date().toISOString() } });
+      const updated = await appointments.findOne({ id });
+      return NextResponse.json(updated, { headers: corsHeaders });
+    }
+
+    // Mark message as read
+    if (path.startsWith('messages/')) {
+      const id = path.split('/')[1];
+      const messages = await getCollection('messages');
+      await messages.updateOne({ id }, { $set: { read: true } });
+      const updated = await messages.findOne({ id });
+      return NextResponse.json(updated, { headers: corsHeaders });
+    }
+
+    // Update pet
+    if (path.startsWith('pets/')) {
+      const id = path.split('/')[1];
+      const pets = await getCollection('pets');
+      await pets.updateOne({ id }, { $set: { ...body, updatedAt: new Date().toISOString() } });
+      const updated = await pets.findOne({ id });
+      return NextResponse.json(updated, { headers: corsHeaders });
+    }
+
+    return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
+  } catch (error) {
+    console.error('PUT Error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
+  }
+}
+
+export async function DELETE(request, { params }) {
+  const path = params?.path?.join('/') || '';
+  
+  try {
+    const user = getUserFromRequest(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    }
+
+    // Delete appointment
+    if (path.startsWith('appointments/')) {
+      const id = path.split('/')[1];
+      const appointments = await getCollection('appointments');
+      await appointments.deleteOne({ id });
+      return NextResponse.json({ success: true }, { headers: corsHeaders });
+    }
+
+    // Delete document
+    if (path.startsWith('documents/')) {
+      const id = path.split('/')[1];
+      const documents = await getCollection('documents');
+      await documents.deleteOne({ id });
+      return NextResponse.json({ success: true }, { headers: corsHeaders });
+    }
+
+    // Delete staff member
+    if (path.startsWith('staff/')) {
+      const id = path.split('/')[1];
+      const staff = await getCollection('staff');
+      await staff.deleteOne({ id });
+      return NextResponse.json({ success: true }, { headers: corsHeaders });
+    }
+
+    // Delete pet
+    if (path.startsWith('pets/')) {
+      const id = path.split('/')[1];
+      const pets = await getCollection('pets');
+      await pets.deleteOne({ id });
+      return NextResponse.json({ success: true }, { headers: corsHeaders });
+    }
+
+    return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
+  } catch (error) {
+    console.error('DELETE Error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
+  }
+}
