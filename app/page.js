@@ -3969,6 +3969,7 @@ function ClinicSettings({ user, onNavigate }) {
 
   return (
     <div>
+      {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
       <div className="mb-6">
         <h2 className="text-2xl font-bold">Impostazioni</h2>
         <p className="text-gray-500 text-sm">Configura la tua clinica</p>
