@@ -72,6 +72,125 @@ export async function GET(request, { params }) {
       return NextResponse.json({ status: 'ok', app: 'VetBuddy API' }, { headers: corsHeaders });
     }
 
+    // Google Calendar OAuth - Start authorization
+    if (path === 'auth/google') {
+      const { searchParams } = new URL(request.url);
+      const clinicId = searchParams.get('clinicId');
+      
+      if (!clinicId) {
+        return NextResponse.json({ error: 'clinicId richiesto' }, { status: 400, headers: corsHeaders });
+      }
+      
+      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${GOOGLE_CLIENT_ID}` +
+        `&redirect_uri=${encodeURIComponent(GOOGLE_REDIRECT_URI)}` +
+        `&response_type=code` +
+        `&scope=${encodeURIComponent(GOOGLE_SCOPES)}` +
+        `&access_type=offline` +
+        `&prompt=consent` +
+        `&state=${clinicId}`;
+      
+      return NextResponse.json({ authUrl }, { headers: corsHeaders });
+    }
+
+    // Google Calendar OAuth - Callback
+    if (path === 'auth/google/callback') {
+      const { searchParams } = new URL(request.url);
+      const code = searchParams.get('code');
+      const clinicId = searchParams.get('state');
+      const error = searchParams.get('error');
+      
+      if (error) {
+        // Redirect back to settings with error
+        return NextResponse.redirect(new URL(`/dashboard?tab=settings&google_error=${error}`, process.env.NEXT_PUBLIC_BASE_URL));
+      }
+      
+      if (!code || !clinicId) {
+        return NextResponse.redirect(new URL('/dashboard?tab=settings&google_error=missing_params', process.env.NEXT_PUBLIC_BASE_URL));
+      }
+      
+      try {
+        // Exchange code for tokens
+        const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            client_id: GOOGLE_CLIENT_ID,
+            client_secret: GOOGLE_CLIENT_SECRET,
+            code,
+            grant_type: 'authorization_code',
+            redirect_uri: GOOGLE_REDIRECT_URI
+          })
+        });
+        
+        const tokens = await tokenResponse.json();
+        
+        if (tokens.error) {
+          console.error('Google OAuth error:', tokens);
+          return NextResponse.redirect(new URL(`/dashboard?tab=settings&google_error=${tokens.error}`, process.env.NEXT_PUBLIC_BASE_URL));
+        }
+        
+        // Get calendar info
+        const calendarResponse = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary', {
+          headers: { 'Authorization': `Bearer ${tokens.access_token}` }
+        });
+        const calendarInfo = await calendarResponse.json();
+        
+        // Save tokens to clinic
+        const users = await getCollection('users');
+        await users.updateOne(
+          { id: clinicId },
+          { 
+            $set: { 
+              googleCalendar: {
+                connected: true,
+                accessToken: tokens.access_token,
+                refreshToken: tokens.refresh_token,
+                expiresAt: new Date(Date.now() + tokens.expires_in * 1000).toISOString(),
+                calendarId: calendarInfo.id || 'primary',
+                calendarName: calendarInfo.summary || 'Calendario principale',
+                connectedAt: new Date().toISOString(),
+                lastSync: null
+              }
+            }
+          }
+        );
+        
+        // Redirect back to settings with success
+        return NextResponse.redirect(new URL('/dashboard?tab=settings&google_success=true', process.env.NEXT_PUBLIC_BASE_URL));
+      } catch (err) {
+        console.error('Google OAuth callback error:', err);
+        return NextResponse.redirect(new URL('/dashboard?tab=settings&google_error=token_exchange_failed', process.env.NEXT_PUBLIC_BASE_URL));
+      }
+    }
+
+    // Get Google Calendar status
+    if (path === 'google-calendar/status') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: user.clinicId || user.id });
+      
+      if (!clinic?.googleCalendar?.connected) {
+        return NextResponse.json({ connected: false }, { headers: corsHeaders });
+      }
+      
+      return NextResponse.json({
+        connected: true,
+        calendarName: clinic.googleCalendar.calendarName,
+        connectedAt: clinic.googleCalendar.connectedAt,
+        lastSync: clinic.googleCalendar.lastSync
+      }, { headers: corsHeaders });
+    }
+
+    // Get staff colors
+    if (path === 'staff-colors') {
+      return NextResponse.json(STAFF_COLORS, { headers: corsHeaders });
+    }
+
     // Get current user
     if (path === 'auth/me') {
       const user = getUserFromRequest(request);
