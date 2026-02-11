@@ -859,48 +859,15 @@ function LandingPage({ onLogin }) {
       </section>
 
       {/* Come Funziona */}
-      <section id="come-funziona" className="py-20 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
+      <section id="come-funziona" className="py-16 px-4 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
             <p className="text-coral-500 font-semibold mb-2">COME FUNZIONA</p>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Due app, un ecosistema</h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-12">
-            <div className="bg-blue-50 rounded-2xl p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center"><PawPrint className="h-6 w-6 text-blue-600" /></div>
-                <div><h3 className="font-bold text-lg">Per i Proprietari</h3><p className="text-sm text-gray-600">100% Gratis, per sempre</p></div>
-              </div>
-              <ul className="space-y-4">
-                {[
-                  'Trova cliniche vicine con distanza in km',
-                  'Prenota visite e video-consulti in 2 tap',
-                  'Ricevi referti e prescrizioni via email',
-                  'Cartella clinica digitale per ogni animale',
-                  'Storico spese veterinarie annuali'
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3"><CheckCircle className="h-5 w-5 text-blue-600 mt-0.5" /><span className="text-gray-700">{item}</span></li>
-                ))}
-              </ul>
-            </div>
-            <div className="bg-coral-50 rounded-2xl p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center"><Building2 className="h-6 w-6 text-coral-600" /></div>
-                <div><h3 className="font-bold text-lg">Per le Cliniche</h3><p className="text-sm text-gray-600">Pilot Milano 2025</p></div>
-              </div>
-              <ul className="space-y-4">
-                {[
-                  'Dashboard "cosa fare oggi" in 10 secondi',
-                  'Team Inbox con assegnazione ticket',
-                  'Documenti → email automatica al cliente',
-                  'Posizione su mappa con indicazioni stradali',
-                  'Report finanziari e analytics'
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3"><CheckCircle className="h-5 w-5 text-coral-600 mt-0.5" /><span className="text-gray-700">{item}</span></li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          
+          {/* Toggle Tabs Component */}
+          <EcosystemToggle />
         </div>
       </section>
 
