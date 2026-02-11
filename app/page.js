@@ -2549,6 +2549,7 @@ function ClinicStaff({ staff, onRefresh, onNavigate }) {
 
   return (
     <div>
+      {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-2xl font-bold">Staff</h2>
