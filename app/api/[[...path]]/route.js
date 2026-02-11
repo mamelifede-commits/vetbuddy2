@@ -107,6 +107,51 @@ export async function GET(request, { params }) {
       return NextResponse.json(list, { headers: corsHeaders });
     }
 
+    // Get subscription plans
+    if (path === 'stripe/plans') {
+      return NextResponse.json(SUBSCRIPTION_PLANS, { headers: corsHeaders });
+    }
+
+    // Get checkout session status
+    if (path.startsWith('stripe/checkout/status/')) {
+      const sessionId = path.split('/')[3];
+      try {
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        
+        // Update payment transaction status
+        const transactions = await getCollection('payment_transactions');
+        await transactions.updateOne(
+          { sessionId },
+          { $set: { status: session.status, paymentStatus: session.payment_status, updatedAt: new Date().toISOString() } }
+        );
+        
+        return NextResponse.json({
+          status: session.status,
+          paymentStatus: session.payment_status,
+          amountTotal: session.amount_total,
+          currency: session.currency,
+          metadata: session.metadata
+        }, { headers: corsHeaders });
+      } catch (error) {
+        return NextResponse.json({ error: error.message }, { status: 400, headers: corsHeaders });
+      }
+    }
+
+    // Get clinic Stripe settings
+    if (path === 'clinic/stripe-settings') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: user.id });
+      return NextResponse.json({ 
+        stripePublishableKey: clinic?.stripePublishableKey || '',
+        stripeSecretKey: clinic?.stripeSecretKey ? '••••••••' + clinic.stripeSecretKey.slice(-4) : '',
+        stripeConfigured: !!clinic?.stripeSecretKey
+      }, { headers: corsHeaders });
+    }
+
     // Get owners (for clinic)
     if (path === 'owners') {
       const user = getUserFromRequest(request);
