@@ -3774,7 +3774,7 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
   );
 }
 
-function ClinicSettings({ user }) {
+function ClinicSettings({ user, onNavigate }) {
   const [googleCalendarStatus, setGoogleCalendarStatus] = useState({ connected: false, loading: true });
   const [stripeSettings, setStripeSettings] = useState({ stripePublishableKey: '', stripeSecretKey: '', stripeConfigured: false });
   const [showStripeForm, setShowStripeForm] = useState(false);
