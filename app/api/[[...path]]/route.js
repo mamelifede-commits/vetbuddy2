@@ -202,6 +202,52 @@ export async function GET(request, { params }) {
       return NextResponse.json(userData, { headers: corsHeaders });
     }
 
+    // ==================== ADMIN API ====================
+    // Get all users (admin only)
+    if (path === 'admin/users') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'admin') {
+        return NextResponse.json({ error: 'Accesso negato' }, { status: 403, headers: corsHeaders });
+      }
+      const users = await getCollection('users');
+      const list = await users.find({}, { projection: { password: 0 } }).sort({ createdAt: -1 }).toArray();
+      return NextResponse.json(list, { headers: corsHeaders });
+    }
+
+    // Get all appointments (admin only)
+    if (path === 'admin/appointments') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'admin') {
+        return NextResponse.json({ error: 'Accesso negato' }, { status: 403, headers: corsHeaders });
+      }
+      const appointments = await getCollection('appointments');
+      const list = await appointments.find({}).sort({ date: -1 }).toArray();
+      return NextResponse.json(list, { headers: corsHeaders });
+    }
+
+    // Get all pets (admin only)
+    if (path === 'admin/pets') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'admin') {
+        return NextResponse.json({ error: 'Accesso negato' }, { status: 403, headers: corsHeaders });
+      }
+      const pets = await getCollection('pets');
+      const list = await pets.find({}).sort({ createdAt: -1 }).toArray();
+      return NextResponse.json(list, { headers: corsHeaders });
+    }
+
+    // Get all documents (admin only)
+    if (path === 'admin/documents') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'admin') {
+        return NextResponse.json({ error: 'Accesso negato' }, { status: 403, headers: corsHeaders });
+      }
+      const documents = await getCollection('documents');
+      const list = await documents.find({}).sort({ createdAt: -1 }).toArray();
+      return NextResponse.json(list, { headers: corsHeaders });
+    }
+    // ==================== END ADMIN API ====================
+
     // Get appointments for clinic or staff
     if (path === 'appointments') {
       const user = getUserFromRequest(request);
