@@ -537,7 +537,7 @@ function LandingPage({ onLogin }) {
           </div>
           
           {/* Feature 1 - Agenda Intelligente */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-12">
             <div className="order-2 lg:order-1">
               <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm mb-4">
                 <CalendarDays className="h-4 w-4" />
