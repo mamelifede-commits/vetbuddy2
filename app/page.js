@@ -1951,6 +1951,8 @@ function DocumentUploadForm({ owners, pets, onSuccess }) {
 // Clinic Documents
 function ClinicDocuments({ documents, owners, pets, onRefresh }) {
   const [showUpload, setShowUpload] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState(null);
+  const [previewDoc, setPreviewDoc] = useState(null);
   const [selectedClientDoc, setSelectedClientDoc] = useState(null);
   const [replyText, setReplyText] = useState('');
   const [filters, setFilters] = useState({ type: 'all', status: 'all', search: '' });
@@ -2011,8 +2013,32 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
     }
     try {
       await api.post('documents/send-email', { documentId: doc.id, recipientEmail: doc.ownerEmail });
-      alert('Email reinviata con successo!');
+      alert('✅ Email reinviata con successo!');
       onRefresh();
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    }
+  };
+
+  const downloadDoc = (doc) => {
+    if (doc.content) {
+      const link = document.createElement('a');
+      link.href = doc.content;
+      link.download = doc.fileName || `${doc.name}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      alert('Contenuto del documento non disponibile');
+    }
+  };
+
+  const deleteDoc = async (docId) => {
+    if (!confirm('Sei sicuro di voler eliminare questo documento?')) return;
+    try {
+      await api.delete(`documents/${docId}`);
+      onRefresh();
+      setSelectedDoc(null);
     } catch (error) {
       alert('Errore: ' + error.message);
     }
@@ -2080,7 +2106,7 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
             {filteredDocs.length === 0 ? (
               <Card><CardContent className="p-12 text-center text-gray-500"><FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessun documento</p><p className="text-sm mt-2">{filters.search || filters.type !== 'all' || filters.status !== 'all' ? 'Prova a modificare i filtri' : 'Carica il tuo primo documento'}</p></CardContent></Card>
             ) : filteredDocs.map((doc) => (
-              <Card key={doc.id} className="hover:shadow-md transition">
+              <Card key={doc.id} className="hover:shadow-md transition cursor-pointer" onClick={() => setSelectedDoc(doc)}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -2098,7 +2124,7 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
                         {doc.amount && <p className="text-xs text-gray-500 mt-0.5">Importo: €{doc.amount.toFixed(2)}</p>}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <Badge className={docTypes[doc.type]?.color || docTypes.altro.color}>
                         {docTypes[doc.type]?.label || 'Altro'}
                       </Badge>
@@ -2112,21 +2138,16 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
                       )}
                       <div className="flex gap-1 ml-2">
                         {doc.ownerEmail && (
-                          <Button size="sm" variant="outline" onClick={() => resendEmail(doc)} title="Reinvia email">
+                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); resendEmail(doc); }} title="Invia/Reinvia email">
                             <Mail className="h-4 w-4" />
                           </Button>
                         )}
                         {doc.content && (
-                          <Button size="sm" variant="outline" onClick={() => {
-                            const link = document.createElement('a');
-                            link.href = doc.content;
-                            link.download = doc.fileName || doc.name;
-                            link.click();
-                          }} title="Scarica">
+                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); downloadDoc(doc); }} title="Scarica PDF">
                             <Download className="h-4 w-4" />
                           </Button>
                         )}
-                        <Button size="sm" variant="outline" title="Anteprima">
+                        <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setPreviewDoc(doc); }} title="Anteprima">
                           <Eye className="h-4 w-4" />
                         </Button>
                       </div>
