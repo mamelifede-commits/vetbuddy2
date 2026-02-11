@@ -1308,7 +1308,7 @@ function WorkflowCard({ step, title, icon: Icon, color, items, nextVideo, onClic
 }
 
 // Clinic Agenda
-function ClinicAgenda({ appointments, staff, owners, pets, onRefresh }) {
+function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate }) {
   const [showDialog, setShowDialog] = useState(false);
   const [editingAppt, setEditingAppt] = useState(null);
   const [viewMode, setViewMode] = useState('week'); // 'day', 'week', 'list'
