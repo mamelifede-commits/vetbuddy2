@@ -509,6 +509,7 @@ function ClinicDashboard({ user, onLogout }) {
         {activeTab === 'agenda' && <ClinicAgenda appointments={appointments} onRefresh={loadData} />}
         {activeTab === 'inbox' && <ClinicInbox messages={messages} owners={owners} pets={pets} onRefresh={loadData} />}
         {activeTab === 'documents' && <ClinicDocuments documents={documents} owners={owners} pets={pets} onRefresh={loadData} />}
+        {activeTab === 'services' && <ClinicServices />}
         {activeTab === 'patients' && <ClinicPatients pets={pets} onRefresh={loadData} />}
         {activeTab === 'owners' && <ClinicOwners owners={owners} onRefresh={loadData} />}
         {activeTab === 'staff' && <ClinicStaff staff={staff} onRefresh={loadData} />}
