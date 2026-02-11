@@ -887,6 +887,83 @@ export async function POST(request, { params }) {
       return NextResponse.json({ success: true }, { headers: corsHeaders });
     }
 
+    // ==================== INVITE CLINIC ====================
+    // Send invitation to a clinic
+    if (path === 'invite-clinic') {
+      const { clinicName, clinicEmail, message, inviterName, inviterEmail } = body;
+      
+      if (!clinicName || !clinicEmail) {
+        return NextResponse.json({ error: 'Nome e email della clinica sono obbligatori' }, { status: 400, headers: corsHeaders });
+      }
+
+      // Save invitation to database for tracking
+      const invitations = await getCollection('clinic_invitations');
+      const invitation = {
+        id: uuidv4(),
+        clinicName,
+        clinicEmail,
+        message: message || '',
+        inviterName: inviterName || 'Un proprietario',
+        inviterEmail: inviterEmail || '',
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+      await invitations.insertOne(invitation);
+
+      // Send email to the clinic
+      try {
+        await sendEmail({
+          to: clinicEmail,
+          subject: `${inviterName || 'Un proprietario'} ti ha invitato su VetBuddy!`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <div style="background: linear-gradient(135deg, #f97066 0%, #fb923c 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
+                <h1 style="color: white; margin: 0; font-size: 28px;">🐾 VetBuddy</h1>
+                <p style="color: rgba(255,255,255,0.9); margin-top: 10px;">La piattaforma veterinaria digitale</p>
+              </div>
+              <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
+                <h2 style="color: #1f2937; margin-top: 0;">Ciao ${clinicName}! 👋</h2>
+                <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">
+                  <strong>${inviterName || 'Un proprietario di animali'}</strong> ti ha invitato a unirti a VetBuddy, 
+                  la piattaforma che digitalizza la gestione della tua clinica veterinaria.
+                </p>
+                ${message ? `
+                <div style="background: white; border-left: 4px solid #f97066; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                  <p style="color: #6b7280; font-style: italic; margin: 0;">"${message}"</p>
+                  <p style="color: #9ca3af; font-size: 14px; margin: 10px 0 0 0;">— ${inviterName || 'Il tuo cliente'}</p>
+                </div>
+                ` : ''}
+                <h3 style="color: #1f2937;">Perché unirsi a VetBuddy?</h3>
+                <ul style="color: #4b5563; line-height: 1.8;">
+                  <li>📅 Prenotazioni online 24/7</li>
+                  <li>📋 Cartelle cliniche digitali</li>
+                  <li>📧 Comunicazione automatizzata con i clienti</li>
+                  <li>💳 Pagamenti integrati</li>
+                  <li>🏥 <strong>Gratis durante la fase Pilot Milano!</strong></li>
+                </ul>
+                <div style="text-align: center; margin-top: 30px;">
+                  <a href="${process.env.NEXT_PUBLIC_BASE_URL}" style="background: #f97066; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
+                    Candidati al Pilot Gratuito →
+                  </a>
+                </div>
+                <p style="color: #9ca3af; font-size: 12px; text-align: center; margin-top: 30px;">
+                  VetBuddy — Pilot Milano 2025<br/>
+                  <a href="${process.env.NEXT_PUBLIC_BASE_URL}" style="color: #f97066;">www.vetbuddy.it</a>
+                </p>
+              </div>
+            </div>
+          `
+        });
+
+        return NextResponse.json({ success: true, message: 'Invito inviato con successo!' }, { headers: corsHeaders });
+      } catch (emailError) {
+        console.error('Error sending invitation email:', emailError);
+        // Still return success if saved to DB, but note email failed
+        return NextResponse.json({ success: true, message: 'Invito salvato (email non inviata)', emailError: true }, { headers: corsHeaders });
+      }
+    }
+    // ==================== END INVITE CLINIC ====================
+
     // Register
     if (path === 'auth/register') {
       const { email, password, name, role, clinicName, phone, address, city, vatNumber, website, latitude, longitude, services } = body;
