@@ -795,6 +795,34 @@ function ClinicControlRoom({ appointments, documents, messages, owners, setupPro
               <Button variant="ghost" className="w-full mt-2 text-coral-500" size="sm">Gestisci <ArrowRight className="h-3 w-3 ml-1" /></Button>
             </CardContent>
           </Card>
+
+          {/* Monthly Summary Widget */}
+          <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-green-200">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2 text-green-700">
+                <TrendingUp className="h-4 w-4" />Questo mese
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-3">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Nuovi clienti</span>
+                  <span className="font-semibold text-green-700">{newClientsThisMonth}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Appuntamenti</span>
+                  <span className="font-semibold text-green-700">{monthlyAppts.length}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Incassi tracciati</span>
+                  <span className="font-semibold text-green-700">€{monthlyRevenue}</span>
+                </div>
+              </div>
+              <Button variant="ghost" className="w-full mt-3 text-green-600" size="sm">
+                Apri Report <ArrowRight className="h-3 w-3 ml-1" />
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
