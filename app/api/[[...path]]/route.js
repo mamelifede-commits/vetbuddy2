@@ -122,7 +122,7 @@ export async function POST(request, { params }) {
 
     // Register
     if (path === 'auth/register') {
-      const { email, password, name, role, clinicName, phone, address } = body;
+      const { email, password, name, role, clinicName, phone, address, city, vatNumber, website } = body;
       if (!email || !password || !name || !role) {
         return NextResponse.json({ error: 'Campi obbligatori mancanti' }, { status: 400, headers: corsHeaders });
       }
@@ -142,6 +142,9 @@ export async function POST(request, { params }) {
         clinicName: role === 'clinic' ? clinicName : null,
         phone: phone || '',
         address: address || '',
+        city: city || '',
+        vatNumber: role === 'clinic' ? (vatNumber || '') : null,
+        website: role === 'clinic' ? (website || '') : null,
         createdAt: new Date().toISOString()
       };
 
@@ -150,6 +153,69 @@ export async function POST(request, { params }) {
       const { password: _, ...userWithoutPassword } = user;
       
       return NextResponse.json({ user: userWithoutPassword, token }, { headers: corsHeaders });
+    }
+
+    // Password Reset Request
+    if (path === 'auth/forgot-password') {
+      const { email } = body;
+      if (!email) {
+        return NextResponse.json({ error: 'Email richiesta' }, { status: 400, headers: corsHeaders });
+      }
+
+      const users = await getCollection('users');
+      const user = await users.findOne({ email });
+      
+      if (!user) {
+        // Don't reveal if user exists or not for security
+        return NextResponse.json({ success: true, message: 'Se l\'email esiste, riceverai un link per reimpostare la password.' }, { headers: corsHeaders });
+      }
+
+      // Generate reset token
+      const resetToken = uuidv4();
+      const resetExpiry = new Date(Date.now() + 3600000).toISOString(); // 1 hour
+      
+      await users.updateOne({ email }, { $set: { resetToken, resetExpiry } });
+
+      // Send email
+      const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL}?reset=${resetToken}`;
+      await sendEmail({
+        to: email,
+        subject: 'VetBuddy - Reimposta la tua password',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #FF6B6B;">🐾 VetBuddy</h2>
+            <p>Hai richiesto di reimpostare la tua password.</p>
+            <p>Clicca il link qui sotto per creare una nuova password:</p>
+            <a href="${resetLink}" style="display: inline-block; background: #FF6B6B; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 20px 0;">Reimposta Password</a>
+            <p style="color: #666; font-size: 14px;">Il link scadrà tra 1 ora.</p>
+            <p style="color: #666; font-size: 14px;">Se non hai richiesto questo reset, ignora questa email.</p>
+          </div>
+        `
+      });
+
+      return NextResponse.json({ success: true, message: 'Se l\'email esiste, riceverai un link per reimpostare la password.' }, { headers: corsHeaders });
+    }
+
+    // Password Reset Confirm
+    if (path === 'auth/reset-password') {
+      const { token, newPassword } = body;
+      if (!token || !newPassword) {
+        return NextResponse.json({ error: 'Token e nuova password richiesti' }, { status: 400, headers: corsHeaders });
+      }
+
+      const users = await getCollection('users');
+      const user = await users.findOne({ resetToken: token });
+      
+      if (!user || new Date(user.resetExpiry) < new Date()) {
+        return NextResponse.json({ error: 'Token non valido o scaduto' }, { status: 400, headers: corsHeaders });
+      }
+
+      await users.updateOne(
+        { resetToken: token },
+        { $set: { password: hashPassword(newPassword) }, $unset: { resetToken: '', resetExpiry: '' } }
+      );
+
+      return NextResponse.json({ success: true, message: 'Password aggiornata con successo' }, { headers: corsHeaders });
     }
 
     // Login
