@@ -482,21 +482,51 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
       }
 
-      const { name, role, email, phone } = body;
+      const { name, role, email, phone, canLogin, password } = body;
       const staff = await getCollection('staff');
       
       const member = {
         id: uuidv4(),
         clinicId: user.id,
+        clinicName: user.clinicName,
         name,
-        role, // 'vet', 'assistant', 'receptionist'
+        role, // 'vet', 'assistant', 'receptionist', 'admin'
         email,
         phone,
+        canLogin: canLogin || false,
+        password: canLogin && password ? hashPassword(password) : null,
+        permissions: role === 'admin' ? ['documents', 'invoices', 'reports', 'payments'] : 
+                     role === 'vet' ? ['visits', 'documents', 'patients', 'messages'] :
+                     role === 'assistant' ? ['visits', 'patients', 'messages'] :
+                     ['calendar', 'messages', 'owners'],
         createdAt: new Date().toISOString()
       };
 
+      // If canLogin, also create a user account for staff
+      if (canLogin && email && password) {
+        const users = await getCollection('users');
+        const existingUser = await users.findOne({ email });
+        if (existingUser) {
+          return NextResponse.json({ error: 'Email già registrata' }, { status: 400, headers: corsHeaders });
+        }
+        
+        await users.insertOne({
+          id: member.id,
+          email,
+          password: hashPassword(password),
+          name,
+          role: 'staff',
+          staffRole: role,
+          clinicId: user.id,
+          clinicName: user.clinicName,
+          permissions: member.permissions,
+          createdAt: new Date().toISOString()
+        });
+      }
+
       await staff.insertOne(member);
-      return NextResponse.json(member, { headers: corsHeaders });
+      const { password: _, ...memberWithoutPassword } = member;
+      return NextResponse.json(memberWithoutPassword, { headers: corsHeaders });
     }
 
     // Add pet
