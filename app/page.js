@@ -106,8 +106,8 @@ function LandingPage({ onLogin }) {
       <section className="pt-16 pb-20 px-4 bg-gradient-to-b from-white to-coral-50/30">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-6">
-            <MapPin className="h-4 w-4" />
-            <span className="font-medium">Pilot attivo a Milano e provincia</span>
+            <Zap className="h-4 w-4" />
+            <span className="font-medium">Beta Test attivo</span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Il gestionale veterinario<br /><span className="text-coral-500">che i tuoi clienti ameranno</span>
