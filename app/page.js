@@ -212,8 +212,12 @@ function LandingPage({ onLogin }) {
       </section>
 
       {/* Perché VetBuddy - Feature distintive */}
-      <section id="funzionalita" className="py-8 px-4 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-6xl mx-auto">
+      <section id="funzionalita" className="py-8 px-4 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-purple-300/20 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-green-300/20 rounded-full blur-2xl"></div>
+        
+        <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-6">
             <p className="text-coral-500 font-semibold mb-2">PERCHÉ VETBUDDY</p>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Le feature che ci distinguono</h2>
@@ -222,72 +226,72 @@ function LandingPage({ onLogin }) {
           
           <div className="grid md:grid-cols-2 gap-5 mb-6">
             {/* Feature 1 - Team Inbox */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-purple-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-purple-200/50 hover:bg-white/90 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0 animate-float" style={{animationDelay: '0s'}}>
-                  <Inbox className="h-7 w-7 text-purple-600" />
+                <div className="h-14 w-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg animate-float" style={{animationDelay: '0s'}}>
+                  <Inbox className="h-7 w-7 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-xl text-gray-900 mb-2">Team Inbox con assegnazione ticket</h3>
                   <p className="text-gray-600 mb-3">Una inbox condivisa per tutto lo staff. Assegna richieste, evita doppioni, traccia chi risponde. Niente messaggi persi.</p>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="text-purple-600 border-purple-300">Anti-doppioni</Badge>
-                    <Badge variant="outline" className="text-purple-600 border-purple-300">Assegnazione staff</Badge>
-                    <Badge variant="outline" className="text-purple-600 border-purple-300">Storico completo</Badge>
+                    <Badge variant="outline" className="text-purple-600 border-purple-300 bg-purple-50/50">Anti-doppioni</Badge>
+                    <Badge variant="outline" className="text-purple-600 border-purple-300 bg-purple-50/50">Assegnazione staff</Badge>
+                    <Badge variant="outline" className="text-purple-600 border-purple-300 bg-purple-50/50">Storico completo</Badge>
                   </div>
                 </div>
               </div>
             </div>
             
             {/* Feature 2 - Documenti automatici */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-green-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-green-200/50 hover:bg-white/90 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0 animate-float" style={{animationDelay: '0.5s'}}>
-                  <FileText className="h-7 w-7 text-green-600" />
+                <div className="h-14 w-14 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg animate-float" style={{animationDelay: '0.5s'}}>
+                  <FileText className="h-7 w-7 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-xl text-gray-900 mb-2">Documenti: upload e invio automatico</h3>
                   <p className="text-gray-600 mb-3">Carica PDF (referti, prescrizioni, fatture) e inviali automaticamente via email al proprietario. Tutto tracciato.</p>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="text-green-600 border-green-300">Upload PDF</Badge>
-                    <Badge variant="outline" className="text-green-600 border-green-300">Email automatica</Badge>
-                    <Badge variant="outline" className="text-green-600 border-green-300">Archivio clinico</Badge>
+                    <Badge variant="outline" className="text-green-600 border-green-300 bg-green-50/50">Upload PDF</Badge>
+                    <Badge variant="outline" className="text-green-600 border-green-300 bg-green-50/50">Email automatica</Badge>
+                    <Badge variant="outline" className="text-green-600 border-green-300 bg-green-50/50">Archivio clinico</Badge>
                   </div>
                 </div>
               </div>
             </div>
             
             {/* Feature 3 - Prenotazioni + Video */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-blue-200/50 hover:bg-white/90 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 animate-float" style={{animationDelay: '1s'}}>
-                  <CalendarCheck className="h-7 w-7 text-blue-600" />
+                <div className="h-14 w-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg animate-float" style={{animationDelay: '1s'}}>
+                  <CalendarCheck className="h-7 w-7 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-xl text-gray-900 mb-2">Prenotazioni + Video + Google Calendar</h3>
                   <p className="text-gray-600 mb-3">Agenda sincronizzata, video-consulti integrati, reminder automatici via email/SMS. I clienti prenotano 24/7.</p>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="text-blue-600 border-blue-300">Sync Google Calendar</Badge>
-                    <Badge variant="outline" className="text-blue-600 border-blue-300">Video-consulti</Badge>
-                    <Badge variant="outline" className="text-blue-600 border-blue-300">Reminder auto</Badge>
+                    <Badge variant="outline" className="text-blue-600 border-blue-300 bg-blue-50/50">Sync Google Calendar</Badge>
+                    <Badge variant="outline" className="text-blue-600 border-blue-300 bg-blue-50/50">Video-consulti</Badge>
+                    <Badge variant="outline" className="text-blue-600 border-blue-300 bg-blue-50/50">Reminder auto</Badge>
                   </div>
                 </div>
               </div>
             </div>
             
             {/* Feature 4 - Reportistica */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-amber-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-amber-200/50 hover:bg-white/90 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 animate-float" style={{animationDelay: '1.5s'}}>
-                  <TrendingUp className="h-7 w-7 text-amber-600" />
+                <div className="h-14 w-14 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg animate-float" style={{animationDelay: '1.5s'}}>
+                  <TrendingUp className="h-7 w-7 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-xl text-gray-900 mb-2">Reportistica clinica completa</h3>
                   <p className="text-gray-600 mb-3">Dashboard con metriche chiave: clienti attivi, fatturato, tempi di risposta, no-show. Prendi decisioni basate sui dati.</p>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="text-amber-600 border-amber-300">Analytics</Badge>
-                    <Badge variant="outline" className="text-amber-600 border-amber-300">Report no-show</Badge>
-                    <Badge variant="outline" className="text-amber-600 border-amber-300">Trend fatturato</Badge>
+                    <Badge variant="outline" className="text-amber-600 border-amber-300 bg-amber-50/50">Analytics</Badge>
+                    <Badge variant="outline" className="text-amber-600 border-amber-300 bg-amber-50/50">Report no-show</Badge>
+                    <Badge variant="outline" className="text-amber-600 border-amber-300 bg-amber-50/50">Trend fatturato</Badge>
                   </div>
                 </div>
               </div>
