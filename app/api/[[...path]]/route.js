@@ -565,6 +565,175 @@ export async function POST(request, { params }) {
       return NextResponse.json(result, { headers: corsHeaders });
     }
 
+    // Create Stripe checkout session for subscription
+    if (path === 'stripe/checkout/subscription') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Solo le cliniche possono sottoscrivere abbonamenti' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { planId, originUrl } = body;
+      const plan = SUBSCRIPTION_PLANS[planId];
+      
+      if (!plan || plan.price === 0) {
+        return NextResponse.json({ error: 'Piano non valido o gratuito' }, { status: 400, headers: corsHeaders });
+      }
+
+      try {
+        const successUrl = `${originUrl}/clinic/dashboard?subscription=success&session_id={CHECKOUT_SESSION_ID}`;
+        const cancelUrl = `${originUrl}/clinic/dashboard?subscription=cancelled`;
+
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ['card'],
+          line_items: [{
+            price_data: {
+              currency: 'eur',
+              product_data: {
+                name: `VetBuddy ${plan.name}`,
+                description: `Abbonamento mensile ${plan.name}`,
+              },
+              unit_amount: Math.round(plan.price * 100), // Convert to cents
+              recurring: { interval: 'month' },
+            },
+            quantity: 1,
+          }],
+          mode: 'subscription',
+          success_url: successUrl,
+          cancel_url: cancelUrl,
+          customer_email: user.email,
+          metadata: {
+            userId: user.id,
+            planId: planId,
+            type: 'subscription'
+          }
+        });
+
+        // Save transaction
+        const transactions = await getCollection('payment_transactions');
+        await transactions.insertOne({
+          id: uuidv4(),
+          sessionId: session.id,
+          userId: user.id,
+          email: user.email,
+          type: 'subscription',
+          planId: planId,
+          amount: plan.price,
+          currency: 'eur',
+          status: 'pending',
+          paymentStatus: 'unpaid',
+          createdAt: new Date().toISOString()
+        });
+
+        return NextResponse.json({ url: session.url, sessionId: session.id }, { headers: corsHeaders });
+      } catch (error) {
+        return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
+      }
+    }
+
+    // Save clinic Stripe settings
+    if (path === 'clinic/stripe-settings') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { stripePublishableKey, stripeSecretKey } = body;
+      const users = await getCollection('users');
+      
+      await users.updateOne(
+        { id: user.id },
+        { $set: { stripePublishableKey, stripeSecretKey, updatedAt: new Date().toISOString() } }
+      );
+
+      return NextResponse.json({ success: true }, { headers: corsHeaders });
+    }
+
+    // Create payment session for visit (owner pays clinic)
+    if (path === 'stripe/checkout/visit') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { appointmentId, clinicId, originUrl } = body;
+      
+      // Get clinic's Stripe keys
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: clinicId, role: 'clinic' });
+      
+      if (!clinic?.stripeSecretKey) {
+        return NextResponse.json({ error: 'La clinica non ha configurato i pagamenti online' }, { status: 400, headers: corsHeaders });
+      }
+
+      // Get appointment details
+      const appointments = await getCollection('appointments');
+      const appointment = await appointments.findOne({ id: appointmentId });
+      
+      if (!appointment || !appointment.price) {
+        return NextResponse.json({ error: 'Appuntamento non trovato o senza prezzo' }, { status: 400, headers: corsHeaders });
+      }
+
+      try {
+        // Use clinic's Stripe account
+        const clinicStripe = new Stripe(clinic.stripeSecretKey);
+        
+        const successUrl = `${originUrl}/owner/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`;
+        const cancelUrl = `${originUrl}/owner/dashboard?payment=cancelled`;
+
+        const session = await clinicStripe.checkout.sessions.create({
+          payment_method_types: ['card'],
+          line_items: [{
+            price_data: {
+              currency: 'eur',
+              product_data: {
+                name: appointment.reason || 'Visita veterinaria',
+                description: `${appointment.petName} - ${appointment.date} ${appointment.time}`,
+              },
+              unit_amount: Math.round(appointment.price * 100),
+            },
+            quantity: 1,
+          }],
+          mode: 'payment',
+          success_url: successUrl,
+          cancel_url: cancelUrl,
+          customer_email: user.email,
+          metadata: {
+            appointmentId: appointmentId,
+            clinicId: clinicId,
+            ownerId: user.id,
+            type: 'visit'
+          }
+        });
+
+        // Save transaction
+        const transactions = await getCollection('payment_transactions');
+        await transactions.insertOne({
+          id: uuidv4(),
+          sessionId: session.id,
+          appointmentId: appointmentId,
+          clinicId: clinicId,
+          ownerId: user.id,
+          email: user.email,
+          type: 'visit',
+          amount: appointment.price,
+          currency: 'eur',
+          status: 'pending',
+          paymentStatus: 'unpaid',
+          createdAt: new Date().toISOString()
+        });
+
+        // Update appointment with payment session
+        await appointments.updateOne(
+          { id: appointmentId },
+          { $set: { paymentSessionId: session.id, paymentStatus: 'pending' } }
+        );
+
+        return NextResponse.json({ url: session.url, sessionId: session.id }, { headers: corsHeaders });
+      } catch (error) {
+        return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
+      }
+    }
+
     // Register owner to clinic
     if (path === 'owners') {
       const user = getUserFromRequest(request);
