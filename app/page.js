@@ -3142,167 +3142,165 @@ function ClinicStaff({ staff, onRefresh, onNavigate }) {
 }
 
 // Clinic Services - Servizi offerti
-function ClinicServices({ onNavigate }) {
-  const [showDialog, setShowDialog] = useState(false);
-  const [services, setServices] = useState([
-    { id: 1, name: 'Visita generale', description: 'Check-up completo dello stato di salute', duration: 30, price: 50, active: true, type: 'in_sede' },
-    { id: 2, name: 'Video-consulto', description: 'Consulenza veterinaria online', duration: 20, price: 35, active: true, type: 'online' },
-    { id: 3, name: 'Vaccinazione', description: 'Somministrazione vaccini e richiami', duration: 15, price: 40, active: true, type: 'in_sede' },
-    { id: 4, name: 'Controllo post-operatorio', description: 'Visita di controllo dopo intervento chirurgico', duration: 20, price: 30, active: true, type: 'in_sede' },
-    { id: 5, name: 'Esami del sangue', description: 'Prelievo e analisi ematiche', duration: 20, price: 60, active: true, type: 'in_sede' },
-    { id: 6, name: 'Ecografia', description: 'Esame ecografico addominale o cardiaco', duration: 30, price: 80, active: true, type: 'in_sede' },
-    { id: 7, name: 'Pulizia dentale', description: 'Detartrasi e igiene orale', duration: 45, price: 120, active: false, type: 'in_sede' },
-    { id: 8, name: 'Consulto specialistico', description: 'Video-consulto con specialista', duration: 30, price: 60, active: true, type: 'online' },
-  ]);
-  const [formData, setFormData] = useState({ name: '', description: '', duration: 30, price: 0, type: 'in_sede' });
+function ClinicServices({ onNavigate, user }) {
+  const [serviceCatalog, setServiceCatalog] = useState({});
+  const [selectedServices, setSelectedServices] = useState(user?.services || []);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('all');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setServices([...services, { ...formData, id: Date.now(), active: true }]);
-    setShowDialog(false);
-    setFormData({ name: '', description: '', duration: 30, price: 0, type: 'in_sede' });
+  useEffect(() => {
+    loadServiceCatalog();
+  }, []);
+
+  const loadServiceCatalog = async () => {
+    try {
+      const catalog = await api.get('services');
+      setServiceCatalog(catalog);
+    } catch (error) {
+      console.error('Error loading services:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const toggleService = (id) => {
-    setServices(services.map(s => s.id === id ? { ...s, active: !s.active } : s));
+  const toggleService = (serviceId) => {
+    setSelectedServices(prev => 
+      prev.includes(serviceId) 
+        ? prev.filter(id => id !== serviceId)
+        : [...prev, serviceId]
+    );
   };
 
-  const inSedeServices = services.filter(s => s.type === 'in_sede');
-  const onlineServices = services.filter(s => s.type === 'online');
+  const saveServices = async () => {
+    setSaving(true);
+    try {
+      await api.put('clinic/services', { services: selectedServices });
+      alert('✅ Servizi salvati con successo!');
+    } catch (error) {
+      alert('❌ Errore nel salvataggio: ' + error.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const selectAll = (categoryId) => {
+    const category = serviceCatalog[categoryId];
+    if (!category) return;
+    const categoryServiceIds = category.services.map(s => s.id);
+    const allSelected = categoryServiceIds.every(id => selectedServices.includes(id));
+    if (allSelected) {
+      setSelectedServices(prev => prev.filter(id => !categoryServiceIds.includes(id)));
+    } else {
+      setSelectedServices(prev => [...new Set([...prev, ...categoryServiceIds])]);
+    }
+  };
+
+  const getCategoryIcon = (iconName) => {
+    const icons = { Stethoscope, UserCog: Settings, Scissors, Search, Plus };
+    return icons[iconName] || Stethoscope;
+  };
+
+  if (loading) {
+    return <div className="flex items-center justify-center p-12"><div className="text-center"><Stethoscope className="h-8 w-8 text-coral-500 mx-auto mb-2 animate-pulse" /><p className="text-gray-500">Caricamento servizi...</p></div></div>;
+  }
+
+  const allServices = Object.entries(serviceCatalog).flatMap(([catId, cat]) => 
+    cat.services.map(s => ({ ...s, categoryId: catId, categoryName: cat.name }))
+  );
+
+  const filteredServices = activeCategory === 'all' 
+    ? allServices 
+    : serviceCatalog[activeCategory]?.services.map(s => ({ ...s, categoryId: activeCategory, categoryName: serviceCatalog[activeCategory].name })) || [];
 
   return (
     <div>
       {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Servizi offerti</h2>
-          <p className="text-gray-500 text-sm">Configura i servizi che offri ai clienti</p>
+          <h2 className="text-2xl font-bold text-gray-800">🏥 Servizi offerti</h2>
+          <p className="text-gray-500 text-sm">Seleziona i servizi che la tua clinica offre ai clienti</p>
         </div>
-        <Dialog open={showDialog} onOpenChange={setShowDialog}>
-          <DialogTrigger asChild>
-            <Button className="bg-coral-500 hover:bg-coral-600"><Plus className="h-4 w-4 mr-2" />Nuovo servizio</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Nuovo servizio</DialogTitle></DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label>Nome servizio</Label>
-                <Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="Es: Visita dermatologica" required />
-              </div>
-              <div>
-                <Label>Descrizione</Label>
-                <Textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} rows={2} />
-              </div>
-              <div>
-                <Label>Tipologia</Label>
-                <Select value={formData.type} onValueChange={(v) => setFormData({...formData, type: v})}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="in_sede">In sede</SelectItem>
-                    <SelectItem value="online">Online (Video-consulto)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Durata (minuti)</Label>
-                  <Input type="number" value={formData.duration} onChange={(e) => setFormData({...formData, duration: parseInt(e.target.value)})} />
-                </div>
-                <div>
-                  <Label>Prezzo (€)</Label>
-                  <Input type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: parseInt(e.target.value)})} />
-                </div>
-              </div>
-              <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">Aggiungi servizio</Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <Button onClick={saveServices} disabled={saving} className="bg-coral-500 hover:bg-coral-600">
+          {saving ? <><Clock className="h-4 w-4 mr-2 animate-spin" />Salvataggio...</> : <><Check className="h-4 w-4 mr-2" />Salva servizi</>}
+        </Button>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <Card>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <Card className="bg-gradient-to-br from-coral-50 to-white border-coral-200">
           <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-coral-500">{services.filter(s => s.active).length}</p>
+            <p className="text-3xl font-bold text-coral-500">{selectedServices.length}</p>
             <p className="text-sm text-gray-500">Servizi attivi</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-blue-500">{onlineServices.filter(s => s.active).length}</p>
-            <p className="text-sm text-gray-500">Video-consulti</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-green-500">{inSedeServices.filter(s => s.active).length}</p>
-            <p className="text-sm text-gray-500">In sede</p>
-          </CardContent>
-        </Card>
+        {Object.entries(serviceCatalog).slice(0, 3).map(([catId, cat]) => {
+          const selectedInCat = cat.services.filter(s => selectedServices.includes(s.id)).length;
+          return (
+            <Card key={catId}>
+              <CardContent className="p-4 text-center">
+                <p className="text-2xl font-bold text-blue-500">{selectedInCat}/{cat.services.length}</p>
+                <p className="text-sm text-gray-500 truncate">{cat.name}</p>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
-      <Tabs defaultValue="tutti">
-        <TabsList>
-          <TabsTrigger value="tutti">Tutti ({services.length})</TabsTrigger>
-          <TabsTrigger value="in_sede">In sede ({inSedeServices.length})</TabsTrigger>
-          <TabsTrigger value="online">Online ({onlineServices.length})</TabsTrigger>
-        </TabsList>
+      {/* Category Tabs */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        <Button variant={activeCategory === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setActiveCategory('all')} className={activeCategory === 'all' ? 'bg-coral-500' : ''}>
+          Tutti ({allServices.length})
+        </Button>
+        {Object.entries(serviceCatalog).map(([catId, cat]) => {
+          const Icon = getCategoryIcon(cat.icon);
+          const selectedCount = cat.services.filter(s => selectedServices.includes(s.id)).length;
+          return (
+            <Button key={catId} variant={activeCategory === catId ? 'default' : 'outline'} size="sm" onClick={() => setActiveCategory(catId)} className={activeCategory === catId ? 'bg-coral-500' : ''}>
+              <Icon className="h-4 w-4 mr-1" />{cat.name} ({selectedCount}/{cat.services.length})
+            </Button>
+          );
+        })}
+      </div>
 
-        <TabsContent value="tutti" className="mt-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            {services.map((service) => (
-              <ServiceCard key={service.id} service={service} onToggle={toggleService} />
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="in_sede" className="mt-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            {inSedeServices.map((service) => (
-              <ServiceCard key={service.id} service={service} onToggle={toggleService} />
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="online" className="mt-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            {onlineServices.map((service) => (
-              <ServiceCard key={service.id} service={service} onToggle={toggleService} />
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
-}
-
-function ServiceCard({ service, onToggle }) {
-  return (
-    <Card className={!service.active ? 'opacity-60' : ''}>
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3">
-            <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${service.type === 'online' ? 'bg-blue-100' : 'bg-coral-100'}`}>
-              {service.type === 'online' ? <Video className="h-5 w-5 text-blue-600" /> : <Stethoscope className="h-5 w-5 text-coral-600" />}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <p className="font-medium">{service.name}</p>
-                <Badge variant="outline" className={service.type === 'online' ? 'text-blue-600 border-blue-300' : 'text-coral-600 border-coral-300'}>
-                  {service.type === 'online' ? 'Online' : 'In sede'}
-                </Badge>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">{service.description}</p>
-              <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{service.duration} min</span>
-                <span className="font-medium text-coral-600">€{service.price}</span>
-              </div>
-            </div>
-          </div>
-          <Switch checked={service.active} onCheckedChange={() => onToggle(service.id)} />
+      {/* Services Grid */}
+      {activeCategory !== 'all' && (
+        <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
+          <span className="text-sm text-gray-600">Seleziona tutti i servizi di questa categoria</span>
+          <Button variant="outline" size="sm" onClick={() => selectAll(activeCategory)}>
+            {serviceCatalog[activeCategory]?.services.every(s => selectedServices.includes(s.id)) ? 'Deseleziona tutti' : 'Seleziona tutti'}
+          </Button>
         </div>
-      </CardContent>
-    </Card>
+      )}
+
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredServices.map((service) => (
+          <Card key={service.id} className={`cursor-pointer transition-all hover:shadow-md ${selectedServices.includes(service.id) ? 'ring-2 ring-coral-500 bg-coral-50' : 'hover:border-gray-300'}`} onClick={() => toggleService(service.id)}>
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge variant="outline" className="text-xs">{service.categoryName}</Badge>
+                  </div>
+                  <p className="font-medium text-gray-900">{service.name}</p>
+                  <p className="text-sm text-gray-500 mt-1 line-clamp-2">{service.description}</p>
+                </div>
+                <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ml-3 ${selectedServices.includes(service.id) ? 'bg-coral-500 border-coral-500' : 'border-gray-300'}`}>
+                  {selectedServices.includes(service.id) && <Check className="h-4 w-4 text-white" />}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredServices.length === 0 && (
+        <div className="text-center py-12">
+          <Stethoscope className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-500">Nessun servizio in questa categoria</p>
+        </div>
+      )}
+    </div>
   );
 }
 
