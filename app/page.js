@@ -935,7 +935,7 @@ function ClinicDashboard({ user, onLogout }) {
 
       {/* Main */}
       <main className="flex-1 p-6 overflow-auto">
-        {activeTab === 'dashboard' && <ClinicControlRoom appointments={appointments} documents={documents} messages={messages} owners={owners} setupProgress={setupProgress} onRefresh={loadData} />}
+        {activeTab === 'dashboard' && <ClinicControlRoom appointments={appointments} documents={documents} messages={messages} owners={owners} setupProgress={setupProgress} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'agenda' && <ClinicAgenda appointments={appointments} staff={staff} owners={owners} pets={pets} onRefresh={loadData} />}
         {activeTab === 'inbox' && <ClinicInbox messages={messages} owners={owners} pets={pets} onRefresh={loadData} />}
         {activeTab === 'documents' && <ClinicDocuments documents={documents} owners={owners} pets={pets} onRefresh={loadData} />}
@@ -952,7 +952,7 @@ function ClinicDashboard({ user, onLogout }) {
 }
 
 // ==================== CONTROL ROOM DASHBOARD ====================
-function ClinicControlRoom({ appointments, documents, messages, owners, setupProgress, onRefresh }) {
+function ClinicControlRoom({ appointments, documents, messages, owners, setupProgress, onRefresh, onNavigate }) {
   const today = new Date().toISOString().split('T')[0];
   const todayAppts = appointments.filter(a => a.date === today);
   const videoAppts = todayAppts.filter(a => a.type === 'videoconsulto');
