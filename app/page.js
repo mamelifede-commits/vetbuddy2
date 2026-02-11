@@ -1228,7 +1228,7 @@ function SetupStep({ icon: Icon, label, desc, done, onClick }) {
 }
 
 // KPI Card Component
-function KPICard({ icon: Icon, label, value, color, highlight }) {
+function KPICard({ icon: Icon, label, value, color, highlight, onClick }) {
   const colors = {
     coral: 'bg-coral-100 text-coral-600',
     blue: 'bg-blue-100 text-blue-600',
@@ -1236,7 +1236,7 @@ function KPICard({ icon: Icon, label, value, color, highlight }) {
     green: 'bg-green-100 text-green-600',
   };
   return (
-    <Card>
+    <Card className={onClick ? 'cursor-pointer hover:shadow-md transition' : ''} onClick={onClick}>
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
           <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${colors[color]}`}>
