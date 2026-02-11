@@ -4799,7 +4799,7 @@ function ClinicSettings({ user, onNavigate }) {
               <Star className="h-5 w-5 text-amber-500" />Abbonamento VetBuddy
               <Badge className="bg-amber-500 text-white">Pilot Milano</Badge>
             </CardTitle>
-            <CardDescription>Accesso su invito — 6 mesi gratuiti per cliniche selezionate</CardDescription>
+            <CardDescription>Accesso su invito — 6 mesi gratuiti per cliniche selezionate nel Pilot</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4">
@@ -4823,8 +4823,9 @@ function ClinicSettings({ user, onNavigate }) {
                 <div className="mt-2">
                   <span className="text-2xl font-bold text-coral-500">€0</span>
                   <span className="text-lg text-gray-400 line-through ml-2">€129/mese</span>
+                  <span className="text-xs text-gray-400 ml-1">+IVA</span>
                 </div>
-                <p className="text-xs text-amber-600 font-semibold">6 mesi gratuiti su invito</p>
+                <p className="text-xs text-amber-600 font-semibold">6 mesi gratuiti nel Pilot</p>
                 <ul className="text-sm text-gray-600 mt-3 space-y-1">
                   <li>• Team Inbox + ticket</li>
                   <li>• Documenti + email auto</li>
@@ -4840,7 +4841,10 @@ function ClinicSettings({ user, onNavigate }) {
               {/* Enterprise */}
               <div className="border rounded-lg p-4 bg-white">
                 <h3 className="font-semibold">Enterprise</h3>
-                <p className="text-2xl font-bold text-coral-500 mt-2">Custom</p>
+                <div className="mt-2">
+                  <span className="text-2xl font-bold text-coral-500">Custom</span>
+                  <span className="text-xs text-gray-400 ml-1">+IVA</span>
+                </div>
                 <p className="text-xs text-gray-500">Gruppi e catene</p>
                 <ul className="text-sm text-gray-600 mt-3 space-y-1">
                   <li>• Multi-sede illimitate</li>
@@ -4851,7 +4855,7 @@ function ClinicSettings({ user, onNavigate }) {
                 <Button variant="outline" className="w-full mt-2">Contattaci</Button>
               </div>
             </div>
-            <p className="text-xs text-gray-500 text-center mt-4">Prezzi IVA esclusa. Gli abbonamenti vengono fatturati da VetBuddy.</p>
+            <p className="text-xs text-gray-500 text-center mt-4">Tutti i prezzi sono IVA esclusa. Gli abbonamenti vengono fatturati da VetBuddy.</p>
           </CardContent>
         </Card>
 
