@@ -527,7 +527,7 @@ function LandingPage({ onLogin }) {
       {/* COSA CI RENDE UNICI - Nuova sezione */}
       <section className="py-12 px-4 bg-gradient-to-br from-coral-50 via-white to-blue-50">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-4">
               <Zap className="h-4 w-4" />
               <span className="font-medium">Cosa ci rende diversi</span>
