@@ -1037,6 +1037,7 @@ function ClinicControlRoom({ appointments, documents, messages, owners, setupPro
               items={[
                 { label: 'Documenti pre-visita', count: docsToReview, action: 'Consulta' }
               ]}
+              onClick={() => onNavigate('documents')}
             />
             
             {/* Step 2: Visita */}
@@ -1049,6 +1050,7 @@ function ClinicControlRoom({ appointments, documents, messages, owners, setupPro
                 { label: 'Video-visite oggi', count: videoAppts.length, action: 'Avvia', highlight: true }
               ]}
               nextVideo={videoAppts[0]}
+              onClick={() => onNavigate('agenda')}
             />
             
             {/* Step 3: Concludi */}
@@ -1061,6 +1063,7 @@ function ClinicControlRoom({ appointments, documents, messages, owners, setupPro
                 { label: 'Follow-up da fare', count: followUps },
                 { label: 'Documenti da inviare', count: docsToSend, action: 'Invia' }
               ]}
+              onClick={() => onNavigate('documents')}
             />
           </div>
 
