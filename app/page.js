@@ -527,14 +527,14 @@ function LandingPage({ onLogin }) {
       <section className="py-20 px-4 bg-gradient-to-r from-coral-500 to-orange-500">
         <div className="max-w-3xl mx-auto text-center text-white">
           <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full mb-6">
-            <MapPin className="h-4 w-4" />
-            <span className="font-medium">Pilot Milano 2025</span>
+            <Zap className="h-4 w-4" />
+            <span className="font-medium">Beta Test Attivo</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">La tua clinica merita di più</h2>
-          <p className="text-coral-100 mb-8 text-lg">Meno burocrazia, più tempo per curare. Unisciti alle prime 20 cliniche a Milano.</p>
+          <p className="text-coral-100 mb-8 text-lg">Meno burocrazia, più tempo per curare. Prova VetBuddy gratis e dacci il tuo feedback.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white text-coral-500 hover:bg-coral-50 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <Building2 className="h-5 w-5 mr-2" />Candidati al Pilot
+              <Building2 className="h-5 w-5 mr-2" />Prova gratis
             </Button>
             <Button size="lg" className="bg-white/20 text-white border-2 border-white hover:bg-white/30 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
               <PawPrint className="h-5 w-5 mr-2" />Sono un proprietario
@@ -549,9 +549,11 @@ function LandingPage({ onLogin }) {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
             <div className="flex items-center gap-2"><VetBuddyLogo size={32} /><span className="font-bold text-xl">VetBuddy</span></div>
             <div className="flex items-center gap-4 text-sm text-gray-400">
-              <span>🏙️ Pilot attivo a Milano</span>
+              <span>🧪 Beta Test attivo</span>
               <span>•</span>
               <span>🇮🇹 Made in Italy</span>
+              <span>•</span>
+              <a href="https://www.vetbuddy.it" className="hover:text-white">www.vetbuddy.it</a>
             </div>
           </div>
           <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -560,6 +562,7 @@ function LandingPage({ onLogin }) {
               <a href="#" className="hover:text-white">Privacy Policy</a>
               <a href="#" className="hover:text-white">Termini di Servizio</a>
               <a href="#" className="hover:text-white">GDPR</a>
+              <a href="mailto:info@vetbuddy.it" className="hover:text-white">info@vetbuddy.it</a>
             </div>
           </div>
         </div>
