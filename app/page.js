@@ -1428,6 +1428,330 @@ function ClinicTemplates() {
   return <div><div className="mb-6"><h2 className="text-2xl font-bold">Template</h2><p className="text-gray-500 text-sm">Messaggi, email e reminder automatici</p></div><Tabs defaultValue="tutti"><TabsList><TabsTrigger value="tutti">Tutti</TabsTrigger><TabsTrigger value="email">Email</TabsTrigger><TabsTrigger value="reminder">Reminder</TabsTrigger></TabsList><TabsContent value="tutti" className="mt-4"><div className="space-y-3">{templates.map((t) => <Card key={t.id}><CardContent className="p-4"><div className="flex items-center justify-between"><div className="flex items-center gap-4"><div className="h-10 w-10 bg-coral-100 rounded-lg flex items-center justify-center">{t.type === 'email' ? <Mail className="h-5 w-5 text-coral-600" /> : <Bell className="h-5 w-5 text-coral-600" />}</div><div><p className="font-medium">{t.name}</p><p className="text-sm text-gray-500">Variabili: {t.vars.map(v => `{{${v}}}`).join(', ')}</p></div></div><Button variant="outline" size="sm">Modifica</Button></div></CardContent></Card>)}</div></TabsContent></Tabs></div>;
 }
 
+// ==================== CLINIC REPORTS ====================
+function ClinicReports({ appointments, documents, messages, owners }) {
+  const [activeTab, setActiveTab] = useState('overview');
+  
+  // Calculate statistics
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+  const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+  
+  // Filter by date helper
+  const filterByMonth = (items, dateField, month, year) => 
+    items.filter(item => {
+      const d = new Date(item[dateField]);
+      return d.getMonth() === month && d.getFullYear() === year;
+    });
+  
+  // Current month stats
+  const monthlyAppts = filterByMonth(appointments, 'date', currentMonth, currentYear);
+  const lastMonthAppts = filterByMonth(appointments, 'date', lastMonth, lastMonthYear);
+  const monthlyDocs = filterByMonth(documents, 'createdAt', currentMonth, currentYear);
+  const monthlyOwners = filterByMonth(owners || [], 'createdAt', currentMonth, currentYear);
+  
+  // Video vs In-person
+  const videoAppts = monthlyAppts.filter(a => a.type === 'videoconsulto');
+  const inPersonAppts = monthlyAppts.filter(a => a.type !== 'videoconsulto');
+  
+  // Revenue
+  const monthlyRevenue = monthlyAppts.reduce((sum, a) => sum + (a.price || 0), 0);
+  const lastMonthRevenue = lastMonthAppts.reduce((sum, a) => sum + (a.price || 0), 0);
+  
+  // Documents stats
+  const docsSent = documents.filter(d => d.emailSent).length;
+  const docsDownloaded = documents.filter(d => d.downloaded).length;
+  const openRate = docsSent > 0 ? Math.round((docsDownloaded / docsSent) * 100) : 0;
+  
+  // Messages stats
+  const closedTickets = messages.filter(m => m.status === 'closed').length;
+  const openTickets = messages.filter(m => m.status !== 'closed').length;
+  
+  // Export CSV function
+  const exportCSV = (data, filename) => {
+    if (!data || data.length === 0) { alert('Nessun dato da esportare'); return; }
+    const headers = Object.keys(data[0]).join(',');
+    const rows = data.map(item => Object.values(item).map(v => `"${v || ''}"`).join(',')).join('\n');
+    const csv = `${headers}\n${rows}`;
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}.csv`;
+    a.click();
+  };
+
+  const StatCard = ({ title, value, subtitle, icon: Icon, color = 'coral', trend }) => (
+    <Card>
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-sm text-gray-500">{title}</p>
+            <p className="text-3xl font-bold" style={{color: color === 'coral' ? '#FF6B6B' : color === 'blue' ? '#3B82F6' : color === 'green' ? '#22C55E' : color === 'emerald' ? '#10B981' : color === 'amber' ? '#F59E0B' : '#EF4444'}}>{value}</p>
+            {subtitle && <p className="text-xs text-gray-400 mt-1">{subtitle}</p>}
+          </div>
+          <div className="h-10 w-10 rounded-lg flex items-center justify-center" style={{backgroundColor: color === 'coral' ? '#FEE2E2' : color === 'blue' ? '#DBEAFE' : color === 'green' ? '#DCFCE7' : color === 'emerald' ? '#D1FAE5' : color === 'amber' ? '#FEF3C7' : '#FEE2E2'}}>
+            <Icon className="h-5 w-5" style={{color: color === 'coral' ? '#FF6B6B' : color === 'blue' ? '#3B82F6' : color === 'green' ? '#22C55E' : color === 'emerald' ? '#10B981' : color === 'amber' ? '#F59E0B' : '#EF4444'}} />
+          </div>
+        </div>
+        {trend !== undefined && (
+          <div className={`flex items-center gap-1 mt-2 text-xs ${trend >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <TrendingUp className={`h-3 w-3 ${trend < 0 ? 'rotate-180' : ''}`} />
+            {Math.abs(trend)}% vs mese scorso
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Report & Analytics</h2>
+          <p className="text-gray-500 text-sm">Monitora le performance della tua clinica</p>
+        </div>
+        <Button variant="outline" onClick={() => exportCSV(appointments, 'appuntamenti')}>
+          <Download className="h-4 w-4 mr-2" />Export CSV
+        </Button>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList>
+          <TabsTrigger value="overview">Panoramica</TabsTrigger>
+          <TabsTrigger value="clients">Clienti</TabsTrigger>
+          <TabsTrigger value="appointments">Appuntamenti</TabsTrigger>
+          <TabsTrigger value="inbox">Inbox</TabsTrigger>
+          <TabsTrigger value="documents">Documenti</TabsTrigger>
+          <TabsTrigger value="payments">Pagamenti</TabsTrigger>
+        </TabsList>
+
+        {/* OVERVIEW */}
+        <TabsContent value="overview" className="mt-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <StatCard title="Nuovi clienti" value={monthlyOwners.length} subtitle="questo mese" icon={User} color="blue" />
+            <StatCard title="Appuntamenti" value={monthlyAppts.length} subtitle="questo mese" icon={Calendar} color="coral" 
+              trend={lastMonthAppts.length > 0 ? Math.round(((monthlyAppts.length - lastMonthAppts.length) / lastMonthAppts.length) * 100) : 0} />
+            <StatCard title="Documenti inviati" value={monthlyDocs.length} subtitle="questo mese" icon={FileText} color="green" />
+            <StatCard title="Incassi tracciati" value={`€${monthlyRevenue}`} subtitle="questo mese" icon={Euro} color="emerald"
+              trend={lastMonthRevenue > 0 ? Math.round(((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue) * 100) : 0} />
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Distribuzione appuntamenti</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="h-3 w-3 rounded-full bg-coral-500"></div>
+                      <span className="text-sm">In presenza</span>
+                    </div>
+                    <span className="font-medium">{inPersonAppts.length}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="h-3 w-3 rounded-full bg-blue-500"></div>
+                      <span className="text-sm">Video consulto</span>
+                    </div>
+                    <span className="font-medium">{videoAppts.length}</span>
+                  </div>
+                  <Progress value={monthlyAppts.length > 0 ? (inPersonAppts.length / monthlyAppts.length) * 100 : 0} className="h-2" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Documenti - Tasso apertura</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-4">
+                  <p className="text-4xl font-bold text-green-600">{openRate}%</p>
+                  <p className="text-sm text-gray-500 mt-1">dei documenti inviati sono stati scaricati</p>
+                  <div className="flex justify-center gap-8 mt-4 text-sm">
+                    <div><span className="font-medium text-gray-800">{docsSent}</span> <span className="text-gray-500">inviati</span></div>
+                    <div><span className="font-medium text-gray-800">{docsDownloaded}</span> <span className="text-gray-500">scaricati</span></div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* CLIENTS */}
+        <TabsContent value="clients" className="mt-6">
+          <div className="grid md:grid-cols-3 gap-4 mb-6">
+            <StatCard title="Nuovi clienti" value={monthlyOwners.length} subtitle="questo mese" icon={User} color="blue" />
+            <StatCard title="Clienti attivi" value={(owners || []).length} subtitle="totale" icon={Users} color="green" />
+            <StatCard title="Tasso ritorno" value="--%" subtitle="da calcolare" icon={RefreshCw} color="amber" />
+          </div>
+          <Card>
+            <CardHeader>
+              <div className="flex justify-between items-center">
+                <CardTitle>Lista clienti</CardTitle>
+                <Button variant="outline" size="sm" onClick={() => exportCSV(owners || [], 'clienti')}>
+                  <Download className="h-4 w-4 mr-1" />Export
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {(owners || []).length === 0 ? (
+                <p className="text-center py-8 text-gray-500">Nessun cliente registrato</p>
+              ) : (
+                <div className="space-y-2">
+                  {(owners || []).slice(0, 10).map((owner, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                          <User className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium">{owner.name}</p>
+                          <p className="text-sm text-gray-500">{owner.email}</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-400">{owner.createdAt ? new Date(owner.createdAt).toLocaleDateString() : '-'}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* APPOINTMENTS */}
+        <TabsContent value="appointments" className="mt-6">
+          <div className="grid md:grid-cols-4 gap-4 mb-6">
+            <StatCard title="Totale" value={monthlyAppts.length} subtitle="questo mese" icon={Calendar} color="coral" />
+            <StatCard title="In presenza" value={inPersonAppts.length} icon={Stethoscope} color="coral" />
+            <StatCard title="Video consulto" value={videoAppts.length} icon={Video} color="blue" />
+            <StatCard title="No-show" value="0" subtitle="cancellazioni" icon={X} color="red" />
+          </div>
+          <Card>
+            <CardHeader>
+              <div className="flex justify-between items-center">
+                <CardTitle>Storico appuntamenti</CardTitle>
+                <Button variant="outline" size="sm" onClick={() => exportCSV(appointments, 'appuntamenti')}>
+                  <Download className="h-4 w-4 mr-1" />Export
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {appointments.length === 0 ? (
+                <p className="text-center py-8 text-gray-500">Nessun appuntamento</p>
+              ) : (
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {appointments.slice(0, 20).map((appt, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className={`h-10 w-10 rounded-full flex items-center justify-center ${appt.type === 'videoconsulto' ? 'bg-blue-100' : 'bg-coral-100'}`}>
+                          {appt.type === 'videoconsulto' ? <Video className="h-5 w-5 text-blue-600" /> : <PawPrint className="h-5 w-5 text-coral-600" />}
+                        </div>
+                        <div>
+                          <p className="font-medium">{appt.petName}</p>
+                          <p className="text-sm text-gray-500">{appt.ownerName} • {appt.reason || appt.type}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">{appt.date}</p>
+                        <p className="text-xs text-gray-500">{appt.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* INBOX */}
+        <TabsContent value="inbox" className="mt-6">
+          <div className="grid md:grid-cols-3 gap-4 mb-6">
+            <StatCard title="Ticket aperti" value={openTickets} icon={Inbox} color="amber" />
+            <StatCard title="Ticket chiusi" value={closedTickets} subtitle="questo mese" icon={CheckCircle} color="green" />
+            <StatCard title="Tempo medio risposta" value="--" subtitle="da calcolare" icon={Clock} color="blue" />
+          </div>
+        </TabsContent>
+
+        {/* DOCUMENTS */}
+        <TabsContent value="documents" className="mt-6">
+          <div className="grid md:grid-cols-4 gap-4 mb-6">
+            <StatCard title="Documenti inviati" value={docsSent} icon={Send} color="coral" />
+            <StatCard title="Scaricati" value={docsDownloaded} icon={Download} color="green" />
+            <StatCard title="Tasso apertura" value={`${openRate}%`} icon={Eye} color="blue" />
+            <StatCard title="Tempo medio invio" value="--" subtitle="post-visita" icon={Clock} color="amber" />
+          </div>
+          <Card>
+            <CardHeader>
+              <div className="flex justify-between items-center">
+                <CardTitle>Storico documenti</CardTitle>
+                <Button variant="outline" size="sm" onClick={() => exportCSV(documents, 'documenti')}>
+                  <Download className="h-4 w-4 mr-1" />Export
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {documents.length === 0 ? (
+                <p className="text-center py-8 text-gray-500">Nessun documento</p>
+              ) : (
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {documents.slice(0, 20).map((doc, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <FileText className="h-5 w-5 text-coral-500" />
+                        <div>
+                          <p className="font-medium">{doc.name}</p>
+                          <p className="text-sm text-gray-500">{doc.petName} • {doc.type}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {doc.emailSent ? (
+                          <Badge variant="outline" className="text-green-600 border-green-300">Inviato</Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-gray-500">Bozza</Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* PAYMENTS */}
+        <TabsContent value="payments" className="mt-6">
+          <div className="grid md:grid-cols-3 gap-4 mb-6">
+            <StatCard title="Incassi questo mese" value={`€${monthlyRevenue}`} icon={Euro} color="emerald" />
+            <StatCard title="Transazioni" value={monthlyAppts.filter(a => a.price > 0).length} icon={Receipt} color="blue" />
+            <StatCard title="Ticket medio" value={monthlyAppts.length > 0 ? `€${Math.round(monthlyRevenue / monthlyAppts.length)}` : '€0'} icon={CreditCard} color="coral" />
+          </div>
+          
+          <Card className="bg-amber-50 border-amber-200">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="h-12 w-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                  <CreditCard className="h-6 w-6 text-amber-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-amber-800">Collega Stripe per tracciare i pagamenti</h3>
+                  <p className="text-sm text-amber-700 mt-1">Attualmente mostri solo gli incassi tracciati in piattaforma. Collega Stripe per abilitare pagamenti video-consulti e avere report completi.</p>
+                  <Button className="mt-3 bg-amber-600 hover:bg-amber-700">Connetti Stripe</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
 function ClinicSettings({ user }) {
   const [googleConnected, setGoogleConnected] = useState(false);
   return <div><div className="mb-6"><h2 className="text-2xl font-bold">Impostazioni</h2><p className="text-gray-500 text-sm">Configura la tua clinica</p></div><div className="space-y-6 max-w-2xl"><Card><CardHeader><CardTitle className="text-lg flex items-center gap-2"><CreditCard className="h-5 w-5 text-coral-500" />Pagamenti (Stripe)</CardTitle><CardDescription>Collega Stripe per video-consulti a pagamento</CardDescription></CardHeader><CardContent><div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"><div><p className="font-medium">Non connesso</p><p className="text-sm text-gray-500">Connetti per abilitare incassi prestazioni</p></div><Button className="bg-coral-500 hover:bg-coral-600">Connetti Stripe</Button></div></CardContent></Card><Card><CardHeader><CardTitle className="text-lg flex items-center gap-2"><CalendarCheck className="h-5 w-5 text-coral-500" />Google Calendar</CardTitle><CardDescription>Sincronizza appuntamenti in tempo reale</CardDescription></CardHeader><CardContent>{googleConnected ? <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg"><div className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-green-600" /><div><p className="font-medium text-green-800">Connesso</p><p className="text-sm text-green-600">Calendario sincronizzato</p></div></div><Button variant="outline" size="sm">Disconnetti</Button></div> : <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"><div><p className="font-medium">Non connesso</p><p className="text-sm text-gray-500">Connetti per evitare doppie prenotazioni</p></div><Button className="bg-coral-500 hover:bg-coral-600" onClick={() => setGoogleConnected(true)}><ExternalLink className="h-4 w-4 mr-2" />Connetti</Button></div>}</CardContent></Card><Card><CardHeader><CardTitle className="text-lg">Profilo clinica</CardTitle></CardHeader><CardContent className="space-y-4"><div><Label>Nome clinica</Label><Input value={user.clinicName || ''} disabled /></div><div><Label>Email</Label><Input value={user.email || ''} disabled /></div></CardContent></Card></div></div>;
