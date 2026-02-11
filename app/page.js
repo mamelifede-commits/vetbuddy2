@@ -5965,6 +5965,26 @@ function FindClinic({ user }) {
                 />
               </div>
             </div>
+            <div className="w-56">
+              <Label className="sr-only">Servizio</Label>
+              <Select value={searchService} onValueChange={(v) => { setSearchService(v); }}>
+                <SelectTrigger>
+                  <Stethoscope className="h-4 w-4 mr-2 text-gray-400" />
+                  <SelectValue placeholder="Filtra per servizio..." />
+                </SelectTrigger>
+                <SelectContent className="max-h-80">
+                  <SelectItem value="">Tutti i servizi</SelectItem>
+                  {serviceCatalog.map((service) => (
+                    <SelectItem key={service.id} value={service.id}>
+                      <span className="flex items-center gap-2">
+                        <span className="text-xs text-gray-400">{service.categoryName}</span>
+                        <span>{service.name}</span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             {userLocation && (
               <div className="w-40">
                 <Label className="sr-only">Distanza massima</Label>
@@ -5991,6 +6011,15 @@ function FindClinic({ user }) {
               </Button>
             )}
           </div>
+          {searchService && (
+            <div className="mt-3 flex items-center gap-2">
+              <Badge variant="outline" className="bg-coral-50 text-coral-700 border-coral-200">
+                <Stethoscope className="h-3 w-3 mr-1" />
+                {serviceCatalog.find(s => s.id === searchService)?.name || searchService}
+                <button onClick={() => setSearchService('')} className="ml-2 hover:text-coral-900">×</button>
+              </Badge>
+            </div>
+          )}
         </CardContent>
       </Card>
 
