@@ -5107,6 +5107,7 @@ function OwnerDashboard({ user, onLogout }) {
             <NavItem icon={PawPrint} label="I miei animali" value="pets" />
             <div className="border-t my-3"></div>
             <NavItem icon={Search} label="Trova clinica" value="findClinic" />
+            <NavItem icon={Mail} label="Invita la tua clinica" value="inviteClinic" />
           </nav>
           <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
         </div>
