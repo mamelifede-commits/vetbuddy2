@@ -166,7 +166,7 @@ function LandingPage({ onLogin }) {
             <span className="font-medium">Beta Test attivo</span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Il gestionale veterinario<br /><span className="text-coral-500">che i tuoi clienti ameranno</span>
+            La piattaforma veterinaria<br /><span className="text-coral-500">che i tuoi clienti ameranno</span>
           </h1>
           <p className="text-xl text-gray-600 mb-4 max-w-2xl mx-auto">
             Prenotazioni online, cartelle cliniche digitali, pagamenti e comunicazione automatizzata.
