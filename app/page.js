@@ -149,7 +149,7 @@ function FeatureCarousel() {
   const next = () => { setCurrentIndex((prev) => (prev + 1) % features.length); setIsAutoPlaying(false); };
 
   return (
-    <div className="relative" onMouseEnter={() => setIsAutoPlaying(false)} onMouseLeave={() => setIsAutoPlaying(true)}>
+    <div className="relative pt-4" onMouseEnter={() => setIsAutoPlaying(false)} onMouseLeave={() => setIsAutoPlaying(true)}>
       {/* Main Carousel */}
       <div className="relative overflow-hidden rounded-2xl">
         <div className="flex transition-transform duration-500 ease-out" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
@@ -158,7 +158,7 @@ function FeatureCarousel() {
             const colors = colorClasses[feature.color];
             return (
               <div key={idx} className="w-full flex-shrink-0 px-4">
-                <div className={`bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-xl border ${colors.border} relative`}>
+                <div className={`bg-white/70 backdrop-blur-md rounded-2xl p-8 shadow-xl border ${colors.border} relative mt-4`}>
                   {feature.badge && (
                     <div className="absolute -top-3 right-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
                       ⭐ {feature.badge}
