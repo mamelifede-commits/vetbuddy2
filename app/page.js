@@ -192,9 +192,10 @@ function LandingPage({ onLogin }) {
                 <PawPrint className="h-7 w-7 text-blue-600" />
               </div>
               <h3 className="font-bold text-lg text-gray-900 mb-2">Sei un Proprietario?</h3>
-              <p className="text-sm text-gray-600 mb-4">Trova cliniche vicine, prenota visite e gestisci i tuoi animali.</p>
+              <p className="text-sm text-gray-600 mb-2">Esplora le funzionalità e invita la tua clinica di fiducia a unirsi.</p>
+              <p className="text-xs text-blue-600 font-medium mb-4">🎯 Registrati gratis per vedere la demo</p>
               <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
-                Trova una Clinica →
+                Esplora gratis →
               </Button>
             </div>
           </div>
