@@ -113,6 +113,123 @@ const api = {
   delete: (endpoint) => api.request(endpoint, { method: 'DELETE' })
 };
 
+// ==================== ECOSYSTEM TOGGLE ====================
+function EcosystemToggle() {
+  const [activeTab, setActiveTab] = useState('proprietari');
+  
+  const tabs = {
+    proprietari: {
+      icon: PawPrint,
+      title: 'Per i Proprietari',
+      subtitle: '100% Gratis, per sempre',
+      color: 'blue',
+      features: [
+        'Trova cliniche vicine con distanza in km',
+        'Prenota visite e video-consulti in 2 tap',
+        'Ricevi referti e prescrizioni via email',
+        'Cartella clinica digitale per ogni animale',
+        'Storico spese veterinarie annuali',
+        'Invita la tua clinica su VetBuddy'
+      ]
+    },
+    cliniche: {
+      icon: Building2,
+      title: 'Per le Cliniche',
+      subtitle: 'Pilot Milano 2025',
+      color: 'coral',
+      features: [
+        'Dashboard "cosa fare oggi" in 10 secondi',
+        'Team Inbox con assegnazione ticket',
+        'Documenti → email automatica al cliente',
+        'Posizione su mappa con indicazioni stradali',
+        'Report finanziari e analytics',
+        '6 mesi gratuiti nel Pilot'
+      ]
+    }
+  };
+
+  const current = tabs[activeTab];
+  const Icon = current.icon;
+  const isBlue = current.color === 'blue';
+
+  return (
+    <div className="relative">
+      {/* Toggle Button */}
+      <div className="flex justify-center mb-8">
+        <div className="bg-gray-100 p-1 rounded-full inline-flex">
+          <button
+            onClick={() => setActiveTab('proprietari')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+              activeTab === 'proprietari' 
+                ? 'bg-white shadow-lg text-blue-600' 
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <PawPrint className="h-5 w-5" />
+            Proprietari
+          </button>
+          <button
+            onClick={() => setActiveTab('cliniche')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+              activeTab === 'cliniche' 
+                ? 'bg-white shadow-lg text-coral-600' 
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <Building2 className="h-5 w-5" />
+            Cliniche
+          </button>
+        </div>
+      </div>
+
+      {/* Content Card */}
+      <div className={`relative overflow-hidden rounded-3xl p-8 md:p-10 transition-all duration-500 ${
+        isBlue 
+          ? 'bg-gradient-to-br from-blue-50 via-blue-100/50 to-white border border-blue-200/50' 
+          : 'bg-gradient-to-br from-coral-50 via-coral-100/50 to-white border border-coral-200/50'
+      }`}>
+        {/* Decorative blob */}
+        <div className={`absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-30 ${isBlue ? 'bg-blue-300' : 'bg-coral-300'}`}></div>
+        
+        <div className="relative z-10">
+          {/* Header */}
+          <div className="flex items-center gap-4 mb-8">
+            <div className={`h-16 w-16 rounded-2xl flex items-center justify-center shadow-lg ${
+              isBlue ? 'bg-gradient-to-br from-blue-400 to-blue-600' : 'bg-gradient-to-br from-coral-400 to-coral-600'
+            }`}>
+              <Icon className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h3 className="font-bold text-2xl text-gray-900">{current.title}</h3>
+              <p className={`text-sm font-medium ${isBlue ? 'text-blue-600' : 'text-coral-600'}`}>{current.subtitle}</p>
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {current.features.map((item, i) => (
+              <div 
+                key={i} 
+                className={`flex items-start gap-3 p-4 rounded-xl bg-white/60 backdrop-blur-sm border transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${
+                  isBlue ? 'border-blue-100' : 'border-coral-100'
+                }`}
+                style={{ animationDelay: `${i * 0.1}s` }}
+              >
+                <div className={`h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  isBlue ? 'bg-blue-100' : 'bg-coral-100'
+                }`}>
+                  <Check className={`h-4 w-4 ${isBlue ? 'text-blue-600' : 'text-coral-600'}`} />
+                </div>
+                <span className="text-gray-700 font-medium">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ==================== FEATURE CAROUSEL ====================
 function FeatureCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
