@@ -2357,8 +2357,8 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
                 </div>
                 <div className="p-3 bg-gray-50 rounded-lg">
                   <p className="text-xs text-gray-500 mb-1">Stato</p>
-                  <Badge className={statusConfig[selectedDoc.status]?.color || 'bg-gray-100'}>
-                    {statusConfig[selectedDoc.status]?.label || 'Bozza'}
+                  <Badge className={statusConfig[selectedDoc.status || 'bozza']?.color || 'bg-gray-100 text-gray-600'}>
+                    {statusConfig[selectedDoc.status || 'bozza']?.label || 'Bozza'}
                   </Badge>
                 </div>
                 <div className="p-3 bg-gray-50 rounded-lg">
