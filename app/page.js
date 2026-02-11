@@ -3667,10 +3667,10 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
             <span className="text-sm font-medium">Torna alla Panoramica</span>
           </button>
           <div className="grid md:grid-cols-4 gap-4 mb-6">
-            <StatCard title="Totale" value={monthlyAppts.length} subtitle="questo mese" icon={Calendar} color="coral" />
-            <StatCard title="In presenza" value={inPersonAppts.length} icon={Stethoscope} color="coral" />
-            <StatCard title="Video consulto" value={videoAppts.length} icon={Video} color="blue" />
-            <StatCard title="No-show" value="0" subtitle="cancellazioni" icon={X} color="red" />
+            <StatCard title="Totale" value={monthlyAppts.length} subtitle="questo mese" icon={Calendar} color="coral" onClick={() => onNavigate('agenda')} />
+            <StatCard title="In presenza" value={inPersonAppts.length} icon={Stethoscope} color="coral" onClick={() => onNavigate('agenda')} />
+            <StatCard title="Video consulto" value={videoAppts.length} icon={Video} color="blue" onClick={() => onNavigate('agenda')} />
+            <StatCard title="No-show" value="0" subtitle="cancellazioni" icon={X} color="red" onClick={() => onNavigate('agenda')} />
           </div>
           <Card>
             <CardHeader>
