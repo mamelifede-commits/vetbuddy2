@@ -3063,6 +3063,9 @@ function ClinicTemplates({ owners = [], pets = [], staff = [], appointments = []
 
   return (
     <div className="space-y-6">
+      {/* Back Button */}
+      {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
+      
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
