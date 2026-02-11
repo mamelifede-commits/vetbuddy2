@@ -274,7 +274,7 @@ function ClinicDashboard({ user, onLogout }) {
       onClick={() => setActiveTab(value)}
       className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-colors ${
         activeTab === value 
-          ? 'bg-emerald-100 text-coral-700 font-medium' 
+          ? 'bg-coral-100 text-coral-700 font-medium' 
           : 'text-gray-600 hover:bg-gray-100'
       }`}
     >
@@ -467,7 +467,7 @@ function AgendaSection({ appointments, owners, pets, onRefresh }) {
                 {todayAppts.map((appt) => (
                   <div key={appt.id} className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                      <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
                         <PawPrint className="h-5 w-5 text-emerald-600" />
                       </div>
                       <div>
@@ -728,7 +728,7 @@ function DocumentsSection({ documents, pets, owners, onRefresh }) {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                    <div className="h-10 w-10 bg-coral-100 rounded-lg flex items-center justify-center">
                       <FileText className="h-5 w-5 text-emerald-600" />
                     </div>
                     <div>
@@ -863,7 +863,7 @@ function StaffSection({ staff, onRefresh }) {
             <Card key={member.id}>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 bg-emerald-100 rounded-full flex items-center justify-center">
+                  <div className="h-12 w-12 bg-coral-100 rounded-full flex items-center justify-center">
                     <User className="h-6 w-6 text-emerald-600" />
                   </div>
                   <div>
@@ -1009,7 +1009,7 @@ function PatientsSection({ pets, owners, onRefresh }) {
             <Card key={pet.id}>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 bg-emerald-100 rounded-full flex items-center justify-center">
+                  <div className="h-12 w-12 bg-coral-100 rounded-full flex items-center justify-center">
                     {pet.species === 'dog' ? (
                       <Dog className="h-6 w-6 text-emerald-600" />
                     ) : pet.species === 'cat' ? (
@@ -1177,7 +1177,7 @@ function OwnerDashboard({ user, onLogout }) {
       onClick={() => setActiveTab(value)}
       className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-colors ${
         activeTab === value 
-          ? 'bg-emerald-100 text-coral-700 font-medium' 
+          ? 'bg-coral-100 text-coral-700 font-medium' 
           : 'text-gray-600 hover:bg-gray-100'
       }`}
     >
@@ -1230,7 +1230,7 @@ function OwnerDashboard({ user, onLogout }) {
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                          <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
                             <PawPrint className="h-5 w-5 text-emerald-600" />
                           </div>
                           <div>
@@ -1267,7 +1267,7 @@ function OwnerDashboard({ user, onLogout }) {
                   <Card key={doc.id}>
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <div className="h-10 w-10 bg-coral-100 rounded-lg flex items-center justify-center">
                           <FileText className="h-5 w-5 text-emerald-600" />
                         </div>
                         <div>
@@ -1327,7 +1327,7 @@ function OwnerDashboard({ user, onLogout }) {
                   <Card key={pet.id}>
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-12 w-12 bg-emerald-100 rounded-full flex items-center justify-center">
+                        <div className="h-12 w-12 bg-coral-100 rounded-full flex items-center justify-center">
                           {pet.species === 'dog' ? (
                             <Dog className="h-6 w-6 text-emerald-600" />
                           ) : pet.species === 'cat' ? (
