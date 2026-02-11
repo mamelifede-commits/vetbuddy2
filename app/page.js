@@ -3784,5 +3784,6 @@ export default function App() {
   if (!user) return <LandingPage onLogin={handleLogin} />;
   if (showWelcome) return <WelcomeScreen user={user} onContinue={handleWelcomeContinue} />;
   if (user.role === 'clinic') return <ClinicDashboard user={user} onLogout={handleLogout} />;
+  if (user.role === 'staff') return <StaffDashboard user={user} onLogout={handleLogout} />;
   return <OwnerDashboard user={user} onLogout={handleLogout} />;
 }
