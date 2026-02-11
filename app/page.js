@@ -5168,6 +5168,7 @@ function InviteClinic({ user }) {
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -5176,10 +5177,27 @@ function InviteClinic({ user }) {
       return;
     }
     setSending(true);
-    // Simula invio (in produzione invierebbe email)
-    await new Promise(r => setTimeout(r, 1000));
-    setSent(true);
-    setSending(false);
+    setError('');
+    
+    try {
+      const response = await api.post('invite-clinic', {
+        clinicName,
+        clinicEmail: email,
+        message,
+        inviterName: user?.name || 'Un proprietario',
+        inviterEmail: user?.email || ''
+      });
+      
+      if (response.success) {
+        setSent(true);
+      } else {
+        setError(response.message || 'Errore durante l\'invio');
+      }
+    } catch (err) {
+      setError(err.message || 'Errore durante l\'invio dell\'invito');
+    } finally {
+      setSending(false);
+    }
   };
 
   if (sent) {
