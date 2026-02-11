@@ -3223,13 +3223,13 @@ function ClinicTemplates({ owners = [], pets = [], staff = [], appointments = []
                 <Label>Appuntamento (opzionale)</Label>
                 <Select 
                   value={useFormData.appointmentId} 
-                  onValueChange={(v) => updateGeneratedMessage({ ...useFormData, appointmentId: v })}
+                  onValueChange={(v) => updateGeneratedMessage({ ...useFormData, appointmentId: v === 'none' ? '' : v })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Seleziona appuntamento..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Nessun appuntamento specifico</SelectItem>
+                    <SelectItem value="none">Nessun appuntamento specifico</SelectItem>
                     {relevantAppointments.slice(0, 10).map(appt => (
                       <SelectItem key={appt.id} value={appt.id}>
                         <div className="flex items-center gap-2">
