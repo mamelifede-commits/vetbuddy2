@@ -4758,11 +4758,12 @@ function OwnerDashboard({ user, onLogout }) {
   const [documents, setDocuments] = useState([]);
   const [messages, setMessages] = useState([]);
   const [pets, setPets] = useState([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => { loadData(); }, []);
   const loadData = async () => { try { const [appts, docs, msgs, petsList] = await Promise.all([api.get('appointments'), api.get('documents'), api.get('messages'), api.get('pets')]); setAppointments(appts); setDocuments(docs); setMessages(msgs); setPets(petsList); } catch (error) { console.error('Error:', error); } };
 
-  const NavItem = ({ icon: Icon, label, value, badge }) => <button onClick={() => { setActiveTab(value); setSelectedPetId(null); }} className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${activeTab === value ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-100'}`}><div className="flex items-center gap-3"><Icon className="h-5 w-5" />{label}</div>{badge > 0 && <Badge className="bg-blue-500 text-white text-xs">{badge}</Badge>}</button>;
+  const NavItem = ({ icon: Icon, label, value, badge }) => <button onClick={() => { setActiveTab(value); setSelectedPetId(null); setMobileMenuOpen(false); }} className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${activeTab === value ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-100'}`}><div className="flex items-center gap-3"><Icon className="h-5 w-5" />{label}</div>{badge > 0 && <Badge className="bg-blue-500 text-white text-xs">{badge}</Badge>}</button>;
 
   const handleOpenPetProfile = (petId) => {
     setSelectedPetId(petId);
@@ -4770,8 +4771,40 @@ function OwnerDashboard({ user, onLogout }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <aside className="w-64 bg-white border-r p-4 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+      {/* Mobile Header */}
+      <div className="md:hidden bg-white border-b p-4 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-3">
+          <VetBuddyLogo size={32} />
+          <div>
+            <h1 className="font-bold text-coral-500 text-sm">VetBuddy</h1>
+            <p className="text-xs text-gray-500 truncate max-w-[120px]">{user.name}</p>
+          </div>
+        </div>
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 hover:bg-gray-100 rounded-lg">
+          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 top-[73px] bg-white z-40 p-4 overflow-auto">
+          <div className="mb-4"><RoleBadge role="owner" /></div>
+          <Badge variant="outline" className="mb-6 justify-center text-amber-600 border-amber-300 bg-amber-50 w-full"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
+          <nav className="space-y-1">
+            <NavItem icon={Calendar} label="Appuntamenti" value="appointments" />
+            <NavItem icon={FileText} label="Documenti" value="documents" badge={documents.length} />
+            <NavItem icon={MessageCircle} label="Messaggi" value="messages" />
+            <NavItem icon={PawPrint} label="I miei animali" value="pets" />
+            <div className="border-t my-3"></div>
+            <NavItem icon={Search} label="Trova clinica" value="findClinic" />
+          </nav>
+          <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
+        </div>
+      )}
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex w-64 bg-white border-r p-4 flex-col flex-shrink-0">
         <div className="flex items-center gap-3 mb-2"><VetBuddyLogo size={36} /><div><h1 className="font-bold text-coral-500">VetBuddy</h1><p className="text-xs text-gray-500 truncate max-w-[140px]">{user.name}</p></div></div>
         <div className="mb-2"><RoleBadge role="owner" /></div>
         <Badge variant="outline" className="mb-6 justify-center text-amber-600 border-amber-300 bg-amber-50"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
@@ -4785,7 +4818,9 @@ function OwnerDashboard({ user, onLogout }) {
         </nav>
         <Button variant="ghost" onClick={onLogout} className="mt-auto text-gray-600"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
       </aside>
-      <main className="flex-1 p-6 overflow-auto">
+
+      {/* Main Content */}
+      <main className="flex-1 p-4 md:p-6 overflow-auto">
         {activeTab === 'appointments' && <OwnerAppointments appointments={appointments} pets={pets} />}
         {activeTab === 'documents' && <OwnerDocuments documents={documents} pets={pets} onRefresh={loadData} />}
         {activeTab === 'messages' && <OwnerMessages messages={messages} />}
