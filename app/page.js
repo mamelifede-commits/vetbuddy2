@@ -2715,6 +2715,7 @@ function ClinicServices({ onNavigate }) {
 
   return (
     <div>
+      {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Servizi offerti</h2>
