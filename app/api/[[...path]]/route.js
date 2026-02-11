@@ -8,6 +8,29 @@ import Stripe from 'stripe';
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder');
 
+// Google OAuth Config
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+const GOOGLE_REDIRECT_URI = process.env.NEXT_PUBLIC_BASE_URL + '/api/auth/google/callback';
+const GOOGLE_SCOPES = [
+  'https://www.googleapis.com/auth/calendar',
+  'https://www.googleapis.com/auth/calendar.events'
+].join(' ');
+
+// Staff colors for calendar
+const STAFF_COLORS = [
+  { id: 1, name: 'Blu', hex: '#3B82F6', google: '1' },
+  { id: 2, name: 'Verde', hex: '#10B981', google: '2' },
+  { id: 3, name: 'Viola', hex: '#8B5CF6', google: '3' },
+  { id: 4, name: 'Rosso', hex: '#EF4444', google: '4' },
+  { id: 5, name: 'Giallo', hex: '#F59E0B', google: '5' },
+  { id: 6, name: 'Arancione', hex: '#F97316', google: '6' },
+  { id: 7, name: 'Turchese', hex: '#06B6D4', google: '7' },
+  { id: 8, name: 'Grigio', hex: '#6B7280', google: '8' },
+  { id: 9, name: 'Rosa', hex: '#EC4899', google: '9' },
+  { id: 10, name: 'Indaco', hex: '#6366F1', google: '10' }
+];
+
 // Subscription Plans (prices in EUR)
 const SUBSCRIPTION_PLANS = {
   starter: { name: 'Starter', price: 0.00, description: 'Per iniziare' },
