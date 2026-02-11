@@ -320,7 +320,7 @@ export async function POST(request, { params }) {
 
     // Register
     if (path === 'auth/register') {
-      const { email, password, name, role, clinicName, phone, address, city, vatNumber, website } = body;
+      const { email, password, name, role, clinicName, phone, address, city, vatNumber, website, latitude, longitude } = body;
       if (!email || !password || !name || !role) {
         return NextResponse.json({ error: 'Campi obbligatori mancanti' }, { status: 400, headers: corsHeaders });
       }
@@ -343,6 +343,8 @@ export async function POST(request, { params }) {
         city: city || '',
         vatNumber: role === 'clinic' ? (vatNumber || '') : null,
         website: role === 'clinic' ? (website || '') : null,
+        latitude: role === 'clinic' ? (latitude || null) : null,
+        longitude: role === 'clinic' ? (longitude || null) : null,
         createdAt: new Date().toISOString()
       };
 
