@@ -13,15 +13,17 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Calendar, FileText, Users, Inbox, Settings, LogOut, Plus, Send, Dog, Cat, Clock, Mail, User, Building2, Phone, PawPrint } from 'lucide-react';
 
-// Logo Component
+// Logo Component - Zampetta geometrica coral
 const VetBuddyLogo = ({ size = 40 }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="50" r="45" fill="#10B981" />
-    <path d="M35 30 L35 45 Q35 50 40 50 L45 50" stroke="white" strokeWidth="6" strokeLinecap="round" fill="none"/>
-    <path d="M65 30 L65 45 Q65 50 60 50 L55 50" stroke="white" strokeWidth="6" strokeLinecap="round" fill="none"/>
-    <path d="M30 55 L30 70 Q30 75 35 75 L45 75" stroke="white" strokeWidth="6" strokeLinecap="round" fill="none"/>
-    <path d="M70 55 L70 70 Q70 75 65 75 L55 75" stroke="white" strokeWidth="6" strokeLinecap="round" fill="none"/>
-    <circle cx="50" cy="62" r="12" fill="white"/>
+    {/* Background circle */}
+    <circle cx="50" cy="50" r="45" fill="#FF6B6B" />
+    {/* Paw pad - main */}
+    <ellipse cx="50" cy="58" rx="16" ry="14" fill="white"/>
+    {/* Toe pads */}
+    <ellipse cx="32" cy="38" rx="8" ry="10" fill="white"/>
+    <ellipse cx="50" cy="32" rx="8" ry="10" fill="white"/>
+    <ellipse cx="68" cy="38" rx="8" ry="10" fill="white"/>
   </svg>
 );
 
