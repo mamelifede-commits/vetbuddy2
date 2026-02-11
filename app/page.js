@@ -936,16 +936,16 @@ function ClinicDashboard({ user, onLogout }) {
       {/* Main */}
       <main className="flex-1 p-6 overflow-auto">
         {activeTab === 'dashboard' && <ClinicControlRoom appointments={appointments} documents={documents} messages={messages} owners={owners} setupProgress={setupProgress} onRefresh={loadData} onNavigate={setActiveTab} />}
-        {activeTab === 'agenda' && <ClinicAgenda appointments={appointments} staff={staff} owners={owners} pets={pets} onRefresh={loadData} />}
-        {activeTab === 'inbox' && <ClinicInbox messages={messages} owners={owners} pets={pets} onRefresh={loadData} />}
-        {activeTab === 'documents' && <ClinicDocuments documents={documents} owners={owners} pets={pets} onRefresh={loadData} />}
-        {activeTab === 'services' && <ClinicServices />}
-        {activeTab === 'patients' && <ClinicPatients pets={pets} onRefresh={loadData} />}
-        {activeTab === 'owners' && <ClinicOwners owners={owners} onRefresh={loadData} />}
-        {activeTab === 'staff' && <ClinicStaff staff={staff} onRefresh={loadData} />}
-        {activeTab === 'reports' && <ClinicReports appointments={appointments} documents={documents} messages={messages} owners={owners} />}
-        {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} />}
-        {activeTab === 'settings' && <ClinicSettings user={user} />}
+        {activeTab === 'agenda' && <ClinicAgenda appointments={appointments} staff={staff} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
+        {activeTab === 'inbox' && <ClinicInbox messages={messages} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
+        {activeTab === 'documents' && <ClinicDocuments documents={documents} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
+        {activeTab === 'services' && <ClinicServices onNavigate={setActiveTab} />}
+        {activeTab === 'patients' && <ClinicPatients pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
+        {activeTab === 'owners' && <ClinicOwners owners={owners} onRefresh={loadData} onNavigate={setActiveTab} />}
+        {activeTab === 'staff' && <ClinicStaff staff={staff} onRefresh={loadData} onNavigate={setActiveTab} />}
+        {activeTab === 'reports' && <ClinicReports appointments={appointments} documents={documents} messages={messages} owners={owners} onNavigate={setActiveTab} />}
+        {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'settings' && <ClinicSettings user={user} onNavigate={setActiveTab} />}
       </main>
     </div>
   );
