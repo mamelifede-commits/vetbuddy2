@@ -341,6 +341,16 @@ function LandingPage({ onLogin }) {
                 </ul>
               </CardContent>
             </Card>
+
+            {/* Feature - Prenotazioni */}
+            <Card className="border-2 border-coral-200 bg-gradient-to-br from-coral-50 to-white hover:shadow-lg transition">
+              <CardHeader>
+                <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mb-3">
+                  <Calendar className="h-6 w-6 text-coral-600" />
+                </div>
+                <CardTitle className="text-lg">Prenotazioni online 24/7</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <p className="text-gray-600 text-sm mb-3">I clienti prenotano quando vogliono, tu ricevi tutto organizzato in agenda.</p>
                 <ul className="space-y-1 text-sm text-gray-500">
                   <li className="flex items-center gap-2"><Check className="h-3 w-3 text-green-500" /> Visite, vaccini, video-consulti</li>
