@@ -950,7 +950,9 @@ function LandingPage({ onLogin }) {
               <CardHeader>
                 <CardTitle>Starter</CardTitle>
                 <CardDescription>Per cliniche in fase di valutazione</CardDescription>
-                <div className="text-3xl font-bold text-gray-400 mt-4">Gratis</div>
+                <div className="mt-4">
+                  <span className="text-3xl font-bold text-gray-400">Gratis</span>
+                </div>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm mb-6">
@@ -971,8 +973,9 @@ function LandingPage({ onLogin }) {
                 <div className="mt-4">
                   <span className="text-3xl font-bold text-coral-500">€0</span>
                   <span className="text-lg text-gray-400 line-through ml-2">€129/mese</span>
+                  <span className="text-xs text-gray-400 ml-1">+IVA</span>
                 </div>
-                <p className="text-xs text-amber-600 font-semibold">6 mesi gratuiti per cliniche selezionate</p>
+                <p className="text-xs text-amber-600 font-semibold">6 mesi gratuiti per cliniche selezionate nel Pilot</p>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm mb-6">
@@ -993,7 +996,10 @@ function LandingPage({ onLogin }) {
               <CardHeader>
                 <CardTitle>Enterprise</CardTitle>
                 <CardDescription>Per gruppi e catene veterinarie</CardDescription>
-                <div className="text-3xl font-bold text-coral-500 mt-4">Custom</div>
+                <div className="mt-4">
+                  <span className="text-3xl font-bold text-coral-500">Custom</span>
+                  <span className="text-xs text-gray-400 ml-1">+IVA</span>
+                </div>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm mb-6">
@@ -1006,7 +1012,7 @@ function LandingPage({ onLogin }) {
               </CardContent>
             </Card>
           </div>
-          <p className="text-center text-sm text-gray-500">Prezzi IVA esclusa. Gli abbonamenti vengono fatturati da VetBuddy.</p>
+          <p className="text-center text-sm text-gray-500">Tutti i prezzi sono IVA esclusa. Gli abbonamenti vengono fatturati da VetBuddy.</p>
         </div>
       </section>
 
