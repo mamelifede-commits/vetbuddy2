@@ -1408,15 +1408,16 @@ export async function POST(request, { params }) {
 
           // Template based on type
           const templates = {
-            prescrizione: { subject: `📋 Prescrizione per ${petName || 'il tuo animale'}`, color: '#10B981' },
-            referto: { subject: `📄 Referto di ${petName || 'il tuo animale'}`, color: '#3B82F6' },
-            fattura: { subject: `🧾 Fattura - ${clinicName}`, color: '#F59E0B' }
+            prescrizione: { subject: `📋 Prescrizione per ${petName || 'il tuo animale'} – ${clinicName}`, color: '#10B981' },
+            referto: { subject: `📄 Referto per ${petName || 'il tuo animale'} – ${clinicName}`, color: '#3B82F6' },
+            fattura: { subject: `🧾 Fattura – ${clinicName}`, color: '#F59E0B' },
+            istruzioni: { subject: `📝 Istruzioni post-visita per ${petName || 'il tuo animale'} – ${clinicName}`, color: '#059669' }
           };
-          const tpl = templates[type] || { subject: `📎 Documento - ${clinicName}`, color: '#6B7280' };
+          const tpl = templates[type] || { subject: `📎 Documento per ${petName || 'il tuo animale'} – ${clinicName}`, color: '#6B7280' };
 
           await sendEmail({
             to: ownerEmail,
-            subject: `${tpl.subject} - ${clinicName}`,
+            subject: tpl.subject,
             html: `
               <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <div style="background: ${tpl.color}; padding: 24px; text-align: center;">
