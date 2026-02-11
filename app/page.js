@@ -3716,9 +3716,9 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
             <span className="text-sm font-medium">Torna alla Panoramica</span>
           </button>
           <div className="grid md:grid-cols-3 gap-4 mb-6">
-            <StatCard title="Ticket aperti" value={openTickets} icon={Inbox} color="amber" />
-            <StatCard title="Ticket chiusi" value={closedTickets} subtitle="questo mese" icon={CheckCircle} color="green" />
-            <StatCard title="Tempo medio risposta" value="--" subtitle="da calcolare" icon={Clock} color="blue" />
+            <StatCard title="Ticket aperti" value={openTickets} icon={Inbox} color="amber" onClick={() => onNavigate('inbox')} />
+            <StatCard title="Ticket chiusi" value={closedTickets} subtitle="questo mese" icon={CheckCircle} color="green" onClick={() => onNavigate('inbox')} />
+            <StatCard title="Tempo medio risposta" value="--" subtitle="da calcolare" icon={Clock} color="blue" onClick={() => onNavigate('inbox')} />
           </div>
         </TabsContent>
 
@@ -3729,10 +3729,10 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
             <span className="text-sm font-medium">Torna alla Panoramica</span>
           </button>
           <div className="grid md:grid-cols-4 gap-4 mb-6">
-            <StatCard title="Documenti inviati" value={docsSent} icon={Send} color="coral" />
-            <StatCard title="Scaricati" value={docsDownloaded} icon={Download} color="green" />
-            <StatCard title="Tasso apertura" value={`${openRate}%`} icon={Eye} color="blue" />
-            <StatCard title="Tempo medio invio" value="--" subtitle="post-visita" icon={Clock} color="amber" />
+            <StatCard title="Documenti inviati" value={docsSent} icon={Send} color="coral" onClick={() => onNavigate('documents')} />
+            <StatCard title="Scaricati" value={docsDownloaded} icon={Download} color="green" onClick={() => onNavigate('documents')} />
+            <StatCard title="Tasso apertura" value={`${openRate}%`} icon={Eye} color="blue" onClick={() => onNavigate('documents')} />
+            <StatCard title="Tempo medio invio" value="--" subtitle="post-visita" icon={Clock} color="amber" onClick={() => onNavigate('documents')} />
           </div>
           <Card>
             <CardHeader>
