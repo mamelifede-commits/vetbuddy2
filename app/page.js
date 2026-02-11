@@ -3094,7 +3094,7 @@ function PetProfile({ petId, onBack, appointments, documents }) {
   );
 }
 
-// ==================== FIND CLINIC (Ricerca Cliniche) ====================
+// ==================== FIND CLINIC (Ricerca Cliniche con Google Maps) ====================
 function FindClinic({ user }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchCity, setSearchCity] = useState('');
@@ -3103,6 +3103,37 @@ function FindClinic({ user }) {
   const [selectedClinic, setSelectedClinic] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewForm, setReviewForm] = useState({ overallRating: 5, punctuality: 5, competence: 5, price: 5, comment: '' });
+  const [userLocation, setUserLocation] = useState(null);
+  const [locationError, setLocationError] = useState(null);
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'map'
+  const [maxDistance, setMaxDistance] = useState(50); // km
+  const [mapCenter, setMapCenter] = useState({ lat: 41.9028, lng: 12.4964 }); // Rome default
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const mapRef = useRef(null);
+
+  // Get user's location
+  const getUserLocation = () => {
+    setLocationError(null);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const loc = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          setUserLocation(loc);
+          setMapCenter(loc);
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          setLocationError('Impossibile ottenere la posizione. Assicurati di aver abilitato la geolocalizzazione.');
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    } else {
+      setLocationError('Geolocalizzazione non supportata dal browser');
+    }
+  };
 
   const searchClinics = async () => {
     setLoading(true);
@@ -3110,8 +3141,18 @@ function FindClinic({ user }) {
       const params = new URLSearchParams();
       if (searchQuery) params.append('q', searchQuery);
       if (searchCity) params.append('city', searchCity);
+      if (userLocation) {
+        params.append('lat', userLocation.lat.toString());
+        params.append('lng', userLocation.lng.toString());
+        params.append('maxDistance', maxDistance.toString());
+      }
       const results = await api.get(`clinics/search?${params.toString()}`);
       setClinics(results);
+      
+      // Update map center based on results
+      if (results.length > 0 && results[0].latitude && results[0].longitude) {
+        setMapCenter({ lat: results[0].latitude, lng: results[0].longitude });
+      }
     } catch (error) {
       console.error('Search error:', error);
     } finally {
@@ -3119,7 +3160,16 @@ function FindClinic({ user }) {
     }
   };
 
-  useEffect(() => { searchClinics(); }, []);
+  useEffect(() => { 
+    getUserLocation();
+    searchClinics(); 
+  }, []);
+
+  useEffect(() => {
+    if (userLocation) {
+      searchClinics();
+    }
+  }, [userLocation, maxDistance]);
 
   const submitReview = async () => {
     try {
@@ -3143,6 +3193,39 @@ function FindClinic({ user }) {
     </div>
   );
 
+  const formatDistance = (distance) => {
+    if (distance === null || distance === undefined) return null;
+    if (distance < 1) return `${Math.round(distance * 1000)} m`;
+    return `${distance.toFixed(1)} km`;
+  };
+
+  // Google Maps Component
+  const GoogleMapsSection = () => {
+    const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    
+    if (!GOOGLE_MAPS_API_KEY) {
+      return (
+        <div className="h-[400px] bg-gray-100 rounded-lg flex items-center justify-center">
+          <p className="text-gray-500">Google Maps API key non configurata</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="h-[500px] rounded-lg overflow-hidden border">
+        <iframe
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          loading="lazy"
+          allowFullScreen
+          referrerPolicy="no-referrer-when-downgrade"
+          src={`https://www.google.com/maps/embed/v1/search?key=${GOOGLE_MAPS_API_KEY}&q=clinica+veterinaria${searchCity ? `+${encodeURIComponent(searchCity)}` : '+Italia'}&center=${mapCenter.lat},${mapCenter.lng}&zoom=12`}
+        />
+      </div>
+    );
+  };
+
   return (
     <div>
       <div className="mb-6">
@@ -3150,11 +3233,30 @@ function FindClinic({ user }) {
         <p className="text-gray-500 text-sm">Cerca cliniche veterinarie nella tua zona</p>
       </div>
 
+      {/* Location Status */}
+      {userLocation && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
+          <MapPin className="h-4 w-4 text-green-600" />
+          <span className="text-sm text-green-700">Posizione rilevata - Le cliniche saranno ordinate per distanza</span>
+        </div>
+      )}
+      {locationError && (
+        <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+            <span className="text-sm text-amber-700">{locationError}</span>
+          </div>
+          <Button size="sm" variant="outline" onClick={getUserLocation}>
+            <RefreshCw className="h-3 w-3 mr-1" />Riprova
+          </Button>
+        </div>
+      )}
+
       {/* Search Form */}
       <Card className="mb-6">
         <CardContent className="p-4">
-          <div className="flex gap-4">
-            <div className="flex-1">
+          <div className="flex flex-wrap gap-4">
+            <div className="flex-1 min-w-[200px]">
               <Label className="sr-only">Nome clinica</Label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -3163,6 +3265,7 @@ function FindClinic({ user }) {
                   value={searchQuery} 
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
+                  onKeyDown={(e) => e.key === 'Enter' && searchClinics()}
                 />
               </div>
             </div>
@@ -3175,19 +3278,91 @@ function FindClinic({ user }) {
                   value={searchCity} 
                   onChange={(e) => setSearchCity(e.target.value)}
                   className="pl-10"
+                  onKeyDown={(e) => e.key === 'Enter' && searchClinics()}
                 />
               </div>
             </div>
+            {userLocation && (
+              <div className="w-40">
+                <Label className="sr-only">Distanza massima</Label>
+                <Select value={maxDistance.toString()} onValueChange={(v) => setMaxDistance(parseInt(v))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Distanza" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="5">Entro 5 km</SelectItem>
+                    <SelectItem value="10">Entro 10 km</SelectItem>
+                    <SelectItem value="25">Entro 25 km</SelectItem>
+                    <SelectItem value="50">Entro 50 km</SelectItem>
+                    <SelectItem value="100">Entro 100 km</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <Button onClick={searchClinics} className="bg-blue-500 hover:bg-blue-600">
               <Search className="h-4 w-4 mr-2" />Cerca
             </Button>
+            {!userLocation && (
+              <Button variant="outline" onClick={getUserLocation}>
+                <MapPin className="h-4 w-4 mr-2" />Usa la mia posizione
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
 
+      {/* View Toggle */}
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-sm text-gray-500">
+          {clinics.length} clinic{clinics.length !== 1 ? 'he' : 'a'} trovat{clinics.length !== 1 ? 'e' : 'a'}
+        </p>
+        <div className="flex gap-2">
+          <Button 
+            size="sm" 
+            variant={viewMode === 'list' ? 'default' : 'outline'}
+            onClick={() => setViewMode('list')}
+          >
+            <ClipboardList className="h-4 w-4 mr-1" />Lista
+          </Button>
+          <Button 
+            size="sm" 
+            variant={viewMode === 'map' ? 'default' : 'outline'}
+            onClick={() => setViewMode('map')}
+          >
+            <MapPin className="h-4 w-4 mr-1" />Mappa
+          </Button>
+        </div>
+      </div>
+
       {/* Results */}
       {loading ? (
         <div className="text-center py-12"><RefreshCw className="h-8 w-8 animate-spin text-blue-500 mx-auto" /></div>
+      ) : viewMode === 'map' ? (
+        <div className="space-y-4">
+          <GoogleMapsSection />
+          {/* Clinic list below map */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {clinics.map((clinic) => (
+              <Card key={clinic.id} className={`hover:shadow-md transition-shadow cursor-pointer ${selectedClinic?.id === clinic.id ? 'ring-2 ring-blue-500' : ''}`} onClick={() => setSelectedClinic(clinic)}>
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="font-semibold">{clinic.clinicName}</h3>
+                    {clinic.distance !== null && (
+                      <Badge variant="outline" className="text-blue-600">
+                        <MapPin className="h-3 w-3 mr-1" />{formatDistance(clinic.distance)}
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-500">{clinic.city}</p>
+                  <div className="flex items-center gap-1 mt-2">
+                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm">{clinic.avgRating || 'N/D'}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
       ) : clinics.length === 0 ? (
         <Card><CardContent className="p-12 text-center text-gray-500"><Building2 className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessuna clinica trovata</p><p className="text-sm mt-2">Prova con altri criteri di ricerca</p></CardContent></Card>
       ) : (
@@ -3210,9 +3385,25 @@ function FindClinic({ user }) {
                 </div>
                 
                 <div className="space-y-2 text-sm text-gray-600 mb-4">
-                  {clinic.city && <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-gray-400" />{clinic.city}</div>}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-gray-400" />
+                      <span>{clinic.city || 'Località non specificata'}</span>
+                    </div>
+                    {clinic.distance !== null && (
+                      <Badge className="bg-blue-100 text-blue-700">
+                        {formatDistance(clinic.distance)}
+                      </Badge>
+                    )}
+                  </div>
+                  {clinic.address && (
+                    <div className="flex items-center gap-2 text-gray-500">
+                      <Building2 className="h-4 w-4 text-gray-400" />
+                      <span>{clinic.address}</span>
+                    </div>
+                  )}
                   {clinic.phone && <div className="flex items-center gap-2"><Phone className="h-4 w-4 text-gray-400" />{clinic.phone}</div>}
-                  {clinic.website && <div className="flex items-center gap-2"><Globe className="h-4 w-4 text-gray-400" /><a href={clinic.website} target="_blank" className="text-blue-500 hover:underline">{clinic.website}</a></div>}
+                  {clinic.website && <div className="flex items-center gap-2"><Globe className="h-4 w-4 text-gray-400" /><a href={clinic.website} target="_blank" className="text-blue-500 hover:underline truncate max-w-[200px]">{clinic.website}</a></div>}
                 </div>
 
                 <div className="flex gap-2">
@@ -3222,12 +3413,103 @@ function FindClinic({ user }) {
                   <Button size="sm" variant="outline" onClick={() => { setSelectedClinic(clinic); setShowReviewForm(true); }}>
                     <Star className="h-4 w-4 mr-1" />Recensisci
                   </Button>
+                  {clinic.latitude && clinic.longitude && (
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${clinic.latitude},${clinic.longitude}`, '_blank')}
+                    >
+                      <MapPin className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
       )}
+
+      {/* Clinic Detail Dialog */}
+      <Dialog open={selectedClinic && !showReviewForm} onOpenChange={() => setSelectedClinic(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{selectedClinic?.clinicName}</DialogTitle>
+            <DialogDescription>{selectedClinic?.name}</DialogDescription>
+          </DialogHeader>
+          {selectedClinic && (
+            <div className="space-y-4 mt-4">
+              {/* Rating Summary */}
+              <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-gray-900">{selectedClinic.avgRating || 'N/D'}</div>
+                  <div className="flex justify-center mt-1">
+                    {[1,2,3,4,5].map(s => (
+                      <Star key={s} className={`h-4 w-4 ${s <= Math.round(selectedClinic.avgRating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">{selectedClinic.reviewCount} recensioni</p>
+                </div>
+                {selectedClinic.distance !== null && (
+                  <div className="flex-1 text-right">
+                    <Badge className="bg-blue-100 text-blue-700 text-lg px-3 py-1">
+                      <MapPin className="h-4 w-4 mr-1 inline" />
+                      {formatDistance(selectedClinic.distance)}
+                    </Badge>
+                    <p className="text-xs text-gray-500 mt-1">dalla tua posizione</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Contact Info */}
+              <div className="space-y-3">
+                {selectedClinic.address && (
+                  <div className="flex items-start gap-3">
+                    <Building2 className="h-5 w-5 text-gray-400 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Indirizzo</p>
+                      <p className="text-sm text-gray-600">{selectedClinic.address}, {selectedClinic.city}</p>
+                    </div>
+                  </div>
+                )}
+                {selectedClinic.phone && (
+                  <div className="flex items-start gap-3">
+                    <Phone className="h-5 w-5 text-gray-400 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Telefono</p>
+                      <a href={`tel:${selectedClinic.phone}`} className="text-sm text-blue-500">{selectedClinic.phone}</a>
+                    </div>
+                  </div>
+                )}
+                {selectedClinic.website && (
+                  <div className="flex items-start gap-3">
+                    <Globe className="h-5 w-5 text-gray-400 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Sito web</p>
+                      <a href={selectedClinic.website} target="_blank" className="text-sm text-blue-500 hover:underline">{selectedClinic.website}</a>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-4">
+                <Button className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={() => setShowReviewForm(true)}>
+                  <Star className="h-4 w-4 mr-2" />Scrivi una recensione
+                </Button>
+                {selectedClinic.latitude && selectedClinic.longitude && (
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${selectedClinic.latitude},${selectedClinic.longitude}`, '_blank')}
+                  >
+                    <MapPin className="h-4 w-4 mr-2" />Indicazioni
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Review Dialog */}
       <Dialog open={showReviewForm} onOpenChange={setShowReviewForm}>
