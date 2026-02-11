@@ -2811,34 +2811,125 @@ function ClinicSettings({ user }) {
         </Card>
 
         {/* Google Calendar */}
-        <Card>
+        <Card className="border-green-200">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <CalendarCheck className="h-5 w-5 text-coral-500" />Google Calendar
+              <CalendarCheck className="h-5 w-5 text-green-600" />Google Calendar
+              {googleCalendarStatus.connected && (
+                <Badge className="bg-green-100 text-green-700 ml-2">Connesso</Badge>
+              )}
             </CardTitle>
-            <CardDescription>Sincronizza appuntamenti in tempo reale</CardDescription>
+            <CardDescription>Sincronizza appuntamenti in tempo reale - niente doppi inserimenti</CardDescription>
           </CardHeader>
-          <CardContent>
-            {googleConnected ? (
-              <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  <div>
-                    <p className="font-medium text-green-800">Connesso</p>
-                    <p className="text-sm text-green-600">Calendario sincronizzato</p>
+          <CardContent className="space-y-4">
+            {googleCalendarStatus.loading ? (
+              <div className="flex items-center justify-center p-8">
+                <RefreshCw className="h-6 w-6 animate-spin text-gray-400" />
+              </div>
+            ) : googleCalendarStatus.connected ? (
+              <>
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="h-6 w-6 text-green-600" />
+                      <div>
+                        <p className="font-medium text-green-800">Calendario connesso</p>
+                        <p className="text-sm text-green-600">{googleCalendarStatus.calendarName || 'Calendario principale'}</p>
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={disconnectGoogleCalendar} className="text-red-600 border-red-300 hover:bg-red-50">
+                      Disconnetti
+                    </Button>
+                  </div>
+                  {googleCalendarStatus.lastSync && (
+                    <p className="text-xs text-green-600 mt-2">
+                      Ultima sincronizzazione: {new Date(googleCalendarStatus.lastSync).toLocaleString('it-IT')}
+                    </p>
+                  )}
+                </div>
+
+                {/* Staff Colors */}
+                <div className="mt-4">
+                  <h4 className="font-medium mb-3 flex items-center gap-2">
+                    <Users className="h-4 w-4" />Colori staff per il calendario
+                  </h4>
+                  <p className="text-sm text-gray-500 mb-3">
+                    Assegna un colore a ogni collaboratore per distinguere gli appuntamenti su Google Calendar.
+                  </p>
+                  <div className="space-y-2">
+                    {staffList.length === 0 ? (
+                      <p className="text-sm text-gray-400 italic">Nessuno staff aggiunto. Vai alla sezione Staff per aggiungere collaboratori.</p>
+                    ) : staffList.map((staff) => (
+                      <div key={staff.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div 
+                            className="h-8 w-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
+                            style={{ backgroundColor: staffColors.find(c => c.id === parseInt(staff.calendarColorId))?.hex || '#6B7280' }}
+                          >
+                            {staff.name?.charAt(0)?.toUpperCase() || 'S'}
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">{staff.name}</p>
+                            <p className="text-xs text-gray-500">{staff.role}</p>
+                          </div>
+                        </div>
+                        <Select 
+                          value={staff.calendarColorId?.toString() || '1'} 
+                          onValueChange={(v) => updateStaffColor(staff.id, v)}
+                        >
+                          <SelectTrigger className="w-36">
+                            <SelectValue placeholder="Colore" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {staffColors.map((color) => (
+                              <SelectItem key={color.id} value={color.id.toString()}>
+                                <div className="flex items-center gap-2">
+                                  <div className="h-4 w-4 rounded-full" style={{ backgroundColor: color.hex }} />
+                                  {color.name}
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <Button variant="outline" size="sm">Disconnetti</Button>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium">Non connesso</p>
-                  <p className="text-sm text-gray-500">Connetti per evitare doppie prenotazioni</p>
+
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg mt-4">
+                  <p className="text-sm text-blue-700">
+                    <strong>Come funziona:</strong> Quando crei un appuntamento su VetBuddy, viene automaticamente aggiunto al tuo Google Calendar con il colore dello staff assegnato.
+                  </p>
                 </div>
-                <Button className="bg-coral-500 hover:bg-coral-600" onClick={() => setGoogleConnected(true)}>
-                  <ExternalLink className="h-4 w-4 mr-2" />Connetti
-                </Button>
+              </>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium">Non connesso</p>
+                    <p className="text-sm text-gray-500">Connetti per sincronizzare gli appuntamenti</p>
+                  </div>
+                  <Button className="bg-green-600 hover:bg-green-700" onClick={connectGoogleCalendar}>
+                    <ExternalLink className="h-4 w-4 mr-2" />Connetti Google Calendar
+                  </Button>
+                </div>
+                <div className="grid md:grid-cols-3 gap-3">
+                  <div className="p-3 bg-gray-50 rounded-lg text-center">
+                    <CalendarCheck className="h-6 w-6 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm font-medium">Sync automatico</p>
+                    <p className="text-xs text-gray-500">Appuntamenti su Google</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg text-center">
+                    <AlertCircle className="h-6 w-6 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm font-medium">No doppioni</p>
+                    <p className="text-xs text-gray-500">Slot occupati bloccati</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg text-center">
+                    <Users className="h-6 w-6 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm font-medium">Colori staff</p>
+                    <p className="text-xs text-gray-500">Un colore per ogni collaboratore</p>
+                  </div>
+                </div>
               </div>
             )}
           </CardContent>
