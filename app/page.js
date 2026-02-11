@@ -4990,8 +4990,22 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [googleOAuthResult, setGoogleOAuthResult] = useState(null);
 
-  useEffect(() => { checkAuth(); }, []);
+  useEffect(() => { 
+    checkAuth(); 
+    // Check for Google OAuth callback params
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('google_success')) {
+        setGoogleOAuthResult({ success: true, message: 'Google Calendar connesso con successo!' });
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (params.get('google_error')) {
+        setGoogleOAuthResult({ success: false, message: 'Errore: ' + params.get('google_error') });
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+  }, []);
 
   const checkAuth = async () => {
     const token = api.getToken();
