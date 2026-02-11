@@ -668,6 +668,10 @@ class VetBuddyAPITest:
         
         tests = [
             ("Health Check", self.test_health_check),
+            ("Services API", self.test_services_api),
+            ("Invite Clinic API", self.test_invite_clinic_api),
+            ("Clinic Search API", self.test_clinic_search_api),
+            ("Demo Authentication", self.test_demo_auth),
             ("User Registration", self.test_register),
             ("User Login", self.test_login),
             ("Get Current User", self.test_auth_me),
