@@ -1012,10 +1012,10 @@ function ClinicControlRoom({ appointments, documents, messages, owners, setupPro
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KPICard icon={Calendar} label="Appuntamenti oggi" value={todayAppts.length} color="coral" />
-        <KPICard icon={Video} label="Video visite oggi" value={videoAppts.length} color="blue" highlight={videoAppts[0]?.time} />
-        <KPICard icon={MessageCircle} label="Messaggi in attesa" value={unreadMessages} color="amber" />
-        <KPICard icon={FileText} label="Nuovi da clienti" value={newFromClients} color="green" />
+        <KPICard icon={Calendar} label="Appuntamenti oggi" value={todayAppts.length} color="coral" onClick={() => onNavigate('agenda')} />
+        <KPICard icon={Video} label="Video visite oggi" value={videoAppts.length} color="blue" highlight={videoAppts[0]?.time} onClick={() => onNavigate('agenda')} />
+        <KPICard icon={MessageCircle} label="Messaggi in attesa" value={unreadMessages} color="amber" onClick={() => onNavigate('inbox')} />
+        <KPICard icon={FileText} label="Nuovi da clienti" value={newFromClients} color="green" onClick={() => onNavigate('documents')} />
       </div>
 
       {/* Main Content Grid */}
