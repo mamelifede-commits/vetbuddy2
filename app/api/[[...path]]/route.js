@@ -743,7 +743,7 @@ export async function POST(request, { params }) {
       return NextResponse.json(pet, { headers: corsHeaders });
     }
 
-    // Send document via email
+    // Send document via email with PDF attachment
     if (path === 'documents/send-email') {
       const user = getUserFromRequest(request);
       if (!user) {
@@ -758,24 +758,156 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Documento non trovato' }, { status: 404, headers: corsHeaders });
       }
 
+      // Get clinic info
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: user.clinicId || user.id });
+      const clinicName = clinic?.clinicName || 'La tua clinica veterinaria';
+
+      // Prepare attachments if PDF content exists
+      const attachments = [];
+      if (doc.content && doc.content.startsWith('data:')) {
+        // Extract base64 content
+        const base64Data = doc.content.split(',')[1];
+        const mimeType = doc.content.split(';')[0].split(':')[1];
+        attachments.push({
+          filename: doc.fileName || `${doc.name}.pdf`,
+          content: base64Data,
+          type: mimeType || 'application/pdf'
+        });
+      }
+
+      // Different templates based on document type
+      const templates = {
+        prescrizione: {
+          subject: `📋 Prescrizione per ${doc.petName || 'il tuo animale'} - ${clinicName}`,
+          intro: 'Ti inviamo la prescrizione richiesta.',
+          cta: 'Segui attentamente le istruzioni indicate. Per qualsiasi dubbio, contattaci.',
+          color: '#10B981'
+        },
+        referto: {
+          subject: `📄 Referto di ${doc.petName || 'il tuo animale'} - ${clinicName}`,
+          intro: 'Ti inviamo il referto della visita.',
+          cta: 'Se hai domande sui risultati, prenota un follow-up con noi.',
+          color: '#3B82F6'
+        },
+        fattura: {
+          subject: `🧾 Fattura per ${doc.petName || 'il tuo animale'} - ${clinicName}`,
+          intro: 'Ti inviamo la fattura relativa ai servizi prestati.',
+          cta: 'Per informazioni sui pagamenti, contattaci.',
+          color: '#F59E0B'
+        }
+      };
+      const template = templates[doc.type] || {
+        subject: `📎 Documento per ${doc.petName || 'il tuo animale'} - ${clinicName}`,
+        intro: 'Ti inviamo un documento.',
+        cta: '',
+        color: '#6B7280'
+      };
+
       const result = await sendEmail({
         to: recipientEmail,
-        subject: `VetBuddy - Documento: ${doc.name}`,
+        subject: template.subject,
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #10B981;">🐾 VetBuddy</h2>
-            <p>Hai ricevuto un nuovo documento dalla clinica veterinaria.</p>
-            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <h3 style="margin: 0 0 10px;">${doc.name}</h3>
-              <p style="margin: 0; color: #666;">Tipo: ${doc.type}</p>
-              <p style="margin: 10px 0 0; color: #666;">Animale: ${doc.petName || 'N/A'}</p>
+          <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+            <div style="background: ${template.color}; padding: 24px; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 24px;">🐾 ${clinicName}</h1>
             </div>
-            <p style="color: #666; font-size: 14px;">Documento inviato tramite VetBuddy - La piattaforma per la gestione delle cliniche veterinarie.</p>
+            <div style="padding: 32px;">
+              <p style="font-size: 16px; color: #374151; margin-bottom: 24px;">Ciao,</p>
+              <p style="font-size: 16px; color: #374151; margin-bottom: 24px;">${template.intro}</p>
+              
+              <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin: 24px 0;">
+                <table style="width: 100%;">
+                  <tr>
+                    <td style="color: #6b7280; font-size: 14px; padding-bottom: 8px;">Documento:</td>
+                    <td style="color: #111827; font-size: 14px; font-weight: 600; padding-bottom: 8px; text-align: right;">${doc.name}</td>
+                  </tr>
+                  <tr>
+                    <td style="color: #6b7280; font-size: 14px; padding-bottom: 8px;">Tipo:</td>
+                    <td style="color: #111827; font-size: 14px; padding-bottom: 8px; text-align: right; text-transform: capitalize;">${doc.type || 'Documento'}</td>
+                  </tr>
+                  <tr>
+                    <td style="color: #6b7280; font-size: 14px; padding-bottom: 8px;">Animale:</td>
+                    <td style="color: #111827; font-size: 14px; padding-bottom: 8px; text-align: right;">${doc.petName || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td style="color: #6b7280; font-size: 14px;">Data:</td>
+                    <td style="color: #111827; font-size: 14px; text-align: right;">${new Date().toLocaleDateString('it-IT')}</td>
+                  </tr>
+                  ${doc.amount ? `
+                  <tr>
+                    <td style="color: #6b7280; font-size: 14px; padding-top: 8px; border-top: 1px solid #e5e7eb;">Importo:</td>
+                    <td style="color: #111827; font-size: 16px; font-weight: 700; padding-top: 8px; text-align: right; border-top: 1px solid #e5e7eb;">€${doc.amount.toFixed(2)}</td>
+                  </tr>
+                  ` : ''}
+                </table>
+              </div>
+
+              ${attachments.length > 0 ? `
+              <p style="font-size: 14px; color: #059669; margin-bottom: 24px;">
+                📎 <strong>Il documento è allegato a questa email.</strong>
+              </p>
+              ` : ''}
+
+              ${template.cta ? `<p style="font-size: 14px; color: #6b7280; margin-bottom: 24px;">${template.cta}</p>` : ''}
+
+              ${doc.notes ? `
+              <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin: 24px 0;">
+                <p style="margin: 0; font-size: 14px; color: #92400e;"><strong>Note:</strong> ${doc.notes}</p>
+              </div>
+              ` : ''}
+            </div>
+            <div style="background: #f9fafb; padding: 24px; text-align: center; border-top: 1px solid #e5e7eb;">
+              <p style="color: #6b7280; font-size: 12px; margin: 0;">Documento inviato tramite <strong>VetBuddy</strong></p>
+              <p style="color: #9ca3af; font-size: 11px; margin: 8px 0 0;">La piattaforma per cliniche veterinarie e proprietari di animali</p>
+            </div>
           </div>
-        `
+        `,
+        attachments: attachments.length > 0 ? attachments : undefined
       });
 
-      return NextResponse.json(result, { headers: corsHeaders });
+      // Update document status and audit log
+      const auditEntry = {
+        action: 'email_sent',
+        sentBy: user.id,
+        sentByName: user.name || user.clinicName,
+        sentTo: recipientEmail,
+        sentAt: new Date().toISOString(),
+        hasAttachment: attachments.length > 0
+      };
+
+      await documents.updateOne(
+        { id: documentId },
+        { 
+          $set: { 
+            status: 'inviato',
+            lastSentAt: new Date().toISOString(),
+            lastSentTo: recipientEmail
+          },
+          $push: { auditLog: auditEntry }
+        }
+      );
+
+      // Create inbox/timeline entry
+      const messages = await getCollection('messages');
+      await messages.insertOne({
+        id: uuidv4(),
+        type: 'document_sent',
+        clinicId: user.clinicId || user.id,
+        ownerId: doc.ownerId,
+        documentId: documentId,
+        subject: `${doc.type === 'prescrizione' ? 'Prescrizione' : doc.type === 'referto' ? 'Referto' : 'Documento'} inviato`,
+        content: `${doc.name} inviato a ${recipientEmail}`,
+        read: true,
+        createdAt: new Date().toISOString()
+      });
+
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Documento inviato via email',
+        hasAttachment: attachments.length > 0,
+        auditEntry
+      }, { headers: corsHeaders });
     }
 
     // Create Stripe checkout session for subscription
