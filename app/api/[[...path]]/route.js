@@ -101,12 +101,12 @@ export async function GET(request, { params }) {
       const error = searchParams.get('error');
       
       if (error) {
-        // Redirect back to settings with error
-        return NextResponse.redirect(new URL(`/dashboard?tab=settings&google_error=${error}`, process.env.NEXT_PUBLIC_BASE_URL));
+        // Redirect back to homepage with error (SPA handles routing)
+        return NextResponse.redirect(new URL(`/?google_error=${error}`, process.env.NEXT_PUBLIC_BASE_URL));
       }
       
       if (!code || !clinicId) {
-        return NextResponse.redirect(new URL('/dashboard?tab=settings&google_error=missing_params', process.env.NEXT_PUBLIC_BASE_URL));
+        return NextResponse.redirect(new URL('/?google_error=missing_params', process.env.NEXT_PUBLIC_BASE_URL));
       }
       
       try {
@@ -127,7 +127,7 @@ export async function GET(request, { params }) {
         
         if (tokens.error) {
           console.error('Google OAuth error:', tokens);
-          return NextResponse.redirect(new URL(`/dashboard?tab=settings&google_error=${tokens.error}`, process.env.NEXT_PUBLIC_BASE_URL));
+          return NextResponse.redirect(new URL(`/?google_error=${tokens.error}`, process.env.NEXT_PUBLIC_BASE_URL));
         }
         
         // Get calendar info
@@ -156,11 +156,11 @@ export async function GET(request, { params }) {
           }
         );
         
-        // Redirect back to settings with success
-        return NextResponse.redirect(new URL('/dashboard?tab=settings&google_success=true', process.env.NEXT_PUBLIC_BASE_URL));
+        // Redirect back to homepage with success (SPA handles routing)
+        return NextResponse.redirect(new URL('/?google_success=true', process.env.NEXT_PUBLIC_BASE_URL));
       } catch (err) {
         console.error('Google OAuth callback error:', err);
-        return NextResponse.redirect(new URL('/dashboard?tab=settings&google_error=token_exchange_failed', process.env.NEXT_PUBLIC_BASE_URL));
+        return NextResponse.redirect(new URL('/?google_error=token_exchange_failed', process.env.NEXT_PUBLIC_BASE_URL));
       }
     }
 
