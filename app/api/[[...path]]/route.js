@@ -542,6 +542,68 @@ export async function POST(request, { params }) {
       return NextResponse.json(owner, { headers: corsHeaders });
     }
 
+    // Submit clinic review
+    if (path === 'reviews') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'owner') {
+        return NextResponse.json({ error: 'Solo i proprietari possono lasciare recensioni' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { clinicId, overallRating, punctuality, competence, price, comment } = body;
+      if (!clinicId || !overallRating) {
+        return NextResponse.json({ error: 'Campi obbligatori mancanti' }, { status: 400, headers: corsHeaders });
+      }
+
+      const reviews = await getCollection('reviews');
+      
+      // Check if user already reviewed this clinic
+      const existing = await reviews.findOne({ clinicId, ownerId: user.id });
+      if (existing) {
+        return NextResponse.json({ error: 'Hai già recensito questa clinica' }, { status: 400, headers: corsHeaders });
+      }
+
+      const review = {
+        id: uuidv4(),
+        clinicId,
+        ownerId: user.id,
+        ownerName: user.name || 'Utente',
+        overallRating: Math.min(5, Math.max(1, overallRating)),
+        punctuality: punctuality ? Math.min(5, Math.max(1, punctuality)) : null,
+        competence: competence ? Math.min(5, Math.max(1, competence)) : null,
+        price: price ? Math.min(5, Math.max(1, price)) : null,
+        comment: comment || '',
+        createdAt: new Date().toISOString()
+      };
+
+      await reviews.insertOne(review);
+      return NextResponse.json(review, { headers: corsHeaders });
+    }
+
+    // Add vaccination
+    if (path === 'vaccinations') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { petId, name, date, nextDue, notes } = body;
+      const vaccinations = await getCollection('vaccinations');
+      
+      const vaccination = {
+        id: uuidv4(),
+        petId,
+        name,
+        date,
+        nextDue,
+        notes: notes || '',
+        createdBy: user.id,
+        createdAt: new Date().toISOString()
+      };
+
+      await vaccinations.insertOne(vaccination);
+      return NextResponse.json(vaccination, { headers: corsHeaders });
+    }
+
     return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
   } catch (error) {
     console.error('POST Error:', error);
