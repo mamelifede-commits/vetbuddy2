@@ -450,7 +450,7 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
       }
 
-      const { name, species, breed, birthDate, weight, notes, ownerId } = body;
+      const { name, species, breed, birthDate, weight, notes, ownerId, microchip, sterilized, allergies, medications } = body;
       const pets = await getCollection('pets');
       
       const pet = {
@@ -460,6 +460,10 @@ export async function POST(request, { params }) {
         breed,
         birthDate,
         weight,
+        microchip: microchip || '',
+        sterilized: sterilized || false,
+        allergies: allergies || '',
+        medications: medications || '',
         notes: notes || '',
         ownerId: user.role === 'owner' ? user.id : ownerId,
         clinicId: user.role === 'clinic' ? user.id : body.clinicId,
