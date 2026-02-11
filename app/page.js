@@ -3451,7 +3451,7 @@ function ClinicTemplates({ owners = [], pets = [], staff = [], appointments = []
 }
 
 // ==================== CLINIC REPORTS ====================
-function ClinicReports({ appointments, documents, messages, owners }) {
+function ClinicReports({ appointments, documents, messages, owners, onNavigate }) {
   const [activeTab, setActiveTab] = useState('overview');
   
   // Calculate statistics
