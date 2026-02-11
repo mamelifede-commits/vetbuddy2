@@ -2503,7 +2503,7 @@ function ClinicDocuments({ documents, owners, pets, onRefresh, onNavigate }) {
 }
 
 // Simple components for other sections
-function ClinicPatients({ pets, onRefresh }) {
+function ClinicPatients({ pets, onRefresh, onNavigate }) {
   const [showDialog, setShowDialog] = useState(false);
   const [formData, setFormData] = useState({ name: '', species: 'dog', breed: '' });
   const handleSubmit = async (e) => { e.preventDefault(); try { await api.post('pets', formData); setShowDialog(false); onRefresh(); } catch (error) { alert(error.message); } };
