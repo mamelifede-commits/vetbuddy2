@@ -2264,6 +2264,93 @@ function ClinicSettings({ user }) {
           </CardContent>
         </Card>
 
+        {/* Posizione su Google Maps */}
+        <Card className="border-blue-200">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-blue-500" />Posizione clinica
+            </CardTitle>
+            <CardDescription>Imposta la posizione per essere trovato dai clienti</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Indirizzo</Label>
+                <Input 
+                  value={locationForm.address} 
+                  onChange={(e) => setLocationForm({...locationForm, address: e.target.value})}
+                  placeholder="Via Roma 1"
+                />
+              </div>
+              <div>
+                <Label>Città</Label>
+                <Input 
+                  value={locationForm.city} 
+                  onChange={(e) => setLocationForm({...locationForm, city: e.target.value})}
+                  placeholder="Milano"
+                />
+              </div>
+            </div>
+            
+            {locationForm.latitude && locationForm.longitude ? (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <span className="font-medium text-green-800">Coordinate impostate</span>
+                </div>
+                <p className="text-sm text-green-700">
+                  Lat: {locationForm.latitude.toFixed(6)}, Lng: {locationForm.longitude.toFixed(6)}
+                </p>
+                <div className="mt-3">
+                  <iframe
+                    width="100%"
+                    height="150"
+                    style={{ border: 0, borderRadius: '8px' }}
+                    loading="lazy"
+                    src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${locationForm.latitude},${locationForm.longitude}&zoom=15`}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="h-5 w-5 text-amber-600" />
+                  <span className="text-sm text-amber-700">Nessuna posizione impostata. I clienti non potranno vedere la distanza dalla tua clinica.</span>
+                </div>
+              </div>
+            )}
+            
+            <div className="flex flex-wrap gap-2">
+              <Button 
+                variant="outline" 
+                onClick={detectLocation} 
+                disabled={detectingLocation}
+              >
+                {detectingLocation ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <MapPin className="h-4 w-4 mr-2" />}
+                Usa posizione attuale
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={geocodeAddress} 
+                disabled={detectingLocation || (!locationForm.address && !locationForm.city)}
+              >
+                {detectingLocation ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Search className="h-4 w-4 mr-2" />}
+                Cerca da indirizzo
+              </Button>
+              <Button 
+                className="bg-blue-500 hover:bg-blue-600"
+                onClick={saveLocation} 
+                disabled={savingLocation || !locationForm.latitude}
+              >
+                {savingLocation ? 'Salvataggio...' : 'Salva posizione'}
+              </Button>
+            </div>
+            <p className="text-xs text-gray-500">
+              La posizione permette ai clienti di vedere quanto dista la tua clinica e ottenere indicazioni stradali.
+            </p>
+          </CardContent>
+        </Card>
+
         {/* Profilo */}
         <Card>
           <CardHeader>
