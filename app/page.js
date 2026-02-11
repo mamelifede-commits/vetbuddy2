@@ -416,7 +416,7 @@ function LandingPage({ onLogin }) {
             </Card>
             
             <Card className="border-2 border-coral-500 relative shadow-lg">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-coral-500 text-white text-xs px-3 py-1 rounded-full">Pilot Milano</div>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-coral-500 text-white text-xs px-3 py-1 rounded-full">Beta Test</div>
               <CardHeader>
                 <CardTitle>Pro</CardTitle>
                 <CardDescription>Tutto incluso</CardDescription>
@@ -424,7 +424,7 @@ function LandingPage({ onLogin }) {
                   <span className="text-3xl font-bold text-coral-500">€0</span>
                   <span className="text-lg text-gray-400 line-through ml-2">€129/mese</span>
                 </div>
-                <p className="text-xs text-coral-600 font-medium">Gratis per 6 mesi nel Pilot</p>
+                <p className="text-xs text-coral-600 font-medium">Gratis durante la fase beta</p>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm mb-6">
@@ -435,7 +435,7 @@ function LandingPage({ onLogin }) {
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Report e analytics</li>
                 </ul>
                 <Button className="w-full bg-coral-500 hover:bg-coral-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-                  Candidati al Pilot
+                  Prova gratis
                 </Button>
               </CardContent>
             </Card>
@@ -452,11 +452,52 @@ function LandingPage({ onLogin }) {
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> API dedicata</li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> SLA garantito</li>
                 </ul>
-                <Button variant="outline" className="w-full">Contattaci</Button>
+                <Button variant="outline" className="w-full" onClick={() => scrollToSection('contatti')}>Contattaci</Button>
               </CardContent>
             </Card>
           </div>
-          <p className="text-center text-sm text-gray-500">Prezzi IVA esclusa. Piano Pro gratuito solo per cliniche ammesse al Pilot Milano.</p>
+          <p className="text-center text-sm text-gray-500">Piano Pro gratuito durante la fase beta. Prezzi futuri IVA esclusa.</p>
+        </div>
+      </section>
+
+      {/* Contact Form for Enterprise */}
+      <section id="contatti" className="py-20 px-4 bg-white">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Contattaci</h2>
+            <p className="text-gray-600">Hai una catena di cliniche o domande specifiche? Scrivici!</p>
+          </div>
+          <Card>
+            <CardContent className="p-6">
+              <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('Grazie! Ti ricontatteremo presto a info@vetbuddy.it'); }}>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="contact-name">Nome e Cognome</Label>
+                    <Input id="contact-name" placeholder="Mario Rossi" required />
+                  </div>
+                  <div>
+                    <Label htmlFor="contact-clinic">Nome Clinica</Label>
+                    <Input id="contact-clinic" placeholder="Clinica Veterinaria Roma" />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="contact-email">Email</Label>
+                  <Input id="contact-email" type="email" placeholder="mario@clinica.it" required />
+                </div>
+                <div>
+                  <Label htmlFor="contact-phone">Telefono (opzionale)</Label>
+                  <Input id="contact-phone" type="tel" placeholder="+39 02 1234567" />
+                </div>
+                <div>
+                  <Label htmlFor="contact-message">Messaggio</Label>
+                  <Textarea id="contact-message" placeholder="Descrivi le tue esigenze o domande..." rows={4} required />
+                </div>
+                <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">
+                  <Send className="h-4 w-4 mr-2" />Invia messaggio
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
