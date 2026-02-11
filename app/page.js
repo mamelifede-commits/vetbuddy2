@@ -182,7 +182,8 @@ function LandingPage({ onLogin }) {
                 <Building2 className="h-7 w-7 text-coral-600" />
               </div>
               <h3 className="font-bold text-lg text-gray-900 mb-2">Sei una Clinica?</h3>
-              <p className="text-sm text-gray-600 mb-4">Candidati al Pilot gratuito a Milano. Digitalizza la tua clinica.</p>
+              <p className="text-sm text-gray-600 mb-2">Candidati al Pilot gratuito a Milano. Digitalizza la tua clinica.</p>
+              <p className="text-xs text-coral-600 font-medium mb-4">🏥 Gratis durante la fase beta</p>
               <Button className="w-full bg-coral-500 hover:bg-coral-600 text-white">
                 Candidati al Pilot →
               </Button>
