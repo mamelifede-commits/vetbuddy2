@@ -562,8 +562,12 @@ export async function GET(request, { params }) {
       if (city) {
         filter.city = { $regex: city, $options: 'i' };
       }
+      // Filter by service offered
+      if (service) {
+        filter.services = service;
+      }
       
-      const clinics = await users.find(filter, { projection: { password: 0, resetToken: 0, resetExpiry: 0 } }).toArray();
+      const clinics = await users.find(filter, { projection: { password: 0, resetToken: 0, resetExpiry: 0 } }).limit(50).toArray();
       
       // Get reviews for each clinic and calculate distance
       const reviews = await getCollection('reviews');
