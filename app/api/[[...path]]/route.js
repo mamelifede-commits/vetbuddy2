@@ -623,6 +623,7 @@ export async function POST(request, { params }) {
           clinicId: user.id,
           clinicName: user.clinicName,
           permissions: member.permissions,
+          mustChangePassword: true, // Force password change on first login
           createdAt: new Date().toISOString()
         });
       }
