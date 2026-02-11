@@ -1079,7 +1079,16 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
   const [showUpload, setShowUpload] = useState(false);
   const [selectedClientDoc, setSelectedClientDoc] = useState(null);
   const [replyText, setReplyText] = useState('');
-  const docTypes = { prescrizione: { label: 'Prescrizione', color: 'bg-purple-100 text-purple-700' }, referto: { label: 'Referto', color: 'bg-blue-100 text-blue-700' }, istruzioni: { label: 'Istruzioni', color: 'bg-green-100 text-green-700' }, altro: { label: 'Altro', color: 'bg-gray-100 text-gray-700' }, foto: { label: 'Foto', color: 'bg-pink-100 text-pink-700' }, video: { label: 'Video', color: 'bg-indigo-100 text-indigo-700' }, esame: { label: 'Esame', color: 'bg-cyan-100 text-cyan-700' } };
+  const docTypes = { 
+    prescrizione: { label: 'Prescrizione', color: 'bg-purple-100 text-purple-700' }, 
+    referto: { label: 'Referto', color: 'bg-blue-100 text-blue-700' }, 
+    fattura: { label: 'Fattura', color: 'bg-emerald-100 text-emerald-700' },
+    istruzioni: { label: 'Istruzioni', color: 'bg-green-100 text-green-700' }, 
+    altro: { label: 'Altro', color: 'bg-gray-100 text-gray-700' }, 
+    foto: { label: 'Foto', color: 'bg-pink-100 text-pink-700' }, 
+    video: { label: 'Video', color: 'bg-indigo-100 text-indigo-700' }, 
+    esame: { label: 'Esame', color: 'bg-cyan-100 text-cyan-700' } 
+  };
 
   // Mock data for client-uploaded documents
   const [clientDocs, setClientDocs] = useState([
