@@ -376,6 +376,109 @@ export async function POST(request, { params }) {
       return NextResponse.json({ success: true, message: 'Password aggiornata con successo' }, { headers: corsHeaders });
     }
 
+    // Change password (for logged in users, including first-time staff)
+    if (path === 'auth/change-password') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { currentPassword, newPassword } = body;
+      if (!newPassword || newPassword.length < 6) {
+        return NextResponse.json({ error: 'La nuova password deve avere almeno 6 caratteri' }, { status: 400, headers: corsHeaders });
+      }
+
+      const users = await getCollection('users');
+      const userData = await users.findOne({ id: user.id });
+
+      // For first-time login (mustChangePassword), currentPassword is optional
+      if (!userData.mustChangePassword && currentPassword) {
+        if (!comparePassword(currentPassword, userData.password)) {
+          return NextResponse.json({ error: 'Password attuale non corretta' }, { status: 400, headers: corsHeaders });
+        }
+      }
+
+      await users.updateOne(
+        { id: user.id },
+        { $set: { password: hashPassword(newPassword), mustChangePassword: false, updatedAt: new Date().toISOString() } }
+      );
+
+      // Also update staff record if exists
+      const staff = await getCollection('staff');
+      await staff.updateOne({ id: user.id }, { $set: { mustChangePassword: false } });
+
+      return NextResponse.json({ success: true, message: 'Password aggiornata' }, { headers: corsHeaders });
+    }
+
+    // Update staff permissions (clinic only)
+    if (path.startsWith('staff/') && path.endsWith('/permissions')) {
+      const staffId = path.split('/')[1];
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { permissions } = body;
+      const staff = await getCollection('staff');
+      const users = await getCollection('users');
+
+      await staff.updateOne({ id: staffId, clinicId: user.id }, { $set: { permissions, updatedAt: new Date().toISOString() } });
+      await users.updateOne({ id: staffId }, { $set: { permissions, updatedAt: new Date().toISOString() } });
+
+      return NextResponse.json({ success: true }, { headers: corsHeaders });
+    }
+
+    // Delete staff member
+    if (path.startsWith('staff/') && !path.includes('/permissions')) {
+      const staffId = path.split('/')[1];
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const staff = await getCollection('staff');
+      const users = await getCollection('users');
+
+      await staff.deleteOne({ id: staffId, clinicId: user.id });
+      await users.deleteOne({ id: staffId });
+
+      return NextResponse.json({ success: true }, { headers: corsHeaders });
+    }
+
+    // Export data as CSV
+    if (path === 'export/invoices') {
+      const user = getUserFromRequest(request);
+      if (!user || (user.role !== 'clinic' && user.role !== 'staff')) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const clinicId = user.role === 'staff' ? user.clinicId : user.id;
+      const documents = await getCollection('documents');
+      const invoices = await documents.find({ clinicId, type: 'fattura' }).sort({ createdAt: -1 }).toArray();
+
+      // Generate CSV
+      const headers = ['ID', 'Titolo', 'Cliente', 'Importo', 'Data', 'Stato', 'Email Inviata'];
+      const rows = invoices.map(inv => [
+        inv.id,
+        inv.name || '',
+        inv.ownerEmail || '',
+        inv.amount || 0,
+        inv.createdAt ? new Date(inv.createdAt).toLocaleDateString() : '',
+        inv.emailSent ? 'Inviata' : 'Bozza',
+        inv.emailSent ? 'Sì' : 'No'
+      ].map(v => `"${v}"`).join(','));
+
+      const csv = [headers.join(','), ...rows].join('\n');
+      
+      return new NextResponse(csv, {
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'text/csv',
+          'Content-Disposition': 'attachment; filename="fatture.csv"'
+        }
+      });
+    }
+
     // Login
     if (path === 'auth/login') {
       const { email, password } = body;
