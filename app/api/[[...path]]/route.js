@@ -1972,10 +1972,10 @@ export async function PUT(request, { params }) {
       return NextResponse.json(updated, { headers: corsHeaders });
     }
 
-    // Update clinic profile (including location)
+    // Update clinic profile (including location and services)
     if (path === 'clinic/profile') {
       const users = await getCollection('users');
-      const { address, city, latitude, longitude, phone, website } = body;
+      const { address, city, latitude, longitude, phone, website, services } = body;
       
       const updateData = { updatedAt: new Date().toISOString() };
       if (address !== undefined) updateData.address = address;
@@ -1984,8 +1984,26 @@ export async function PUT(request, { params }) {
       if (longitude !== undefined) updateData.longitude = longitude;
       if (phone !== undefined) updateData.phone = phone;
       if (website !== undefined) updateData.website = website;
+      if (services !== undefined) updateData.services = services; // Array of service IDs
       
       await users.updateOne({ id: user.id }, { $set: updateData });
+      const updated = await users.findOne({ id: user.id }, { projection: { password: 0 } });
+      return NextResponse.json(updated, { headers: corsHeaders });
+    }
+
+    // Update clinic services only
+    if (path === 'clinic/services') {
+      const users = await getCollection('users');
+      const { services } = body;
+      
+      if (!Array.isArray(services)) {
+        return NextResponse.json({ error: 'services deve essere un array' }, { status: 400, headers: corsHeaders });
+      }
+      
+      await users.updateOne(
+        { id: user.id }, 
+        { $set: { services, updatedAt: new Date().toISOString() } }
+      );
       const updated = await users.findOne({ id: user.id }, { projection: { password: 0 } });
       return NextResponse.json(updated, { headers: corsHeaders });
     }
