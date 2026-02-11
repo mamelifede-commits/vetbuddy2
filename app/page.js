@@ -465,7 +465,7 @@ function AgendaSection({ appointments, owners, pets, onRefresh }) {
             ) : (
               <div className="space-y-3">
                 {todayAppts.map((appt) => (
-                  <div key={appt.id} className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg">
+                  <div key={appt.id} className="flex items-center justify-between p-3 bg-coral-50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
                         <PawPrint className="h-5 w-5 text-coral-600" />
@@ -1384,7 +1384,7 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-emerald-50">
+      <div className="min-h-screen flex items-center justify-center bg-coral-50">
         <div className="text-center">
           <VetBuddyLogo size={60} />
           <p className="mt-4 text-coral-700">Caricamento...</p>
