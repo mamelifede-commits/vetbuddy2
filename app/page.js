@@ -6360,11 +6360,15 @@ function FindClinic({ user }) {
                     <p className="text-sm text-gray-500">{clinic.name}</p>
                   </div>
                   <div className="text-right">
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium">{clinic.avgRating || 'N/D'}</span>
+                    <div className="flex items-center gap-1 justify-end">
+                      {[1,2,3,4,5].map((s) => (
+                        <Star key={s} className={`h-4 w-4 ${s <= Math.round(clinic.avgRating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
+                      ))}
                     </div>
-                    <p className="text-xs text-gray-500">{clinic.reviewCount} recensioni</p>
+                    <div className="flex items-center gap-1 justify-end mt-1">
+                      <span className="font-bold text-gray-800">{clinic.avgRating ? clinic.avgRating.toFixed(1) : '-'}</span>
+                      <span className="text-xs text-gray-500">({clinic.reviewCount || 0} recensioni)</span>
+                    </div>
                   </div>
                 </div>
                 
