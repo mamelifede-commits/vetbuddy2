@@ -1995,6 +1995,14 @@ function ClinicSettings({ user }) {
   const [stripeForm, setStripeForm] = useState({ publishableKey: '', secretKey: '' });
   const [saving, setSaving] = useState(false);
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+  const [locationForm, setLocationForm] = useState({ 
+    address: user.address || '', 
+    city: user.city || '', 
+    latitude: user.latitude || null, 
+    longitude: user.longitude || null 
+  });
+  const [detectingLocation, setDetectingLocation] = useState(false);
+  const [savingLocation, setSavingLocation] = useState(false);
 
   useEffect(() => { loadStripeSettings(); }, []);
 
@@ -2027,6 +2035,73 @@ function ClinicSettings({ user }) {
       });
       window.location.href = url;
     } catch (error) { alert(error.message); setSubscriptionLoading(false); }
+  };
+
+  // Detect current location
+  const detectLocation = () => {
+    setDetectingLocation(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocationForm(prev => ({
+            ...prev,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          }));
+          setDetectingLocation(false);
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          alert('Impossibile ottenere la posizione. Assicurati di aver abilitato la geolocalizzazione.');
+          setDetectingLocation(false);
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    } else {
+      alert('Geolocalizzazione non supportata dal browser');
+      setDetectingLocation(false);
+    }
+  };
+
+  // Geocode address using Google Maps Geocoding
+  const geocodeAddress = async () => {
+    if (!locationForm.address || !locationForm.city) {
+      alert('Inserisci indirizzo e città');
+      return;
+    }
+    setDetectingLocation(true);
+    try {
+      const address = encodeURIComponent(`${locationForm.address}, ${locationForm.city}, Italia`);
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`);
+      const data = await response.json();
+      
+      if (data.results && data.results.length > 0) {
+        const { lat, lng } = data.results[0].geometry.location;
+        setLocationForm(prev => ({
+          ...prev,
+          latitude: lat,
+          longitude: lng
+        }));
+        alert('Coordinate trovate con successo!');
+      } else {
+        alert('Indirizzo non trovato. Prova con un indirizzo più preciso o usa "Usa posizione attuale".');
+      }
+    } catch (error) {
+      console.error('Geocoding error:', error);
+      alert('Errore durante la geocodifica. Riprova.');
+    } finally {
+      setDetectingLocation(false);
+    }
+  };
+
+  // Save location
+  const saveLocation = async () => {
+    setSavingLocation(true);
+    try {
+      await api.put('clinic/profile', locationForm);
+      alert('Posizione salvata con successo! I clienti potranno ora vedere la distanza dalla tua clinica.');
+    } catch (error) { alert(error.message); } finally { setSavingLocation(false); }
   };
 
   return (
