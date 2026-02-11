@@ -1533,12 +1533,12 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh }) {
                 {/* Staff Assignment */}
                 <div>
                   <Label>Assegnato a (veterinario/staff)</Label>
-                  <Select value={formData.staffId} onValueChange={(v) => setFormData({...formData, staffId: v})}>
+                  <Select value={formData.staffId || 'none'} onValueChange={(v) => setFormData({...formData, staffId: v === 'none' ? '' : v})}>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleziona chi prende l'appuntamento" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Non assegnato</SelectItem>
+                      <SelectItem value="none">Non assegnato</SelectItem>
                       {staff?.map(s => (
                         <SelectItem key={s.id} value={s.id}>
                           <div className="flex items-center gap-2">
