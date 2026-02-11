@@ -952,6 +952,170 @@ function ClinicStaff({ staff, onRefresh }) {
   return <div><div className="flex justify-between items-center mb-6"><div><h2 className="text-2xl font-bold">Staff</h2><p className="text-gray-500 text-sm">Gestisci il team</p></div><Dialog open={showDialog} onOpenChange={setShowDialog}><DialogTrigger asChild><Button className="bg-coral-500 hover:bg-coral-600"><Plus className="h-4 w-4 mr-2" />Aggiungi</Button></DialogTrigger><DialogContent><DialogHeader><DialogTitle>Nuovo membro</DialogTitle></DialogHeader><form onSubmit={handleSubmit} className="space-y-4"><div><Label>Nome</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required /></div><div><Label>Ruolo</Label><Select value={formData.role} onValueChange={(v) => setFormData({...formData, role: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="vet">Veterinario</SelectItem><SelectItem value="assistant">Assistente</SelectItem><SelectItem value="receptionist">Receptionist</SelectItem></SelectContent></Select></div><div><Label>Email</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} /></div><Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">Aggiungi</Button></form></DialogContent></Dialog></div><div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">{staff.length === 0 ? <Card className="col-span-full"><CardContent className="p-12 text-center text-gray-500"><Users className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p>Nessun membro</p></CardContent></Card> : staff.map((member) => <Card key={member.id}><CardContent className="p-4"><div className="flex items-center gap-3"><div className="h-12 w-12 bg-coral-100 rounded-full flex items-center justify-center"><User className="h-6 w-6 text-coral-600" /></div><div><p className="font-medium">{member.name}</p><Badge variant="outline">{roleLabels[member.role]}</Badge></div></div></CardContent></Card>)}</div></div>;
 }
 
+// Clinic Services - Servizi offerti
+function ClinicServices() {
+  const [showDialog, setShowDialog] = useState(false);
+  const [services, setServices] = useState([
+    { id: 1, name: 'Visita generale', description: 'Check-up completo dello stato di salute', duration: 30, price: 50, active: true, type: 'in_sede' },
+    { id: 2, name: 'Video-consulto', description: 'Consulenza veterinaria online', duration: 20, price: 35, active: true, type: 'online' },
+    { id: 3, name: 'Vaccinazione', description: 'Somministrazione vaccini e richiami', duration: 15, price: 40, active: true, type: 'in_sede' },
+    { id: 4, name: 'Controllo post-operatorio', description: 'Visita di controllo dopo intervento chirurgico', duration: 20, price: 30, active: true, type: 'in_sede' },
+    { id: 5, name: 'Esami del sangue', description: 'Prelievo e analisi ematiche', duration: 20, price: 60, active: true, type: 'in_sede' },
+    { id: 6, name: 'Ecografia', description: 'Esame ecografico addominale o cardiaco', duration: 30, price: 80, active: true, type: 'in_sede' },
+    { id: 7, name: 'Pulizia dentale', description: 'Detartrasi e igiene orale', duration: 45, price: 120, active: false, type: 'in_sede' },
+    { id: 8, name: 'Consulto specialistico', description: 'Video-consulto con specialista', duration: 30, price: 60, active: true, type: 'online' },
+  ]);
+  const [formData, setFormData] = useState({ name: '', description: '', duration: 30, price: 0, type: 'in_sede' });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setServices([...services, { ...formData, id: Date.now(), active: true }]);
+    setShowDialog(false);
+    setFormData({ name: '', description: '', duration: 30, price: 0, type: 'in_sede' });
+  };
+
+  const toggleService = (id) => {
+    setServices(services.map(s => s.id === id ? { ...s, active: !s.active } : s));
+  };
+
+  const inSedeServices = services.filter(s => s.type === 'in_sede');
+  const onlineServices = services.filter(s => s.type === 'online');
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Servizi offerti</h2>
+          <p className="text-gray-500 text-sm">Configura i servizi che offri ai clienti</p>
+        </div>
+        <Dialog open={showDialog} onOpenChange={setShowDialog}>
+          <DialogTrigger asChild>
+            <Button className="bg-coral-500 hover:bg-coral-600"><Plus className="h-4 w-4 mr-2" />Nuovo servizio</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader><DialogTitle>Nuovo servizio</DialogTitle></DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label>Nome servizio</Label>
+                <Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="Es: Visita dermatologica" required />
+              </div>
+              <div>
+                <Label>Descrizione</Label>
+                <Textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} rows={2} />
+              </div>
+              <div>
+                <Label>Tipologia</Label>
+                <Select value={formData.type} onValueChange={(v) => setFormData({...formData, type: v})}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="in_sede">In sede</SelectItem>
+                    <SelectItem value="online">Online (Video-consulto)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Durata (minuti)</Label>
+                  <Input type="number" value={formData.duration} onChange={(e) => setFormData({...formData, duration: parseInt(e.target.value)})} />
+                </div>
+                <div>
+                  <Label>Prezzo (€)</Label>
+                  <Input type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: parseInt(e.target.value)})} />
+                </div>
+              </div>
+              <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">Aggiungi servizio</Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <Card>
+          <CardContent className="p-4 text-center">
+            <p className="text-2xl font-bold text-coral-500">{services.filter(s => s.active).length}</p>
+            <p className="text-sm text-gray-500">Servizi attivi</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <p className="text-2xl font-bold text-blue-500">{onlineServices.filter(s => s.active).length}</p>
+            <p className="text-sm text-gray-500">Video-consulti</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <p className="text-2xl font-bold text-green-500">{inSedeServices.filter(s => s.active).length}</p>
+            <p className="text-sm text-gray-500">In sede</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs defaultValue="tutti">
+        <TabsList>
+          <TabsTrigger value="tutti">Tutti ({services.length})</TabsTrigger>
+          <TabsTrigger value="in_sede">In sede ({inSedeServices.length})</TabsTrigger>
+          <TabsTrigger value="online">Online ({onlineServices.length})</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="tutti" className="mt-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            {services.map((service) => (
+              <ServiceCard key={service.id} service={service} onToggle={toggleService} />
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="in_sede" className="mt-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            {inSedeServices.map((service) => (
+              <ServiceCard key={service.id} service={service} onToggle={toggleService} />
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="online" className="mt-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            {onlineServices.map((service) => (
+              <ServiceCard key={service.id} service={service} onToggle={toggleService} />
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+function ServiceCard({ service, onToggle }) {
+  return (
+    <Card className={!service.active ? 'opacity-60' : ''}>
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${service.type === 'online' ? 'bg-blue-100' : 'bg-coral-100'}`}>
+              {service.type === 'online' ? <Video className="h-5 w-5 text-blue-600" /> : <Stethoscope className="h-5 w-5 text-coral-600" />}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="font-medium">{service.name}</p>
+                <Badge variant="outline" className={service.type === 'online' ? 'text-blue-600 border-blue-300' : 'text-coral-600 border-coral-300'}>
+                  {service.type === 'online' ? 'Online' : 'In sede'}
+                </Badge>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">{service.description}</p>
+              <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{service.duration} min</span>
+                <span className="font-medium text-coral-600">€{service.price}</span>
+              </div>
+            </div>
+          </div>
+          <Switch checked={service.active} onCheckedChange={() => onToggle(service.id)} />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function ClinicTemplates() {
   const templates = [
     { id: 1, name: 'Conferma appuntamento', type: 'email', vars: ['nome_cliente', 'nome_pet', 'data', 'ora'] },
