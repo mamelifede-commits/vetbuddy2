@@ -36,6 +36,62 @@ const VetBuddyLogo = ({ size = 40 }) => (
   </svg>
 );
 
+// ==================== ACCESSO NON AUTORIZZATO ====================
+function AccessDenied({ userRole, requiredRole, onGoBack }) {
+  const roleLabels = {
+    clinic: 'Clinica',
+    owner: 'Proprietario',
+    staff: 'Staff'
+  };
+  
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <Card className="max-w-md w-full text-center">
+        <CardHeader>
+          <div className="mx-auto h-16 w-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+            <AlertCircle className="h-8 w-8 text-red-500" />
+          </div>
+          <CardTitle className="text-xl text-gray-900">Accesso non autorizzato</CardTitle>
+          <CardDescription>
+            Questa sezione è riservata agli account <strong>{roleLabels[requiredRole]}</strong>.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="p-4 bg-gray-100 rounded-lg">
+            <p className="text-sm text-gray-600">
+              Il tuo account è registrato come: <Badge variant="outline" className="ml-1">{roleLabels[userRole]}</Badge>
+            </p>
+          </div>
+          <Button onClick={onGoBack} className="w-full bg-coral-500 hover:bg-coral-600">
+            {userRole === 'owner' ? (
+              <><PawPrint className="h-4 w-4 mr-2" />Vai all'area Proprietario</>
+            ) : (
+              <><Building2 className="h-4 w-4 mr-2" />Vai all'area Clinica</>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// ==================== ROLE BADGE COMPONENT ====================
+function RoleBadge({ role }) {
+  const config = {
+    clinic: { label: 'Account: Clinica', icon: Building2, color: 'bg-blue-100 text-blue-700 border-blue-200' },
+    owner: { label: 'Account: Proprietario', icon: PawPrint, color: 'bg-green-100 text-green-700 border-green-200' },
+    staff: { label: 'Account: Staff', icon: Users, color: 'bg-purple-100 text-purple-700 border-purple-200' }
+  };
+  const { label, icon: Icon, color } = config[role] || config.owner;
+  
+  return (
+    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${color}`}>
+      <Icon className="h-3 w-3" />
+      {label}
+    </div>
+  );
+}
+
 // API Helper
 const api = {
   baseUrl: '/api',
