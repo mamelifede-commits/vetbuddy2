@@ -5017,10 +5017,18 @@ export default function App() {
   const handleWelcomeContinue = () => { localStorage.setItem('vetbuddy_welcomed_' + user.id, 'true'); setShowWelcome(false); };
   const handleLogout = () => { localStorage.removeItem('vetbuddy_token'); api.token = null; setUser(null); setShowWelcome(false); };
 
+  // Show Google OAuth result toast
+  useEffect(() => {
+    if (googleOAuthResult) {
+      alert(googleOAuthResult.success ? '✅ ' + googleOAuthResult.message : '❌ ' + googleOAuthResult.message);
+      setGoogleOAuthResult(null);
+    }
+  }, [googleOAuthResult]);
+
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-coral-50"><div className="text-center"><VetBuddyLogo size={60} /><p className="mt-4 text-coral-700">Caricamento...</p></div></div>;
   if (!user) return <LandingPage onLogin={handleLogin} />;
   if (showWelcome) return <WelcomeScreen user={user} onContinue={handleWelcomeContinue} />;
-  if (user.role === 'clinic') return <ClinicDashboard user={user} onLogout={handleLogout} />;
+  if (user.role === 'clinic') return <ClinicDashboard user={user} onLogout={handleLogout} googleOAuthResult={googleOAuthResult} />;
   if (user.role === 'staff') return <StaffDashboard user={user} onLogout={handleLogout} />;
   return <OwnerDashboard user={user} onLogout={handleLogout} />;
 }
