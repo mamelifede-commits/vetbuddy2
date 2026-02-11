@@ -842,6 +842,7 @@ function ClinicDashboard({ user, onLogout }) {
             <p className="text-xs text-gray-500 truncate max-w-[140px]">{user.clinicName || 'Clinica'}</p>
           </div>
         </div>
+        <div className="mb-2"><RoleBadge role="clinic" /></div>
         <Badge variant="outline" className="mb-6 justify-center text-amber-600 border-amber-300 bg-amber-50"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
         
         <nav className="space-y-1 flex-1">
