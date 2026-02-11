@@ -2823,10 +2823,15 @@ function ServiceCard({ service, onToggle }) {
   );
 }
 
-function ClinicTemplates() {
+function ClinicTemplates({ owners = [], pets = [], staff = [], appointments = [], user }) {
   const [activeTab, setActiveTab] = useState('tutti');
   const [showNewDialog, setShowNewDialog] = useState(false);
+  const [showUseDialog, setShowUseDialog] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [generatedMessage, setGeneratedMessage] = useState('');
+  const [useFormData, setUseFormData] = useState({ ownerId: '', petId: '', appointmentId: '', customData: {} });
+  
   const [templates, setTemplates] = useState([
     { 
       id: 1, 
@@ -2860,7 +2865,7 @@ function ClinicTemplates() {
       id: 5, 
       name: 'Follow-up Post Visita', 
       type: 'email', 
-      content: 'Gentile {{nome_cliente}}, Grazie per aver scelto {{nome_clinica}} per la cura di {{nome_pet}}. Di seguito il riepilogo della visita del {{data}}: {{riepilogo_visita}} Per qualsiasi domanda, non esiti a contattarci.',
+      content: 'Gentile {{nome_cliente}},\n\nGrazie per aver scelto {{nome_clinica}} per la cura di {{nome_pet}}.\n\nDi seguito il riepilogo della visita del {{data}}:\n{{riepilogo_visita}}\n\nPer qualsiasi domanda, non esiti a contattarci.\n\nCordiali saluti,\n{{nome_clinica}}',
       icon: 'email'
     },
     { 
@@ -2875,9 +2880,16 @@ function ClinicTemplates() {
   const [newTemplate, setNewTemplate] = useState({ name: '', type: 'messaggio', content: '' });
 
   const availableVars = [
-    '{{nome_cliente}}', '{{nome_pet}}', '{{data}}', '{{ora}}', 
-    '{{nome_clinica}}', '{{nome_medico}}', '{{servizio}}', '{{email_clinica}}',
-    '{{riepilogo_visita}}', '{{importo}}'
+    { key: '{{nome_cliente}}', desc: 'Nome del proprietario' },
+    { key: '{{nome_pet}}', desc: 'Nome dell\'animale' },
+    { key: '{{data}}', desc: 'Data appuntamento' },
+    { key: '{{ora}}', desc: 'Ora appuntamento' },
+    { key: '{{nome_clinica}}', desc: 'Nome della clinica' },
+    { key: '{{nome_medico}}', desc: 'Nome del veterinario' },
+    { key: '{{servizio}}', desc: 'Tipo di servizio' },
+    { key: '{{email_clinica}}', desc: 'Email clinica' },
+    { key: '{{riepilogo_visita}}', desc: 'Note/riepilogo' },
+    { key: '{{importo}}', desc: 'Importo da pagare' },
   ];
 
   const typeConfig = {
@@ -2896,13 +2908,92 @@ function ClinicTemplates() {
     }
   };
 
+  // Get clinic name from user
+  const clinicName = user?.clinicName || 'La tua Clinica Veterinaria';
+  const clinicEmail = user?.email || '';
+
+  // Generate message with real data
+  const generateMessage = (template, data) => {
+    let message = template.content;
+    
+    // Get selected owner
+    const owner = owners.find(o => o.id === data.ownerId);
+    // Get selected pet
+    const pet = pets.find(p => p.id === data.petId);
+    // Get selected appointment
+    const appointment = appointments.find(a => a.id === data.appointmentId);
+    // Get staff/vet
+    const vet = staff.find(s => s.id === (appointment?.staffId || data.customData?.staffId));
+
+    // Replace variables
+    message = message.replace(/\{\{nome_cliente\}\}/g, owner?.name || data.customData?.nome_cliente || '[Nome Cliente]');
+    message = message.replace(/\{\{nome_pet\}\}/g, pet?.name || appointment?.petName || data.customData?.nome_pet || '[Nome Animale]');
+    message = message.replace(/\{\{data\}\}/g, appointment?.date ? new Date(appointment.date).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' }) : data.customData?.data || '[Data]');
+    message = message.replace(/\{\{ora\}\}/g, appointment?.time || data.customData?.ora || '[Ora]');
+    message = message.replace(/\{\{nome_clinica\}\}/g, clinicName);
+    message = message.replace(/\{\{email_clinica\}\}/g, clinicEmail || '[email@clinica.it]');
+    message = message.replace(/\{\{nome_medico\}\}/g, vet?.name || data.customData?.nome_medico || '[Nome Medico]');
+    message = message.replace(/\{\{servizio\}\}/g, appointment?.type || appointment?.reason || data.customData?.servizio || '[Servizio]');
+    message = message.replace(/\{\{riepilogo_visita\}\}/g, data.customData?.riepilogo_visita || '[Inserire riepilogo]');
+    message = message.replace(/\{\{importo\}\}/g, data.customData?.importo ? `€${data.customData.importo}` : '[Importo]');
+
+    return message;
+  };
+
+  // Open use template dialog
+  const openUseDialog = (template) => {
+    setSelectedTemplate(template);
+    setUseFormData({ ownerId: '', petId: '', appointmentId: '', customData: {} });
+    setGeneratedMessage('');
+    setShowUseDialog(true);
+  };
+
+  // Update generated message when form changes
+  const updateGeneratedMessage = (newFormData) => {
+    setUseFormData(newFormData);
+    if (selectedTemplate) {
+      const msg = generateMessage(selectedTemplate, newFormData);
+      setGeneratedMessage(msg);
+    }
+  };
+
+  // Get owner's pets
+  const ownerPets = useFormData.ownerId 
+    ? pets.filter(p => p.ownerId === useFormData.ownerId)
+    : pets;
+
+  // Get appointments for selected owner/pet
+  const relevantAppointments = appointments.filter(a => {
+    if (useFormData.petId) {
+      const pet = pets.find(p => p.id === useFormData.petId);
+      return a.petName === pet?.name;
+    }
+    if (useFormData.ownerId) {
+      const owner = owners.find(o => o.id === useFormData.ownerId);
+      return a.ownerName === owner?.name || a.ownerEmail === owner?.email;
+    }
+    return true;
+  });
+
   const filteredTemplates = activeTab === 'tutti' 
     ? templates 
     : templates.filter(t => t.type === activeTab.replace('messaggi', 'messaggio'));
 
   const copyToClipboard = (content) => {
     navigator.clipboard.writeText(content);
-    alert('✅ Template copiato negli appunti!');
+    alert('✅ Messaggio copiato negli appunti!');
+  };
+
+  const sendViaWhatsApp = (message, phone) => {
+    const encodedMsg = encodeURIComponent(message);
+    const url = phone ? `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodedMsg}` : `https://wa.me/?text=${encodedMsg}`;
+    window.open(url, '_blank');
+  };
+
+  const sendViaEmail = (message, email, subject) => {
+    const encodedMsg = encodeURIComponent(message);
+    const encodedSubject = encodeURIComponent(subject || 'Messaggio da ' + clinicName);
+    window.open(`mailto:${email || ''}?subject=${encodedSubject}&body=${encodedMsg}`, '_blank');
   };
 
   const handleSaveTemplate = () => {
@@ -2954,38 +3045,32 @@ function ClinicTemplates() {
         <CardContent className="p-5">
           <div className="flex items-start gap-4">
             <div className="h-10 w-10 bg-coral-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Info className="h-5 w-5 text-coral-600" />
+              <Zap className="h-5 w-5 text-coral-600" />
             </div>
             <div>
-              <h4 className="font-semibold text-gray-800 mb-2">Come usare i Template</h4>
+              <h4 className="font-semibold text-gray-800 mb-2">Template Automatici</h4>
               <div className="grid md:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-start gap-2">
                   <div className="h-6 w-6 bg-coral-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
                   <div>
-                    <p className="font-medium text-gray-700">Copia il template</p>
-                    <p className="text-gray-500">Clicca su "Copia" per copiare il testo negli appunti</p>
+                    <p className="font-medium text-gray-700">Clicca "Usa"</p>
+                    <p className="text-gray-500">Seleziona il template da utilizzare</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
                   <div className="h-6 w-6 bg-coral-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
                   <div>
-                    <p className="font-medium text-gray-700">Sostituisci le variabili</p>
-                    <p className="text-gray-500">Rimpiazza {"{{nome_cliente}}"}, {"{{nome_pet}}"} ecc. con i dati reali</p>
+                    <p className="font-medium text-gray-700">Seleziona cliente</p>
+                    <p className="text-gray-500">I dati vengono inseriti automaticamente!</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
                   <div className="h-6 w-6 bg-coral-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
                   <div>
-                    <p className="font-medium text-gray-700">Invia il messaggio</p>
-                    <p className="text-gray-500">Incolla in WhatsApp, email o SMS e invia al cliente</p>
+                    <p className="font-medium text-gray-700">Invia subito</p>
+                    <p className="text-gray-500">Via WhatsApp, Email o copia il testo</p>
                   </div>
                 </div>
-              </div>
-              <div className="mt-4 p-3 bg-white/60 rounded-lg border border-coral-100">
-                <p className="text-xs text-gray-600">
-                  <strong>💡 Suggerimento:</strong> I template ti aiutano a comunicare in modo professionale e veloce. 
-                  Personalizza i messaggi standard per risparmiare tempo e mantenere coerenza nella comunicazione con i clienti.
-                </p>
               </div>
             </div>
           </div>
@@ -3029,20 +3114,20 @@ function ClinicTemplates() {
                 <p className="text-sm text-gray-600 line-clamp-3 mb-4">{template.content}</p>
                 
                 <div className="flex items-center justify-between pt-3 border-t">
-                  <button 
-                    onClick={() => copyToClipboard(template.content)}
-                    className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-coral-600 transition"
+                  <Button 
+                    size="sm" 
+                    className="bg-coral-500 hover:bg-coral-600 text-white"
+                    onClick={() => openUseDialog(template)}
                   >
-                    <ClipboardList className="h-4 w-4" />
-                    Copia
-                  </button>
+                    <Zap className="h-3 w-3 mr-1" />
+                    Usa
+                  </Button>
                   <div className="flex items-center gap-2">
                     <button 
                       onClick={() => openEditDialog(template)}
                       className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-coral-600 transition"
                     >
                       <Edit className="h-4 w-4" />
-                      Modifica
                     </button>
                     <button 
                       onClick={() => deleteTemplate(template.id)}
@@ -3062,16 +3147,204 @@ function ClinicTemplates() {
       <Card className="bg-blue-50 border-blue-200">
         <CardContent className="p-5">
           <h4 className="font-semibold text-blue-800 mb-2">Variabili disponibili</h4>
-          <p className="text-sm text-blue-600 mb-3">Usa queste variabili nei tuoi template. Verranno sostituite automaticamente con i dati reali.</p>
+          <p className="text-sm text-blue-600 mb-3">Queste variabili vengono sostituite automaticamente con i dati reali del cliente.</p>
           <div className="flex flex-wrap gap-2">
             {availableVars.map(v => (
-              <Badge key={v} variant="outline" className="bg-white text-blue-700 border-blue-300 font-mono text-xs">
-                {v}
+              <Badge key={v.key} variant="outline" className="bg-white text-blue-700 border-blue-300 font-mono text-xs" title={v.desc}>
+                {v.key}
               </Badge>
             ))}
           </div>
         </CardContent>
       </Card>
+
+      {/* USE TEMPLATE DIALOG */}
+      <Dialog open={showUseDialog} onOpenChange={setShowUseDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-coral-500" />
+              Usa Template: {selectedTemplate?.name}
+            </DialogTitle>
+            <DialogDescription>Seleziona il cliente e i dati verranno inseriti automaticamente</DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            {/* Client Selection */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <Label>Proprietario</Label>
+                <Select 
+                  value={useFormData.ownerId} 
+                  onValueChange={(v) => updateGeneratedMessage({ ...useFormData, ownerId: v, petId: '' })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleziona proprietario..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {owners.map(owner => (
+                      <SelectItem key={owner.id} value={owner.id}>
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4 text-gray-400" />
+                          {owner.name} {owner.email && `(${owner.email})`}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label>Animale</Label>
+                <Select 
+                  value={useFormData.petId} 
+                  onValueChange={(v) => updateGeneratedMessage({ ...useFormData, petId: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleziona animale..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ownerPets.map(pet => (
+                      <SelectItem key={pet.id} value={pet.id}>
+                        <div className="flex items-center gap-2">
+                          <PawPrint className="h-4 w-4 text-gray-400" />
+                          {pet.name} ({pet.species || pet.type})
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Appointment Selection (optional) */}
+            {relevantAppointments.length > 0 && (
+              <div>
+                <Label>Appuntamento (opzionale)</Label>
+                <Select 
+                  value={useFormData.appointmentId} 
+                  onValueChange={(v) => updateGeneratedMessage({ ...useFormData, appointmentId: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleziona appuntamento..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Nessun appuntamento specifico</SelectItem>
+                    {relevantAppointments.slice(0, 10).map(appt => (
+                      <SelectItem key={appt.id} value={appt.id}>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-gray-400" />
+                          {appt.date} {appt.time} - {appt.petName} ({appt.type || appt.reason || 'Visita'})
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Custom fields for missing data */}
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-2 font-medium">Dati aggiuntivi (opzionali)</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-xs">Veterinario</Label>
+                  <Select 
+                    value={useFormData.customData?.staffId || ''} 
+                    onValueChange={(v) => updateGeneratedMessage({ ...useFormData, customData: { ...useFormData.customData, staffId: v } })}
+                  >
+                    <SelectTrigger className="h-9">
+                      <SelectValue placeholder="Seleziona..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {staff.filter(s => s.role === 'vet' || s.role === 'veterinario').map(s => (
+                        <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-xs">Servizio</Label>
+                  <Input 
+                    className="h-9"
+                    placeholder="Es: Vaccino, Visita..."
+                    value={useFormData.customData?.servizio || ''}
+                    onChange={(e) => updateGeneratedMessage({ ...useFormData, customData: { ...useFormData.customData, servizio: e.target.value } })}
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Data</Label>
+                  <Input 
+                    type="date"
+                    className="h-9"
+                    value={useFormData.customData?.data || ''}
+                    onChange={(e) => updateGeneratedMessage({ ...useFormData, customData: { ...useFormData.customData, data: new Date(e.target.value).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' }) } })}
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Ora</Label>
+                  <Input 
+                    type="time"
+                    className="h-9"
+                    value={useFormData.customData?.ora || ''}
+                    onChange={(e) => updateGeneratedMessage({ ...useFormData, customData: { ...useFormData.customData, ora: e.target.value } })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Generated Message Preview */}
+            <div>
+              <Label className="flex items-center gap-2">
+                <Eye className="h-4 w-4" />
+                Anteprima messaggio
+              </Label>
+              <div className="mt-2 p-4 bg-white border-2 border-coral-200 rounded-lg min-h-[120px]">
+                {generatedMessage ? (
+                  <p className="text-gray-800 whitespace-pre-wrap">{generatedMessage}</p>
+                ) : (
+                  <p className="text-gray-400 italic">Seleziona un cliente per vedere l'anteprima del messaggio...</p>
+                )}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-3 pt-4 border-t">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => copyToClipboard(generatedMessage)}
+                disabled={!generatedMessage}
+              >
+                <ClipboardList className="h-4 w-4 mr-2" />
+                Copia testo
+              </Button>
+              <Button 
+                className="flex-1 bg-green-500 hover:bg-green-600"
+                onClick={() => {
+                  const owner = owners.find(o => o.id === useFormData.ownerId);
+                  sendViaWhatsApp(generatedMessage, owner?.phone);
+                }}
+                disabled={!generatedMessage}
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                WhatsApp
+              </Button>
+              <Button 
+                className="flex-1 bg-blue-500 hover:bg-blue-600"
+                onClick={() => {
+                  const owner = owners.find(o => o.id === useFormData.ownerId);
+                  sendViaEmail(generatedMessage, owner?.email, selectedTemplate?.name);
+                }}
+                disabled={!generatedMessage}
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                Email
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* New/Edit Template Dialog */}
       <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
@@ -3121,12 +3394,12 @@ function ClinicTemplates() {
               <div className="flex flex-wrap gap-1 mt-2">
                 {availableVars.slice(0, 6).map(v => (
                   <button 
-                    key={v} 
+                    key={v.key} 
                     type="button"
-                    onClick={() => insertVariable(v)}
+                    onClick={() => insertVariable(v.key)}
                     className="text-xs px-2 py-1 bg-gray-100 hover:bg-coral-100 text-gray-600 hover:text-coral-600 rounded transition"
                   >
-                    {v}
+                    {v.key}
                   </button>
                 ))}
               </div>
