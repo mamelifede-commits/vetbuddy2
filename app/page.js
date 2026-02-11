@@ -6346,7 +6346,31 @@ function FindClinic({ user }) {
           </div>
         </div>
       ) : clinics.length === 0 ? (
-        <Card><CardContent className="p-12 text-center text-gray-500"><Building2 className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessuna clinica trovata</p><p className="text-sm mt-2">Prova con altri criteri di ricerca</p></CardContent></Card>
+        <Card className="border-dashed border-2 border-coral-200 bg-coral-50/50">
+          <CardContent className="p-8 text-center">
+            <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-4">
+              <MapPin className="h-4 w-4" />
+              <span className="text-sm font-medium">Pilot Milano</span>
+            </div>
+            <Building2 className="h-16 w-16 mx-auto mb-4 text-coral-300" />
+            <h3 className="font-bold text-xl text-gray-800 mb-2">Nessuna clinica trovata nella tua zona</h3>
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              Siamo in fase pilot e stiamo attivando le prime cliniche a Milano e provincia. 
+              <br/>La tua clinica preferita non è ancora su VetBuddy?
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button className="bg-coral-500 hover:bg-coral-600" onClick={() => setSearchCity('Milano')}>
+                <MapPin className="h-4 w-4 mr-2" />Cerca a Milano
+              </Button>
+              <Button variant="outline" className="border-coral-300 text-coral-700 hover:bg-coral-50">
+                <Mail className="h-4 w-4 mr-2" />Invita la tua clinica
+              </Button>
+            </div>
+            <p className="text-xs text-gray-400 mt-4">
+              Invitando la tua clinica ci aiuti a crescere e potresti ricevere vantaggi esclusivi!
+            </p>
+          </CardContent>
+        </Card>
       ) : (
         <div className="grid md:grid-cols-2 gap-4">
           {clinics.map((clinic) => (
