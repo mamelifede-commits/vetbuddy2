@@ -3563,16 +3563,16 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
         {/* OVERVIEW */}
         <TabsContent value="overview" className="mt-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <StatCard title="Nuovi clienti" value={monthlyOwners.length} subtitle="questo mese" icon={User} color="blue" />
+            <StatCard title="Nuovi clienti" value={monthlyOwners.length} subtitle="questo mese" icon={User} color="blue" onClick={() => setActiveReportTab('clients')} />
             <StatCard title="Appuntamenti" value={monthlyAppts.length} subtitle="questo mese" icon={Calendar} color="coral" 
-              trend={lastMonthAppts.length > 0 ? Math.round(((monthlyAppts.length - lastMonthAppts.length) / lastMonthAppts.length) * 100) : 0} />
-            <StatCard title="Documenti inviati" value={monthlyDocs.length} subtitle="questo mese" icon={FileText} color="green" />
+              trend={lastMonthAppts.length > 0 ? Math.round(((monthlyAppts.length - lastMonthAppts.length) / lastMonthAppts.length) * 100) : 0} onClick={() => setActiveReportTab('appointments')} />
+            <StatCard title="Documenti inviati" value={monthlyDocs.length} subtitle="questo mese" icon={FileText} color="green" onClick={() => setActiveReportTab('documents')} />
             <StatCard title="Incassi tracciati" value={`€${monthlyRevenue}`} subtitle="questo mese" icon={Euro} color="emerald"
-              trend={lastMonthRevenue > 0 ? Math.round(((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue) * 100) : 0} />
+              trend={lastMonthRevenue > 0 ? Math.round(((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue) * 100) : 0} onClick={() => setActiveReportTab('payments')} />
           </div>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <Card>
+            <Card className="cursor-pointer hover:shadow-md transition" onClick={() => setActiveReportTab('appointments')}>
               <CardHeader>
                 <CardTitle className="text-base">Distribuzione appuntamenti</CardTitle>
               </CardHeader>
