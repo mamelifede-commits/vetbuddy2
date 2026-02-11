@@ -1998,7 +1998,7 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
   };
   
   const statusConfig = {
-    bozza: { label: 'Bozza', color: 'bg-gray-100 text-gray-600' },
+    bozza: { label: 'Bozza', color: 'bg-slate-200 text-slate-700' },
     inviato: { label: 'Inviato', color: 'bg-green-100 text-green-700' },
     visualizzato: { label: 'Visualizzato', color: 'bg-blue-100 text-blue-700' },
     scaricato: { label: 'Scaricato', color: 'bg-purple-100 text-purple-700' }
