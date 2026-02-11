@@ -107,6 +107,108 @@ export async function GET(request, { params }) {
       return NextResponse.json(list, { headers: corsHeaders });
     }
 
+    // Search clinics (public)
+    if (path === 'clinics/search') {
+      const { searchParams } = new URL(request.url);
+      const query = searchParams.get('q') || '';
+      const city = searchParams.get('city') || '';
+      const service = searchParams.get('service') || '';
+      
+      const users = await getCollection('users');
+      const filter = { role: 'clinic' };
+      
+      if (query) {
+        filter.$or = [
+          { clinicName: { $regex: query, $options: 'i' } },
+          { name: { $regex: query, $options: 'i' } }
+        ];
+      }
+      if (city) {
+        filter.city = { $regex: city, $options: 'i' };
+      }
+      
+      const clinics = await users.find(filter, { projection: { password: 0, resetToken: 0, resetExpiry: 0 } }).toArray();
+      
+      // Get reviews for each clinic
+      const reviews = await getCollection('reviews');
+      const clinicsWithReviews = await Promise.all(clinics.map(async (clinic) => {
+        const clinicReviews = await reviews.find({ clinicId: clinic.id }).toArray();
+        const avgRating = clinicReviews.length > 0 
+          ? clinicReviews.reduce((sum, r) => sum + r.overallRating, 0) / clinicReviews.length 
+          : 0;
+        return { ...clinic, reviewCount: clinicReviews.length, avgRating: Math.round(avgRating * 10) / 10 };
+      }));
+      
+      return NextResponse.json(clinicsWithReviews, { headers: corsHeaders });
+    }
+
+    // Get clinic reviews
+    if (path.startsWith('clinics/') && path.endsWith('/reviews')) {
+      const clinicId = path.split('/')[1];
+      const reviews = await getCollection('reviews');
+      const list = await reviews.find({ clinicId }).sort({ createdAt: -1 }).toArray();
+      return NextResponse.json(list, { headers: corsHeaders });
+    }
+
+    // Get single clinic (public)
+    if (path.startsWith('clinics/') && !path.includes('/reviews')) {
+      const clinicId = path.split('/')[1];
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: clinicId, role: 'clinic' }, { projection: { password: 0 } });
+      if (!clinic) {
+        return NextResponse.json({ error: 'Clinica non trovata' }, { status: 404, headers: corsHeaders });
+      }
+      
+      const reviews = await getCollection('reviews');
+      const clinicReviews = await reviews.find({ clinicId }).toArray();
+      const avgRating = clinicReviews.length > 0 
+        ? clinicReviews.reduce((sum, r) => sum + r.overallRating, 0) / clinicReviews.length 
+        : 0;
+      
+      return NextResponse.json({ 
+        ...clinic, 
+        reviewCount: clinicReviews.length, 
+        avgRating: Math.round(avgRating * 10) / 10 
+      }, { headers: corsHeaders });
+    }
+
+    // Get pet with full details
+    if (path.startsWith('pets/') && path.split('/').length === 2) {
+      const petId = path.split('/')[1];
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const pets = await getCollection('pets');
+      const pet = await pets.findOne({ id: petId });
+      if (!pet) {
+        return NextResponse.json({ error: 'Animale non trovato' }, { status: 404, headers: corsHeaders });
+      }
+      
+      // Get related data
+      const [appointments, documents, vaccinations] = await Promise.all([
+        getCollection('appointments').then(c => c.find({ petId }).sort({ date: -1 }).toArray()),
+        getCollection('documents').then(c => c.find({ petId }).sort({ createdAt: -1 }).toArray()),
+        getCollection('vaccinations').then(c => c.find({ petId }).sort({ date: -1 }).toArray())
+      ]);
+      
+      // Calculate total spending
+      const totalSpent = appointments.reduce((sum, a) => sum + (a.price || 0), 0);
+      const currentYear = new Date().getFullYear();
+      const yearSpent = appointments
+        .filter(a => new Date(a.date).getFullYear() === currentYear)
+        .reduce((sum, a) => sum + (a.price || 0), 0);
+      
+      return NextResponse.json({ 
+        ...pet, 
+        appointments, 
+        documents, 
+        vaccinations,
+        spending: { total: totalSpent, currentYear: yearSpent }
+      }, { headers: corsHeaders });
+    }
+
     return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
   } catch (error) {
     console.error('GET Error:', error);
