@@ -1393,6 +1393,7 @@ function ClinicSettings({ user }) {
 // ==================== OWNER DASHBOARD ====================
 function OwnerDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('appointments');
+  const [selectedPetId, setSelectedPetId] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -1401,7 +1402,12 @@ function OwnerDashboard({ user, onLogout }) {
   useEffect(() => { loadData(); }, []);
   const loadData = async () => { try { const [appts, docs, msgs, petsList] = await Promise.all([api.get('appointments'), api.get('documents'), api.get('messages'), api.get('pets')]); setAppointments(appts); setDocuments(docs); setMessages(msgs); setPets(petsList); } catch (error) { console.error('Error:', error); } };
 
-  const NavItem = ({ icon: Icon, label, value, badge }) => <button onClick={() => setActiveTab(value)} className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${activeTab === value ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-100'}`}><div className="flex items-center gap-3"><Icon className="h-5 w-5" />{label}</div>{badge > 0 && <Badge className="bg-blue-500 text-white text-xs">{badge}</Badge>}</button>;
+  const NavItem = ({ icon: Icon, label, value, badge }) => <button onClick={() => { setActiveTab(value); setSelectedPetId(null); }} className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${activeTab === value ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-100'}`}><div className="flex items-center gap-3"><Icon className="h-5 w-5" />{label}</div>{badge > 0 && <Badge className="bg-blue-500 text-white text-xs">{badge}</Badge>}</button>;
+
+  const handleOpenPetProfile = (petId) => {
+    setSelectedPetId(petId);
+    setActiveTab('petProfile');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -1413,6 +1419,8 @@ function OwnerDashboard({ user, onLogout }) {
           <NavItem icon={FileText} label="Documenti" value="documents" badge={documents.length} />
           <NavItem icon={MessageCircle} label="Messaggi" value="messages" />
           <NavItem icon={PawPrint} label="I miei animali" value="pets" />
+          <div className="border-t my-3"></div>
+          <NavItem icon={Search} label="Trova clinica" value="findClinic" />
         </nav>
         <Button variant="ghost" onClick={onLogout} className="mt-auto text-gray-600"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
       </aside>
@@ -1420,7 +1428,9 @@ function OwnerDashboard({ user, onLogout }) {
         {activeTab === 'appointments' && <OwnerAppointments appointments={appointments} pets={pets} />}
         {activeTab === 'documents' && <OwnerDocuments documents={documents} pets={pets} onRefresh={loadData} />}
         {activeTab === 'messages' && <OwnerMessages messages={messages} />}
-        {activeTab === 'pets' && <OwnerPets pets={pets} onRefresh={loadData} />}
+        {activeTab === 'pets' && <OwnerPets pets={pets} onRefresh={loadData} onOpenProfile={handleOpenPetProfile} />}
+        {activeTab === 'petProfile' && selectedPetId && <PetProfile petId={selectedPetId} onBack={() => setActiveTab('pets')} appointments={appointments} documents={documents} />}
+        {activeTab === 'findClinic' && <FindClinic user={user} />}
       </main>
     </div>
   );
