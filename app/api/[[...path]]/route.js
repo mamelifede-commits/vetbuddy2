@@ -137,6 +137,26 @@ export async function GET(request, { params }) {
       return NextResponse.json({ status: 'ok', app: 'VetBuddy API' }, { headers: corsHeaders });
     }
 
+    // Get veterinary services catalog
+    if (path === 'services') {
+      return NextResponse.json(VETERINARY_SERVICES, { headers: corsHeaders });
+    }
+
+    // Get all service IDs as flat list
+    if (path === 'services/flat') {
+      const flatServices = [];
+      Object.entries(VETERINARY_SERVICES).forEach(([categoryId, category]) => {
+        category.services.forEach(service => {
+          flatServices.push({
+            ...service,
+            categoryId,
+            categoryName: category.name
+          });
+        });
+      });
+      return NextResponse.json(flatServices, { headers: corsHeaders });
+    }
+
     // Google Calendar OAuth - Start authorization
     if (path === 'auth/google') {
       const { searchParams } = new URL(request.url);
