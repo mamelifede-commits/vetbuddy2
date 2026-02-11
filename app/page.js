@@ -639,7 +639,11 @@ function AuthForm({ mode, setMode, onLogin }) {
   const [success, setSuccess] = useState('');
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
-  const [formData, setFormData] = useState({ email: '', password: '', name: '', role: 'owner', clinicName: '', phone: '', city: '', vatNumber: '', website: '' });
+  const [formData, setFormData] = useState({ 
+    email: '', password: '', name: '', role: 'owner', clinicName: '', phone: '', city: '', vatNumber: '', website: '',
+    staffCount: '' // Per cliniche
+  });
+  const [pilotRequestSent, setPilotRequestSent] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -649,7 +653,13 @@ function AuthForm({ mode, setMode, onLogin }) {
       const endpoint = mode === 'login' ? 'auth/login' : 'auth/register';
       const data = await api.post(endpoint, formData);
       api.setToken(data.token);
-      onLogin(data.user);
+      
+      // Per cliniche, mostra messaggio di conferma Pilot
+      if (mode === 'register' && formData.role === 'clinic') {
+        setPilotRequestSent(true);
+      } else {
+        onLogin(data.user);
+      }
     } catch (err) { setError(err.message); } finally { setLoading(false); }
   };
 
@@ -663,6 +673,30 @@ function AuthForm({ mode, setMode, onLogin }) {
       setSuccess(data.message);
     } catch (err) { setError(err.message); } finally { setLoading(false); }
   };
+
+  // Schermata conferma Pilot per cliniche
+  if (pilotRequestSent) {
+    return (
+      <div className="text-center py-4">
+        <div className="mx-auto h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+          <CheckCircle className="h-8 w-8 text-green-500" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Richiesta inviata!</h3>
+        <p className="text-gray-600 mb-4">
+          Grazie per il tuo interesse in VetBuddy. Ti contatteremo presto per l'attivazione e l'onboarding personalizzato.
+        </p>
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg mb-4">
+          <p className="text-sm text-amber-700">
+            <strong>Nota:</strong> VetBuddy è attualmente disponibile solo tramite Pilot su invito. 
+            Stiamo selezionando un numero limitato di cliniche per garantire un supporto dedicato.
+          </p>
+        </div>
+        <Button onClick={() => { setPilotRequestSent(false); setMode('login'); }} className="w-full bg-coral-500 hover:bg-coral-600">
+          Vai al login
+        </Button>
+      </div>
+    );
+  }
 
   if (showForgotPassword) {
     return (
@@ -712,22 +746,53 @@ function AuthForm({ mode, setMode, onLogin }) {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>{formData.role === 'clinic' ? 'Nome responsabile' : 'Nome completo'}</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required /></div>
+              
+              {/* Messaggio Pilot per cliniche */}
+              {formData.role === 'clinic' && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p className="text-xs text-amber-700">
+                    <strong>Accesso Pilot:</strong> VetBuddy è disponibile solo su invito. Compila il form e ti contatteremo per l'attivazione.
+                  </p>
+                </div>
+              )}
+              
+              {/* Messaggio per proprietari */}
+              {formData.role === 'owner' && (
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-xs text-blue-700">
+                    <strong>Nota:</strong> VetBuddy è in fase Pilot. Alcune cliniche potrebbero non essere ancora affiliate. Puoi comunque creare il profilo dei tuoi animali.
+                  </p>
+                </div>
+              )}
+              
+              <div><Label>{formData.role === 'clinic' ? 'Nome responsabile' : 'Nome completo'}</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required placeholder={formData.role === 'clinic' ? 'Dr. Mario Rossi' : 'Mario Rossi'} /></div>
+              
               {formData.role === 'clinic' && (
                 <>
-                  <div><Label>Nome Clinica</Label><Input value={formData.clinicName} onChange={(e) => setFormData({...formData, clinicName: e.target.value})} required /></div>
+                  <div><Label>Nome Clinica *</Label><Input value={formData.clinicName} onChange={(e) => setFormData({...formData, clinicName: e.target.value})} required placeholder="Clinica Veterinaria Roma" /></div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div><Label>Città</Label><Input value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} placeholder="Es. Roma" /></div>
-                    <div><Label>Partita IVA</Label><Input value={formData.vatNumber} onChange={(e) => setFormData({...formData, vatNumber: e.target.value})} placeholder="IT01234567890" /></div>
+                    <div><Label>Città *</Label><Input value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} required placeholder="Milano" /></div>
+                    <div><Label>N° Staff</Label>
+                      <Select value={formData.staffCount} onValueChange={(v) => setFormData({...formData, staffCount: v})}>
+                        <SelectTrigger><SelectValue placeholder="Seleziona" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">Solo io</SelectItem>
+                          <SelectItem value="2-5">2-5 persone</SelectItem>
+                          <SelectItem value="6-10">6-10 persone</SelectItem>
+                          <SelectItem value="10+">Più di 10</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
+                  <div><Label>Partita IVA</Label><Input value={formData.vatNumber} onChange={(e) => setFormData({...formData, vatNumber: e.target.value})} placeholder="IT01234567890" /></div>
                   <div><Label>Sito web</Label><Input value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} placeholder="https://..." /></div>
                 </>
               )}
-              <div><Label>Telefono</Label><Input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} /></div>
+              <div><Label>Telefono</Label><Input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} placeholder="+39 02 1234567" /></div>
             </>
           )}
-          <div><Label>Email</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required /></div>
-          <div><Label>Password</Label><Input type="password" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} required /></div>
+          <div><Label>Email *</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required placeholder="email@esempio.it" /></div>
+          <div><Label>Password *</Label><Input type="password" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} required placeholder="Minimo 8 caratteri" /></div>
           {mode === 'login' && (
             <button type="button" onClick={() => setShowForgotPassword(true)} className="text-sm text-coral-500 hover:underline">
               Password dimenticata?
@@ -735,9 +800,15 @@ function AuthForm({ mode, setMode, onLogin }) {
           )}
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600" disabled={loading}>
-            {loading ? 'Caricamento...' : (mode === 'login' ? 'Accedi' : (formData.role === 'clinic' ? 'Richiedi accesso Pilot' : 'Registrati gratis'))}
+            {loading ? 'Caricamento...' : (mode === 'login' ? 'Accedi' : (formData.role === 'clinic' ? 'Candidati al Pilot' : 'Registrati gratis'))}
           </Button>
-          {mode === 'register' && <p className="text-xs text-gray-500 text-center">{formData.role === 'clinic' ? 'VetBuddy è in fase Pilot. Ti ricontatteremo.' : 'Gratis per sempre per i proprietari.'}</p>}
+          {mode === 'register' && (
+            <p className="text-xs text-gray-500 text-center">
+              {formData.role === 'clinic' 
+                ? 'Ti contatteremo per attivazione e onboarding.' 
+                : 'Gratis per sempre per i proprietari di animali.'}
+            </p>
+          )}
         </form>
       </Tabs>
     </div>
