@@ -3622,9 +3622,9 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
             <span className="text-sm font-medium">Torna alla Panoramica</span>
           </button>
           <div className="grid md:grid-cols-3 gap-4 mb-6">
-            <StatCard title="Nuovi clienti" value={monthlyOwners.length} subtitle="questo mese" icon={User} color="blue" />
-            <StatCard title="Clienti attivi" value={(owners || []).length} subtitle="totale" icon={Users} color="green" />
-            <StatCard title="Tasso ritorno" value="--%" subtitle="da calcolare" icon={RefreshCw} color="amber" />
+            <StatCard title="Nuovi clienti" value={monthlyOwners.length} subtitle="questo mese" icon={User} color="blue" onClick={() => onNavigate('owners')} />
+            <StatCard title="Clienti attivi" value={(owners || []).length} subtitle="totale" icon={Users} color="green" onClick={() => onNavigate('owners')} />
+            <StatCard title="Tasso ritorno" value="--%" subtitle="da calcolare" icon={RefreshCw} color="amber" onClick={() => onNavigate('owners')} />
           </div>
           <Card>
             <CardHeader>
