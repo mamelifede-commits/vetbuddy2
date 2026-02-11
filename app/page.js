@@ -573,7 +573,7 @@ function ClinicDashboard({ user, onLogout }) {
 }
 
 // ==================== CONTROL ROOM DASHBOARD ====================
-function ClinicControlRoom({ appointments, documents, messages, setupProgress, onRefresh }) {
+function ClinicControlRoom({ appointments, documents, messages, owners, setupProgress, onRefresh }) {
   const today = new Date().toISOString().split('T')[0];
   const todayAppts = appointments.filter(a => a.date === today);
   const videoAppts = todayAppts.filter(a => a.type === 'videoconsulto');
@@ -587,6 +587,19 @@ function ClinicControlRoom({ appointments, documents, messages, setupProgress, o
   const docsToReview = documents.filter(d => d.status === 'to_review').length || 2;
   const followUps = messages.filter(m => m.type === 'follow_up' && !m.read).length || 1;
   const docsToSend = documents.filter(d => !d.emailSent).length || 3;
+
+  // Monthly stats for mini report widget
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const monthlyAppts = appointments.filter(a => {
+    const d = new Date(a.date);
+    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  });
+  const newClientsThisMonth = owners?.filter(o => {
+    const d = new Date(o.createdAt);
+    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  }).length || 0;
+  const monthlyRevenue = monthlyAppts.reduce((sum, a) => sum + (a.price || 0), 0);
 
   return (
     <div className="space-y-6">
