@@ -556,7 +556,7 @@ function ClinicDashboard({ user, onLogout }) {
 
       {/* Main */}
       <main className="flex-1 p-6 overflow-auto">
-        {activeTab === 'dashboard' && <ClinicControlRoom appointments={appointments} documents={documents} messages={messages} setupProgress={setupProgress} onRefresh={loadData} />}
+        {activeTab === 'dashboard' && <ClinicControlRoom appointments={appointments} documents={documents} messages={messages} owners={owners} setupProgress={setupProgress} onRefresh={loadData} />}
         {activeTab === 'agenda' && <ClinicAgenda appointments={appointments} onRefresh={loadData} />}
         {activeTab === 'inbox' && <ClinicInbox messages={messages} owners={owners} pets={pets} onRefresh={loadData} />}
         {activeTab === 'documents' && <ClinicDocuments documents={documents} owners={owners} pets={pets} onRefresh={loadData} />}
@@ -564,6 +564,7 @@ function ClinicDashboard({ user, onLogout }) {
         {activeTab === 'patients' && <ClinicPatients pets={pets} onRefresh={loadData} />}
         {activeTab === 'owners' && <ClinicOwners owners={owners} onRefresh={loadData} />}
         {activeTab === 'staff' && <ClinicStaff staff={staff} onRefresh={loadData} />}
+        {activeTab === 'reports' && <ClinicReports appointments={appointments} documents={documents} messages={messages} owners={owners} />}
         {activeTab === 'templates' && <ClinicTemplates />}
         {activeTab === 'settings' && <ClinicSettings user={user} />}
       </main>
