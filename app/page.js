@@ -1861,11 +1861,104 @@ function OwnerMessages({ messages }) {
   return <div><h2 className="text-2xl font-bold text-gray-800 mb-2">Messaggi</h2><p className="text-gray-500 text-sm mb-6">Comunicazioni con la clinica</p><Card><CardContent className="p-0">{messages.length === 0 ? <div className="p-12 text-center text-gray-500"><MessageCircle className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessun messaggio</p></div> : <ScrollArea className="h-[400px]">{messages.map((msg) => <div key={msg.id} className="p-4 border-b"><p className="font-medium">{msg.subject}</p><p className="text-sm text-gray-500 mt-1">{msg.content}</p><p className="text-xs text-gray-400 mt-2">{new Date(msg.createdAt).toLocaleDateString()}</p></div>)}</ScrollArea>}</CardContent></Card></div>;
 }
 
-function OwnerPets({ pets, onRefresh }) {
+function OwnerPets({ pets, onRefresh, onOpenProfile }) {
   const [showDialog, setShowDialog] = useState(false);
-  const [formData, setFormData] = useState({ name: '', species: 'dog', breed: '' });
-  const handleSubmit = async (e) => { e.preventDefault(); try { await api.post('pets', formData); setShowDialog(false); onRefresh(); } catch (error) { alert(error.message); } };
-  return <div><div className="flex justify-between items-center mb-6"><div><h2 className="text-2xl font-bold text-gray-800">I miei animali</h2><p className="text-gray-500 text-sm">Gestisci i profili dei tuoi amici</p></div><Dialog open={showDialog} onOpenChange={setShowDialog}><DialogTrigger asChild><Button className="bg-blue-500 hover:bg-blue-600"><Plus className="h-4 w-4 mr-2" />Aggiungi</Button></DialogTrigger><DialogContent><DialogHeader><DialogTitle>Nuovo animale</DialogTitle></DialogHeader><form onSubmit={handleSubmit} className="space-y-4"><div><Label>Nome</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required /></div><div><Label>Specie</Label><Select value={formData.species} onValueChange={(v) => setFormData({...formData, species: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="dog">Cane</SelectItem><SelectItem value="cat">Gatto</SelectItem><SelectItem value="other">Altro</SelectItem></SelectContent></Select></div><div><Label>Razza</Label><Input value={formData.breed} onChange={(e) => setFormData({...formData, breed: e.target.value})} /></div><Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600">Aggiungi</Button></form></DialogContent></Dialog></div><div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">{pets.length === 0 ? <Card className="col-span-full"><CardContent className="p-12 text-center text-gray-500"><PawPrint className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessun animale</p></CardContent></Card> : pets.map((pet) => <Card key={pet.id}><CardContent className="p-4"><div className="flex items-center gap-3"><div className="h-14 w-14 bg-blue-100 rounded-full flex items-center justify-center">{pet.species === 'dog' ? <Dog className="h-7 w-7 text-blue-600" /> : pet.species === 'cat' ? <Cat className="h-7 w-7 text-blue-600" /> : <PawPrint className="h-7 w-7 text-blue-600" />}</div><div><p className="font-medium text-lg">{pet.name}</p><p className="text-sm text-gray-500">{pet.breed || pet.species}</p></div></div></CardContent></Card>)}</div></div>;
+  const [formData, setFormData] = useState({ 
+    name: '', species: 'dog', breed: '', birthDate: '', weight: '', 
+    microchip: '', sterilized: false, allergies: '', medications: '', notes: '' 
+  });
+  
+  const handleSubmit = async (e) => { 
+    e.preventDefault(); 
+    try { 
+      await api.post('pets', formData); 
+      setShowDialog(false); 
+      setFormData({ name: '', species: 'dog', breed: '', birthDate: '', weight: '', microchip: '', sterilized: false, allergies: '', medications: '', notes: '' });
+      onRefresh(); 
+    } catch (error) { alert(error.message); } 
+  };
+
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return null;
+    const birth = new Date(birthDate);
+    const now = new Date();
+    const years = now.getFullYear() - birth.getFullYear();
+    const months = now.getMonth() - birth.getMonth();
+    if (years < 1) return `${months + (months < 0 ? 12 : 0)} mesi`;
+    return `${years} ann${years === 1 ? 'o' : 'i'}`;
+  };
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">I miei animali</h2>
+          <p className="text-gray-500 text-sm">Gestisci i profili e la cartella clinica dei tuoi amici</p>
+        </div>
+        <Dialog open={showDialog} onOpenChange={setShowDialog}>
+          <DialogTrigger asChild><Button className="bg-blue-500 hover:bg-blue-600"><Plus className="h-4 w-4 mr-2" />Aggiungi animale</Button></DialogTrigger>
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogHeader><DialogTitle>Nuovo animale</DialogTitle><DialogDescription>Inserisci i dati del tuo animale</DialogDescription></DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Nome *</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required /></div>
+                <div><Label>Specie</Label><Select value={formData.species} onValueChange={(v) => setFormData({...formData, species: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="dog">Cane</SelectItem><SelectItem value="cat">Gatto</SelectItem><SelectItem value="bird">Uccello</SelectItem><SelectItem value="rabbit">Coniglio</SelectItem><SelectItem value="other">Altro</SelectItem></SelectContent></Select></div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Razza</Label><Input value={formData.breed} onChange={(e) => setFormData({...formData, breed: e.target.value})} placeholder="Es. Labrador" /></div>
+                <div><Label>Data di nascita</Label><Input type="date" value={formData.birthDate} onChange={(e) => setFormData({...formData, birthDate: e.target.value})} /></div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Peso (kg)</Label><Input type="number" step="0.1" value={formData.weight} onChange={(e) => setFormData({...formData, weight: e.target.value})} placeholder="Es. 12.5" /></div>
+                <div><Label>Microchip</Label><Input value={formData.microchip} onChange={(e) => setFormData({...formData, microchip: e.target.value})} placeholder="Numero microchip" /></div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <Switch checked={formData.sterilized} onCheckedChange={(v) => setFormData({...formData, sterilized: v})} />
+                <Label>Sterilizzato/a</Label>
+              </div>
+              <div><Label>Allergie note</Label><Input value={formData.allergies} onChange={(e) => setFormData({...formData, allergies: e.target.value})} placeholder="Es. Pollo, antibiotici..." /></div>
+              <div><Label>Farmaci in corso</Label><Input value={formData.medications} onChange={(e) => setFormData({...formData, medications: e.target.value})} placeholder="Es. Antistaminico 1x/giorno" /></div>
+              <div><Label>Note comportamentali</Label><Textarea value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} placeholder="Es. Timoroso, aggressivo con altri cani..." rows={2} /></div>
+              <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600">Aggiungi animale</Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+      
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {pets.length === 0 ? (
+          <Card className="col-span-full">
+            <CardContent className="p-12 text-center text-gray-500">
+              <PawPrint className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+              <p className="font-medium">Nessun animale registrato</p>
+              <p className="text-sm mt-2">Aggiungi il tuo primo animale per iniziare</p>
+            </CardContent>
+          </Card>
+        ) : pets.map((pet) => (
+          <Card key={pet.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => onOpenProfile?.(pet.id)}>
+            <CardContent className="p-4">
+              <div className="flex items-start gap-4">
+                <div className="h-16 w-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center flex-shrink-0">
+                  {pet.species === 'dog' ? <Dog className="h-8 w-8 text-blue-600" /> : pet.species === 'cat' ? <Cat className="h-8 w-8 text-blue-600" /> : <PawPrint className="h-8 w-8 text-blue-600" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-lg">{pet.name}</p>
+                  <p className="text-sm text-gray-500">{pet.breed || (pet.species === 'dog' ? 'Cane' : pet.species === 'cat' ? 'Gatto' : 'Animale')}</p>
+                  {pet.birthDate && <p className="text-xs text-gray-400 mt-1">{calculateAge(pet.birthDate)}</p>}
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {pet.sterilized && <Badge variant="outline" className="text-xs text-green-600 border-green-300">Sterilizzato</Badge>}
+                    {pet.microchip && <Badge variant="outline" className="text-xs text-blue-600 border-blue-300">Microchip</Badge>}
+                    {pet.allergies && <Badge variant="outline" className="text-xs text-red-600 border-red-300">Allergie</Badge>}
+                  </div>
+                </div>
+                <ChevronRight className="h-5 w-5 text-gray-400" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // ==================== MAIN APP ====================
