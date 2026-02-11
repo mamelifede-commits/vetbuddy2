@@ -3537,6 +3537,7 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
 
   return (
     <div className="space-y-6">
+      {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Report & Analytics</h2>
