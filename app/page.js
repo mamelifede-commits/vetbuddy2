@@ -1846,7 +1846,7 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate
 }
 
 // Clinic Inbox
-function ClinicInbox({ messages, owners, pets, onRefresh }) {
+function ClinicInbox({ messages, owners, pets, onRefresh, onNavigate }) {
   const [selectedMsg, setSelectedMsg] = useState(null);
   const [filter, setFilter] = useState('all');
   const filteredMessages = messages.filter(m => { if (filter === 'unread') return !m.read; if (filter === 'assigned') return m.assignedTo; return true; });
