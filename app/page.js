@@ -1456,6 +1456,9 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate
 
   return (
     <div className="space-y-6">
+      {/* Back Button */}
+      {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
+      
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
