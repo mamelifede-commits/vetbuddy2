@@ -3,6 +3,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { getCollection } from '@/lib/db';
 import { hashPassword, comparePassword, generateToken, getUserFromRequest } from '@/lib/auth';
 import { sendEmail } from '@/lib/email';
+import Stripe from 'stripe';
+
+// Initialize Stripe
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder');
+
+// Subscription Plans (prices in EUR)
+const SUBSCRIPTION_PLANS = {
+  starter: { name: 'Starter', price: 0.00, description: 'Per iniziare' },
+  pro: { name: 'Pro', price: 129.00, description: 'Per automatizzare' },
+  enterprise: { name: 'Enterprise', price: 299.00, description: 'Per gruppi e catene' }
+};
 
 // CORS headers
 const corsHeaders = {
