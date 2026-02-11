@@ -207,15 +207,15 @@ function LandingPage({ onLogin }) {
       </section>
 
       {/* Perché VetBuddy - Feature distintive */}
-      <section id="funzionalita" className="py-12 px-4 bg-gradient-to-b from-gray-50 to-white">
+      <section id="funzionalita" className="py-8 px-4 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <p className="text-coral-500 font-semibold mb-2">PERCHÉ VETBUDDY</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Le feature che ci distinguono</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Le feature che ci distinguono</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">Strumenti progettati per semplificare il lavoro quotidiano della clinica e migliorare l'esperienza dei tuoi clienti.</p>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="grid md:grid-cols-2 gap-5 mb-6">
             {/* Feature 1 - Team Inbox */}
             <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-purple-200">
               <div className="flex items-start gap-4">
