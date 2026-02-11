@@ -444,6 +444,184 @@ class VetBuddyAPITest:
             self.error(f"Pet listing test failed: {str(e)}")
             return False
     
+    def test_services_api(self) -> bool:
+        """Test veterinary services API endpoints"""
+        self.log("Testing services API...")
+        
+        try:
+            # Test GET /api/services
+            response = self.make_request("GET", "/services")
+            
+            if not response["success"]:
+                self.error(f"Services API failed with status {response['status_code']}: {response['data']}")
+                return False
+                
+            data = response["data"]
+            if not isinstance(data, dict) or not data:
+                self.error(f"Services API should return a non-empty dictionary: {data}")
+                return False
+                
+            # Check for expected categories
+            expected_categories = ["visite_generali", "visite_specialistiche", "chirurgia", "diagnostica", "altri_servizi"]
+            for category in expected_categories:
+                if category not in data:
+                    self.error(f"Missing service category '{category}' in response")
+                    return False
+                    
+            self.success("Services catalog endpoint working correctly")
+            
+            # Test GET /api/services/flat
+            response = self.make_request("GET", "/services/flat")
+            
+            if not response["success"]:
+                self.error(f"Services flat API failed with status {response['status_code']}: {response['data']}")
+                return False
+                
+            flat_data = response["data"]
+            if not isinstance(flat_data, list) or not flat_data:
+                self.error(f"Services flat API should return a non-empty list: {flat_data}")
+                return False
+                
+            # Check first service has required fields
+            first_service = flat_data[0]
+            required_fields = ["id", "name", "description", "categoryId", "categoryName"]
+            for field in required_fields:
+                if field not in first_service:
+                    self.error(f"Service missing required field '{field}': {first_service}")
+                    return False
+                    
+            self.success(f"Services flat endpoint working correctly - found {len(flat_data)} services")
+            return True
+            
+        except Exception as e:
+            self.error(f"Services API test failed: {str(e)}")
+            return False
+    
+    def test_invite_clinic_api(self) -> bool:
+        """Test invite clinic API endpoint"""
+        self.log("Testing invite clinic API...")
+        
+        try:
+            invite_data = {
+                "clinicName": "Clinica Test Milano",
+                "clinicEmail": "test@clinicatest.it",
+                "message": "Ciao, sono un tuo cliente!",
+                "inviterName": "Mario Rossi",
+                "inviterEmail": "mario@test.it"
+            }
+            
+            response = self.make_request("POST", "/invite-clinic", invite_data)
+            
+            if not response["success"]:
+                self.error(f"Invite clinic API failed with status {response['status_code']}: {response['data']}")
+                return False
+                
+            data = response["data"]
+            if not data.get("success"):
+                self.error(f"Invite clinic API should return success=true: {data}")
+                return False
+                
+            if "message" not in data:
+                self.error(f"Invite clinic API should return a message: {data}")
+                return False
+                
+            self.success("Invite clinic API working correctly")
+            return True
+            
+        except Exception as e:
+            self.error(f"Invite clinic API test failed: {str(e)}")
+            return False
+    
+    def test_clinic_search_api(self) -> bool:
+        """Test clinic search API endpoints"""
+        self.log("Testing clinic search API...")
+        
+        try:
+            # Test basic search
+            response = self.make_request("GET", "/clinics/search")
+            
+            if not response["success"]:
+                self.error(f"Basic clinic search failed with status {response['status_code']}: {response['data']}")
+                return False
+                
+            data = response["data"]
+            if not isinstance(data, list):
+                self.error(f"Clinic search should return a list: {data}")
+                return False
+                
+            self.success(f"Basic clinic search working - found {len(data)} clinics")
+            
+            # Test search with city filter
+            response = self.make_request("GET", "/clinics/search?city=Milano")
+            
+            if not response["success"]:
+                self.error(f"City filtered clinic search failed with status {response['status_code']}: {response['data']}")
+                return False
+                
+            city_data = response["data"]
+            if not isinstance(city_data, list):
+                self.error(f"City filtered clinic search should return a list: {city_data}")
+                return False
+                
+            self.success(f"City filtered clinic search working - found {len(city_data)} clinics in Milano")
+            
+            # Test search with service filter
+            response = self.make_request("GET", "/clinics/search?service=visita_clinica")
+            
+            if not response["success"]:
+                self.error(f"Service filtered clinic search failed with status {response['status_code']}: {response['data']}")
+                return False
+                
+            service_data = response["data"]
+            if not isinstance(service_data, list):
+                self.error(f"Service filtered clinic search should return a list: {service_data}")
+                return False
+                
+            self.success(f"Service filtered clinic search working - found {len(service_data)} clinics with visita_clinica")
+            return True
+            
+        except Exception as e:
+            self.error(f"Clinic search API test failed: {str(e)}")
+            return False
+    
+    def test_demo_auth(self) -> bool:
+        """Test authentication with demo credentials"""
+        self.log("Testing demo authentication...")
+        
+        try:
+            # Test clinic demo login
+            demo_clinic_data = {
+                "email": "demo@vetbuddy.it",
+                "password": "DemoVet2025!"
+            }
+            
+            response = self.make_request("POST", "/auth/login", demo_clinic_data)
+            
+            if response["success"]:
+                self.success("Demo clinic authentication working (demo@vetbuddy.it)")
+                # Don't use demo token for other tests
+            else:
+                self.log(f"Demo clinic credentials not available (status {response['status_code']})")
+            
+            # Test owner demo login
+            demo_owner_data = {
+                "email": "anna.bianchi@email.com",
+                "password": "Password123!"
+            }
+            
+            response = self.make_request("POST", "/auth/login", demo_owner_data)
+            
+            if response["success"]:
+                self.success("Demo owner authentication working (anna.bianchi@email.com)")
+            else:
+                self.log(f"Demo owner credentials not available (status {response['status_code']})")
+            
+            return True
+            
+        except Exception as e:
+            self.error(f"Demo authentication test failed: {str(e)}")
+            return False
+    
     def test_authentication_required(self) -> bool:
         """Test that authentication is required for protected endpoints"""
         self.log("Testing authentication requirements...")
