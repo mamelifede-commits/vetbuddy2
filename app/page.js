@@ -2101,6 +2101,7 @@ function ClinicDocuments({ documents, owners, pets, onRefresh, onNavigate }) {
 
   return (
     <div>
+      {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
       <div className="flex justify-between items-center mb-6">
         <div><h2 className="text-2xl font-bold text-gray-800">Documenti</h2><p className="text-gray-500 text-sm">Carica PDF e inviali automaticamente via email</p></div>
         <Button className="bg-coral-500 hover:bg-coral-600" onClick={() => setShowUpload(true)}><Upload className="h-4 w-4 mr-2" />Carica documento</Button>
