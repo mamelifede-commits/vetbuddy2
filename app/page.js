@@ -970,9 +970,17 @@ function ClinicInbox({ messages, owners, pets, onRefresh }) {
 
 // Document Upload Form
 function DocumentUploadForm({ owners, pets, onSuccess }) {
-  const [formData, setFormData] = useState({ type: 'prescrizione', ownerEmail: '', petName: '', title: '', file: null, fileName: '', notes: '', sendEmail: true });
+  const [formData, setFormData] = useState({ type: 'prescrizione', ownerEmail: '', petName: '', title: '', file: null, fileName: '', notes: '', sendEmail: true, amount: '' });
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+
+  const docTypeOptions = [
+    { value: 'prescrizione', label: 'Prescrizione medica', icon: FileText, color: 'text-purple-600' },
+    { value: 'referto', label: 'Referto / Esami', icon: FileCheck, color: 'text-blue-600' },
+    { value: 'fattura', label: 'Fattura', icon: Receipt, color: 'text-emerald-600' },
+    { value: 'istruzioni', label: 'Istruzioni post-visita', icon: ClipboardList, color: 'text-green-600' },
+    { value: 'altro', label: 'Altro documento', icon: FileText, color: 'text-gray-600' },
+  ];
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
@@ -987,19 +995,81 @@ function DocumentUploadForm({ owners, pets, onSuccess }) {
     e.preventDefault();
     if (!formData.file) { alert('Seleziona un file PDF'); return; }
     setUploading(true);
-    try { await api.post('documents', { name: formData.title, type: formData.type, content: formData.file, fileName: formData.fileName, petName: formData.petName, ownerEmail: formData.ownerEmail, notes: formData.notes, sendEmail: formData.sendEmail }); onSuccess?.(); } catch (error) { alert(error.message); } finally { setUploading(false); }
+    try { 
+      await api.post('documents', { 
+        name: formData.title, 
+        type: formData.type, 
+        content: formData.file, 
+        fileName: formData.fileName, 
+        petName: formData.petName, 
+        ownerEmail: formData.ownerEmail, 
+        notes: formData.notes, 
+        sendEmail: formData.sendEmail,
+        amount: formData.type === 'fattura' ? parseFloat(formData.amount) || 0 : null
+      }); 
+      onSuccess?.(); 
+    } catch (error) { alert(error.message); } finally { setUploading(false); }
   };
 
   return (
     <><DialogHeader><DialogTitle>Carica documento</DialogTitle><DialogDescription>Il documento verrà salvato e opzionalmente inviato via email con PDF allegato.</DialogDescription></DialogHeader>
     <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-      <div><Label>Tipo documento</Label><Select value={formData.type} onValueChange={(v) => setFormData({...formData, type: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="prescrizione">Prescrizione</SelectItem><SelectItem value="referto">Referto</SelectItem><SelectItem value="istruzioni">Istruzioni</SelectItem><SelectItem value="altro">Altro</SelectItem></SelectContent></Select></div>
-      <div className="grid grid-cols-2 gap-4"><div><Label>Proprietario</Label><Input placeholder="Nome o email" value={formData.ownerEmail} onChange={(e) => setFormData({...formData, ownerEmail: e.target.value})} /></div><div><Label>Animale</Label><Input placeholder="Nome animale" value={formData.petName} onChange={(e) => setFormData({...formData, petName: e.target.value})} /></div></div>
-      <div><Label>Titolo documento</Label><Input value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} placeholder="Es: Prescrizione antibiotico" /></div>
-      <div><Label>File PDF</Label><input type="file" accept=".pdf" ref={fileInputRef} onChange={handleFileSelect} className="hidden" /><div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-coral-400 transition">{formData.fileName ? <div className="flex items-center justify-center gap-2 text-coral-600"><FileText className="h-5 w-5" /><span className="font-medium">{formData.fileName}</span></div> : <><Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" /><p className="text-sm text-gray-500">Clicca per selezionare un PDF</p></>}</div></div>
+      <div>
+        <Label>Tipo documento</Label>
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          {docTypeOptions.map(opt => {
+            const Icon = opt.icon;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setFormData({...formData, type: opt.value})}
+                className={`flex items-center gap-2 p-3 rounded-lg border text-left transition ${formData.type === opt.value ? 'border-coral-500 bg-coral-50' : 'border-gray-200 hover:border-coral-300'}`}
+              >
+                <Icon className={`h-4 w-4 ${opt.color}`} />
+                <span className="text-sm font-medium">{opt.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-2 gap-4">
+        <div><Label>Proprietario</Label><Input placeholder="Nome o email" value={formData.ownerEmail} onChange={(e) => setFormData({...formData, ownerEmail: e.target.value})} required /></div>
+        <div><Label>Animale</Label><Input placeholder="Nome animale" value={formData.petName} onChange={(e) => setFormData({...formData, petName: e.target.value})} /></div>
+      </div>
+      
+      <div><Label>Titolo documento</Label><Input value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} placeholder={formData.type === 'fattura' ? 'Es: Fattura visita 12/02' : 'Es: Prescrizione antibiotico'} /></div>
+      
+      {formData.type === 'fattura' && (
+        <div><Label>Importo (€)</Label><Input type="number" step="0.01" value={formData.amount} onChange={(e) => setFormData({...formData, amount: e.target.value})} placeholder="0.00" /></div>
+      )}
+      
+      <div>
+        <Label>File PDF</Label>
+        <input type="file" accept=".pdf" ref={fileInputRef} onChange={handleFileSelect} className="hidden" />
+        <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-coral-400 transition">
+          {formData.fileName ? (
+            <div className="flex items-center justify-center gap-2 text-coral-600"><FileText className="h-5 w-5" /><span className="font-medium">{formData.fileName}</span></div>
+          ) : (
+            <><Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" /><p className="text-sm text-gray-500">Clicca per selezionare un PDF</p><p className="text-xs text-gray-400 mt-1">Prescrizioni, referti, fatture...</p></>
+          )}
+        </div>
+      </div>
+      
       <div><Label>Note interne (solo clinica)</Label><Textarea value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} rows={2} /></div>
-      <div className="flex items-center justify-between p-4 bg-coral-50 rounded-lg"><div><p className="font-medium text-sm">Invia via email automaticamente</p><p className="text-xs text-gray-500">Il proprietario riceverà il PDF come allegato</p></div><Switch checked={formData.sendEmail} onCheckedChange={(v) => setFormData({...formData, sendEmail: v})} /></div>
-      <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600" disabled={uploading}>{uploading ? 'Caricamento...' : (formData.sendEmail ? 'Carica e invia email' : 'Carica documento')}</Button>
+      
+      <div className="flex items-center justify-between p-4 bg-coral-50 rounded-lg">
+        <div>
+          <p className="font-medium text-sm">Invia via email automaticamente</p>
+          <p className="text-xs text-gray-500">Il proprietario riceverà il PDF come allegato</p>
+        </div>
+        <Switch checked={formData.sendEmail} onCheckedChange={(v) => setFormData({...formData, sendEmail: v})} />
+      </div>
+      
+      <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600" disabled={uploading}>
+        {uploading ? 'Caricamento...' : (formData.sendEmail ? 'Carica e invia email' : 'Carica documento')}
+      </Button>
     </form></>
   );
 }
