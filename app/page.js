@@ -914,7 +914,29 @@ function DocumentUploadForm({ owners, pets, onSuccess }) {
 // Clinic Documents
 function ClinicDocuments({ documents, owners, pets, onRefresh }) {
   const [showUpload, setShowUpload] = useState(false);
-  const docTypes = { prescrizione: { label: 'Prescrizione', color: 'bg-purple-100 text-purple-700' }, referto: { label: 'Referto', color: 'bg-blue-100 text-blue-700' }, istruzioni: { label: 'Istruzioni', color: 'bg-green-100 text-green-700' }, altro: { label: 'Altro', color: 'bg-gray-100 text-gray-700' } };
+  const [selectedClientDoc, setSelectedClientDoc] = useState(null);
+  const [replyText, setReplyText] = useState('');
+  const docTypes = { prescrizione: { label: 'Prescrizione', color: 'bg-purple-100 text-purple-700' }, referto: { label: 'Referto', color: 'bg-blue-100 text-blue-700' }, istruzioni: { label: 'Istruzioni', color: 'bg-green-100 text-green-700' }, altro: { label: 'Altro', color: 'bg-gray-100 text-gray-700' }, foto: { label: 'Foto', color: 'bg-pink-100 text-pink-700' }, video: { label: 'Video', color: 'bg-indigo-100 text-indigo-700' }, esame: { label: 'Esame', color: 'bg-cyan-100 text-cyan-700' } };
+
+  // Mock data for client-uploaded documents
+  const [clientDocs, setClientDocs] = useState([
+    { id: 'cd1', name: 'Foto_zampa_Luna.jpg', type: 'foto', petName: 'Luna', ownerName: 'Marco Rossi', ownerEmail: 'marco@email.com', createdAt: new Date().toISOString(), read: false, notes: 'La zampa sembra gonfia da ieri sera, vorrei un parere', preview: true },
+    { id: 'cd2', name: 'Esame_sangue_Milo.pdf', type: 'esame', petName: 'Milo', ownerName: 'Anna Bianchi', ownerEmail: 'anna@email.com', createdAt: new Date(Date.now() - 86400000).toISOString(), read: true, notes: 'Allego esami fatti in altro laboratorio', preview: false },
+    { id: 'cd3', name: 'Video_tosse_Rocky.mp4', type: 'video', petName: 'Rocky', ownerName: 'Giulia Verdi', ownerEmail: 'giulia@email.com', createdAt: new Date(Date.now() - 172800000).toISOString(), read: false, notes: 'Il cane tossisce così da 3 giorni', preview: true },
+  ]);
+
+  const markAsRead = (docId) => {
+    setClientDocs(clientDocs.map(d => d.id === docId ? { ...d, read: true } : d));
+  };
+
+  const handleReply = (doc) => {
+    alert(`Risposta inviata a ${doc.ownerEmail}: "${replyText}"`);
+    setReplyText('');
+    setSelectedClientDoc(null);
+    markAsRead(doc.id);
+  };
+
+  const unreadCount = clientDocs.filter(d => !d.read).length;
 
   return (
     <div>
@@ -923,7 +945,194 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
         <Button className="bg-coral-500 hover:bg-coral-600" onClick={() => setShowUpload(true)}><Upload className="h-4 w-4 mr-2" />Carica documento</Button>
       </div>
       <div className="bg-coral-50 border border-coral-200 rounded-lg p-4 mb-6"><div className="flex items-start gap-3"><FileText className="h-5 w-5 text-coral-600 mt-0.5" /><div><h4 className="font-medium text-coral-800">Come funziona</h4><p className="text-sm text-coral-700">Carichi il PDF → il proprietario lo riceve via email come allegato → lo ritrova in app nella sezione Documenti.</p></div></div></div>
-      <Tabs defaultValue="dalla-clinica"><TabsList><TabsTrigger value="dalla-clinica">Dalla clinica</TabsTrigger><TabsTrigger value="dai-clienti">Caricati dai clienti</TabsTrigger></TabsList><TabsContent value="dalla-clinica" className="mt-4"><div className="space-y-3">{documents.length === 0 ? <Card><CardContent className="p-12 text-center text-gray-500"><FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessun documento</p></CardContent></Card> : documents.map((doc) => <Card key={doc.id}><CardContent className="p-4"><div className="flex items-center justify-between"><div className="flex items-center gap-4"><div className="h-12 w-12 bg-coral-100 rounded-lg flex items-center justify-center"><FileText className="h-6 w-6 text-coral-600" /></div><div><p className="font-medium">{doc.name}</p><p className="text-sm text-gray-500">{doc.petName || 'N/A'} • {new Date(doc.createdAt).toLocaleDateString()}</p></div></div><div className="flex items-center gap-3"><Badge className={docTypes[doc.type]?.color || docTypes.altro.color}>{docTypes[doc.type]?.label || 'Altro'}</Badge>{doc.emailSent ? <Badge variant="outline" className="text-green-600 border-green-300"><Mail className="h-3 w-3 mr-1" />Inviata</Badge> : <Badge variant="outline" className="text-gray-500">Non inviata</Badge>}<Button size="sm" variant="outline"><Eye className="h-4 w-4" /></Button></div></div></CardContent></Card>)}</div></TabsContent><TabsContent value="dai-clienti" className="mt-4"><Card><CardContent className="p-12 text-center text-gray-500"><FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessun documento caricato dai clienti</p></CardContent></Card></TabsContent></Tabs>
+      
+      <Tabs defaultValue="dalla-clinica">
+        <TabsList>
+          <TabsTrigger value="dalla-clinica">Dalla clinica</TabsTrigger>
+          <TabsTrigger value="dai-clienti" className="relative">
+            Caricati dai clienti
+            {unreadCount > 0 && <Badge className="ml-2 bg-coral-500 text-white text-xs h-5 w-5 p-0 flex items-center justify-center rounded-full">{unreadCount}</Badge>}
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="dalla-clinica" className="mt-4">
+          <div className="space-y-3">
+            {documents.length === 0 ? (
+              <Card><CardContent className="p-12 text-center text-gray-500"><FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p className="font-medium">Nessun documento</p></CardContent></Card>
+            ) : documents.map((doc) => (
+              <Card key={doc.id}><CardContent className="p-4"><div className="flex items-center justify-between"><div className="flex items-center gap-4"><div className="h-12 w-12 bg-coral-100 rounded-lg flex items-center justify-center"><FileText className="h-6 w-6 text-coral-600" /></div><div><p className="font-medium">{doc.name}</p><p className="text-sm text-gray-500">{doc.petName || 'N/A'} • {new Date(doc.createdAt).toLocaleDateString()}</p></div></div><div className="flex items-center gap-3"><Badge className={docTypes[doc.type]?.color || docTypes.altro.color}>{docTypes[doc.type]?.label || 'Altro'}</Badge>{doc.emailSent ? <Badge variant="outline" className="text-green-600 border-green-300"><Mail className="h-3 w-3 mr-1" />Inviata</Badge> : <Badge variant="outline" className="text-gray-500">Non inviata</Badge>}<Button size="sm" variant="outline"><Eye className="h-4 w-4" /></Button></div></div></CardContent></Card>
+            ))}
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="dai-clienti" className="mt-4">
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Document List */}
+            <div className="lg:col-span-1">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium text-gray-500 flex items-center gap-2">
+                    <Upload className="h-4 w-4" />
+                    DOCUMENTI RICEVUTI ({clientDocs.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <ScrollArea className="h-[500px]">
+                    {clientDocs.length === 0 ? (
+                      <div className="p-6 text-center text-gray-500">
+                        <FileText className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                        <p className="text-sm">Nessun documento dai clienti</p>
+                      </div>
+                    ) : clientDocs.map((doc) => (
+                      <div 
+                        key={doc.id} 
+                        onClick={() => { setSelectedClientDoc(doc); markAsRead(doc.id); }}
+                        className={`p-4 border-b cursor-pointer hover:bg-gray-50 transition ${selectedClientDoc?.id === doc.id ? 'bg-coral-50 border-l-4 border-l-coral-500' : ''} ${!doc.read ? 'bg-blue-50' : ''}`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${doc.type === 'foto' ? 'bg-pink-100' : doc.type === 'video' ? 'bg-indigo-100' : 'bg-cyan-100'}`}>
+                            {doc.type === 'foto' ? <Eye className="h-5 w-5 text-pink-600" /> : doc.type === 'video' ? <PlayCircle className="h-5 w-5 text-indigo-600" /> : <FileText className="h-5 w-5 text-cyan-600" />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className={`font-medium text-sm truncate ${!doc.read ? 'text-blue-700' : ''}`}>{doc.petName}</p>
+                              {!doc.read && <CircleDot className="h-3 w-3 text-blue-500" />}
+                            </div>
+                            <p className="text-xs text-gray-500 truncate">{doc.ownerName}</p>
+                            <p className="text-xs text-gray-400 mt-1">{new Date(doc.createdAt).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Document Detail */}
+            <Card className="lg:col-span-2">
+              {selectedClientDoc ? (
+                <>
+                  <CardHeader className="border-b">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          {selectedClientDoc.name}
+                          <Badge className={docTypes[selectedClientDoc.type]?.color || docTypes.altro.color}>
+                            {docTypes[selectedClientDoc.type]?.label || 'Altro'}
+                          </Badge>
+                        </CardTitle>
+                        <CardDescription className="mt-1">
+                          Da: {selectedClientDoc.ownerName} ({selectedClientDoc.ownerEmail})
+                        </CardDescription>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button size="sm" variant="outline">
+                          <Download className="h-4 w-4 mr-1" />Scarica
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Eye className="h-4 w-4 mr-1" />Anteprima
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    {/* Document Info */}
+                    <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div>
+                          <span className="text-gray-500">Animale:</span>
+                          <p className="font-medium">{selectedClientDoc.petName}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Tipo:</span>
+                          <p className="font-medium">{docTypes[selectedClientDoc.type]?.label || 'Altro'}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Data:</span>
+                          <p className="font-medium">{new Date(selectedClientDoc.createdAt).toLocaleString()}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Stato:</span>
+                          <Badge variant="outline" className={selectedClientDoc.read ? 'text-green-600 border-green-300' : 'text-blue-600 border-blue-300'}>
+                            {selectedClientDoc.read ? 'Letto' : 'Non letto'}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Preview Area */}
+                    {selectedClientDoc.preview && (
+                      <div className="mb-6">
+                        <h4 className="text-sm font-medium text-gray-500 mb-2">ANTEPRIMA</h4>
+                        <div className="border rounded-lg p-8 bg-gray-100 flex items-center justify-center">
+                          {selectedClientDoc.type === 'foto' ? (
+                            <div className="text-center">
+                              <div className="h-32 w-32 bg-gray-300 rounded-lg mx-auto flex items-center justify-center">
+                                <Eye className="h-12 w-12 text-gray-500" />
+                              </div>
+                              <p className="text-sm text-gray-500 mt-2">Clicca "Anteprima" per visualizzare</p>
+                            </div>
+                          ) : selectedClientDoc.type === 'video' ? (
+                            <div className="text-center">
+                              <div className="h-32 w-48 bg-gray-800 rounded-lg mx-auto flex items-center justify-center">
+                                <PlayCircle className="h-12 w-12 text-white" />
+                              </div>
+                              <p className="text-sm text-gray-500 mt-2">Clicca per riprodurre il video</p>
+                            </div>
+                          ) : (
+                            <FileText className="h-16 w-16 text-gray-400" />
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Client Notes */}
+                    <div className="mb-6">
+                      <h4 className="text-sm font-medium text-gray-500 mb-2">NOTE DEL PROPRIETARIO</h4>
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <p className="text-gray-700">{selectedClientDoc.notes}</p>
+                      </div>
+                    </div>
+
+                    {/* Reply Section */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-500 mb-2">RISPONDI</h4>
+                      <div className="space-y-3">
+                        <Textarea 
+                          placeholder="Scrivi una risposta al proprietario..."
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          rows={3}
+                        />
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs text-gray-500">La risposta verrà inviata via email a {selectedClientDoc.ownerEmail}</p>
+                          <Button 
+                            className="bg-coral-500 hover:bg-coral-600"
+                            disabled={!replyText.trim()}
+                            onClick={() => handleReply(selectedClientDoc)}
+                          >
+                            <Send className="h-4 w-4 mr-2" />Invia risposta
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </>
+              ) : (
+                <CardContent className="flex items-center justify-center h-[500px] text-gray-500">
+                  <div className="text-center">
+                    <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p className="font-medium">Seleziona un documento</p>
+                    <p className="text-sm mt-1">Clicca su un documento per vedere i dettagli</p>
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+      
       <Dialog open={showUpload} onOpenChange={setShowUpload}><DialogContent className="max-w-lg"><DocumentUploadForm owners={owners} pets={pets} onSuccess={() => { setShowUpload(false); onRefresh(); }} /></DialogContent></Dialog>
     </div>
   );
