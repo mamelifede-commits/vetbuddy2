@@ -3025,22 +3025,59 @@ function OwnerDocuments({ documents, pets, onRefresh }) {
             </Card>
           ) : (
             <div className="space-y-3">
-              {documents.filter(d => !d.fromClient).map((doc) => (
+              {documents.filter(d => !d.fromClient).map((doc) => {
+                const handleDownload = () => {
+                  if (doc.content) {
+                    // If we have base64 content, create a download link
+                    const link = document.createElement('a');
+                    link.href = doc.content;
+                    link.download = doc.fileName || doc.name || 'documento';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  } else if (doc.fileUrl) {
+                    // If we have a URL, open it
+                    window.open(doc.fileUrl, '_blank');
+                  } else {
+                    alert('File non disponibile per il download');
+                  }
+                };
+                return (
                 <Card key={doc.id}>
                   <CardContent className="p-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <FileText className="h-6 w-6 text-blue-600" />
+                      <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${
+                        doc.type === 'referto' ? 'bg-blue-100' : 
+                        doc.type === 'prescrizione' ? 'bg-green-100' : 
+                        doc.type === 'fattura' ? 'bg-yellow-100' : 'bg-gray-100'
+                      }`}>
+                        <FileText className={`h-6 w-6 ${
+                          doc.type === 'referto' ? 'text-blue-600' : 
+                          doc.type === 'prescrizione' ? 'text-green-600' : 
+                          doc.type === 'fattura' ? 'text-yellow-600' : 'text-gray-600'
+                        }`} />
                       </div>
                       <div>
-                        <p className="font-medium">{doc.name}</p>
-                        <p className="text-sm text-gray-500">{doc.petName} • {new Date(doc.createdAt).toLocaleDateString()}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium">{doc.name}</p>
+                          <Badge variant="outline" className={`text-xs ${
+                            doc.type === 'referto' ? 'border-blue-300 text-blue-600' : 
+                            doc.type === 'prescrizione' ? 'border-green-300 text-green-600' : 
+                            doc.type === 'fattura' ? 'border-yellow-300 text-yellow-600' : 'border-gray-300 text-gray-600'
+                          }`}>
+                            {doc.type || 'documento'}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-500">{doc.petName} • {new Date(doc.createdAt).toLocaleDateString('it-IT')}</p>
+                        {doc.amount && <p className="text-xs text-gray-400 mt-1">Importo: €{doc.amount.toFixed(2)}</p>}
                       </div>
                     </div>
-                    <Button variant="outline" size="sm"><Download className="h-4 w-4 mr-1" />Scarica</Button>
+                    <Button variant="outline" size="sm" onClick={handleDownload}>
+                      <Download className="h-4 w-4 mr-1" />Scarica
+                    </Button>
                   </CardContent>
                 </Card>
-              ))}
+              )})}
             </div>
           )}
         </TabsContent>
