@@ -6813,3 +6813,4 @@ export default function App() {
   if (user.role === 'staff') return <StaffDashboard user={user} onLogout={handleLogout} />;
   return <OwnerDashboard user={user} onLogout={handleLogout} />;
 }
+// Mobile responsive update Wed Feb 11 18:07:23 UTC 2026
