@@ -21,7 +21,9 @@ import {
   Star, Check, Upload, Paperclip, AlertCircle, RefreshCw, Eye, Download,
   UserCheck, Ticket, Filter, MoreHorizontal, ExternalLink, Video, CalendarCheck,
   CreditCard, PlayCircle, ArrowRight, FileCheck, Stethoscope, SendHorizontal,
-  LayoutDashboard, ListTodo, CircleDot, Timer, TrendingUp, Activity
+  LayoutDashboard, ListTodo, CircleDot, Timer, TrendingUp, Activity,
+  MapPin, Globe, Receipt, Syringe, Weight, AlertTriangle, ChevronLeft,
+  Euro, Wallet, Camera, Edit, Trash2, Info, StarHalf
 } from 'lucide-react';
 
 // Logo Component
