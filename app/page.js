@@ -2698,7 +2698,8 @@ function OwnerDashboard({ user, onLogout }) {
     <div className="min-h-screen bg-gray-50 flex">
       <aside className="w-64 bg-white border-r p-4 flex flex-col">
         <div className="flex items-center gap-3 mb-2"><VetBuddyLogo size={36} /><div><h1 className="font-bold text-coral-500">VetBuddy</h1><p className="text-xs text-gray-500 truncate max-w-[140px]">{user.name}</p></div></div>
-        <Badge variant="outline" className="mb-6 justify-center text-amber-600 border-amber-300 bg-amber-50"><AlertCircle className="h-3 w-3 mr-1" /> Demo / Pilot</Badge>
+        <div className="mb-2"><RoleBadge role="owner" /></div>
+        <Badge variant="outline" className="mb-6 justify-center text-amber-600 border-amber-300 bg-amber-50"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
         <nav className="space-y-1 flex-1">
           <NavItem icon={Calendar} label="Appuntamenti" value="appointments" />
           <NavItem icon={FileText} label="Documenti" value="documents" badge={documents.length} />
