@@ -184,24 +184,24 @@ function EcosystemToggle() {
 
       {/* Content Card */}
       <div className={`relative overflow-hidden rounded-3xl p-8 md:p-10 transition-all duration-500 ${
-        isBlue 
-          ? 'bg-gradient-to-br from-blue-50 via-blue-100/50 to-white border border-blue-200/50' 
-          : 'bg-gradient-to-br from-coral-50 via-coral-100/50 to-white border border-coral-200/50'
+        isCoral 
+          ? 'bg-gradient-to-br from-coral-50 via-coral-100/50 to-white border border-coral-200/50' 
+          : 'bg-gradient-to-br from-blue-50 via-blue-100/50 to-white border border-blue-200/50'
       }`}>
         {/* Decorative blob */}
-        <div className={`absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-30 ${isBlue ? 'bg-blue-300' : 'bg-coral-300'}`}></div>
+        <div className={`absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-30 ${isCoral ? 'bg-coral-300' : 'bg-blue-300'}`}></div>
         
         <div className="relative z-10">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
             <div className={`h-16 w-16 rounded-2xl flex items-center justify-center shadow-lg ${
-              isBlue ? 'bg-gradient-to-br from-blue-400 to-blue-600' : 'bg-gradient-to-br from-coral-400 to-coral-600'
+              isCoral ? 'bg-gradient-to-br from-coral-400 to-coral-600' : 'bg-gradient-to-br from-blue-400 to-blue-600'
             }`}>
               <Icon className="h-8 w-8 text-white" />
             </div>
             <div>
               <h3 className="font-bold text-2xl text-gray-900">{current.title}</h3>
-              <p className={`text-sm font-medium ${isBlue ? 'text-blue-600' : 'text-coral-600'}`}>{current.subtitle}</p>
+              <p className={`text-sm font-medium ${isCoral ? 'text-coral-600' : 'text-blue-600'}`}>{current.subtitle}</p>
             </div>
           </div>
 
@@ -211,14 +211,13 @@ function EcosystemToggle() {
               <div 
                 key={i} 
                 className={`flex items-start gap-3 p-4 rounded-xl bg-white/60 backdrop-blur-sm border transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${
-                  isBlue ? 'border-blue-100' : 'border-coral-100'
+                  isCoral ? 'border-coral-100' : 'border-blue-100'
                 }`}
-                style={{ animationDelay: `${i * 0.1}s` }}
               >
                 <div className={`h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  isBlue ? 'bg-blue-100' : 'bg-coral-100'
+                  isCoral ? 'bg-coral-100' : 'bg-blue-100'
                 }`}>
-                  <Check className={`h-4 w-4 ${isBlue ? 'text-blue-600' : 'text-coral-600'}`} />
+                  <Check className={`h-4 w-4 ${isCoral ? 'text-coral-600' : 'text-blue-600'}`} />
                 </div>
                 <span className="text-gray-700 font-medium">{item}</span>
               </div>
