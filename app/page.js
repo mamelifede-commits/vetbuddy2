@@ -2500,7 +2500,7 @@ function ClinicReports({ appointments, documents, messages, owners }) {
 }
 
 function ClinicSettings({ user }) {
-  const [googleConnected, setGoogleConnected] = useState(false);
+  const [googleCalendarStatus, setGoogleCalendarStatus] = useState({ connected: false, loading: true });
   const [stripeSettings, setStripeSettings] = useState({ stripePublishableKey: '', stripeSecretKey: '', stripeConfigured: false });
   const [showStripeForm, setShowStripeForm] = useState(false);
   const [stripeForm, setStripeForm] = useState({ publishableKey: '', secretKey: '' });
@@ -2514,8 +2514,80 @@ function ClinicSettings({ user }) {
   });
   const [detectingLocation, setDetectingLocation] = useState(false);
   const [savingLocation, setSavingLocation] = useState(false);
+  const [staffColors, setStaffColors] = useState([]);
+  const [staffList, setStaffList] = useState([]);
 
-  useEffect(() => { loadStripeSettings(); }, []);
+  useEffect(() => { 
+    loadStripeSettings(); 
+    loadGoogleCalendarStatus();
+    loadStaffColors();
+    loadStaff();
+    
+    // Check for Google OAuth callback
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('google_success')) {
+      alert('✅ Google Calendar connesso con successo!');
+      window.history.replaceState({}, '', window.location.pathname);
+      loadGoogleCalendarStatus();
+    }
+    if (params.get('google_error')) {
+      alert('❌ Errore connessione Google Calendar: ' + params.get('google_error'));
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
+  const loadGoogleCalendarStatus = async () => {
+    try {
+      const status = await api.get('google-calendar/status');
+      setGoogleCalendarStatus({ ...status, loading: false });
+    } catch (error) { 
+      console.error('Error loading Google Calendar status:', error);
+      setGoogleCalendarStatus({ connected: false, loading: false });
+    }
+  };
+
+  const loadStaffColors = async () => {
+    try {
+      const colors = await api.get('staff-colors');
+      setStaffColors(colors);
+    } catch (error) { console.error('Error loading staff colors:', error); }
+  };
+
+  const loadStaff = async () => {
+    try {
+      const staff = await api.get('staff');
+      setStaffList(staff);
+    } catch (error) { console.error('Error loading staff:', error); }
+  };
+
+  const connectGoogleCalendar = async () => {
+    try {
+      const { authUrl } = await api.get(`auth/google?clinicId=${user.id}`);
+      window.location.href = authUrl;
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    }
+  };
+
+  const disconnectGoogleCalendar = async () => {
+    if (!confirm('Sei sicuro di voler disconnettere Google Calendar?')) return;
+    try {
+      await api.post('google-calendar/disconnect', {});
+      setGoogleCalendarStatus({ connected: false, loading: false });
+      alert('Google Calendar disconnesso');
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    }
+  };
+
+  const updateStaffColor = async (staffId, colorId) => {
+    try {
+      await api.post('staff/calendar-color', { staffId, colorId });
+      loadStaff();
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    }
+  };
 
   const loadStripeSettings = async () => {
     try {
