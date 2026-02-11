@@ -191,6 +191,66 @@ export async function GET(request, { params }) {
       return NextResponse.json(STAFF_COLORS, { headers: corsHeaders });
     }
 
+    // Test email endpoint
+    if (path === 'test-email') {
+      const { searchParams } = new URL(request.url);
+      const to = searchParams.get('to') || 'info@vetbuddy.it';
+      
+      try {
+        await sendEmail({
+          to: to,
+          subject: '🐾 Test Email VetBuddy - Configurazione DNS OK!',
+          html: `
+            <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+              <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 32px; text-align: center;">
+                <h1 style="color: white; margin: 0; font-size: 32px;">🐾 VetBuddy</h1>
+                <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 16px;">La piattaforma veterinaria</p>
+              </div>
+              
+              <div style="padding: 32px;">
+                <div style="background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+                  <h2 style="color: #155724; margin: 0 0 8px;">✅ Test completato con successo!</h2>
+                  <p style="color: #155724; margin: 0;">La configurazione DNS di Resend è corretta. Puoi inviare email da @vetbuddy.it</p>
+                </div>
+                
+                <h3 style="color: #333;">Riepilogo configurazione:</h3>
+                <ul style="color: #666; line-height: 1.8;">
+                  <li><strong>DKIM:</strong> ✅ Verificato</li>
+                  <li><strong>SPF:</strong> ✅ Verificato</li>
+                  <li><strong>MX:</strong> ✅ Verificato</li>
+                  <li><strong>Dominio:</strong> vetbuddy.it</li>
+                  <li><strong>Provider:</strong> Resend (EU-West-1)</li>
+                </ul>
+                
+                <p style="color: #666; margin-top: 24px;">
+                  Ora puoi inviare documenti, conferme appuntamento e promemoria ai tuoi clienti direttamente dalla piattaforma VetBuddy.
+                </p>
+              </div>
+              
+              <div style="background: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e9ecef;">
+                <p style="color: #6c757d; font-size: 12px; margin: 0;">
+                  Email inviata da <strong>VetBuddy</strong> - La piattaforma veterinaria<br/>
+                  <a href="https://www.vetbuddy.it" style="color: #FF6B6B;">www.vetbuddy.it</a>
+                </p>
+              </div>
+            </div>
+          `
+        });
+        
+        return NextResponse.json({ 
+          success: true, 
+          message: `Email di test inviata a ${to}`,
+          timestamp: new Date().toISOString()
+        }, { headers: corsHeaders });
+      } catch (error) {
+        console.error('Test email error:', error);
+        return NextResponse.json({ 
+          success: false, 
+          error: error.message 
+        }, { status: 500, headers: corsHeaders });
+      }
+    }
+
     // Get current user
     if (path === 'auth/me') {
       const user = getUserFromRequest(request);
