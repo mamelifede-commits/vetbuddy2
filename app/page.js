@@ -424,7 +424,7 @@ function LandingPage({ onLogin }) {
             <Button size="lg" className="bg-white text-coral-500 hover:bg-coral-50" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
               Richiedi accesso Pilot
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-coral-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+            <Button size="lg" variant="outline" className="border-white text-coral-500 bg-white hover:bg-coral-50" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
               Esplora la demo
             </Button>
           </div>
