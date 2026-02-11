@@ -1367,8 +1367,8 @@ function OwnerDashboard({ user, onLogout }) {
         <Button variant="ghost" onClick={onLogout} className="mt-auto text-gray-600"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
       </aside>
       <main className="flex-1 p-6 overflow-auto">
-        {activeTab === 'appointments' && <OwnerAppointments appointments={appointments} />}
-        {activeTab === 'documents' && <OwnerDocuments documents={documents} />}
+        {activeTab === 'appointments' && <OwnerAppointments appointments={appointments} pets={pets} />}
+        {activeTab === 'documents' && <OwnerDocuments documents={documents} pets={pets} onRefresh={loadData} />}
         {activeTab === 'messages' && <OwnerMessages messages={messages} />}
         {activeTab === 'pets' && <OwnerPets pets={pets} onRefresh={loadData} />}
       </main>
