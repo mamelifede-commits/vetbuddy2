@@ -3779,9 +3779,9 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
             <span className="text-sm font-medium">Torna alla Panoramica</span>
           </button>
           <div className="grid md:grid-cols-3 gap-4 mb-6">
-            <StatCard title="Incassi questo mese" value={`€${monthlyRevenue}`} icon={Euro} color="emerald" />
-            <StatCard title="Transazioni" value={monthlyAppts.filter(a => a.price > 0).length} icon={Receipt} color="blue" />
-            <StatCard title="Ticket medio" value={monthlyAppts.length > 0 ? `€${Math.round(monthlyRevenue / monthlyAppts.length)}` : '€0'} icon={CreditCard} color="coral" />
+            <StatCard title="Incassi questo mese" value={`€${monthlyRevenue}`} icon={Euro} color="emerald" onClick={() => onNavigate('settings')} />
+            <StatCard title="Transazioni" value={monthlyAppts.filter(a => a.price > 0).length} icon={Receipt} color="blue" onClick={() => onNavigate('settings')} />
+            <StatCard title="Ticket medio" value={monthlyAppts.length > 0 ? `€${Math.round(monthlyRevenue / monthlyAppts.length)}` : '€0'} icon={CreditCard} color="coral" onClick={() => onNavigate('settings')} />
           </div>
           
           <Card className="bg-amber-50 border-amber-200">
