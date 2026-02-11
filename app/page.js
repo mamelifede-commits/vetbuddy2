@@ -1768,12 +1768,14 @@ function OwnerDocuments({ documents, pets, onRefresh }) {
             </Card>
           ) : (
             <div className="space-y-3">
-              {documents.filter(d => d.fromClient).map((doc) => (
+              {documents.filter(d => d.fromClient).map((doc) => {
+                const DocIcon = docTypes[doc.type]?.icon || FileText;
+                return (
                 <Card key={doc.id}>
                   <CardContent className="p-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${docTypes[doc.type]?.color || docTypes.altro.color}`}>
-                        {docTypes[doc.type]?.icon ? <docTypes[doc.type].icon className="h-6 w-6" /> : <FileText className="h-6 w-6" />}
+                        <DocIcon className="h-6 w-6" />
                       </div>
                       <div>
                         <p className="font-medium">{doc.name}</p>
