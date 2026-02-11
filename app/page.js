@@ -1072,12 +1072,14 @@ function LandingPage({ onLogin }) {
           <div className="text-center mb-12"><h2 className="text-3xl font-bold text-gray-900 mb-4">Domande frequenti</h2></div>
           <Accordion type="single" collapsible className="space-y-4">
             {[
-              { q: 'Cos\'è il Pilot?', a: 'VetBuddy è in fase Pilot: stiamo testando con un numero limitato di cliniche. Le cliniche visibili nell\'app demo non sono ancora affiliate.' },
-              { q: 'Quanto costa per i proprietari?', a: 'VetBuddy è e sarà sempre gratuito per i proprietari di animali. Nessun costo nascosto.' },
-              { q: 'Come funziona la geolocalizzazione?', a: 'I clienti possono cercare cliniche vicine sulla mappa, vedere la distanza in km e ottenere indicazioni stradali con un tap.' },
-              { q: 'Cosa include il piano Pro nel Pilot?', a: 'Per i 6 mesi del Pilot Milano: team inbox, documenti automatici, Google Calendar sync, pagamenti Stripe, report finanziari e supporto dedicato.' },
-              { q: 'Come funziona l\'invio documenti?', a: 'La clinica carica un PDF (referto, prescrizione, fattura), seleziona il cliente e l\'animale, e il documento viene inviato via email come allegato. Il cliente lo ritrova anche nell\'app.' },
-              { q: 'Posso provare prima di candidarmi?', a: 'Sì! Puoi registrarti come proprietario e esplorare l\'app. Per le cliniche, il piano Starter è sempre gratuito. Il piano Pro è gratuito per chi entra nel Pilot Milano.' },
+              { q: 'Cos\'è il Pilot e come funziona l\'invito?', a: 'VetBuddy è in fase Pilot a Milano. L\'accesso è su invito per garantire qualità e supporto dedicato. Candidati compilando il form e ti contatteremo per l\'attivazione.' },
+              { q: 'Quanto dura il Pilot gratuito?', a: 'Le cliniche selezionate per il Pilot Milano hanno 6 mesi di piano Pro gratuito. Al termine, potrai scegliere il piano più adatto alle tue esigenze.' },
+              { q: 'Quanto costa per i proprietari?', a: 'VetBuddy è e sarà sempre gratuito per i proprietari di animali. Nessun costo nascosto, mai.' },
+              { q: 'Come funziona la fatturazione?', a: 'Gli abbonamenti vengono fatturati da VetBuddy. Prezzi IVA esclusa. Riceverai report e riconciliazione mensile. Puoi disdire in qualsiasi momento.' },
+              { q: 'Cosa include il piano Pro?', a: 'Team inbox con assegnazione ticket, documenti con invio automatico via email, sync Google Calendar, video-consulti, reminder automatici, pagamenti integrati, reportistica completa e supporto prioritario.' },
+              { q: 'Come funziona l\'invio documenti?', a: 'Carichi un PDF (referto, prescrizione, fattura), selezioni cliente e animale, e il documento viene inviato automaticamente via email. Il cliente lo ritrova anche nell\'app.' },
+              { q: 'I documenti sono sicuri?', a: 'Sì. I documenti sono crittografati, accessibili solo dalla clinica e dal proprietario autorizzato. Rispettiamo GDPR e normative privacy.' },
+              { q: 'Posso esplorare l\'app prima di candidarmi?', a: 'Sì! Registrati come proprietario per esplorare la demo. Vedrai le funzionalità ma nota: le cliniche nell\'app demo non sono ancora affiliate realmente.' },
             ].map((item, i) => (
               <AccordionItem key={i} value={`item-${i}`} className="bg-white rounded-lg px-6 border">
                 <AccordionTrigger className="text-left font-medium">{item.q}</AccordionTrigger>
