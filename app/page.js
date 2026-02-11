@@ -2333,6 +2333,119 @@ function ClinicDocuments({ documents, owners, pets, onRefresh }) {
       </Tabs>
       
       <Dialog open={showUpload} onOpenChange={setShowUpload}><DialogContent className="max-w-lg"><DocumentUploadForm owners={owners} pets={pets} onSuccess={() => { setShowUpload(false); onRefresh(); }} /></DialogContent></Dialog>
+      
+      {/* Document Detail Dialog */}
+      <Dialog open={!!selectedDoc} onOpenChange={() => setSelectedDoc(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${docTypes[selectedDoc?.type]?.color?.split(' ')[0] || 'bg-gray-100'}`}>
+                <FileText className={`h-5 w-5 ${docTypes[selectedDoc?.type]?.color?.split(' ')[1] || 'text-gray-600'}`} />
+              </div>
+              {selectedDoc?.name}
+            </DialogTitle>
+            <DialogDescription>Dettagli documento</DialogDescription>
+          </DialogHeader>
+          {selectedDoc && (
+            <div className="space-y-4 mt-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-500 mb-1">Tipo</p>
+                  <Badge className={docTypes[selectedDoc.type]?.color || 'bg-gray-100'}>
+                    {docTypes[selectedDoc.type]?.label || 'Altro'}
+                  </Badge>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-500 mb-1">Stato</p>
+                  <Badge className={statusConfig[selectedDoc.status]?.color || 'bg-gray-100'}>
+                    {statusConfig[selectedDoc.status]?.label || 'Bozza'}
+                  </Badge>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-500 mb-1">Animale</p>
+                  <p className="font-medium">{selectedDoc.petName || 'N/A'}</p>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-500 mb-1">Proprietario</p>
+                  <p className="font-medium">{selectedDoc.ownerEmail || 'N/A'}</p>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-500 mb-1">Creato il</p>
+                  <p className="font-medium">{new Date(selectedDoc.createdAt).toLocaleString('it-IT')}</p>
+                </div>
+                {selectedDoc.lastSentAt && (
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500 mb-1">Ultimo invio</p>
+                    <p className="font-medium">{new Date(selectedDoc.lastSentAt).toLocaleString('it-IT')}</p>
+                  </div>
+                )}
+              </div>
+              
+              {selectedDoc.notes && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p className="text-xs text-amber-600 mb-1">Note</p>
+                  <p className="text-sm text-amber-800">{selectedDoc.notes}</p>
+                </div>
+              )}
+              
+              <div className="flex gap-2 pt-4 border-t">
+                {selectedDoc.content && (
+                  <>
+                    <Button variant="outline" className="flex-1" onClick={() => { setPreviewDoc(selectedDoc); setSelectedDoc(null); }}>
+                      <Eye className="h-4 w-4 mr-2" />Anteprima
+                    </Button>
+                    <Button variant="outline" className="flex-1" onClick={() => downloadDoc(selectedDoc)}>
+                      <Download className="h-4 w-4 mr-2" />Scarica
+                    </Button>
+                  </>
+                )}
+                {selectedDoc.ownerEmail && (
+                  <Button className="flex-1 bg-coral-500 hover:bg-coral-600" onClick={() => { resendEmail(selectedDoc); setSelectedDoc(null); }}>
+                    <Mail className="h-4 w-4 mr-2" />Invia Email
+                  </Button>
+                )}
+                <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={() => deleteDoc(selectedDoc.id)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* PDF Preview Dialog */}
+      <Dialog open={!!previewDoc} onOpenChange={() => setPreviewDoc(null)}>
+        <DialogContent className="max-w-4xl h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>Anteprima: {previewDoc?.name}</DialogTitle>
+          </DialogHeader>
+          {previewDoc?.content ? (
+            <div className="flex-1 h-full min-h-[500px]">
+              <iframe 
+                src={previewDoc.content} 
+                className="w-full h-full rounded-lg border"
+                title="Anteprima documento"
+              />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-500">
+              <div className="text-center">
+                <FileText className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                <p>Anteprima non disponibile</p>
+                <p className="text-sm mt-1">Il documento non ha un contenuto visualizzabile</p>
+              </div>
+            </div>
+          )}
+          <div className="flex gap-2 mt-4">
+            {previewDoc?.content && (
+              <Button variant="outline" onClick={() => downloadDoc(previewDoc)}>
+                <Download className="h-4 w-4 mr-2" />Scarica PDF
+              </Button>
+            )}
+            <Button variant="outline" onClick={() => setPreviewDoc(null)}>Chiudi</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
