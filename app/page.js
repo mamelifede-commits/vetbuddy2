@@ -2683,7 +2683,7 @@ function ClinicStaff({ staff, onRefresh, onNavigate }) {
 }
 
 // Clinic Services - Servizi offerti
-function ClinicServices() {
+function ClinicServices({ onNavigate }) {
   const [showDialog, setShowDialog] = useState(false);
   const [services, setServices] = useState([
     { id: 1, name: 'Visita generale', description: 'Check-up completo dello stato di salute', duration: 30, price: 50, active: true, type: 'in_sede' },
