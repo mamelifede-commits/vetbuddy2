@@ -3550,7 +3550,7 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
         </Button>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs value={activeReportTab} onValueChange={setActiveReportTab}>
         <TabsList>
           <TabsTrigger value="overview">Panoramica</TabsTrigger>
           <TabsTrigger value="clients">Clienti</TabsTrigger>
