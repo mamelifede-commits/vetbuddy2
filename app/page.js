@@ -2949,6 +2949,49 @@ function ClinicTemplates() {
         </Button>
       </div>
 
+      {/* How to use - Instructions */}
+      <Card className="bg-gradient-to-r from-coral-50 to-orange-50 border-coral-200">
+        <CardContent className="p-5">
+          <div className="flex items-start gap-4">
+            <div className="h-10 w-10 bg-coral-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Info className="h-5 w-5 text-coral-600" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-800 mb-2">Come usare i Template</h4>
+              <div className="grid md:grid-cols-3 gap-4 text-sm">
+                <div className="flex items-start gap-2">
+                  <div className="h-6 w-6 bg-coral-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
+                  <div>
+                    <p className="font-medium text-gray-700">Copia il template</p>
+                    <p className="text-gray-500">Clicca su "Copia" per copiare il testo negli appunti</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="h-6 w-6 bg-coral-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
+                  <div>
+                    <p className="font-medium text-gray-700">Sostituisci le variabili</p>
+                    <p className="text-gray-500">Rimpiazza {"{{nome_cliente}}"}, {"{{nome_pet}}"} ecc. con i dati reali</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="h-6 w-6 bg-coral-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
+                  <div>
+                    <p className="font-medium text-gray-700">Invia il messaggio</p>
+                    <p className="text-gray-500">Incolla in WhatsApp, email o SMS e invia al cliente</p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-white/60 rounded-lg border border-coral-100">
+                <p className="text-xs text-gray-600">
+                  <strong>💡 Suggerimento:</strong> I template ti aiutano a comunicare in modo professionale e veloce. 
+                  Personalizza i messaggi standard per risparmiare tempo e mantenere coerenza nella comunicazione con i clienti.
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Tabs */}
       <div className="flex gap-6 border-b">
         {['tutti', 'messaggi', 'email', 'reminder'].map(tab => (
