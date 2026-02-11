@@ -1209,16 +1209,20 @@ function ClinicControlRoom({ appointments, documents, messages, owners, setupPro
 }
 
 // Setup Step Component
-function SetupStep({ icon: Icon, label, desc, done }) {
+function SetupStep({ icon: Icon, label, desc, done, onClick }) {
   return (
-    <button className={`flex items-center gap-3 p-3 rounded-lg border transition ${done ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-coral-300'}`}>
+    <button 
+      onClick={onClick}
+      className={`flex items-center gap-3 p-3 rounded-lg border transition w-full ${done ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-coral-300 hover:bg-coral-50 cursor-pointer'}`}
+    >
       <div className={`h-8 w-8 rounded-full flex items-center justify-center ${done ? 'bg-green-100' : 'bg-coral-100'}`}>
         {done ? <Check className="h-4 w-4 text-green-600" /> : <Icon className="h-4 w-4 text-coral-500" />}
       </div>
-      <div className="text-left">
+      <div className="text-left flex-1">
         <p className={`text-sm font-medium ${done ? 'text-green-700' : ''}`}>{label}</p>
         <p className="text-xs text-gray-500">{desc}</p>
       </div>
+      {!done && <ChevronRight className="h-4 w-4 text-gray-400" />}
     </button>
   );
 }
