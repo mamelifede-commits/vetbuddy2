@@ -3568,6 +3568,7 @@ function ClinicServices({ onNavigate, user }) {
       </Dialog>
     </div>
   );
+}
 
 
 function ClinicTemplates({ owners = [], pets = [], staff = [], appointments = [], user, onNavigate }) {
