@@ -606,22 +606,6 @@ function LandingPage({ onLogin }) {
 
           {/* Feature Grid - 7 features chiave */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {/* Videoconsulto */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-indigo-100 hover:shadow-xl hover:-translate-y-1 transition-all group relative">
-              <div className="absolute -top-3 right-4 bg-indigo-500 text-white text-xs px-3 py-1 rounded-full font-medium">
-                Novità
-              </div>
-              <div className="h-14 w-14 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <Video className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Videoconsulto</h3>
-              <p className="text-gray-600 text-sm mb-4">Visite online con un click. Link automatico al cliente, nessun software esterno.</p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-xs">1-click</Badge>
-                <Badge variant="outline" className="text-xs">HD Quality</Badge>
-              </div>
-            </div>
-
             {/* Agenda */}
             <div className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
               <div className="h-14 w-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
@@ -661,6 +645,22 @@ function LandingPage({ onLogin }) {
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="text-xs">Ticket system</Badge>
                 <Badge variant="outline" className="text-xs">Quick replies</Badge>
+              </div>
+            </div>
+
+            {/* Videoconsulto */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-indigo-100 hover:shadow-xl hover:-translate-y-1 transition-all group relative">
+              <div className="absolute -top-3 right-4 bg-indigo-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                Novità
+              </div>
+              <div className="h-14 w-14 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
+                <Video className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Videoconsulto</h3>
+              <p className="text-gray-600 text-sm mb-4">Visite online con un click. Link automatico al cliente, nessun software esterno.</p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="text-xs">1-click</Badge>
+                <Badge variant="outline" className="text-xs">HD Quality</Badge>
               </div>
             </div>
 
