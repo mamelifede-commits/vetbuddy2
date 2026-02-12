@@ -7963,6 +7963,8 @@ function OwnerAppointments({ appointments, pets }) {
   const [loadingClinics, setLoadingClinics] = useState(false);
   const [loadingServices, setLoadingServices] = useState(false);
   const [videoConsultoConfirmed, setVideoConsultoConfirmed] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadingFile, setUploadingFile] = useState(false);
   
   // Nuovi stati per la ricerca per servizio
   const [searchMode, setSearchMode] = useState('clinic'); // 'clinic' o 'service'
