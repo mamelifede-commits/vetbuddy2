@@ -5508,6 +5508,173 @@ function ClinicReports({ appointments, documents, messages, owners, pets, onNavi
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Dialog Dettaglio Cliente */}
+      <Dialog open={!!selectedOwnerDetail} onOpenChange={() => setSelectedOwnerDetail(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <User className="h-5 w-5 text-blue-600" />
+              </div>
+              {selectedOwnerDetail?.name}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedOwnerDetail && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Email</p>
+                  <p className="font-medium text-sm">{selectedOwnerDetail.email}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Telefono</p>
+                  <p className="font-medium text-sm">{selectedOwnerDetail.phone || 'N/D'}</p>
+                </div>
+              </div>
+              {selectedOwnerDetail.address && (
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Indirizzo</p>
+                  <p className="font-medium text-sm">{selectedOwnerDetail.address}</p>
+                </div>
+              )}
+              <div className="bg-blue-50 rounded-lg p-3">
+                <p className="text-xs text-blue-600">Animali</p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {(pets || []).filter(p => p.ownerId === selectedOwnerDetail.id).map(pet => (
+                    <Badge key={pet.id} className="bg-blue-100 text-blue-700">{pet.name}</Badge>
+                  ))}
+                  {(pets || []).filter(p => p.ownerId === selectedOwnerDetail.id).length === 0 && (
+                    <span className="text-sm text-gray-500">Nessun animale</span>
+                  )}
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => window.location.href = `mailto:${selectedOwnerDetail.email}`}>
+                  <Mail className="h-4 w-4 mr-2" />Email
+                </Button>
+                {selectedOwnerDetail.phone && (
+                  <Button variant="outline" className="flex-1" onClick={() => window.location.href = `tel:${selectedOwnerDetail.phone}`}>
+                    <Phone className="h-4 w-4 mr-2" />Chiama
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog Dettaglio Animale */}
+      <Dialog open={!!selectedPetDetail} onOpenChange={() => setSelectedPetDetail(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
+                <PawPrint className="h-5 w-5 text-coral-600" />
+              </div>
+              {selectedPetDetail?.name}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedPetDetail && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Specie</p>
+                  <p className="font-medium text-sm">{selectedPetDetail.species === 'dog' ? '🐕 Cane' : selectedPetDetail.species === 'cat' ? '🐱 Gatto' : selectedPetDetail.species}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Razza</p>
+                  <p className="font-medium text-sm">{selectedPetDetail.breed || 'N/D'}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Età</p>
+                  <p className="font-medium text-sm">{selectedPetDetail.birthDate ? `${Math.floor((new Date() - new Date(selectedPetDetail.birthDate)) / (365.25 * 24 * 60 * 60 * 1000))} anni` : 'N/D'}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Peso</p>
+                  <p className="font-medium text-sm">{selectedPetDetail.weight ? `${selectedPetDetail.weight} kg` : 'N/D'}</p>
+                </div>
+              </div>
+              {selectedPetDetail.microchip && (
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Microchip</p>
+                  <p className="font-medium text-sm">{selectedPetDetail.microchip}</p>
+                </div>
+              )}
+              {(selectedPetDetail.allergies || selectedPetDetail.medications) && (
+                <div className="bg-red-50 rounded-lg p-3">
+                  <p className="text-xs text-red-600">⚠️ Condizioni Mediche</p>
+                  {selectedPetDetail.allergies && <p className="text-sm mt-1"><strong>Allergie:</strong> {selectedPetDetail.allergies}</p>}
+                  {selectedPetDetail.medications && <p className="text-sm mt-1"><strong>Farmaci:</strong> {selectedPetDetail.medications}</p>}
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog Dettaglio Documento */}
+      <Dialog open={!!selectedDocDetail} onOpenChange={() => setSelectedDocDetail(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
+                <FileText className="h-5 w-5 text-coral-600" />
+              </div>
+              {selectedDocDetail?.name}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedDocDetail && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Tipo</p>
+                  <p className="font-medium text-sm">{selectedDocDetail.type}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Animale</p>
+                  <p className="font-medium text-sm">{selectedDocDetail.petName}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Proprietario</p>
+                  <p className="font-medium text-sm">{selectedDocDetail.ownerName || 'N/D'}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Data</p>
+                  <p className="font-medium text-sm">{selectedDocDetail.createdAt ? new Date(selectedDocDetail.createdAt).toLocaleDateString('it-IT') : 'N/D'}</p>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-xs text-gray-500">Stato</p>
+                <div className="flex items-center gap-2 mt-1">
+                  {selectedDocDetail.emailSent ? (
+                    <Badge className="bg-green-100 text-green-700">✓ Inviato via email</Badge>
+                  ) : (
+                    <Badge className="bg-gray-100 text-gray-700">Bozza</Badge>
+                  )}
+                  {selectedDocDetail.downloaded && <Badge className="bg-blue-100 text-blue-700">Scaricato</Badge>}
+                </div>
+              </div>
+              {selectedDocDetail.content && (
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Contenuto</p>
+                  <p className="text-sm mt-1 whitespace-pre-wrap">{selectedDocDetail.content}</p>
+                </div>
+              )}
+              <div className="flex gap-2">
+                {(selectedDocDetail.url || selectedDocDetail.fileUrl) && (
+                  <Button className="flex-1 bg-coral-500 hover:bg-coral-600" onClick={() => window.open(selectedDocDetail.url || selectedDocDetail.fileUrl, '_blank')}>
+                    <Download className="h-4 w-4 mr-2" />Scarica
+                  </Button>
+                )}
+                <Button variant="outline" className="flex-1" onClick={() => { setSelectedDocDetail(null); onNavigate('documents'); }}>
+                  <FileText className="h-4 w-4 mr-2" />Vai a Documenti
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
