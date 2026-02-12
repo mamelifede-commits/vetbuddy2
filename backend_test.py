@@ -374,7 +374,7 @@ def main():
     """Run all backend API tests"""
     
     # Configuration
-    BASE_URL = "https://pet-clinic-demo-1.preview.emergentagent.com"
+    BASE_URL = "https://vetbuddy-pet-edit.preview.emergentagent.com"
     CLINIC_EMAIL = "demo@vetbuddy.it"
     CLINIC_PASSWORD = "DemoVet2025!"
     OWNER_EMAIL = "proprietario.demo@vetbuddy.it"  
