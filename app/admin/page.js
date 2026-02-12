@@ -6,19 +6,44 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { CheckCircle, XCircle, Clock, Building2, Mail, Phone, MapPin, FileText, RefreshCw, Eye, ChevronLeft } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Building2, Mail, Phone, MapPin, FileText, RefreshCw, Eye, ChevronLeft, Lock, LogIn } from 'lucide-react';
 import Link from 'next/link';
+
+// Admin email - solo questo può accedere
+const ADMIN_EMAIL = 'info@vetbuddy.it';
 
 const api = {
   baseUrl: '/api',
+  getToken() {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('vetbuddy_token');
+    }
+    return null;
+  },
   async get(endpoint) {
-    const res = await fetch(`${this.baseUrl}/${endpoint}`);
+    const token = this.getToken();
+    const res = await fetch(`${this.baseUrl}/${endpoint}`, {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+    });
     if (!res.ok) throw new Error((await res.json()).error || 'Errore');
     return res.json();
   },
   async put(endpoint, data) {
+    const token = this.getToken();
     const res = await fetch(`${this.baseUrl}/${endpoint}`, {
       method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+      },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Errore');
+    return res.json();
+  },
+  async post(endpoint, data) {
+    const res = await fetch(`${this.baseUrl}/${endpoint}`, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
@@ -28,6 +53,15 @@ const api = {
 };
 
 export default function AdminPage() {
+  // Auth state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
+
+  // Applications state
   const [applications, setApplications] = useState([]);
   const [counts, setCounts] = useState({ total: 0, pending: 0, approved: 0, rejected: 0 });
   const [loading, setLoading] = useState(true);
@@ -39,9 +73,70 @@ export default function AdminPage() {
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [appToReject, setAppToReject] = useState(null);
 
+  // Check if user is authenticated as admin on mount
   useEffect(() => {
-    loadApplications();
-  }, [filter]);
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadApplications();
+    }
+  }, [filter, isAuthenticated]);
+
+  const checkAuth = async () => {
+    setAuthChecking(true);
+    const token = localStorage.getItem('vetbuddy_token');
+    if (!token) {
+      setAuthChecking(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/auth/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const user = await res.json();
+        if (user.email === ADMIN_EMAIL) {
+          setIsAuthenticated(true);
+        } else {
+          setLoginError('Accesso riservato solo a ' + ADMIN_EMAIL);
+          localStorage.removeItem('vetbuddy_token');
+        }
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+    }
+    setAuthChecking(false);
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginLoading(true);
+    setLoginError('');
+
+    // Check if email is admin email
+    if (loginEmail !== ADMIN_EMAIL) {
+      setLoginError('⛔ Accesso riservato solo a ' + ADMIN_EMAIL);
+      setLoginLoading(false);
+      return;
+    }
+
+    try {
+      const data = await api.post('auth/login', { email: loginEmail, password: loginPassword });
+      localStorage.setItem('vetbuddy_token', data.token);
+      setIsAuthenticated(true);
+    } catch (error) {
+      setLoginError(error.message || 'Credenziali non valide');
+    }
+    setLoginLoading(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('vetbuddy_token');
+    setIsAuthenticated(false);
+  };
 
   const loadApplications = async () => {
     setLoading(true);
