@@ -5136,6 +5136,47 @@ function ClinicSettings({ user, onNavigate }) {
   // Count active automations
   const activeAutomationsCount = Object.values(automationSettings).filter(Boolean).length;
 
+  // Load payment settings
+  const loadPaymentSettings = async () => {
+    try {
+      const response = await api.get(`clinic/payment-settings?clinicId=${user.id}`);
+      if (response.success && response.settings) {
+        setPaymentSettings(response.settings);
+      }
+    } catch (error) {
+      console.error('Error loading payment settings:', error);
+    }
+  };
+
+  // Update payment method
+  const updatePaymentMethod = async (method, enabled) => {
+    setPaymentSettingsSaving(true);
+    const newMethods = { ...paymentSettings.paymentMethods, [method]: enabled };
+    setPaymentSettings(prev => ({ ...prev, paymentMethods: newMethods }));
+    
+    try {
+      await api.put('clinic/payment-settings', { paymentMethods: newMethods });
+    } catch (error) {
+      console.error('Error saving payment method:', error);
+    } finally {
+      setPaymentSettingsSaving(false);
+    }
+  };
+
+  // Update cancellation policy
+  const updateCancellationPolicy = async (policyId) => {
+    setPaymentSettingsSaving(true);
+    setPaymentSettings(prev => ({ ...prev, cancellationPolicy: policyId }));
+    
+    try {
+      await api.put('clinic/payment-settings', { cancellationPolicy: policyId });
+    } catch (error) {
+      console.error('Error saving cancellation policy:', error);
+    } finally {
+      setPaymentSettingsSaving(false);
+    }
+  };
+
   const loadGoogleCalendarStatus = async () => {
     try {
       const status = await api.get('google-calendar/status');
