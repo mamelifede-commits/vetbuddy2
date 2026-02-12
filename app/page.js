@@ -8616,6 +8616,60 @@ function FindClinic({ user }) {
                 )}
               </div>
 
+              {/* Payment & Cancellation Policy */}
+              {(selectedClinic.paymentSettings?.methods?.length > 0 || selectedClinic.paymentSettings?.cancellationPolicy) && (
+                <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 space-y-3">
+                  <h4 className="font-semibold text-gray-800 flex items-center gap-2">
+                    <CreditCard className="h-4 w-4 text-blue-500" />
+                    Informazioni utili
+                  </h4>
+                  
+                  {/* Payment Methods */}
+                  {selectedClinic.paymentSettings?.methods?.length > 0 && (
+                    <div>
+                      <p className="text-xs text-gray-500 mb-2">METODI DI PAGAMENTO ACCETTATI</p>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedClinic.paymentSettings.methods.includes('cash') && (
+                          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                            💵 Contanti
+                          </Badge>
+                        )}
+                        {selectedClinic.paymentSettings.methods.includes('card') && (
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                            💳 Carta
+                          </Badge>
+                        )}
+                        {selectedClinic.paymentSettings.methods.includes('transfer') && (
+                          <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                            🏦 Bonifico
+                          </Badge>
+                        )}
+                        {selectedClinic.paymentSettings.methods.includes('online') && (
+                          <Badge variant="outline" className="bg-coral-50 text-coral-700 border-coral-200">
+                            🌐 Online
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Cancellation Policy */}
+                  {selectedClinic.paymentSettings?.cancellationPolicy && (
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">POLICY DI CANCELLAZIONE</p>
+                      <p className="text-sm text-gray-700">
+                        {selectedClinic.paymentSettings.cancellationPolicy === 'free_24h' && '✅ Cancellazione gratuita fino a 24h prima'}
+                        {selectedClinic.paymentSettings.cancellationPolicy === 'free_48h' && '✅ Cancellazione gratuita fino a 48h prima'}
+                        {selectedClinic.paymentSettings.cancellationPolicy === 'penalty_30' && '⚠️ Penale 30% se cancelli meno di 24h prima'}
+                        {selectedClinic.paymentSettings.cancellationPolicy === 'penalty_50' && '⚠️ Penale 50% se cancelli meno di 24h prima'}
+                        {selectedClinic.paymentSettings.cancellationPolicy === 'no_refund_24h' && '❌ Nessun rimborso se cancelli meno di 24h prima'}
+                        {selectedClinic.paymentSettings.cancellationPolicy === 'no_refund' && '❌ Nessun rimborso per cancellazioni'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Actions */}
               <div className="flex gap-3 pt-4">
                 <Button className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={() => setShowReviewForm(true)}>
