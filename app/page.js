@@ -424,10 +424,271 @@ function LandingPage({ onLogin }) {
         </div>
       </section>
 
-      {/* Perché VetBuddy - Feature distintive */}
-      <section id="funzionalita" className="py-8 px-4 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-purple-300/20 rounded-full blur-2xl"></div>
+      {/* COSA CI RENDE UNICI - Sezione unificata e compatta */}
+      <section id="funzionalita" className="py-16 px-4 bg-gradient-to-br from-gray-50 via-white to-coral-50/30">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-4">
+              <Zap className="h-4 w-4" />
+              <span className="font-medium">Tutto in una piattaforma</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Non il solito gestionale veterinario
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Funzionalità pensate per risparmiare tempo e lavorare meglio. Cliniche e proprietari connessi.
+            </p>
+          </div>
+
+          {/* Feature Grid - 6 features chiave */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {/* Agenda */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
+              <div className="h-14 w-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
+                <CalendarDays className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Agenda Intelligente</h3>
+              <p className="text-gray-600 text-sm mb-4">Calendario settimanale con colori per veterinario. Drag & drop appuntamenti, 10+ tipi di visita.</p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="text-xs">Multi-veterinario</Badge>
+                <Badge variant="outline" className="text-xs">Drag & drop</Badge>
+              </div>
+            </div>
+
+            {/* Automazioni */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100 hover:shadow-xl hover:-translate-y-1 transition-all group relative">
+              <div className="absolute -top-3 right-4 bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                44+ attive
+              </div>
+              <div className="h-14 w-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
+                <Zap className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Automazioni AI</h3>
+              <p className="text-gray-600 text-sm mb-4">Promemoria, richiami vaccini, follow-up, auguri compleanno pet. Tutto automatico, 24/7.</p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="text-xs">-80% telefonate</Badge>
+                <Badge variant="outline" className="text-xs">+40% ritorno</Badge>
+              </div>
+            </div>
+
+            {/* Team Inbox */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
+              <div className="h-14 w-14 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
+                <Inbox className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Team Inbox</h3>
+              <p className="text-gray-600 text-sm mb-4">Tutti i messaggi in un unico posto. Assegna ticket, segui le conversazioni, rispondi velocemente.</p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="text-xs">Ticket system</Badge>
+                <Badge variant="outline" className="text-xs">Quick replies</Badge>
+              </div>
+            </div>
+
+            {/* Documenti */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-amber-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
+              <div className="h-14 w-14 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
+                <FileText className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Documenti Cloud</h3>
+              <p className="text-gray-600 text-sm mb-4">Referti, prescrizioni, fatture. Upload drag & drop, firma digitale, invio 1-click ai clienti.</p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="text-xs">Firma digitale</Badge>
+                <Badge variant="outline" className="text-xs">Invio email</Badge>
+              </div>
+            </div>
+
+            {/* Template */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-coral-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
+              <div className="h-14 w-14 bg-gradient-to-br from-coral-400 to-coral-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
+                <ClipboardList className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Template Smart</h3>
+              <p className="text-gray-600 text-sm mb-4">Messaggi pre-compilati con variabili automatiche. Nome cliente, pet, data, orario... tutto al suo posto.</p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="text-xs">WhatsApp</Badge>
+                <Badge variant="outline" className="text-xs">Email</Badge>
+              </div>
+            </div>
+
+            {/* Report */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-cyan-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
+              <div className="h-14 w-14 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
+                <TrendingUp className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Report & Analytics</h3>
+              <p className="text-gray-600 text-sm mb-4">Fatturato, appuntamenti, no-show, clienti top. Export CSV, grafici interattivi, trend mensili.</p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="text-xs">Export CSV</Badge>
+                <Badge variant="outline" className="text-xs">Dashboard</Badge>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats impatto */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
+              <div className="text-3xl font-bold text-green-600 mb-1">-80%</div>
+              <p className="text-sm text-gray-600">Telefonate</p>
+            </div>
+            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
+              <div className="text-3xl font-bold text-blue-600 mb-1">-60%</div>
+              <p className="text-sm text-gray-600">No-show</p>
+            </div>
+            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
+              <div className="text-3xl font-bold text-amber-600 mb-1">+40%</div>
+              <p className="text-sm text-gray-600">Clienti fedeli</p>
+            </div>
+            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
+              <div className="text-3xl font-bold text-purple-600 mb-1">2h</div>
+              <p className="text-sm text-gray-600">Risparmiate/giorno</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TROVA CLINICA - Mappa stilizzata */}
+      <section className="py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-coral-50/30 overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-4">
+                <MapPin className="h-4 w-4" />
+                <span className="font-medium">Per i proprietari</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Trova la clinica <span className="text-blue-500">più vicina</span>
+              </h2>
+              <p className="text-gray-600 mb-6">
+                I tuoi clienti possono trovarti facilmente sulla mappa. Vedono distanza in tempo reale, orari e servizi disponibili.
+              </p>
+              <ul className="space-y-3 mb-6">
+                <li className="flex items-center gap-3">
+                  <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <MapPin className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <span className="text-gray-700">Geolocalizzazione GPS automatica</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
+                    <Clock className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">Calcolo distanza in tempo reale</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="h-8 w-8 bg-coral-100 rounded-full flex items-center justify-center">
+                    <Stethoscope className="h-4 w-4 text-coral-600" />
+                  </div>
+                  <span className="text-gray-700">Servizi e specializzazioni visibili</span>
+                </li>
+              </ul>
+              <Button className="bg-blue-500 hover:bg-blue-600">
+                Trova clinica vicino a te →
+              </Button>
+            </div>
+            
+            {/* Mappa Stilizzata */}
+            <div className="relative">
+              <div className="bg-gradient-to-br from-blue-100 to-green-50 rounded-2xl p-6 shadow-2xl border border-blue-200 relative overflow-hidden">
+                {/* Mappa decorativa */}
+                <div className="absolute inset-0 opacity-20">
+                  <svg viewBox="0 0 400 300" className="w-full h-full">
+                    <defs>
+                      <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#3b82f6" strokeWidth="0.5"/>
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)"/>
+                    {/* Strade */}
+                    <path d="M0,150 Q100,120 200,150 T400,140" stroke="#94a3b8" strokeWidth="8" fill="none"/>
+                    <path d="M150,0 Q180,100 150,200 T170,300" stroke="#94a3b8" strokeWidth="6" fill="none"/>
+                    <path d="M280,0 Q260,80 280,160 T270,300" stroke="#94a3b8" strokeWidth="4" fill="none"/>
+                  </svg>
+                </div>
+                
+                {/* Pin cliniche */}
+                <div className="relative z-10 h-64">
+                  {/* Clinica principale */}
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-bounce">
+                    <div className="bg-coral-500 text-white p-3 rounded-full shadow-lg relative">
+                      <Building2 className="h-6 w-6" />
+                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-coral-500 rotate-45"></div>
+                    </div>
+                    <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-white px-3 py-1 rounded-full shadow text-xs font-medium whitespace-nowrap">
+                      Clinica VetMilano • 0.3 km
+                    </div>
+                  </div>
+                  
+                  {/* Altre cliniche */}
+                  <div className="absolute top-4 left-8">
+                    <div className="bg-blue-500 text-white p-2 rounded-full shadow-md">
+                      <Building2 className="h-4 w-4" />
+                    </div>
+                    <span className="absolute -bottom-4 left-0 text-xs text-gray-500">1.2 km</span>
+                  </div>
+                  
+                  <div className="absolute top-8 right-12">
+                    <div className="bg-blue-400 text-white p-2 rounded-full shadow-md">
+                      <Building2 className="h-4 w-4" />
+                    </div>
+                    <span className="absolute -bottom-4 left-0 text-xs text-gray-500">2.1 km</span>
+                  </div>
+                  
+                  <div className="absolute bottom-8 left-16">
+                    <div className="bg-blue-400 text-white p-2 rounded-full shadow-md">
+                      <Building2 className="h-4 w-4" />
+                    </div>
+                    <span className="absolute -bottom-4 left-0 text-xs text-gray-500">1.8 km</span>
+                  </div>
+                  
+                  <div className="absolute bottom-4 right-8">
+                    <div className="bg-blue-300 text-white p-2 rounded-full shadow-md">
+                      <Building2 className="h-4 w-4" />
+                    </div>
+                    <span className="absolute -bottom-4 left-0 text-xs text-gray-500">3.5 km</span>
+                  </div>
+                  
+                  {/* User position */}
+                  <div className="absolute top-1/3 left-1/3">
+                    <div className="relative">
+                      <div className="h-4 w-4 bg-green-500 rounded-full shadow-lg animate-ping absolute"></div>
+                      <div className="h-4 w-4 bg-green-500 rounded-full shadow-lg relative z-10"></div>
+                    </div>
+                    <span className="absolute -bottom-4 -left-2 text-xs text-green-600 font-medium">Tu</span>
+                  </div>
+                </div>
+                
+                {/* Search bar finta */}
+                <div className="relative z-10 flex items-center gap-2 bg-white rounded-full px-4 py-3 shadow-lg mt-4">
+                  <Search className="h-5 w-5 text-gray-400" />
+                  <span className="text-gray-500 text-sm">Cerca cliniche veterinarie vicino a te...</span>
+                  <Button size="sm" className="ml-auto bg-coral-500 hover:bg-coral-600 rounded-full">
+                    Cerca
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Card risultato */}
+              <div className="absolute -bottom-4 -right-4 bg-white rounded-xl shadow-xl p-4 border w-64 z-20">
+                <div className="flex items-start gap-3">
+                  <div className="h-12 w-12 bg-coral-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Building2 className="h-6 w-6 text-coral-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Clinica VetMilano</h4>
+                    <p className="text-xs text-gray-500">Via Roma 123, Milano</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge className="bg-green-100 text-green-700 text-xs">Aperto</Badge>
+                      <span className="text-xs text-gray-500">• 0.3 km</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Come Funziona - Semplificato */}
         <div className="absolute bottom-10 right-10 w-40 h-40 bg-green-300/20 rounded-full blur-2xl"></div>
         
         <div className="max-w-6xl mx-auto relative z-10">
