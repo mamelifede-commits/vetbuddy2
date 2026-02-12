@@ -580,123 +580,95 @@ function LandingPage({ onLogin }) {
         </div>
       </section>
 
-      {/* COSA CI RENDE UNICI - Sezione unificata e compatta */}
-      <section id="funzionalita" className="py-16 px-4 bg-gradient-to-br from-gray-50 via-white to-coral-50/30">
+      {/* FUNZIONALITÀ CHIAVE - Snello */}
+      <section id="funzionalita" className="py-12 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-4">
-              <Zap className="h-4 w-4" />
-              <span className="font-medium">Tutto in una piattaforma</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Non il solito gestionale veterinario
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+              Tutto ciò che serve alla tua clinica
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Funzionalità pensate per risparmiare tempo e lavorare meglio. Cliniche e proprietari connessi.
+            <p className="text-gray-600 max-w-xl mx-auto">
+              6 strumenti essenziali per gestire appuntamenti, comunicazione e documenti senza stress.
             </p>
           </div>
 
-          {/* Feature Grid - 6 features chiave */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {/* Agenda */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
-              <div className="h-14 w-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <CalendarDays className="h-7 w-7 text-white" />
+          {/* Feature Grid - 6 features + Videoconsulto evidenziato */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+            {/* 🎥 VIDEOCONSULTO - Evidenziato */}
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all relative overflow-hidden">
+              <div className="absolute top-3 right-3 bg-white/20 text-white text-xs px-2 py-1 rounded-full font-medium">
+                ⭐ Novità
               </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Agenda Intelligente</h3>
-              <p className="text-gray-600 text-sm mb-4">Calendario settimanale con colori per veterinario. Drag & drop appuntamenti, 10+ tipi di visita.</p>
+              <div className="h-12 w-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+                <Video className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">Videoconsulto Integrato</h3>
+              <p className="text-indigo-100 text-sm mb-3">Visite online con un click. Link automatico al cliente, nessun software esterno.</p>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-xs">Multi-veterinario</Badge>
-                <Badge variant="outline" className="text-xs">Drag & drop</Badge>
+                <span className="bg-white/20 text-white text-xs px-2 py-1 rounded-full">1-click</span>
+                <span className="bg-white/20 text-white text-xs px-2 py-1 rounded-full">HD Quality</span>
               </div>
             </div>
 
-            {/* Automazioni */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100 hover:shadow-xl hover:-translate-y-1 transition-all group relative">
-              <div className="absolute -top-3 right-4 bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-medium">
-                44+ attive
-              </div>
-              <div className="h-14 w-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <Zap className="h-7 w-7 text-white" />
+            {/* 🤖 Automazioni */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100 hover:shadow-xl hover:-translate-y-1 transition-all relative">
+              <div className="absolute -top-3 right-4 bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-medium">44+</div>
+              <div className="h-12 w-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                <Zap className="h-6 w-6 text-purple-600" />
               </div>
               <h3 className="font-bold text-lg text-gray-900 mb-2">Automazioni AI</h3>
-              <p className="text-gray-600 text-sm mb-4">Promemoria, richiami vaccini, follow-up, auguri compleanno pet. Tutto automatico, 24/7.</p>
+              <p className="text-gray-600 text-sm mb-3">Promemoria, richiami vaccini, follow-up automatici. Zero lavoro manuale.</p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="text-xs">-80% telefonate</Badge>
-                <Badge variant="outline" className="text-xs">+40% ritorno</Badge>
               </div>
             </div>
 
-            {/* Team Inbox */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
-              <div className="h-14 w-14 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <Inbox className="h-7 w-7 text-white" />
+            {/* 📥 Team Inbox */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100 hover:shadow-xl hover:-translate-y-1 transition-all">
+              <div className="h-12 w-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                <Inbox className="h-6 w-6 text-green-600" />
               </div>
               <h3 className="font-bold text-lg text-gray-900 mb-2">Team Inbox</h3>
-              <p className="text-gray-600 text-sm mb-4">Tutti i messaggi in un unico posto. Assegna ticket, segui le conversazioni, rispondi velocemente.</p>
+              <p className="text-gray-600 text-sm mb-3">Tutti i messaggi in un posto. Assegna ticket, niente messaggi persi.</p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="text-xs">Ticket system</Badge>
-                <Badge variant="outline" className="text-xs">Quick replies</Badge>
               </div>
             </div>
 
-            {/* Documenti */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-amber-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
-              <div className="h-14 w-14 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <FileText className="h-7 w-7 text-white" />
+            {/* 📅 Agenda */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:shadow-xl hover:-translate-y-1 transition-all">
+              <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                <CalendarDays className="h-6 w-6 text-blue-600" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Agenda Smart</h3>
+              <p className="text-gray-600 text-sm mb-3">Vista settimanale, colori per veterinario, drag & drop. Sync Google Calendar.</p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="text-xs">Multi-vet</Badge>
+              </div>
+            </div>
+
+            {/* 📄 Documenti */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-amber-100 hover:shadow-xl hover:-translate-y-1 transition-all">
+              <div className="h-12 w-12 bg-amber-100 rounded-xl flex items-center justify-center mb-4">
+                <FileText className="h-6 w-6 text-amber-600" />
               </div>
               <h3 className="font-bold text-lg text-gray-900 mb-2">Documenti Cloud</h3>
-              <p className="text-gray-600 text-sm mb-4">Referti, prescrizioni, fatture. Upload drag & drop, firma digitale, invio 1-click ai clienti.</p>
+              <p className="text-gray-600 text-sm mb-3">Upload referti, invio 1-click via email. Il cliente li trova nell'app.</p>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-xs">Firma digitale</Badge>
-                <Badge variant="outline" className="text-xs">Invio email</Badge>
+                <Badge variant="outline" className="text-xs">Email auto</Badge>
               </div>
             </div>
 
-            {/* Template */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-coral-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
-              <div className="h-14 w-14 bg-gradient-to-br from-coral-400 to-coral-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <ClipboardList className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Template Smart</h3>
-              <p className="text-gray-600 text-sm mb-4">Messaggi pre-compilati con variabili automatiche. Nome cliente, pet, data, orario... tutto al suo posto.</p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-xs">WhatsApp</Badge>
-                <Badge variant="outline" className="text-xs">Email</Badge>
-              </div>
-            </div>
-
-            {/* Report */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-cyan-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
-              <div className="h-14 w-14 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <TrendingUp className="h-7 w-7 text-white" />
+            {/* 📊 Report */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-cyan-100 hover:shadow-xl hover:-translate-y-1 transition-all">
+              <div className="h-12 w-12 bg-cyan-100 rounded-xl flex items-center justify-center mb-4">
+                <TrendingUp className="h-6 w-6 text-cyan-600" />
               </div>
               <h3 className="font-bold text-lg text-gray-900 mb-2">Report & Analytics</h3>
-              <p className="text-gray-600 text-sm mb-4">Fatturato, appuntamenti, no-show, clienti top. Export CSV, grafici interattivi, trend mensili.</p>
+              <p className="text-gray-600 text-sm mb-3">Dashboard KPI, fatturato, no-show. Dati per decidere meglio.</p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="text-xs">Export CSV</Badge>
-                <Badge variant="outline" className="text-xs">Dashboard</Badge>
               </div>
-            </div>
-          </div>
-
-          {/* Stats impatto */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
-              <div className="text-3xl font-bold text-green-600 mb-1">-80%</div>
-              <p className="text-sm text-gray-600">Telefonate</p>
-            </div>
-            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
-              <div className="text-3xl font-bold text-blue-600 mb-1">-60%</div>
-              <p className="text-sm text-gray-600">No-show</p>
-            </div>
-            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
-              <div className="text-3xl font-bold text-amber-600 mb-1">+40%</div>
-              <p className="text-sm text-gray-600">Clienti fedeli</p>
-            </div>
-            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
-              <div className="text-3xl font-bold text-purple-600 mb-1">2h</div>
-              <p className="text-sm text-gray-600">Risparmiate/giorno</p>
             </div>
           </div>
         </div>
