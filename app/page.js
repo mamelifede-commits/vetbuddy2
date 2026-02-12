@@ -5017,7 +5017,30 @@ function ClinicSettings({ user, onNavigate }) {
     // Stagionali
     summerHeatAlert: true,
     tickSeasonAlert: true,
-    newYearFireworksAlert: true
+    newYearFireworksAlert: true,
+    // NUOVE - Comunicazione Multi-Canale
+    whatsappReminders: false,
+    smsEmergency: false,
+    // NUOVE - Ciclo di Vita Pet
+    sterilizationReminder: true,
+    seniorPetCare: true,
+    microchipCheck: true,
+    welcomeNewPet: true,
+    // NUOVE - AI
+    aiLabExplanation: true,
+    breedRiskAlert: true,
+    dietSuggestions: true,
+    // NUOVE - Business
+    loyaltyProgram: true,
+    referralProgram: true,
+    holidayClosures: true,
+    // NUOVE - Situazioni Delicate
+    petCondolences: true,
+    griefFollowup: true,
+    // NUOVE - Per la Clinica
+    dailySummary: true,
+    lowStockAlert: true,
+    staffBirthday: true
   });
   const [automationLoading, setAutomationLoading] = useState(true);
   const [automationSaving, setAutomationSaving] = useState(null); // Tracks which toggle is saving
