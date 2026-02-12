@@ -6261,69 +6261,6 @@ function ClinicSettings({ user, onNavigate }) {
   const [staffColors, setStaffColors] = useState([]);
   const [staffList, setStaffList] = useState([]);
   
-  // Automation settings state
-  const [automationSettings, setAutomationSettings] = useState({
-    // Email Automatiche
-    appointmentReminders: true,
-    bookingConfirmation: true,
-    vaccineRecalls: true,
-    postVisitFollowup: true,
-    // Gestione Smart
-    noShowDetection: true,
-    waitlistNotification: true,
-    suggestedSlots: true,
-    documentReminders: true,
-    // Messaggi & Report
-    autoTicketAssignment: true,
-    aiQuickReplies: true,
-    urgencyNotifications: true,
-    weeklyReport: true,
-    // Engagement & Fidelizzazione
-    petBirthday: true,
-    reviewRequest: true,
-    inactiveClientReactivation: true,
-    // Salute & Prevenzione
-    antiparasiticReminder: true,
-    annualCheckup: true,
-    medicationRefill: true,
-    weightAlert: true,
-    dentalHygiene: true,
-    // Operatività Clinica
-    appointmentConfirmation: true,
-    labResultsReady: true,
-    paymentReminder: true,
-    postSurgeryFollowup: true,
-    // Stagionali
-    summerHeatAlert: true,
-    tickSeasonAlert: true,
-    newYearFireworksAlert: true,
-    // NUOVE - Comunicazione Multi-Canale
-    whatsappReminders: false,
-    smsEmergency: false,
-    // NUOVE - Ciclo di Vita Pet
-    sterilizationReminder: true,
-    seniorPetCare: true,
-    microchipCheck: true,
-    welcomeNewPet: true,
-    // NUOVE - AI
-    aiLabExplanation: true,
-    breedRiskAlert: true,
-    dietSuggestions: true,
-    // NUOVE - Business
-    loyaltyProgram: true,
-    referralProgram: true,
-    holidayClosures: true,
-    // NUOVE - Situazioni Delicate
-    petCondolences: true,
-    griefFollowup: true,
-    // NUOVE - Per la Clinica
-    dailySummary: true,
-    lowStockAlert: true,
-    staffBirthday: true
-  });
-  const [automationLoading, setAutomationLoading] = useState(true);
-  const [automationSaving, setAutomationSaving] = useState(null); // Tracks which toggle is saving
-  
   // Payment settings state
   const [paymentSettings, setPaymentSettings] = useState({
     paymentMethods: { cash: true, cardInClinic: true, bankTransfer: false, online: false },
@@ -6336,7 +6273,6 @@ function ClinicSettings({ user, onNavigate }) {
     loadGoogleCalendarStatus();
     loadStaffColors();
     loadStaff();
-    loadAutomationSettings();
     loadPaymentSettings();
     
     // Check for Google OAuth callback
@@ -6351,43 +6287,6 @@ function ClinicSettings({ user, onNavigate }) {
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
-
-  // Load automation settings from API
-  const loadAutomationSettings = async () => {
-    try {
-      const response = await api.get('automations/settings');
-      if (response.success && response.settings) {
-        setAutomationSettings(response.settings);
-      }
-    } catch (error) {
-      console.error('Error loading automation settings:', error);
-    } finally {
-      setAutomationLoading(false);
-    }
-  };
-
-  // Toggle a single automation setting
-  const toggleAutomation = async (key) => {
-    const newValue = !automationSettings[key];
-    setAutomationSaving(key);
-    
-    // Optimistic update
-    setAutomationSettings(prev => ({ ...prev, [key]: newValue }));
-    
-    try {
-      await api.post('automations/settings', { key, enabled: newValue });
-    } catch (error) {
-      console.error('Error saving automation setting:', error);
-      // Revert on error
-      setAutomationSettings(prev => ({ ...prev, [key]: !newValue }));
-      alert('Errore nel salvataggio. Riprova.');
-    } finally {
-      setAutomationSaving(null);
-    }
-  };
-
-  // Count active automations
-  const activeAutomationsCount = Object.values(automationSettings).filter(Boolean).length;
 
   // Load payment settings
   const loadPaymentSettings = async () => {
