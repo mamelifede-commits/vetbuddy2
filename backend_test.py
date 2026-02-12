@@ -1,742 +1,493 @@
 #!/usr/bin/env python3
 """
-VetBuddy API Backend Testing Suite
-Tests all API endpoints for the veterinary clinic management system.
+VetBuddy Backend API Testing - Automation Settings Focus
+Test the newly implemented Automation Settings API with comprehensive scenarios
 """
 
-import requests
+import asyncio
+import aiohttp
 import json
-import sys
-import os
-from typing import Dict, Any, Optional
+import time
+from datetime import datetime
 
 # Base URL from environment
-BASE_URL = "https://vetbuddy-automations.preview.emergentagent.com/api"
+BASE_URL = "https://vetbuddy-automations.preview.emergentagent.com"
+LOGIN_EMAIL = "demo@vetbuddy.it"
+LOGIN_PASSWORD = "DemoVet2025!"
 
-class VetBuddyAPITest:
+class VetBuddyTester:
     def __init__(self):
         self.base_url = BASE_URL
-        self.token = None
-        self.user_data = None
-        self.test_data = {}
-        
-    def log(self, message: str):
-        """Log test messages"""
-        print(f"🧪 {message}")
-        
-    def error(self, message: str):
-        """Log error messages"""
-        print(f"❌ ERROR: {message}")
-        
-    def success(self, message: str):
-        """Log success messages"""
-        print(f"✅ SUCCESS: {message}")
-        
-    def make_request(self, method: str, endpoint: str, data: dict = None, headers: dict = None) -> Dict[str, Any]:
-        """Make HTTP request to API"""
-        url = f"{self.base_url}/{endpoint.lstrip('/')}"
-        request_headers = {"Content-Type": "application/json"}
-        
-        if headers:
-            request_headers.update(headers)
-            
-        if self.token:
-            request_headers["Authorization"] = f"Bearer {self.token}"
-            
+        self.session = None
+        self.auth_token = None
+        self.test_results = {
+            "passed": 0,
+            "failed": 0,
+            "skipped": 0,
+            "errors": []
+        }
+
+    async def create_session(self):
+        """Create aiohttp session"""
+        self.session = aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(total=30),
+            headers={"Content-Type": "application/json"}
+        )
+
+    async def close_session(self):
+        """Close aiohttp session"""
+        if self.session:
+            await self.session.close()
+
+    async def login_and_get_token(self):
+        """Login with demo clinic credentials and get JWT token"""
         try:
-            if method.upper() == "GET":
-                response = requests.get(url, headers=request_headers, timeout=30)
-            elif method.upper() == "POST":
-                response = requests.post(url, json=data, headers=request_headers, timeout=30)
-            elif method.upper() == "PUT":
-                response = requests.put(url, json=data, headers=request_headers, timeout=30)
-            elif method.upper() == "DELETE":
-                response = requests.delete(url, headers=request_headers, timeout=30)
-            else:
-                raise ValueError(f"Unsupported method: {method}")
-                
-            return {
-                "status_code": response.status_code,
-                "data": response.json() if response.text else {},
-                "success": 200 <= response.status_code < 300
-            }
-        except requests.exceptions.RequestException as e:
-            return {
-                "status_code": 0,
-                "data": {"error": str(e)},
-                "success": False
-            }
-        except json.JSONDecodeError:
-            return {
-                "status_code": response.status_code,
-                "data": {"error": "Invalid JSON response", "text": response.text},
-                "success": False
-            }
-    
-    def test_health_check(self) -> bool:
-        """Test health check endpoint"""
-        self.log("Testing health check endpoint...")
-        
-        try:
-            response = self.make_request("GET", "/health")
+            print("🔑 Testing login with demo clinic credentials...")
             
-            if not response["success"]:
-                self.error(f"Health check failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if data.get("status") != "ok" or "VetBuddy" not in data.get("app", ""):
-                self.error(f"Health check returned unexpected data: {data}")
-                return False
-                
-            self.success("Health check endpoint working correctly")
-            return True
-            
-        except Exception as e:
-            self.error(f"Health check test failed: {str(e)}")
-            return False
-    
-    def test_register(self) -> bool:
-        """Test user registration"""
-        self.log("Testing user registration...")
-        
-        try:
-            user_data = {
-                "email": "testclinic@example.com",
-                "password": "SecurePass123!",
-                "name": "Test Veterinary Clinic",
-                "role": "clinic",
-                "clinicName": "Test Vet Clinic",
-                "phone": "+1234567890",
-                "address": "123 Main Street, Test City"
-            }
-            
-            response = self.make_request("POST", "/auth/register", user_data)
-            
-            if not response["success"]:
-                self.error(f"Registration failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not data.get("token") or not data.get("user"):
-                self.error(f"Registration response missing token or user: {data}")
-                return False
-                
-            # Store for later tests
-            self.token = data["token"]
-            self.user_data = data["user"]
-            self.test_data["clinic_id"] = data["user"]["id"]
-            
-            self.success(f"User registration successful. User ID: {self.user_data['id']}")
-            return True
-            
-        except Exception as e:
-            self.error(f"Registration test failed: {str(e)}")
-            return False
-    
-    def test_login(self) -> bool:
-        """Test user login"""
-        self.log("Testing user login...")
-        
-        try:
             login_data = {
-                "email": "testclinic@example.com",
-                "password": "SecurePass123!"
+                "email": LOGIN_EMAIL,
+                "password": LOGIN_PASSWORD
             }
             
-            response = self.make_request("POST", "/auth/login", login_data)
-            
-            if not response["success"]:
-                self.error(f"Login failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not data.get("token") or not data.get("user"):
-                self.error(f"Login response missing token or user: {data}")
-                return False
-                
-            # Update token
-            self.token = data["token"]
-            self.success("User login successful")
-            return True
-            
-        except Exception as e:
-            self.error(f"Login test failed: {str(e)}")
-            return False
-    
-    def test_auth_me(self) -> bool:
-        """Test get current user endpoint"""
-        self.log("Testing get current user...")
-        
-        try:
-            response = self.make_request("GET", "/auth/me")
-            
-            if not response["success"]:
-                self.error(f"Get current user failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not data.get("id") or data["role"] != "clinic":
-                self.error(f"Get current user returned unexpected data: {data}")
-                return False
-                
-            self.success("Get current user endpoint working correctly")
-            return True
-            
-        except Exception as e:
-            self.error(f"Get current user test failed: {str(e)}")
-            return False
-    
-    def test_create_appointment(self) -> bool:
-        """Test creating an appointment"""
-        self.log("Testing appointment creation...")
-        
-        try:
-            appointment_data = {
-                "petName": "Buddy",
-                "ownerName": "John Smith",
-                "date": "2025-01-15",
-                "time": "10:30",
-                "reason": "Annual vaccination",
-                "notes": "First time visit"
-            }
-            
-            response = self.make_request("POST", "/appointments", appointment_data)
-            
-            if not response["success"]:
-                self.error(f"Appointment creation failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not data.get("id") or data["petName"] != "Buddy":
-                self.error(f"Appointment creation returned unexpected data: {data}")
-                return False
-                
-            self.test_data["appointment_id"] = data["id"]
-            self.success(f"Appointment created successfully. ID: {data['id']}")
-            return True
-            
-        except Exception as e:
-            self.error(f"Appointment creation test failed: {str(e)}")
-            return False
-    
-    def test_list_appointments(self) -> bool:
-        """Test listing appointments"""
-        self.log("Testing appointment listing...")
-        
-        try:
-            response = self.make_request("GET", "/appointments")
-            
-            if not response["success"]:
-                self.error(f"Appointment listing failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not isinstance(data, list):
-                self.error(f"Appointment listing should return a list: {data}")
-                return False
-                
-            # Should have at least the appointment we created
-            if len(data) == 0:
-                self.error("No appointments found after creating one")
-                return False
-                
-            self.success(f"Appointment listing successful. Found {len(data)} appointments")
-            return True
-            
-        except Exception as e:
-            self.error(f"Appointment listing test failed: {str(e)}")
-            return False
-    
-    def test_create_document(self) -> bool:
-        """Test creating a document"""
-        self.log("Testing document creation...")
-        
-        try:
-            document_data = {
-                "name": "Vaccination Certificate",
-                "type": "vaccination",
-                "content": "Vaccination certificate content for Buddy",
-                "petName": "Buddy"
-            }
-            
-            response = self.make_request("POST", "/documents", document_data)
-            
-            if not response["success"]:
-                self.error(f"Document creation failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not data.get("id") or data["name"] != "Vaccination Certificate":
-                self.error(f"Document creation returned unexpected data: {data}")
-                return False
-                
-            self.test_data["document_id"] = data["id"]
-            self.success(f"Document created successfully. ID: {data['id']}")
-            return True
-            
-        except Exception as e:
-            self.error(f"Document creation test failed: {str(e)}")
-            return False
-    
-    def test_list_documents(self) -> bool:
-        """Test listing documents"""
-        self.log("Testing document listing...")
-        
-        try:
-            response = self.make_request("GET", "/documents")
-            
-            if not response["success"]:
-                self.error(f"Document listing failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not isinstance(data, list):
-                self.error(f"Document listing should return a list: {data}")
-                return False
-                
-            self.success(f"Document listing successful. Found {len(data)} documents")
-            return True
-            
-        except Exception as e:
-            self.error(f"Document listing test failed: {str(e)}")
-            return False
-    
-    def test_send_document_email(self) -> bool:
-        """Test sending document via email (MOCK mode)"""
-        self.log("Testing document email sending...")
-        
-        try:
-            if "document_id" not in self.test_data:
-                self.error("No document ID available for email test")
-                return False
-                
-            email_data = {
-                "documentId": self.test_data["document_id"],
-                "recipientEmail": "owner@example.com"
-            }
-            
-            response = self.make_request("POST", "/documents/send-email", email_data)
-            
-            if not response["success"]:
-                self.error(f"Document email sending failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not data.get("success"):
-                self.error(f"Document email sending returned failure: {data}")
-                return False
-                
-            self.success("Document email sending successful (MOCK mode)")
-            return True
-            
-        except Exception as e:
-            self.error(f"Document email sending test failed: {str(e)}")
-            return False
-    
-    def test_create_staff(self) -> bool:
-        """Test creating staff member"""
-        self.log("Testing staff creation...")
-        
-        try:
-            staff_data = {
-                "name": "Dr. Sarah Johnson",
-                "role": "vet",
-                "email": "sarah.johnson@testclinic.com",
-                "phone": "+1234567891"
-            }
-            
-            response = self.make_request("POST", "/staff", staff_data)
-            
-            if not response["success"]:
-                self.error(f"Staff creation failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not data.get("id") or data["name"] != "Dr. Sarah Johnson":
-                self.error(f"Staff creation returned unexpected data: {data}")
-                return False
-                
-            self.test_data["staff_id"] = data["id"]
-            self.success(f"Staff member created successfully. ID: {data['id']}")
-            return True
-            
-        except Exception as e:
-            self.error(f"Staff creation test failed: {str(e)}")
-            return False
-    
-    def test_list_staff(self) -> bool:
-        """Test listing staff members"""
-        self.log("Testing staff listing...")
-        
-        try:
-            response = self.make_request("GET", "/staff")
-            
-            if not response["success"]:
-                self.error(f"Staff listing failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not isinstance(data, list):
-                self.error(f"Staff listing should return a list: {data}")
-                return False
-                
-            self.success(f"Staff listing successful. Found {len(data)} staff members")
-            return True
-            
-        except Exception as e:
-            self.error(f"Staff listing test failed: {str(e)}")
-            return False
-    
-    def test_create_pet(self) -> bool:
-        """Test creating a pet"""
-        self.log("Testing pet creation...")
-        
-        try:
-            pet_data = {
-                "name": "Buddy",
-                "species": "dog",
-                "breed": "Golden Retriever",
-                "birthDate": "2020-05-15",
-                "weight": "28.5",
-                "notes": "Very friendly dog, loves treats"
-            }
-            
-            response = self.make_request("POST", "/pets", pet_data)
-            
-            if not response["success"]:
-                self.error(f"Pet creation failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not data.get("id") or data["name"] != "Buddy":
-                self.error(f"Pet creation returned unexpected data: {data}")
-                return False
-                
-            self.test_data["pet_id"] = data["id"]
-            self.success(f"Pet created successfully. ID: {data['id']}")
-            return True
-            
-        except Exception as e:
-            self.error(f"Pet creation test failed: {str(e)}")
-            return False
-    
-    def test_list_pets(self) -> bool:
-        """Test listing pets"""
-        self.log("Testing pet listing...")
-        
-        try:
-            response = self.make_request("GET", "/pets")
-            
-            if not response["success"]:
-                self.error(f"Pet listing failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not isinstance(data, list):
-                self.error(f"Pet listing should return a list: {data}")
-                return False
-                
-            self.success(f"Pet listing successful. Found {len(data)} pets")
-            return True
-            
-        except Exception as e:
-            self.error(f"Pet listing test failed: {str(e)}")
-            return False
-    
-    def test_services_api(self) -> bool:
-        """Test veterinary services API endpoints"""
-        self.log("Testing services API...")
-        
-        try:
-            # Test GET /api/services
-            response = self.make_request("GET", "/services")
-            
-            if not response["success"]:
-                self.error(f"Services API failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not isinstance(data, dict) or not data:
-                self.error(f"Services API should return a non-empty dictionary: {data}")
-                return False
-                
-            # Check for expected categories
-            expected_categories = ["visite_generali", "visite_specialistiche", "chirurgia", "diagnostica", "altri_servizi"]
-            for category in expected_categories:
-                if category not in data:
-                    self.error(f"Missing service category '{category}' in response")
-                    return False
-                    
-            self.success("Services catalog endpoint working correctly")
-            
-            # Test GET /api/services/flat
-            response = self.make_request("GET", "/services/flat")
-            
-            if not response["success"]:
-                self.error(f"Services flat API failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            flat_data = response["data"]
-            if not isinstance(flat_data, list) or not flat_data:
-                self.error(f"Services flat API should return a non-empty list: {flat_data}")
-                return False
-                
-            # Check first service has required fields
-            first_service = flat_data[0]
-            required_fields = ["id", "name", "description", "categoryId", "categoryName"]
-            for field in required_fields:
-                if field not in first_service:
-                    self.error(f"Service missing required field '{field}': {first_service}")
-                    return False
-                    
-            self.success(f"Services flat endpoint working correctly - found {len(flat_data)} services")
-            return True
-            
-        except Exception as e:
-            self.error(f"Services API test failed: {str(e)}")
-            return False
-    
-    def test_invite_clinic_api(self) -> bool:
-        """Test invite clinic API endpoint"""
-        self.log("Testing invite clinic API...")
-        
-        try:
-            invite_data = {
-                "clinicName": "Clinica Test Milano",
-                "clinicEmail": "test@clinicatest.it",
-                "message": "Ciao, sono un tuo cliente!",
-                "inviterName": "Mario Rossi",
-                "inviterEmail": "mario@test.it"
-            }
-            
-            response = self.make_request("POST", "/invite-clinic", invite_data)
-            
-            if not response["success"]:
-                self.error(f"Invite clinic API failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not data.get("success"):
-                self.error(f"Invite clinic API should return success=true: {data}")
-                return False
-                
-            if "message" not in data:
-                self.error(f"Invite clinic API should return a message: {data}")
-                return False
-                
-            self.success("Invite clinic API working correctly")
-            return True
-            
-        except Exception as e:
-            self.error(f"Invite clinic API test failed: {str(e)}")
-            return False
-    
-    def test_clinic_search_api(self) -> bool:
-        """Test clinic search API endpoints"""
-        self.log("Testing clinic search API...")
-        
-        try:
-            # Test basic search
-            response = self.make_request("GET", "/clinics/search")
-            
-            if not response["success"]:
-                self.error(f"Basic clinic search failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            data = response["data"]
-            if not isinstance(data, list):
-                self.error(f"Clinic search should return a list: {data}")
-                return False
-                
-            self.success(f"Basic clinic search working - found {len(data)} clinics")
-            
-            # Test search with city filter
-            response = self.make_request("GET", "/clinics/search?city=Milano")
-            
-            if not response["success"]:
-                self.error(f"City filtered clinic search failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            city_data = response["data"]
-            if not isinstance(city_data, list):
-                self.error(f"City filtered clinic search should return a list: {city_data}")
-                return False
-                
-            self.success(f"City filtered clinic search working - found {len(city_data)} clinics in Milano")
-            
-            # Test search with service filter
-            response = self.make_request("GET", "/clinics/search?service=visita_clinica")
-            
-            if not response["success"]:
-                self.error(f"Service filtered clinic search failed with status {response['status_code']}: {response['data']}")
-                return False
-                
-            service_data = response["data"]
-            if not isinstance(service_data, list):
-                self.error(f"Service filtered clinic search should return a list: {service_data}")
-                return False
-                
-            self.success(f"Service filtered clinic search working - found {len(service_data)} clinics with visita_clinica")
-            return True
-            
-        except Exception as e:
-            self.error(f"Clinic search API test failed: {str(e)}")
-            return False
-    
-    def test_demo_auth(self) -> bool:
-        """Test authentication with demo credentials"""
-        self.log("Testing demo authentication...")
-        
-        try:
-            # Test clinic demo login
-            demo_clinic_data = {
-                "email": "demo@vetbuddy.it",
-                "password": "DemoVet2025!"
-            }
-            
-            response = self.make_request("POST", "/auth/login", demo_clinic_data)
-            
-            if response["success"]:
-                self.success("Demo clinic authentication working (demo@vetbuddy.it)")
-                # Don't use demo token for other tests
-            else:
-                self.log(f"Demo clinic credentials not available (status {response['status_code']})")
-            
-            # Test owner demo login
-            demo_owner_data = {
-                "email": "anna.bianchi@email.com",
-                "password": "Password123!"
-            }
-            
-            response = self.make_request("POST", "/auth/login", demo_owner_data)
-            
-            if response["success"]:
-                self.success("Demo owner authentication working (anna.bianchi@email.com)")
-            else:
-                self.log(f"Demo owner credentials not available (status {response['status_code']})")
-            
-            return True
-            
-        except Exception as e:
-            self.error(f"Demo authentication test failed: {str(e)}")
-            return False
-    
-    def test_authentication_required(self) -> bool:
-        """Test that authentication is required for protected endpoints"""
-        self.log("Testing authentication requirements...")
-        
-        try:
-            # Save current token
-            saved_token = self.token
-            self.token = None
-            
-            # Test protected endpoint without token
-            response = self.make_request("GET", "/appointments")
-            
-            if response["status_code"] != 401:
-                self.error(f"Expected 401 for unauthenticated request, got {response['status_code']}")
-                self.token = saved_token
-                return False
-            
-            # Test with invalid token
-            self.token = "invalid_token"
-            response = self.make_request("GET", "/appointments")
-            
-            if response["status_code"] != 401:
-                self.error(f"Expected 401 for invalid token, got {response['status_code']}")
-                self.token = saved_token
-                return False
-            
-            # Restore valid token
-            self.token = saved_token
-            
-            self.success("Authentication requirements working correctly")
-            return True
-            
-        except Exception as e:
-            self.error(f"Authentication requirements test failed: {str(e)}")
-            # Restore token even on error
-            if saved_token:
-                self.token = saved_token
-            return False
-    
-    def run_all_tests(self):
-        """Run all API tests"""
-        print("🏥 Starting VetBuddy API Backend Tests")
-        print("=" * 50)
-        
-        tests = [
-            ("Health Check", self.test_health_check),
-            ("Services API", self.test_services_api),
-            ("Invite Clinic API", self.test_invite_clinic_api),
-            ("Clinic Search API", self.test_clinic_search_api),
-            ("Demo Authentication", self.test_demo_auth),
-            ("User Registration", self.test_register),
-            ("User Login", self.test_login),
-            ("Get Current User", self.test_auth_me),
-            ("Create Appointment", self.test_create_appointment),
-            ("List Appointments", self.test_list_appointments),
-            ("Create Document", self.test_create_document),
-            ("List Documents", self.test_list_documents),
-            ("Send Document Email", self.test_send_document_email),
-            ("Create Staff", self.test_create_staff),
-            ("List Staff", self.test_list_staff),
-            ("Create Pet", self.test_create_pet),
-            ("List Pets", self.test_list_pets),
-            ("Authentication Requirements", self.test_authentication_required),
-        ]
-        
-        passed = 0
-        total = len(tests)
-        failed_tests = []
-        
-        for test_name, test_func in tests:
-            print(f"\n🔍 Running: {test_name}")
-            print("-" * 30)
-            
-            try:
-                if test_func():
-                    passed += 1
+            async with self.session.post(
+                f"{self.base_url}/api/auth/login",
+                data=json.dumps(login_data)
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if 'token' in data and data.get('user', {}).get('role') == 'clinic':
+                        self.auth_token = data['token']
+                        print(f"✅ Login successful - Token obtained for clinic: {data['user']['clinicName']}")
+                        self.test_results["passed"] += 1
+                        return True
+                    else:
+                        print("❌ Login failed - Invalid response format")
+                        self.test_results["failed"] += 1
+                        self.test_results["errors"].append("Login failed - Invalid response format")
+                        return False
                 else:
-                    failed_tests.append(test_name)
-            except Exception as e:
-                self.error(f"Test '{test_name}' crashed: {str(e)}")
-                failed_tests.append(test_name)
+                    print(f"❌ Login failed - Status {response.status}")
+                    error_text = await response.text()
+                    self.test_results["failed"] += 1
+                    self.test_results["errors"].append(f"Login failed - Status {response.status}: {error_text}")
+                    return False
+                    
+        except Exception as e:
+            print(f"❌ Login error: {str(e)}")
+            self.test_results["failed"] += 1
+            self.test_results["errors"].append(f"Login error: {str(e)}")
+            return False
+
+    async def test_get_automation_settings(self):
+        """Test GET /api/automations/settings - Should return all 12 automation settings"""
+        try:
+            print("\n📋 Testing GET /api/automations/settings...")
+            
+            if not self.auth_token:
+                print("❌ No auth token available")
+                self.test_results["failed"] += 1
+                return False
+                
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            
+            async with self.session.get(
+                f"{self.base_url}/api/automations/settings",
+                headers=headers
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Verify response structure
+                    if not data.get('success'):
+                        print("❌ Response missing success field")
+                        self.test_results["failed"] += 1
+                        return False
+                    
+                    settings = data.get('settings', {})
+                    
+                    # Expected 12 automation settings
+                    expected_settings = [
+                        'appointmentReminders', 'bookingConfirmation', 'vaccineRecalls', 
+                        'postVisitFollowup', 'noShowDetection', 'waitlistNotification',
+                        'suggestedSlots', 'documentReminders', 'autoTicketAssignment',
+                        'aiQuickReplies', 'urgencyNotifications', 'weeklyReport'
+                    ]
+                    
+                    # Check all 12 settings are present
+                    missing_settings = []
+                    for setting in expected_settings:
+                        if setting not in settings:
+                            missing_settings.append(setting)
+                        elif settings[setting] is not True:  # Should default to true
+                            print(f"⚠️  Setting {setting} is not defaulting to true: {settings[setting]}")
+                    
+                    if missing_settings:
+                        print(f"❌ Missing settings: {missing_settings}")
+                        self.test_results["failed"] += 1
+                        self.test_results["errors"].append(f"Missing automation settings: {missing_settings}")
+                        return False
+                    else:
+                        print(f"✅ All 12 automation settings found and defaulting to true")
+                        print(f"   Settings: {list(settings.keys())}")
+                        self.test_results["passed"] += 1
+                        return True
+                        
+                else:
+                    print(f"❌ GET settings failed - Status {response.status}")
+                    error_text = await response.text()
+                    self.test_results["failed"] += 1
+                    self.test_results["errors"].append(f"GET settings failed - Status {response.status}: {error_text}")
+                    return False
+                    
+        except Exception as e:
+            print(f"❌ GET settings error: {str(e)}")
+            self.test_results["failed"] += 1
+            self.test_results["errors"].append(f"GET settings error: {str(e)}")
+            return False
+
+    async def test_post_single_automation_setting(self):
+        """Test POST /api/automations/settings - Toggle single setting"""
+        try:
+            print("\n🔄 Testing POST /api/automations/settings (single setting toggle)...")
+            
+            if not self.auth_token:
+                print("❌ No auth token available")
+                self.test_results["failed"] += 1
+                return False
+                
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            
+            # Test disabling appointmentReminders
+            test_data = {
+                "key": "appointmentReminders",
+                "enabled": False
+            }
+            
+            async with self.session.post(
+                f"{self.base_url}/api/automations/settings",
+                headers=headers,
+                data=json.dumps(test_data)
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Verify response
+                    if (data.get('success') and 
+                        data.get('key') == 'appointmentReminders' and 
+                        data.get('enabled') == False):
+                        print("✅ Successfully disabled appointmentReminders")
+                        self.test_results["passed"] += 1
+                        return True
+                    else:
+                        print(f"❌ Invalid response structure: {data}")
+                        self.test_results["failed"] += 1
+                        self.test_results["errors"].append(f"POST single setting invalid response: {data}")
+                        return False
+                        
+                else:
+                    print(f"❌ POST single setting failed - Status {response.status}")
+                    error_text = await response.text()
+                    self.test_results["failed"] += 1
+                    self.test_results["errors"].append(f"POST single setting failed - Status {response.status}: {error_text}")
+                    return False
+                    
+        except Exception as e:
+            print(f"❌ POST single setting error: {str(e)}")
+            self.test_results["failed"] += 1
+            self.test_results["errors"].append(f"POST single setting error: {str(e)}")
+            return False
+
+    async def test_verify_setting_change(self):
+        """Verify that appointmentReminders is now false"""
+        try:
+            print("\n🔍 Verifying that appointmentReminders is now disabled...")
+            
+            if not self.auth_token:
+                print("❌ No auth token available")
+                self.test_results["failed"] += 1
+                return False
+                
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            
+            async with self.session.get(
+                f"{self.base_url}/api/automations/settings",
+                headers=headers
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    settings = data.get('settings', {})
+                    
+                    if settings.get('appointmentReminders') == False:
+                        print("✅ appointmentReminders correctly showing as disabled")
+                        self.test_results["passed"] += 1
+                        return True
+                    else:
+                        print(f"❌ appointmentReminders should be false but is: {settings.get('appointmentReminders')}")
+                        self.test_results["failed"] += 1
+                        self.test_results["errors"].append(f"Setting change not persisted - appointmentReminders: {settings.get('appointmentReminders')}")
+                        return False
+                        
+                else:
+                    print(f"❌ Verification failed - Status {response.status}")
+                    self.test_results["failed"] += 1
+                    return False
+                    
+        except Exception as e:
+            print(f"❌ Verification error: {str(e)}")
+            self.test_results["failed"] += 1
+            self.test_results["errors"].append(f"Verification error: {str(e)}")
+            return False
+
+    async def test_put_multiple_settings(self):
+        """Test PUT /api/automations/settings - Update multiple settings"""
+        try:
+            print("\n📝 Testing PUT /api/automations/settings (multiple settings update)...")
+            
+            if not self.auth_token:
+                print("❌ No auth token available")
+                self.test_results["failed"] += 1
+                return False
+                
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            
+            # Test updating multiple settings
+            test_data = {
+                "settings": {
+                    "appointmentReminders": True,  # Re-enable this
+                    "vaccineRecalls": False,       # Disable this
+                    "weeklyReport": False          # Disable this too
+                }
+            }
+            
+            async with self.session.put(
+                f"{self.base_url}/api/automations/settings",
+                headers=headers,
+                data=json.dumps(test_data)
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Verify response
+                    if data.get('success') and 'settings' in data:
+                        print("✅ Successfully updated multiple settings")
+                        print(f"   Updated settings: {data['settings']}")
+                        self.test_results["passed"] += 1
+                        return True
+                    else:
+                        print(f"❌ Invalid response structure: {data}")
+                        self.test_results["failed"] += 1
+                        self.test_results["errors"].append(f"PUT multiple settings invalid response: {data}")
+                        return False
+                        
+                else:
+                    print(f"❌ PUT multiple settings failed - Status {response.status}")
+                    error_text = await response.text()
+                    self.test_results["failed"] += 1
+                    self.test_results["errors"].append(f"PUT multiple settings failed - Status {response.status}: {error_text}")
+                    return False
+                    
+        except Exception as e:
+            print(f"❌ PUT multiple settings error: {str(e)}")
+            self.test_results["failed"] += 1
+            self.test_results["errors"].append(f"PUT multiple settings error: {str(e)}")
+            return False
+
+    async def test_cron_job_with_settings(self):
+        """Test GET /api/cron/daily - Execute and check if disabled settings show in skipped count"""
+        try:
+            print("\n⏰ Testing GET /api/cron/daily (cron job execution)...")
+            
+            # Note: Cron job doesn't require auth token, but may require special header in production
+            async with self.session.get(
+                f"{self.base_url}/api/cron/daily"
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Verify response structure
+                    if not data.get('success'):
+                        print("❌ Cron job response missing success field")
+                        self.test_results["failed"] += 1
+                        return False
+                    
+                    results = data.get('results', {})
+                    
+                    # Check that we have the expected result categories
+                    expected_categories = [
+                        'promemoria', 'richiamiVaccini', 'followUp', 
+                        'noShow', 'documentReminders', 'weeklyReports'
+                    ]
+                    
+                    missing_categories = []
+                    for category in expected_categories:
+                        if category not in results:
+                            missing_categories.append(category)
+                    
+                    if missing_categories:
+                        print(f"❌ Missing result categories: {missing_categories}")
+                        self.test_results["failed"] += 1
+                        self.test_results["errors"].append(f"Missing cron result categories: {missing_categories}")
+                        return False
+                    
+                    # Verify each category has counts
+                    total_processed = 0
+                    total_skipped = 0
+                    
+                    for category, result in results.items():
+                        if isinstance(result, dict):
+                            skipped = result.get('skipped', 0)
+                            sent = result.get('sent', 0)
+                            marked = result.get('marked', 0)  # For noShow
+                            errors = result.get('errors', 0)
+                            
+                            total_skipped += skipped
+                            total_processed += sent + marked
+                            
+                            print(f"   {category}: sent/marked={sent + marked}, skipped={skipped}, errors={errors}")
+                    
+                    print(f"✅ Cron job executed successfully")
+                    print(f"   Total processed: {total_processed}, Total skipped: {total_skipped}")
+                    
+                    if total_skipped > 0:
+                        print(f"   ℹ️  Skipped items likely due to disabled automation settings")
+                    
+                    self.test_results["passed"] += 1
+                    return True
+                        
+                else:
+                    print(f"❌ Cron job failed - Status {response.status}")
+                    error_text = await response.text()
+                    self.test_results["failed"] += 1
+                    self.test_results["errors"].append(f"Cron job failed - Status {response.status}: {error_text}")
+                    return False
+                    
+        except Exception as e:
+            print(f"❌ Cron job error: {str(e)}")
+            self.test_results["failed"] += 1
+            self.test_results["errors"].append(f"Cron job error: {str(e)}")
+            return False
+
+    async def test_re_enable_appointment_reminders(self):
+        """Re-enable appointmentReminders for final verification"""
+        try:
+            print("\n🔄 Re-enabling appointmentReminders...")
+            
+            if not self.auth_token:
+                print("❌ No auth token available")
+                self.test_results["failed"] += 1
+                return False
+                
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            
+            # Re-enable appointmentReminders
+            test_data = {
+                "key": "appointmentReminders",
+                "enabled": True
+            }
+            
+            async with self.session.post(
+                f"{self.base_url}/api/automations/settings",
+                headers=headers,
+                data=json.dumps(test_data)
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    if (data.get('success') and 
+                        data.get('key') == 'appointmentReminders' and 
+                        data.get('enabled') == True):
+                        print("✅ Successfully re-enabled appointmentReminders")
+                        self.test_results["passed"] += 1
+                        return True
+                    else:
+                        print(f"❌ Failed to re-enable setting: {data}")
+                        self.test_results["failed"] += 1
+                        return False
+                        
+                else:
+                    print(f"❌ Re-enable failed - Status {response.status}")
+                    self.test_results["failed"] += 1
+                    return False
+                    
+        except Exception as e:
+            print(f"❌ Re-enable error: {str(e)}")
+            self.test_results["failed"] += 1
+            self.test_results["errors"].append(f"Re-enable error: {str(e)}")
+            return False
+
+    async def test_unauthorized_access(self):
+        """Test that non-clinic users cannot access the automation settings API"""
+        try:
+            print("\n🚫 Testing unauthorized access (no token)...")
+            
+            # Try without authorization header
+            async with self.session.get(
+                f"{self.base_url}/api/automations/settings"
+            ) as response:
+                if response.status == 401:
+                    print("✅ Correctly blocked unauthorized access (401)")
+                    self.test_results["passed"] += 1
+                    return True
+                else:
+                    print(f"❌ Should have returned 401 but got {response.status}")
+                    self.test_results["failed"] += 1
+                    self.test_results["errors"].append(f"Authorization check failed - Expected 401 but got {response.status}")
+                    return False
+                    
+        except Exception as e:
+            print(f"❌ Unauthorized access test error: {str(e)}")
+            self.test_results["failed"] += 1
+            self.test_results["errors"].append(f"Unauthorized access test error: {str(e)}")
+            return False
+
+    async def run_all_tests(self):
+        """Run all automation settings tests"""
+        print("🚀 Starting VetBuddy Automation Settings API Tests")
+        print("=" * 60)
+        
+        await self.create_session()
+        
+        try:
+            # Run tests in sequence
+            await self.login_and_get_token()
+            await self.test_get_automation_settings()
+            await self.test_post_single_automation_setting()
+            await self.test_verify_setting_change()
+            await self.test_put_multiple_settings()
+            await self.test_cron_job_with_settings()
+            await self.test_re_enable_appointment_reminders()
+            await self.test_unauthorized_access()
+            
+        finally:
+            await self.close_session()
         
         # Print summary
-        print("\n" + "=" * 50)
+        print("\n" + "=" * 60)
         print("📊 TEST SUMMARY")
-        print("=" * 50)
-        print(f"✅ Passed: {passed}/{total}")
-        print(f"❌ Failed: {total - passed}/{total}")
+        print("=" * 60)
+        print(f"✅ Passed: {self.test_results['passed']}")
+        print(f"❌ Failed: {self.test_results['failed']}")
+        print(f"⏭️  Skipped: {self.test_results['skipped']}")
         
-        if failed_tests:
-            print(f"\n❌ Failed Tests:")
-            for test in failed_tests:
-                print(f"   • {test}")
+        if self.test_results['errors']:
+            print(f"\n🚨 ERRORS FOUND:")
+            for i, error in enumerate(self.test_results['errors'], 1):
+                print(f"   {i}. {error}")
+        
+        if self.test_results['failed'] == 0:
+            print(f"\n🎉 ALL TESTS PASSED! Automation Settings API is working correctly.")
+            return True
         else:
-            print(f"\n🎉 All tests passed!")
-        
-        return passed == total
+            print(f"\n⚠️  {self.test_results['failed']} test(s) failed. Please check the errors above.")
+            return False
+
+# Run the tests
+async def main():
+    tester = VetBuddyTester()
+    success = await tester.run_all_tests()
+    return success
 
 if __name__ == "__main__":
-    try:
-        print(f"🌐 Using API Base URL: {BASE_URL}")
-        
-        tester = VetBuddyAPITest()
-        success = tester.run_all_tests()
-        
-        if success:
-            print("\n✅ All backend API tests completed successfully!")
-            sys.exit(0)
-        else:
-            print("\n❌ Some backend API tests failed!")
-            sys.exit(1)
-            
-    except KeyboardInterrupt:
-        print("\n⏹️ Tests interrupted by user")
-        sys.exit(1)
-    except Exception as e:
-        print(f"\n💥 Test suite crashed: {str(e)}")
-        sys.exit(1)
+    result = asyncio.run(main())
+    if not result:
+        exit(1)
