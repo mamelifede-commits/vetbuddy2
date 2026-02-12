@@ -4841,6 +4841,8 @@ function SubscriptionPlans({ user }) {
 
   return (
     <div className="space-y-4">
+      <p className="text-sm text-gray-600 text-center">Piani disponibili solo tramite Pilot (su invito). Prezzi IVA esclusa.</p>
+      
       {paymentSuccess && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
           <CheckCircle className="h-5 w-5 text-green-500" />
@@ -4855,59 +4857,74 @@ function SubscriptionPlans({ user }) {
         {/* Starter */}
         <div className="border rounded-lg p-4 bg-white">
           <h3 className="font-semibold">Starter</h3>
-          <p className="text-2xl font-bold text-gray-400 mt-2">Gratis</p>
-          <p className="text-xs text-gray-500">Funzionalità base</p>
-          <ul className="text-sm text-gray-600 mt-3 space-y-1">
+          <p className="text-xs text-gray-500 mb-2">Per cliniche in fase di valutazione</p>
+          <div className="mb-2">
+            <span className="text-2xl font-bold text-gray-400">Gratis</span>
+            <p className="text-xs text-gray-500">solo su invito – Pilot Milano</p>
+          </div>
+          <p className="text-xs text-gray-400 mb-3">Prezzi IVA esclusa</p>
+          <p className="text-xs font-medium text-gray-700 mb-2">Include:</p>
+          <ul className="text-sm text-gray-600 space-y-1 mb-3">
             <li>• 1 sede, 1 utente</li>
-            <li>• 30 richieste/mese</li>
+            <li>• Fino a 30 richieste/mese</li>
+            <li>• Posizione su mappa</li>
           </ul>
-          <Badge variant="outline" className="w-full justify-center mt-3 text-amber-700 border-amber-300">Solo con Pilot</Badge>
           <Button 
             variant="outline" 
-            className="w-full mt-2" 
+            className="w-full mb-2" 
             disabled={currentPlan === 'starter'}
           >
-            {currentPlan === 'starter' ? 'Piano attuale' : 'Downgrade'}
+            {currentPlan === 'starter' ? 'Piano attuale' : 'Richiedi invito'}
           </Button>
+          <p className="text-xs text-gray-500 text-center">Accesso disponibile solo per cliniche ammesse al Pilot Milano.</p>
         </div>
         
         {/* Pro - Pilot */}
         <div className={`border-2 rounded-lg p-4 bg-white relative ${isPilotActive ? 'border-amber-500' : 'border-coral-500'}`}>
-          {isPilotActive && <Badge className="absolute -top-2 right-2 bg-amber-500">PILOT ATTIVO</Badge>}
-          <h3 className="font-semibold">Pro</h3>
-          <div className="mt-2">
+          <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 bg-amber-500 whitespace-nowrap">PILOT MILANO (su invito)</Badge>
+          <h3 className="font-semibold mt-2">Pro</h3>
+          <p className="text-xs text-gray-500 mb-2">Tutto incluso per la tua clinica</p>
+          <div className="mb-1">
             {isPilotActive ? (
               <>
                 <span className="text-2xl font-bold text-coral-500">€0</span>
-                <span className="text-lg text-gray-400 line-through ml-2">€99/mese</span>
+                <span className="text-sm text-gray-500 ml-1">(Pilot)</span>
+                <span className="text-lg text-gray-400 line-through ml-2">€129/mese</span>
+                <span className="text-xs text-gray-400 ml-1">+IVA</span>
               </>
             ) : (
-              <span className="text-2xl font-bold text-coral-500">€99/mese</span>
+              <>
+                <span className="text-2xl font-bold text-coral-500">€129/mese</span>
+                <span className="text-xs text-gray-400 ml-1">+IVA</span>
+              </>
             )}
-            <span className="text-xs text-gray-400 ml-1">+IVA</span>
           </div>
-          {isPilotActive && <p className="text-xs text-amber-600 font-semibold">6 mesi gratuiti nel Pilot</p>}
-          <ul className="text-sm text-gray-600 mt-3 space-y-1">
+          {isPilotActive && (
+            <>
+              <p className="text-xs text-amber-600 font-semibold">90 giorni gratuiti per cliniche selezionate nel Pilot</p>
+              <p className="text-xs text-gray-500 italic mb-2">(Estendibile fino a 6 mesi per cliniche attive che completano onboarding e feedback.)</p>
+            </>
+          )}
+          <p className="text-xs text-gray-400 mb-3">Prezzi IVA esclusa</p>
+          <p className="text-xs font-medium text-gray-700 mb-2">Include:</p>
+          <ul className="text-sm text-gray-600 space-y-1 mb-3">
             <li>• Fino a 10 staff</li>
             <li>• Team Inbox + ticket</li>
-            <li>• Documenti + email auto</li>
+            <li>• Documenti + invio email automatico (PDF allegato)</li>
             <li>• Google Calendar sync</li>
             <li>• Report e analytics</li>
           </ul>
           {isPilotActive ? (
-            <>
-              <Badge variant="outline" className="w-full justify-center mt-3 text-amber-700 border-amber-300">Solo con Pilot</Badge>
-              <Button className="w-full mt-2 bg-amber-500 hover:bg-amber-600" disabled>
-                ✓ Attivo nel Pilot
-              </Button>
-            </>
+            <Button className="w-full bg-amber-500 hover:bg-amber-600" disabled>
+              ✓ Attivo nel Pilot
+            </Button>
           ) : (
             <Button 
-              className="w-full mt-3 bg-coral-500 hover:bg-coral-600" 
+              className="w-full bg-coral-500 hover:bg-coral-600" 
               onClick={() => handleSubscribe('pro')}
               disabled={loading}
             >
-              {loading ? <><RefreshCw className="h-4 w-4 mr-2 animate-spin" />Caricamento...</> : <>Abbonati a €99/mese</>}
+              {loading ? <><RefreshCw className="h-4 w-4 mr-2 animate-spin" />Caricamento...</> : <>Candidati al Pilot →</>}
             </Button>
           )}
         </div>
@@ -4915,29 +4932,31 @@ function SubscriptionPlans({ user }) {
         {/* Enterprise */}
         <div className="border rounded-lg p-4 bg-white">
           <h3 className="font-semibold">Enterprise</h3>
-          <div className="mt-2">
-            <span className="text-2xl font-bold text-coral-500">€199/mese</span>
+          <p className="text-xs text-gray-500 mb-2">Per gruppi e catene veterinarie</p>
+          <div className="mb-2">
+            <span className="text-2xl font-bold text-coral-500">Custom</span>
             <span className="text-xs text-gray-400 ml-1">+IVA</span>
           </div>
-          <p className="text-xs text-gray-500">Gruppi e catene</p>
-          <ul className="text-sm text-gray-600 mt-3 space-y-1">
+          <p className="text-xs text-gray-400 mb-3">Prezzi IVA esclusa</p>
+          <p className="text-xs font-medium text-gray-700 mb-2">Include:</p>
+          <ul className="text-sm text-gray-600 space-y-1 mb-3">
             <li>• Multi-sede illimitate</li>
-            <li>• Staff illimitato</li>
             <li>• API dedicata</li>
             <li>• SLA garantito</li>
+            <li>• Onboarding dedicato</li>
           </ul>
           <Button 
-            className="w-full mt-3 bg-gray-800 hover:bg-gray-900" 
-            onClick={() => handleSubscribe('enterprise')}
-            disabled={loading || currentPlan === 'enterprise'}
+            className="w-full bg-gray-800 hover:bg-gray-900 mb-2" 
+            onClick={() => window.location.href = 'mailto:info@vetbuddy.it?subject=Richiesta%20Enterprise'}
           >
-            {currentPlan === 'enterprise' ? '✓ Attivo' : loading ? 'Caricamento...' : 'Abbonati a €199/mese'}
+            Contattaci
           </Button>
+          <Badge variant="outline" className="w-full justify-center text-amber-700 border-amber-300 bg-amber-50">Solo con Pilot (su invito)</Badge>
         </div>
       </div>
 
       <p className="text-xs text-gray-500 text-center">
-        Prezzi IVA esclusa (22%). Pagamento sicuro tramite Stripe. Cancella quando vuoi.
+        Non è una prova libera: stiamo selezionando un numero limitato di cliniche.
       </p>
     </div>
   );
