@@ -7690,12 +7690,33 @@ function OwnerAppointments({ appointments, pets }) {
               <Plus className="h-4 w-4 mr-2" />Prenota visita
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Prenota una visita</DialogTitle>
-              <DialogDescription>Scegli il servizio e l'orario preferito</DialogDescription>
+              <DialogDescription>Scegli la clinica, il servizio e l'orario preferito</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              {/* Clinic Selection */}
+              <div>
+                <Label>Presso quale clinica?</Label>
+                <Select value={formData.clinicId} onValueChange={(v) => setFormData({...formData, clinicId: v, serviceId: ''})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={loadingClinics ? "Caricamento..." : "Seleziona clinica"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {clinics.map(clinic => (
+                      <SelectItem key={clinic.id} value={clinic.id}>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-coral-500" />
+                          <span>{clinic.clinicName || clinic.name}</span>
+                          {clinic.avgRating && <span className="text-xs text-amber-600">★ {clinic.avgRating.toFixed(1)}</span>}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
               {/* Pet Selection */}
               <div>
                 <Label>Per quale animale?</Label>
@@ -7717,33 +7738,44 @@ function OwnerAppointments({ appointments, pets }) {
               </div>
               
               {/* Service Selection */}
-              <div>
-                <Label>Tipo di visita</Label>
-                <div className="grid grid-cols-1 gap-2 mt-2">
-                  {availableServices.map(service => (
-                    <div 
-                      key={service.id}
-                      onClick={() => setFormData({...formData, serviceId: service.id.toString()})}
-                      className={`p-3 border rounded-lg cursor-pointer transition ${formData.serviceId === service.id.toString() ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={`h-8 w-8 rounded-full flex items-center justify-center ${service.type === 'online' ? 'bg-blue-100' : 'bg-coral-100'}`}>
-                            {service.type === 'online' ? <Video className="h-4 w-4 text-blue-600" /> : <Stethoscope className="h-4 w-4 text-coral-600" />}
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm">{service.name}</p>
-                            <p className="text-xs text-gray-500">{service.duration} min • {service.type === 'online' ? 'Online' : 'In sede'}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-blue-600">€{service.price}</p>
-                        </div>
-                      </div>
+              {formData.clinicId && (
+                <div>
+                  <Label>Tipo di visita</Label>
+                  {loadingServices ? (
+                    <div className="text-center py-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-500 border-t-transparent mx-auto"></div>
+                      <p className="text-sm text-gray-500 mt-2">Caricamento servizi...</p>
                     </div>
-                  ))}
+                  ) : clinicServices.length === 0 ? (
+                    <p className="text-sm text-gray-500 py-2">Nessun servizio disponibile per questa clinica</p>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-2 mt-2 max-h-48 overflow-y-auto">
+                      {clinicServices.map(service => (
+                        <div 
+                          key={service.id}
+                          onClick={() => setFormData({...formData, serviceId: service.id.toString()})}
+                          className={`p-3 border rounded-lg cursor-pointer transition ${formData.serviceId === service.id.toString() ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`h-8 w-8 rounded-full flex items-center justify-center ${service.type === 'online' ? 'bg-blue-100' : 'bg-coral-100'}`}>
+                                {service.type === 'online' ? <Video className="h-4 w-4 text-blue-600" /> : <Stethoscope className="h-4 w-4 text-coral-600" />}
+                              </div>
+                              <div>
+                                <p className="font-medium text-sm">{service.name}</p>
+                                <p className="text-xs text-gray-500">{service.duration} min • {service.type === 'online' ? 'Online' : 'In sede'}</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-semibold text-blue-600">€{service.price}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
               
               {/* Date/Time */}
               <div className="grid grid-cols-2 gap-4">
@@ -7769,10 +7801,14 @@ function OwnerAppointments({ appointments, pets }) {
               </div>
               
               {/* Summary */}
-              {selectedService && (
+              {selectedService && selectedClinic && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <h4 className="font-medium text-blue-800 mb-2">Riepilogo</h4>
                   <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Clinica:</span>
+                      <span className="font-medium">{selectedClinic.clinicName || selectedClinic.name}</span>
+                    </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Servizio:</span>
                       <span className="font-medium">{selectedService.name}</span>
@@ -7781,7 +7817,7 @@ function OwnerAppointments({ appointments, pets }) {
                       <span className="text-gray-600">Durata:</span>
                       <span>{selectedService.duration} minuti</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between border-t pt-1 mt-1">
                       <span className="text-gray-600">Costo:</span>
                       <span className="font-semibold text-blue-600">€{selectedService.price}</span>
                     </div>
@@ -7789,7 +7825,7 @@ function OwnerAppointments({ appointments, pets }) {
                 </div>
               )}
               
-              <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600" disabled={!formData.petId || !formData.serviceId || !formData.date || !formData.time}>
+              <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600" disabled={!formData.petId || !formData.serviceId || !formData.date || !formData.time || !formData.clinicId}>
                 Prenota appuntamento
               </Button>
             </form>
