@@ -430,7 +430,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Services Management" # Critical issue - not accessible
+    - "VetBuddy Owner Dashboard Pet Modification Flow" # New test request
   stuck_tasks:
     - "Services Management" # Major functionality gap
   test_all: false
