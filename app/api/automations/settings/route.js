@@ -43,7 +43,36 @@ const DEFAULT_SETTINGS = {
   // === STAGIONALI ===
   summerHeatAlert: true,           // Alert caldo estivo (giugno-agosto)
   tickSeasonAlert: true,           // Alert stagione zecche (marzo-maggio)
-  newYearFireworksAlert: true      // Consigli botti capodanno (dicembre)
+  newYearFireworksAlert: true,     // Consigli botti capodanno (dicembre)
+  
+  // === COMUNICAZIONE MULTI-CANALE ===
+  whatsappReminders: false,        // Promemoria via WhatsApp (richiede integrazione)
+  smsEmergency: false,             // SMS per emergenze (richiede crediti SMS)
+  
+  // === CICLO DI VITA PET ===
+  sterilizationReminder: true,     // Promemoria sterilizzazione cuccioli 6-12 mesi
+  seniorPetCare: true,             // Checkup speciali pet over 7 anni
+  microchipCheck: true,            // Verifica annuale dati microchip
+  welcomeNewPet: true,             // Sequenza benvenuto nuovi clienti
+  
+  // === INTELLIGENZA ARTIFICIALE ===
+  aiLabExplanation: true,          // Spiegazione referti in linguaggio semplice
+  breedRiskAlert: true,            // Alert patologie comuni per razza
+  dietSuggestions: true,           // Suggerimenti dieta per specie/età/peso
+  
+  // === BUSINESS & FIDELIZZAZIONE ===
+  loyaltyProgram: true,            // Punti e sconti dopo X visite
+  referralProgram: true,           // Sconto per chi porta amici
+  holidayClosures: true,           // Avviso chiusure festive
+  
+  // === SITUAZIONI DELICATE ===
+  petCondolences: true,            // Messaggio condoglianze
+  griefFollowup: true,             // Follow-up supporto dopo 1 mese
+  
+  // === PER LA CLINICA ===
+  dailySummary: true,              // Riepilogo giornaliero serale
+  lowStockAlert: true,             // Alert scorte basse
+  staffBirthday: true              // Ricorda compleanni staff
 };
 
 // GET - Retrieve automation settings for the authenticated clinic
