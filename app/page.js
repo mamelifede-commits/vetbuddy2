@@ -1659,6 +1659,21 @@ function ClinicDashboard({ user, onLogout }) {
   const [owners, setOwners] = useState([]);
   const [setupProgress, setSetupProgress] = useState({ payments: false, video: false, team: false, automations: false });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Stati per aprire pet/owner da altre sezioni
+  const [selectedPetFromOwner, setSelectedPetFromOwner] = useState(null);
+  const [selectedOwnerFromPet, setSelectedOwnerFromPet] = useState(null);
+  
+  // Funzioni callback per navigazione tra pet e owner
+  const handleOpenPetFromOwner = (pet) => {
+    setSelectedPetFromOwner(pet);
+    setActiveTab('patients');
+  };
+  
+  const handleOpenOwnerFromPet = (owner) => {
+    setSelectedOwnerFromPet(owner);
+    setActiveTab('owners');
+  };
 
   useEffect(() => { loadData(); }, []);
 
