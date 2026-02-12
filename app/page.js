@@ -3446,7 +3446,7 @@ function ClinicDocuments({ documents, owners, pets, onRefresh, onNavigate }) {
 }
 
 // Simple components for other sections
-function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner }) {
+function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner, initialPet, onClearInitialPet }) {
   const [showDialog, setShowDialog] = useState(false);
   const [selectedPet, setSelectedPet] = useState(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
@@ -3456,6 +3456,14 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner 
   const [searchQuery, setSearchQuery] = useState('');
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editFormData, setEditFormData] = useState({});
+  
+  // Apri automaticamente il pet se viene passato da un altro componente
+  useEffect(() => {
+    if (initialPet) {
+      openPetDetails(initialPet);
+      if (onClearInitialPet) onClearInitialPet();
+    }
+  }, [initialPet]);
   
   const handleSubmit = async (e) => { e.preventDefault(); try { await api.post('pets', formData); setShowDialog(false); onRefresh(); } catch (error) { alert(error.message); } };
   
