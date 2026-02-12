@@ -5317,7 +5317,16 @@ function ClinicReports({ appointments, documents, messages, owners, pets, onNavi
               ) : (
                 <div className="space-y-2">
                   {(owners || []).slice(0, 10).map((owner, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div 
+                      key={i} 
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
+                      onClick={() => {
+                        if (onOpenOwner) {
+                          onOpenOwner(owner);
+                          onNavigate('owners');
+                        }
+                      }}
+                    >
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
                           <User className="h-5 w-5 text-blue-600" />
@@ -5327,7 +5336,10 @@ function ClinicReports({ appointments, documents, messages, owners, pets, onNavi
                           <p className="text-sm text-gray-500">{owner.email}</p>
                         </div>
                       </div>
-                      <p className="text-xs text-gray-400">{owner.createdAt ? new Date(owner.createdAt).toLocaleDateString() : '-'}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-gray-400">{owner.createdAt ? new Date(owner.createdAt).toLocaleDateString() : '-'}</p>
+                        <ChevronRight className="h-4 w-4 text-gray-400" />
+                      </div>
                     </div>
                   ))}
                 </div>
