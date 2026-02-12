@@ -5450,21 +5450,11 @@ function ClinicReports({ appointments, documents, messages, owners, pets, onNavi
               ) : (
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {documents.slice(0, 20).map((doc, i) => {
-                    const pet = (pets || []).find(p => p.id === doc.petId || p.name === doc.petName);
                     return (
                       <div 
                         key={i} 
                         className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-coral-50 cursor-pointer transition-colors"
-                        onClick={() => {
-                          if (doc.url || doc.fileUrl) {
-                            window.open(doc.url || doc.fileUrl, '_blank');
-                          } else if (pet && onOpenPet) {
-                            onOpenPet(pet);
-                            onNavigate('patients');
-                          } else {
-                            onNavigate('documents');
-                          }
-                        }}
+                        onClick={() => setSelectedDocDetail(doc)}
                       >
                         <div className="flex items-center gap-3">
                           <FileText className="h-5 w-5 text-coral-500" />
