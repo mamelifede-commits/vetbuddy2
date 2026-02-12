@@ -547,7 +547,7 @@ function LandingPage({ onLogin }) {
         </div>
       </section>
 
-      {/* TROVA CLINICA - Mappa stilizzata */}
+      {/* TROVA CLINICA - Google Maps Interattiva */}
       <section className="py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-coral-50/30 overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -582,109 +582,13 @@ function LandingPage({ onLogin }) {
                   <span className="text-gray-700">Servizi e specializzazioni visibili</span>
                 </li>
               </ul>
-              <Button className="bg-blue-500 hover:bg-blue-600">
+              <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
                 Trova clinica vicino a te →
               </Button>
             </div>
             
-            {/* Mappa Stilizzata */}
-            <div className="relative">
-              <div className="bg-gradient-to-br from-blue-100 to-green-50 rounded-2xl p-6 shadow-2xl border border-blue-200 relative overflow-hidden">
-                {/* Mappa decorativa */}
-                <div className="absolute inset-0 opacity-20">
-                  <svg viewBox="0 0 400 300" className="w-full h-full">
-                    <defs>
-                      <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#3b82f6" strokeWidth="0.5"/>
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#grid)"/>
-                    {/* Strade */}
-                    <path d="M0,150 Q100,120 200,150 T400,140" stroke="#94a3b8" strokeWidth="8" fill="none"/>
-                    <path d="M150,0 Q180,100 150,200 T170,300" stroke="#94a3b8" strokeWidth="6" fill="none"/>
-                    <path d="M280,0 Q260,80 280,160 T270,300" stroke="#94a3b8" strokeWidth="4" fill="none"/>
-                  </svg>
-                </div>
-                
-                {/* Pin cliniche */}
-                <div className="relative z-10 h-64">
-                  {/* Clinica principale */}
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-bounce">
-                    <div className="bg-coral-500 text-white p-3 rounded-full shadow-lg relative">
-                      <Building2 className="h-6 w-6" />
-                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-coral-500 rotate-45"></div>
-                    </div>
-                    <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-white px-3 py-1 rounded-full shadow text-xs font-medium whitespace-nowrap">
-                      Clinica VetMilano • 0.3 km
-                    </div>
-                  </div>
-                  
-                  {/* Altre cliniche */}
-                  <div className="absolute top-4 left-8">
-                    <div className="bg-blue-500 text-white p-2 rounded-full shadow-md">
-                      <Building2 className="h-4 w-4" />
-                    </div>
-                    <span className="absolute -bottom-4 left-0 text-xs text-gray-500">1.2 km</span>
-                  </div>
-                  
-                  <div className="absolute top-8 right-12">
-                    <div className="bg-blue-400 text-white p-2 rounded-full shadow-md">
-                      <Building2 className="h-4 w-4" />
-                    </div>
-                    <span className="absolute -bottom-4 left-0 text-xs text-gray-500">2.1 km</span>
-                  </div>
-                  
-                  <div className="absolute bottom-8 left-16">
-                    <div className="bg-blue-400 text-white p-2 rounded-full shadow-md">
-                      <Building2 className="h-4 w-4" />
-                    </div>
-                    <span className="absolute -bottom-4 left-0 text-xs text-gray-500">1.8 km</span>
-                  </div>
-                  
-                  <div className="absolute bottom-4 right-8">
-                    <div className="bg-blue-300 text-white p-2 rounded-full shadow-md">
-                      <Building2 className="h-4 w-4" />
-                    </div>
-                    <span className="absolute -bottom-4 left-0 text-xs text-gray-500">3.5 km</span>
-                  </div>
-                  
-                  {/* User position */}
-                  <div className="absolute top-1/3 left-1/3">
-                    <div className="relative">
-                      <div className="h-4 w-4 bg-green-500 rounded-full shadow-lg animate-ping absolute"></div>
-                      <div className="h-4 w-4 bg-green-500 rounded-full shadow-lg relative z-10"></div>
-                    </div>
-                    <span className="absolute -bottom-4 -left-2 text-xs text-green-600 font-medium">Tu</span>
-                  </div>
-                </div>
-                
-                {/* Search bar finta */}
-                <div className="relative z-10 flex items-center gap-2 bg-white rounded-full px-4 py-3 shadow-lg mt-4">
-                  <Search className="h-5 w-5 text-gray-400" />
-                  <span className="text-gray-500 text-sm">Cerca cliniche veterinarie vicino a te...</span>
-                  <Button size="sm" className="ml-auto bg-coral-500 hover:bg-coral-600 rounded-full">
-                    Cerca
-                  </Button>
-                </div>
-              </div>
-              
-              {/* Card risultato */}
-              <div className="absolute -bottom-4 -right-4 bg-white rounded-xl shadow-xl p-4 border w-64 z-20">
-                <div className="flex items-start gap-3">
-                  <div className="h-12 w-12 bg-coral-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Building2 className="h-6 w-6 text-coral-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Clinica VetMilano</h4>
-                    <p className="text-xs text-gray-500">Via Roma 123, Milano</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge className="bg-green-100 text-green-700 text-xs">Aperto</Badge>
-                      <span className="text-xs text-gray-500">• 0.3 km</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* Google Maps Interattiva */}
+            <HomepageMapSection />
           </div>
         </div>
       </section>
