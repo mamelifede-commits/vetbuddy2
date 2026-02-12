@@ -76,7 +76,6 @@ export async function GET(request) {
     noShow: { marked: 0, skipped: 0 },
     documentReminders: { sent: 0, skipped: 0 },
     weeklyReports: { sent: 0, skipped: 0 },
-    // New automations
     petBirthday: { sent: 0, errors: 0, skipped: 0 },
     reviewRequest: { sent: 0, errors: 0, skipped: 0 },
     inactiveClients: { sent: 0, errors: 0, skipped: 0 },
@@ -84,7 +83,18 @@ export async function GET(request) {
     annualCheckup: { sent: 0, errors: 0, skipped: 0 },
     appointmentConfirmation: { sent: 0, errors: 0, skipped: 0 },
     paymentReminder: { sent: 0, errors: 0, skipped: 0 },
-    seasonalAlerts: { sent: 0, skipped: 0 }
+    seasonalAlerts: { sent: 0, skipped: 0 },
+    // New automations results
+    sterilization: { sent: 0, errors: 0, skipped: 0 },
+    seniorPetCare: { sent: 0, errors: 0, skipped: 0 },
+    microchipCheck: { sent: 0, errors: 0, skipped: 0 },
+    welcomeNewPet: { sent: 0, errors: 0, skipped: 0 },
+    loyaltyProgram: { sent: 0, errors: 0, skipped: 0 },
+    referralProgram: { sent: 0, errors: 0, skipped: 0 },
+    holidayClosures: { sent: 0, skipped: 0 },
+    petCondolences: { sent: 0, errors: 0, skipped: 0 },
+    dailySummary: { sent: 0, errors: 0, skipped: 0 },
+    staffBirthday: { sent: 0, errors: 0, skipped: 0 }
   };
 
   const today = new Date();
