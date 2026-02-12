@@ -158,7 +158,7 @@ export default function AdminPage() {
 
   const openApproveDialog = (app) => {
     setAppToApprove(app);
-    setSelectedPlan('pilot'); // Default
+    setSelectedPlan('pro'); // Default
     setShowApproveDialog(true);
   };
 
