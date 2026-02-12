@@ -535,56 +535,48 @@ function LandingPage({ onLogin }) {
         )}
       </header>
 
-      {/* Hero - Messaggio chiaro per cliniche e proprietari */}
-      <section className="pt-12 pb-12 px-4 bg-gradient-to-br from-white via-coral-50/30 to-blue-50/30 relative overflow-hidden">
-        {/* Decorative blobs */}
-        <div className="absolute top-0 left-0 w-72 h-72 bg-coral-300/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute top-1/2 right-0 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl translate-x-1/2"></div>
-        <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-purple-300/20 rounded-full blur-3xl"></div>
+      {/* HERO - Snello e impattante */}
+      <section className="pt-10 pb-8 px-4 bg-gradient-to-br from-white via-coral-50/20 to-blue-50/20 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-coral-200/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-blue-200/20 rounded-full blur-3xl"></div>
         
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          {/* Badge Pilot */}
-          <div className="inline-flex items-center gap-2 bg-white/70 backdrop-blur-md text-amber-800 px-4 py-2 rounded-full mb-6 border border-amber-200/50 shadow-lg animate-fade-in-up">
-            <MapPin className="h-4 w-4" />
-            <span className="font-semibold">Pilot Milano — Accesso su invito</span>
-          </div>
-          
-          {/* Headline principale */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight animate-fade-in-up animate-delay-100">
-            La piattaforma per <span className="text-coral-500">cliniche veterinarie</span> e <span className="text-blue-500">proprietari di animali</span>
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+            Il gestionale veterinario che <span className="text-coral-500">lavora per te</span>
           </h1>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto animate-fade-in-up animate-delay-200">
-            Gestisci appuntamenti, documenti e comunicazione in un'unica piattaforma. Zero carta, zero caos.
+          <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+            44+ automazioni, videoconsulti, documenti cloud. Meno burocrazia, più tempo per i tuoi pazienti.
           </p>
           
-          {/* CTA Buttons - Glassmorphism */}
-          <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-6">
-            <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-coral-200/50 hover:bg-white/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group animate-fade-in-left animate-delay-300" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <div className="h-14 w-14 bg-gradient-to-br from-coral-400 to-coral-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition shadow-lg">
-                <Building2 className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Per Cliniche Veterinarie</h3>
-              <p className="text-sm text-gray-600 mb-3">Dashboard completa, inbox team, documenti, reportistica.</p>
-              <p className="text-xs text-amber-600 font-semibold mb-3">🎫 Pilot: 90 giorni gratuiti su invito</p>
-              <Button className="w-full bg-gradient-to-r from-coral-500 to-coral-600 hover:from-coral-600 hover:to-coral-700 text-white shadow-lg">
-                Richiedi Invito →
-              </Button>
-            </div>
-            <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-blue-200/50 hover:bg-white/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group animate-fade-in-right animate-delay-300" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <div className="h-14 w-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition shadow-lg">
-                <PawPrint className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Per Proprietari di Animali</h3>
-              <p className="text-sm text-gray-600 mb-3">Prenota visite, ricevi documenti, invita la tua clinica.</p>
-              <p className="text-xs text-blue-600 font-semibold mb-3">🆓 Gratis per sempre • Invita la tua clinica</p>
-              <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg">
-                Esplora la Demo →
-              </Button>
-            </div>
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <Button size="lg" className="bg-coral-500 hover:bg-coral-600 text-white h-12 px-8" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+              <Building2 className="h-5 w-5 mr-2" />Sono una Clinica
+            </Button>
+            <Button size="lg" variant="outline" className="h-12 px-8 border-2" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+              <PawPrint className="h-5 w-5 mr-2" />Sono un Proprietario
+            </Button>
           </div>
           
-          {/* Trust indicators */}
-          <p className="text-sm text-gray-400">Pilot attivo a Milano e provincia • Accesso prioritario per cliniche selezionate</p>
+          {/* Social Proof - Numeri chiave */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
+            <div className="bg-white/80 backdrop-blur rounded-xl p-3 shadow-sm border">
+              <div className="text-2xl font-bold text-purple-600">44+</div>
+              <p className="text-xs text-gray-500">Automazioni AI</p>
+            </div>
+            <div className="bg-white/80 backdrop-blur rounded-xl p-3 shadow-sm border">
+              <div className="text-2xl font-bold text-green-600">-80%</div>
+              <p className="text-xs text-gray-500">Telefonate</p>
+            </div>
+            <div className="bg-white/80 backdrop-blur rounded-xl p-3 shadow-sm border">
+              <div className="text-2xl font-bold text-blue-600">-60%</div>
+              <p className="text-xs text-gray-500">No-show</p>
+            </div>
+            <div className="bg-white/80 backdrop-blur rounded-xl p-3 shadow-sm border">
+              <div className="text-2xl font-bold text-coral-600">2h</div>
+              <p className="text-xs text-gray-500">Risparmiate/giorno</p>
+            </div>
+          </div>
         </div>
       </section>
 
