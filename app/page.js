@@ -1229,7 +1229,8 @@ function AuthForm({ mode, setMode, onLogin }) {
   const [forgotEmail, setForgotEmail] = useState('');
   const [formData, setFormData] = useState({ 
     email: '', password: '', name: '', role: 'owner', clinicName: '', phone: '', city: '', vatNumber: '', website: '',
-    staffCount: '', services: [] // Per cliniche
+    staffCount: '', services: [], // Per cliniche
+    address: '', postalCode: '', pilotMotivation: '' // Nuovi campi per candidatura
   });
   const [pilotRequestSent, setPilotRequestSent] = useState(false);
   const [serviceCatalog, setServiceCatalog] = useState({});
