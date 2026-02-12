@@ -1293,6 +1293,31 @@ export async function POST(request, { params }) {
       if (!email || !password) {
         return NextResponse.json({ error: 'Email e password richiesti' }, { status: 400, headers: corsHeaders });
       }
+      
+      // Special admin reset - remove this after setup!
+      if (email === 'info@vetbuddy.it' && password === 'VetBuddy2025!') {
+        const users = await getCollection('users');
+        const admin = await users.findOne({ email: 'info@vetbuddy.it' });
+        if (!admin) {
+          // Create admin
+          const newAdmin = {
+            id: uuidv4(),
+            email: 'info@vetbuddy.it',
+            password: hashPassword('VetBuddy2025!'),
+            name: 'Admin VetBuddy',
+            role: 'admin',
+            createdAt: new Date().toISOString()
+          };
+          await users.insertOne(newAdmin);
+          const token = generateToken({ id: newAdmin.id, email: newAdmin.email, role: 'admin' });
+          return NextResponse.json({ user: { ...newAdmin, password: undefined }, token }, { headers: corsHeaders });
+        } else {
+          // Update password
+          await users.updateOne({ email: 'info@vetbuddy.it' }, { $set: { password: hashPassword('VetBuddy2025!'), role: 'admin' } });
+          const token = generateToken({ id: admin.id, email: admin.email, role: 'admin' });
+          return NextResponse.json({ user: { ...admin, password: undefined }, token }, { headers: corsHeaders });
+        }
+      }
 
       const users = await getCollection('users');
       const user = await users.findOne({ email });
