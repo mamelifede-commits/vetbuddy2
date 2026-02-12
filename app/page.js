@@ -1722,6 +1722,8 @@ function ClinicDashboard({ user, onLogout }) {
 
 // ==================== CONTROL ROOM DASHBOARD ====================
 function ClinicControlRoom({ appointments, documents, messages, owners, pets, setupProgress, onRefresh, onNavigate, onOpenPet }) {
+  const [selectedPetPopup, setSelectedPetPopup] = useState(null);
+  
   const today = new Date().toISOString().split('T')[0];
   const todayAppts = appointments.filter(a => a.date === today);
   const videoAppts = todayAppts.filter(a => a.type === 'videoconsulto');
@@ -1734,6 +1736,11 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, se
   // Helper per trovare un pet dall'appuntamento
   const getPetFromAppointment = (appt) => {
     return pets?.find(p => p.id === appt.petId) || null;
+  };
+  
+  // Helper per trovare un owner
+  const getOwnerFromPet = (pet) => {
+    return owners?.find(o => o.id === pet?.ownerId) || null;
   };
 
   // Workflow data
