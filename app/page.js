@@ -9395,7 +9395,7 @@ function FindClinic({ user }) {
                   <SelectValue placeholder="Filtra per servizio..." />
                 </SelectTrigger>
                 <SelectContent className="max-h-80">
-                  <SelectItem value="">Tutti i servizi</SelectItem>
+                  <SelectItem value="all">Tutti i servizi</SelectItem>
                   {serviceCatalog.map((service) => (
                     <SelectItem key={service.id} value={service.id}>
                       <span className="flex items-center gap-2">
