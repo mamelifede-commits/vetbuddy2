@@ -3835,12 +3835,20 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner,
   );
 }
 
-function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet }) {
+function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet, initialOwner, onClearInitialOwner }) {
   const [showDialog, setShowDialog] = useState(false);
   const [selectedOwner, setSelectedOwner] = useState(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Apri automaticamente il proprietario se viene passato da un altro componente
+  useEffect(() => {
+    if (initialOwner) {
+      openOwnerDetails(initialOwner);
+      if (onClearInitialOwner) onClearInitialOwner();
+    }
+  }, [initialOwner]);
   
   const handleSubmit = async (e) => { e.preventDefault(); try { await api.post('owners', formData); setShowDialog(false); onRefresh(); } catch (error) { alert(error.message); } };
   
