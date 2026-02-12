@@ -5510,62 +5510,87 @@ function ClinicSettings({ user, onNavigate }) {
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Zap className="h-5 w-5 text-purple-500" />Automazioni
-              <Badge className="bg-purple-100 text-purple-700">12 Attive</Badge>
+              <Badge className={`${activeAutomationsCount === 12 ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'}`}>
+                {automationLoading ? '...' : `${activeAutomationsCount} Attive`}
+              </Badge>
             </CardTitle>
-            <CardDescription>Email automatiche, notifiche intelligenti e gestione smart</CardDescription>
+            <CardDescription>Attiva/disattiva le automazioni per la tua clinica</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {/* Sezione Email Automatiche */}
-            <div className="mb-4">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <Mail className="h-4 w-4" /> Email Automatiche
-              </h4>
-              <div className="grid md:grid-cols-2 gap-2">
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Bell className="h-4 w-4 text-blue-500" />
-                    <div>
-                      <p className="text-sm font-medium">Promemoria Appuntamenti</p>
-                      <p className="text-xs text-gray-500">24h prima</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    <div>
-                      <p className="text-sm font-medium">Conferma Prenotazione</p>
-                      <p className="text-xs text-gray-500">Immediata</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Syringe className="h-4 w-4 text-purple-500" />
-                    <div>
-                      <p className="text-sm font-medium">Richiamo Vaccini</p>
-                      <p className="text-xs text-gray-500">30 giorni prima</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-amber-500" />
-                    <div>
-                      <p className="text-sm font-medium">Follow-up Post Visita</p>
-                      <p className="text-xs text-gray-500">48h dopo</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
-                </div>
+            {automationLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <RefreshCw className="h-6 w-6 animate-spin text-purple-500" />
+                <span className="ml-2 text-gray-500">Caricamento impostazioni...</span>
               </div>
-            </div>
+            ) : (
+              <>
+                {/* Sezione Email Automatiche */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <Mail className="h-4 w-4" /> Email Automatiche
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Bell className="h-4 w-4 text-blue-500" />
+                        <div>
+                          <p className="text-sm font-medium">Promemoria Appuntamenti</p>
+                          <p className="text-xs text-gray-500">24h prima</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.appointmentReminders} 
+                        onCheckedChange={() => toggleAutomation('appointmentReminders')}
+                        disabled={automationSaving === 'appointmentReminders'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <div>
+                          <p className="text-sm font-medium">Conferma Prenotazione</p>
+                          <p className="text-xs text-gray-500">Immediata</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.bookingConfirmation} 
+                        onCheckedChange={() => toggleAutomation('bookingConfirmation')}
+                        disabled={automationSaving === 'bookingConfirmation'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Syringe className="h-4 w-4 text-purple-500" />
+                        <div>
+                          <p className="text-sm font-medium">Richiamo Vaccini</p>
+                          <p className="text-xs text-gray-500">30 giorni prima</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.vaccineRecalls} 
+                        onCheckedChange={() => toggleAutomation('vaccineRecalls')}
+                        disabled={automationSaving === 'vaccineRecalls'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Heart className="h-4 w-4 text-amber-500" />
+                        <div>
+                          <p className="text-sm font-medium">Follow-up Post Visita</p>
+                          <p className="text-xs text-gray-500">48h dopo</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.postVisitFollowup} 
+                        onCheckedChange={() => toggleAutomation('postVisitFollowup')}
+                        disabled={automationSaving === 'postVisitFollowup'}
+                      />
+                    </div>
+                  </div>
+                </div>
 
             {/* Sezione Gestione Smart */}
             <div className="mb-4">
