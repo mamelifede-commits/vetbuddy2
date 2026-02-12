@@ -3692,11 +3692,174 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [] }) {
   );
 }
 
-function ClinicOwners({ owners, onRefresh, onNavigate }) {
+function ClinicOwners({ owners, onRefresh, onNavigate, pets = [] }) {
   const [showDialog, setShowDialog] = useState(false);
+  const [selectedOwner, setSelectedOwner] = useState(null);
+  const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  
   const handleSubmit = async (e) => { e.preventDefault(); try { await api.post('owners', formData); setShowDialog(false); onRefresh(); } catch (error) { alert(error.message); } };
-  return <div>{onNavigate && <BackToDashboard onNavigate={onNavigate} />}<div className="flex justify-between items-center mb-6"><div><h2 className="text-2xl font-bold">Proprietari</h2><p className="text-gray-500 text-sm">Clienti della clinica</p></div><Dialog open={showDialog} onOpenChange={setShowDialog}><DialogTrigger asChild><Button className="bg-coral-500 hover:bg-coral-600"><Plus className="h-4 w-4 mr-2" />Aggiungi</Button></DialogTrigger><DialogContent><DialogHeader><DialogTitle>Nuovo proprietario</DialogTitle></DialogHeader><form onSubmit={handleSubmit} className="space-y-4"><div><Label>Nome</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required /></div><div><Label>Email</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required /></div><div><Label>Telefono</Label><Input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} /></div><Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">Aggiungi</Button></form></DialogContent></Dialog></div><div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">{owners.length === 0 ? <Card className="col-span-full"><CardContent className="p-12 text-center text-gray-500"><User className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p>Nessun proprietario</p></CardContent></Card> : owners.map((owner) => <Card key={owner.id}><CardContent className="p-4"><div className="flex items-center gap-3"><div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center"><User className="h-6 w-6 text-blue-600" /></div><div><p className="font-medium">{owner.name}</p><p className="text-sm text-gray-500">{owner.email}</p></div></div>{owner.phone && <p className="text-sm text-gray-500 mt-3 flex items-center gap-2"><Phone className="h-4 w-4" />{owner.phone}</p>}</CardContent></Card>)}</div></div>;
+  
+  const openOwnerDetails = (owner) => {
+    setSelectedOwner(owner);
+    setShowDetailDialog(true);
+  };
+  
+  const getOwnerPets = (ownerId) => {
+    return pets.filter(p => p.ownerId === ownerId);
+  };
+  
+  return (
+    <div>
+      {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-bold">Proprietari</h2>
+          <p className="text-gray-500 text-sm">Clienti della clinica - clicca per vedere i dettagli</p>
+        </div>
+        <Dialog open={showDialog} onOpenChange={setShowDialog}>
+          <DialogTrigger asChild><Button className="bg-coral-500 hover:bg-coral-600"><Plus className="h-4 w-4 mr-2" />Aggiungi</Button></DialogTrigger>
+          <DialogContent>
+            <DialogHeader><DialogTitle>Nuovo proprietario</DialogTitle></DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div><Label>Nome</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required /></div>
+              <div><Label>Email</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required /></div>
+              <div><Label>Telefono</Label><Input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} /></div>
+              <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">Aggiungi</Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+      
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {owners.length === 0 ? (
+          <Card className="col-span-full"><CardContent className="p-12 text-center text-gray-500"><User className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p>Nessun proprietario</p></CardContent></Card>
+        ) : owners.map((owner) => {
+          const ownerPets = getOwnerPets(owner.id);
+          return (
+            <Card key={owner.id} className="cursor-pointer hover:shadow-lg hover:border-blue-300 transition-all group" onClick={() => openOwnerDetails(owner)}>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                    <User className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium">{owner.name}</p>
+                    <p className="text-sm text-gray-500">{owner.email}</p>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
+                </div>
+                {owner.phone && <p className="text-sm text-gray-500 mt-3 flex items-center gap-2"><Phone className="h-4 w-4" />{owner.phone}</p>}
+                {ownerPets.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-3">
+                    {ownerPets.slice(0, 3).map(pet => (
+                      <Badge key={pet.id} variant="outline" className="text-xs">
+                        {pet.species === 'dog' ? '🐕' : pet.species === 'cat' ? '🐱' : '🐾'} {pet.name}
+                      </Badge>
+                    ))}
+                    {ownerPets.length > 3 && <Badge variant="outline" className="text-xs">+{ownerPets.length - 3}</Badge>}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+      
+      {/* Detail Modal */}
+      <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <User className="h-5 w-5 text-blue-600" />
+              </div>
+              {selectedOwner?.name || 'Dettagli Proprietario'}
+            </DialogTitle>
+            <DialogDescription>Scheda cliente</DialogDescription>
+          </DialogHeader>
+          
+          {selectedOwner && (
+            <div className="space-y-4 mt-4">
+              {/* Contatti */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <Mail className="h-5 w-5 text-gray-400" />
+                  <div>
+                    <p className="text-xs text-gray-500">Email</p>
+                    <p className="font-medium">{selectedOwner.email}</p>
+                  </div>
+                </div>
+                {selectedOwner.phone && (
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <Phone className="h-5 w-5 text-gray-400" />
+                    <div>
+                      <p className="text-xs text-gray-500">Telefono</p>
+                      <p className="font-medium">{selectedOwner.phone}</p>
+                    </div>
+                  </div>
+                )}
+                {selectedOwner.address && (
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <MapPin className="h-5 w-5 text-gray-400" />
+                    <div>
+                      <p className="text-xs text-gray-500">Indirizzo</p>
+                      <p className="font-medium">{selectedOwner.address}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Animali del proprietario */}
+              {(() => {
+                const ownerPets = getOwnerPets(selectedOwner.id);
+                if (ownerPets.length === 0) return null;
+                return (
+                  <div>
+                    <p className="text-sm font-medium mb-3 flex items-center gap-2">
+                      <PawPrint className="h-4 w-4" /> Animali ({ownerPets.length})
+                    </p>
+                    <div className="space-y-2">
+                      {ownerPets.map(pet => (
+                        <div key={pet.id} className="flex items-center gap-3 p-3 bg-coral-50 rounded-lg">
+                          <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
+                            {pet.species === 'dog' ? <Dog className="h-5 w-5 text-coral-600" /> : pet.species === 'cat' ? <Cat className="h-5 w-5 text-coral-600" /> : <PawPrint className="h-5 w-5 text-coral-600" />}
+                          </div>
+                          <div>
+                            <p className="font-medium">{pet.name}</p>
+                            <p className="text-xs text-gray-500">{pet.breed || (pet.species === 'dog' ? 'Cane' : pet.species === 'cat' ? 'Gatto' : 'Altro')}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+              
+              {/* Data registrazione */}
+              {selectedOwner.createdAt && (
+                <p className="text-xs text-gray-400 text-center pt-2 border-t">
+                  Cliente dal {new Date(selectedOwner.createdAt).toLocaleDateString('it-IT')}
+                </p>
+              )}
+              
+              {/* Quick Actions */}
+              <div className="flex gap-2 pt-2">
+                <Button variant="outline" className="flex-1" onClick={() => window.location.href = `mailto:${selectedOwner.email}`}>
+                  <Mail className="h-4 w-4 mr-2" /> Email
+                </Button>
+                {selectedOwner.phone && (
+                  <Button variant="outline" className="flex-1" onClick={() => window.location.href = `tel:${selectedOwner.phone}`}>
+                    <Phone className="h-4 w-4 mr-2" /> Chiama
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }
 
 function ClinicStaff({ staff, onRefresh, onNavigate }) {
