@@ -328,7 +328,6 @@ function FeatureCarousel() {
 }
 
 // ==================== HOMEPAGE MAP SECTION ====================
-const GOOGLE_MAPS_LIBRARIES = ['places'];
 
 function HomepageMapSection() {
   const [selectedClinic, setSelectedClinic] = useState(null);
