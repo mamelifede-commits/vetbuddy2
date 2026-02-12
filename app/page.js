@@ -3472,11 +3472,224 @@ function ClinicDocuments({ documents, owners, pets, onRefresh, onNavigate }) {
 }
 
 // Simple components for other sections
-function ClinicPatients({ pets, onRefresh, onNavigate }) {
+function ClinicPatients({ pets, onRefresh, onNavigate, owners = [] }) {
   const [showDialog, setShowDialog] = useState(false);
+  const [selectedPet, setSelectedPet] = useState(null);
+  const [showDetailDialog, setShowDetailDialog] = useState(false);
+  const [petDetails, setPetDetails] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
   const [formData, setFormData] = useState({ name: '', species: 'dog', breed: '' });
+  
   const handleSubmit = async (e) => { e.preventDefault(); try { await api.post('pets', formData); setShowDialog(false); onRefresh(); } catch (error) { alert(error.message); } };
-  return <div>{onNavigate && <BackToDashboard onNavigate={onNavigate} />}<div className="flex justify-between items-center mb-6"><div><h2 className="text-2xl font-bold">Pazienti</h2><p className="text-gray-500 text-sm">Animali registrati</p></div><Dialog open={showDialog} onOpenChange={setShowDialog}><DialogTrigger asChild><Button className="bg-coral-500 hover:bg-coral-600"><Plus className="h-4 w-4 mr-2" />Nuovo</Button></DialogTrigger><DialogContent><DialogHeader><DialogTitle>Nuovo paziente</DialogTitle></DialogHeader><form onSubmit={handleSubmit} className="space-y-4"><div><Label>Nome</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required /></div><div><Label>Specie</Label><Select value={formData.species} onValueChange={(v) => setFormData({...formData, species: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="dog">Cane</SelectItem><SelectItem value="cat">Gatto</SelectItem><SelectItem value="other">Altro</SelectItem></SelectContent></Select></div><div><Label>Razza</Label><Input value={formData.breed} onChange={(e) => setFormData({...formData, breed: e.target.value})} /></div><Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">Aggiungi</Button></form></DialogContent></Dialog></div><div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">{pets.length === 0 ? <Card className="col-span-full"><CardContent className="p-12 text-center text-gray-500"><PawPrint className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p>Nessun paziente</p></CardContent></Card> : pets.map((pet) => <Card key={pet.id}><CardContent className="p-4"><div className="flex items-center gap-3"><div className="h-12 w-12 bg-coral-100 rounded-full flex items-center justify-center">{pet.species === 'dog' ? <Dog className="h-6 w-6 text-coral-600" /> : pet.species === 'cat' ? <Cat className="h-6 w-6 text-coral-600" /> : <PawPrint className="h-6 w-6 text-coral-600" />}</div><div><p className="font-medium">{pet.name}</p><p className="text-sm text-gray-500">{pet.breed || pet.species}</p></div></div></CardContent></Card>)}</div></div>;
+  
+  const openPetDetails = async (pet) => {
+    setSelectedPet(pet);
+    setShowDetailDialog(true);
+    setLoadingDetails(true);
+    try {
+      const details = await api.get(`pets/${pet.id}`);
+      setPetDetails(details);
+    } catch (error) {
+      console.error('Error loading pet details:', error);
+      setPetDetails(pet);
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+  
+  const getOwnerName = (ownerId) => {
+    const owner = owners.find(o => o.id === ownerId);
+    return owner?.name || 'Non assegnato';
+  };
+  
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return null;
+    const birth = new Date(birthDate);
+    const now = new Date();
+    const years = now.getFullYear() - birth.getFullYear();
+    const months = now.getMonth() - birth.getMonth();
+    if (years < 1) return `${months + (months < 0 ? 12 : 0)} mesi`;
+    return `${years} ann${years === 1 ? 'o' : 'i'}`;
+  };
+  
+  return (
+    <div>
+      {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-bold">Pazienti</h2>
+          <p className="text-gray-500 text-sm">Animali registrati - clicca per vedere i dettagli</p>
+        </div>
+        <Dialog open={showDialog} onOpenChange={setShowDialog}>
+          <DialogTrigger asChild><Button className="bg-coral-500 hover:bg-coral-600"><Plus className="h-4 w-4 mr-2" />Nuovo</Button></DialogTrigger>
+          <DialogContent>
+            <DialogHeader><DialogTitle>Nuovo paziente</DialogTitle></DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div><Label>Nome</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required /></div>
+              <div><Label>Specie</Label><Select value={formData.species} onValueChange={(v) => setFormData({...formData, species: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="dog">Cane</SelectItem><SelectItem value="cat">Gatto</SelectItem><SelectItem value="other">Altro</SelectItem></SelectContent></Select></div>
+              <div><Label>Razza</Label><Input value={formData.breed} onChange={(e) => setFormData({...formData, breed: e.target.value})} /></div>
+              <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">Aggiungi</Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+      
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {pets.length === 0 ? (
+          <Card className="col-span-full"><CardContent className="p-12 text-center text-gray-500"><PawPrint className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p>Nessun paziente</p></CardContent></Card>
+        ) : pets.map((pet) => (
+          <Card key={pet.id} className="cursor-pointer hover:shadow-lg hover:border-coral-300 transition-all group" onClick={() => openPetDetails(pet)}>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 bg-coral-100 rounded-full flex items-center justify-center group-hover:bg-coral-200 transition-colors">
+                  {pet.species === 'dog' ? <Dog className="h-6 w-6 text-coral-600" /> : pet.species === 'cat' ? <Cat className="h-6 w-6 text-coral-600" /> : <PawPrint className="h-6 w-6 text-coral-600" />}
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium">{pet.name}</p>
+                  <p className="text-sm text-gray-500">{pet.breed || (pet.species === 'dog' ? 'Cane' : pet.species === 'cat' ? 'Gatto' : 'Altro')}</p>
+                  {pet.ownerId && <p className="text-xs text-gray-400 mt-1">👤 {getOwnerName(pet.ownerId)}</p>}
+                </div>
+                <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-coral-500 transition-colors" />
+              </div>
+              <div className="flex flex-wrap gap-1 mt-3">
+                {pet.sterilized && <Badge variant="outline" className="text-xs text-green-600 border-green-300">Sterilizzato</Badge>}
+                {pet.microchip && <Badge variant="outline" className="text-xs text-blue-600 border-blue-300">Microchip</Badge>}
+                {pet.allergies && <Badge variant="outline" className="text-xs text-red-600 border-red-300">Allergie</Badge>}
+                {pet.insurance && <Badge variant="outline" className="text-xs text-purple-600 border-purple-300">Assicurato</Badge>}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      
+      {/* Detail Modal */}
+      <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
+                {selectedPet?.species === 'dog' ? <Dog className="h-5 w-5 text-coral-600" /> : selectedPet?.species === 'cat' ? <Cat className="h-5 w-5 text-coral-600" /> : <PawPrint className="h-5 w-5 text-coral-600" />}
+              </div>
+              {selectedPet?.name || 'Dettagli Paziente'}
+            </DialogTitle>
+            <DialogDescription>{selectedPet?.breed || 'Scheda clinica completa'}</DialogDescription>
+          </DialogHeader>
+          
+          {loadingDetails ? (
+            <div className="flex items-center justify-center py-12"><RefreshCw className="h-8 w-8 animate-spin text-coral-500" /></div>
+          ) : petDetails ? (
+            <div className="space-y-6 mt-4">
+              {/* Info Base */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm text-gray-500">Specie</p>
+                  <p className="font-medium">{petDetails.species === 'dog' ? 'Cane' : petDetails.species === 'cat' ? 'Gatto' : 'Altro'}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm text-gray-500">Razza</p>
+                  <p className="font-medium">{petDetails.breed || 'Non specificata'}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm text-gray-500">Età</p>
+                  <p className="font-medium">{calculateAge(petDetails.birthDate) || 'Non specificata'}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm text-gray-500">Peso</p>
+                  <p className="font-medium">{petDetails.weight ? `${petDetails.weight} kg` : 'Non registrato'}</p>
+                </div>
+              </div>
+              
+              {/* Proprietario */}
+              {petDetails.ownerId && (
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <p className="text-sm text-blue-600 font-medium mb-2">👤 Proprietario</p>
+                  <p className="font-medium">{getOwnerName(petDetails.ownerId)}</p>
+                </div>
+              )}
+              
+              {/* Microchip */}
+              {petDetails.microchip && (
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm text-gray-500">Microchip</p>
+                  <p className="font-mono font-medium">{petDetails.microchip}</p>
+                </div>
+              )}
+              
+              {/* Assicurazione */}
+              {petDetails.insurance && (
+                <div className="bg-purple-50 p-4 rounded-lg">
+                  <p className="text-sm text-purple-600 font-medium mb-2">🛡️ Assicurazione</p>
+                  <p className="font-medium">{petDetails.insuranceCompany || 'Compagnia non specificata'}</p>
+                  {petDetails.insurancePolicy && <p className="text-sm text-gray-500">Polizza: {petDetails.insurancePolicy}</p>}
+                </div>
+              )}
+              
+              {/* Condizioni Mediche */}
+              {(petDetails.chronicDiseases || petDetails.currentConditions || petDetails.allergies) && (
+                <div className="bg-red-50 p-4 rounded-lg">
+                  <p className="text-sm text-red-600 font-medium mb-2">⚠️ Condizioni Mediche</p>
+                  {petDetails.chronicDiseases && <p className="text-sm mb-2"><strong>Patologie croniche:</strong> {petDetails.chronicDiseases}</p>}
+                  {petDetails.currentConditions && <p className="text-sm mb-2"><strong>Condizioni attuali:</strong> {petDetails.currentConditions}</p>}
+                  {petDetails.allergies && <p className="text-sm"><strong>Allergie:</strong> {petDetails.allergies}</p>}
+                </div>
+              )}
+              
+              {/* Farmaci */}
+              {petDetails.medications && (
+                <div className="bg-amber-50 p-4 rounded-lg">
+                  <p className="text-sm text-amber-600 font-medium mb-2">💊 Farmaci in corso</p>
+                  <p className="text-sm">{petDetails.medications}</p>
+                </div>
+              )}
+              
+              {/* Storico Pesi */}
+              {petDetails.weightHistory && petDetails.weightHistory.length > 0 && (
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <p className="text-sm text-green-600 font-medium mb-2">📊 Storico Pesi</p>
+                  <div className="space-y-1">
+                    {petDetails.weightHistory.slice(-5).reverse().map((w, i) => (
+                      <div key={i} className="flex justify-between text-sm">
+                        <span className="text-gray-600">{new Date(w.date).toLocaleDateString('it-IT')}</span>
+                        <span className="font-medium">{w.weight} kg</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Appuntamenti recenti */}
+              {petDetails.appointments && petDetails.appointments.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium mb-2">📅 Ultimi appuntamenti</p>
+                  <div className="space-y-2">
+                    {petDetails.appointments.slice(0, 5).map((apt, i) => (
+                      <div key={i} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="font-medium text-sm">{apt.type || apt.reason || 'Visita'}</p>
+                          <p className="text-xs text-gray-500">{new Date(apt.date).toLocaleDateString('it-IT')}</p>
+                        </div>
+                        <Badge variant={apt.status === 'completed' ? 'default' : 'outline'} className="text-xs">
+                          {apt.status === 'completed' ? 'Completato' : apt.status === 'cancelled' ? 'Annullato' : 'Programmato'}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Note */}
+              {petDetails.notes && (
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm text-gray-500 mb-1">📝 Note comportamentali</p>
+                  <p className="text-sm">{petDetails.notes}</p>
+                </div>
+              )}
+            </div>
+          ) : null}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }
 
 function ClinicOwners({ owners, onRefresh, onNavigate }) {
