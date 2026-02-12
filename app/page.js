@@ -8727,8 +8727,9 @@ function PetProfile({ petId, onBack, appointments, documents }) {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <Button className="bg-blue-500 hover:bg-blue-600"><Calendar className="h-4 w-4 mr-2" />Prenota visita</Button>
-                <Button variant="outline"><Upload className="h-4 w-4 mr-2" />Carica documento</Button>
+                <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => setShowBookingDialog(true)}><Calendar className="h-4 w-4 mr-2" />Prenota visita</Button>
+                <Button variant="outline" onClick={() => setShowUploadDialog(true)}><Upload className="h-4 w-4 mr-2" />Carica documento</Button>
+                <Button variant="outline" onClick={() => setShowEditDialog(true)}><Edit className="h-4 w-4 mr-2" />Modifica dati</Button>
               </div>
             </div>
           </CardContent>
