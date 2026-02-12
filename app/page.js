@@ -7354,20 +7354,28 @@ function OwnerDashboard({ user, onLogout }) {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[73px] bg-white z-40 p-4 overflow-auto">
-          <div className="mb-4"><RoleBadge role="owner" /></div>
-          <Badge variant="outline" className="mb-6 justify-center text-amber-600 border-amber-300 bg-amber-50 w-full"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
-          <nav className="space-y-1">
-            <NavItem icon={Calendar} label="Appuntamenti" value="appointments" />
-            <NavItem icon={FileText} label="Documenti" value="documents" badge={documents.length} />
-            <NavItem icon={MessageCircle} label="Messaggi" value="messages" />
-            <NavItem icon={PawPrint} label="I miei animali" value="pets" />
-            <div className="border-t my-3"></div>
-            <NavItem icon={Search} label="Trova clinica" value="findClinic" />
-            <NavItem icon={Mail} label="Invita la tua clinica" value="inviteClinic" />
-          </nav>
-          <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
-        </div>
+        <>
+          {/* Dark backdrop */}
+          <div 
+            className="md:hidden fixed inset-0 bg-black/50 z-[55]" 
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          {/* Menu panel */}
+          <div className="md:hidden fixed left-0 right-0 top-[57px] bottom-0 bg-white z-[60] p-4 overflow-y-auto shadow-xl animate-in slide-in-from-top duration-200">
+            <div className="mb-4"><RoleBadge role="owner" /></div>
+            <Badge variant="outline" className="mb-6 justify-center text-amber-600 border-amber-300 bg-amber-50 w-full"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
+            <nav className="space-y-1">
+              <NavItem icon={Calendar} label="Appuntamenti" value="appointments" />
+              <NavItem icon={FileText} label="Documenti" value="documents" badge={documents.length} />
+              <NavItem icon={MessageCircle} label="Messaggi" value="messages" />
+              <NavItem icon={PawPrint} label="I miei animali" value="pets" />
+              <div className="border-t my-3"></div>
+              <NavItem icon={Search} label="Trova clinica" value="findClinic" />
+              <NavItem icon={Mail} label="Invita la tua clinica" value="inviteClinic" />
+            </nav>
+            <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
+          </div>
+        </>
       )}
 
       {/* Desktop Sidebar */}
