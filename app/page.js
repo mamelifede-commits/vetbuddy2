@@ -3873,10 +3873,28 @@ function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet }) {
         </Dialog>
       </div>
       
+      {/* Barra di ricerca */}
+      <div className="mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <Input 
+            placeholder="Cerca per nome, email, telefono o animale..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        {searchQuery && (
+          <p className="text-sm text-gray-500 mt-2">
+            {filteredOwners.length} risultat{filteredOwners.length === 1 ? 'o' : 'i'} per "{searchQuery}"
+          </p>
+        )}
+      </div>
+      
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {owners.length === 0 ? (
-          <Card className="col-span-full"><CardContent className="p-12 text-center text-gray-500"><User className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p>Nessun proprietario</p></CardContent></Card>
-        ) : owners.map((owner) => {
+        {filteredOwners.length === 0 ? (
+          <Card className="col-span-full"><CardContent className="p-12 text-center text-gray-500"><User className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p>{searchQuery ? 'Nessun risultato trovato' : 'Nessun proprietario'}</p></CardContent></Card>
+        ) : filteredOwners.map((owner) => {
           const ownerPets = getOwnerPets(owner.id);
           return (
             <Card key={owner.id} className="cursor-pointer hover:shadow-lg hover:border-blue-300 transition-all group" onClick={() => openOwnerDetails(owner)}>
