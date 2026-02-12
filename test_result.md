@@ -392,6 +392,8 @@ test_plan:
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "main"
+    message: "UPDATES MADE: 1) Enhanced Google Maps component in FindClinic section - replaced iframe with interactive @react-google-maps/api component with custom VetBuddy markers, user location marker, info windows, and modern styling. 2) Verified all 23+ automations in /api/cron/daily are already personalized with owner.name, pet.name, clinic.clinicName. 3) Verified favicon is working correctly (/icon.svg). 4) Demo accounts verified working: proprietario.demo@vetbuddy.it (password: demo123), demo@vetbuddy.it (password: DemoVet2025!). Please test the enhanced map functionality and overall button functionality."
   - agent: "testing"
     message: "Comprehensive backend testing completed successfully. All 10 backend tasks are working correctly. VetBuddy API is fully functional with complete CRUD operations for all entities (users, appointments, documents, staff, pets). Authentication system with JWT tokens working. Role-based access control implemented. Email functionality working in MOCK mode. Database integration with MongoDB working perfectly. All endpoints tested with realistic data and proper error handling verified. Ready for frontend integration or deployment."
   - agent: "testing"
