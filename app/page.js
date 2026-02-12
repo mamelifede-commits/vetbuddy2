@@ -3363,7 +3363,7 @@ function ClinicDocuments({ documents, owners, pets, onRefresh, onNavigate }) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-3 bg-gray-50 rounded-lg">
                   <p className="text-xs text-gray-500 mb-1">Tipo</p>
-                  <Badge className={docTypes[selectedDoc.type]?.color || 'bg-gray-100'}>
+                  <Badge className={docTypes[selectedDoc.type]?.color || 'bg-gray-100 text-gray-700'}>
                     {docTypes[selectedDoc.type]?.label || 'Altro'}
                   </Badge>
                 </div>
