@@ -310,7 +310,7 @@ def main():
     """Run Pet Management PUT API tests"""
     
     # Configuration from review request
-    BASE_URL = "https://vetbuddy-dashboard.preview.emergentagent.com"
+    BASE_URL = "https://mobile-dashboard-22.preview.emergentagent.com"
     OWNER_EMAIL = "proprietario.demo@vetbuddy.it"  
     OWNER_PASSWORD = "demo123"
     CLINIC_EMAIL = "demo@vetbuddy.it"
