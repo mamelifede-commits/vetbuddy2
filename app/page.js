@@ -4165,6 +4165,7 @@ function ClinicServices({ onNavigate, user }) {
   const [showAddCustom, setShowAddCustom] = useState(false);
   const [customForm, setCustomForm] = useState({ name: '', description: '', price: '' });
   const [editingPrice, setEditingPrice] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     loadServiceCatalog();
