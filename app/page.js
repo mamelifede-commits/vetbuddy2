@@ -4762,6 +4762,173 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
   );
 }
 
+
+// ==================== SUBSCRIPTION PLANS ====================
+function SubscriptionPlans({ user }) {
+  const [loading, setLoading] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState(user?.subscriptionPlan || 'pilot');
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+  // Controlla se c'è un session_id nell'URL (ritorno da Stripe)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    const paymentStatus = urlParams.get('payment');
+    
+    if (sessionId && paymentStatus === 'success') {
+      pollPaymentStatus(sessionId);
+    }
+  }, []);
+
+  const pollPaymentStatus = async (sessionId, attempts = 0) => {
+    const maxAttempts = 5;
+    if (attempts >= maxAttempts) return;
+
+    try {
+      const res = await api.get(`payments/status/${sessionId}`);
+      if (res.paymentStatus === 'paid') {
+        setPaymentSuccess(true);
+        setCurrentPlan(res.metadata?.planId || 'pro');
+        // Rimuovi i parametri dall'URL
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (res.status !== 'expired') {
+        setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), 2000);
+      }
+    } catch (error) {
+      console.error('Error checking payment:', error);
+    }
+  };
+
+  const handleSubscribe = async (planId) => {
+    if (planId === 'starter' || planId === 'pilot') return; // Piani gratuiti
+    
+    setLoading(true);
+    try {
+      const originUrl = window.location.origin;
+      const res = await api.post('payments/checkout', {
+        planId,
+        clinicId: user?.id,
+        originUrl
+      });
+      
+      if (res.url) {
+        window.location.href = res.url; // Redirect a Stripe Checkout
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Errore durante la creazione del pagamento');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const isPilotActive = currentPlan === 'pilot' || currentPlan === 'pro';
+
+  return (
+    <div className="space-y-4">
+      {paymentSuccess && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
+          <CheckCircle className="h-5 w-5 text-green-500" />
+          <div>
+            <p className="font-medium text-green-800">Pagamento completato!</p>
+            <p className="text-sm text-green-600">Il tuo abbonamento è ora attivo.</p>
+          </div>
+        </div>
+      )}
+
+      <div className="grid md:grid-cols-3 gap-4">
+        {/* Starter */}
+        <div className="border rounded-lg p-4 bg-white">
+          <h3 className="font-semibold">Starter</h3>
+          <p className="text-2xl font-bold text-gray-400 mt-2">Gratis</p>
+          <p className="text-xs text-gray-500">Funzionalità base</p>
+          <ul className="text-sm text-gray-600 mt-3 space-y-1">
+            <li>• 1 sede, 1 utente</li>
+            <li>• 30 richieste/mese</li>
+          </ul>
+          <Badge variant="outline" className="w-full justify-center mt-3 text-amber-700 border-amber-300">Solo con Pilot</Badge>
+          <Button 
+            variant="outline" 
+            className="w-full mt-2" 
+            disabled={currentPlan === 'starter'}
+          >
+            {currentPlan === 'starter' ? 'Piano attuale' : 'Downgrade'}
+          </Button>
+        </div>
+        
+        {/* Pro - Pilot */}
+        <div className={`border-2 rounded-lg p-4 bg-white relative ${isPilotActive ? 'border-amber-500' : 'border-coral-500'}`}>
+          {isPilotActive && <Badge className="absolute -top-2 right-2 bg-amber-500">PILOT ATTIVO</Badge>}
+          <h3 className="font-semibold">Pro</h3>
+          <div className="mt-2">
+            {isPilotActive ? (
+              <>
+                <span className="text-2xl font-bold text-coral-500">€0</span>
+                <span className="text-lg text-gray-400 line-through ml-2">€99/mese</span>
+              </>
+            ) : (
+              <span className="text-2xl font-bold text-coral-500">€99/mese</span>
+            )}
+            <span className="text-xs text-gray-400 ml-1">+IVA</span>
+          </div>
+          {isPilotActive && <p className="text-xs text-amber-600 font-semibold">6 mesi gratuiti nel Pilot</p>}
+          <ul className="text-sm text-gray-600 mt-3 space-y-1">
+            <li>• Fino a 10 staff</li>
+            <li>• Team Inbox + ticket</li>
+            <li>• Documenti + email auto</li>
+            <li>• Google Calendar sync</li>
+            <li>• Report e analytics</li>
+          </ul>
+          {isPilotActive ? (
+            <>
+              <Badge variant="outline" className="w-full justify-center mt-3 text-amber-700 border-amber-300">Solo con Pilot</Badge>
+              <Button className="w-full mt-2 bg-amber-500 hover:bg-amber-600" disabled>
+                ✓ Attivo nel Pilot
+              </Button>
+            </>
+          ) : (
+            <Button 
+              className="w-full mt-3 bg-coral-500 hover:bg-coral-600" 
+              onClick={() => handleSubscribe('pro')}
+              disabled={loading}
+            >
+              {loading ? <><RefreshCw className="h-4 w-4 mr-2 animate-spin" />Caricamento...</> : <>Abbonati a €99/mese</>}
+            </Button>
+          )}
+        </div>
+        
+        {/* Enterprise */}
+        <div className="border rounded-lg p-4 bg-white">
+          <h3 className="font-semibold">Enterprise</h3>
+          <div className="mt-2">
+            <span className="text-2xl font-bold text-coral-500">€199/mese</span>
+            <span className="text-xs text-gray-400 ml-1">+IVA</span>
+          </div>
+          <p className="text-xs text-gray-500">Gruppi e catene</p>
+          <ul className="text-sm text-gray-600 mt-3 space-y-1">
+            <li>• Multi-sede illimitate</li>
+            <li>• Staff illimitato</li>
+            <li>• API dedicata</li>
+            <li>• SLA garantito</li>
+          </ul>
+          <Button 
+            className="w-full mt-3 bg-gray-800 hover:bg-gray-900" 
+            onClick={() => handleSubscribe('enterprise')}
+            disabled={loading || currentPlan === 'enterprise'}
+          >
+            {currentPlan === 'enterprise' ? '✓ Attivo' : loading ? 'Caricamento...' : 'Abbonati a €199/mese'}
+          </Button>
+        </div>
+      </div>
+
+      <p className="text-xs text-gray-500 text-center">
+        Prezzi IVA esclusa (22%). Pagamento sicuro tramite Stripe. Cancella quando vuoi.
+      </p>
+    </div>
+  );
+}
+
+
 function ClinicSettings({ user, onNavigate }) {
   const [googleCalendarStatus, setGoogleCalendarStatus] = useState({ connected: false, loading: true });
   const [stripeSettings, setStripeSettings] = useState({ stripePublishableKey: '', stripeSecretKey: '', stripeConfigured: false });
