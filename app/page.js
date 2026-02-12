@@ -8322,11 +8322,15 @@ function PetProfile({ petId, onBack, appointments, documents }) {
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="p-3 bg-red-50 rounded-lg">
                     <p className="text-sm font-medium text-red-800">Allergie</p>
-                    <p className="text-sm text-red-600 mt-1">{pet.allergies || 'Nessuna nota'}</p>
+                    <p className="text-sm text-red-600 mt-1">{Array.isArray(pet.allergies) ? pet.allergies.join(', ') : (pet.allergies || 'Nessuna nota')}</p>
                   </div>
                   <div className="p-3 bg-purple-50 rounded-lg">
                     <p className="text-sm font-medium text-purple-800">Farmaci in corso</p>
-                    <p className="text-sm text-purple-600 mt-1">{pet.medications || 'Nessuno'}</p>
+                    <p className="text-sm text-purple-600 mt-1">
+                      {Array.isArray(pet.medications) 
+                        ? pet.medications.map(m => typeof m === 'object' ? m.name : m).join(', ')
+                        : (pet.medications || 'Nessuno')}
+                    </p>
                   </div>
                   <div className="p-3 bg-blue-50 rounded-lg">
                     <p className="text-sm font-medium text-blue-800">Note comportamentali</p>
