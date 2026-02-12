@@ -9931,19 +9931,27 @@ function AdminDashboard({ user, onLogout }) {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[73px] bg-white z-40 p-4 overflow-auto">
-          <Badge className="mb-4 bg-purple-100 text-purple-700">👑 Amministratore</Badge>
-          <nav className="space-y-1">
-            <NavItem icon={LayoutDashboard} label="Dashboard" value="dashboard" />
-            <NavItem icon={Users} label="Utenti" value="users" badge={stats.users} />
-            <NavItem icon={Building2} label="Cliniche" value="clinics" badge={stats.clinics} />
-            <NavItem icon={User} label="Proprietari" value="owners" badge={stats.owners} />
-            <NavItem icon={Calendar} label="Appuntamenti" value="appointments" badge={stats.appointments} />
-            <NavItem icon={PawPrint} label="Animali" value="pets" badge={stats.pets} />
-            <NavItem icon={FileText} label="Documenti" value="documents" badge={stats.documents} />
-          </nav>
-          <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
-        </div>
+        <>
+          {/* Dark backdrop */}
+          <div 
+            className="md:hidden fixed inset-0 bg-black/50 z-[55]" 
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          {/* Menu panel */}
+          <div className="md:hidden fixed left-0 right-0 top-[57px] bottom-0 bg-white z-[60] p-4 overflow-y-auto shadow-xl animate-in slide-in-from-top duration-200">
+            <Badge className="mb-4 bg-purple-100 text-purple-700">👑 Amministratore</Badge>
+            <nav className="space-y-1">
+              <NavItem icon={LayoutDashboard} label="Dashboard" value="dashboard" />
+              <NavItem icon={Users} label="Utenti" value="users" badge={stats.users} />
+              <NavItem icon={Building2} label="Cliniche" value="clinics" badge={stats.clinics} />
+              <NavItem icon={User} label="Proprietari" value="owners" badge={stats.owners} />
+              <NavItem icon={Calendar} label="Appuntamenti" value="appointments" badge={stats.appointments} />
+              <NavItem icon={PawPrint} label="Animali" value="pets" badge={stats.pets} />
+              <NavItem icon={FileText} label="Documenti" value="documents" badge={stats.documents} />
+            </nav>
+            <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
+          </div>
+        </>
       )}
 
       {/* Desktop Sidebar */}
