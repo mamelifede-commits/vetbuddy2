@@ -1942,27 +1942,39 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, se
                 <p className="text-gray-500 text-sm py-4 text-center">Nessun appuntamento oggi</p>
               ) : (
                 <div className="space-y-2">
-                  {todayAppts.slice(0, 5).map((appt, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className={`h-10 w-10 rounded-full flex items-center justify-center ${appt.type === 'videoconsulto' ? 'bg-blue-100' : 'bg-coral-100'}`}>
-                          {appt.type === 'videoconsulto' ? <Video className="h-5 w-5 text-blue-600" /> : <PawPrint className="h-5 w-5 text-coral-600" />}
+                  {todayAppts.slice(0, 5).map((appt, i) => {
+                    const pet = getPetFromAppointment(appt);
+                    return (
+                      <div 
+                        key={i} 
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                        onClick={() => {
+                          if (pet && onOpenPet) {
+                            onOpenPet(pet);
+                          }
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`h-10 w-10 rounded-full flex items-center justify-center ${appt.type === 'videoconsulto' ? 'bg-blue-100' : 'bg-coral-100'}`}>
+                            {appt.type === 'videoconsulto' ? <Video className="h-5 w-5 text-blue-600" /> : <PawPrint className="h-5 w-5 text-coral-600" />}
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">{appt.petName}</p>
+                            <p className="text-xs text-gray-500">{appt.ownerName} • {appt.reason || appt.type}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-sm">{appt.petName}</p>
-                          <p className="text-xs text-gray-500">{appt.ownerName} • {appt.reason || appt.type}</p>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{appt.time}</Badge>
+                          {appt.type === 'videoconsulto' && (
+                            <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white h-8" onClick={(e) => e.stopPropagation()}>
+                              <PlayCircle className="h-3 w-3 mr-1" />Avvia
+                            </Button>
+                          )}
+                          <ChevronRight className="h-4 w-4 text-gray-400" />
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline">{appt.time}</Badge>
-                        {appt.type === 'videoconsulto' && (
-                          <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white h-8">
-                            <PlayCircle className="h-3 w-3 mr-1" />Avvia
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
