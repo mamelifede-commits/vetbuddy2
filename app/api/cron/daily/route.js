@@ -27,7 +27,25 @@ const DEFAULT_AUTOMATION_SETTINGS = {
   postSurgeryFollowup: true,
   summerHeatAlert: true,
   tickSeasonAlert: true,
-  newYearFireworksAlert: true
+  newYearFireworksAlert: true,
+  // New automations
+  whatsappReminders: false,
+  smsEmergency: false,
+  sterilizationReminder: true,
+  seniorPetCare: true,
+  microchipCheck: true,
+  welcomeNewPet: true,
+  aiLabExplanation: true,
+  breedRiskAlert: true,
+  dietSuggestions: true,
+  loyaltyProgram: true,
+  referralProgram: true,
+  holidayClosures: true,
+  petCondolences: true,
+  griefFollowup: true,
+  dailySummary: true,
+  lowStockAlert: true,
+  staffBirthday: true
 };
 
 // Helper: Check if automation is enabled for a clinic
