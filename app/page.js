@@ -1885,8 +1885,8 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, se
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge variant="outline">{appt.time}</Badge>
-                          {appt.type === 'videoconsulto' && (
-                            <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white h-8" onClick={(e) => e.stopPropagation()}>
+                          {appt.type === 'videoconsulto' && appt.videoLink && (
+                            <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white h-8" onClick={(e) => { e.stopPropagation(); window.open(appt.videoLink, '_blank'); }}>
                               <PlayCircle className="h-3 w-3 mr-1" />Avvia
                             </Button>
                           )}
