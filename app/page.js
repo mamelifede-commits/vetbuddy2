@@ -1186,45 +1186,50 @@ function LandingPage({ onLogin }) {
               <CardContent>
                 <p className="text-xs font-medium text-gray-700 mb-3">Include:</p>
                 <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> 1 sede, 1 utente</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Fino a 50 pazienti</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Agenda base</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Posizione su mappa</li>
-                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300" /> Automazioni</li>
-                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300" /> Team Inbox</li>
-                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300" /> Report avanzati</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>1 sede, 1 utente</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Fino a 50 pazienti</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Agenda base</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Posizione su mappa</span></li>
+                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300 flex-shrink-0" /> <span>Automazioni</span></li>
+                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300 flex-shrink-0" /> <span>Team Inbox</span></li>
+                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300 flex-shrink-0" /> <span>Report avanzati</span></li>
                 </ul>
                 <Button className="w-full bg-gray-500 hover:bg-gray-600 mb-2" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi invito</Button>
                 <p className="text-xs text-gray-500 mt-3 text-center">Ideale per valutare la piattaforma</p>
               </CardContent>
             </Card>
             
-            {/* Pilot - Piano principale */}
+            {/* Pilot - Piano principale (Pro) */}
             <Card className="border-2 border-coral-500 relative shadow-lg scale-105">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">⭐ CONSIGLIATO</div>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">⭐ PILOT MILANO</div>
               <CardHeader className="pt-6">
-                <CardTitle className="text-coral-500">Pilot</CardTitle>
+                <CardTitle className="text-coral-500">Pro</CardTitle>
                 <CardDescription>Per cliniche che vogliono crescere</CardDescription>
                 <div className="mt-4">
                   <span className="text-3xl font-bold text-coral-500">€0</span>
                   <span className="text-lg text-gray-400 line-through ml-2">€129/mese</span>
                 </div>
-                <p className="text-xs text-amber-600 font-semibold mt-1">🎁 6 mesi gratuiti nel Pilot Milano</p>
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-2 mt-2">
+                  <p className="text-xs text-amber-700 font-semibold">🎁 90 giorni gratuiti per cliniche selezionate nel Pilot</p>
+                  <p className="text-xs text-amber-600 mt-1">Estendibile fino a 6 mesi per cliniche attive che completano onboarding e feedback</p>
+                </div>
               </CardHeader>
               <CardContent>
                 <p className="text-xs font-medium text-gray-700 mb-3">Include tutto di Starter più:</p>
                 <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Fino a 5 utenti staff</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Pazienti illimitati</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> <strong>20 Automazioni</strong> (promemoria, recall, follow-up)</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Team Inbox + ticket</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Documenti + invio email</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Google Calendar sync</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Report settimanali</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Fino a 5 utenti staff</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Pazienti illimitati</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span><strong>20 Automazioni</strong></span></li>
+                  <li className="flex items-center gap-2 ml-6 text-xs text-gray-500">promemoria, recall, follow-up, birthday...</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Team Inbox + ticket</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Documenti + invio email</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Google Calendar sync</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Report settimanali</span></li>
                 </ul>
                 <Button className="w-full bg-coral-500 hover:bg-coral-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
                   Candidati al Pilot →
                 </Button>
+                <p className="text-xs text-gray-500 mt-2 text-center">Dopo il Pilot: €129/mese + IVA</p>
               </CardContent>
             </Card>
             
@@ -1239,18 +1244,19 @@ function LandingPage({ onLogin }) {
                 <p className="text-xs text-purple-500 mt-1">Contattaci per un preventivo</p>
               </CardHeader>
               <CardContent>
-                <p className="text-xs font-medium text-gray-700 mb-3">Include tutto di Pilot più:</p>
+                <p className="text-xs font-medium text-gray-700 mb-3">Include tutto di Pro più:</p>
                 <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> Utenti illimitati</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> Multi-sede</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> <strong>44+ Automazioni complete</strong></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> WhatsApp Business integration</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> API dedicata</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> SLA garantito 99.9%</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> Onboarding dedicato</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> Supporto prioritario</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>Utenti illimitati</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>Multi-sede</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span><strong>44+ Automazioni complete</strong></span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>WhatsApp Business</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>API dedicata</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>SLA garantito 99.9%</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>Onboarding dedicato</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>Supporto prioritario</span></li>
                 </ul>
                 <Button className="w-full bg-purple-600 hover:bg-purple-700 mb-2" onClick={() => scrollToSection('contatti')}>Contattaci</Button>
+                <p className="text-xs text-gray-500 mt-2 text-center">Prezzi IVA esclusa</p>
               </CardContent>
             </Card>
           </div>
