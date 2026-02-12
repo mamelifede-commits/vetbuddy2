@@ -3631,13 +3631,39 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner 
                 </div>
               </div>
               
-              {/* Proprietario */}
-              {petDetails.ownerId && (
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-sm text-blue-600 font-medium mb-2">👤 Proprietario</p>
-                  <p className="font-medium">{getOwnerName(petDetails.ownerId)}</p>
-                </div>
-              )}
+              {/* Proprietario - Con email e telefono, cliccabile */}
+              {petDetails.ownerId && (() => {
+                const owner = getOwnerDetails(petDetails.ownerId);
+                return (
+                  <div 
+                    className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors"
+                    onClick={() => {
+                      if (owner && onOpenOwner) {
+                        setShowDetailDialog(false);
+                        onOpenOwner(owner);
+                      }
+                    }}
+                  >
+                    <p className="text-sm text-blue-600 font-medium mb-2">👤 Proprietario</p>
+                    <p className="font-medium text-lg">{owner?.name || 'Non assegnato'}</p>
+                    {owner?.email && (
+                      <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
+                        <Mail className="h-4 w-4" />
+                        <span>{owner.email}</span>
+                      </div>
+                    )}
+                    {owner?.phone && (
+                      <div className="flex items-center gap-2 mt-1 text-sm text-gray-600">
+                        <Phone className="h-4 w-4" />
+                        <span>{owner.phone}</span>
+                      </div>
+                    )}
+                    {owner && onOpenOwner && (
+                      <p className="text-xs text-blue-500 mt-2">Clicca per vedere la scheda cliente →</p>
+                    )}
+                  </div>
+                );
+              })()}
               
               {/* Microchip */}
               {petDetails.microchip && (
