@@ -80,7 +80,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      loadApplications();
+      loadApplications(filter);
     }
   }, [filter, isAuthenticated]);
 
