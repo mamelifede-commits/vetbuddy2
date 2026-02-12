@@ -5319,27 +5319,39 @@ function ClinicReports({ appointments, documents, messages, owners, pets, onNavi
                 <p className="text-center py-8 text-gray-500">Nessun cliente registrato</p>
               ) : (
                 <div className="space-y-2">
-                  {(owners || []).slice(0, 10).map((owner, i) => (
-                    <div 
-                      key={i} 
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
-                      onClick={() => setSelectedOwnerDetail(owner)}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                          <User className="h-5 w-5 text-blue-600" />
+                  {(owners || []).slice(0, 10).map((owner, i) => {
+                    const ownerPets = (pets || []).filter(p => p.ownerId === owner.id);
+                    return (
+                      <div 
+                        key={i} 
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
+                        onClick={() => setSelectedOwnerDetail(owner)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <User className="h-5 w-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium">{owner.name}</p>
+                            <p className="text-sm text-gray-500">{owner.email}</p>
+                            {ownerPets.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {ownerPets.map(pet => (
+                                  <Badge key={pet.id} variant="outline" className="text-xs bg-coral-50 text-coral-700 border-coral-200">
+                                    {pet.species === 'dog' ? '🐕' : pet.species === 'cat' ? '🐱' : '🐾'} {pet.name}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium">{owner.name}</p>
-                          <p className="text-sm text-gray-500">{owner.email}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs text-gray-400">{owner.createdAt ? new Date(owner.createdAt).toLocaleDateString() : '-'}</p>
+                          <ChevronRight className="h-4 w-4 text-gray-400" />
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <p className="text-xs text-gray-400">{owner.createdAt ? new Date(owner.createdAt).toLocaleDateString() : '-'}</p>
-                        <ChevronRight className="h-4 w-4 text-gray-400" />
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
