@@ -5323,12 +5323,7 @@ function ClinicReports({ appointments, documents, messages, owners, pets, onNavi
                     <div 
                       key={i} 
                       className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
-                      onClick={() => {
-                        if (onOpenOwner) {
-                          onOpenOwner(owner);
-                          onNavigate('owners');
-                        }
-                      }}
+                      onClick={() => setSelectedOwnerDetail(owner)}
                     >
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
