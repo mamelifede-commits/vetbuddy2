@@ -188,6 +188,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Pet management system working correctly. POST /api/pets creates pets with proper owner/clinic association. GET /api/pets lists pets with role-based filtering. Pet metadata (species, breed, birth date, weight, notes) all handled properly."
+      - working: true
+        agent: "main"
+        comment: "PUT /api/pets/{id} VERIFIED WORKING - All new fields save correctly: insurance (boolean), insuranceCompany, insurancePolicy, chronicDiseases, currentConditions, allergies, medications, medicalHistory, weightHistory (array with weight/date). Full CRUD cycle tested via curl."
 
   - task: "Database Integration"
     implemented: true
