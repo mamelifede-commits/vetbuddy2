@@ -5660,63 +5660,81 @@ function ClinicSettings({ user, onNavigate }) {
                   </div>
                 </div>
 
-            {/* Sezione Messaggi & Report */}
-            <div className="mb-4">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <MessageCircle className="h-4 w-4" /> Messaggi & Report
-              </h4>
-              <div className="grid md:grid-cols-2 gap-2">
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-pink-50 to-pink-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Ticket className="h-4 w-4 text-pink-500" />
-                    <div>
-                      <p className="text-sm font-medium">Auto-Assegnazione Ticket</p>
-                      <p className="text-xs text-gray-500">Per categoria</p>
+                {/* Sezione Messaggi & Report */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <MessageCircle className="h-4 w-4" /> Messaggi & Report
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-pink-50 to-pink-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Ticket className="h-4 w-4 text-pink-500" />
+                        <div>
+                          <p className="text-sm font-medium">Auto-Assegnazione Ticket</p>
+                          <p className="text-xs text-gray-500">Per categoria</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.autoTicketAssignment} 
+                        onCheckedChange={() => toggleAutomation('autoTicketAssignment')}
+                        disabled={automationSaving === 'autoTicketAssignment'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-rose-50 to-rose-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Zap className="h-4 w-4 text-rose-500" />
+                        <div>
+                          <p className="text-sm font-medium">Risposte Rapide AI</p>
+                          <p className="text-xs text-gray-500">Suggerimenti smart</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.aiQuickReplies} 
+                        onCheckedChange={() => toggleAutomation('aiQuickReplies')}
+                        disabled={automationSaving === 'aiQuickReplies'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-red-50 to-red-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4 text-red-500" />
+                        <div>
+                          <p className="text-sm font-medium">Notifiche Urgenze</p>
+                          <p className="text-xs text-gray-500">Priorità automatica</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.urgencyNotifications} 
+                        onCheckedChange={() => toggleAutomation('urgencyNotifications')}
+                        disabled={automationSaving === 'urgencyNotifications'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <BarChart3 className="h-4 w-4 text-indigo-500" />
+                        <div>
+                          <p className="text-sm font-medium">Report Settimanale</p>
+                          <p className="text-xs text-gray-500">Ogni lunedì</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.weeklyReport} 
+                        onCheckedChange={() => toggleAutomation('weeklyReport')}
+                        disabled={automationSaving === 'weeklyReport'}
+                      />
                     </div>
                   </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-rose-50 to-rose-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-rose-500" />
-                    <div>
-                      <p className="text-sm font-medium">Risposte Rapide AI</p>
-                      <p className="text-xs text-gray-500">Suggerimenti smart</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
+                <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                  <p className="text-sm text-purple-700">
+                    <strong>💡 Pilot Milano:</strong> Tutte le automazioni attive eseguono ogni giorno alle 8:00. Puoi attivarle/disattivarle in qualsiasi momento.
+                  </p>
                 </div>
-
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-red-50 to-red-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-red-500" />
-                    <div>
-                      <p className="text-sm font-medium">Notifiche Urgenze</p>
-                      <p className="text-xs text-gray-500">Priorità automatica</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4 text-indigo-500" />
-                    <div>
-                      <p className="text-sm font-medium">Report Settimanale</p>
-                      <p className="text-xs text-gray-500">Ogni lunedì</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
-              <p className="text-sm text-purple-700">
-                <strong>💡 Pilot Milano:</strong> Tutte le 12 automazioni sono incluse gratuitamente. Il cron job esegue ogni giorno alle 8:00.
-              </p>
-            </div>
+              </>
+            )}
           </CardContent>
         </Card>
 
