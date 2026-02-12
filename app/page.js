@@ -6030,9 +6030,14 @@ function ClinicAutomations({ user, onNavigate }) {
           </h2>
           <p className="text-gray-500 text-sm">Configura le automazioni per la tua clinica</p>
         </div>
-        <Badge className={`text-lg px-4 py-2 ${activeAutomationsCount >= totalAutomations - 5 ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'}`}>
-          {automationLoading ? '...' : `${activeAutomationsCount}/${totalAutomations} Attive`}
-        </Badge>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className={`text-sm px-3 py-1 ${getPlanBadgeColor()}`}>
+            Piano: {clinicPlan === 'pro' ? 'Pro' : clinicPlan === 'custom' ? 'Custom' : 'Starter'}
+          </Badge>
+          <Badge className={`text-lg px-4 py-2 ${activeAutomationsCount >= planAutomationsCount - 2 ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'}`}>
+            {automationLoading ? '...' : `${activeAutomationsCount}/${planAutomationsCount} Attive`}
+          </Badge>
+        </div>
       </div>
 
       {automationLoading ? (
