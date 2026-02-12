@@ -94,13 +94,44 @@ export async function GET(request) {
     
     // Return existing settings or defaults
     const settings = clinic?.automationSettings || DEFAULT_SETTINGS;
+    
+    // Get plan info
+    const plan = clinic?.subscriptionPlan || 'starter';
+    const planLimits = clinic?.planLimits || {};
+    
+    // Determine which automations are allowed based on plan
+    let allowedAutomations = [];
+    let automationsCount = 0;
+    
+    if (plan === 'custom') {
+      allowedAutomations = 'all';
+      automationsCount = 44;
+    } else if (plan === 'pro') {
+      // Pro plan: 20 automations allowed
+      allowedAutomations = [
+        'appointmentReminders', 'bookingConfirmation', 'vaccineRecalls', 'postVisitFollowup',
+        'noShowDetection', 'waitlistNotification', 'suggestedSlots', 'documentReminders',
+        'autoTicketAssignment', 'aiQuickReplies', 'urgencyNotifications', 'weeklyReport',
+        'petBirthday', 'reviewRequest', 'inactiveClientReactivation',
+        'antiparasiticReminder', 'annualCheckup', 'medicationRefill', 'weightAlert', 'dentalHygiene'
+      ];
+      automationsCount = 20;
+    } else {
+      // Starter: no automations
+      allowedAutomations = [];
+      automationsCount = 0;
+    }
 
     return NextResponse.json({
       success: true,
       settings: {
         ...DEFAULT_SETTINGS,
         ...settings
-      }
+      },
+      plan,
+      planLimits,
+      allowedAutomations,
+      automationsCount
     });
   } catch (error) {
     console.error('Error getting automation settings:', error);
