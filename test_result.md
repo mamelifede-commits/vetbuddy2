@@ -326,6 +326,18 @@ frontend:
         agent: "main"
         comment: "UPDATED: Google Maps integration added to homepage. Interactive map showing Milano area with 5 demo clinic markers. Custom map styling, legend, stats badge '5 cliniche in zona'. InfoWindow popups on marker click. Screenshot verified - map loads correctly."
 
+  - task: "VetBuddy Owner Dashboard Pet Modification Flow"
+    implemented: true
+    working: "NA"
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "NEW TEST REQUEST: Need to test complete owner dashboard pet modification flow including login with owner credentials (proprietario.demo@vetbuddy.it / demo123), navigation to 'I miei animali', finding Luna pet card, clicking edit button, verifying all form fields exist (Nome, Specie, Razza, Data di nascita, Peso attuale, Data pesatura, Assicurazione toggle, Compagnia assicurativa, Numero polizza, Patologie croniche, Condizioni attuali, Allergie, Farmaci, Storia medica, Note comportamentali), modifying fields, saving changes, and verifying persistence."
+
   - task: "Google Maps Homepage"
     implemented: true
     working: true
