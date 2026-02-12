@@ -4981,12 +4981,31 @@ function ClinicSettings({ user, onNavigate }) {
   const [savingLocation, setSavingLocation] = useState(false);
   const [staffColors, setStaffColors] = useState([]);
   const [staffList, setStaffList] = useState([]);
+  
+  // Automation settings state
+  const [automationSettings, setAutomationSettings] = useState({
+    appointmentReminders: true,
+    bookingConfirmation: true,
+    vaccineRecalls: true,
+    postVisitFollowup: true,
+    noShowDetection: true,
+    waitlistNotification: true,
+    suggestedSlots: true,
+    documentReminders: true,
+    autoTicketAssignment: true,
+    aiQuickReplies: true,
+    urgencyNotifications: true,
+    weeklyReport: true
+  });
+  const [automationLoading, setAutomationLoading] = useState(true);
+  const [automationSaving, setAutomationSaving] = useState(null); // Tracks which toggle is saving
 
   useEffect(() => { 
     loadStripeSettings(); 
     loadGoogleCalendarStatus();
     loadStaffColors();
     loadStaff();
+    loadAutomationSettings();
     
     // Check for Google OAuth callback
     const params = new URLSearchParams(window.location.search);
@@ -5000,6 +5019,43 @@ function ClinicSettings({ user, onNavigate }) {
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
+
+  // Load automation settings from API
+  const loadAutomationSettings = async () => {
+    try {
+      const response = await api.get('automations/settings');
+      if (response.success && response.settings) {
+        setAutomationSettings(response.settings);
+      }
+    } catch (error) {
+      console.error('Error loading automation settings:', error);
+    } finally {
+      setAutomationLoading(false);
+    }
+  };
+
+  // Toggle a single automation setting
+  const toggleAutomation = async (key) => {
+    const newValue = !automationSettings[key];
+    setAutomationSaving(key);
+    
+    // Optimistic update
+    setAutomationSettings(prev => ({ ...prev, [key]: newValue }));
+    
+    try {
+      await api.post('automations/settings', { key, enabled: newValue });
+    } catch (error) {
+      console.error('Error saving automation setting:', error);
+      // Revert on error
+      setAutomationSettings(prev => ({ ...prev, [key]: !newValue }));
+      alert('Errore nel salvataggio. Riprova.');
+    } finally {
+      setAutomationSaving(null);
+    }
+  };
+
+  // Count active automations
+  const activeAutomationsCount = Object.values(automationSettings).filter(Boolean).length;
 
   const loadGoogleCalendarStatus = async () => {
     try {
