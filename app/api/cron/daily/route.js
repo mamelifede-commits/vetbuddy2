@@ -431,6 +431,463 @@ export async function GET(request) {
       }
     }
 
+    // =====================================================
+    // NUOVE AUTOMAZIONI
+    // =====================================================
+
+    // 7. COMPLEANNO PET (auguri il giorno del compleanno)
+    const todayMonth = today.getMonth() + 1;
+    const todayDay = today.getDate();
+    
+    const allPets = await db.collection('pets').find({}).toArray();
+    
+    for (const pet of allPets) {
+      if (!pet.birthDate) continue;
+      
+      const birthDate = new Date(pet.birthDate);
+      if (birthDate.getMonth() + 1 === todayMonth && birthDate.getDate() === todayDay) {
+        const clinic = pet.clinicId ? clinicsMap.get(pet.clinicId) : null;
+        if (clinic && !isAutomationEnabled(clinic, 'petBirthday')) {
+          results.petBirthday.skipped++;
+          continue;
+        }
+        
+        const owner = await db.collection('users').findOne({ id: pet.ownerId });
+        if (owner?.email) {
+          const age = today.getFullYear() - birthDate.getFullYear();
+          try {
+            await sendEmail({
+              to: owner.email,
+              subject: `🎂 Buon compleanno ${pet.name}! 🐾`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <div style="background: linear-gradient(135deg, #FF6B6B, #FFE66D); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+                    <h1 style="color: white; margin: 0; font-size: 32px;">🎂 Buon Compleanno! 🎉</h1>
+                  </div>
+                  <div style="padding: 30px; background: #f9f9f9; text-align: center;">
+                    <h2 style="color: #333;">${pet.name} compie ${age} anni oggi!</h2>
+                    <p style="color: #666; font-size: 16px;">Tanti auguri da tutto il team VetBuddy!</p>
+                    <p style="font-size: 48px;">🎁🐾🎈</p>
+                    <p style="color: #999; font-size: 14px;">Per festeggiare, perché non prenotare un controllo di salute?</p>
+                  </div>
+                </div>
+              `
+            });
+            results.petBirthday.sent++;
+          } catch (err) {
+            results.petBirthday.errors++;
+          }
+        }
+      }
+    }
+
+    // 8. RICHIESTA RECENSIONE (3 giorni dopo visita completata positiva)
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    const threeDaysAgoStr = threeDaysAgo.toISOString().split('T')[0];
+
+    const recentCompletedApts = await db.collection('appointments').find({
+      date: threeDaysAgoStr,
+      status: 'completed',
+      reviewRequestSent: { $ne: true }
+    }).toArray();
+
+    for (const apt of recentCompletedApts) {
+      const clinic = clinicsMap.get(apt.clinicId);
+      if (!isAutomationEnabled(clinic, 'reviewRequest')) {
+        results.reviewRequest.skipped++;
+        continue;
+      }
+
+      const owner = await db.collection('users').findOne({ id: apt.ownerId });
+      const pet = await db.collection('pets').findOne({ id: apt.petId });
+      
+      if (owner?.email && clinic) {
+        try {
+          await sendEmail({
+            to: owner.email,
+            subject: `⭐ Come è andata la visita di ${pet?.name || 'il tuo animale'}?`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #FFD700, #FFA500); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">⭐ La tua opinione conta!</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <p style="color: #666;">Ciao ${owner.name || ''},</p>
+                  <p style="color: #666;">Come è andata la visita di <strong>${pet?.name || 'il tuo animale'}</strong> presso <strong>${clinic.clinicName}</strong>?</p>
+                  <p style="color: #666;">Se ti sei trovato bene, lasciaci una recensione! Aiuterà altri proprietari a trovare una clinica di fiducia.</p>
+                  <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://g.page/r/${clinic.googlePlaceId || 'review'}" style="background: #4285F4; color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; display: inline-block;">⭐ Lascia una recensione</a>
+                  </div>
+                  <p style="color: #999; font-size: 12px; text-align: center;">Grazie per il tuo feedback!</p>
+                </div>
+              </div>
+            `
+          });
+          await db.collection('appointments').updateOne({ id: apt.id }, { $set: { reviewRequestSent: true } });
+          results.reviewRequest.sent++;
+        } catch (err) {
+          results.reviewRequest.errors++;
+        }
+      }
+    }
+
+    // 9. RIATTIVAZIONE CLIENTI INATTIVI (non visitano da 6+ mesi)
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    const sixMonthsAgoStr = sixMonthsAgo.toISOString().split('T')[0];
+
+    // Esegui solo il 1° del mese per non spammare
+    if (today.getDate() === 1) {
+      for (const clinic of allClinics) {
+        if (!isAutomationEnabled(clinic, 'inactiveClientReactivation')) {
+          results.inactiveClients.skipped++;
+          continue;
+        }
+
+        // Trova clienti che non hanno appuntamenti negli ultimi 6 mesi
+        const recentApts = await db.collection('appointments').find({
+          clinicId: clinic.id,
+          date: { $gte: sixMonthsAgoStr }
+        }).toArray();
+        const activeOwnerIds = new Set(recentApts.map(a => a.ownerId));
+
+        const allClinicApts = await db.collection('appointments').find({ clinicId: clinic.id }).toArray();
+        const allOwnerIds = new Set(allClinicApts.map(a => a.ownerId));
+        
+        for (const ownerId of allOwnerIds) {
+          if (activeOwnerIds.has(ownerId)) continue;
+          
+          const owner = await db.collection('users').findOne({ id: ownerId, reactivationSent: { $ne: true } });
+          if (!owner?.email) continue;
+
+          try {
+            await sendEmail({
+              to: owner.email,
+              subject: `🐾 Ci manchi! È tempo di un controllo?`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <div style="background: linear-gradient(135deg, #9B59B6, #E74C3C); padding: 20px; border-radius: 10px 10px 0 0;">
+                    <h1 style="color: white; margin: 0;">🐾 Ci manchi!</h1>
+                  </div>
+                  <div style="padding: 30px; background: #f9f9f9;">
+                    <p>Ciao ${owner.name || ''},</p>
+                    <p>È passato un po' di tempo dalla tua ultima visita presso <strong>${clinic.clinicName}</strong>.</p>
+                    <p>I controlli regolari sono importanti per la salute del tuo animale. Prenota una visita!</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                      <a href="https://vetbuddy.it" style="background: #FF6B6B; color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">Prenota Ora</a>
+                    </div>
+                  </div>
+                </div>
+              `
+            });
+            await db.collection('users').updateOne({ id: ownerId }, { $set: { reactivationSent: true, reactivationSentAt: new Date() } });
+            results.inactiveClients.sent++;
+          } catch (err) {
+            results.inactiveClients.errors++;
+          }
+        }
+      }
+    }
+
+    // 10. ANTIPARASSITARI (ogni 3 mesi dalla data dell'ultimo trattamento)
+    const antiparasiticDue = await db.collection('treatments').find({
+      type: 'antiparasitic',
+      nextDueDate: { $lte: todayStr },
+      reminderSent: { $ne: true }
+    }).toArray();
+
+    for (const treatment of antiparasiticDue) {
+      const pet = await db.collection('pets').findOne({ id: treatment.petId });
+      const clinic = pet?.clinicId ? clinicsMap.get(pet.clinicId) : null;
+      
+      if (clinic && !isAutomationEnabled(clinic, 'antiparasiticReminder')) {
+        results.antiparasitic.skipped++;
+        continue;
+      }
+
+      const owner = pet ? await db.collection('users').findOne({ id: pet.ownerId }) : null;
+      if (owner?.email) {
+        try {
+          await sendEmail({
+            to: owner.email,
+            subject: `🐜 Promemoria antiparassitario per ${pet.name}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #27AE60, #2ECC71); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">🛡️ Protezione Antiparassitaria</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <p>Ciao ${owner.name || ''},</p>
+                  <p>È tempo di rinnovare il trattamento antiparassitario di <strong>${pet.name}</strong>!</p>
+                  <p>Gli antiparassitari proteggono il tuo animale da pulci, zecche e altri parassiti.</p>
+                  <div style="background: #E8F5E9; padding: 15px; border-radius: 10px; margin: 20px 0;">
+                    <p style="margin: 0;"><strong>💡 Consiglio:</strong> Il trattamento andrebbe ripetuto ogni 1-3 mesi a seconda del prodotto.</p>
+                  </div>
+                </div>
+              </div>
+            `
+          });
+          await db.collection('treatments').updateOne({ id: treatment.id }, { $set: { reminderSent: true } });
+          results.antiparasitic.sent++;
+        } catch (err) {
+          results.antiparasitic.errors++;
+        }
+      }
+    }
+
+    // 11. CONTROLLO ANNUALE (1 anno dall'ultima visita)
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    const oneYearAgoStr = oneYearAgo.toISOString().split('T')[0];
+    const oneYearAgoEnd = new Date(oneYearAgo);
+    oneYearAgoEnd.setDate(oneYearAgoEnd.getDate() + 7); // Finestra di 7 giorni
+
+    const annualCheckupApts = await db.collection('appointments').find({
+      date: { $gte: oneYearAgoStr, $lte: oneYearAgoEnd.toISOString().split('T')[0] },
+      status: 'completed',
+      annualReminderSent: { $ne: true }
+    }).toArray();
+
+    for (const apt of annualCheckupApts) {
+      const clinic = clinicsMap.get(apt.clinicId);
+      if (!isAutomationEnabled(clinic, 'annualCheckup')) {
+        results.annualCheckup.skipped++;
+        continue;
+      }
+
+      const owner = await db.collection('users').findOne({ id: apt.ownerId });
+      const pet = await db.collection('pets').findOne({ id: apt.petId });
+
+      if (owner?.email && pet) {
+        try {
+          await sendEmail({
+            to: owner.email,
+            subject: `📅 È passato un anno! Controllo per ${pet.name}?`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #3498DB, #2980B9); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">📅 Controllo Annuale</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <p>Ciao ${owner.name || ''},</p>
+                  <p>È passato un anno dall'ultima visita di <strong>${pet.name}</strong>!</p>
+                  <p>Un controllo annuale è importante per:</p>
+                  <ul>
+                    <li>Verificare lo stato di salute generale</li>
+                    <li>Aggiornare le vaccinazioni</li>
+                    <li>Prevenire problemi futuri</li>
+                  </ul>
+                  <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://vetbuddy.it" style="background: #3498DB; color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">Prenota Controllo</a>
+                  </div>
+                </div>
+              </div>
+            `
+          });
+          await db.collection('appointments').updateOne({ id: apt.id }, { $set: { annualReminderSent: true } });
+          results.annualCheckup.sent++;
+        } catch (err) {
+          results.annualCheckup.errors++;
+        }
+      }
+    }
+
+    // 12. CONFERMA APPUNTAMENTO (48h prima)
+    const in2Days = new Date();
+    in2Days.setDate(in2Days.getDate() + 2);
+    const in2DaysStr = in2Days.toISOString().split('T')[0];
+
+    const appointmentsToConfirm = await db.collection('appointments').find({
+      date: in2DaysStr,
+      status: 'pending',
+      confirmationRequestSent: { $ne: true }
+    }).toArray();
+
+    for (const apt of appointmentsToConfirm) {
+      const clinic = clinicsMap.get(apt.clinicId);
+      if (!isAutomationEnabled(clinic, 'appointmentConfirmation')) {
+        results.appointmentConfirmation.skipped++;
+        continue;
+      }
+
+      const owner = await db.collection('users').findOne({ id: apt.ownerId });
+      const pet = await db.collection('pets').findOne({ id: apt.petId });
+
+      if (owner?.email && clinic) {
+        try {
+          await sendEmail({
+            to: owner.email,
+            subject: `✅ Conferma appuntamento per ${pet?.name || 'il tuo animale'}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">✅ Conferma Appuntamento</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <p>Ciao ${owner.name || ''},</p>
+                  <p>Ti ricordiamo l'appuntamento tra 2 giorni:</p>
+                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FF6B6B;">
+                    <p style="margin: 5px 0;"><strong>📅 Data:</strong> ${apt.date}</p>
+                    <p style="margin: 5px 0;"><strong>🕐 Ora:</strong> ${apt.time}</p>
+                    <p style="margin: 5px 0;"><strong>🐾 Paziente:</strong> ${pet?.name || 'N/A'}</p>
+                    <p style="margin: 5px 0;"><strong>🏥 Clinica:</strong> ${clinic.clinicName}</p>
+                  </div>
+                  <p style="text-align: center; font-weight: bold;">Puoi confermare la tua presenza?</p>
+                  <p style="color: #999; font-size: 12px; text-align: center;">Se non puoi venire, contatta la clinica per disdire.</p>
+                </div>
+              </div>
+            `
+          });
+          await db.collection('appointments').updateOne({ id: apt.id }, { $set: { confirmationRequestSent: true } });
+          results.appointmentConfirmation.sent++;
+        } catch (err) {
+          results.appointmentConfirmation.errors++;
+        }
+      }
+    }
+
+    // 13. REMINDER PAGAMENTO (fatture non pagate dopo 7 giorni)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const sevenDaysAgoStr = sevenDaysAgo.toISOString().split('T')[0];
+
+    const unpaidInvoices = await db.collection('invoices').find({
+      status: 'unpaid',
+      createdAt: { $lte: sevenDaysAgoStr },
+      paymentReminderSent: { $ne: true }
+    }).toArray();
+
+    for (const invoice of unpaidInvoices) {
+      const clinic = clinicsMap.get(invoice.clinicId);
+      if (!isAutomationEnabled(clinic, 'paymentReminder')) {
+        results.paymentReminder.skipped++;
+        continue;
+      }
+
+      const owner = await db.collection('users').findOne({ id: invoice.ownerId });
+      if (owner?.email && clinic) {
+        try {
+          await sendEmail({
+            to: owner.email,
+            subject: `💳 Promemoria pagamento - ${clinic.clinicName}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #E74C3C, #C0392B); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">💳 Promemoria Pagamento</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <p>Ciao ${owner.name || ''},</p>
+                  <p>Ti ricordiamo che hai una fattura in sospeso:</p>
+                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <p><strong>Importo:</strong> €${invoice.amount?.toFixed(2) || '0.00'}</p>
+                    <p><strong>Data:</strong> ${invoice.createdAt}</p>
+                    <p><strong>Clinica:</strong> ${clinic.clinicName}</p>
+                  </div>
+                  <p>Per qualsiasi domanda, contatta la clinica.</p>
+                </div>
+              </div>
+            `
+          });
+          await db.collection('invoices').updateOne({ id: invoice.id }, { $set: { paymentReminderSent: true } });
+          results.paymentReminder.sent++;
+        } catch (err) {
+          results.paymentReminder.errors++;
+        }
+      }
+    }
+
+    // 14. ALERT STAGIONALI
+    // Caldo estivo: Giugno-Agosto
+    // Zecche: Marzo-Maggio  
+    // Capodanno: Ultima settimana di Dicembre
+
+    let seasonalType = null;
+    let seasonalSubject = '';
+    let seasonalContent = '';
+
+    if (currentMonth >= 6 && currentMonth <= 8 && today.getDate() === 1) {
+      seasonalType = 'summerHeatAlert';
+      seasonalSubject = '☀️ Consigli per proteggere il tuo animale dal caldo';
+      seasonalContent = `
+        <h2>☀️ Estate: Proteggi il tuo animale dal caldo!</h2>
+        <ul>
+          <li>🚗 Non lasciare MAI il tuo animale in auto</li>
+          <li>💧 Acqua fresca sempre disponibile</li>
+          <li>🕐 Passeggiate nelle ore più fresche</li>
+          <li>🏠 Zone d'ombra durante il giorno</li>
+          <li>🐾 Attenzione all'asfalto bollente sulle zampe</li>
+        </ul>
+      `;
+    } else if (currentMonth >= 3 && currentMonth <= 5 && today.getDate() === 1) {
+      seasonalType = 'tickSeasonAlert';
+      seasonalSubject = '🦟 Stagione zecche: Proteggi il tuo animale!';
+      seasonalContent = `
+        <h2>🦟 È iniziata la stagione delle zecche!</h2>
+        <p>Con l'arrivo della primavera, le zecche tornano attive. Ecco cosa fare:</p>
+        <ul>
+          <li>💊 Applica regolarmente l'antiparassitario</li>
+          <li>🔍 Controlla il pelo dopo ogni passeggiata</li>
+          <li>🌿 Evita erba alta e zone boschive</li>
+          <li>⚠️ Rimuovi le zecche con pinzette apposite</li>
+        </ul>
+      `;
+    } else if (currentMonth === 12 && today.getDate() >= 27) {
+      seasonalType = 'newYearFireworksAlert';
+      seasonalSubject = '🎆 Capodanno: Come gestire lo stress da botti';
+      seasonalContent = `
+        <h2>🎆 Capodanno in arrivo: Prepara il tuo animale!</h2>
+        <p>I fuochi d'artificio possono spaventare molto gli animali. Ecco come aiutarli:</p>
+        <ul>
+          <li>🏠 Crea un rifugio sicuro e tranquillo in casa</li>
+          <li>🔇 Chiudi finestre e tapparelle</li>
+          <li>🎵 Musica o TV per mascherare i rumori</li>
+          <li>🤗 Resta calmo, il tuo stress si trasmette</li>
+          <li>💊 Chiedi al veterinario per ansiolitici naturali</li>
+          <li>📍 Assicurati che il microchip sia aggiornato</li>
+        </ul>
+      `;
+    }
+
+    if (seasonalType) {
+      for (const clinic of allClinics) {
+        if (!isAutomationEnabled(clinic, seasonalType)) {
+          results.seasonalAlerts.skipped++;
+          continue;
+        }
+
+        // Trova tutti i proprietari della clinica
+        const clinicApts = await db.collection('appointments').find({ clinicId: clinic.id }).toArray();
+        const ownerIds = [...new Set(clinicApts.map(a => a.ownerId))];
+
+        for (const ownerId of ownerIds) {
+          const owner = await db.collection('users').findOne({ id: ownerId });
+          if (!owner?.email) continue;
+
+          try {
+            await sendEmail({
+              to: owner.email,
+              subject: seasonalSubject,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
+                    <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                  </div>
+                  <div style="padding: 30px; background: #f9f9f9;">
+                    ${seasonalContent}
+                    <p style="color: #999; margin-top: 30px;">Dalla tua clinica di fiducia: ${clinic.clinicName}</p>
+                  </div>
+                </div>
+              `
+            });
+            results.seasonalAlerts.sent++;
+          } catch (err) {
+            // Ignora errori singoli per alert massivi
+          }
+        }
+      }
+    }
+
     console.log('Daily cron completed:', results);
 
     return NextResponse.json({
