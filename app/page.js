@@ -8121,7 +8121,7 @@ function OwnerAppointments({ appointments, pets }) {
           <h2 className="text-2xl font-bold text-gray-800">I miei appuntamenti</h2>
           <p className="text-gray-500 text-sm">Visite e consulti prenotati</p>
         </div>
-        <Dialog open={showBooking} onOpenChange={(open) => { setShowBooking(open); if (!open) { handleModeChange('clinic'); setVideoConsultoConfirmed(false); } }}>
+        <Dialog open={showBooking} onOpenChange={(open) => { setShowBooking(open); if (!open) { handleModeChange('clinic'); setVideoConsultoConfirmed(false); setUploadedFiles([]); } }}>
           <DialogTrigger asChild>
             <Button className="bg-blue-500 hover:bg-blue-600">
               <Plus className="h-4 w-4 mr-2" />Prenota visita
