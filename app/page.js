@@ -2203,7 +2203,7 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate
     { value: 'sterilizzazione', label: 'Sterilizzazione', icon: Shield, color: 'bg-pink-100 text-pink-700 border-pink-200' },
     { value: 'dentale', label: 'Pulizia dentale', icon: Star, color: 'bg-cyan-100 text-cyan-700 border-cyan-200' },
     { value: 'esami', label: 'Esami / Analisi', icon: FileText, color: 'bg-indigo-100 text-indigo-700 border-indigo-200' },
-    { value: 'videoconsulto', label: 'Video-consulto', icon: Video, color: 'bg-teal-100 text-teal-700 border-teal-200' },
+    { value: 'videoconsulto', label: 'Video consulto', icon: Video, color: 'bg-teal-100 text-teal-700 border-teal-200' },
     { value: 'altro', label: 'Altro', icon: Calendar, color: 'bg-gray-100 text-gray-700 border-gray-200' },
   ];
 
