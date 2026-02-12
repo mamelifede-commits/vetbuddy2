@@ -14,12 +14,12 @@ const PLANS = {
   },
   pro: {
     name: 'Pro',
-    price: 99.00, // €99/mese
+    price: 129.00, // €129/mese
     description: 'Tutte le funzionalità per la tua clinica'
   },
   enterprise: {
     name: 'Enterprise', 
-    price: 199.00, // €199/mese
+    price: 0, // Custom - contattaci
     description: 'Multi-sede e supporto dedicato'
   }
 };
