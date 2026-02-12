@@ -3971,7 +3971,15 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [] }) {
               {petDetails.medications && (
                 <div className="bg-amber-50 p-4 rounded-lg">
                   <p className="text-sm text-amber-600 font-medium mb-2">💊 Farmaci in corso</p>
-                  <p className="text-sm">{petDetails.medications}</p>
+                  {Array.isArray(petDetails.medications) ? (
+                    <div className="space-y-1">
+                      {petDetails.medications.map((med, i) => (
+                        <p key={i} className="text-sm">{typeof med === 'object' ? `${med.name} - ${med.dosage} (${med.frequency})` : med}</p>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm">{petDetails.medications}</p>
+                  )}
                 </div>
               )}
               
