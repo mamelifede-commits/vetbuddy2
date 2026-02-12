@@ -402,7 +402,7 @@ function LandingPage({ onLogin }) {
               </div>
               <h3 className="font-bold text-lg text-gray-900 mb-2">Per Cliniche Veterinarie</h3>
               <p className="text-sm text-gray-600 mb-3">Dashboard completa, inbox team, documenti, reportistica.</p>
-              <p className="text-xs text-amber-600 font-semibold mb-3">🎫 Pilot: 6 mesi gratuiti su invito</p>
+              <p className="text-xs text-amber-600 font-semibold mb-3">🎫 Pilot: 90 giorni gratuiti su invito</p>
               <Button className="w-full bg-gradient-to-r from-coral-500 to-coral-600 hover:from-coral-600 hover:to-coral-700 text-white shadow-lg">
                 Richiedi Invito →
               </Button>
