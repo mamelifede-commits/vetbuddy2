@@ -8898,17 +8898,27 @@ function FindClinic({ user }) {
               )}
 
               {/* Actions */}
-              <div className="flex gap-3 pt-4">
-                <Button className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={() => setShowReviewForm(true)}>
-                  <Star className="h-4 w-4 mr-2" />Scrivi una recensione
+              <div className="flex flex-col gap-3 pt-4">
+                <Button className="w-full bg-coral-500 hover:bg-coral-600" size="lg">
+                  <Calendar className="h-5 w-5 mr-2" />Richiedi appuntamento
                 </Button>
-                {selectedClinic.latitude && selectedClinic.longitude && (
-                  <Button 
-                    variant="outline" 
-                    className="flex-1"
-                    onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${selectedClinic.latitude},${selectedClinic.longitude}`, '_blank')}
-                  >
-                    <MapPin className="h-4 w-4 mr-2" />Indicazioni
+                <div className="flex gap-3">
+                  <Button className="flex-1" variant="outline" onClick={() => setShowReviewForm(true)}>
+                    <Star className="h-4 w-4 mr-2" />Recensisci
+                  </Button>
+                  {selectedClinic.latitude && selectedClinic.longitude && (
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${selectedClinic.latitude},${selectedClinic.longitude}`, '_blank')}
+                    >
+                      <MapPin className="h-4 w-4 mr-2" />Indicazioni
+                    </Button>
+                  )}
+                </div>
+                {selectedClinic.phone && (
+                  <Button variant="ghost" className="text-blue-600" onClick={() => window.location.href = `tel:${selectedClinic.phone}`}>
+                    <Phone className="h-4 w-4 mr-2" />Chiama {selectedClinic.phone}
                   </Button>
                 )}
               </div>
