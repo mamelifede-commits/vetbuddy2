@@ -1202,12 +1202,12 @@ function LandingPage({ onLogin }) {
               <span>🇮🇹 Made in Italy</span>
             </div>
             <div className="flex gap-4 text-sm text-gray-400">
-              <a href="#" className="hover:text-white">Privacy</a>
-              <a href="#" className="hover:text-white">Termini</a>
+              <a href="/privacy" className="hover:text-white">Privacy</a>
+              <a href="/termini" className="hover:text-white">Termini</a>
               <a href="mailto:info@vetbuddy.it" className="hover:text-white">info@vetbuddy.it</a>
             </div>
           </div>
-          <p className="text-center text-gray-500 text-xs mt-4">© 2025 VetBuddy. Tutti i diritti riservati.</p>
+          <p className="text-center text-gray-500 text-xs mt-4">© 2025 VetBuddy. Tutti i diritti riservati. P.IVA: [da inserire]</p>
         </div>
       </footer>
 
