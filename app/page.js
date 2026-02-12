@@ -5136,10 +5136,6 @@ function ClinicSettings({ user, onNavigate }) {
             <SubscriptionPlans user={user} />
           </CardContent>
         </Card>
-            </div>
-            <p className="text-xs text-gray-500 text-center mt-4">Tutti i prezzi sono IVA esclusa. Gli abbonamenti vengono fatturati da VetBuddy.</p>
-          </CardContent>
-        </Card>
 
         {/* Stripe per pagamenti clienti */}
         <Card>
