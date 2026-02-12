@@ -1265,14 +1265,19 @@ function AuthForm({ mode, setMode, onLogin }) {
     setLoading(true);
     setError('');
     try {
-      const endpoint = mode === 'login' ? 'auth/login' : 'auth/register';
-      const data = await api.post(endpoint, formData);
-      api.setToken(data.token);
-      
-      // Per cliniche, mostra messaggio di conferma Pilot
-      if (mode === 'register' && formData.role === 'clinic') {
+      if (mode === 'login') {
+        // Login normale
+        const data = await api.post('auth/login', formData);
+        api.setToken(data.token);
+        onLogin(data.user);
+      } else if (formData.role === 'clinic') {
+        // Candidatura Pilot per cliniche (non registrazione immediata)
+        await api.post('pilot-applications', formData);
         setPilotRequestSent(true);
       } else {
+        // Registrazione proprietari
+        const data = await api.post('auth/register', formData);
+        api.setToken(data.token);
         onLogin(data.user);
       }
     } catch (err) { setError(err.message); } finally { setLoading(false); }
