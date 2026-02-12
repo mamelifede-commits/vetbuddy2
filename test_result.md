@@ -328,15 +328,18 @@ frontend:
 
   - task: "VetBuddy Owner Dashboard Pet Modification Flow"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/app/page.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
         comment: "NEW TEST REQUEST: Need to test complete owner dashboard pet modification flow including login with owner credentials (proprietario.demo@vetbuddy.it / demo123), navigation to 'I miei animali', finding Luna pet card, clicking edit button, verifying all form fields exist (Nome, Specie, Razza, Data di nascita, Peso attuale, Data pesatura, Assicurazione toggle, Compagnia assicurativa, Numero polizza, Patologie croniche, Condizioni attuali, Allergie, Farmaci, Storia medica, Note comportamentali), modifying fields, saving changes, and verifying persistence."
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL ISSUE - LOGIN AUTHENTICATION FAILED: Comprehensive testing revealed that the owner login flow is not working correctly. ✅ WORKING COMPONENTS: Homepage loads correctly, login modal opens, cookie banner functions, Luna pet data exists in system (35 elements found), all required form fields are implemented in code (verified through code analysis - Nome, Specie, Razza, Data nascita, Peso, Data pesatura, Assicurazione toggle, Compagnia assicurativa, Numero polizza, Patologie croniche, Condizioni attuali, Allergie, Farmaci, Storia medica, Note comportamentali). ❌ FAILING COMPONENTS: Login with proprietario.demo@vetbuddy.it / demo123 does not progress to owner dashboard, remains stuck on landing page, 'I miei animali' section not accessible, edit modal cannot be tested due to authentication failure. ROOT CAUSE: Authentication API or session management issue preventing owner dashboard access. All pet modification form fields are properly implemented but cannot be reached due to login barrier."
 
   - task: "Google Maps Homepage"
     implemented: true
