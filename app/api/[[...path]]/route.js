@@ -1496,6 +1496,27 @@ export async function POST(request, { params }) {
                 </table>
               </div>
 
+              ${appt.videoLink ? `
+              <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 16px; padding: 24px; margin-bottom: 24px; text-align: center;">
+                <h3 style="color: white; margin: 0 0 12px; font-size: 18px;">🎥 Video Consulto</h3>
+                <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin: 0 0 16px;">
+                  Il giorno dell'appuntamento, clicca il pulsante qui sotto per avviare la videochiamata.
+                </p>
+                <a href="${appt.videoLink}" target="_blank" style="display: inline-block; background: white; color: #6366f1; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
+                  📹 Avvia Video Consulto
+                </a>
+                <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin: 12px 0 0;">
+                  Link: ${appt.videoLink}
+                </p>
+              </div>
+              
+              <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin-bottom: 24px; border-radius: 0 8px 8px 0;">
+                <p style="margin: 0; font-size: 14px; color: #92400e;">
+                  <strong>⚠️ Importante:</strong> Il video consulto è una consulenza a distanza e non sostituisce una visita clinica in presenza quando è necessario un esame fisico.
+                </p>
+              </div>
+              ` : ''}
+
               ${appt.reason ? `
               <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin-bottom: 24px; border-radius: 0 8px 8px 0;">
                 <p style="margin: 0; font-size: 14px; color: #92400e;"><strong>Note:</strong> ${appt.reason}</p>
