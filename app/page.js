@@ -9433,12 +9433,12 @@ function FindClinic({ user }) {
               </Button>
             )}
           </div>
-          {searchService && (
+          {searchService && searchService !== 'all' && (
             <div className="mt-3 flex items-center gap-2">
               <Badge variant="outline" className="bg-coral-50 text-coral-700 border-coral-200">
                 <Stethoscope className="h-3 w-3 mr-1" />
                 {serviceCatalog.find(s => s.id === searchService)?.name || searchService}
-                <button onClick={() => setSearchService('')} className="ml-2 hover:text-coral-900">×</button>
+                <button onClick={() => setSearchService('all')} className="ml-2 hover:text-coral-900">×</button>
               </Badge>
             </div>
           )}
