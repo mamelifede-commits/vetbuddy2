@@ -252,6 +252,36 @@ export async function PUT(request) {
 
     // If approved, create the clinic account
     if (status === 'approved') {
+      // Get the plan from request
+      const plan = body.plan || 'pilot';
+      
+      // Define plan limits
+      const planLimits = {
+        starter: {
+          maxUsers: 1,
+          maxPatients: 50,
+          automationsEnabled: false,
+          automationsCount: 0,
+          features: ['agenda_base', 'map_position']
+        },
+        pilot: {
+          maxUsers: 5,
+          maxPatients: -1, // unlimited
+          automationsEnabled: true,
+          automationsCount: 20,
+          features: ['agenda_base', 'map_position', 'team_inbox', 'documents', 'google_calendar', 'reports', 'automations_basic']
+        },
+        custom: {
+          maxUsers: -1, // unlimited
+          maxPatients: -1,
+          automationsEnabled: true,
+          automationsCount: 44,
+          features: ['agenda_base', 'map_position', 'team_inbox', 'documents', 'google_calendar', 'reports', 'automations_full', 'whatsapp', 'api', 'multi_location', 'sla', 'priority_support']
+        }
+      };
+
+      const selectedPlanLimits = planLimits[plan] || planLimits.pilot;
+
       // Generate a temporary password
       const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
       const bcrypt = require('bcryptjs');
@@ -274,15 +304,24 @@ export async function PUT(request) {
         services: application.services,
         pilotMember: true,
         pilotApprovedAt: new Date(),
+        subscriptionPlan: plan,
+        planLimits: selectedPlanLimits,
         createdAt: new Date()
       };
 
       await db.collection('users').insertOne(clinicUser);
 
+      // Plan descriptions for email
+      const planDescriptions = {
+        starter: 'Piano Starter (1 utente, funzionalità base)',
+        pilot: 'Piano Pilot (5 utenti, 20 automazioni, tutte le funzionalità core)',
+        custom: 'Piano Custom (illimitato, 44+ automazioni, supporto prioritario)'
+      };
+
       // Send approval email with credentials
       await sendEmail({
         to: application.email,
-        subject: `🎉 Benvenuto nel Pilot VetBuddy!`,
+        subject: `🎉 Benvenuto nel Pilot VetBuddy - Piano ${plan.charAt(0).toUpperCase() + plan.slice(1)}!`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <div style="background: linear-gradient(135deg, #27AE60, #2ECC71); padding: 20px; border-radius: 10px 10px 0 0;">
@@ -291,6 +330,12 @@ export async function PUT(request) {
             <div style="padding: 30px; background: #f9f9f9;">
               <p>Ciao ${application.name},</p>
               <p>Siamo felici di comunicarti che <strong>${application.clinicName}</strong> è stata approvata per il Pilot VetBuddy!</p>
+              
+              <div style="background: ${plan === 'custom' ? '#9333ea' : plan === 'pilot' ? '#FF6B6B' : '#6B7280'}; color: white; padding: 15px; border-radius: 10px; margin: 20px 0; text-align: center;">
+                <p style="margin: 0; font-size: 14px;">Il tuo piano:</p>
+                <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold;">${plan.charAt(0).toUpperCase() + plan.slice(1)}</p>
+                <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.9;">${planDescriptions[plan]}</p>
+              </div>
               
               <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid #27AE60;">
                 <h3 style="margin-top: 0; color: #27AE60;">🔐 Le tue credenziali:</h3>
