@@ -6030,6 +6030,256 @@ function ClinicSettings({ user, onNavigate }) {
                   </div>
                 </div>
 
+                {/* Sezione Ciclo di Vita Pet */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <span className="text-lg">🐾</span> Ciclo di Vita Pet
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">✂️</span>
+                        <div>
+                          <p className="text-sm font-medium">Sterilizzazione</p>
+                          <p className="text-xs text-gray-500">Cuccioli 6-12 mesi</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.sterilizationReminder} 
+                        onCheckedChange={() => toggleAutomation('sterilizationReminder')}
+                        disabled={automationSaving === 'sterilizationReminder'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">👴</span>
+                        <div>
+                          <p className="text-sm font-medium">Senior Pet Care</p>
+                          <p className="text-xs text-gray-500">Animali 7+ anni</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.seniorPetCare} 
+                        onCheckedChange={() => toggleAutomation('seniorPetCare')}
+                        disabled={automationSaving === 'seniorPetCare'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">📍</span>
+                        <div>
+                          <p className="text-sm font-medium">Verifica Microchip</p>
+                          <p className="text-xs text-gray-500">Controllo annuale</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.microchipCheck} 
+                        onCheckedChange={() => toggleAutomation('microchipCheck')}
+                        disabled={automationSaving === 'microchipCheck'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">👋</span>
+                        <div>
+                          <p className="text-sm font-medium">Welcome New Pet</p>
+                          <p className="text-xs text-gray-500">Sequenza benvenuto</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.welcomeNewPet} 
+                        onCheckedChange={() => toggleAutomation('welcomeNewPet')}
+                        disabled={automationSaving === 'welcomeNewPet'}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sezione Business & Fidelizzazione */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <span className="text-lg">💰</span> Business & Fidelizzazione
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🏆</span>
+                        <div>
+                          <p className="text-sm font-medium">Programma Fedeltà</p>
+                          <p className="text-xs text-gray-500">Sconti dopo X visite</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.loyaltyProgram} 
+                        onCheckedChange={() => toggleAutomation('loyaltyProgram')}
+                        disabled={automationSaving === 'loyaltyProgram'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🤝</span>
+                        <div>
+                          <p className="text-sm font-medium">Programma Referral</p>
+                          <p className="text-xs text-gray-500">Premi chi porta amici</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.referralProgram} 
+                        onCheckedChange={() => toggleAutomation('referralProgram')}
+                        disabled={automationSaving === 'referralProgram'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-red-50 to-red-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🏖️</span>
+                        <div>
+                          <p className="text-sm font-medium">Chiusure Festive</p>
+                          <p className="text-xs text-gray-500">Avvisi Natale, Agosto</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.holidayClosures} 
+                        onCheckedChange={() => toggleAutomation('holidayClosures')}
+                        disabled={automationSaving === 'holidayClosures'}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sezione Situazioni Delicate */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <span className="text-lg">💔</span> Situazioni Delicate
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🌈</span>
+                        <div>
+                          <p className="text-sm font-medium">Condoglianze Pet</p>
+                          <p className="text-xs text-gray-500">Messaggio di supporto</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.petCondolences} 
+                        onCheckedChange={() => toggleAutomation('petCondolences')}
+                        disabled={automationSaving === 'petCondolences'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">💝</span>
+                        <div>
+                          <p className="text-sm font-medium">Follow-up Lutto</p>
+                          <p className="text-xs text-gray-500">Check-in dopo 1 mese</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.griefFollowup} 
+                        onCheckedChange={() => toggleAutomation('griefFollowup')}
+                        disabled={automationSaving === 'griefFollowup'}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sezione Per la Clinica */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <span className="text-lg">🏥</span> Per la Clinica
+                  </h4>
+                  <div className="grid md:grid-cols-3 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">📊</span>
+                        <div>
+                          <p className="text-sm font-medium">Riepilogo Serale</p>
+                          <p className="text-xs text-gray-500">Recap giornaliero</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.dailySummary} 
+                        onCheckedChange={() => toggleAutomation('dailySummary')}
+                        disabled={automationSaving === 'dailySummary'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-rose-50 to-rose-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">📦</span>
+                        <div>
+                          <p className="text-sm font-medium">Scorte Basse</p>
+                          <p className="text-xs text-gray-500">Alert inventario</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.lowStockAlert} 
+                        onCheckedChange={() => toggleAutomation('lowStockAlert')}
+                        disabled={automationSaving === 'lowStockAlert'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-pink-50 to-pink-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🎂</span>
+                        <div>
+                          <p className="text-sm font-medium">Compleanno Staff</p>
+                          <p className="text-xs text-gray-500">Ricorda il team</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.staffBirthday} 
+                        onCheckedChange={() => toggleAutomation('staffBirthday')}
+                        disabled={automationSaving === 'staffBirthday'}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sezione Multi-Canale (Coming Soon) */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <span className="text-lg">📱</span> Multi-Canale <Badge className="bg-amber-100 text-amber-700 text-xs ml-2">Coming Soon</Badge>
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg opacity-60">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">💬</span>
+                        <div>
+                          <p className="text-sm font-medium">WhatsApp Business</p>
+                          <p className="text-xs text-gray-500">Richiede integrazione</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.whatsappReminders} 
+                        onCheckedChange={() => toggleAutomation('whatsappReminders')}
+                        disabled={true}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg opacity-60">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">📲</span>
+                        <div>
+                          <p className="text-sm font-medium">SMS Emergenza</p>
+                          <p className="text-xs text-gray-500">Richiede crediti SMS</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.smsEmergency} 
+                        onCheckedChange={() => toggleAutomation('smsEmergency')}
+                        disabled={true}
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
                   <p className="text-sm text-purple-700">
                     <strong>💡 Pilot Milano:</strong> Tutte le {Object.keys(automationSettings).length} automazioni eseguono ogni giorno alle 8:00. Puoi attivarle/disattivarle in qualsiasi momento.
