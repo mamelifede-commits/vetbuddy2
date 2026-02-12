@@ -154,7 +154,7 @@ export default function AdminPage() {
   // State for approve dialog with plan selection
   const [showApproveDialog, setShowApproveDialog] = useState(false);
   const [appToApprove, setAppToApprove] = useState(null);
-  const [selectedPlan, setSelectedPlan] = useState('pilot');
+  const [selectedPlan, setSelectedPlan] = useState('pro');
 
   const openApproveDialog = (app) => {
     setAppToApprove(app);
