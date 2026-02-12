@@ -1363,11 +1363,21 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
       }
 
-      const { petId, petName, ownerName, ownerId, date, time, reason, notes } = body;
+      const { petId, petName, ownerName, ownerId, date, time, reason, notes, type, serviceId, duration } = body;
       const appointments = await getCollection('appointments');
       
+      const appointmentId = uuidv4();
+      
+      // Generate video link for video consulto
+      let videoLink = null;
+      if (type === 'videoconsulto' || type === 'online' || serviceId?.includes('online') || serviceId?.includes('consulenza')) {
+        // Generate unique Jitsi Meet room
+        const roomCode = `vetbuddy-${appointmentId.slice(0, 8)}`;
+        videoLink = `https://meet.jit.si/${roomCode}`;
+      }
+      
       const appointment = {
-        id: uuidv4(),
+        id: appointmentId,
         clinicId: user.role === 'clinic' ? user.id : body.clinicId,
         ownerId: user.role === 'owner' ? user.id : ownerId,
         petId,
@@ -1375,8 +1385,12 @@ export async function POST(request, { params }) {
         ownerName,
         date,
         time,
+        type: type || 'visita',
+        serviceId,
+        duration: duration || 30,
         reason,
         notes: notes || '',
+        videoLink,
         status: 'scheduled',
         createdAt: new Date().toISOString()
       };
