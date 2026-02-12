@@ -332,6 +332,7 @@ const GOOGLE_MAPS_LIBRARIES = ['places'];
 
 function HomepageMapSection() {
   const [selectedClinic, setSelectedClinic] = useState(null);
+  const [mapError, setMapError] = useState(false);
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   
   // Demo clinics for homepage showcase - Milano area
@@ -345,79 +346,58 @@ function HomepageMapSection() {
   
   const mapCenter = useMemo(() => ({ lat: 45.4642, lng: 9.1900 }), []);
   
-  const mapStyles = [
-    { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-    { featureType: 'transit', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#e0f2fe' }] },
-    { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#f8fafc' }] },
-    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#e2e8f0' }] },
-    { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#cbd5e1' }] },
-  ];
-  
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: apiKey || '',
-    libraries: GOOGLE_MAPS_LIBRARIES
-  });
-  
-  // Fallback UI for loading or error states
-  if (loadError || !apiKey) {
-    return (
-      <div className="relative">
-        <div className="bg-gradient-to-br from-blue-100 to-green-50 rounded-2xl p-6 shadow-2xl border border-blue-200 relative overflow-hidden h-[400px]">
-          <div className="absolute inset-0 opacity-20">
-            <svg viewBox="0 0 400 300" className="w-full h-full">
-              <defs>
-                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#3b82f6" strokeWidth="0.5"/>
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#grid)"/>
-            </svg>
-          </div>
-          <div className="relative z-10 flex flex-col items-center justify-center h-full">
-            <div className="bg-coral-500 text-white p-4 rounded-full shadow-lg mb-4 animate-bounce">
+  // Fallback senza Google Maps API - usa embed iframe
+  const renderFallbackMap = () => (
+    <div className="relative">
+      <div className="bg-gradient-to-br from-blue-100 to-green-50 rounded-2xl shadow-2xl border border-blue-200 overflow-hidden relative">
+        {apiKey ? (
+          <iframe
+            width="100%"
+            height="400"
+            style={{ border: 0 }}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+            src={`https://www.google.com/maps/embed/v1/search?key=${apiKey}&q=clinica+veterinaria+Milano&center=${mapCenter.lat},${mapCenter.lng}&zoom=13`}
+            onError={() => setMapError(true)}
+          />
+        ) : (
+          <div className="h-[400px] flex flex-col items-center justify-center">
+            <div className="bg-coral-500 text-white p-4 rounded-full shadow-lg mb-4">
               <Building2 className="h-8 w-8" />
             </div>
             <p className="text-gray-600 font-medium text-center">Mappa delle cliniche veterinarie</p>
             <p className="text-gray-400 text-sm mt-2">Milano e provincia</p>
           </div>
-        </div>
+        )}
       </div>
-    );
-  }
-  
-  if (!isLoaded) {
-    return (
-      <div className="relative">
-        <div className="bg-gradient-to-br from-blue-100 to-green-50 rounded-2xl shadow-2xl border border-blue-200 h-[400px] flex items-center justify-center">
-          <div className="text-center">
-            <RefreshCw className="h-8 w-8 text-blue-500 animate-spin mx-auto mb-2" />
-            <p className="text-gray-500">Caricamento mappa...</p>
+      
+      {/* Floating clinic cards */}
+      <div className="absolute -bottom-4 -right-4 bg-white rounded-xl shadow-xl p-4 border w-64 z-20 hover:shadow-2xl transition-shadow">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="bg-green-100 p-2 rounded-full">
+            <MapPin className="h-5 w-5 text-green-600" />
+          </div>
+          <div>
+            <p className="font-semibold text-gray-900 text-sm">Clinica VetMilano</p>
+            <p className="text-xs text-green-600">● Aperto ora</p>
           </div>
         </div>
+        <div className="flex items-center justify-between text-xs text-gray-500">
+          <span>⭐ 4.8 (127)</span>
+          <span>0.3 km</span>
+        </div>
       </div>
-    );
+    </div>
+  );
+  
+  // Se c'è un errore o non c'è API key, mostra il fallback
+  if (!apiKey || mapError) {
+    return renderFallbackMap();
   }
   
-  return (
-    <div className="relative">
-      {/* Map Container with Beautiful Styling */}
-      <div className="rounded-2xl shadow-2xl border-2 border-blue-200 overflow-hidden relative">
-        <GoogleMap
-          mapContainerStyle={{ width: '100%', height: '400px' }}
-          center={mapCenter}
-          zoom={13}
-          options={{
-            styles: mapStyles,
-            disableDefaultUI: true,
-            zoomControl: true,
-            mapTypeControl: false,
-            streetViewControl: false,
-            fullscreenControl: false,
-          }}
-        >
-          {/* Clinic Markers */}
-          {demoClinics.map((clinic) => (
+  // Usa iframe invece di Google Maps SDK per maggiore stabilità
+  return renderFallbackMap();
             <MarkerF
               key={clinic.id}
               position={{ lat: clinic.lat, lng: clinic.lng }}
