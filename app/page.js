@@ -1914,7 +1914,7 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, se
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 text-blue-700 mb-2">
                   <Video className="h-4 w-4" />
-                  <span className="text-sm font-medium">Prossima video visita</span>
+                  <span className="text-sm font-medium">Prossimo video consulto</span>
                 </div>
                 <p className="font-semibold">{videoAppts[0].petName}</p>
                 <p className="text-sm text-gray-600">{videoAppts[0].ownerName}</p>
