@@ -1868,8 +1868,9 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, se
                         key={i} 
                         className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
                         onClick={() => {
-                          if (pet && onOpenPet) {
-                            onOpenPet(pet);
+                          const pet = getPetFromAppointment(appt);
+                          if (pet) {
+                            setSelectedPetPopup(pet);
                           }
                         }}
                       >
