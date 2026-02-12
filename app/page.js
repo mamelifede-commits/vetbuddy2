@@ -5453,24 +5453,41 @@ function ClinicReports({ appointments, documents, messages, owners, pets, onNavi
                 <p className="text-center py-8 text-gray-500">Nessun documento</p>
               ) : (
                 <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {documents.slice(0, 20).map((doc, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <FileText className="h-5 w-5 text-coral-500" />
-                        <div>
-                          <p className="font-medium">{doc.name}</p>
-                          <p className="text-sm text-gray-500">{doc.petName} • {doc.type}</p>
+                  {documents.slice(0, 20).map((doc, i) => {
+                    const pet = (pets || []).find(p => p.id === doc.petId || p.name === doc.petName);
+                    return (
+                      <div 
+                        key={i} 
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-coral-50 cursor-pointer transition-colors"
+                        onClick={() => {
+                          if (doc.url || doc.fileUrl) {
+                            window.open(doc.url || doc.fileUrl, '_blank');
+                          } else if (pet && onOpenPet) {
+                            onOpenPet(pet);
+                            onNavigate('patients');
+                          } else {
+                            onNavigate('documents');
+                          }
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <FileText className="h-5 w-5 text-coral-500" />
+                          <div>
+                            <p className="font-medium">{doc.name}</p>
+                            <p className="text-sm text-gray-500">{doc.petName} • {doc.type}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {doc.emailSent ? (
+                            <Badge variant="outline" className="text-green-600 border-green-300">Inviato</Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-gray-500">Bozza</Badge>
+                          )}
+                          <ChevronRight className="h-4 w-4 text-gray-400" />
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {doc.emailSent ? (
-                          <Badge variant="outline" className="text-green-600 border-green-300">Inviato</Badge>
-                        ) : (
-                          <Badge variant="outline" className="text-gray-500">Bozza</Badge>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
