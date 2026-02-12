@@ -662,6 +662,17 @@ export async function GET(request, { params }) {
       return NextResponse.json(filteredClinics, { headers: corsHeaders });
     }
 
+    // Get own clinic reviews (authenticated)
+    if (path === 'clinic/reviews') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const reviews = await getCollection('reviews');
+      const list = await reviews.find({ clinicId: user.id }).sort({ createdAt: -1 }).toArray();
+      return NextResponse.json({ reviews: list }, { headers: corsHeaders });
+    }
+
     // Get clinic reviews
     if (path.startsWith('clinics/') && path.endsWith('/reviews')) {
       const clinicId = path.split('/')[1];
