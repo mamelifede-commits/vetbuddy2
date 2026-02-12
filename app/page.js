@@ -1809,7 +1809,7 @@ function ClinicDashboard({ user, onLogout }) {
 }
 
 // ==================== CONTROL ROOM DASHBOARD ====================
-function ClinicControlRoom({ appointments, documents, messages, owners, setupProgress, onRefresh, onNavigate }) {
+function ClinicControlRoom({ appointments, documents, messages, owners, pets, setupProgress, onRefresh, onNavigate, onOpenPet }) {
   const today = new Date().toISOString().split('T')[0];
   const todayAppts = appointments.filter(a => a.date === today);
   const videoAppts = todayAppts.filter(a => a.type === 'videoconsulto');
@@ -1818,6 +1818,11 @@ function ClinicControlRoom({ appointments, documents, messages, owners, setupPro
   
   const completedSteps = Object.values(setupProgress).filter(Boolean).length;
   const progressPercent = (completedSteps / 4) * 100;
+
+  // Helper per trovare un pet dall'appuntamento
+  const getPetFromAppointment = (appt) => {
+    return pets?.find(p => p.id === appt.petId) || null;
+  };
 
   // Workflow data
   const docsToReview = documents.filter(d => d.status === 'to_review').length || 2;
