@@ -23,7 +23,8 @@ import {
   CreditCard, PlayCircle, ArrowRight, FileCheck, Stethoscope, SendHorizontal,
   LayoutDashboard, ListTodo, CircleDot, Timer, TrendingUp, Activity,
   MapPin, Globe, Receipt, Syringe, Weight, AlertTriangle, ChevronLeft,
-  Euro, Wallet, Camera, Edit, Trash2, Info, StarHalf, Image as ImageIcon, Scissors
+  Euro, Wallet, Camera, Edit, Trash2, Info, StarHalf, Image as ImageIcon, Scissors,
+  BarChart3
 } from 'lucide-react';
 
 // Logo Component
