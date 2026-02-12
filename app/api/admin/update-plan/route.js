@@ -3,6 +3,9 @@ import { getCollection } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { sendEmail } from '@/lib/email';
 
+// Force dynamic rendering to prevent static generation errors
+export const dynamic = 'force-dynamic';
+
 const ADMIN_EMAIL = 'info@vetbuddy.it';
 
 // Plan limits configuration

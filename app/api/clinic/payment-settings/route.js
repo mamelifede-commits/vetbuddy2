@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 
+// Force dynamic rendering to prevent static generation errors
+export const dynamic = 'force-dynamic';
+
 // Predefined cancellation policy options
 export const CANCELLATION_POLICIES = [
   { id: 'free_24h', label: 'Cancellazione gratuita fino a 24h prima', penalty: 0 },

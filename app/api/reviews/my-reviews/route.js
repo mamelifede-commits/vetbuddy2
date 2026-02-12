@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { MongoClient } from 'mongodb';
 
+// Force dynamic rendering to prevent static generation errors
+export const dynamic = 'force-dynamic';
+
 const client = new MongoClient(process.env.MONGO_URL);
 
 // GET /api/reviews/my-reviews - Get all reviews written by the current user
