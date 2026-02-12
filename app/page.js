@@ -5913,67 +5913,12 @@ function ClinicFeedbackPage({ user }) {
 
 // ==================== AUTOMAZIONI ====================
 function ClinicAutomations({ user, onNavigate }) {
-  const [automationSettings, setAutomationSettings] = useState({
-    // Email Automatiche
-    appointmentReminders: true,
-    bookingConfirmation: true,
-    vaccineRecalls: true,
-    postVisitFollowup: true,
-    // Gestione Smart
-    noShowDetection: true,
-    waitlistNotification: true,
-    suggestedSlots: true,
-    documentReminders: true,
-    // Messaggi & Report
-    autoTicketAssignment: true,
-    aiQuickReplies: true,
-    urgencyNotifications: true,
-    weeklyReport: true,
-    // Engagement & Fidelizzazione
-    petBirthday: true,
-    reviewRequest: true,
-    inactiveClientReactivation: true,
-    // Salute & Prevenzione
-    antiparasiticReminder: true,
-    annualCheckup: true,
-    medicationRefill: true,
-    weightAlert: true,
-    dentalHygiene: true,
-    // Operatività Clinica
-    appointmentConfirmation: true,
-    labResultsReady: true,
-    paymentReminder: true,
-    postSurgeryFollowup: true,
-    // Stagionali
-    summerHeatAlert: true,
-    tickSeasonAlert: true,
-    newYearFireworksAlert: true,
-    // Multi-Canale
-    whatsappReminders: false,
-    smsEmergency: false,
-    // Ciclo di Vita Pet
-    sterilizationReminder: true,
-    seniorPetCare: true,
-    microchipCheck: true,
-    welcomeNewPet: true,
-    // AI
-    aiLabExplanation: true,
-    breedRiskAlert: true,
-    dietSuggestions: true,
-    // Business
-    loyaltyProgram: true,
-    referralProgram: true,
-    holidayClosures: true,
-    // Situazioni Delicate
-    petCondolences: true,
-    griefFollowup: true,
-    // Per la Clinica
-    dailySummary: true,
-    lowStockAlert: true,
-    staffBirthday: true
-  });
+  const [automationSettings, setAutomationSettings] = useState({});
   const [automationLoading, setAutomationLoading] = useState(true);
   const [automationSaving, setAutomationSaving] = useState(null);
+  const [clinicPlan, setClinicPlan] = useState('starter');
+  const [allowedAutomations, setAllowedAutomations] = useState([]);
+  const [planAutomationsCount, setPlanAutomationsCount] = useState(0);
 
   useEffect(() => {
     loadAutomationSettings();
@@ -5982,8 +5927,11 @@ function ClinicAutomations({ user, onNavigate }) {
   const loadAutomationSettings = async () => {
     try {
       const response = await api.get('automations/settings');
-      if (response.success && response.settings) {
-        setAutomationSettings(response.settings);
+      if (response.success) {
+        setAutomationSettings(response.settings || {});
+        setClinicPlan(response.plan || 'starter');
+        setAllowedAutomations(response.allowedAutomations || []);
+        setPlanAutomationsCount(response.automationsCount || 0);
       }
     } catch (error) {
       console.error('Error loading automation settings:', error);
@@ -5992,42 +5940,83 @@ function ClinicAutomations({ user, onNavigate }) {
     }
   };
 
+  const isAutomationAllowed = (key) => {
+    if (clinicPlan === 'custom') return true;
+    if (allowedAutomations === 'all') return true;
+    return allowedAutomations.includes(key);
+  };
+
   const toggleAutomation = async (key) => {
+    if (!isAutomationAllowed(key)) {
+      alert(`⚠️ Questa automazione non è inclusa nel piano ${clinicPlan.toUpperCase()}.\n\nEffettua l'upgrade al piano PRO o CUSTOM per sbloccarla.`);
+      return;
+    }
+
     const newValue = !automationSettings[key];
     setAutomationSaving(key);
     setAutomationSettings(prev => ({ ...prev, [key]: newValue }));
     
     try {
-      await api.post('automations/settings', { key, enabled: newValue });
+      const response = await api.post('automations/settings', { key, enabled: newValue });
+      if (response.error) {
+        throw new Error(response.error);
+      }
     } catch (error) {
       console.error('Error saving automation setting:', error);
       setAutomationSettings(prev => ({ ...prev, [key]: !newValue }));
-      alert('Errore nel salvataggio. Riprova.');
+      alert(error.message || 'Errore nel salvataggio. Riprova.');
     } finally {
       setAutomationSaving(null);
     }
   };
 
-  const activeAutomationsCount = Object.values(automationSettings).filter(Boolean).length;
+  // Count active automations (only allowed ones)
+  const activeAutomationsCount = Object.entries(automationSettings)
+    .filter(([key, value]) => value && isAutomationAllowed(key))
+    .length;
   const totalAutomations = Object.keys(automationSettings).length;
 
+  // Plan badge color
+  const getPlanBadgeColor = () => {
+    switch(clinicPlan) {
+      case 'custom': return 'bg-purple-100 text-purple-700 border-purple-300';
+      case 'pro': return 'bg-coral-100 text-coral-700 border-coral-300';
+      default: return 'bg-gray-100 text-gray-700 border-gray-300';
+    }
+  };
+
   // Helper component for automation item
-  const AutomationItem = ({ settingKey, icon, title, description, gradient, disabled = false }) => (
-    <div className={`flex items-center justify-between p-3 ${gradient} rounded-lg ${disabled ? 'opacity-60' : ''}`}>
-      <div className="flex items-center gap-2">
-        {icon}
-        <div>
-          <p className="text-sm font-medium">{title}</p>
-          <p className="text-xs text-gray-500">{description}</p>
+  const AutomationItem = ({ settingKey, icon, title, description, gradient, forceDisabled = false }) => {
+    const allowed = isAutomationAllowed(settingKey);
+    const isDisabled = forceDisabled || !allowed;
+    
+    return (
+      <div className={`flex items-center justify-between p-3 ${gradient} rounded-lg ${isDisabled ? 'opacity-50' : ''} relative`}>
+        <div className="flex items-center gap-2">
+          {icon}
+          <div>
+            <p className="text-sm font-medium flex items-center gap-1">
+              {title}
+              {!allowed && <Lock className="h-3 w-3 text-gray-400" />}
+            </p>
+            <p className="text-xs text-gray-500">{description}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {!allowed && (
+            <Badge variant="outline" className="text-xs bg-amber-50 text-amber-600 border-amber-200">
+              {clinicPlan === 'starter' ? 'Pro+' : 'Custom'}
+            </Badge>
+          )}
+          <Switch 
+            checked={allowed ? automationSettings[settingKey] : false}
+            onCheckedChange={() => toggleAutomation(settingKey)}
+            disabled={isDisabled || automationSaving === settingKey}
+          />
         </div>
       </div>
-      <Switch 
-        checked={automationSettings[settingKey]} 
-        onCheckedChange={() => toggleAutomation(settingKey)}
-        disabled={disabled || automationSaving === settingKey}
-      />
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="space-y-6">
