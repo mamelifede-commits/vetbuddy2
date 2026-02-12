@@ -3750,8 +3750,62 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner 
                   <p className="text-sm">{petDetails.notes}</p>
                 </div>
               )}
+              
+              {/* Azioni - Modifica e Elimina */}
+              <div className="flex gap-3 pt-4 border-t">
+                <Button variant="outline" className="flex-1" onClick={handleEditPet}>
+                  <Edit className="h-4 w-4 mr-2" />Modifica
+                </Button>
+                <Button variant="outline" className="text-red-500 hover:bg-red-50 hover:text-red-600" onClick={handleDeletePet}>
+                  <Trash2 className="h-4 w-4 mr-2" />Elimina
+                </Button>
+              </div>
             </div>
           ) : null}
+        </DialogContent>
+      </Dialog>
+      
+      {/* Dialog Modifica Animale */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Modifica {selectedPet?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <Label>Nome</Label>
+              <Input value={editFormData.name || ''} onChange={(e) => setEditFormData({...editFormData, name: e.target.value})} />
+            </div>
+            <div>
+              <Label>Specie</Label>
+              <Select value={editFormData.species || 'dog'} onValueChange={(v) => setEditFormData({...editFormData, species: v})}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="dog">🐕 Cane</SelectItem>
+                  <SelectItem value="cat">🐱 Gatto</SelectItem>
+                  <SelectItem value="bird">🦜 Uccello</SelectItem>
+                  <SelectItem value="rabbit">🐰 Coniglio</SelectItem>
+                  <SelectItem value="other">🐾 Altro</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Razza</Label>
+              <Input value={editFormData.breed || ''} onChange={(e) => setEditFormData({...editFormData, breed: e.target.value})} />
+            </div>
+            <div>
+              <Label>Peso (kg)</Label>
+              <Input type="number" step="0.1" value={editFormData.weight || ''} onChange={(e) => setEditFormData({...editFormData, weight: e.target.value})} />
+            </div>
+            <div>
+              <Label>Microchip</Label>
+              <Input value={editFormData.microchip || ''} onChange={(e) => setEditFormData({...editFormData, microchip: e.target.value})} />
+            </div>
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={() => setShowEditDialog(false)} className="flex-1">Annulla</Button>
+              <Button onClick={handleSaveEdit} className="flex-1 bg-coral-500 hover:bg-coral-600">Salva</Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
