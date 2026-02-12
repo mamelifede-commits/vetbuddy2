@@ -1168,6 +1168,69 @@ export async function POST(request, { params }) {
       });
     }
 
+    // ==================== AUTOMATIONS SETTINGS ====================
+    // Save automation settings
+    if (path === 'automations/settings') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { key, enabled } = body;
+      
+      // Get clinic's plan to check automation limits
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: user.id });
+      
+      if (!clinic) {
+        return NextResponse.json({ error: 'Clinica non trovata' }, { status: 404, headers: corsHeaders });
+      }
+
+      // Define automation limits by plan
+      const PLAN_AUTOMATION_LIMITS = {
+        starter: { count: 0, allowed: [] },
+        pro: { 
+          count: 20, 
+          allowed: [
+            'appointmentReminders', 'bookingConfirmation', 'vaccineRecalls', 'postVisitFollowup',
+            'noShowDetection', 'waitlistNotification', 'suggestedSlots', 'documentReminders',
+            'autoTicketAssignment', 'urgencyNotifications', 'weeklyReport',
+            'petBirthday', 'reviewRequest', 'inactiveClientReactivation',
+            'antiparasiticReminder', 'annualCheckup', 'appointmentConfirmation', 'labResultsReady',
+            'paymentReminder', 'postSurgeryFollowup'
+          ]
+        },
+        custom: { count: 44, allowed: 'all' }
+      };
+
+      const clinicPlan = clinic.plan || 'starter';
+      const planLimits = PLAN_AUTOMATION_LIMITS[clinicPlan] || PLAN_AUTOMATION_LIMITS.starter;
+
+      // Check if this automation is allowed for the plan
+      if (planLimits.allowed !== 'all' && !planLimits.allowed.includes(key)) {
+        return NextResponse.json({ 
+          error: `Questa automazione non è inclusa nel piano ${clinicPlan}. Effettua l'upgrade per sbloccarla.`,
+          planRequired: planLimits.allowed === 'all' ? clinicPlan : 'pro'
+        }, { status: 403, headers: corsHeaders });
+      }
+
+      // Save the setting
+      const automationSettings = await getCollection('automation_settings');
+      await automationSettings.updateOne(
+        { clinicId: user.id },
+        { 
+          $set: { 
+            [`settings.${key}`]: enabled,
+            updatedAt: new Date().toISOString()
+          },
+          $setOnInsert: { clinicId: user.id, createdAt: new Date().toISOString() }
+        },
+        { upsert: true }
+      );
+
+      return NextResponse.json({ success: true, key, enabled }, { headers: corsHeaders });
+    }
+
     // Login
     if (path === 'auth/login') {
       const { email, password } = body;
