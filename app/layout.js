@@ -6,6 +6,10 @@ export const metadata = {
   description: 'La piattaforma per cliniche veterinarie e proprietari di animali. Gestisci appuntamenti, documenti e comunicazione in un\'unica piattaforma. Pilot Milano 2025.',
   keywords: ['veterinario', 'clinica veterinaria', 'gestionale', 'animali', 'Milano', 'prenotazioni', 'pet'],
   authors: [{ name: 'VetBuddy' }],
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-icon.svg',
+  },
   openGraph: {
     title: 'VetBuddy - Gestionale Veterinario',
     description: 'La piattaforma per cliniche veterinarie e proprietari di animali. Zero carta, zero caos.',
