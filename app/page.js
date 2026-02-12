@@ -5884,7 +5884,7 @@ function ClinicSettings({ user, onNavigate }) {
               <Star className="h-5 w-5 text-amber-500" />Abbonamento VetBuddy
               <Badge className="bg-amber-500 text-white">Pilot Milano</Badge>
             </CardTitle>
-            <CardDescription>Accesso su invito — 6 mesi gratuiti per cliniche selezionate nel Pilot</CardDescription>
+            <CardDescription>Accesso su invito — 90 giorni gratuiti per cliniche selezionate (estendibili a 6 mesi)</CardDescription>
           </CardHeader>
           <CardContent>
             <SubscriptionPlans user={user} />
