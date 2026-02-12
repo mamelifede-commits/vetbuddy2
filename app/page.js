@@ -327,6 +327,169 @@ function FeatureCarousel() {
   );
 }
 
+// ==================== HOMEPAGE MAP SECTION ====================
+const GOOGLE_MAPS_LIBRARIES = ['places'];
+
+function HomepageMapSection() {
+  const [selectedClinic, setSelectedClinic] = useState(null);
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  
+  // Demo clinics for homepage showcase - Milano area
+  const demoClinics = [
+    { id: 1, name: 'Clinica VetMilano Centro', lat: 45.4642, lng: 9.1900, address: 'Via Roma 123, Milano', distance: '0.3 km', open: true, rating: 4.8 },
+    { id: 2, name: 'Ambulatorio VetCare', lat: 45.4722, lng: 9.1755, address: 'Corso Buenos Aires 45, Milano', distance: '1.2 km', open: true, rating: 4.6 },
+    { id: 3, name: 'Clinica Animali Felici', lat: 45.4580, lng: 9.2100, address: 'Via Montenapoleone 18, Milano', distance: '2.1 km', open: false, rating: 4.9 },
+    { id: 4, name: 'Pronto Soccorso Vet', lat: 45.4500, lng: 9.1650, address: 'Via Tortona 15, Milano', distance: '1.8 km', open: true, rating: 4.7 },
+    { id: 5, name: 'Centro Veterinario 24H', lat: 45.4800, lng: 9.2050, address: 'Viale Certosa 200, Milano', distance: '3.5 km', open: true, rating: 4.5 },
+  ];
+  
+  const mapCenter = useMemo(() => ({ lat: 45.4642, lng: 9.1900 }), []);
+  
+  const mapStyles = [
+    { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+    { featureType: 'transit', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#e0f2fe' }] },
+    { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#f8fafc' }] },
+    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#e2e8f0' }] },
+    { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#cbd5e1' }] },
+  ];
+  
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: apiKey || '',
+    libraries: GOOGLE_MAPS_LIBRARIES
+  });
+  
+  // Fallback UI for loading or error states
+  if (loadError || !apiKey) {
+    return (
+      <div className="relative">
+        <div className="bg-gradient-to-br from-blue-100 to-green-50 rounded-2xl p-6 shadow-2xl border border-blue-200 relative overflow-hidden h-[400px]">
+          <div className="absolute inset-0 opacity-20">
+            <svg viewBox="0 0 400 300" className="w-full h-full">
+              <defs>
+                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#3b82f6" strokeWidth="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)"/>
+            </svg>
+          </div>
+          <div className="relative z-10 flex flex-col items-center justify-center h-full">
+            <div className="bg-coral-500 text-white p-4 rounded-full shadow-lg mb-4 animate-bounce">
+              <Building2 className="h-8 w-8" />
+            </div>
+            <p className="text-gray-600 font-medium text-center">Mappa delle cliniche veterinarie</p>
+            <p className="text-gray-400 text-sm mt-2">Milano e provincia</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  if (!isLoaded) {
+    return (
+      <div className="relative">
+        <div className="bg-gradient-to-br from-blue-100 to-green-50 rounded-2xl shadow-2xl border border-blue-200 h-[400px] flex items-center justify-center">
+          <div className="text-center">
+            <RefreshCw className="h-8 w-8 text-blue-500 animate-spin mx-auto mb-2" />
+            <p className="text-gray-500">Caricamento mappa...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="relative">
+      {/* Map Container with Beautiful Styling */}
+      <div className="rounded-2xl shadow-2xl border-2 border-blue-200 overflow-hidden relative">
+        <GoogleMap
+          mapContainerStyle={{ width: '100%', height: '400px' }}
+          center={mapCenter}
+          zoom={13}
+          options={{
+            styles: mapStyles,
+            disableDefaultUI: true,
+            zoomControl: true,
+            mapTypeControl: false,
+            streetViewControl: false,
+            fullscreenControl: false,
+          }}
+        >
+          {/* Clinic Markers */}
+          {demoClinics.map((clinic) => (
+            <MarkerF
+              key={clinic.id}
+              position={{ lat: clinic.lat, lng: clinic.lng }}
+              icon={{
+                url: clinic.open 
+                  ? 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="50" viewBox="0 0 40 50"><path d="M20 0C9 0 0 9 0 20c0 11 20 30 20 30s20-19 20-30C40 9 31 0 20 0z" fill="#FF6B6B"/><circle cx="20" cy="18" r="10" fill="white"/><text x="20" y="22" font-size="12" text-anchor="middle" fill="#FF6B6B">🏥</text></svg>')
+                  : 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="50" viewBox="0 0 40 50"><path d="M20 0C9 0 0 9 0 20c0 11 20 30 20 30s20-19 20-30C40 9 31 0 20 0z" fill="#94a3b8"/><circle cx="20" cy="18" r="10" fill="white"/><text x="20" y="22" font-size="12" text-anchor="middle" fill="#94a3b8">🏥</text></svg>'),
+                scaledSize: { width: 40, height: 50, equals: () => false },
+                anchor: { x: 20, y: 50, equals: () => false },
+              }}
+              onClick={() => setSelectedClinic(clinic)}
+            />
+          ))}
+          
+          {/* Info Window */}
+          {selectedClinic && (
+            <InfoWindowF
+              position={{ lat: selectedClinic.lat, lng: selectedClinic.lng }}
+              onCloseClick={() => setSelectedClinic(null)}
+            >
+              <div className="p-2 min-w-[200px]">
+                <h4 className="font-bold text-gray-900">{selectedClinic.name}</h4>
+                <p className="text-xs text-gray-500 mt-1">{selectedClinic.address}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${selectedClinic.open ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                    {selectedClinic.open ? '● Aperto' : '● Chiuso'}
+                  </span>
+                  <span className="text-xs text-gray-500">• {selectedClinic.distance}</span>
+                  <span className="text-xs text-amber-600">★ {selectedClinic.rating}</span>
+                </div>
+              </div>
+            </InfoWindowF>
+          )}
+        </GoogleMap>
+        
+        {/* Overlay Legend */}
+        <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg px-3 py-2 z-10">
+          <div className="flex items-center gap-2 text-xs">
+            <div className="w-3 h-3 rounded-full bg-coral-500"></div>
+            <span className="text-gray-700">Cliniche VetBuddy</span>
+          </div>
+        </div>
+        
+        {/* Stats Badge */}
+        <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg px-3 py-2 z-10">
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold text-coral-600">{demoClinics.length}</span>
+            <span className="text-xs text-gray-500">cliniche<br/>in zona</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Floating Result Card */}
+      <div className="absolute -bottom-4 -right-4 bg-white rounded-xl shadow-xl p-4 border w-64 z-20 hover:shadow-2xl transition-shadow">
+        <div className="flex items-start gap-3">
+          <div className="h-12 w-12 bg-gradient-to-br from-coral-100 to-coral-200 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Building2 className="h-6 w-6 text-coral-600" />
+          </div>
+          <div>
+            <h4 className="font-semibold text-gray-900 text-sm">Clinica VetMilano</h4>
+            <p className="text-xs text-gray-500">Via Roma 123, Milano</p>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">Aperto</span>
+              <span className="text-xs text-gray-400">• 0.3 km</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ==================== LANDING PAGE ====================
 function LandingPage({ onLogin }) {
   const [showAuth, setShowAuth] = useState(false);
