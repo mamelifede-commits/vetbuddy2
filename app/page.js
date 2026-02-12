@@ -1790,7 +1790,7 @@ function ClinicDashboard({ user, onLogout }) {
 
       {/* Main */}
       <main className="flex-1 p-4 md:p-6 overflow-auto">
-        {activeTab === 'dashboard' && <ClinicControlRoom appointments={appointments} documents={documents} messages={messages} owners={owners} setupProgress={setupProgress} onRefresh={loadData} onNavigate={setActiveTab} />}
+        {activeTab === 'dashboard' && <ClinicControlRoom appointments={appointments} documents={documents} messages={messages} owners={owners} pets={pets} setupProgress={setupProgress} onRefresh={loadData} onNavigate={setActiveTab} onOpenPet={handleOpenPetFromOwner} />}
         {activeTab === 'agenda' && <ClinicAgenda appointments={appointments} staff={staff} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'inbox' && <ClinicInbox messages={messages} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'documents' && <ClinicDocuments documents={documents} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
