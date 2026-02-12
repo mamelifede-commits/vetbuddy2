@@ -1745,6 +1745,7 @@ function ClinicDashboard({ user, onLogout }) {
               <NavItem icon={User} label="Proprietari" value="owners" />
               <NavItem icon={Users} label="Staff" value="staff" />
               <NavItem icon={TrendingUp} label="Report" value="reports" />
+              <NavItem icon={Star} label="Recensioni" value="reviews" />
               <NavItem icon={ClipboardList} label="Template" value="templates" />
               <NavItem icon={Zap} label="Automazioni" value="automations" />
               <div className="border-t my-2"></div>
