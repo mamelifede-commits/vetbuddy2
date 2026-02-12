@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/db';
 
+// Forza rendering dinamico per evitare errori build Vercel
+export const dynamic = 'force-dynamic';
+
 // Suggerisce slot in base allo storico degli appuntamenti
 export async function GET(request) {
   try {
