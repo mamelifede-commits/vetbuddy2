@@ -1676,6 +1676,7 @@ function ClinicDashboard({ user, onLogout }) {
         {activeTab === 'reports' && <ClinicReports appointments={appointments} documents={documents} messages={messages} owners={owners} onNavigate={setActiveTab} />}
         {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} onNavigate={setActiveTab} />}
         {activeTab === 'settings' && <ClinicSettings user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'feedback' && <ClinicFeedbackPage user={user} />}
       </main>
     </div>
   );
