@@ -43,6 +43,17 @@ const SUBSCRIPTION_PLANS = {
 
 // Veterinary Services Catalog
 const VETERINARY_SERVICES = {
+  video_consulto: {
+    name: 'Video Consulto',
+    icon: 'Video',
+    services: [
+      { id: 'consulenza_online', name: 'Consulenza Online', description: 'Consulenza a distanza per triage, dubbi, follow-up e interpretazione referti', type: 'online', duration: 20 },
+      { id: 'follow_up_online', name: 'Follow-up Online', description: 'Controllo post-visita o post-intervento in videochiamata', type: 'online', duration: 15 },
+      { id: 'interpretazione_referti', name: 'Interpretazione Referti', description: 'Spiegazione e discussione di esami e analisi', type: 'online', duration: 15 },
+      { id: 'consulto_comportamentale', name: 'Consulto Comportamentale', description: 'Valutazione iniziale problemi comportamentali', type: 'online', duration: 30 },
+      { id: 'seconda_opinione', name: 'Seconda Opinione', description: 'Valutazione caso clinico per secondo parere', type: 'online', duration: 25 }
+    ]
+  },
   visite_generali: {
     name: 'Visite Generali',
     icon: 'Stethoscope',
