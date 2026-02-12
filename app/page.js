@@ -8216,6 +8216,8 @@ function FindClinic({ user }) {
   const [clinics, setClinics] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedClinic, setSelectedClinic] = useState(null);
+  const [clinicReviews, setClinicReviews] = useState([]);
+  const [loadingReviews, setLoadingReviews] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewForm, setReviewForm] = useState({ overallRating: 5, punctuality: 5, competence: 5, price: 5, comment: '' });
   const [userLocation, setUserLocation] = useState(null);
@@ -8225,6 +8227,29 @@ function FindClinic({ user }) {
   const [mapCenter, setMapCenter] = useState({ lat: 45.4642, lng: 9.1900 }); // Milan default for Pilot
   const [mapLoaded, setMapLoaded] = useState(false);
   const mapRef = useRef(null);
+
+  // Load reviews when clinic is selected
+  const loadClinicReviews = async (clinicId) => {
+    setLoadingReviews(true);
+    try {
+      const res = await api.get(`clinics/${clinicId}/reviews`);
+      setClinicReviews(res.reviews || res || []);
+    } catch (error) {
+      console.error('Error loading reviews:', error);
+      setClinicReviews([]);
+    } finally {
+      setLoadingReviews(false);
+    }
+  };
+
+  // When clinic is selected, load its reviews
+  useEffect(() => {
+    if (selectedClinic?.id) {
+      loadClinicReviews(selectedClinic.id);
+    } else {
+      setClinicReviews([]);
+    }
+  }, [selectedClinic?.id]);
 
   // Load service catalog
   useEffect(() => {
