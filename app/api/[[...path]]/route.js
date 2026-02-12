@@ -1259,7 +1259,7 @@ export async function POST(request, { params }) {
         custom: { count: 44, allowed: 'all' }
       };
 
-      const clinicPlan = clinic.plan || 'starter';
+      const clinicPlan = clinic.subscriptionPlan || clinic.plan || 'starter';
       const planLimits = PLAN_AUTOMATION_LIMITS[clinicPlan] || PLAN_AUTOMATION_LIMITS.starter;
 
       // Check if this automation is allowed for the plan
