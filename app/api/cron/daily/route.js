@@ -5,6 +5,22 @@ import { sendEmail } from '@/lib/email';
 // Vercel Cron Job - Eseguito ogni giorno alle 8:00
 // Configura in vercel.json
 
+// Default settings for clinics without custom configuration
+const DEFAULT_AUTOMATION_SETTINGS = {
+  appointmentReminders: true,
+  vaccineRecalls: true,
+  postVisitFollowup: true,
+  noShowDetection: true,
+  documentReminders: true,
+  weeklyReport: true
+};
+
+// Helper: Check if automation is enabled for a clinic
+function isAutomationEnabled(clinic, automationKey) {
+  const settings = clinic?.automationSettings || DEFAULT_AUTOMATION_SETTINGS;
+  return settings[automationKey] !== false; // Default to true if not set
+}
+
 export async function GET(request) {
   // Verifica che sia una richiesta cron autorizzata
   const authHeader = request.headers.get('authorization');
@@ -16,10 +32,12 @@ export async function GET(request) {
   }
 
   const results = {
-    promemoria: { sent: 0, errors: 0 },
-    richiamiVaccini: { sent: 0, errors: 0 },
-    followUp: { sent: 0, errors: 0 },
-    noShow: { marked: 0 }
+    promemoria: { sent: 0, errors: 0, skipped: 0 },
+    richiamiVaccini: { sent: 0, errors: 0, skipped: 0 },
+    followUp: { sent: 0, errors: 0, skipped: 0 },
+    noShow: { marked: 0, skipped: 0 },
+    documentReminders: { sent: 0, skipped: 0 },
+    weeklyReports: { sent: 0, skipped: 0 }
   };
 
   const today = new Date();
@@ -28,6 +46,10 @@ export async function GET(request) {
   try {
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME || 'vetbuddy');
+    
+    // Pre-load all clinics for settings lookup
+    const allClinics = await db.collection('users').find({ role: 'clinic' }).toArray();
+    const clinicsMap = new Map(allClinics.map(c => [c.id, c]));
 
     // 1. PROMEMORIA APPUNTAMENTI (24h prima)
     const tomorrow = new Date();
