@@ -981,123 +981,142 @@ function LandingPage({ onLogin }) {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full mb-4">
               <Zap className="h-4 w-4" />
-              <span className="font-medium">Automazioni Intelligenti</span>
+              <span className="font-medium">Zero stress, tutto automatico</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              <span className="text-purple-600">44+ automazioni</span> che lavorano per te
+              Riduci il <span className="text-purple-600">carico di lavoro</span> del 70%
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              VetBuddy automatizza le attività ripetitive: promemoria, recall vaccini, follow-up, auguri di compleanno e molto altro. 
-              Tu curi gli animali, VetBuddy fa il resto.
+            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+              Basta telefonate, promemoria manuali e clienti che dimenticano gli appuntamenti. 
+              <strong> VetBuddy lavora mentre tu curi gli animali.</strong>
             </p>
           </div>
 
-          {/* Griglia automazioni per categoria */}
+          {/* Hero stats - impatto sul lavoro */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-green-100">
+              <div className="text-3xl font-bold text-green-600 mb-1">-80%</div>
+              <p className="text-sm text-gray-600">Telefonate per promemoria</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-blue-100">
+              <div className="text-3xl font-bold text-blue-600 mb-1">-60%</div>
+              <p className="text-sm text-gray-600">No-show e appuntamenti persi</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-amber-100">
+              <div className="text-3xl font-bold text-amber-600 mb-1">+40%</div>
+              <p className="text-sm text-gray-600">Clienti che tornano</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-purple-100">
+              <div className="text-3xl font-bold text-purple-600 mb-1">2h/giorno</div>
+              <p className="text-sm text-gray-600">Risparmiate in media</p>
+            </div>
+          </div>
+
+          {/* Automazioni che riducono il carico */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {/* Email Automatiche */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:shadow-xl transition-shadow">
-              <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-                <Mail className="h-6 w-6 text-blue-600" />
+            {/* Promemoria automatici */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-green-200 hover:shadow-xl transition-shadow relative">
+              <div className="absolute -top-3 left-4 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                🔥 Più richiesta
               </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">📧 Email Automatiche</h3>
-              <p className="text-gray-600 text-sm mb-4">Promemoria appuntamenti, conferme prenotazione, richiamo vaccini, follow-up post visita.</p>
-              <div className="flex flex-wrap gap-1">
-                {['Promemoria 24h', 'Conferma booking', 'Recall vaccini', 'Follow-up'].map(tag => (
-                  <span key={tag} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">{tag}</span>
-                ))}
+              <div className="h-12 w-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 mt-2">
+                <Bell className="h-6 w-6 text-green-600" />
               </div>
-            </div>
-
-            {/* Salute & Prevenzione */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100 hover:shadow-xl transition-shadow">
-              <div className="h-12 w-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
-                <Heart className="h-6 w-6 text-green-600" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">💊 Salute & Prevenzione</h3>
-              <p className="text-gray-600 text-sm mb-4">Antiparassitari, check-up annuale, refill farmaci, alert peso, igiene dentale.</p>
-              <div className="flex flex-wrap gap-1">
-                {['Antiparassitari', 'Check-up', 'Refill farmaci', 'Alert peso'].map(tag => (
-                  <span key={tag} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded-full">{tag}</span>
-                ))}
+              <h3 className="font-bold text-lg text-gray-900 mb-2">📱 Promemoria Automatici</h3>
+              <p className="text-gray-600 text-sm mb-3">Mai più telefonate per ricordare gli appuntamenti. Email e SMS partono da soli 24h prima.</p>
+              <div className="bg-green-50 rounded-lg p-3 text-sm">
+                <span className="text-green-700 font-medium">💡 Risparmio:</span>
+                <span className="text-green-600"> 15+ chiamate/giorno</span>
               </div>
             </div>
 
-            {/* Engagement */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-amber-100 hover:shadow-xl transition-shadow">
-              <div className="h-12 w-12 bg-amber-100 rounded-xl flex items-center justify-center mb-4">
-                <Star className="h-6 w-6 text-amber-600" />
+            {/* Richiamo vaccini */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-200 hover:shadow-xl transition-shadow relative">
+              <div className="absolute -top-3 left-4 bg-blue-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                💰 Più fatturato
               </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">🎂 Engagement</h3>
-              <p className="text-gray-600 text-sm mb-4">Compleanno pet, richiesta recensioni, riattivazione clienti inattivi, programma fedeltà.</p>
-              <div className="flex flex-wrap gap-1">
-                {['Compleanno pet', 'Recensioni', 'Riattivazione', 'Fedeltà'].map(tag => (
-                  <span key={tag} className="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded-full">{tag}</span>
-                ))}
+              <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 mt-2">
+                <Syringe className="h-6 w-6 text-blue-600" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">💉 Richiamo Vaccini</h3>
+              <p className="text-gray-600 text-sm mb-3">I clienti ricevono il promemoria 30 giorni prima della scadenza. Tu non devi ricordarti nulla.</p>
+              <div className="bg-blue-50 rounded-lg p-3 text-sm">
+                <span className="text-blue-700 font-medium">💡 Risultato:</span>
+                <span className="text-blue-600"> +35% richiami rispettati</span>
               </div>
             </div>
 
-            {/* Gestione Smart */}
+            {/* Conferme prenotazione */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100 hover:shadow-xl transition-shadow">
+              <div className="h-12 w-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                <CheckCircle className="h-6 w-6 text-purple-600" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">✅ Conferme Istantanee</h3>
+              <p className="text-gray-600 text-sm mb-3">Appena il cliente prenota, riceve subito la conferma con tutti i dettagli. Zero lavoro per te.</p>
+              <div className="bg-purple-50 rounded-lg p-3 text-sm">
+                <span className="text-purple-700 font-medium">💡 Automatico:</span>
+                <span className="text-purple-600"> 100% delle prenotazioni</span>
+              </div>
+            </div>
+
+            {/* Follow-up post visita */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-coral-100 hover:shadow-xl transition-shadow">
+              <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mb-4">
+                <Heart className="h-6 w-6 text-coral-600" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">💝 Follow-up Post Visita</h3>
+              <p className="text-gray-600 text-sm mb-3">48h dopo la visita, il cliente riceve un messaggio per sapere come sta il pet. Cura e attenzione automatiche.</p>
+              <div className="bg-coral-50 rounded-lg p-3 text-sm">
+                <span className="text-coral-700 font-medium">💡 Effetto:</span>
+                <span className="text-coral-600"> Clienti più fedeli</span>
+              </div>
+            </div>
+
+            {/* No-show detection */}
             <div className="bg-white rounded-2xl p-6 shadow-lg border border-red-100 hover:shadow-xl transition-shadow">
               <div className="h-12 w-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
-                <Settings className="h-6 w-6 text-red-600" />
+                <AlertCircle className="h-6 w-6 text-red-600" />
               </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">⚙️ Gestione Smart</h3>
-              <p className="text-gray-600 text-sm mb-4">No-show detection, lista d'attesa, slot suggeriti, reminder documenti mancanti.</p>
-              <div className="flex flex-wrap gap-1">
-                {['No-show', 'Waitlist', 'Slot AI', 'Documenti'].map(tag => (
-                  <span key={tag} className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded-full">{tag}</span>
-                ))}
-              </div>
-            </div>
-
-            {/* Ciclo di Vita Pet */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-pink-100 hover:shadow-xl transition-shadow">
-              <div className="h-12 w-12 bg-pink-100 rounded-xl flex items-center justify-center mb-4">
-                <PawPrint className="h-6 w-6 text-pink-600" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">🐾 Ciclo di Vita</h3>
-              <p className="text-gray-600 text-sm mb-4">Benvenuto cucciolo, sterilizzazione, senior pet care, verifica microchip.</p>
-              <div className="flex flex-wrap gap-1">
-                {['Welcome', 'Sterilizzazione', 'Senior care', 'Microchip'].map(tag => (
-                  <span key={tag} className="text-xs bg-pink-50 text-pink-700 px-2 py-1 rounded-full">{tag}</span>
-                ))}
+              <h3 className="font-bold text-lg text-gray-900 mb-2">🚫 Anti No-Show</h3>
+              <p className="text-gray-600 text-sm mb-3">Identifica automaticamente chi non si presenta e tiene traccia per gestire i recidivi.</p>
+              <div className="bg-red-50 rounded-lg p-3 text-sm">
+                <span className="text-red-700 font-medium">💡 Recupero:</span>
+                <span className="text-red-600"> Slot persi ridotti del 60%</span>
               </div>
             </div>
 
-            {/* Alert Stagionali */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-orange-100 hover:shadow-xl transition-shadow">
-              <div className="h-12 w-12 bg-orange-100 rounded-xl flex items-center justify-center mb-4">
-                <AlertTriangle className="h-6 w-6 text-orange-600" />
+            {/* Compleanno Pet */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-amber-100 hover:shadow-xl transition-shadow">
+              <div className="h-12 w-12 bg-amber-100 rounded-xl flex items-center justify-center mb-4">
+                <Gift className="h-6 w-6 text-amber-600" />
               </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">🌡️ Alert Stagionali</h3>
-              <p className="text-gray-600 text-sm mb-4">Caldo estivo, stagione zecche, botti di capodanno, chiusure festività.</p>
-              <div className="flex flex-wrap gap-1">
-                {['Caldo', 'Zecche', 'Botti', 'Festività'].map(tag => (
-                  <span key={tag} className="text-xs bg-orange-50 text-orange-700 px-2 py-1 rounded-full">{tag}</span>
-                ))}
+              <h3 className="font-bold text-lg text-gray-900 mb-2">🎂 Auguri Automatici</h3>
+              <p className="text-gray-600 text-sm mb-3">Email di auguri per il compleanno del pet con eventuale sconto. I clienti adorano questo tocco personale!</p>
+              <div className="bg-amber-50 rounded-lg p-3 text-sm">
+                <span className="text-amber-700 font-medium">💡 Engagement:</span>
+                <span className="text-amber-600"> +25% prenotazioni</span>
               </div>
             </div>
           </div>
 
-          {/* Stats e CTA */}
+          {/* CTA finale */}
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 text-white">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-8">
-                <div className="text-center">
-                  <p className="text-4xl font-bold">44+</p>
-                  <p className="text-purple-200 text-sm">Automazioni</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-4xl font-bold">100%</p>
-                  <p className="text-purple-200 text-sm">Configurabili</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-4xl font-bold">24/7</p>
-                  <p className="text-purple-200 text-sm">Attive sempre</p>
-                </div>
+              <div>
+                <h3 className="text-2xl font-bold mb-2">🎯 44+ automazioni disponibili</h3>
+                <p className="text-purple-200">Antiparassitari, refill farmaci, lista d'attesa, richiesta recensioni, alert stagionali e molto altro...</p>
               </div>
-              <div className="text-center md:text-right">
-                <p className="text-lg mb-2">Attiva solo quelle che ti servono</p>
+              <div className="flex flex-col items-center gap-2">
+                <div className="text-center bg-white/10 rounded-lg px-6 py-3">
+                  <p className="text-3xl font-bold">24/7</p>
+                  <p className="text-purple-200 text-sm">Sempre attive</p>
+                </div>
+                <p className="text-xs text-purple-300">Attiva solo quelle che ti servono</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
                 <p className="text-purple-200 text-sm">Ogni automazione può essere accesa/spenta con un click</p>
               </div>
             </div>
