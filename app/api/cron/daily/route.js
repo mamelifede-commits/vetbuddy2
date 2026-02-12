@@ -1083,12 +1083,12 @@ export async function GET(request) {
     }
 
     // 18. WELCOME NEW PET (nuovi clienti registrati negli ultimi 3 giorni)
-    const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    const threeDaysAgoWelcome = new Date();
+    threeDaysAgoWelcome.setDate(threeDaysAgoWelcome.getDate() - 3);
     
     const newClients = await db.collection('users').find({
       role: 'owner',
-      createdAt: { $gte: threeDaysAgo, $lte: today },
+      createdAt: { $gte: threeDaysAgoWelcome, $lte: today },
       welcomeEmailSent: { $ne: true }
     }).toArray();
 
