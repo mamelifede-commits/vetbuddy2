@@ -604,8 +604,26 @@ function LandingPage({ onLogin }) {
             </p>
           </div>
 
-          {/* Feature Grid - 6 features chiave */}
+          {/* Feature Grid - 7 features chiave */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {/* 🎥 VIDEOCONSULTO - Feature evidenziata */}
+            <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all group relative overflow-hidden md:col-span-2 lg:col-span-1">
+              <div className="absolute top-3 right-3 bg-white/20 backdrop-blur text-white text-xs px-3 py-1 rounded-full font-semibold flex items-center gap-1">
+                <Sparkles className="h-3 w-3" /> Novità
+              </div>
+              <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+              <div className="h-14 w-14 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                <Video className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="font-bold text-xl text-white mb-2">Videoconsulto Integrato</h3>
+              <p className="text-white/90 text-sm mb-4">Visite online con un click. Link automatico al cliente via email/WhatsApp, nessun software esterno da installare.</p>
+              <div className="flex flex-wrap gap-2">
+                <span className="bg-white/20 text-white text-xs px-3 py-1 rounded-full">1-click start</span>
+                <span className="bg-white/20 text-white text-xs px-3 py-1 rounded-full">HD Quality</span>
+                <span className="bg-white/20 text-white text-xs px-3 py-1 rounded-full">Registrazione</span>
+              </div>
+            </div>
+
             {/* Agenda */}
             <div className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
               <div className="h-14 w-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
