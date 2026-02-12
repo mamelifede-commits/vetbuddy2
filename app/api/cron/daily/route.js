@@ -22,6 +22,9 @@ export async function GET(request) {
     noShow: { marked: 0 }
   };
 
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+
   try {
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME || 'vetbuddy');
