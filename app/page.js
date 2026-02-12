@@ -1920,9 +1920,14 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, se
                 <p className="text-sm text-gray-600">{videoAppts[0].ownerName}</p>
                 <p className="text-sm text-blue-600 font-medium mt-1">Ore {videoAppts[0].time}</p>
                 <div className="flex gap-2 mt-3">
-                  <Button size="sm" variant="outline" className="flex-1">Prepara</Button>
-                  <Button size="sm" className="flex-1 bg-blue-500 hover:bg-blue-600">Avvia</Button>
+                  <Button size="sm" variant="outline" className="flex-1" onClick={() => setSelectedPetPopup(getPetFromAppointment(videoAppts[0]))}>Prepara</Button>
+                  <Button size="sm" className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={() => videoAppts[0].videoLink && window.open(videoAppts[0].videoLink, '_blank')}>
+                    <PlayCircle className="h-3 w-3 mr-1" />Avvia
+                  </Button>
                 </div>
+                {videoAppts[0].videoLink && (
+                  <p className="text-xs text-blue-500 mt-2 truncate">Link: {videoAppts[0].videoLink}</p>
+                )}
               </CardContent>
             </Card>
           )}
