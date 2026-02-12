@@ -1406,7 +1406,7 @@ export async function POST(request, { params }) {
         sterilizzazione: 'Sterilizzazione',
         dentale: 'Pulizia dentale',
         esami: 'Esami / Analisi',
-        videoconsulto: 'Video-consulto'
+        videoconsulto: 'Video Consulto'
       };
       const typeLabel = typeLabels[appt.type] || appt.type || 'Appuntamento';
 
