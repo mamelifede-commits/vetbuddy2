@@ -276,6 +276,62 @@ export async function GET(request, { params }) {
       return NextResponse.json(STAFF_COLORS, { headers: corsHeaders });
     }
 
+    // ==================== GET AUTOMATIONS SETTINGS ====================
+    if (path === 'automations/settings') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      // Get clinic's plan
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: user.id });
+      const clinicPlan = clinic?.plan || 'starter';
+
+      // Define which automations are allowed per plan
+      const PRO_AUTOMATIONS = [
+        'appointmentReminders', 'bookingConfirmation', 'vaccineRecalls', 'postVisitFollowup',
+        'noShowDetection', 'waitlistNotification', 'suggestedSlots', 'documentReminders',
+        'autoTicketAssignment', 'urgencyNotifications', 'weeklyReport',
+        'petBirthday', 'reviewRequest', 'inactiveClientReactivation',
+        'antiparasiticReminder', 'annualCheckup', 'appointmentConfirmation', 'labResultsReady',
+        'paymentReminder', 'postSurgeryFollowup'
+      ];
+
+      // Get saved settings
+      const automationSettings = await getCollection('automation_settings');
+      const savedSettings = await automationSettings.findOne({ clinicId: user.id });
+
+      // Build default settings based on plan
+      const defaultSettings = {
+        // All automations with default ON for allowed ones
+        appointmentReminders: true, bookingConfirmation: true, vaccineRecalls: true, postVisitFollowup: true,
+        noShowDetection: true, waitlistNotification: true, suggestedSlots: true, documentReminders: true,
+        autoTicketAssignment: true, aiQuickReplies: true, urgencyNotifications: true, weeklyReport: true,
+        petBirthday: true, reviewRequest: true, inactiveClientReactivation: true,
+        antiparasiticReminder: true, annualCheckup: true, medicationRefill: true, weightAlert: true, dentalHygiene: true,
+        appointmentConfirmation: true, labResultsReady: true, paymentReminder: true, postSurgeryFollowup: true,
+        summerHeatAlert: true, tickSeasonAlert: true, newYearFireworksAlert: true,
+        whatsappReminders: false, smsEmergency: false,
+        sterilizationReminder: true, seniorPetCare: true, microchipCheck: true, welcomeNewPet: true,
+        aiLabExplanation: true, breedRiskAlert: true, dietSuggestions: true,
+        loyaltyProgram: true, referralProgram: true, holidayClosures: true,
+        petCondolences: true, griefFollowup: true,
+        dailySummary: true, lowStockAlert: true, staffBirthday: true
+      };
+
+      // Merge saved settings with defaults
+      const mergedSettings = { ...defaultSettings, ...(savedSettings?.settings || {}) };
+
+      return NextResponse.json({ 
+        success: true, 
+        settings: mergedSettings,
+        plan: clinicPlan,
+        allowedAutomations: clinicPlan === 'custom' ? 'all' : (clinicPlan === 'pro' ? PRO_AUTOMATIONS : []),
+        automationsCount: clinicPlan === 'custom' ? 44 : (clinicPlan === 'pro' ? 20 : 0)
+      }, { headers: corsHeaders });
+    }
+
     // Get current user
     if (path === 'auth/me') {
       const user = getUserFromRequest(request);
