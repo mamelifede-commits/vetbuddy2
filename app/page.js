@@ -5750,9 +5750,266 @@ function ClinicSettings({ user, onNavigate }) {
                   </div>
                 </div>
 
+                {/* Sezione Engagement & Fidelizzazione */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <Heart className="h-4 w-4" /> Engagement & Fidelizzazione
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-pink-50 to-pink-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🎂</span>
+                        <div>
+                          <p className="text-sm font-medium">Compleanno Pet</p>
+                          <p className="text-xs text-gray-500">Auguri + sconto</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.petBirthday} 
+                        onCheckedChange={() => toggleAutomation('petBirthday')}
+                        disabled={automationSaving === 'petBirthday'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Star className="h-4 w-4 text-yellow-500" />
+                        <div>
+                          <p className="text-sm font-medium">Richiesta Recensione</p>
+                          <p className="text-xs text-gray-500">3 giorni dopo</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.reviewRequest} 
+                        onCheckedChange={() => toggleAutomation('reviewRequest')}
+                        disabled={automationSaving === 'reviewRequest'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-violet-50 to-violet-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <RefreshCw className="h-4 w-4 text-violet-500" />
+                        <div>
+                          <p className="text-sm font-medium">Riattivazione Inattivi</p>
+                          <p className="text-xs text-gray-500">6+ mesi assenti</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.inactiveClientReactivation} 
+                        onCheckedChange={() => toggleAutomation('inactiveClientReactivation')}
+                        disabled={automationSaving === 'inactiveClientReactivation'}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sezione Salute & Prevenzione */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <Stethoscope className="h-4 w-4" /> Salute & Prevenzione
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🐜</span>
+                        <div>
+                          <p className="text-sm font-medium">Antiparassitari</p>
+                          <p className="text-xs text-gray-500">Ogni 1-3 mesi</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.antiparasiticReminder} 
+                        onCheckedChange={() => toggleAutomation('antiparasiticReminder')}
+                        disabled={automationSaving === 'antiparasiticReminder'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <CalendarDays className="h-4 w-4 text-blue-500" />
+                        <div>
+                          <p className="text-sm font-medium">Controllo Annuale</p>
+                          <p className="text-xs text-gray-500">1 anno dall'ultima visita</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.annualCheckup} 
+                        onCheckedChange={() => toggleAutomation('annualCheckup')}
+                        disabled={automationSaving === 'annualCheckup'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">💊</span>
+                        <div>
+                          <p className="text-sm font-medium">Refill Farmaci</p>
+                          <p className="text-xs text-gray-500">Terapie croniche</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.medicationRefill} 
+                        onCheckedChange={() => toggleAutomation('medicationRefill')}
+                        disabled={automationSaving === 'medicationRefill'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Weight className="h-4 w-4 text-orange-500" />
+                        <div>
+                          <p className="text-sm font-medium">Alert Peso</p>
+                          <p className="text-xs text-gray-500">Variazioni significative</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.weightAlert} 
+                        onCheckedChange={() => toggleAutomation('weightAlert')}
+                        disabled={automationSaving === 'weightAlert'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🦷</span>
+                        <div>
+                          <p className="text-sm font-medium">Igiene Dentale</p>
+                          <p className="text-xs text-gray-500">Pulizia annuale</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.dentalHygiene} 
+                        onCheckedChange={() => toggleAutomation('dentalHygiene')}
+                        disabled={automationSaving === 'dentalHygiene'}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sezione Operatività Clinica */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <ClipboardList className="h-4 w-4" /> Operatività Clinica
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-sky-50 to-sky-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <CalendarCheck className="h-4 w-4 text-sky-500" />
+                        <div>
+                          <p className="text-sm font-medium">Conferma Appuntamento</p>
+                          <p className="text-xs text-gray-500">48h prima</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.appointmentConfirmation} 
+                        onCheckedChange={() => toggleAutomation('appointmentConfirmation')}
+                        disabled={automationSaving === 'appointmentConfirmation'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-lime-50 to-lime-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <FileCheck className="h-4 w-4 text-lime-600" />
+                        <div>
+                          <p className="text-sm font-medium">Referti Pronti</p>
+                          <p className="text-xs text-gray-500">Notifica automatica</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.labResultsReady} 
+                        onCheckedChange={() => toggleAutomation('labResultsReady')}
+                        disabled={automationSaving === 'labResultsReady'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-red-50 to-red-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Euro className="h-4 w-4 text-red-500" />
+                        <div>
+                          <p className="text-sm font-medium">Reminder Pagamento</p>
+                          <p className="text-xs text-gray-500">Fatture non pagate</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.paymentReminder} 
+                        onCheckedChange={() => toggleAutomation('paymentReminder')}
+                        disabled={automationSaving === 'paymentReminder'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-fuchsia-50 to-fuchsia-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Scissors className="h-4 w-4 text-fuchsia-500" />
+                        <div>
+                          <p className="text-sm font-medium">Follow-up Chirurgia</p>
+                          <p className="text-xs text-gray-500">Post-intervento</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.postSurgeryFollowup} 
+                        onCheckedChange={() => toggleAutomation('postSurgeryFollowup')}
+                        disabled={automationSaving === 'postSurgeryFollowup'}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sezione Stagionali */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <span className="text-lg">🌡️</span> Alert Stagionali
+                  </h4>
+                  <div className="grid md:grid-cols-3 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">☀️</span>
+                        <div>
+                          <p className="text-sm font-medium">Caldo Estivo</p>
+                          <p className="text-xs text-gray-500">Giu-Ago</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.summerHeatAlert} 
+                        onCheckedChange={() => toggleAutomation('summerHeatAlert')}
+                        disabled={automationSaving === 'summerHeatAlert'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🦟</span>
+                        <div>
+                          <p className="text-sm font-medium">Stagione Zecche</p>
+                          <p className="text-xs text-gray-500">Mar-Mag</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.tickSeasonAlert} 
+                        onCheckedChange={() => toggleAutomation('tickSeasonAlert')}
+                        disabled={automationSaving === 'tickSeasonAlert'}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🎆</span>
+                        <div>
+                          <p className="text-sm font-medium">Botti Capodanno</p>
+                          <p className="text-xs text-gray-500">Dicembre</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.newYearFireworksAlert} 
+                        onCheckedChange={() => toggleAutomation('newYearFireworksAlert')}
+                        disabled={automationSaving === 'newYearFireworksAlert'}
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
                   <p className="text-sm text-purple-700">
-                    <strong>💡 Pilot Milano:</strong> Tutte le automazioni attive eseguono ogni giorno alle 8:00. Puoi attivarle/disattivarle in qualsiasi momento.
+                    <strong>💡 Pilot Milano:</strong> Tutte le {Object.keys(automationSettings).length} automazioni eseguono ogni giorno alle 8:00. Puoi attivarle/disattivarle in qualsiasi momento.
                   </p>
                 </div>
               </>
