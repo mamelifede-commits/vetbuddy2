@@ -1783,7 +1783,7 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, se
             <Progress value={progressPercent} className="h-2 mb-4" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <SetupStep icon={CreditCard} label="Pagamenti" desc="Collega Stripe" done={setupProgress.payments} onClick={() => onNavigate('settings')} />
-              <SetupStep icon={Video} label="Video visita" desc="Configura orari" done={setupProgress.video} onClick={() => onNavigate('settings')} />
+              <SetupStep icon={Video} label="Video consulto" desc="Configura orari" done={setupProgress.video} onClick={() => onNavigate('settings')} />
               <SetupStep icon={Users} label="Team" desc="Aggiungi staff" done={setupProgress.team} onClick={() => onNavigate('staff')} />
               <SetupStep icon={Bell} label="Automazioni" desc="Promemoria auto" done={setupProgress.automations} onClick={() => onNavigate('automations')} />
             </div>
