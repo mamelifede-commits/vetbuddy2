@@ -8867,6 +8867,36 @@ function FindClinic({ user }) {
                 </div>
               )}
 
+              {/* Servizi e Prezzi della Clinica */}
+              {(selectedClinic.services?.length > 0 || selectedClinic.customServices?.length > 0) && (
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 space-y-3">
+                  <h4 className="font-semibold text-gray-800 flex items-center gap-2">
+                    <Stethoscope className="h-4 w-4 text-green-500" />
+                    Servizi e Listino Prezzi
+                  </h4>
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {/* Standard Services */}
+                    {selectedClinic.services?.filter(s => s.price).map((service, idx) => (
+                      <div key={idx} className="flex items-center justify-between py-2 border-b border-green-100 last:border-0">
+                        <span className="text-sm text-gray-700 capitalize">{service.id?.replace(/_/g, ' ') || service.name}</span>
+                        <Badge className="bg-green-100 text-green-700 font-semibold">€{parseFloat(service.price).toFixed(2)}</Badge>
+                      </div>
+                    ))}
+                    {/* Custom Services */}
+                    {selectedClinic.customServices?.map((service, idx) => (
+                      <div key={`custom-${idx}`} className="flex items-center justify-between py-2 border-b border-green-100 last:border-0">
+                        <div>
+                          <span className="text-sm text-gray-700">{service.name}</span>
+                          {service.description && <p className="text-xs text-gray-500">{service.description}</p>}
+                        </div>
+                        <Badge className="bg-green-100 text-green-700 font-semibold">€{parseFloat(service.price).toFixed(2)}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 italic">* Prezzi indicativi, possono variare in base alla visita</p>
+                </div>
+              )}
+
               {/* Actions */}
               <div className="flex gap-3 pt-4">
                 <Button className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={() => setShowReviewForm(true)}>
