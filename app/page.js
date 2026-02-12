@@ -8333,6 +8333,7 @@ function FindClinic({ user }) {
       setShowReviewForm(false);
       setReviewForm({ overallRating: 5, punctuality: 5, competence: 5, price: 5, comment: '' });
       searchClinics();
+      loadClinicReviews(selectedClinic.id); // Reload reviews
     } catch (error) {
       alert(error.message);
     }
