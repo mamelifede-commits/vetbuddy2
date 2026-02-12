@@ -7588,37 +7588,92 @@ function InviteClinic({ user }) {
 
 function OwnerAppointments({ appointments, pets }) {
   const [showBooking, setShowBooking] = useState(false);
-  const [formData, setFormData] = useState({ petId: '', serviceId: '', date: '', time: '', notes: '' });
+  const [formData, setFormData] = useState({ petId: '', serviceId: '', date: '', time: '', notes: '', clinicId: '' });
+  const [clinics, setClinics] = useState([]);
+  const [clinicServices, setClinicServices] = useState([]);
+  const [loadingClinics, setLoadingClinics] = useState(false);
+  const [loadingServices, setLoadingServices] = useState(false);
   
-  // Available services from clinic
-  const availableServices = [
-    { id: 1, name: 'Visita generale', duration: 30, price: 50, type: 'in_sede' },
-    { id: 2, name: 'Video-consulto', duration: 20, price: 35, type: 'online' },
-    { id: 3, name: 'Vaccinazione', duration: 15, price: 40, type: 'in_sede' },
-    { id: 4, name: 'Controllo post-operatorio', duration: 20, price: 30, type: 'in_sede' },
-    { id: 5, name: 'Esami del sangue', duration: 20, price: 60, type: 'in_sede' },
-    { id: 6, name: 'Ecografia', duration: 30, price: 80, type: 'in_sede' },
-    { id: 8, name: 'Consulto specialistico', duration: 30, price: 60, type: 'online' },
-  ];
+  // Carica le cliniche disponibili quando si apre il dialog
+  useEffect(() => {
+    if (showBooking && clinics.length === 0) {
+      loadClinics();
+    }
+  }, [showBooking]);
   
-  const selectedService = availableServices.find(s => s.id === parseInt(formData.serviceId));
+  // Carica i servizi quando si seleziona una clinica
+  useEffect(() => {
+    if (formData.clinicId) {
+      loadClinicServices(formData.clinicId);
+    } else {
+      setClinicServices([]);
+    }
+  }, [formData.clinicId]);
+  
+  const loadClinics = async () => {
+    setLoadingClinics(true);
+    try {
+      const res = await api.get('clinics/search?city=Milano&maxDistance=50');
+      setClinics(res.clinics || res || []);
+    } catch (error) {
+      console.error('Error loading clinics:', error);
+    } finally {
+      setLoadingClinics(false);
+    }
+  };
+  
+  const loadClinicServices = async (clinicId) => {
+    setLoadingServices(true);
+    setFormData(prev => ({...prev, serviceId: ''})); // Reset service selection
+    try {
+      const clinic = clinics.find(c => c.id === clinicId);
+      // Usa i servizi della clinica se disponibili
+      if (clinic?.services && clinic.services.length > 0) {
+        const formattedServices = clinic.services.map((s, idx) => ({
+          id: idx + 1,
+          name: s.name || s.id?.replace(/_/g, ' ') || 'Servizio',
+          duration: s.duration || 30,
+          price: s.price || 0,
+          type: s.type || (s.id?.includes('video') ? 'online' : 'in_sede')
+        }));
+        setClinicServices(formattedServices);
+      } else {
+        // Fallback servizi base se la clinica non ha servizi configurati
+        setClinicServices([
+          { id: 1, name: 'Visita generale', duration: 30, price: 50, type: 'in_sede' },
+          { id: 2, name: 'Video-consulto', duration: 20, price: 35, type: 'online' },
+        ]);
+      }
+    } catch (error) {
+      console.error('Error loading clinic services:', error);
+      setClinicServices([]);
+    } finally {
+      setLoadingServices(false);
+    }
+  };
+  
+  const selectedService = clinicServices.find(s => s.id === parseInt(formData.serviceId));
+  const selectedClinic = clinics.find(c => c.id === formData.clinicId);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const service = availableServices.find(s => s.id === parseInt(formData.serviceId));
+    const service = clinicServices.find(s => s.id === parseInt(formData.serviceId));
     const pet = pets.find(p => p.id === formData.petId);
     try {
       await api.post('appointments', {
         petName: pet?.name || 'Animale',
         ownerName: 'Proprietario',
+        clinicId: formData.clinicId,
+        clinicName: selectedClinic?.clinicName || selectedClinic?.name || 'Clinica',
         date: formData.date,
         time: formData.time,
         type: service?.type === 'online' ? 'videoconsulto' : 'visita',
         reason: service?.name || 'Visita',
+        price: service?.price || 0,
         notes: formData.notes
       });
       setShowBooking(false);
-      setFormData({ petId: '', serviceId: '', date: '', time: '', notes: '' });
+      setFormData({ petId: '', serviceId: '', date: '', time: '', notes: '', clinicId: '' });
     } catch (error) { alert(error.message); }
   };
   
