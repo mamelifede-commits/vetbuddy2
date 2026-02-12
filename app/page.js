@@ -561,7 +561,7 @@ function LandingPage({ onLogin }) {
               </div>
             </div>
 
-            {/* Videoconsulto */}
+            {/* Video Consulto */}
             <div className="bg-white rounded-2xl p-6 shadow-lg border border-indigo-100 hover:shadow-xl hover:-translate-y-1 transition-all group relative">
               <div className="absolute -top-3 right-4 bg-indigo-500 text-white text-xs px-3 py-1 rounded-full font-medium">
                 Novità
@@ -569,8 +569,8 @@ function LandingPage({ onLogin }) {
               <div className="h-14 w-14 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
                 <Video className="h-7 w-7 text-white" />
               </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Videoconsulto</h3>
-              <p className="text-gray-600 text-sm mb-4">Visite online con un click. Link automatico al cliente, nessun software esterno.</p>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Video Consulto</h3>
+              <p className="text-gray-600 text-sm mb-4">Consulenze online con un click. Link automatico al cliente, nessun software esterno.</p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="text-xs">1-click</Badge>
                 <Badge variant="outline" className="text-xs">HD Quality</Badge>
