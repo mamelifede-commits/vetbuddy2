@@ -1117,12 +1117,6 @@ function LandingPage({ onLogin }) {
           </div>
         </div>
       </section>
-                <p className="text-purple-200 text-sm">Ogni automazione può essere accesa/spenta con un click</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Come Funziona */}
       <section id="come-funziona" className="py-12 px-4 bg-gradient-to-b from-white to-gray-50">
