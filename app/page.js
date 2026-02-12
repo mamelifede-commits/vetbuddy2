@@ -1205,6 +1205,7 @@ function LandingPage({ onLogin }) {
             <div className="flex gap-4 text-sm text-gray-400">
               <a href="/privacy" className="hover:text-white">Privacy</a>
               <a href="/termini" className="hover:text-white">Termini</a>
+              <a href="/cookie-policy" className="hover:text-white">Cookie</a>
               <a href="mailto:info@vetbuddy.it" className="hover:text-white">info@vetbuddy.it</a>
             </div>
           </div>
