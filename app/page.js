@@ -1312,7 +1312,7 @@ function LandingPage({ onLogin }) {
           <Accordion type="single" collapsible className="space-y-4">
             {[
               { q: 'Cos\'è il Pilot e come funziona l\'invito?', a: 'VetBuddy è in fase Pilot a Milano. L\'accesso è su invito per garantire qualità e supporto dedicato. Candidati compilando il form e ti contatteremo per l\'attivazione.' },
-              { q: 'Quanto dura il Pilot gratuito?', a: 'Le cliniche selezionate per il Pilot Milano hanno 6 mesi di piano Pro gratuito. Al termine, potrai scegliere il piano più adatto alle tue esigenze.' },
+              { q: 'Quanto dura il Pilot gratuito?', a: '90 giorni iniziali gratuiti per tutte le cliniche selezionate nel Pilot Milano. Estendibile fino a 6 mesi per le cliniche più attive che completano l\'onboarding e forniscono feedback. Al termine, potrai scegliere il piano più adatto alle tue esigenze (a partire da €129/mese + IVA).' },
               { q: 'Quanto costa per i proprietari?', a: 'VetBuddy è e sarà sempre gratuito per i proprietari di animali. Nessun costo nascosto, mai.' },
               { q: 'Come funziona la fatturazione?', a: 'Gli abbonamenti vengono fatturati da VetBuddy. Prezzi IVA esclusa. Riceverai report e riconciliazione mensile. Puoi disdire in qualsiasi momento.' },
               { q: 'Cosa include il piano Pro?', a: 'Team inbox con assegnazione ticket, documenti con invio automatico via email, sync Google Calendar, video-consulti, reminder automatici, pagamenti integrati, reportistica completa e supporto prioritario.' },
