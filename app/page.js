@@ -7586,6 +7586,22 @@ function InviteClinic({ user }) {
   );
 }
 
+// Categorie servizi predefinite
+const SERVICE_CATEGORIES = [
+  { id: 'visita_generale', name: 'Visita generale', icon: '🩺', keywords: ['visita', 'controllo', 'check-up', 'generale'] },
+  { id: 'vaccinazioni', name: 'Vaccinazioni', icon: '💉', keywords: ['vaccino', 'vaccinazione', 'richiamo', 'antirabbia', 'trivalente'] },
+  { id: 'esami_diagnostica', name: 'Esami e diagnostica', icon: '🔬', keywords: ['esame', 'analisi', 'sangue', 'ecografia', 'radiografia', 'diagnostica'] },
+  { id: 'chirurgia', name: 'Chirurgia', icon: '🏥', keywords: ['chirurgia', 'operazione', 'sterilizzazione', 'castrazione', 'intervento'] },
+  { id: 'odontoiatria', name: 'Odontoiatria', icon: '🦷', keywords: ['denti', 'dentale', 'pulizia denti', 'odontoiatria', 'estrazione'] },
+  { id: 'toelettatura', name: 'Toelettatura', icon: '✂️', keywords: ['toelettatura', 'bagno', 'tosatura', 'grooming', 'pelo'] },
+  { id: 'dermatologia', name: 'Dermatologia', icon: '🐾', keywords: ['pelle', 'dermatologia', 'allergia', 'prurito', 'cute'] },
+  { id: 'farmacia', name: 'Farmacia veterinaria', icon: '💊', keywords: ['farmaco', 'medicina', 'farmacia', 'ricetta'] },
+  { id: 'emergenza', name: 'Pronto soccorso', icon: '🚨', keywords: ['emergenza', 'urgenza', 'pronto soccorso', 'h24'] },
+  { id: 'certificati', name: 'Certificati e documenti', icon: '📋', keywords: ['certificato', 'passaporto', 'documento', 'microchip'] },
+  { id: 'video_consulto', name: 'Video-consulto', icon: '📹', keywords: ['video', 'online', 'teleconsulto', 'remoto'] },
+  { id: 'altro', name: 'Altro', icon: '📌', keywords: ['altro', 'vari'] },
+];
+
 function OwnerAppointments({ appointments, pets }) {
   const [showBooking, setShowBooking] = useState(false);
   const [formData, setFormData] = useState({ petId: '', serviceId: '', date: '', time: '', notes: '', clinicId: '' });
@@ -7593,6 +7609,12 @@ function OwnerAppointments({ appointments, pets }) {
   const [clinicServices, setClinicServices] = useState([]);
   const [loadingClinics, setLoadingClinics] = useState(false);
   const [loadingServices, setLoadingServices] = useState(false);
+  
+  // Nuovi stati per la ricerca per servizio
+  const [searchMode, setSearchMode] = useState('clinic'); // 'clinic' o 'service'
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [serviceSearch, setServiceSearch] = useState('');
+  const [filteredClinics, setFilteredClinics] = useState([]);
   
   // Carica le cliniche disponibili quando si apre il dialog
   useEffect(() => {
@@ -7609,6 +7631,30 @@ function OwnerAppointments({ appointments, pets }) {
       setClinicServices([]);
     }
   }, [formData.clinicId]);
+  
+  // Filtra cliniche quando si seleziona una categoria servizio
+  useEffect(() => {
+    if (selectedCategory && clinics.length > 0) {
+      const category = SERVICE_CATEGORIES.find(c => c.id === selectedCategory);
+      if (category) {
+        const filtered = clinics.filter(clinic => {
+          // Controlla se la clinica offre servizi in questa categoria
+          if (!clinic.services || clinic.services.length === 0) {
+            // Se non ha servizi configurati, mostra comunque per servizi base
+            return ['visita_generale', 'video_consulto'].includes(selectedCategory);
+          }
+          // Cerca match nei servizi della clinica
+          return clinic.services.some(service => {
+            const serviceName = (service.name || service.id || '').toLowerCase();
+            return category.keywords.some(keyword => serviceName.includes(keyword.toLowerCase()));
+          });
+        });
+        setFilteredClinics(filtered);
+      }
+    } else {
+      setFilteredClinics([]);
+    }
+  }, [selectedCategory, clinics]);
   
   const loadClinics = async () => {
     setLoadingClinics(true);
@@ -7636,7 +7682,20 @@ function OwnerAppointments({ appointments, pets }) {
           price: s.price || 0,
           type: s.type || (s.id?.includes('video') ? 'online' : 'in_sede')
         }));
-        setClinicServices(formattedServices);
+        // Se siamo in modalità servizio, filtra solo i servizi della categoria selezionata
+        if (searchMode === 'service' && selectedCategory) {
+          const category = SERVICE_CATEGORIES.find(c => c.id === selectedCategory);
+          if (category) {
+            const filteredServices = formattedServices.filter(service => 
+              category.keywords.some(keyword => service.name.toLowerCase().includes(keyword.toLowerCase()))
+            );
+            setClinicServices(filteredServices.length > 0 ? filteredServices : formattedServices);
+          } else {
+            setClinicServices(formattedServices);
+          }
+        } else {
+          setClinicServices(formattedServices);
+        }
       } else {
         // Fallback servizi base se la clinica non ha servizi configurati
         setClinicServices([
@@ -7651,6 +7710,28 @@ function OwnerAppointments({ appointments, pets }) {
       setLoadingServices(false);
     }
   };
+  
+  // Funzione per selezionare clinica dalla modalità servizio
+  const selectClinicFromService = (clinic) => {
+    setFormData({...formData, clinicId: clinic.id});
+  };
+  
+  // Reset quando si cambia modalità
+  const handleModeChange = (mode) => {
+    setSearchMode(mode);
+    setSelectedCategory(null);
+    setServiceSearch('');
+    setFilteredClinics([]);
+    setFormData({ petId: formData.petId, serviceId: '', date: '', time: '', notes: '', clinicId: '' });
+    setClinicServices([]);
+  };
+  
+  // Filtra categorie per ricerca
+  const filteredCategories = SERVICE_CATEGORIES.filter(cat =>
+    serviceSearch === '' || 
+    cat.name.toLowerCase().includes(serviceSearch.toLowerCase()) ||
+    cat.keywords.some(k => k.toLowerCase().includes(serviceSearch.toLowerCase()))
+  );
   
   const selectedService = clinicServices.find(s => s.id === parseInt(formData.serviceId));
   const selectedClinic = clinics.find(c => c.id === formData.clinicId);
