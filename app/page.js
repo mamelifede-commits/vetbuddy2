@@ -5374,23 +5374,40 @@ function ClinicReports({ appointments, documents, messages, owners, pets, onNavi
                 <p className="text-center py-8 text-gray-500">Nessun appuntamento</p>
               ) : (
                 <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {appointments.slice(0, 20).map((appt, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className={`h-10 w-10 rounded-full flex items-center justify-center ${appt.type === 'videoconsulto' ? 'bg-blue-100' : 'bg-coral-100'}`}>
-                          {appt.type === 'videoconsulto' ? <Video className="h-5 w-5 text-blue-600" /> : <PawPrint className="h-5 w-5 text-coral-600" />}
+                  {appointments.slice(0, 20).map((appt, i) => {
+                    const pet = (pets || []).find(p => p.id === appt.petId || p.name === appt.petName);
+                    const owner = (owners || []).find(o => o.id === appt.ownerId || o.name === appt.ownerName);
+                    return (
+                      <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-coral-50 cursor-pointer transition-colors"
+                        onClick={() => {
+                          if (pet && onOpenPet) {
+                            onOpenPet(pet);
+                            onNavigate('patients');
+                          } else if (owner && onOpenOwner) {
+                            onOpenOwner(owner);
+                            onNavigate('owners');
+                          }
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`h-10 w-10 rounded-full flex items-center justify-center ${appt.type === 'videoconsulto' ? 'bg-blue-100' : 'bg-coral-100'}`}>
+                            {appt.type === 'videoconsulto' ? <Video className="h-5 w-5 text-blue-600" /> : <PawPrint className="h-5 w-5 text-coral-600" />}
+                          </div>
+                          <div>
+                            <p className="font-medium">{appt.petName}</p>
+                            <p className="text-sm text-gray-500">{appt.ownerName} • {appt.reason || appt.type}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium">{appt.petName}</p>
-                          <p className="text-sm text-gray-500">{appt.ownerName} • {appt.reason || appt.type}</p>
+                        <div className="flex items-center gap-2">
+                          <div className="text-right">
+                            <p className="text-sm font-medium">{appt.date}</p>
+                            <p className="text-xs text-gray-500">{appt.time}</p>
+                          </div>
+                          <ChevronRight className="h-4 w-4 text-gray-400" />
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium">{appt.date}</p>
-                        <p className="text-xs text-gray-500">{appt.time}</p>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
