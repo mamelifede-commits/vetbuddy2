@@ -5274,7 +5274,7 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
   };
 
   const StatCard = ({ title, value, subtitle, icon: Icon, color = 'coral', trend, onClick }) => (
-    <Card className={onClick ? 'cursor-pointer hover:shadow-md transition' : ''} onClick={onClick}>
+    <Card className={`${onClick ? 'cursor-pointer hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200' : ''}`} onClick={onClick}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div>
@@ -5290,6 +5290,12 @@ function ClinicReports({ appointments, documents, messages, owners, onNavigate }
           <div className={`flex items-center gap-1 mt-2 text-xs ${trend >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             <TrendingUp className={`h-3 w-3 ${trend < 0 ? 'rotate-180' : ''}`} />
             {Math.abs(trend)}% vs mese scorso
+          </div>
+        )}
+        {onClick && (
+          <div className="flex items-center justify-end mt-2 text-xs text-gray-400">
+            <span>Clicca per dettagli</span>
+            <ChevronRight className="h-3 w-3 ml-1" />
           </div>
         )}
       </CardContent>
