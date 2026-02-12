@@ -916,6 +916,487 @@ export async function GET(request) {
       }
     }
 
+    // =====================================================
+    // NUOVE AUTOMAZIONI AVANZATE
+    // =====================================================
+
+    // 15. STERILIZZAZIONE (cuccioli/gattini 6-12 mesi non sterilizzati)
+    for (const pet of allPets) {
+      if (!pet.birthDate || pet.isNeutered) continue;
+      
+      const birthDate = new Date(pet.birthDate);
+      const ageMonths = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24 * 30));
+      
+      if (ageMonths >= 6 && ageMonths <= 12) {
+        const clinic = pet.clinicId ? clinicsMap.get(pet.clinicId) : null;
+        if (clinic && !isAutomationEnabled(clinic, 'sterilizationReminder')) {
+          results.sterilization.skipped++;
+          continue;
+        }
+        
+        // Controlla se già inviato
+        if (pet.sterilizationReminderSent) continue;
+        
+        const owner = await db.collection('users').findOne({ id: pet.ownerId });
+        if (owner?.email) {
+          try {
+            await sendEmail({
+              to: owner.email,
+              subject: `🐾 È il momento giusto per sterilizzare ${pet.name}`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <div style="background: linear-gradient(135deg, #9B59B6, #8E44AD); padding: 20px; border-radius: 10px 10px 0 0;">
+                    <h1 style="color: white; margin: 0;">🐾 Consiglio Importante</h1>
+                  </div>
+                  <div style="padding: 30px; background: #f9f9f9;">
+                    <p>Ciao ${owner.name || ''},</p>
+                    <p><strong>${pet.name}</strong> ha ${ageMonths} mesi - l'età ideale per la sterilizzazione!</p>
+                    <h3>Perché sterilizzare?</h3>
+                    <ul>
+                      <li>✅ Previene tumori e malattie</li>
+                      <li>✅ Comportamento più equilibrato</li>
+                      <li>✅ Niente cucciolate indesiderate</li>
+                      <li>✅ Vita più lunga e sana</li>
+                    </ul>
+                    <p>Parlane con il tuo veterinario alla prossima visita!</p>
+                  </div>
+                </div>
+              `
+            });
+            await db.collection('pets').updateOne({ id: pet.id }, { $set: { sterilizationReminderSent: true } });
+            results.sterilization.sent++;
+          } catch (err) {
+            results.sterilization.errors++;
+          }
+        }
+      }
+    }
+
+    // 16. SENIOR PET CARE (animali over 7 anni - controllo semestrale)
+    for (const pet of allPets) {
+      if (!pet.birthDate) continue;
+      
+      const birthDate = new Date(pet.birthDate);
+      const ageYears = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24 * 365));
+      
+      if (ageYears >= 7) {
+        const clinic = pet.clinicId ? clinicsMap.get(pet.clinicId) : null;
+        if (clinic && !isAutomationEnabled(clinic, 'seniorPetCare')) {
+          results.seniorPetCare.skipped++;
+          continue;
+        }
+        
+        // Controlla ultima visita
+        const lastVisit = await db.collection('appointments').findOne({
+          petId: pet.id,
+          status: 'completed'
+        }, { sort: { date: -1 } });
+        
+        if (lastVisit) {
+          const lastVisitDate = new Date(lastVisit.date);
+          const monthsSinceVisit = Math.floor((today - lastVisitDate) / (1000 * 60 * 60 * 24 * 30));
+          
+          // Se sono passati 6+ mesi, invia reminder
+          if (monthsSinceVisit >= 6 && !pet.seniorCheckupReminderSent) {
+            const owner = await db.collection('users').findOne({ id: pet.ownerId });
+            if (owner?.email) {
+              try {
+                await sendEmail({
+                  to: owner.email,
+                  subject: `👴 Checkup Senior per ${pet.name} (${ageYears} anni)`,
+                  html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                      <div style="background: linear-gradient(135deg, #3498DB, #2980B9); padding: 20px; border-radius: 10px 10px 0 0;">
+                        <h1 style="color: white; margin: 0;">👴 Checkup Senior</h1>
+                      </div>
+                      <div style="padding: 30px; background: #f9f9f9;">
+                        <p>Ciao ${owner.name || ''},</p>
+                        <p><strong>${pet.name}</strong> ha ${ageYears} anni e merita cure speciali!</p>
+                        <p>Per gli animali senior consigliamo:</p>
+                        <ul>
+                          <li>🩺 Controlli ogni 6 mesi</li>
+                          <li>🧪 Esami del sangue annuali</li>
+                          <li>🦴 Controllo articolazioni</li>
+                          <li>❤️ Monitoraggio cardiaco</li>
+                        </ul>
+                        <p>Prenota un checkup senior per ${pet.name}!</p>
+                      </div>
+                    </div>
+                  `
+                });
+                await db.collection('pets').updateOne({ id: pet.id }, { $set: { seniorCheckupReminderSent: true, seniorCheckupReminderSentAt: new Date() } });
+                results.seniorPetCare.sent++;
+              } catch (err) {
+                results.seniorPetCare.errors++;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 17. MICROCHIP CHECK (verifica annuale)
+    const microchipCheckDue = await db.collection('pets').find({
+      hasMicrochip: true,
+      microchipLastVerified: { $lte: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000) },
+      microchipReminderSent: { $ne: true }
+    }).toArray();
+
+    for (const pet of microchipCheckDue) {
+      const clinic = pet.clinicId ? clinicsMap.get(pet.clinicId) : null;
+      if (clinic && !isAutomationEnabled(clinic, 'microchipCheck')) {
+        results.microchipCheck.skipped++;
+        continue;
+      }
+      
+      const owner = await db.collection('users').findOne({ id: pet.ownerId });
+      if (owner?.email) {
+        try {
+          await sendEmail({
+            to: owner.email,
+            subject: `📍 Verifica microchip di ${pet.name}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #1ABC9C, #16A085); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">📍 Verifica Microchip</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <p>Ciao ${owner.name || ''},</p>
+                  <p>È passato un anno dall'ultima verifica del microchip di <strong>${pet.name}</strong>.</p>
+                  <p><strong>Perché è importante?</strong></p>
+                  <ul>
+                    <li>📞 I tuoi dati di contatto sono ancora corretti?</li>
+                    <li>📍 L'indirizzo è aggiornato?</li>
+                    <li>✅ Il chip funziona correttamente?</li>
+                  </ul>
+                  <p>Una verifica rapida può fare la differenza se ${pet.name} si perde!</p>
+                </div>
+              </div>
+            `
+          });
+          await db.collection('pets').updateOne({ id: pet.id }, { $set: { microchipReminderSent: true } });
+          results.microchipCheck.sent++;
+        } catch (err) {
+          results.microchipCheck.errors++;
+        }
+      }
+    }
+
+    // 18. WELCOME NEW PET (nuovi clienti registrati negli ultimi 3 giorni)
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    
+    const newClients = await db.collection('users').find({
+      role: 'owner',
+      createdAt: { $gte: threeDaysAgo, $lte: today },
+      welcomeEmailSent: { $ne: true }
+    }).toArray();
+
+    for (const client of newClients) {
+      // Find associated clinic
+      const clientClinic = await db.collection('clinic_clients').findOne({ ownerId: client.id });
+      const clinic = clientClinic ? clinicsMap.get(clientClinic.clinicId) : null;
+      
+      if (clinic && !isAutomationEnabled(clinic, 'welcomeNewPet')) {
+        results.welcomeNewPet.skipped++;
+        continue;
+      }
+      
+      if (client.email) {
+        try {
+          await sendEmail({
+            to: client.email,
+            subject: `🎉 Benvenuto in ${clinic?.clinicName || 'VetBuddy'}!`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">🎉 Benvenuto!</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <p>Ciao ${client.name || ''},</p>
+                  <p>Siamo felicissimi di averti con noi! 🐾</p>
+                  <h3>Cosa puoi fare con VetBuddy:</h3>
+                  <ul>
+                    <li>📅 Prenotare appuntamenti online</li>
+                    <li>📄 Ricevere documenti e referti</li>
+                    <li>💬 Chattare con la clinica</li>
+                    <li>🔔 Ricevere promemoria automatici</li>
+                  </ul>
+                  <p>Se hai domande, siamo sempre qui per te!</p>
+                  <p style="font-size: 24px; text-align: center;">🐕 🐈 🐰</p>
+                </div>
+              </div>
+            `
+          });
+          await db.collection('users').updateOne({ id: client.id }, { $set: { welcomeEmailSent: true } });
+          results.welcomeNewPet.sent++;
+        } catch (err) {
+          results.welcomeNewPet.errors++;
+        }
+      }
+    }
+
+    // 19. PROGRAMMA FEDELTÀ (dopo 5 visite completate)
+    for (const clinic of allClinics) {
+      if (!isAutomationEnabled(clinic, 'loyaltyProgram')) {
+        results.loyaltyProgram.skipped++;
+        continue;
+      }
+
+      const clientVisitCounts = await db.collection('appointments').aggregate([
+        { $match: { clinicId: clinic.id, status: 'completed' } },
+        { $group: { _id: '$ownerId', visitCount: { $sum: 1 } } },
+        { $match: { visitCount: { $in: [5, 10, 20] } } }
+      ]).toArray();
+
+      for (const clientStats of clientVisitCounts) {
+        const owner = await db.collection('users').findOne({ 
+          id: clientStats._id, 
+          [`loyaltyMilestone${clientStats.visitCount}Sent`]: { $ne: true }
+        });
+        
+        if (owner?.email) {
+          const discount = clientStats.visitCount === 5 ? '10%' : clientStats.visitCount === 10 ? '15%' : '20%';
+          try {
+            await sendEmail({
+              to: owner.email,
+              subject: `🏆 Hai raggiunto ${clientStats.visitCount} visite! Ecco il tuo premio`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <div style="background: linear-gradient(135deg, #F39C12, #E74C3C); padding: 20px; border-radius: 10px 10px 0 0;">
+                    <h1 style="color: white; margin: 0;">🏆 Traguardo Raggiunto!</h1>
+                  </div>
+                  <div style="padding: 30px; background: #f9f9f9; text-align: center;">
+                    <p style="font-size: 48px; margin: 0;">🎉</p>
+                    <h2>${clientStats.visitCount} visite con noi!</h2>
+                    <p>Per ringraziarti della tua fedeltà, ecco un regalo:</p>
+                    <div style="background: #27AE60; color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                      <p style="font-size: 32px; font-weight: bold; margin: 0;">${discount} DI SCONTO</p>
+                      <p style="margin: 5px 0;">sulla prossima visita</p>
+                    </div>
+                    <p style="color: #999;">Mostra questa email alla prossima visita!</p>
+                  </div>
+                </div>
+              `
+            });
+            await db.collection('users').updateOne(
+              { id: clientStats._id }, 
+              { $set: { [`loyaltyMilestone${clientStats.visitCount}Sent`]: true } }
+            );
+            results.loyaltyProgram.sent++;
+          } catch (err) {
+            results.loyaltyProgram.errors++;
+          }
+        }
+      }
+    }
+
+    // 20. CHIUSURE FESTIVE (7 giorni prima di Natale, Pasqua, Ferragosto)
+    const upcomingHolidays = [];
+    const checkDate = new Date(today);
+    checkDate.setDate(checkDate.getDate() + 7);
+    const checkMonth = checkDate.getMonth() + 1;
+    const checkDay = checkDate.getDate();
+
+    // Natale
+    if (checkMonth === 12 && checkDay >= 24 && checkDay <= 26) {
+      upcomingHolidays.push({ name: 'Natale', dates: '24-26 Dicembre' });
+    }
+    // Ferragosto
+    if (checkMonth === 8 && checkDay >= 14 && checkDay <= 16) {
+      upcomingHolidays.push({ name: 'Ferragosto', dates: '14-16 Agosto' });
+    }
+
+    if (upcomingHolidays.length > 0) {
+      for (const clinic of allClinics) {
+        if (!isAutomationEnabled(clinic, 'holidayClosures')) {
+          results.holidayClosures.skipped++;
+          continue;
+        }
+
+        const clinicClients = await db.collection('clinic_clients').find({ clinicId: clinic.id }).toArray();
+        for (const cc of clinicClients) {
+          const owner = await db.collection('users').findOne({ id: cc.ownerId });
+          if (owner?.email) {
+            await sendEmail({
+              to: owner.email,
+              subject: `🏖️ Chiusura ${upcomingHolidays[0].name} - ${clinic.clinicName}`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <div style="background: linear-gradient(135deg, #E74C3C, #C0392B); padding: 20px; border-radius: 10px 10px 0 0;">
+                    <h1 style="color: white; margin: 0;">🏖️ Avviso Chiusura</h1>
+                  </div>
+                  <div style="padding: 30px; background: #f9f9f9;">
+                    <p>Ciao ${owner.name || ''},</p>
+                    <p>Ti informiamo che <strong>${clinic.clinicName}</strong> sarà chiusa per <strong>${upcomingHolidays[0].name}</strong>.</p>
+                    <p><strong>Date:</strong> ${upcomingHolidays[0].dates}</p>
+                    <p>Per emergenze durante la chiusura, contatta il pronto soccorso veterinario più vicino.</p>
+                    <p>Ti auguriamo buone feste! 🎉</p>
+                  </div>
+                </div>
+              `
+            });
+            results.holidayClosures.sent++;
+          }
+        }
+      }
+    }
+
+    // 21. CONDOGLIANZE PET (se un pet viene segnato come deceduto)
+    const deceasedPets = await db.collection('pets').find({
+      status: 'deceased',
+      deceasedAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      condolencesSent: { $ne: true }
+    }).toArray();
+
+    for (const pet of deceasedPets) {
+      const clinic = pet.clinicId ? clinicsMap.get(pet.clinicId) : null;
+      if (clinic && !isAutomationEnabled(clinic, 'petCondolences')) {
+        results.petCondolences.skipped++;
+        continue;
+      }
+
+      const owner = await db.collection('users').findOne({ id: pet.ownerId });
+      if (owner?.email) {
+        try {
+          await sendEmail({
+            to: owner.email,
+            subject: `💔 Le nostre più sentite condoglianze per ${pet.name}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #5D6D7E, #34495E); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">💔 Con profondo affetto</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <p>Caro/a ${owner.name || ''},</p>
+                  <p>Abbiamo appreso con grande tristezza della perdita di <strong>${pet.name}</strong>.</p>
+                  <p>Sappiamo quanto fosse speciale per te e quanto dolore stai provando in questo momento.</p>
+                  <p>${pet.name} è stato fortunato/a ad avere un proprietario così amorevole, e i momenti che avete condiviso rimarranno per sempre nel tuo cuore.</p>
+                  <p>Ti siamo vicini in questo momento difficile.</p>
+                  <p style="font-style: italic; color: #666;">"Non sei più al mio fianco, ma sei per sempre nel mio cuore."</p>
+                  <p>Con affetto,<br>Il team di ${clinic?.clinicName || 'VetBuddy'}</p>
+                  <p style="font-size: 24px; text-align: center;">🌈🐾</p>
+                </div>
+              </div>
+            `
+          });
+          await db.collection('pets').updateOne({ id: pet.id }, { $set: { condolencesSent: true } });
+          results.petCondolences.sent++;
+        } catch (err) {
+          results.petCondolences.errors++;
+        }
+      }
+    }
+
+    // 22. DAILY SUMMARY (riepilogo serale per la clinica - solo se è sera)
+    const currentHour = today.getHours();
+    if (currentHour >= 18 && currentHour <= 20) {
+      for (const clinic of allClinics) {
+        if (!isAutomationEnabled(clinic, 'dailySummary') || !clinic.email) {
+          results.dailySummary.skipped++;
+          continue;
+        }
+
+        // Calcola statistiche del giorno
+        const todayApts = await db.collection('appointments').find({
+          clinicId: clinic.id,
+          date: todayStr
+        }).toArray();
+
+        const todayMessages = await db.collection('messages').countDocuments({
+          clinicId: clinic.id,
+          createdAt: { $gte: new Date(todayStr) }
+        });
+
+        const stats = {
+          totalApts: todayApts.length,
+          completed: todayApts.filter(a => a.status === 'completed').length,
+          noShow: todayApts.filter(a => a.status === 'no-show').length,
+          messages: todayMessages
+        };
+
+        try {
+          await sendEmail({
+            to: clinic.email,
+            subject: `📊 Riepilogo di oggi - ${todayStr}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">📊 Riepilogo Giornaliero</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <h2>${todayStr}</h2>
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                      <td style="padding: 15px; background: white; text-align: center; border-radius: 10px;">
+                        <strong style="font-size: 28px; color: #3498DB;">${stats.totalApts}</strong><br>Appuntamenti
+                      </td>
+                      <td style="padding: 15px; background: white; text-align: center; border-radius: 10px;">
+                        <strong style="font-size: 28px; color: #27AE60;">${stats.completed}</strong><br>Completati
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 15px; background: white; text-align: center; border-radius: 10px;">
+                        <strong style="font-size: 28px; color: #E74C3C;">${stats.noShow}</strong><br>No-show
+                      </td>
+                      <td style="padding: 15px; background: white; text-align: center; border-radius: 10px;">
+                        <strong style="font-size: 28px; color: #9B59B6;">${stats.messages}</strong><br>Messaggi
+                      </td>
+                    </tr>
+                  </table>
+                  <p style="text-align: center; margin-top: 20px; color: #666;">Buon riposo! A domani 💪</p>
+                </div>
+              </div>
+            `
+          });
+          results.dailySummary.sent++;
+        } catch (err) {
+          results.dailySummary.errors++;
+        }
+      }
+    }
+
+    // 23. STAFF BIRTHDAY (compleanni del team)
+    for (const clinic of allClinics) {
+      if (!isAutomationEnabled(clinic, 'staffBirthday')) {
+        results.staffBirthday.skipped++;
+        continue;
+      }
+
+      const staff = await db.collection('staff').find({ clinicId: clinic.id }).toArray();
+      for (const member of staff) {
+        if (!member.birthDate) continue;
+        
+        const birthDate = new Date(member.birthDate);
+        if (birthDate.getMonth() + 1 === todayMonth && birthDate.getDate() === todayDay) {
+          // Invia email a tutta la clinica
+          if (clinic.email) {
+            try {
+              await sendEmail({
+                to: clinic.email,
+                subject: `🎂 Oggi è il compleanno di ${member.name}!`,
+                html: `
+                  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <div style="background: linear-gradient(135deg, #FF6B6B, #FFE66D); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+                      <h1 style="color: white; margin: 0;">🎂 Buon Compleanno!</h1>
+                    </div>
+                    <div style="padding: 30px; background: #f9f9f9; text-align: center;">
+                      <h2>${member.name}</h2>
+                      <p style="font-size: 48px;">🎉🎁🎈</p>
+                      <p>Ricordati di fargli/le gli auguri oggi!</p>
+                    </div>
+                  </div>
+                `
+              });
+              results.staffBirthday.sent++;
+            } catch (err) {
+              results.staffBirthday.errors++;
+            }
+          }
+        }
+      }
+    }
+
     console.log('Daily cron completed:', results);
 
     return NextResponse.json({
