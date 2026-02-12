@@ -3431,13 +3431,16 @@ function ClinicDocuments({ documents, owners, pets, onRefresh, onNavigate }) {
 }
 
 // Simple components for other sections
-function ClinicPatients({ pets, onRefresh, onNavigate, owners = [] }) {
+function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner }) {
   const [showDialog, setShowDialog] = useState(false);
   const [selectedPet, setSelectedPet] = useState(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [petDetails, setPetDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [formData, setFormData] = useState({ name: '', species: 'dog', breed: '' });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editFormData, setEditFormData] = useState({});
   
   const handleSubmit = async (e) => { e.preventDefault(); try { await api.post('pets', formData); setShowDialog(false); onRefresh(); } catch (error) { alert(error.message); } };
   
@@ -3460,6 +3463,58 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [] }) {
     const owner = owners.find(o => o.id === ownerId);
     return owner?.name || 'Non assegnato';
   };
+  
+  const getOwnerDetails = (ownerId) => {
+    return owners.find(o => o.id === ownerId) || null;
+  };
+  
+  const handleEditPet = () => {
+    setEditFormData({
+      name: petDetails?.name || '',
+      species: petDetails?.species || 'dog',
+      breed: petDetails?.breed || '',
+      weight: petDetails?.weight || '',
+      microchip: petDetails?.microchip || ''
+    });
+    setShowEditDialog(true);
+  };
+  
+  const handleSaveEdit = async () => {
+    try {
+      await api.put(`pets/${selectedPet.id}`, editFormData);
+      alert('✅ Animale aggiornato!');
+      setShowEditDialog(false);
+      openPetDetails(selectedPet);
+      onRefresh();
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    }
+  };
+  
+  const handleDeletePet = async () => {
+    if (!confirm(`Sei sicuro di voler eliminare ${selectedPet?.name}? Questa azione non può essere annullata.`)) return;
+    try {
+      await api.delete(`pets/${selectedPet.id}`);
+      alert('✅ Animale eliminato!');
+      setShowDetailDialog(false);
+      onRefresh();
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    }
+  };
+  
+  // Filtra i pazienti per la ricerca
+  const filteredPets = pets.filter(pet => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    const ownerName = getOwnerName(pet.ownerId).toLowerCase();
+    return (
+      pet.name?.toLowerCase().includes(query) ||
+      pet.breed?.toLowerCase().includes(query) ||
+      pet.microchip?.toLowerCase().includes(query) ||
+      ownerName.includes(query)
+    );
+  });
   
   const calculateAge = (birthDate) => {
     if (!birthDate) return null;
