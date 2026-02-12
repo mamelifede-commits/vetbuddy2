@@ -319,6 +319,21 @@ frontend:
       - working: true
         agent: "testing"
         comment: "WORKING: Landing page loads correctly with Pilot Milano banner at top, both cards 'Sei una Clinica?' and 'Sei un Proprietario?' visible and well-aligned, footer with VetBuddy branding and Made in Italy text. All visual elements properly displayed."
+      - working: true
+        agent: "main"
+        comment: "UPDATED: Google Maps integration added to homepage. Interactive map showing Milano area with 5 demo clinic markers. Custom map styling, legend, stats badge '5 cliniche in zona'. InfoWindow popups on marker click. Screenshot verified - map loads correctly."
+
+  - task: "Google Maps Homepage"
+    implemented: true
+    working: true
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "NEW FEATURE: HomepageMapSection component with @react-google-maps/api. Shows real Google Maps of Milano with custom styled markers for veterinary clinics. Features: custom map styling, legend overlay, stats badge, InfoWindow popups, floating result card. API key from NEXT_PUBLIC_GOOGLE_MAPS_API_KEY env var."
 
   - task: "Registration Modal - Clinic"
     implemented: true
