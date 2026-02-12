@@ -1755,9 +1755,9 @@ function ClinicDashboard({ user, onLogout }) {
             <NavItem icon={Users} label="Staff" value="staff" />
             <NavItem icon={TrendingUp} label="Report" value="reports" />
             <NavItem icon={ClipboardList} label="Template" value="templates" />
-            <NavItem icon={Settings} label="Impostazioni" value="settings" />
             <div className="border-t my-2"></div>
             <NavItem icon={MessageCircle} label="Feedback" value="feedback" />
+            <NavItem icon={Settings} label="Impostazioni" value="settings" />
           </nav>
           <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
         </div>
