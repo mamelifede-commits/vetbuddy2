@@ -8978,6 +8978,112 @@ function PetProfile({ petId, onBack, appointments, documents }) {
           </div>
         </TabsContent>
       </Tabs>
+      
+      {/* Dialog Modifica Pet */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Modifica dati di {pet.name}</DialogTitle>
+            <DialogDescription>Aggiorna le informazioni del tuo animale</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Nome</Label>
+                <Input value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} />
+              </div>
+              <div>
+                <Label>Specie</Label>
+                <Select value={editForm.species} onValueChange={(v) => setEditForm({...editForm, species: v})}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="dog">🐕 Cane</SelectItem>
+                    <SelectItem value="cat">🐈 Gatto</SelectItem>
+                    <SelectItem value="other">🐾 Altro</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Razza</Label>
+                <Input value={editForm.breed} onChange={(e) => setEditForm({...editForm, breed: e.target.value})} placeholder="Es. Golden Retriever" />
+              </div>
+              <div>
+                <Label>Data di nascita</Label>
+                <Input type="date" value={editForm.birthDate} onChange={(e) => setEditForm({...editForm, birthDate: e.target.value})} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Peso (kg)</Label>
+                <Input type="number" step="0.1" value={editForm.weight} onChange={(e) => setEditForm({...editForm, weight: e.target.value})} placeholder="Es. 25.5" />
+              </div>
+              <div>
+                <Label>Microchip</Label>
+                <Input value={editForm.microchip} onChange={(e) => setEditForm({...editForm, microchip: e.target.value})} placeholder="Numero microchip" />
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="sterilized" checked={editForm.sterilized} onChange={(e) => setEditForm({...editForm, sterilized: e.target.checked})} className="h-4 w-4" />
+              <Label htmlFor="sterilized">Sterilizzato/Castrato</Label>
+            </div>
+            <div>
+              <Label>Allergie</Label>
+              <Input value={editForm.allergies} onChange={(e) => setEditForm({...editForm, allergies: e.target.value})} placeholder="Es. Pollo, polline..." />
+            </div>
+            <div>
+              <Label>Farmaci/Terapie in corso</Label>
+              <Input value={editForm.medications} onChange={(e) => setEditForm({...editForm, medications: e.target.value})} placeholder="Es. Cardisure 2x al giorno" />
+            </div>
+            <div>
+              <Label>Note aggiuntive</Label>
+              <Textarea value={editForm.notes} onChange={(e) => setEditForm({...editForm, notes: e.target.value})} placeholder="Altre informazioni utili..." rows={2} />
+            </div>
+          </div>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setShowEditDialog(false)}>Annulla</Button>
+            <Button className="bg-blue-500 hover:bg-blue-600" onClick={handleSaveEdit} disabled={saving}>
+              {saving ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <Check className="h-4 w-4 mr-2" />}
+              {saving ? 'Salvataggio...' : 'Salva modifiche'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Dialog Prenotazione (semplificato) */}
+      <Dialog open={showBookingDialog} onOpenChange={setShowBookingDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Prenota visita per {pet.name}</DialogTitle>
+            <DialogDescription>Vai alla sezione Appuntamenti per prenotare una nuova visita</DialogDescription>
+          </DialogHeader>
+          <div className="text-center py-6">
+            <Calendar className="h-16 w-16 text-blue-500 mx-auto mb-4" />
+            <p className="text-gray-600 mb-4">Per prenotare una visita, usa la sezione "I miei appuntamenti" nel menu laterale.</p>
+            <Button onClick={() => { setShowBookingDialog(false); onBack(); }} className="bg-blue-500 hover:bg-blue-600">
+              Vai agli Appuntamenti
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Dialog Upload Documento (semplificato) */}
+      <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Carica documento per {pet.name}</DialogTitle>
+            <DialogDescription>Vai alla sezione Documenti per caricare un nuovo file</DialogDescription>
+          </DialogHeader>
+          <div className="text-center py-6">
+            <Upload className="h-16 w-16 text-green-500 mx-auto mb-4" />
+            <p className="text-gray-600 mb-4">Per caricare documenti, usa la sezione "Documenti" nel menu laterale.</p>
+            <Button onClick={() => { setShowUploadDialog(false); onBack(); }} className="bg-green-500 hover:bg-green-600">
+              Vai ai Documenti
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
