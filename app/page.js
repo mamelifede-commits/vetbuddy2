@@ -1380,13 +1380,18 @@ function AuthForm({ mode, setMode, onLogin }) {
                 </div>
               )}
               
-              <div><Label>{formData.role === 'clinic' ? 'Nome responsabile' : 'Nome completo'}</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required placeholder={formData.role === 'clinic' ? 'Dr. Mario Rossi' : 'Mario Rossi'} /></div>
+              <div><Label>{formData.role === 'clinic' ? 'Nome responsabile *' : 'Nome completo *'}</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required placeholder={formData.role === 'clinic' ? 'Dr. Mario Rossi' : 'Mario Rossi'} /></div>
               
               {formData.role === 'clinic' && (
                 <>
                   <div><Label>Nome Clinica *</Label><Input value={formData.clinicName} onChange={(e) => setFormData({...formData, clinicName: e.target.value})} required placeholder="Clinica Veterinaria Roma" /></div>
+                  <div><Label>Indirizzo *</Label><Input value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} required placeholder="Via Roma 123" /></div>
                   <div className="grid grid-cols-2 gap-3">
                     <div><Label>Città *</Label><Input value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} required placeholder="Milano" /></div>
+                    <div><Label>CAP *</Label><Input value={formData.postalCode} onChange={(e) => setFormData({...formData, postalCode: e.target.value})} required placeholder="20100" /></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div><Label>Telefono *</Label><Input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} required placeholder="+39 02 1234567" /></div>
                     <div><Label>N° Staff</Label>
                       <Select value={formData.staffCount} onValueChange={(v) => setFormData({...formData, staffCount: v})}>
                         <SelectTrigger><SelectValue placeholder="Seleziona" /></SelectTrigger>
@@ -1399,8 +1404,20 @@ function AuthForm({ mode, setMode, onLogin }) {
                       </Select>
                     </div>
                   </div>
-                  <div><Label>Partita IVA</Label><Input value={formData.vatNumber} onChange={(e) => setFormData({...formData, vatNumber: e.target.value})} placeholder="IT01234567890" /></div>
+                  <div><Label>Partita IVA *</Label><Input value={formData.vatNumber} onChange={(e) => setFormData({...formData, vatNumber: e.target.value})} required placeholder="IT01234567890" /></div>
                   <div><Label>Sito web</Label><Input value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} placeholder="https://..." /></div>
+                  
+                  {/* Motivazione candidatura */}
+                  <div>
+                    <Label>Perché vuoi unirti al Pilot? *</Label>
+                    <textarea 
+                      value={formData.pilotMotivation || ''} 
+                      onChange={(e) => setFormData({...formData, pilotMotivation: e.target.value})}
+                      required
+                      placeholder="Raccontaci perché sei interessato a VetBuddy e come pensi di usarlo..."
+                      className="w-full min-h-[80px] px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coral-500"
+                    />
+                  </div>
                   
                   {/* Sezione Servizi */}
                   <div className="border-t pt-4 mt-2">
@@ -1439,7 +1456,10 @@ function AuthForm({ mode, setMode, onLogin }) {
                   </div>
                 </>
               )}
-              <div><Label>Telefono</Label><Input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} placeholder="+39 02 1234567" /></div>
+              
+              {formData.role === 'owner' && (
+                <div><Label>Telefono *</Label><Input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} required placeholder="+39 02 1234567" /></div>
+              )}
             </>
           )}
           <div><Label>Email *</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required placeholder="email@esempio.it" /></div>
