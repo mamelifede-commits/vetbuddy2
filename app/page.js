@@ -7765,7 +7765,7 @@ function OwnerAppointments({ appointments, pets }) {
           <h2 className="text-2xl font-bold text-gray-800">I miei appuntamenti</h2>
           <p className="text-gray-500 text-sm">Visite e consulti prenotati</p>
         </div>
-        <Dialog open={showBooking} onOpenChange={setShowBooking}>
+        <Dialog open={showBooking} onOpenChange={(open) => { setShowBooking(open); if (!open) handleModeChange('clinic'); }}>
           <DialogTrigger asChild>
             <Button className="bg-blue-500 hover:bg-blue-600">
               <Plus className="h-4 w-4 mr-2" />Prenota visita
@@ -7774,31 +7774,29 @@ function OwnerAppointments({ appointments, pets }) {
           <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Prenota una visita</DialogTitle>
-              <DialogDescription>Scegli la clinica, il servizio e l'orario preferito</DialogDescription>
+              <DialogDescription>Scegli come vuoi cercare: per clinica o per tipo di servizio</DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-              {/* Clinic Selection */}
-              <div>
-                <Label>Presso quale clinica?</Label>
-                <Select value={formData.clinicId} onValueChange={(v) => setFormData({...formData, clinicId: v, serviceId: ''})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={loadingClinics ? "Caricamento..." : "Seleziona clinica"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {clinics.map(clinic => (
-                      <SelectItem key={clinic.id} value={clinic.id}>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-coral-500" />
-                          <span>{clinic.clinicName || clinic.name}</span>
-                          {clinic.avgRating && <span className="text-xs text-amber-600">★ {clinic.avgRating.toFixed(1)}</span>}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              {/* Pet Selection */}
+            
+            {/* Toggle Modalità Ricerca */}
+            <div className="flex gap-2 p-1 bg-gray-100 rounded-lg mb-4">
+              <button
+                onClick={() => handleModeChange('clinic')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${searchMode === 'clinic' ? 'bg-white shadow text-blue-600' : 'text-gray-600 hover:text-gray-800'}`}
+              >
+                <Building2 className="h-4 w-4 inline mr-2" />
+                Cerca per Clinica
+              </button>
+              <button
+                onClick={() => handleModeChange('service')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${searchMode === 'service' ? 'bg-white shadow text-blue-600' : 'text-gray-600 hover:text-gray-800'}`}
+              >
+                <Search className="h-4 w-4 inline mr-2" />
+                Cerca per Servizio
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Pet Selection - sempre visibile */}
               <div>
                 <Label>Per quale animale?</Label>
                 <Select value={formData.petId} onValueChange={(v) => setFormData({...formData, petId: v})}>
@@ -7818,68 +7816,235 @@ function OwnerAppointments({ appointments, pets }) {
                 </Select>
               </div>
               
-              {/* Service Selection */}
-              {formData.clinicId && (
-                <div>
-                  <Label>Tipo di visita</Label>
-                  {loadingServices ? (
-                    <div className="text-center py-4">
-                      <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-500 border-t-transparent mx-auto"></div>
-                      <p className="text-sm text-gray-500 mt-2">Caricamento servizi...</p>
-                    </div>
-                  ) : clinicServices.length === 0 ? (
-                    <p className="text-sm text-gray-500 py-2">Nessun servizio disponibile per questa clinica</p>
-                  ) : (
-                    <div className="grid grid-cols-1 gap-2 mt-2 max-h-48 overflow-y-auto">
-                      {clinicServices.map(service => (
-                        <div 
-                          key={service.id}
-                          onClick={() => setFormData({...formData, serviceId: service.id.toString()})}
-                          className={`p-3 border rounded-lg cursor-pointer transition ${formData.serviceId === service.id.toString() ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className={`h-8 w-8 rounded-full flex items-center justify-center ${service.type === 'online' ? 'bg-blue-100' : 'bg-coral-100'}`}>
-                                {service.type === 'online' ? <Video className="h-4 w-4 text-blue-600" /> : <Stethoscope className="h-4 w-4 text-coral-600" />}
-                              </div>
-                              <div>
-                                <p className="font-medium text-sm">{service.name}</p>
-                                <p className="text-xs text-gray-500">{service.duration} min • {service.type === 'online' ? 'Online' : 'In sede'}</p>
-                              </div>
+              {/* ========== MODALITÀ CLINICA ========== */}
+              {searchMode === 'clinic' && (
+                <>
+                  {/* Clinic Selection */}
+                  <div>
+                    <Label>Presso quale clinica?</Label>
+                    <Select value={formData.clinicId} onValueChange={(v) => setFormData({...formData, clinicId: v, serviceId: ''})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={loadingClinics ? "Caricamento..." : "Seleziona clinica"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {clinics.map(clinic => (
+                          <SelectItem key={clinic.id} value={clinic.id}>
+                            <div className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4 text-coral-500" />
+                              <span>{clinic.clinicName || clinic.name}</span>
+                              {clinic.avgRating && <span className="text-xs text-amber-600">★ {clinic.avgRating.toFixed(1)}</span>}
                             </div>
-                            <div className="text-right">
-                              <p className="font-semibold text-blue-600">€{service.price}</p>
-                            </div>
-                          </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {/* Service Selection */}
+                  {formData.clinicId && (
+                    <div>
+                      <Label>Tipo di visita</Label>
+                      {loadingServices ? (
+                        <div className="text-center py-4">
+                          <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-500 border-t-transparent mx-auto"></div>
+                          <p className="text-sm text-gray-500 mt-2">Caricamento servizi...</p>
                         </div>
-                      ))}
+                      ) : clinicServices.length === 0 ? (
+                        <p className="text-sm text-gray-500 py-2">Nessun servizio disponibile per questa clinica</p>
+                      ) : (
+                        <div className="grid grid-cols-1 gap-2 mt-2 max-h-48 overflow-y-auto">
+                          {clinicServices.map(service => (
+                            <div 
+                              key={service.id}
+                              onClick={() => setFormData({...formData, serviceId: service.id.toString()})}
+                              className={`p-3 border rounded-lg cursor-pointer transition ${formData.serviceId === service.id.toString() ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className={`h-8 w-8 rounded-full flex items-center justify-center ${service.type === 'online' ? 'bg-blue-100' : 'bg-coral-100'}`}>
+                                    {service.type === 'online' ? <Video className="h-4 w-4 text-blue-600" /> : <Stethoscope className="h-4 w-4 text-coral-600" />}
+                                  </div>
+                                  <div>
+                                    <p className="font-medium text-sm">{service.name}</p>
+                                    <p className="text-xs text-gray-500">{service.duration} min • {service.type === 'online' ? 'Online' : 'In sede'}</p>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <p className="font-semibold text-blue-600">€{service.price}</p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
+                </>
+              )}
+              
+              {/* ========== MODALITÀ SERVIZIO ========== */}
+              {searchMode === 'service' && (
+                <>
+                  {/* Step 1: Cerca servizio */}
+                  {!selectedCategory && (
+                    <div>
+                      <Label>Che servizio cerchi?</Label>
+                      <div className="relative mt-2">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input
+                          placeholder="Es. vaccinazione, toelettatura, visita..."
+                          value={serviceSearch}
+                          onChange={(e) => setServiceSearch(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 mt-3 max-h-64 overflow-y-auto">
+                        {filteredCategories.map(category => (
+                          <div
+                            key={category.id}
+                            onClick={() => setSelectedCategory(category.id)}
+                            className="p-3 border rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition flex items-center gap-3"
+                          >
+                            <span className="text-2xl">{category.icon}</span>
+                            <span className="font-medium text-sm">{category.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Step 2: Mostra cliniche che offrono il servizio */}
+                  {selectedCategory && !formData.clinicId && (
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label>Cliniche che offrono: <span className="text-blue-600">{SERVICE_CATEGORIES.find(c => c.id === selectedCategory)?.name}</span></Label>
+                        <button type="button" onClick={() => setSelectedCategory(null)} className="text-sm text-gray-500 hover:text-blue-600">← Cambia servizio</button>
+                      </div>
+                      
+                      {loadingClinics ? (
+                        <div className="text-center py-6">
+                          <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent mx-auto"></div>
+                          <p className="text-sm text-gray-500 mt-2">Cercando cliniche...</p>
+                        </div>
+                      ) : filteredClinics.length === 0 ? (
+                        <div className="text-center py-6 bg-gray-50 rounded-lg">
+                          <Building2 className="h-10 w-10 text-gray-300 mx-auto mb-2" />
+                          <p className="text-gray-500">Nessuna clinica trovata per questo servizio nella tua zona</p>
+                          <button type="button" onClick={() => setSelectedCategory(null)} className="text-blue-500 text-sm mt-2 hover:underline">Prova un altro servizio</button>
+                        </div>
+                      ) : (
+                        <div className="space-y-3 max-h-64 overflow-y-auto">
+                          {filteredClinics.map(clinic => (
+                            <div
+                              key={clinic.id}
+                              onClick={() => selectClinicFromService(clinic)}
+                              className="p-4 border rounded-lg cursor-pointer hover:border-blue-400 hover:shadow-md transition bg-white"
+                            >
+                              <div className="flex items-start justify-between">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2">
+                                    <h4 className="font-semibold text-gray-900">{clinic.clinicName || clinic.name}</h4>
+                                    {clinic.avgRating && (
+                                      <span className="flex items-center gap-1 text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                                        <Star className="h-3 w-3 fill-current" />
+                                        {clinic.avgRating.toFixed(1)}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+                                    <MapPin className="h-3 w-3" />
+                                    <span>{clinic.address}, {clinic.city}</span>
+                                  </div>
+                                  {clinic.phone && (
+                                    <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+                                      <Phone className="h-3 w-3" />
+                                      <span>{clinic.phone}</span>
+                                    </div>
+                                  )}
+                                </div>
+                                <ChevronRight className="h-5 w-5 text-gray-400" />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Step 3: Dopo aver scelto la clinica, mostra i servizi specifici */}
+                  {selectedCategory && formData.clinicId && (
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label>Clinica selezionata</Label>
+                        <button type="button" onClick={() => setFormData({...formData, clinicId: '', serviceId: ''})} className="text-sm text-gray-500 hover:text-blue-600">← Cambia clinica</button>
+                      </div>
+                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg mb-4">
+                        <div className="flex items-center gap-2">
+                          <Building2 className="h-5 w-5 text-blue-600" />
+                          <span className="font-medium">{selectedClinic?.clinicName || selectedClinic?.name}</span>
+                        </div>
+                      </div>
+                      
+                      <Label>Seleziona il servizio specifico</Label>
+                      {loadingServices ? (
+                        <div className="text-center py-4">
+                          <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-500 border-t-transparent mx-auto"></div>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 gap-2 mt-2 max-h-40 overflow-y-auto">
+                          {clinicServices.map(service => (
+                            <div 
+                              key={service.id}
+                              onClick={() => setFormData({...formData, serviceId: service.id.toString()})}
+                              className={`p-3 border rounded-lg cursor-pointer transition ${formData.serviceId === service.id.toString() ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className={`h-8 w-8 rounded-full flex items-center justify-center ${service.type === 'online' ? 'bg-blue-100' : 'bg-coral-100'}`}>
+                                    {service.type === 'online' ? <Video className="h-4 w-4 text-blue-600" /> : <Stethoscope className="h-4 w-4 text-coral-600" />}
+                                  </div>
+                                  <div>
+                                    <p className="font-medium text-sm">{service.name}</p>
+                                    <p className="text-xs text-gray-500">{service.duration} min</p>
+                                  </div>
+                                </div>
+                                <p className="font-semibold text-blue-600">€{service.price}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+              
+              {/* Date/Time - mostra solo quando servizio è selezionato */}
+              {formData.serviceId && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Data</Label>
+                    <Input type="date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} required min={new Date().toISOString().split('T')[0]} />
+                  </div>
+                  <div>
+                    <Label>Ora</Label>
+                    <Input type="time" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} required />
+                  </div>
                 </div>
               )}
               
-              {/* Date/Time */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Data</Label>
-                  <Input type="date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} required min={new Date().toISOString().split('T')[0]} />
-                </div>
-                <div>
-                  <Label>Ora</Label>
-                  <Input type="time" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} required />
-                </div>
-              </div>
-              
               {/* Notes */}
-              <div>
-                <Label>Note per il veterinario (opzionale)</Label>
-                <Textarea 
-                  value={formData.notes} 
-                  onChange={(e) => setFormData({...formData, notes: e.target.value})} 
-                  placeholder="Descrivi brevemente il motivo della visita..."
-                  rows={2}
-                />
-              </div>
+              {formData.serviceId && (
+                <div>
+                  <Label>Note per il veterinario (opzionale)</Label>
+                  <Textarea 
+                    value={formData.notes} 
+                    onChange={(e) => setFormData({...formData, notes: e.target.value})} 
+                    placeholder="Descrivi brevemente il motivo della visita..."
+                    rows={2}
+                  />
+                </div>
+              )}
               
               {/* Summary */}
               {selectedService && selectedClinic && (
