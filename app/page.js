@@ -851,47 +851,6 @@ function LandingPage({ onLogin }) {
         </div>
       </section>
 
-      {/* Contact Form for Enterprise */}
-      <section id="contatti" className="py-12 px-4 bg-white">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Contattaci</h2>
-            <p className="text-gray-600">Hai una catena di cliniche o domande specifiche? Scrivici!</p>
-          </div>
-          <Card>
-            <CardContent className="p-6">
-              <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('Grazie! Ti ricontatteremo presto a info@vetbuddy.it'); }}>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="contact-name">Nome e Cognome</Label>
-                    <Input id="contact-name" placeholder="Mario Rossi" required />
-                  </div>
-                  <div>
-                    <Label htmlFor="contact-clinic">Nome Clinica</Label>
-                    <Input id="contact-clinic" placeholder="Clinica Veterinaria Roma" />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="contact-email">Email</Label>
-                  <Input id="contact-email" type="email" placeholder="mario@clinica.it" required />
-                </div>
-                <div>
-                  <Label htmlFor="contact-phone">Telefono (opzionale)</Label>
-                  <Input id="contact-phone" type="tel" placeholder="+39 02 1234567" />
-                </div>
-                <div>
-                  <Label htmlFor="contact-message">Messaggio</Label>
-                  <Textarea id="contact-message" placeholder="Descrivi le tue esigenze o domande..." rows={4} required />
-                </div>
-                <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">
-                  <Send className="h-4 w-4 mr-2" />Invia messaggio
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
       {/* FAQ */}
       <section id="faq" className="py-12 px-4">
         <div className="max-w-3xl mx-auto">
