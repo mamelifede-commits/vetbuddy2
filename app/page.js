@@ -8392,13 +8392,85 @@ function OwnerAppointments({ appointments, pets }) {
               {/* Notes */}
               {formData.serviceId && (
                 <div>
-                  <Label>Note per il veterinario (opzionale)</Label>
+                  <Label>Motivo del consulto *</Label>
                   <Textarea 
                     value={formData.notes} 
                     onChange={(e) => setFormData({...formData, notes: e.target.value})} 
-                    placeholder="Descrivi brevemente il motivo della visita..."
-                    rows={2}
+                    placeholder={selectedService?.type === 'online' 
+                      ? "Descrivi il motivo del video consulto, sintomi osservati, domande per il veterinario..."
+                      : "Descrivi brevemente il motivo della visita..."}
+                    rows={3}
                   />
+                </div>
+              )}
+
+              {/* Upload Documenti per Video Consulto */}
+              {selectedService?.type === 'online' && (
+                <div className="space-y-3">
+                  <div>
+                    <Label className="flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Documenti allegati (opzionale ma consigliato)
+                    </Label>
+                    <p className="text-xs text-gray-500 mb-2">
+                      Carica referti, analisi, foto o video per aiutare il veterinario a prepararsi.
+                    </p>
+                  </div>
+                  
+                  {/* File List */}
+                  {uploadedFiles.length > 0 && (
+                    <div className="space-y-2">
+                      {uploadedFiles.map((file, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            {file.type?.includes('image') ? (
+                              <ImageIcon className="h-4 w-4 text-green-600" />
+                            ) : file.type?.includes('video') ? (
+                              <Video className="h-4 w-4 text-green-600" />
+                            ) : (
+                              <FileText className="h-4 w-4 text-green-600" />
+                            )}
+                            <span className="text-sm font-medium text-green-800">{file.name}</span>
+                            <span className="text-xs text-green-600">({(file.size / 1024).toFixed(0)} KB)</span>
+                          </div>
+                          <Button 
+                            type="button"
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => setUploadedFiles(files => files.filter((_, i) => i !== index))}
+                            className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Upload Button */}
+                  <div className="flex gap-2">
+                    <label className="flex-1">
+                      <input
+                        type="file"
+                        multiple
+                        accept=".pdf,.jpg,.jpeg,.png,.mp4,.mov"
+                        className="hidden"
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || []);
+                          setUploadedFiles(prev => [...prev, ...files]);
+                          e.target.value = '';
+                        }}
+                      />
+                      <div className="flex items-center justify-center gap-2 p-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition">
+                        <Upload className="h-4 w-4 text-gray-500" />
+                        <span className="text-sm text-gray-600">Carica file (PDF, immagini, video)</span>
+                      </div>
+                    </label>
+                  </div>
+                  
+                  <p className="text-xs text-gray-400">
+                    Formati supportati: PDF, JPG, PNG, MP4, MOV • Max 10MB per file
+                  </p>
                 </div>
               )}
               
