@@ -4291,11 +4291,20 @@ function ClinicServices({ onNavigate, user }) {
     cat.services.map(s => ({ ...s, categoryId: catId, categoryName: cat.name }))
   );
 
-  const filteredServices = activeCategory === 'all' 
+  const baseFilteredServices = activeCategory === 'all' 
     ? allCatalogServices 
     : activeCategory === 'custom'
     ? []
     : serviceCatalog[activeCategory]?.services.map(s => ({ ...s, categoryId: activeCategory, categoryName: serviceCatalog[activeCategory].name })) || [];
+
+  // Apply search filter
+  const filteredServices = searchQuery.trim() 
+    ? baseFilteredServices.filter(s => 
+        s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        s.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.categoryName?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : baseFilteredServices;
 
   const totalActiveServices = selectedServices.length + customServices.length;
 
