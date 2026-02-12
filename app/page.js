@@ -3970,7 +3970,7 @@ function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet }) {
                 )}
               </div>
               
-              {/* Animali del proprietario */}
+              {/* Animali del proprietario - Cliccabili */}
               {(() => {
                 const ownerPets = getOwnerPets(selectedOwner.id);
                 if (ownerPets.length === 0) return null;
@@ -3981,14 +3981,19 @@ function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet }) {
                     </p>
                     <div className="space-y-2">
                       {ownerPets.map(pet => (
-                        <div key={pet.id} className="flex items-center gap-3 p-3 bg-coral-50 rounded-lg">
+                        <div 
+                          key={pet.id} 
+                          className="flex items-center gap-3 p-3 bg-coral-50 rounded-lg cursor-pointer hover:bg-coral-100 transition-colors"
+                          onClick={() => handlePetClick(pet)}
+                        >
                           <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
                             {pet.species === 'dog' ? <Dog className="h-5 w-5 text-coral-600" /> : pet.species === 'cat' ? <Cat className="h-5 w-5 text-coral-600" /> : <PawPrint className="h-5 w-5 text-coral-600" />}
                           </div>
-                          <div>
+                          <div className="flex-1">
                             <p className="font-medium">{pet.name}</p>
                             <p className="text-xs text-gray-500">{pet.breed || (pet.species === 'dog' ? 'Cane' : pet.species === 'cat' ? 'Gatto' : 'Altro')}</p>
                           </div>
+                          <ChevronRight className="h-5 w-5 text-gray-300" />
                         </div>
                       ))}
                     </div>
