@@ -8253,29 +8253,230 @@ function FindClinic({ user }) {
     return `${distance.toFixed(1)} km`;
   };
 
-  // Google Maps Component
+  // Google Maps Component - Enhanced Interactive Map
   const GoogleMapsSection = () => {
     const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    const [selectedMapClinic, setSelectedMapClinic] = useState(null);
+    const [mapInstance, setMapInstance] = useState(null);
+    
+    const { isLoaded, loadError } = useJsApiLoader({
+      googleMapsApiKey: GOOGLE_MAPS_API_KEY || '',
+      id: 'vetbuddy-google-map'
+    });
+
+    // Custom map style - modern and clean
+    const mapStyles = [
+      { featureType: "poi.business", stylers: [{ visibility: "off" }] },
+      { featureType: "poi.park", elementType: "labels.text", stylers: [{ visibility: "off" }] },
+      { featureType: "water", elementType: "geometry", stylers: [{ color: "#e9e9e9" }] },
+      { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
+      { featureType: "road", elementType: "geometry", stylers: [{ color: "#ffffff" }] },
+      { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#dadada" }] },
+      { featureType: "landscape", elementType: "geometry", stylers: [{ color: "#f5f5f5" }] },
+    ];
+
+    const mapContainerStyle = {
+      width: '100%',
+      height: '500px',
+      borderRadius: '16px',
+    };
+
+    const mapOptions = {
+      styles: mapStyles,
+      disableDefaultUI: false,
+      zoomControl: true,
+      mapTypeControl: false,
+      scaleControl: true,
+      streetViewControl: false,
+      rotateControl: false,
+      fullscreenControl: true,
+    };
+
+    const onMapLoad = useCallback((map) => {
+      setMapInstance(map);
+      // Fit bounds to show all clinics if available
+      if (clinics.length > 0) {
+        const bounds = new window.google.maps.LatLngBounds();
+        clinics.forEach(clinic => {
+          if (clinic.latitude && clinic.longitude) {
+            bounds.extend({ lat: clinic.latitude, lng: clinic.longitude });
+          }
+        });
+        if (userLocation) {
+          bounds.extend({ lat: userLocation.lat, lng: userLocation.lng });
+        }
+        map.fitBounds(bounds);
+      }
+    }, [clinics, userLocation]);
     
     if (!GOOGLE_MAPS_API_KEY) {
       return (
-        <div className="h-[400px] bg-gray-100 rounded-lg flex items-center justify-center">
-          <p className="text-gray-500">Google Maps API key non configurata</p>
+        <div className="h-[500px] bg-gradient-to-br from-blue-50 to-coral-50 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-gray-200">
+          <MapPin className="h-16 w-16 text-gray-300 mb-4" />
+          <p className="text-gray-500 font-medium">Google Maps API key non configurata</p>
+          <p className="text-sm text-gray-400 mt-2">Contatta l'amministratore per abilitare la mappa</p>
+        </div>
+      );
+    }
+
+    if (loadError) {
+      return (
+        <div className="h-[500px] bg-red-50 rounded-2xl flex flex-col items-center justify-center border border-red-200">
+          <AlertCircle className="h-16 w-16 text-red-300 mb-4" />
+          <p className="text-red-600 font-medium">Errore nel caricamento della mappa</p>
+          <p className="text-sm text-red-400 mt-2">{loadError.message}</p>
+        </div>
+      );
+    }
+
+    if (!isLoaded) {
+      return (
+        <div className="h-[500px] bg-gradient-to-br from-blue-50 to-coral-50 rounded-2xl flex flex-col items-center justify-center border border-gray-100 animate-pulse">
+          <RefreshCw className="h-12 w-12 text-blue-400 mb-4 animate-spin" />
+          <p className="text-gray-500 font-medium">Caricamento mappa...</p>
         </div>
       );
     }
 
     return (
-      <div className="h-[500px] rounded-lg overflow-hidden border">
-        <iframe
-          width="100%"
-          height="100%"
-          style={{ border: 0 }}
-          loading="lazy"
-          allowFullScreen
-          referrerPolicy="no-referrer-when-downgrade"
-          src={`https://www.google.com/maps/embed/v1/search?key=${GOOGLE_MAPS_API_KEY}&q=clinica+veterinaria${searchCity ? `+${encodeURIComponent(searchCity)}` : '+Italia'}&center=${mapCenter.lat},${mapCenter.lng}&zoom=12`}
-        />
+      <div className="relative">
+        {/* Map Legend */}
+        <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 space-y-2">
+          <div className="flex items-center gap-2 text-sm">
+            <div className="w-4 h-4 rounded-full bg-gradient-to-br from-coral-400 to-coral-600 shadow-sm"></div>
+            <span className="text-gray-700">Cliniche VetBuddy</span>
+          </div>
+          {userLocation && (
+            <div className="flex items-center gap-2 text-sm">
+              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 shadow-sm"></div>
+              <span className="text-gray-700">La tua posizione</span>
+            </div>
+          )}
+        </div>
+
+        {/* Stats overlay */}
+        <div className="absolute top-4 right-4 z-10 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg px-4 py-2">
+          <div className="flex items-center gap-3">
+            <div className="text-center">
+              <div className="text-xl font-bold text-coral-600">{clinics.filter(c => c.latitude && c.longitude).length}</div>
+              <div className="text-xs text-gray-500">su mappa</div>
+            </div>
+            <div className="w-px h-8 bg-gray-200"></div>
+            <div className="text-center">
+              <div className="text-xl font-bold text-blue-600">{clinics.length}</div>
+              <div className="text-xs text-gray-500">totali</div>
+            </div>
+          </div>
+        </div>
+
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          center={mapCenter}
+          zoom={12}
+          onLoad={onMapLoad}
+          options={mapOptions}
+        >
+          {/* User location marker */}
+          {userLocation && (
+            <Marker
+              position={userLocation}
+              icon={{
+                path: window.google.maps.SymbolPath.CIRCLE,
+                scale: 12,
+                fillColor: '#3B82F6',
+                fillOpacity: 1,
+                strokeColor: '#ffffff',
+                strokeWeight: 3,
+              }}
+              title="La tua posizione"
+            />
+          )}
+
+          {/* Clinic markers */}
+          {clinics.map((clinic) => {
+            if (!clinic.latitude || !clinic.longitude) return null;
+            return (
+              <Marker
+                key={clinic.id}
+                position={{ lat: clinic.latitude, lng: clinic.longitude }}
+                onClick={() => setSelectedMapClinic(clinic)}
+                icon={{
+                  url: 'data:image/svg+xml,' + encodeURIComponent(`
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 56" width="40" height="48">
+                      <defs>
+                        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" style="stop-color:#FF6B6B"/>
+                          <stop offset="100%" style="stop-color:#FF8E53"/>
+                        </linearGradient>
+                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3"/>
+                        </filter>
+                      </defs>
+                      <path filter="url(#shadow)" fill="url(#grad)" d="M24 0C10.7 0 0 10.7 0 24c0 18 24 32 24 32s24-14 24-32C48 10.7 37.3 0 24 0z"/>
+                      <ellipse cx="24" cy="26" rx="8" ry="7" fill="white"/>
+                      <ellipse cx="15" cy="18" rx="4" ry="5" fill="white"/>
+                      <ellipse cx="24" cy="14" rx="4" ry="5" fill="white"/>
+                      <ellipse cx="33" cy="18" rx="4" ry="5" fill="white"/>
+                    </svg>
+                  `),
+                  scaledSize: new window.google.maps.Size(40, 48),
+                  anchor: new window.google.maps.Point(20, 48),
+                }}
+                animation={window.google.maps.Animation.DROP}
+              />
+            );
+          })}
+
+          {/* Info Window for selected clinic */}
+          {selectedMapClinic && selectedMapClinic.latitude && (
+            <InfoWindow
+              position={{ lat: selectedMapClinic.latitude, lng: selectedMapClinic.longitude }}
+              onCloseClick={() => setSelectedMapClinic(null)}
+            >
+              <div className="p-2 min-w-[200px]">
+                <h3 className="font-bold text-gray-900 text-base mb-1">{selectedMapClinic.clinicName}</h3>
+                <p className="text-sm text-gray-500 mb-2">{selectedMapClinic.city}</p>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex">
+                    {[1,2,3,4,5].map((s) => (
+                      <Star key={s} className={`h-3.5 w-3.5 ${s <= Math.round(selectedMapClinic.avgRating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-600">{selectedMapClinic.avgRating?.toFixed(1) || 'N/D'}</span>
+                  <span className="text-xs text-gray-400">({selectedMapClinic.reviewCount || 0})</span>
+                </div>
+                {selectedMapClinic.distance !== null && (
+                  <div className="flex items-center gap-1 text-sm text-blue-600 mb-2">
+                    <MapPin className="h-3 w-3" />
+                    <span>{formatDistance(selectedMapClinic.distance)}</span>
+                  </div>
+                )}
+                <div className="flex gap-2 mt-3">
+                  <button 
+                    onClick={() => setSelectedClinic(selectedMapClinic)}
+                    className="flex-1 bg-coral-500 hover:bg-coral-600 text-white text-xs px-3 py-1.5 rounded-lg transition"
+                  >
+                    Dettagli
+                  </button>
+                  <button 
+                    onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${selectedMapClinic.latitude},${selectedMapClinic.longitude}`, '_blank')}
+                    className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg transition"
+                  >
+                    <MapPin className="h-3 w-3" />
+                  </button>
+                </div>
+              </div>
+            </InfoWindow>
+          )}
+        </GoogleMap>
+
+        {/* Bottom instruction */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg px-4 py-2 text-sm text-gray-600">
+          <span className="flex items-center gap-2">
+            <PawPrint className="h-4 w-4 text-coral-500" />
+            Clicca su un marker per vedere i dettagli della clinica
+          </span>
+        </div>
       </div>
     );
   };
