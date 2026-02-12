@@ -1308,7 +1308,7 @@ function LandingPage({ onLogin }) {
               <a href="mailto:info@vetbuddy.it" className="hover:text-white">info@vetbuddy.it</a>
             </div>
           </div>
-          <p className="text-center text-gray-500 text-xs mt-4">© 2026 VetBuddy. Tutti i diritti riservati. P.IVA: [da inserire]</p>
+          <p className="text-center text-gray-500 text-xs mt-4">© 2026 VetBuddy. Tutti i diritti riservati.</p>
         </div>
       </footer>
 
