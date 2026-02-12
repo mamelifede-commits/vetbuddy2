@@ -3812,11 +3812,12 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner 
   );
 }
 
-function ClinicOwners({ owners, onRefresh, onNavigate, pets = [] }) {
+function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet }) {
   const [showDialog, setShowDialog] = useState(false);
   const [selectedOwner, setSelectedOwner] = useState(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [searchQuery, setSearchQuery] = useState('');
   
   const handleSubmit = async (e) => { e.preventDefault(); try { await api.post('owners', formData); setShowDialog(false); onRefresh(); } catch (error) { alert(error.message); } };
   
@@ -3827,6 +3828,27 @@ function ClinicOwners({ owners, onRefresh, onNavigate, pets = [] }) {
   
   const getOwnerPets = (ownerId) => {
     return pets.filter(p => p.ownerId === ownerId);
+  };
+  
+  // Filtra i proprietari per la ricerca
+  const filteredOwners = owners.filter(owner => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    const ownerPets = getOwnerPets(owner.id);
+    const petNames = ownerPets.map(p => p.name?.toLowerCase() || '').join(' ');
+    return (
+      owner.name?.toLowerCase().includes(query) ||
+      owner.email?.toLowerCase().includes(query) ||
+      owner.phone?.toLowerCase().includes(query) ||
+      petNames.includes(query)
+    );
+  });
+  
+  const handlePetClick = (pet) => {
+    if (onOpenPet) {
+      setShowDetailDialog(false);
+      onOpenPet(pet);
+    }
   };
   
   return (
