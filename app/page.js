@@ -1776,6 +1776,7 @@ function ClinicDashboard({ user, onLogout }) {
             <NavItem icon={Users} label="Staff" value="staff" />
             <NavItem icon={TrendingUp} label="Report" value="reports" />
             <NavItem icon={ClipboardList} label="Template" value="templates" />
+            <NavItem icon={Zap} label="Automazioni" value="automations" />
             <div className="border-t my-2"></div>
             <NavItem icon={MessageCircle} label="Feedback" value="feedback" />
             <NavItem icon={Settings} label="Impostazioni" value="settings" />
@@ -1807,6 +1808,7 @@ function ClinicDashboard({ user, onLogout }) {
           <NavItem icon={Users} label="Staff" value="staff" />
           <NavItem icon={TrendingUp} label="Report" value="reports" />
           <NavItem icon={ClipboardList} label="Template" value="templates" />
+          <NavItem icon={Zap} label="Automazioni" value="automations" />
           <div className="border-t my-2"></div>
           <NavItem icon={MessageCircle} label="Feedback" value="feedback" />
           <NavItem icon={Settings} label="Impostazioni" value="settings" />
