@@ -318,7 +318,7 @@ export default function AdminPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button onClick={loadApplications} variant="outline" size="sm">
+              <Button onClick={() => loadApplications(filter)} variant="outline" size="sm">
                 <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                 Aggiorna
               </Button>
