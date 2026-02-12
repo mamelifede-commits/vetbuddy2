@@ -6701,6 +6701,25 @@ function ClinicSettings({ user, onNavigate }) {
     }
   };
 
+  // Handle clinic profile update
+  const handleProfileUpdate = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await api.put('clinic/profile', profileForm);
+      // Update user object in parent (would need to refresh or update context)
+      alert('✅ Profilo clinica aggiornato con successo!');
+      setEditingProfile(false);
+      // Reload page to reflect changes
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating clinic profile:', error);
+      alert('❌ Errore durante l\'aggiornamento del profilo');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const loadGoogleCalendarStatus = async () => {
     try {
       const status = await api.get('google-calendar/status');
