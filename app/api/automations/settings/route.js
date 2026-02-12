@@ -4,18 +4,46 @@ import { verifyToken, getUserFromRequest } from '@/lib/auth';
 
 // Default automation settings
 const DEFAULT_SETTINGS = {
+  // === EMAIL AUTOMATICHE ===
   appointmentReminders: true,      // Promemoria appuntamenti 24h prima
   bookingConfirmation: true,       // Conferma prenotazione immediata
   vaccineRecalls: true,            // Richiamo vaccini 30 giorni prima
   postVisitFollowup: true,         // Follow-up post visita 48h dopo
+  
+  // === GESTIONE SMART ===
   noShowDetection: true,           // No-show detection automatica
   waitlistNotification: true,      // Notifica slot liberi da lista attesa
   suggestedSlots: true,            // Slot suggeriti basato su storico
   documentReminders: true,         // Reminder documenti mancanti
+  
+  // === MESSAGGI & REPORT ===
   autoTicketAssignment: true,      // Auto-assegnazione ticket per categoria
   aiQuickReplies: true,            // Risposte rapide AI suggerite
   urgencyNotifications: true,      // Notifiche urgenze priorità automatica
-  weeklyReport: true               // Report settimanale ogni lunedì
+  weeklyReport: true,              // Report settimanale ogni lunedì
+  
+  // === ENGAGEMENT & FIDELIZZAZIONE ===
+  petBirthday: true,               // Auguri compleanno pet
+  reviewRequest: true,             // Richiesta recensione post-visita
+  inactiveClientReactivation: true, // Riattivazione clienti inattivi (6+ mesi)
+  
+  // === SALUTE & PREVENZIONE ===
+  antiparasiticReminder: true,     // Promemoria antiparassitari
+  annualCheckup: true,             // Reminder controllo annuale
+  medicationRefill: true,          // Avviso refill farmaci cronici
+  weightAlert: true,               // Alert variazioni peso significative
+  dentalHygiene: true,             // Promemoria igiene dentale annuale
+  
+  // === OPERATIVITÀ CLINICA ===
+  appointmentConfirmation: true,   // Richiesta conferma 48h prima
+  labResultsReady: true,           // Notifica referti pronti
+  paymentReminder: true,           // Reminder fatture non pagate
+  postSurgeryFollowup: true,       // Follow-up specifico post-chirurgia
+  
+  // === STAGIONALI ===
+  summerHeatAlert: true,           // Alert caldo estivo (giugno-agosto)
+  tickSeasonAlert: true,           // Alert stagione zecche (marzo-maggio)
+  newYearFireworksAlert: true      // Consigli botti capodanno (dicembre)
 };
 
 // GET - Retrieve automation settings for the authenticated clinic
