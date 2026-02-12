@@ -286,7 +286,7 @@ export async function GET(request, { params }) {
       // Get clinic's plan
       const users = await getCollection('users');
       const clinic = await users.findOne({ id: user.id });
-      const clinicPlan = clinic?.plan || 'starter';
+      const clinicPlan = clinic?.subscriptionPlan || clinic?.plan || 'starter';
 
       // Define which automations are allowed per plan
       const PRO_AUTOMATIONS = [
