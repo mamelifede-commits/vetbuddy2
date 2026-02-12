@@ -8632,6 +8632,11 @@ function PetProfile({ petId, onBack, appointments, documents }) {
   const [pet, setPet] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showBookingDialog, setShowBookingDialog] = useState(false);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [editForm, setEditForm] = useState({});
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     loadPetData();
@@ -8641,10 +8646,36 @@ function PetProfile({ petId, onBack, appointments, documents }) {
     try {
       const data = await api.get(`pets/${petId}`);
       setPet(data);
+      setEditForm({
+        name: data.name || '',
+        species: data.species || 'dog',
+        breed: data.breed || '',
+        birthDate: data.birthDate ? data.birthDate.split('T')[0] : '',
+        weight: data.weight || '',
+        microchip: data.microchip || '',
+        sterilized: data.sterilized || false,
+        allergies: data.allergies || '',
+        medications: data.medications || '',
+        notes: data.notes || ''
+      });
     } catch (error) {
       console.error('Error loading pet:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveEdit = async () => {
+    setSaving(true);
+    try {
+      await api.put(`pets/${petId}`, editForm);
+      await loadPetData();
+      setShowEditDialog(false);
+      alert('✅ Dati aggiornati con successo!');
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    } finally {
+      setSaving(false);
     }
   };
 
