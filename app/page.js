@@ -6621,6 +6621,18 @@ function ClinicSettings({ user, onNavigate }) {
   const [staffColors, setStaffColors] = useState([]);
   const [staffList, setStaffList] = useState([]);
   
+  // Profile editing state
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    clinicName: user.clinicName || '',
+    vatNumber: user.vatNumber || '',
+    phone: user.phone || '',
+    website: user.website || '',
+    description: user.description || '',
+    openingTime: user.openingTime || '09:00',
+    closingTime: user.closingTime || '18:00'
+  });
+  
   // Payment settings state
   const [paymentSettings, setPaymentSettings] = useState({
     paymentMethods: { cash: true, cardInClinic: true, bankTransfer: false, online: false },
