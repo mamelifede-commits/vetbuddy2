@@ -225,6 +225,114 @@ export async function GET(request) {
     );
     results.noShow.marked = noShowResult.modifiedCount;
 
+    // 5. REMINDER DOCUMENTI MANCANTI (per ogni clinica)
+    const clinics = await db.collection('users').find({ role: 'clinic' }).toArray();
+    results.documentReminders = { sent: 0 };
+    
+    for (const clinic of clinics) {
+      const appointmentsWithoutDocs = await db.collection('appointments').find({
+        clinicId: clinic.id,
+        status: 'completed',
+        hasDocuments: { $ne: true },
+        documentReminderSent: { $ne: true },
+        date: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] }
+      }).toArray();
+
+      if (appointmentsWithoutDocs.length > 0 && clinic.email) {
+        // Invia reminder
+        const reminderList = await Promise.all(appointmentsWithoutDocs.map(async (apt) => {
+          const pet = await db.collection('pets').findOne({ id: apt.petId });
+          return `${pet?.name || 'Paziente'} - ${apt.reason || 'Visita'} (${apt.date})`;
+        }));
+
+        await sendEmail({
+          to: clinic.email,
+          subject: `📋 ${appointmentsWithoutDocs.length} documenti da caricare - VetBuddy`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <div style="background: linear-gradient(135deg, #FF9800, #FFB74D); padding: 20px; border-radius: 10px 10px 0 0;">
+                <h1 style="color: white; margin: 0;">📋 Documenti Mancanti</h1>
+              </div>
+              <div style="padding: 30px; background: #f9f9f9;">
+                <p>Ciao ${clinic.clinicName || 'Team'},</p>
+                <p>Ci sono <strong>${appointmentsWithoutDocs.length} visite completate</strong> senza documenti:</p>
+                <ul>${reminderList.map(r => `<li>${r}</li>`).join('')}</ul>
+                <p>Ricordati di caricare referti e prescrizioni.</p>
+              </div>
+            </div>
+          `
+        });
+
+        // Segna come inviati
+        for (const apt of appointmentsWithoutDocs) {
+          await db.collection('appointments').updateOne(
+            { id: apt.id },
+            { $set: { documentReminderSent: true } }
+          );
+        }
+        results.documentReminders.sent++;
+      }
+    }
+
+    // 6. REPORT SETTIMANALE (ogni lunedì)
+    const dayOfWeek = today.getDay();
+    results.weeklyReports = { sent: 0 };
+    
+    if (dayOfWeek === 1) { // Lunedì
+      for (const clinic of clinics) {
+        if (!clinic.email) continue;
+        
+        // Calcola statistiche settimanali
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const weekAgoStr = weekAgo.toISOString().split('T')[0];
+        
+        const weeklyApts = await db.collection('appointments').find({
+          clinicId: clinic.id,
+          date: { $gte: weekAgoStr, $lte: todayStr }
+        }).toArray();
+
+        const stats = {
+          total: weeklyApts.length,
+          completed: weeklyApts.filter(a => a.status === 'completed').length,
+          noShow: weeklyApts.filter(a => a.status === 'no-show').length
+        };
+
+        const noShowRate = stats.total > 0 ? Math.round((stats.noShow / stats.total) * 100) : 0;
+
+        await sendEmail({
+          to: clinic.email,
+          subject: `📊 Report Settimanale - ${clinic.clinicName || 'VetBuddy'}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; border-radius: 10px 10px 0 0;">
+                <h1 style="color: white; margin: 0;">📊 Report Settimanale</h1>
+              </div>
+              <div style="padding: 30px; background: #f9f9f9;">
+                <h2>Ciao ${clinic.clinicName || 'Team'}!</h2>
+                <p>Ecco il riepilogo della settimana:</p>
+                <table style="width: 100%; margin: 20px 0;">
+                  <tr>
+                    <td style="padding: 15px; background: white; text-align: center; border-radius: 10px;">
+                      <strong style="font-size: 28px;">${stats.total}</strong><br>Appuntamenti
+                    </td>
+                    <td style="padding: 15px; background: white; text-align: center; border-radius: 10px;">
+                      <strong style="font-size: 28px; color: #4CAF50;">${stats.completed}</strong><br>Completati
+                    </td>
+                    <td style="padding: 15px; background: white; text-align: center; border-radius: 10px;">
+                      <strong style="font-size: 28px; color: ${noShowRate > 20 ? '#f44336' : '#666'};">${noShowRate}%</strong><br>No-show
+                    </td>
+                  </tr>
+                </table>
+                ${noShowRate > 20 ? '<p style="color: #f44336;">⚠️ Il tasso di no-show è alto. Valuta promemoria aggiuntivi.</p>' : '<p style="color: #4CAF50;">✅ Ottimo lavoro questa settimana!</p>'}
+              </div>
+            </div>
+          `
+        });
+        results.weeklyReports.sent++;
+      }
+    }
+
     console.log('Daily cron completed:', results);
 
     return NextResponse.json({
