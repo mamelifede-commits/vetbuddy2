@@ -138,14 +138,16 @@ export default function AdminPage() {
     setIsAuthenticated(false);
   };
 
-  const loadApplications = async () => {
+  const loadApplications = async (currentFilter) => {
     setLoading(true);
     try {
-      const data = await api.get(`pilot-applications?status=${filter}`);
-      setApplications(data.applications);
-      setCounts(data.counts);
+      const filterToUse = currentFilter || filter;
+      const data = await api.get(`pilot-applications?status=${filterToUse}`);
+      setApplications(data.applications || []);
+      setCounts(data.counts || { total: 0, pending: 0, approved: 0, rejected: 0 });
     } catch (error) {
       console.error('Error loading applications:', error);
+      setApplications([]);
     } finally {
       setLoading(false);
     }
