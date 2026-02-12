@@ -6316,6 +6316,98 @@ function ClinicSettings({ user, onNavigate }) {
           </CardContent>
         </Card>
 
+        {/* 💳 METODI DI PAGAMENTO */}
+        <Card className="border-green-200">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-green-500" />
+              Metodi di Pagamento & Cancellazione
+            </CardTitle>
+            <CardDescription>Configura come i clienti possono pagare e le policy di cancellazione</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Metodi di pagamento */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-700 mb-3">Metodi di pagamento accettati</h4>
+              <div className="grid grid-cols-2 gap-3">
+                <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input 
+                    type="checkbox" 
+                    checked={paymentSettings?.paymentMethods?.cash !== false}
+                    onChange={(e) => updatePaymentMethod('cash', e.target.checked)}
+                    className="h-4 w-4 text-green-500 rounded"
+                  />
+                  <span className="text-lg">💵</span>
+                  <span>Contanti</span>
+                </label>
+                <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input 
+                    type="checkbox" 
+                    checked={paymentSettings?.paymentMethods?.cardInClinic !== false}
+                    onChange={(e) => updatePaymentMethod('cardInClinic', e.target.checked)}
+                    className="h-4 w-4 text-green-500 rounded"
+                  />
+                  <span className="text-lg">💳</span>
+                  <span>Carta in clinica</span>
+                </label>
+                <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input 
+                    type="checkbox" 
+                    checked={paymentSettings?.paymentMethods?.bankTransfer === true}
+                    onChange={(e) => updatePaymentMethod('bankTransfer', e.target.checked)}
+                    className="h-4 w-4 text-green-500 rounded"
+                  />
+                  <span className="text-lg">🏦</span>
+                  <span>Bonifico</span>
+                </label>
+                <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input 
+                    type="checkbox" 
+                    checked={paymentSettings?.paymentMethods?.online === true}
+                    onChange={(e) => updatePaymentMethod('online', e.target.checked)}
+                    className="h-4 w-4 text-green-500 rounded"
+                  />
+                  <span className="text-lg">🌐</span>
+                  <span>Online (Stripe)</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Policy cancellazione */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-700 mb-3">Policy di cancellazione</h4>
+              <div className="space-y-2">
+                {[
+                  { id: 'free_24h', label: 'Cancellazione gratuita fino a 24h prima' },
+                  { id: 'free_48h', label: 'Cancellazione gratuita fino a 48h prima' },
+                  { id: 'penalty_30_24h', label: 'Penale 30% se cancelli meno di 24h prima' },
+                  { id: 'penalty_50_24h', label: 'Penale 50% se cancelli meno di 24h prima' },
+                  { id: 'penalty_100_24h', label: 'Nessun rimborso se cancelli meno di 24h prima' },
+                  { id: 'no_refund', label: 'Nessun rimborso per cancellazioni' }
+                ].map(policy => (
+                  <label key={policy.id} className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${paymentSettings?.cancellationPolicy === policy.id ? 'border-green-500 bg-green-50' : ''}`}>
+                    <input 
+                      type="radio" 
+                      name="cancellationPolicy"
+                      checked={paymentSettings?.cancellationPolicy === policy.id}
+                      onChange={() => updateCancellationPolicy(policy.id)}
+                      className="h-4 w-4 text-green-500"
+                    />
+                    <span className="text-sm">{policy.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {paymentSettingsSaving && (
+              <p className="text-sm text-green-600 flex items-center gap-2">
+                <RefreshCw className="h-4 w-4 animate-spin" />
+                Salvataggio...
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Profilo */}
         <Card>
           <CardHeader>
