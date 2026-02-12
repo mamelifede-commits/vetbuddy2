@@ -9199,7 +9199,7 @@ function FindClinic({ user }) {
       const params = new URLSearchParams();
       if (searchQuery) params.append('q', searchQuery);
       if (searchCity) params.append('city', searchCity);
-      if (searchService) params.append('service', searchService);
+      if (searchService && searchService !== 'all') params.append('service', searchService);
       if (userLocation) {
         params.append('lat', userLocation.lat.toString());
         params.append('lng', userLocation.lng.toString());
