@@ -12,13 +12,33 @@ const DEFAULT_AUTOMATION_SETTINGS = {
   postVisitFollowup: true,
   noShowDetection: true,
   documentReminders: true,
-  weeklyReport: true
+  weeklyReport: true,
+  petBirthday: true,
+  reviewRequest: true,
+  inactiveClientReactivation: true,
+  antiparasiticReminder: true,
+  annualCheckup: true,
+  medicationRefill: true,
+  weightAlert: true,
+  dentalHygiene: true,
+  appointmentConfirmation: true,
+  labResultsReady: true,
+  paymentReminder: true,
+  postSurgeryFollowup: true,
+  summerHeatAlert: true,
+  tickSeasonAlert: true,
+  newYearFireworksAlert: true
 };
 
 // Helper: Check if automation is enabled for a clinic
 function isAutomationEnabled(clinic, automationKey) {
   const settings = clinic?.automationSettings || DEFAULT_AUTOMATION_SETTINGS;
   return settings[automationKey] !== false; // Default to true if not set
+}
+
+// Helper: Get current month (1-12)
+function getCurrentMonth() {
+  return new Date().getMonth() + 1;
 }
 
 export async function GET(request) {
@@ -37,11 +57,21 @@ export async function GET(request) {
     followUp: { sent: 0, errors: 0, skipped: 0 },
     noShow: { marked: 0, skipped: 0 },
     documentReminders: { sent: 0, skipped: 0 },
-    weeklyReports: { sent: 0, skipped: 0 }
+    weeklyReports: { sent: 0, skipped: 0 },
+    // New automations
+    petBirthday: { sent: 0, errors: 0, skipped: 0 },
+    reviewRequest: { sent: 0, errors: 0, skipped: 0 },
+    inactiveClients: { sent: 0, errors: 0, skipped: 0 },
+    antiparasitic: { sent: 0, errors: 0, skipped: 0 },
+    annualCheckup: { sent: 0, errors: 0, skipped: 0 },
+    appointmentConfirmation: { sent: 0, errors: 0, skipped: 0 },
+    paymentReminder: { sent: 0, errors: 0, skipped: 0 },
+    seasonalAlerts: { sent: 0, skipped: 0 }
   };
 
   const today = new Date();
   const todayStr = today.toISOString().split('T')[0];
+  const currentMonth = getCurrentMonth();
 
   try {
     const client = await clientPromise;
