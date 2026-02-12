@@ -4984,18 +4984,40 @@ function ClinicSettings({ user, onNavigate }) {
   
   // Automation settings state
   const [automationSettings, setAutomationSettings] = useState({
+    // Email Automatiche
     appointmentReminders: true,
     bookingConfirmation: true,
     vaccineRecalls: true,
     postVisitFollowup: true,
+    // Gestione Smart
     noShowDetection: true,
     waitlistNotification: true,
     suggestedSlots: true,
     documentReminders: true,
+    // Messaggi & Report
     autoTicketAssignment: true,
     aiQuickReplies: true,
     urgencyNotifications: true,
-    weeklyReport: true
+    weeklyReport: true,
+    // Engagement & Fidelizzazione
+    petBirthday: true,
+    reviewRequest: true,
+    inactiveClientReactivation: true,
+    // Salute & Prevenzione
+    antiparasiticReminder: true,
+    annualCheckup: true,
+    medicationRefill: true,
+    weightAlert: true,
+    dentalHygiene: true,
+    // Operatività Clinica
+    appointmentConfirmation: true,
+    labResultsReady: true,
+    paymentReminder: true,
+    postSurgeryFollowup: true,
+    // Stagionali
+    summerHeatAlert: true,
+    tickSeasonAlert: true,
+    newYearFireworksAlert: true
   });
   const [automationLoading, setAutomationLoading] = useState(true);
   const [automationSaving, setAutomationSaving] = useState(null); // Tracks which toggle is saving
