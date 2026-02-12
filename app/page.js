@@ -8862,6 +8862,57 @@ function FindClinic({ user }) {
                 </div>
               )}
 
+              {/* Recensioni dei clienti */}
+              <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl p-4 space-y-3">
+                <h4 className="font-semibold text-gray-800 flex items-center gap-2">
+                  <Star className="h-4 w-4 text-yellow-500" />
+                  Recensioni dei clienti
+                </h4>
+                {loadingReviews ? (
+                  <div className="text-center py-4">
+                    <div className="animate-spin rounded-full h-6 w-6 border-2 border-yellow-500 border-t-transparent mx-auto"></div>
+                    <p className="text-sm text-gray-500 mt-2">Caricamento recensioni...</p>
+                  </div>
+                ) : clinicReviews.length > 0 ? (
+                  <div className="space-y-3 max-h-64 overflow-y-auto">
+                    {clinicReviews.map((review, idx) => (
+                      <div key={idx} className="bg-white rounded-lg p-3 shadow-sm border border-yellow-100">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                              <User className="h-4 w-4 text-yellow-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-800">{review.ownerName || 'Cliente VetBuddy'}</p>
+                              <p className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString('it-IT')}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            {[1,2,3,4,5].map(s => (
+                              <Star key={s} className={`h-3 w-3 ${s <= review.overallRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                            ))}
+                          </div>
+                        </div>
+                        {review.comment && (
+                          <p className="text-sm text-gray-600 italic">"{review.comment}"</p>
+                        )}
+                        <div className="flex gap-4 mt-2 text-xs text-gray-500">
+                          <span>Puntualità: {review.punctuality}/5</span>
+                          <span>Competenza: {review.competence}/5</span>
+                          <span>Prezzo: {review.price}/5</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <Star className="h-8 w-8 text-gray-300 mx-auto mb-2" />
+                    <p className="text-sm text-gray-500">Nessuna recensione ancora</p>
+                    <p className="text-xs text-gray-400">Sii il primo a lasciare una recensione!</p>
+                  </div>
+                )}
+              </div>
+
               {/* Actions */}
               <div className="flex flex-col gap-3 pt-4">
                 <Button className="w-full bg-coral-500 hover:bg-coral-600" size="lg">
