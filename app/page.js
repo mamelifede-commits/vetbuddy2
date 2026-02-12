@@ -1141,7 +1141,7 @@ function LandingPage({ onLogin }) {
               <span className="font-semibold">Beta Test 2025</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Accedi al Pilot VetBuddy</h2>
-            <p className="text-gray-600 max-w-xl mx-auto">Stiamo testando l'app con cliniche veterinarie selezionate a Milano. <strong>Candidati per 6 mesi gratuiti e aiutaci a costruire il futuro.</strong></p>
+            <p className="text-gray-600 max-w-xl mx-auto">Stiamo testando l'app con cliniche veterinarie selezionate a Milano. <strong>Candidati per 90 giorni gratuiti (estendibili a 6 mesi) e aiutaci a costruire il futuro.</strong></p>
           </div>
 
           {/* Beta Benefits */}
