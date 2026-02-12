@@ -5070,6 +5070,13 @@ function ClinicSettings({ user, onNavigate }) {
   });
   const [automationLoading, setAutomationLoading] = useState(true);
   const [automationSaving, setAutomationSaving] = useState(null); // Tracks which toggle is saving
+  
+  // Payment settings state
+  const [paymentSettings, setPaymentSettings] = useState({
+    paymentMethods: { cash: true, cardInClinic: true, bankTransfer: false, online: false },
+    cancellationPolicy: 'free_24h'
+  });
+  const [paymentSettingsSaving, setPaymentSettingsSaving] = useState(false);
 
   useEffect(() => { 
     loadStripeSettings(); 
@@ -5077,6 +5084,7 @@ function ClinicSettings({ user, onNavigate }) {
     loadStaffColors();
     loadStaff();
     loadAutomationSettings();
+    loadPaymentSettings();
     
     // Check for Google OAuth callback
     const params = new URLSearchParams(window.location.search);
