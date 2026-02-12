@@ -273,6 +273,31 @@ backend:
         agent: "testing"
         comment: "Role-based access control working correctly. Clinic and owner roles properly differentiated. Staff management restricted to clinic users. Data filtering based on user roles working. Proper authorization checks in place."
 
+
+  - task: "Automation Settings API"
+    implemented: true
+    working: true
+    file: "/app/app/api/automations/settings/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Automation settings API fully functional. GET /api/automations/settings returns all 12 automation settings with defaults. POST /api/automations/settings toggles individual settings (key, enabled). Settings persisted to MongoDB users collection under automationSettings field. Role-based access control working (only clinics can modify)."
+
+  - task: "Daily Cron Job with Settings Check"
+    implemented: true
+    working: true
+    file: "/app/app/api/cron/daily/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Daily cron job updated to respect clinic automation settings. Each automation checks if enabled before executing. Returns results with sent/errors/skipped counts. Supports 6 automations: appointmentReminders, vaccineRecalls, postVisitFollowup, noShowDetection, documentReminders, weeklyReport. Scheduled to run at 8:00 AM via vercel.json."
+
 frontend:
   - task: "Landing Page UI"
     implemented: true
