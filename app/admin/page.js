@@ -176,7 +176,7 @@ export default function AdminPage() {
       alert(`✅ Clinica approvata con piano ${selectedPlan.toUpperCase()}! Email con credenziali inviata.`);
       setShowApproveDialog(false);
       setAppToApprove(null);
-      loadApplications();
+      loadApplications(filter);
     } catch (error) {
       alert('Errore: ' + error.message);
     } finally {
@@ -197,7 +197,7 @@ export default function AdminPage() {
       setShowRejectDialog(false);
       setRejectNotes('');
       setAppToReject(null);
-      loadApplications();
+      loadApplications(filter);
     } catch (error) {
       alert('Errore: ' + error.message);
     } finally {
