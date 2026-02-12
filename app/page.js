@@ -1063,23 +1063,6 @@ function LandingPage({ onLogin }) {
               </div>
             </div>
           </div>
-
-          {/* CTA finale */}
-          <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 text-white">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <h3 className="text-2xl font-bold mb-2">🎯 44+ automazioni disponibili</h3>
-                <p className="text-purple-200">Antiparassitari, refill farmaci, lista d'attesa, richiesta recensioni, alert stagionali e molto altro...</p>
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <div className="text-center bg-white/10 rounded-lg px-6 py-3">
-                  <p className="text-3xl font-bold">24/7</p>
-                  <p className="text-purple-200 text-sm">Sempre attive</p>
-                </div>
-                <p className="text-xs text-purple-300">Attiva solo quelle che ti servono</p>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
