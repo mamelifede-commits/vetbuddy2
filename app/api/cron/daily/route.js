@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/db';
 import { sendEmail } from '@/lib/email';
 
+// Force dynamic rendering to prevent static generation errors
+export const dynamic = 'force-dynamic';
+
 // Vercel Cron Job - Eseguito ogni giorno alle 8:00
 // Configura in vercel.json
 

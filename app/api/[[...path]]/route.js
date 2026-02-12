@@ -5,6 +5,9 @@ import { hashPassword, comparePassword, generateToken, getUserFromRequest } from
 import { sendEmail } from '@/lib/email';
 import Stripe from 'stripe';
 
+// Force dynamic rendering to prevent static generation errors
+export const dynamic = 'force-dynamic';
+
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder');
 

@@ -3,6 +3,9 @@ import clientPromise from '@/lib/db';
 import { sendEmail } from '@/lib/email';
 import { v4 as uuidv4 } from 'uuid';
 
+// Force dynamic rendering to prevent static generation errors
+export const dynamic = 'force-dynamic';
+
 // POST - Submit a new pilot application
 export async function POST(request) {
   try {
