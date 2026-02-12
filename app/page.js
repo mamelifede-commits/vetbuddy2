@@ -5448,6 +5448,122 @@ function ClinicSettings({ user, onNavigate }) {
           </CardContent>
         </Card>
 
+        {/* 🤖 AUTOMAZIONI */}
+        <Card className="border-purple-200">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Zap className="h-5 w-5 text-purple-500" />Automazioni
+              <Badge className="bg-purple-100 text-purple-700">Attive</Badge>
+            </CardTitle>
+            <CardDescription>Email automatiche e notifiche per risparmiare tempo</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Promemoria Appuntamenti */}
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                  <Bell className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-medium">Promemoria Appuntamenti</p>
+                  <p className="text-sm text-gray-500">Email automatica 24h prima dell'appuntamento</p>
+                </div>
+              </div>
+              <Badge className="bg-green-100 text-green-700">✓ Attivo</Badge>
+            </div>
+
+            {/* Conferma Prenotazione */}
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-green-500 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-medium">Conferma Prenotazione</p>
+                  <p className="text-sm text-gray-500">Email immediata quando il cliente prenota</p>
+                </div>
+              </div>
+              <Badge className="bg-green-100 text-green-700">✓ Attivo</Badge>
+            </div>
+
+            {/* Richiamo Vaccini */}
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-purple-500 rounded-lg flex items-center justify-center">
+                  <Calendar className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-medium">Richiamo Vaccini</p>
+                  <p className="text-sm text-gray-500">Email automatica 30 giorni prima della scadenza</p>
+                </div>
+              </div>
+              <Badge className="bg-green-100 text-green-700">✓ Attivo</Badge>
+            </div>
+
+            {/* Follow-up Post Visita */}
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-amber-500 rounded-lg flex items-center justify-center">
+                  <Heart className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-medium">Follow-up Post Visita</p>
+                  <p className="text-sm text-gray-500">"Come sta?" 48h dopo la visita completata</p>
+                </div>
+              </div>
+              <Badge className="bg-green-100 text-green-700">✓ Attivo</Badge>
+            </div>
+
+            {/* No-Show Detection */}
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-red-50 to-red-100 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-red-500 rounded-lg flex items-center justify-center">
+                  <AlertCircle className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-medium">Rilevamento No-Show</p>
+                  <p className="text-sm text-gray-500">Marca automaticamente chi non si presenta</p>
+                </div>
+              </div>
+              <Badge className="bg-green-100 text-green-700">✓ Attivo</Badge>
+            </div>
+
+            {/* Auto-Assegnazione Messaggi */}
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-cyan-500 rounded-lg flex items-center justify-center">
+                  <MessageCircle className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-medium">Auto-Assegnazione Messaggi</p>
+                  <p className="text-sm text-gray-500">Categorizza e assegna ticket automaticamente</p>
+                </div>
+              </div>
+              <Badge className="bg-green-100 text-green-700">✓ Attivo</Badge>
+            </div>
+
+            {/* Report Settimanale */}
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-indigo-500 rounded-lg flex items-center justify-center">
+                  <BarChart3 className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-medium">Report Settimanale</p>
+                  <p className="text-sm text-gray-500">Riepilogo KPI via email ogni lunedì</p>
+                </div>
+              </div>
+              <Badge className="bg-green-100 text-green-700">✓ Attivo</Badge>
+            </div>
+
+            <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg mt-4">
+              <p className="text-sm text-purple-700">
+                <strong>💡 Suggerimento:</strong> Tutte le automazioni sono attive di default per le cliniche del Pilot. Le email vengono inviate automaticamente ogni giorno alle 8:00.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Profilo */}
         <Card>
           <CardHeader>
