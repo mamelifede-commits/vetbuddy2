@@ -5001,6 +5001,169 @@ function SubscriptionPlans({ user }) {
   );
 }
 
+// ==================== FEEDBACK SECTION ====================
+function FeedbackSection({ user }) {
+  const [showForm, setShowForm] = useState(false);
+  const [feedbackForm, setFeedbackForm] = useState({
+    type: 'suggestion',
+    subject: '',
+    message: '',
+    rating: 0
+  });
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const feedbackTypes = [
+    { id: 'bug', label: '🐛 Segnala un bug', desc: 'Qualcosa non funziona come dovrebbe' },
+    { id: 'suggestion', label: '💡 Suggerimento', desc: 'Hai un\'idea per migliorare VetBuddy' },
+    { id: 'praise', label: '⭐ Complimento', desc: 'Dicci cosa ti piace!' },
+    { id: 'other', label: '📝 Altro', desc: 'Qualsiasi altro feedback' }
+  ];
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!feedbackForm.message.trim()) {
+      alert('Scrivi un messaggio per inviare il feedback');
+      return;
+    }
+    
+    setSending(true);
+    try {
+      const response = await api.post('feedback', feedbackForm);
+      if (response.success) {
+        setSent(true);
+        setFeedbackForm({ type: 'suggestion', subject: '', message: '', rating: 0 });
+        setTimeout(() => {
+          setSent(false);
+          setShowForm(false);
+        }, 3000);
+      }
+    } catch (error) {
+      alert('Errore: ' + (error.message || 'Impossibile inviare il feedback'));
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <Card className="border-teal-200">
+      <CardHeader>
+        <CardTitle className="text-lg flex items-center gap-2">
+          <MessageCircle className="h-5 w-5 text-teal-500" />
+          Feedback
+        </CardTitle>
+        <CardDescription>Aiutaci a migliorare VetBuddy con il tuo feedback</CardDescription>
+      </CardHeader>
+      <CardContent>
+        {!showForm ? (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">
+              Il tuo feedback è prezioso! Segnalaci bug, suggerisci nuove funzionalità o semplicemente dicci cosa ne pensi.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {feedbackTypes.map(type => (
+                <Button
+                  key={type.id}
+                  variant="outline"
+                  className="h-auto py-3 flex flex-col items-center gap-1 hover:border-teal-400 hover:bg-teal-50"
+                  onClick={() => { setFeedbackForm(f => ({ ...f, type: type.id })); setShowForm(true); }}
+                >
+                  <span className="text-lg">{type.label.split(' ')[0]}</span>
+                  <span className="text-xs text-gray-500">{type.label.split(' ').slice(1).join(' ')}</span>
+                </Button>
+              ))}
+            </div>
+          </div>
+        ) : sent ? (
+          <div className="text-center py-8">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="h-8 w-8 text-green-500" />
+            </div>
+            <h3 className="font-semibold text-lg text-gray-900 mb-2">Grazie per il feedback!</h3>
+            <p className="text-gray-600">Il tuo messaggio è stato inviato al team VetBuddy.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Button type="button" variant="ghost" size="sm" onClick={() => setShowForm(false)}>
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="font-medium">{feedbackTypes.find(t => t.id === feedbackForm.type)?.label}</span>
+            </div>
+
+            {/* Rating opzionale */}
+            {feedbackForm.type === 'praise' && (
+              <div>
+                <Label className="mb-2 block">Quanto sei soddisfatto? (opzionale)</Label>
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setFeedbackForm(f => ({ ...f, rating: star }))}
+                      className="text-2xl hover:scale-110 transition-transform"
+                    >
+                      {star <= feedbackForm.rating ? '⭐' : '☆'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div>
+              <Label>Oggetto (opzionale)</Label>
+              <Input
+                value={feedbackForm.subject}
+                onChange={(e) => setFeedbackForm(f => ({ ...f, subject: e.target.value }))}
+                placeholder="Di cosa si tratta?"
+              />
+            </div>
+
+            <div>
+              <Label>Messaggio *</Label>
+              <Textarea
+                value={feedbackForm.message}
+                onChange={(e) => setFeedbackForm(f => ({ ...f, message: e.target.value }))}
+                placeholder={
+                  feedbackForm.type === 'bug' ? 'Descrivi il problema che hai riscontrato...' :
+                  feedbackForm.type === 'suggestion' ? 'Descrivi la tua idea...' :
+                  feedbackForm.type === 'praise' ? 'Cosa ti piace di VetBuddy?' :
+                  'Scrivi il tuo messaggio...'
+                }
+                rows={5}
+                required
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="flex-1">
+                Annulla
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={sending || !feedbackForm.message.trim()} 
+                className="flex-1 bg-teal-500 hover:bg-teal-600"
+              >
+                {sending ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    Invio...
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4 mr-2" />
+                    Invia Feedback
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 
 function ClinicSettings({ user, onNavigate }) {
   const [googleCalendarStatus, setGoogleCalendarStatus] = useState({ connected: false, loading: true });
