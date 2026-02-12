@@ -339,11 +339,16 @@ export async function GET(request) {
 
     // 6. REPORT SETTIMANALE (ogni lunedì)
     const dayOfWeek = today.getDay();
-    results.weeklyReports = { sent: 0 };
     
     if (dayOfWeek === 1) { // Lunedì
-      for (const clinic of clinics) {
+      for (const clinic of allClinics) {
         if (!clinic.email) continue;
+        
+        // Check if this automation is enabled for the clinic
+        if (!isAutomationEnabled(clinic, 'weeklyReport')) {
+          results.weeklyReports.skipped++;
+          continue;
+        }
         
         // Calcola statistiche settimanali
         const weekAgo = new Date();
