@@ -5130,6 +5130,9 @@ function ClinicTemplates({ owners = [], pets = [], staff = [], appointments = []
 // ==================== CLINIC REPORTS ====================
 function ClinicReports({ appointments, documents, messages, owners, pets, onNavigate, onOpenOwner, onOpenPet }) {
   const [activeTab, setActiveTab] = useState('overview');
+  const [selectedOwnerDetail, setSelectedOwnerDetail] = useState(null);
+  const [selectedPetDetail, setSelectedPetDetail] = useState(null);
+  const [selectedDocDetail, setSelectedDocDetail] = useState(null);
   
   // Calculate statistics
   const now = new Date();
