@@ -418,7 +418,7 @@ export default function AdminPage() {
                           <Button 
                             size="sm" 
                             className="bg-green-500 hover:bg-green-600"
-                            onClick={() => handleApprove(app)}
+                            onClick={() => openApproveDialog(app)}
                             disabled={actionLoading}
                           >
                             <CheckCircle className="h-4 w-4 mr-1" />
