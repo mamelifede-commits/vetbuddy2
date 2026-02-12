@@ -689,6 +689,7 @@ function LandingPage({ onLogin }) {
       </section>
 
       {/* Come Funziona - Semplificato */}
+      <section className="py-12 px-4 bg-gradient-to-br from-gray-50 via-white to-blue-50/30 overflow-hidden relative" id="come-funziona">
         <div className="absolute bottom-10 right-10 w-40 h-40 bg-green-300/20 rounded-full blur-2xl"></div>
         
         <div className="max-w-6xl mx-auto relative z-10">
