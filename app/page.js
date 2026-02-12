@@ -8456,7 +8456,11 @@ function PetProfile({ petId, onBack, appointments, documents }) {
               <CardContent>
                 {pet.medications ? (
                   <div className="p-3 bg-purple-50 rounded-lg">
-                    <p className="text-purple-800">{pet.medications}</p>
+                    <p className="text-purple-800">
+                      {Array.isArray(pet.medications) 
+                        ? pet.medications.map(m => typeof m === 'object' ? `${m.name} - ${m.dosage}` : m).join(', ')
+                        : pet.medications}
+                    </p>
                   </div>
                 ) : (
                   <p className="text-gray-500 text-center py-4">Nessuna terapia in corso</p>
