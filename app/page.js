@@ -131,7 +131,7 @@ function EcosystemToggle() {
         'Documenti → email automatica al cliente',
         'Posizione su mappa con indicazioni stradali',
         'Report finanziari e analytics',
-        '6 mesi gratuiti nel Pilot'
+        '90 giorni gratuiti nel Pilot (estendibili a 6 mesi)'
       ]
     },
     proprietari: {
