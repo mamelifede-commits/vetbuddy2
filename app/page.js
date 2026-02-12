@@ -500,8 +500,8 @@ function LandingPage({ onLogin }) {
   return (
     <div className="min-h-screen bg-white">
       {/* Pilot Banner - Milano */}
-      <div className="bg-gradient-to-r from-coral-500 to-orange-500 text-white text-center py-3 px-4 text-sm">
-        <span className="font-semibold">🏙️ Pilot Milano</span> — Accesso su invito per cliniche selezionate a Milano e provincia. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Candidati al Pilot →</button>
+      <div className="bg-gradient-to-r from-coral-500 to-orange-500 text-white text-center py-2.5 px-4 text-sm">
+        <span className="font-semibold">🏙️ Pilot Milano</span> — Accesso su invito per cliniche selezionate. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Candidati →</button>
       </div>
 
       {/* Header */}
@@ -511,7 +511,6 @@ function LandingPage({ onLogin }) {
             <div className="flex items-center gap-2"><VetBuddyLogo size={32} /><span className="font-bold text-xl text-gray-900">VetBuddy</span></div>
             <nav className="hidden md:flex items-center gap-8">
               <button onClick={() => scrollToSection('funzionalita')} className="text-gray-600 hover:text-coral-500 transition">Funzionalità</button>
-              <button onClick={() => scrollToSection('come-funziona')} className="text-gray-600 hover:text-coral-500 transition">Come funziona</button>
               <button onClick={() => scrollToSection('pilot')} className="text-gray-600 hover:text-coral-500 transition">Pilot Milano</button>
               <button onClick={() => scrollToSection('faq')} className="text-gray-600 hover:text-coral-500 transition">FAQ</button>
             </nav>
@@ -526,7 +525,6 @@ function LandingPage({ onLogin }) {
           <div className="md:hidden bg-white border-t py-4 px-4 shadow-lg">
             <nav className="flex flex-col gap-3">
               <button onClick={() => { scrollToSection('funzionalita'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Funzionalità</button>
-              <button onClick={() => { scrollToSection('come-funziona'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Come funziona</button>
               <button onClick={() => { scrollToSection('pilot'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Pilot Milano</button>
               <button onClick={() => { scrollToSection('faq'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">FAQ</button>
               <hr className="my-2" />
