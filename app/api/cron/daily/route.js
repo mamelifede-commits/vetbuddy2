@@ -255,26 +255,44 @@ export async function GET(request) {
     }
 
     // 4. NO-SHOW DETECTION (appuntamenti passati non completati)
+    // Process per clinic to respect individual settings
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-    const noShowResult = await db.collection('appointments').updateMany(
-      {
-        date: { $lt: yesterdayStr },
-        status: { $in: ['pending', 'confirmed'] }
-      },
-      {
-        $set: { status: 'no-show', markedNoShowAt: new Date() }
+    let totalNoShowMarked = 0;
+    let totalNoShowSkipped = 0;
+
+    for (const clinic of allClinics) {
+      if (!isAutomationEnabled(clinic, 'noShowDetection')) {
+        totalNoShowSkipped++;
+        continue;
       }
-    );
-    results.noShow.marked = noShowResult.modifiedCount;
+
+      const noShowResult = await db.collection('appointments').updateMany(
+        {
+          clinicId: clinic.id,
+          date: { $lt: yesterdayStr },
+          status: { $in: ['pending', 'confirmed'] }
+        },
+        {
+          $set: { status: 'no-show', markedNoShowAt: new Date() }
+        }
+      );
+      totalNoShowMarked += noShowResult.modifiedCount;
+    }
+    results.noShow.marked = totalNoShowMarked;
+    results.noShow.skipped = totalNoShowSkipped;
 
     // 5. REMINDER DOCUMENTI MANCANTI (per ogni clinica)
-    const clinics = await db.collection('users').find({ role: 'clinic' }).toArray();
-    results.documentReminders = { sent: 0 };
     
-    for (const clinic of clinics) {
+    for (const clinic of allClinics) {
+      // Check if this automation is enabled for the clinic
+      if (!isAutomationEnabled(clinic, 'documentReminders')) {
+        results.documentReminders.skipped++;
+        continue;
+      }
+
       const appointmentsWithoutDocs = await db.collection('appointments').find({
         clinicId: clinic.id,
         status: 'completed',
