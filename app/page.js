@@ -1172,54 +1172,54 @@ function LandingPage({ onLogin }) {
           <p className="text-center text-sm text-gray-600 mb-6">Piani disponibili solo tramite Pilot (su invito). Prezzi IVA esclusa.</p>
           
           <div className="grid md:grid-cols-3 gap-6 mb-4">
-            {/* Starter */}
+            {/* Starter - Piano base */}
             <Card className="border-2 border-gray-200">
               <CardHeader>
                 <CardTitle>Starter</CardTitle>
-                <CardDescription>Per cliniche in fase di valutazione</CardDescription>
+                <CardDescription>Per iniziare a esplorare VetBuddy</CardDescription>
                 <div className="mt-4">
-                  <span className="text-3xl font-bold text-gray-400">Gratis</span>
+                  <span className="text-3xl font-bold text-gray-500">Gratis</span>
                   <p className="text-xs text-gray-500 mt-1">solo su invito – Pilot Milano</p>
                 </div>
-                <p className="text-xs text-gray-400">Prezzi IVA esclusa</p>
               </CardHeader>
               <CardContent>
                 <p className="text-xs font-medium text-gray-700 mb-3">Include:</p>
                 <ul className="space-y-2 text-sm mb-4">
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> 1 sede, 1 utente</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Fino a 30 richieste/mese</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Fino a 50 pazienti</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Agenda base</li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Posizione su mappa</li>
+                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300" /> Automazioni</li>
+                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300" /> Team Inbox</li>
+                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300" /> Report avanzati</li>
                 </ul>
-                <Button className="w-full bg-coral-500 hover:bg-coral-600 mb-2" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi invito</Button>
-                <button onClick={() => scrollToSection('pilot')} className="w-full text-center text-sm text-coral-500 hover:underline">Scopri il Pilot →</button>
-                <p className="text-xs text-gray-500 mt-3 text-center">Accesso disponibile solo per cliniche ammesse al Pilot Milano.</p>
+                <Button className="w-full bg-gray-500 hover:bg-gray-600 mb-2" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi invito</Button>
+                <p className="text-xs text-gray-500 mt-3 text-center">Ideale per valutare la piattaforma</p>
               </CardContent>
             </Card>
             
-            {/* Pro - Pilot Milano */}
-            <Card className="border-2 border-coral-500 relative shadow-lg">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">PILOT MILANO (su invito)</div>
+            {/* Pilot - Piano principale */}
+            <Card className="border-2 border-coral-500 relative shadow-lg scale-105">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">⭐ CONSIGLIATO</div>
               <CardHeader className="pt-6">
-                <CardTitle>Pro</CardTitle>
-                <CardDescription>Tutto incluso per la tua clinica</CardDescription>
+                <CardTitle className="text-coral-500">Pilot</CardTitle>
+                <CardDescription>Per cliniche che vogliono crescere</CardDescription>
                 <div className="mt-4">
                   <span className="text-3xl font-bold text-coral-500">€0</span>
-                  <span className="text-sm text-gray-500 ml-1">(Pilot)</span>
                   <span className="text-lg text-gray-400 line-through ml-2">€129/mese</span>
-                  <span className="text-xs text-gray-400 ml-1">+IVA</span>
                 </div>
-                <p className="text-xs text-amber-600 font-semibold mt-1">90 giorni gratuiti per cliniche selezionate nel Pilot</p>
-                <p className="text-xs text-gray-500 italic">(Estendibile fino a 6 mesi per cliniche attive che completano onboarding e feedback.)</p>
-                <p className="text-xs text-gray-400 mt-1">Prezzi IVA esclusa</p>
+                <p className="text-xs text-amber-600 font-semibold mt-1">🎁 6 mesi gratuiti nel Pilot Milano</p>
               </CardHeader>
               <CardContent>
-                <p className="text-xs font-medium text-gray-700 mb-3">Include:</p>
+                <p className="text-xs font-medium text-gray-700 mb-3">Include tutto di Starter più:</p>
                 <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Fino a 10 staff</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Fino a 5 utenti staff</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Pazienti illimitati</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> <strong>20 Automazioni</strong> (promemoria, recall, follow-up)</li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Team Inbox + ticket</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Documenti + invio email automatico (PDF allegato)</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Documenti + invio email</li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Google Calendar sync</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Report e analytics</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Report settimanali</li>
                 </ul>
                 <Button className="w-full bg-coral-500 hover:bg-coral-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
                   Candidati al Pilot →
@@ -1227,27 +1227,29 @@ function LandingPage({ onLogin }) {
               </CardContent>
             </Card>
             
-            {/* Enterprise */}
-            <Card className="border-2 border-gray-200">
+            {/* Custom - Piano enterprise */}
+            <Card className="border-2 border-purple-300 bg-gradient-to-br from-white to-purple-50">
               <CardHeader>
-                <CardTitle>Enterprise</CardTitle>
-                <CardDescription>Per gruppi e catene veterinarie</CardDescription>
+                <CardTitle className="text-purple-700">Custom</CardTitle>
+                <CardDescription>Per cliniche che vogliono il massimo</CardDescription>
                 <div className="mt-4">
-                  <span className="text-3xl font-bold text-coral-500">Custom</span>
-                  <span className="text-xs text-gray-400 ml-1">+IVA</span>
+                  <span className="text-3xl font-bold text-purple-600">Su misura</span>
                 </div>
-                <p className="text-xs text-gray-400">Prezzi IVA esclusa</p>
+                <p className="text-xs text-purple-500 mt-1">Contattaci per un preventivo</p>
               </CardHeader>
               <CardContent>
-                <p className="text-xs font-medium text-gray-700 mb-3">Include:</p>
+                <p className="text-xs font-medium text-gray-700 mb-3">Include tutto di Pilot più:</p>
                 <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Multi-sede illimitate</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> API dedicata</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> SLA garantito</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Onboarding dedicato</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> Utenti illimitati</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> Multi-sede</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> <strong>44+ Automazioni complete</strong></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> WhatsApp Business integration</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> API dedicata</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> SLA garantito 99.9%</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> Onboarding dedicato</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /> Supporto prioritario</li>
                 </ul>
-                <Button className="w-full bg-gray-800 hover:bg-gray-900 mb-2" onClick={() => scrollToSection('contatti')}>Contattaci</Button>
-                <Badge variant="outline" className="w-full justify-center text-amber-700 border-amber-300 bg-amber-50">Solo con Pilot (su invito)</Badge>
+                <Button className="w-full bg-purple-600 hover:bg-purple-700 mb-2" onClick={() => scrollToSection('contatti')}>Contattaci</Button>
               </CardContent>
             </Card>
           </div>
