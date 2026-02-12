@@ -2092,27 +2092,35 @@ function ClinicDashboard({ user, onLogout }) {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[73px] bg-white z-40 p-4 overflow-auto">
-          <div className="mb-2"><RoleBadge role="clinic" /></div>
-          <Badge variant="outline" className="mb-4 justify-center text-amber-600 border-amber-300 bg-amber-50 w-full"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
-          <nav className="space-y-1">
-            <NavItem icon={LayoutDashboard} label="Dashboard" value="dashboard" />
-            <NavItem icon={Calendar} label="Agenda" value="agenda" />
-            <NavItem icon={Inbox} label="Team Inbox" value="inbox" badge={unreadMessages} />
-            <NavItem icon={FileText} label="Documenti" value="documents" />
-            <NavItem icon={Stethoscope} label="Servizi" value="services" />
-            <NavItem icon={PawPrint} label="Pazienti" value="patients" />
-            <NavItem icon={User} label="Proprietari" value="owners" />
-            <NavItem icon={Users} label="Staff" value="staff" />
-            <NavItem icon={TrendingUp} label="Report" value="reports" />
-            <NavItem icon={ClipboardList} label="Template" value="templates" />
-            <NavItem icon={Zap} label="Automazioni" value="automations" />
-            <div className="border-t my-2"></div>
-            <NavItem icon={MessageCircle} label="Feedback" value="feedback" />
-            <NavItem icon={Settings} label="Impostazioni" value="settings" />
-          </nav>
-          <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
-        </div>
+        <>
+          {/* Dark backdrop */}
+          <div 
+            className="md:hidden fixed inset-0 bg-black/50 z-[55]" 
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          {/* Menu panel */}
+          <div className="md:hidden fixed left-0 right-0 top-[57px] bottom-0 bg-white z-[60] p-4 overflow-y-auto shadow-xl animate-in slide-in-from-top duration-200">
+            <div className="mb-2"><RoleBadge role="clinic" /></div>
+            <Badge variant="outline" className="mb-4 justify-center text-amber-600 border-amber-300 bg-amber-50 w-full"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
+            <nav className="space-y-1">
+              <NavItem icon={LayoutDashboard} label="Dashboard" value="dashboard" />
+              <NavItem icon={Calendar} label="Agenda" value="agenda" />
+              <NavItem icon={Inbox} label="Team Inbox" value="inbox" badge={unreadMessages} />
+              <NavItem icon={FileText} label="Documenti" value="documents" />
+              <NavItem icon={Stethoscope} label="Servizi" value="services" />
+              <NavItem icon={PawPrint} label="Pazienti" value="patients" />
+              <NavItem icon={User} label="Proprietari" value="owners" />
+              <NavItem icon={Users} label="Staff" value="staff" />
+              <NavItem icon={TrendingUp} label="Report" value="reports" />
+              <NavItem icon={ClipboardList} label="Template" value="templates" />
+              <NavItem icon={Zap} label="Automazioni" value="automations" />
+              <div className="border-t my-2"></div>
+              <NavItem icon={MessageCircle} label="Feedback" value="feedback" />
+              <NavItem icon={Settings} label="Impostazioni" value="settings" />
+            </nav>
+            <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
+          </div>
+        </>
       )}
 
       {/* Desktop Sidebar */}
