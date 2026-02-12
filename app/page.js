@@ -1025,53 +1025,65 @@ function LandingPage({ onLogin }) {
           </div>
 
           {/* Pricing Cards - Pilot Coherence */}
-          <div className="grid md:grid-cols-3 gap-6 mb-6">
+          <p className="text-center text-sm text-gray-600 mb-6">Piani disponibili solo tramite Pilot (su invito). Prezzi IVA esclusa.</p>
+          
+          <div className="grid md:grid-cols-3 gap-6 mb-4">
+            {/* Starter */}
             <Card className="border-2 border-gray-200">
               <CardHeader>
                 <CardTitle>Starter</CardTitle>
                 <CardDescription>Per cliniche in fase di valutazione</CardDescription>
                 <div className="mt-4">
                   <span className="text-3xl font-bold text-gray-400">Gratis</span>
+                  <p className="text-xs text-gray-500 mt-1">solo su invito – Pilot Milano</p>
                 </div>
+                <p className="text-xs text-gray-400">Prezzi IVA esclusa</p>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-sm mb-6">
+                <p className="text-xs font-medium text-gray-700 mb-3">Include:</p>
+                <ul className="space-y-2 text-sm mb-4">
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> 1 sede, 1 utente</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> 30 richieste/mese</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Fino a 30 richieste/mese</li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Posizione su mappa</li>
                 </ul>
-                <Badge variant="outline" className="w-full justify-center mb-3 text-amber-700 border-amber-300 bg-amber-50">Solo con Pilot (su invito)</Badge>
-                <Button variant="outline" className="w-full" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi Invito</Button>
+                <Button className="w-full bg-coral-500 hover:bg-coral-600 mb-2" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi invito</Button>
+                <button onClick={() => scrollToSection('pilot')} className="w-full text-center text-sm text-coral-500 hover:underline">Scopri il Pilot →</button>
+                <p className="text-xs text-gray-500 mt-3 text-center">Accesso disponibile solo per cliniche ammesse al Pilot Milano.</p>
               </CardContent>
             </Card>
             
+            {/* Pro - Pilot Milano */}
             <Card className="border-2 border-coral-500 relative shadow-lg">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs px-3 py-1 rounded-full font-semibold">PILOT MILANO</div>
-              <CardHeader>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">PILOT MILANO (su invito)</div>
+              <CardHeader className="pt-6">
                 <CardTitle>Pro</CardTitle>
                 <CardDescription>Tutto incluso per la tua clinica</CardDescription>
                 <div className="mt-4">
                   <span className="text-3xl font-bold text-coral-500">€0</span>
+                  <span className="text-sm text-gray-500 ml-1">(Pilot)</span>
                   <span className="text-lg text-gray-400 line-through ml-2">€129/mese</span>
                   <span className="text-xs text-gray-400 ml-1">+IVA</span>
                 </div>
-                <p className="text-xs text-amber-600 font-semibold">6 mesi gratuiti per cliniche selezionate nel Pilot</p>
+                <p className="text-xs text-amber-600 font-semibold mt-1">90 giorni gratuiti per cliniche selezionate nel Pilot</p>
+                <p className="text-xs text-gray-500 italic">(Estendibile fino a 6 mesi per cliniche attive che completano onboarding e feedback.)</p>
+                <p className="text-xs text-gray-400 mt-1">Prezzi IVA esclusa</p>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-sm mb-6">
+                <p className="text-xs font-medium text-gray-700 mb-3">Include:</p>
+                <ul className="space-y-2 text-sm mb-4">
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Fino a 10 staff</li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Team Inbox + ticket</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Documenti + email auto</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Documenti + invio email automatico (PDF allegato)</li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Google Calendar sync</li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Report e analytics</li>
                 </ul>
-                <Badge variant="outline" className="w-full justify-center mb-3 text-amber-700 border-amber-300 bg-amber-50">Solo con Pilot (su invito)</Badge>
                 <Button className="w-full bg-coral-500 hover:bg-coral-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
                   Candidati al Pilot →
                 </Button>
               </CardContent>
             </Card>
             
+            {/* Enterprise */}
             <Card className="border-2 border-gray-200">
               <CardHeader>
                 <CardTitle>Enterprise</CardTitle>
@@ -1080,19 +1092,22 @@ function LandingPage({ onLogin }) {
                   <span className="text-3xl font-bold text-coral-500">Custom</span>
                   <span className="text-xs text-gray-400 ml-1">+IVA</span>
                 </div>
+                <p className="text-xs text-gray-400">Prezzi IVA esclusa</p>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-sm mb-6">
+                <p className="text-xs font-medium text-gray-700 mb-3">Include:</p>
+                <ul className="space-y-2 text-sm mb-4">
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Multi-sede illimitate</li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> API dedicata</li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> SLA garantito</li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Onboarding dedicato</li>
                 </ul>
-                <Badge variant="outline" className="w-full justify-center mb-3 text-amber-700 border-amber-300 bg-amber-50">Solo con Pilot (su invito)</Badge>
-                <Button variant="outline" className="w-full" onClick={() => scrollToSection('contatti')}>Contattaci</Button>
+                <Button className="w-full bg-gray-800 hover:bg-gray-900 mb-2" onClick={() => scrollToSection('contatti')}>Contattaci</Button>
+                <Badge variant="outline" className="w-full justify-center text-amber-700 border-amber-300 bg-amber-50">Solo con Pilot (su invito)</Badge>
               </CardContent>
             </Card>
           </div>
-          <p className="text-center text-sm text-gray-500">Tutti i prezzi sono IVA esclusa. Gli abbonamenti vengono fatturati da VetBuddy.</p>
+          <p className="text-center text-xs text-gray-500">Non è una prova libera: stiamo selezionando un numero limitato di cliniche.</p>
         </div>
       </section>
 
