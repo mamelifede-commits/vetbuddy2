@@ -5593,56 +5593,72 @@ function ClinicSettings({ user, onNavigate }) {
                 </div>
 
             {/* Sezione Gestione Smart */}
-            <div className="mb-4">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <Settings className="h-4 w-4" /> Gestione Smart
-              </h4>
-              <div className="grid md:grid-cols-2 gap-2">
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-red-50 to-red-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4 text-red-500" />
-                    <div>
-                      <p className="text-sm font-medium">No-Show Detection</p>
-                      <p className="text-xs text-gray-500">Marca automaticamente</p>
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <Settings className="h-4 w-4" /> Gestione Smart
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-red-50 to-red-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4 text-red-500" />
+                        <div>
+                          <p className="text-sm font-medium">No-Show Detection</p>
+                          <p className="text-xs text-gray-500">Marca automaticamente</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.noShowDetection} 
+                        onCheckedChange={() => toggleAutomation('noShowDetection')}
+                        disabled={automationSaving === 'noShowDetection'}
+                      />
                     </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
-                </div>
 
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-cyan-500" />
-                    <div>
-                      <p className="text-sm font-medium">Lista d'Attesa</p>
-                      <p className="text-xs text-gray-500">Notifica slot liberi</p>
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-cyan-500" />
+                        <div>
+                          <p className="text-sm font-medium">Lista d'Attesa</p>
+                          <p className="text-xs text-gray-500">Notifica slot liberi</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.waitlistNotification} 
+                        onCheckedChange={() => toggleAutomation('waitlistNotification')}
+                        disabled={automationSaving === 'waitlistNotification'}
+                      />
                     </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
-                </div>
 
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-teal-500" />
-                    <div>
-                      <p className="text-sm font-medium">Slot Suggeriti</p>
-                      <p className="text-xs text-gray-500">Basato su storico</p>
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-teal-500" />
+                        <div>
+                          <p className="text-sm font-medium">Slot Suggeriti</p>
+                          <p className="text-xs text-gray-500">Basato su storico</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.suggestedSlots} 
+                        onCheckedChange={() => toggleAutomation('suggestedSlots')}
+                        disabled={automationSaving === 'suggestedSlots'}
+                      />
                     </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
-                </div>
 
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-orange-500" />
-                    <div>
-                      <p className="text-sm font-medium">Reminder Documenti</p>
-                      <p className="text-xs text-gray-500">Referti mancanti</p>
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-orange-500" />
+                        <div>
+                          <p className="text-sm font-medium">Reminder Documenti</p>
+                          <p className="text-xs text-gray-500">Referti mancanti</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={automationSettings.documentReminders} 
+                        onCheckedChange={() => toggleAutomation('documentReminders')}
+                        disabled={automationSaving === 'documentReminders'}
+                      />
                     </div>
                   </div>
-                  <Badge className="bg-green-100 text-green-700 text-xs">✓</Badge>
                 </div>
-              </div>
-            </div>
 
             {/* Sezione Messaggi & Report */}
             <div className="mb-4">
