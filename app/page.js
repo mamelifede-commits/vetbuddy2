@@ -8424,8 +8424,43 @@ function OwnerAppointments({ appointments, pets }) {
                   </div>
                 </div>
               )}
+
+              {/* Video Consulto Disclaimer */}
+              {selectedService?.type === 'online' && (
+                <div className="space-y-3">
+                  <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <Video className="h-5 w-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-medium text-indigo-800 mb-1">Cos'è il Video Consulto?</h4>
+                        <p className="text-sm text-indigo-700">
+                          È una consulenza a distanza con il veterinario per triage, dubbi, follow-up e interpretazione di referti. 
+                          <strong> Non sostituisce una visita clinica in presenza</strong> quando è necessario un esame fisico.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <label className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition">
+                    <input 
+                      type="checkbox" 
+                      checked={videoConsultoConfirmed} 
+                      onChange={(e) => setVideoConsultoConfirmed(e.target.checked)}
+                      className="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <span className="text-sm text-gray-700">
+                      Ho capito che il video consulto è una consulenza e potrebbe essere richiesta una visita in clinica.
+                    </span>
+                  </label>
+                </div>
+              )}
               
-              <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600" disabled={!formData.petId || !formData.serviceId || !formData.date || !formData.time || !formData.clinicId}>
+              {/* Emergency Message */}
+              <div className="text-center text-xs text-gray-500 bg-amber-50 border border-amber-100 rounded-lg p-2">
+                <span className="text-amber-600">⚠️</span> Per emergenze contatta subito la clinica o il pronto soccorso veterinario.
+              </div>
+              
+              <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600" disabled={!formData.petId || !formData.serviceId || !formData.date || !formData.time || !formData.clinicId || (selectedService?.type === 'online' && !videoConsultoConfirmed)}>
                 Prenota appuntamento
               </Button>
             </form>
