@@ -30,12 +30,14 @@ export async function POST(request) {
     const userDoc = await db.collection('users').findOne({ id: user.id });
     const clinicName = userDoc?.clinicName || userDoc?.name || 'Clinica';
     const userEmail = userDoc?.email || user.email;
+    const userName = userDoc?.name || 'Utente';
 
     // Create feedback entry
     const feedback = {
       id: uuidv4(),
       userId: user.id,
       clinicName,
+      userName,
       userEmail,
       type, // 'bug', 'suggestion', 'praise', 'other'
       subject: subject || null,
@@ -56,6 +58,14 @@ export async function POST(request) {
       other: '📝 Altro'
     };
 
+    const typeColors = {
+      bug: '#EF4444',
+      suggestion: '#F59E0B',
+      praise: '#10B981',
+      other: '#3B82F6'
+    };
+
+    // Email to admin
     try {
       await sendEmail({
         to: 'info@vetbuddy.it',
@@ -95,7 +105,7 @@ export async function POST(request) {
                 </table>
               </div>
               
-              <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #667eea;">
+              <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid ${typeColors[type] || '#667eea'};">
                 <h3 style="margin-top: 0; color: #333;">Messaggio:</h3>
                 <p style="color: #666; white-space: pre-wrap; margin-bottom: 0;">${message}</p>
               </div>
@@ -114,7 +124,58 @@ export async function POST(request) {
       });
     } catch (emailError) {
       console.error('Failed to send feedback notification:', emailError);
-      // Don't fail the request if email fails
+    }
+
+    // Send thank you email to user
+    try {
+      await sendEmail({
+        to: userEmail,
+        subject: `Grazie per il tuo feedback! 💚 - VetBuddy`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #10B981, #059669); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 28px;">Grazie! 🎉</h1>
+              <p style="color: rgba(255,255,255,0.9); margin-top: 10px;">Abbiamo ricevuto il tuo feedback</p>
+            </div>
+            <div style="padding: 30px; background: #f9f9f9;">
+              <p style="font-size: 16px; color: #333;">Ciao ${userName},</p>
+              
+              <p style="color: #666;">Grazie per aver dedicato del tempo a inviarci il tuo ${typeLabels[type]?.toLowerCase() || 'feedback'}. 
+              Il tuo contributo è fondamentale per migliorare VetBuddy!</p>
+              
+              <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid ${typeColors[type] || '#10B981'};">
+                <p style="color: #999; font-size: 12px; margin: 0 0 8px 0;">IL TUO MESSAGGIO:</p>
+                <p style="color: #333; margin: 0; white-space: pre-wrap;">${message.length > 200 ? message.substring(0, 200) + '...' : message}</p>
+              </div>
+              
+              <div style="background: #E0F2FE; padding: 15px; border-radius: 10px; margin-top: 20px;">
+                <p style="margin: 0; color: #0369A1; font-size: 14px;">
+                  <strong>📬 Cosa succede ora?</strong><br/>
+                  Il nostro team leggerà il tuo feedback entro 24-48 ore. 
+                  ${type === 'bug' ? 'Se necessario, ti contatteremo per maggiori dettagli.' : 
+                    type === 'suggestion' ? 'Valuteremo la tua idea per le prossime versioni!' :
+                    'Ci fa sempre piacere ricevere feedback positivi!'}
+                </p>
+              </div>
+              
+              <p style="color: #666; margin-top: 20px;">Per qualsiasi altra cosa, siamo sempre disponibili!</p>
+              
+              <p style="color: #333; margin-top: 20px;">
+                A presto 🐾<br/>
+                <strong>Il team VetBuddy</strong>
+              </p>
+            </div>
+            <div style="padding: 20px; background: #333; border-radius: 0 0 10px 10px; text-align: center;">
+              <p style="color: #999; margin: 0; font-size: 12px;">
+                VetBuddy - La piattaforma veterinaria<br/>
+                <a href="mailto:info@vetbuddy.it" style="color: #10B981;">info@vetbuddy.it</a>
+              </p>
+            </div>
+          </div>
+        `
+      });
+    } catch (emailError) {
+      console.error('Failed to send thank you email:', emailError);
     }
 
     return NextResponse.json({
