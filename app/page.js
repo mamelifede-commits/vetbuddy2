@@ -5378,12 +5378,10 @@ function ClinicReports({ appointments, documents, messages, owners, pets, onNavi
                     return (
                       <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-coral-50 cursor-pointer transition-colors"
                         onClick={() => {
-                          if (pet && onOpenPet) {
-                            onOpenPet(pet);
-                            onNavigate('patients');
-                          } else if (owner && onOpenOwner) {
-                            onOpenOwner(owner);
-                            onNavigate('owners');
+                          if (pet) {
+                            setSelectedPetDetail(pet);
+                          } else if (owner) {
+                            setSelectedOwnerDetail(owner);
                           }
                         }}
                       >
