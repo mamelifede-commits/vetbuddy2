@@ -540,18 +540,18 @@ export default function AdminPage() {
                   <Badge className="bg-gray-100 text-gray-600">Gratis</Badge>
                 </label>
                 
-                <label className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${selectedPlan === 'pilot' ? 'border-coral-500 bg-coral-50' : 'border-gray-200 hover:border-coral-300'}`}>
+                <label className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${selectedPlan === 'pro' ? 'border-coral-500 bg-coral-50' : 'border-gray-200 hover:border-coral-300'}`}>
                   <input 
                     type="radio" 
                     name="plan" 
-                    value="pilot"
-                    checked={selectedPlan === 'pilot'}
+                    value="pro"
+                    checked={selectedPlan === 'pro'}
                     onChange={(e) => setSelectedPlan(e.target.value)}
                     className="h-4 w-4"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-coral-600">Pilot</div>
-                    <div className="text-xs text-gray-500">5 utenti, pazienti illimitati, 20 automazioni</div>
+                    <div className="font-semibold text-coral-600">Pro (Pilot Milano)</div>
+                    <div className="text-xs text-gray-500">5 utenti, pazienti illimitati, 20 automazioni, 90 giorni gratuiti</div>
                   </div>
                   <Badge className="bg-coral-100 text-coral-600">⭐ Consigliato</Badge>
                 </label>
