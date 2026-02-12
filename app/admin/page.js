@@ -151,12 +151,29 @@ export default function AdminPage() {
     }
   };
 
-  const handleApprove = async (app) => {
-    if (!confirm(`Approvare ${app.clinicName}? Verrà creato un account e inviate le credenziali.`)) return;
+  // State for approve dialog with plan selection
+  const [showApproveDialog, setShowApproveDialog] = useState(false);
+  const [appToApprove, setAppToApprove] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState('pilot');
+
+  const openApproveDialog = (app) => {
+    setAppToApprove(app);
+    setSelectedPlan('pilot'); // Default
+    setShowApproveDialog(true);
+  };
+
+  const handleApprove = async () => {
+    if (!appToApprove) return;
     setActionLoading(true);
     try {
-      await api.put('pilot-applications', { applicationId: app.id, status: 'approved' });
-      alert('✅ Clinica approvata! Email con credenziali inviata.');
+      await api.put('pilot-applications', { 
+        applicationId: appToApprove.id, 
+        status: 'approved',
+        plan: selectedPlan 
+      });
+      alert(`✅ Clinica approvata con piano ${selectedPlan.toUpperCase()}! Email con credenziali inviata.`);
+      setShowApproveDialog(false);
+      setAppToApprove(null);
       loadApplications();
     } catch (error) {
       alert('Errore: ' + error.message);
