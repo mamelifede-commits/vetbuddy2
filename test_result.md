@@ -191,6 +191,9 @@ backend:
       - working: true
         agent: "main"
         comment: "PUT /api/pets/{id} VERIFIED WORKING - All new fields save correctly: insurance (boolean), insuranceCompany, insurancePolicy, chronicDiseases, currentConditions, allergies, medications, medicalHistory, weightHistory (array with weight/date). Full CRUD cycle tested via curl."
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE PUT API TESTING COMPLETED - ALL NEW FIELDS VERIFIED ✅: Tested PUT /api/pets/{petId} with both owner (proprietario.demo@vetbuddy.it) and clinic (demo@vetbuddy.it) accounts. ALL new fields working perfectly: ✅ Insurance (boolean): True, ✅ Insurance Company: 'Assicurazioni Animali Italia', ✅ Insurance Policy: 'POL-2025-VET001234', ✅ Chronic Diseases (array): 2 items ['Displasia dell\\'anca', 'Allergia alimentare'], ✅ Current Conditions (array): 2 items, ✅ Allergies (array): 3 items, ✅ Medications (complex array): 2 items with name/dosage/frequency/dates, ✅ Medical History (complex array): 2 items with date/description/veterinarian, ✅ Weight History (array): 4 items with weight/date structure. Data persistence verified - all fields save correctly to database and are retrievable. Both owner and clinic roles can successfully update pets with all new medical/insurance fields. API fully functional as per review request requirements."
 
   - task: "Database Integration"
     implemented: true
