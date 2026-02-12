@@ -2001,6 +2001,86 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, se
           </Card>
         </div>
       </div>
+
+      {/* Dialog Dettaglio Animale - Dashboard */}
+      <Dialog open={!!selectedPetPopup} onOpenChange={() => setSelectedPetPopup(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className="h-12 w-12 bg-coral-100 rounded-full flex items-center justify-center">
+                <PawPrint className="h-6 w-6 text-coral-600" />
+              </div>
+              <div>
+                <p className="text-xl">{selectedPetPopup?.name}</p>
+                <p className="text-sm text-gray-500 font-normal">{selectedPetPopup?.breed || selectedPetPopup?.species}</p>
+              </div>
+            </DialogTitle>
+          </DialogHeader>
+          {selectedPetPopup && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Specie</p>
+                  <p className="font-medium">{selectedPetPopup.species === 'dog' ? '🐕 Cane' : selectedPetPopup.species === 'cat' ? '🐱 Gatto' : selectedPetPopup.species || 'Altro'}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Razza</p>
+                  <p className="font-medium">{selectedPetPopup.breed || 'N/D'}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Età</p>
+                  <p className="font-medium">{selectedPetPopup.birthDate ? `${Math.floor((new Date() - new Date(selectedPetPopup.birthDate)) / (365.25 * 24 * 60 * 60 * 1000))} anni` : 'N/D'}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Peso</p>
+                  <p className="font-medium">{selectedPetPopup.weight ? `${selectedPetPopup.weight} kg` : 'N/D'}</p>
+                </div>
+              </div>
+              
+              {/* Owner Info */}
+              {(() => {
+                const owner = getOwnerFromPet(selectedPetPopup);
+                return owner && (
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <p className="text-xs text-blue-600 font-medium mb-2">👤 Proprietario</p>
+                    <p className="font-medium">{owner.name}</p>
+                    {owner.email && <p className="text-sm text-gray-600 flex items-center gap-2 mt-1"><Mail className="h-3 w-3" />{owner.email}</p>}
+                    {owner.phone && <p className="text-sm text-gray-600 flex items-center gap-2 mt-1"><Phone className="h-3 w-3" />{owner.phone}</p>}
+                  </div>
+                );
+              })()}
+
+              {selectedPetPopup.microchip && (
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Microchip</p>
+                  <p className="font-mono font-medium">{selectedPetPopup.microchip}</p>
+                </div>
+              )}
+              
+              {(selectedPetPopup.allergies || selectedPetPopup.chronicDiseases) && (
+                <div className="bg-red-50 rounded-lg p-3">
+                  <p className="text-xs text-red-600 font-medium">⚠️ Condizioni Mediche</p>
+                  {selectedPetPopup.allergies && <p className="text-sm mt-1"><strong>Allergie:</strong> {selectedPetPopup.allergies}</p>}
+                  {selectedPetPopup.chronicDiseases && <p className="text-sm mt-1"><strong>Patologie:</strong> {selectedPetPopup.chronicDiseases}</p>}
+                </div>
+              )}
+              
+              {selectedPetPopup.medications && (
+                <div className="bg-amber-50 rounded-lg p-3">
+                  <p className="text-xs text-amber-600 font-medium">💊 Farmaci in corso</p>
+                  <p className="text-sm mt-1">{selectedPetPopup.medications}</p>
+                </div>
+              )}
+
+              <div className="flex gap-2 pt-2">
+                <Button variant="outline" className="flex-1" onClick={() => { setSelectedPetPopup(null); onOpenPet && onOpenPet(selectedPetPopup); }}>
+                  Apri scheda completa
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
