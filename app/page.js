@@ -7232,16 +7232,52 @@ function ClinicSettings({ user, onNavigate }) {
 
         {/* Profilo */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-lg">Profilo clinica</CardTitle>
+            <Button variant="outline" size="sm" onClick={() => setEditingProfile(!editingProfile)}>
+              {editingProfile ? <X className="h-4 w-4 mr-1" /> : <Edit className="h-4 w-4 mr-1" />}
+              {editingProfile ? 'Annulla' : 'Modifica'}
+            </Button>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div><Label>Nome clinica</Label><Input value={user.clinicName || ''} disabled /></div>
-              <div><Label>P.IVA</Label><Input value={user.vatNumber || ''} disabled /></div>
-            </div>
-            <div><Label>Email</Label><Input value={user.email || ''} disabled /></div>
-            <div><Label>Sito web</Label><Input value={user.website || ''} disabled /></div>
+            {editingProfile ? (
+              <form onSubmit={handleProfileUpdate} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div><Label>Nome clinica *</Label><Input value={profileForm.clinicName} onChange={(e) => setProfileForm({...profileForm, clinicName: e.target.value})} required /></div>
+                  <div><Label>P.IVA</Label><Input value={profileForm.vatNumber} onChange={(e) => setProfileForm({...profileForm, vatNumber: e.target.value})} placeholder="IT12345678901" /></div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div><Label>Telefono</Label><Input value={profileForm.phone} onChange={(e) => setProfileForm({...profileForm, phone: e.target.value})} placeholder="+39 02 1234567" /></div>
+                  <div><Label>Sito web</Label><Input value={profileForm.website} onChange={(e) => setProfileForm({...profileForm, website: e.target.value})} placeholder="www.clinicaveterinaria.it" /></div>
+                </div>
+                <div><Label>Descrizione clinica</Label><Textarea value={profileForm.description} onChange={(e) => setProfileForm({...profileForm, description: e.target.value})} placeholder="Descrivi i servizi e le specializzazioni della tua clinica..." rows={3} /></div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div><Label>Orario apertura</Label><Input type="time" value={profileForm.openingTime} onChange={(e) => setProfileForm({...profileForm, openingTime: e.target.value})} /></div>
+                  <div><Label>Orario chiusura</Label><Input type="time" value={profileForm.closingTime} onChange={(e) => setProfileForm({...profileForm, closingTime: e.target.value})} /></div>
+                </div>
+                <div className="flex gap-2">
+                  <Button type="button" variant="outline" onClick={() => setEditingProfile(false)} className="flex-1">Annulla</Button>
+                  <Button type="submit" className="flex-1 bg-blue-500 hover:bg-blue-600">Salva modifiche</Button>
+                </div>
+              </form>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div><Label className="text-gray-500">Nome clinica</Label><p className="font-medium">{user.clinicName || '-'}</p></div>
+                  <div><Label className="text-gray-500">P.IVA</Label><p className="font-medium">{user.vatNumber || '-'}</p></div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div><Label className="text-gray-500">Email</Label><p className="font-medium">{user.email || '-'}</p></div>
+                  <div><Label className="text-gray-500">Telefono</Label><p className="font-medium">{user.phone || '-'}</p></div>
+                </div>
+                <div><Label className="text-gray-500">Sito web</Label><p className="font-medium">{user.website || '-'}</p></div>
+                {user.description && <div><Label className="text-gray-500">Descrizione</Label><p className="text-sm text-gray-600">{user.description}</p></div>}
+                <div className="grid grid-cols-2 gap-4">
+                  <div><Label className="text-gray-500">Orario apertura</Label><p className="font-medium">{user.openingTime || '09:00'}</p></div>
+                  <div><Label className="text-gray-500">Orario chiusura</Label><p className="font-medium">{user.closingTime || '18:00'}</p></div>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>
