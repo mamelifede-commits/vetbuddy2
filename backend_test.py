@@ -10,7 +10,7 @@ import time
 from datetime import datetime
 
 # Base URL from environment
-BASE_URL = "https://automation-showcase-2.preview.emergentagent.com"
+BASE_URL = "https://pet-clinic-demo-1.preview.emergentagent.com"
 LOGIN_EMAIL = "demo@vetbuddy.it"
 LOGIN_PASSWORD = "DemoVet2025!"
 
