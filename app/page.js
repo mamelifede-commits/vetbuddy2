@@ -3548,10 +3548,28 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner 
         </Dialog>
       </div>
       
+      {/* Barra di ricerca */}
+      <div className="mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <Input 
+            placeholder="Cerca per nome animale, razza, microchip o proprietario..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        {searchQuery && (
+          <p className="text-sm text-gray-500 mt-2">
+            {filteredPets.length} risultat{filteredPets.length === 1 ? 'o' : 'i'} per "{searchQuery}"
+          </p>
+        )}
+      </div>
+      
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {pets.length === 0 ? (
-          <Card className="col-span-full"><CardContent className="p-12 text-center text-gray-500"><PawPrint className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p>Nessun paziente</p></CardContent></Card>
-        ) : pets.map((pet) => (
+        {filteredPets.length === 0 ? (
+          <Card className="col-span-full"><CardContent className="p-12 text-center text-gray-500"><PawPrint className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p>{searchQuery ? 'Nessun risultato trovato' : 'Nessun paziente'}</p></CardContent></Card>
+        ) : filteredPets.map((pet) => (
           <Card key={pet.id} className="cursor-pointer hover:shadow-lg hover:border-coral-300 transition-all group" onClick={() => openPetDetails(pet)}>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
