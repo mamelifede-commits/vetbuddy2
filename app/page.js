@@ -8583,9 +8583,9 @@ function OwnerAppointments({ appointments, pets }) {
                 <div className="text-right">
                   <p className="font-medium">{appt.date}</p>
                   <p className="text-sm text-gray-500">{appt.time}</p>
-                  {appt.type === 'videoconsulto' && (
-                    <Button size="sm" className="mt-2 bg-blue-500 hover:bg-blue-600">
-                      <Video className="h-3 w-3 mr-1" />Entra
+                  {appt.type === 'videoconsulto' && appt.videoLink && (
+                    <Button size="sm" className="mt-2 bg-blue-500 hover:bg-blue-600" onClick={() => window.open(appt.videoLink, '_blank')}>
+                      <Video className="h-3 w-3 mr-1" />Entra nel Video Consulto
                     </Button>
                   )}
                 </div>
