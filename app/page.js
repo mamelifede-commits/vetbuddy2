@@ -6049,13 +6049,41 @@ function ClinicAutomations({ user, onNavigate }) {
         </Card>
       ) : (
         <div className="space-y-6">
-          {/* Info Banner */}
-          <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-xl">
-            <p className="text-purple-700 flex items-center gap-2">
-              <Zap className="h-5 w-5" />
-              <span><strong>Pilot Milano:</strong> Tutte le {totalAutomations} automazioni vengono eseguite ogni giorno alle 8:00. Attiva solo quelle che ti servono!</span>
-            </p>
-          </div>
+          {/* Plan Info Banner */}
+          {clinicPlan === 'starter' && (
+            <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 rounded-xl">
+              <div className="flex items-start gap-3">
+                <Lock className="h-5 w-5 text-amber-600 mt-0.5" />
+                <div>
+                  <p className="text-amber-800 font-semibold">Piano Starter - Automazioni non incluse</p>
+                  <p className="text-amber-700 text-sm mt-1">
+                    Il tuo piano attuale non include le automazioni. Effettua l'upgrade al piano <strong>Pro</strong> per sbloccare 20 automazioni o al piano <strong>Custom</strong> per tutte le 44+ automazioni.
+                  </p>
+                  <Button size="sm" className="mt-3 bg-coral-500 hover:bg-coral-600">
+                    <Zap className="h-4 w-4 mr-2" /> Upgrade a Pro
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {clinicPlan === 'pro' && (
+            <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-xl">
+              <p className="text-purple-700 flex items-center gap-2">
+                <Zap className="h-5 w-5" />
+                <span><strong>Piano Pro:</strong> Hai accesso a {planAutomationsCount} automazioni. Le automazioni bloccate 🔒 richiedono il piano Custom.</span>
+              </p>
+            </div>
+          )}
+          
+          {clinicPlan === 'custom' && (
+            <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-xl">
+              <p className="text-purple-700 flex items-center gap-2">
+                <Zap className="h-5 w-5" />
+                <span><strong>Piano Custom:</strong> Tutte le {planAutomationsCount} automazioni vengono eseguite ogni giorno alle 8:00. Attiva solo quelle che ti servono!</span>
+              </p>
+            </div>
+          )}
 
           {/* Email Automatiche */}
           <Card className="border-blue-200">
