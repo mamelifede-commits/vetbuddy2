@@ -1,0 +1,244 @@
+import { NextResponse } from 'next/server';
+import clientPromise from '@/lib/db';
+import { sendEmail } from '@/lib/email';
+
+// Vercel Cron Job - Eseguito ogni giorno alle 8:00
+// Configura in vercel.json
+
+export async function GET(request) {
+  // Verifica che sia una richiesta cron autorizzata
+  const authHeader = request.headers.get('authorization');
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    // In development, permetti senza auth
+    if (process.env.NODE_ENV === 'production' && !process.env.CRON_SECRET) {
+      console.log('Cron job running without auth (CRON_SECRET not set)');
+    }
+  }
+
+  const results = {
+    promemoria: { sent: 0, errors: 0 },
+    richiamiVaccini: { sent: 0, errors: 0 },
+    followUp: { sent: 0, errors: 0 },
+    noShow: { marked: 0 }
+  };
+
+  try {
+    const client = await clientPromise;
+    const db = client.db(process.env.DB_NAME || 'vetbuddy');
+
+    // 1. PROMEMORIA APPUNTAMENTI (24h prima)
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const tomorrowEnd = new Date(tomorrow);
+    tomorrowEnd.setHours(23, 59, 59, 999);
+
+    const appointmentsTomorrow = await db.collection('appointments').find({
+      date: { $gte: tomorrow.toISOString().split('T')[0], $lte: tomorrowEnd.toISOString().split('T')[0] },
+      status: { $in: ['confirmed', 'pending'] },
+      reminderSent: { $ne: true }
+    }).toArray();
+
+    for (const apt of appointmentsTomorrow) {
+      try {
+        // Trova il proprietario e l'animale
+        const owner = await db.collection('users').findOne({ id: apt.ownerId });
+        const pet = await db.collection('pets').findOne({ id: apt.petId });
+        const clinic = await db.collection('users').findOne({ id: apt.clinicId });
+
+        if (owner?.email && pet && clinic) {
+          await sendEmail({
+            to: owner.email,
+            subject: `⏰ Promemoria: Appuntamento domani per ${pet.name}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <h2 style="color: #333;">Promemoria Appuntamento</h2>
+                  <p style="color: #666; font-size: 16px;">Ciao ${owner.name || 'Proprietario'},</p>
+                  <p style="color: #666; font-size: 16px;">Ti ricordiamo che <strong>${pet.name}</strong> ha un appuntamento domani:</p>
+                  
+                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FF6B6B;">
+                    <p style="margin: 5px 0;"><strong>📅 Data:</strong> ${apt.date}</p>
+                    <p style="margin: 5px 0;"><strong>🕐 Ora:</strong> ${apt.time}</p>
+                    <p style="margin: 5px 0;"><strong>🏥 Clinica:</strong> ${clinic.clinicName || clinic.name}</p>
+                    <p style="margin: 5px 0;"><strong>📋 Motivo:</strong> ${apt.reason || 'Visita'}</p>
+                  </div>
+                  
+                  <p style="color: #666; font-size: 14px;">Se non puoi presentarti, ti preghiamo di avvisare la clinica il prima possibile.</p>
+                </div>
+                <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                </div>
+              </div>
+            `
+          });
+
+          // Segna come inviato
+          await db.collection('appointments').updateOne(
+            { id: apt.id },
+            { $set: { reminderSent: true, reminderSentAt: new Date() } }
+          );
+          results.promemoria.sent++;
+        }
+      } catch (err) {
+        console.error('Error sending reminder:', err);
+        results.promemoria.errors++;
+      }
+    }
+
+    // 2. RICHIAMO VACCINI (30 giorni prima della scadenza)
+    const in30Days = new Date();
+    in30Days.setDate(in30Days.getDate() + 30);
+    const in30DaysStr = in30Days.toISOString().split('T')[0];
+
+    const vaccinesExpiring = await db.collection('vaccinations').find({
+      nextDueDate: { $lte: in30DaysStr },
+      reminderSent: { $ne: true },
+      status: 'active'
+    }).toArray();
+
+    for (const vaccine of vaccinesExpiring) {
+      try {
+        const pet = await db.collection('pets').findOne({ id: vaccine.petId });
+        const owner = pet ? await db.collection('users').findOne({ id: pet.ownerId }) : null;
+
+        if (owner?.email && pet) {
+          await sendEmail({
+            to: owner.email,
+            subject: `💉 Richiamo vaccino in scadenza per ${pet.name}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <h2 style="color: #333;">⚠️ Richiamo Vaccino in Scadenza</h2>
+                  <p style="color: #666; font-size: 16px;">Ciao ${owner.name || 'Proprietario'},</p>
+                  <p style="color: #666; font-size: 16px;">Il vaccino <strong>${vaccine.name}</strong> di <strong>${pet.name}</strong> è in scadenza:</p>
+                  
+                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FFA500;">
+                    <p style="margin: 5px 0;"><strong>💉 Vaccino:</strong> ${vaccine.name}</p>
+                    <p style="margin: 5px 0;"><strong>📅 Scadenza:</strong> ${vaccine.nextDueDate}</p>
+                    <p style="margin: 5px 0;"><strong>🐾 Animale:</strong> ${pet.name}</p>
+                  </div>
+                  
+                  <p style="color: #666; font-size: 16px;">Ti consigliamo di prenotare un appuntamento per il richiamo.</p>
+                  
+                  <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://vetbuddy.it" style="background: #FF6B6B; color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">Prenota Appuntamento</a>
+                  </div>
+                </div>
+                <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                </div>
+              </div>
+            `
+          });
+
+          await db.collection('vaccinations').updateOne(
+            { id: vaccine.id },
+            { $set: { reminderSent: true, reminderSentAt: new Date() } }
+          );
+          results.richiamiVaccini.sent++;
+        }
+      } catch (err) {
+        console.error('Error sending vaccine reminder:', err);
+        results.richiamiVaccini.errors++;
+      }
+    }
+
+    // 3. FOLLOW-UP POST VISITA (48h dopo)
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+    const twoDaysAgoStr = twoDaysAgo.toISOString().split('T')[0];
+
+    const completedAppointments = await db.collection('appointments').find({
+      date: twoDaysAgoStr,
+      status: 'completed',
+      followUpSent: { $ne: true }
+    }).toArray();
+
+    for (const apt of completedAppointments) {
+      try {
+        const owner = await db.collection('users').findOne({ id: apt.ownerId });
+        const pet = await db.collection('pets').findOne({ id: apt.petId });
+        const clinic = await db.collection('users').findOne({ id: apt.clinicId });
+
+        if (owner?.email && pet && clinic) {
+          await sendEmail({
+            to: owner.email,
+            subject: `💚 Come sta ${pet.name} dopo la visita?`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #4CAF50, #8BC34A); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <h2 style="color: #333;">Come sta ${pet.name}?</h2>
+                  <p style="color: #666; font-size: 16px;">Ciao ${owner.name || 'Proprietario'},</p>
+                  <p style="color: #666; font-size: 16px;">Sono passati un paio di giorni dalla visita di <strong>${pet.name}</strong> presso <strong>${clinic.clinicName || clinic.name}</strong>.</p>
+                  
+                  <p style="color: #666; font-size: 16px;">Volevamo sapere come sta! Se hai domande o dubbi, non esitare a contattare la clinica.</p>
+                  
+                  <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://vetbuddy.it" style="background: #4CAF50; color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">Contatta la Clinica</a>
+                  </div>
+                  
+                  <p style="color: #999; font-size: 14px; text-align: center;">Grazie per aver scelto VetBuddy! 🐾</p>
+                </div>
+                <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                </div>
+              </div>
+            `
+          });
+
+          await db.collection('appointments').updateOne(
+            { id: apt.id },
+            { $set: { followUpSent: true, followUpSentAt: new Date() } }
+          );
+          results.followUp.sent++;
+        }
+      } catch (err) {
+        console.error('Error sending follow-up:', err);
+        results.followUp.errors++;
+      }
+    }
+
+    // 4. NO-SHOW DETECTION (appuntamenti passati non completati)
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    const noShowResult = await db.collection('appointments').updateMany(
+      {
+        date: { $lt: yesterdayStr },
+        status: { $in: ['pending', 'confirmed'] }
+      },
+      {
+        $set: { status: 'no-show', markedNoShowAt: new Date() }
+      }
+    );
+    results.noShow.marked = noShowResult.modifiedCount;
+
+    console.log('Daily cron completed:', results);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Daily automation completed',
+      results,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Cron job error:', error);
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
+  }
+}
