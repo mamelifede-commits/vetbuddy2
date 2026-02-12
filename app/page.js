@@ -1302,18 +1302,30 @@ function AuthForm({ mode, setMode, onLogin }) {
         <div className="mx-auto h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
           <CheckCircle className="h-8 w-8 text-green-500" />
         </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2">Richiesta inviata!</h3>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Candidatura inviata! 🎉</h3>
         <p className="text-gray-600 mb-4">
-          Grazie per il tuo interesse in VetBuddy. Ti contatteremo presto per l'attivazione e l'onboarding personalizzato.
+          Grazie per il tuo interesse in VetBuddy!
         </p>
+        <div className="p-4 bg-green-50 border border-green-200 rounded-lg mb-4 text-left">
+          <p className="text-sm text-green-700 mb-2">
+            <strong>📧 Ti abbiamo inviato una email di conferma.</strong>
+          </p>
+          <p className="text-sm text-green-700">
+            <strong>⏱️ Prossimi passi:</strong>
+          </p>
+          <ul className="text-sm text-green-700 list-disc ml-4 mt-1">
+            <li>Esamineremo la tua candidatura</li>
+            <li>Ti contatteremo entro <strong>48 ore lavorative</strong></li>
+            <li>Se approvato, riceverai le credenziali di accesso</li>
+          </ul>
+        </div>
         <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg mb-4">
           <p className="text-sm text-amber-700">
-            <strong>Nota:</strong> VetBuddy è attualmente disponibile solo tramite Pilot su invito. 
-            Stiamo selezionando un numero limitato di cliniche per garantire un supporto dedicato.
+            <strong>Nota:</strong> Il Pilot Milano è riservato a un numero limitato di cliniche selezionate per garantire supporto dedicato e qualità del servizio.
           </p>
         </div>
-        <Button onClick={() => { setPilotRequestSent(false); setMode('login'); }} className="w-full bg-coral-500 hover:bg-coral-600">
-          Vai al login
+        <Button onClick={() => { setPilotRequestSent(false); setMode('login'); }} variant="outline" className="w-full">
+          Chiudi
         </Button>
       </div>
     );
