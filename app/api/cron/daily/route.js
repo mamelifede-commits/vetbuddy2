@@ -203,9 +203,15 @@ export async function GET(request) {
 
     for (const apt of completedAppointments) {
       try {
+        // Check if clinic has this automation enabled
+        const clinic = clinicsMap.get(apt.clinicId);
+        if (!isAutomationEnabled(clinic, 'postVisitFollowup')) {
+          results.followUp.skipped++;
+          continue;
+        }
+
         const owner = await db.collection('users').findOne({ id: apt.ownerId });
         const pet = await db.collection('pets').findOne({ id: apt.petId });
-        const clinic = await db.collection('users').findOne({ id: apt.clinicId });
 
         if (owner?.email && pet && clinic) {
           await sendEmail({
