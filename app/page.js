@@ -6847,9 +6847,6 @@ function ClinicSettings({ user, onNavigate }) {
           </CardContent>
         </Card>
 
-        {/* 📬 FEEDBACK */}
-        <FeedbackSection user={user} />
-
         {/* Profilo */}
         <Card>
           <CardHeader>
