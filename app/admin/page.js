@@ -207,6 +207,81 @@ export default function AdminPage() {
     );
   };
 
+  // Show loading while checking auth
+  if (authChecking) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-8 w-8 animate-spin text-coral-500 mx-auto mb-4" />
+          <p className="text-gray-500">Verifica accesso...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login form if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto w-16 h-16 bg-coral-100 rounded-full flex items-center justify-center mb-4">
+              <Lock className="h-8 w-8 text-coral-500" />
+            </div>
+            <CardTitle className="text-2xl">🏥 Admin VetBuddy</CardTitle>
+            <CardDescription>Accesso riservato agli amministratori</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              {loginError && (
+                <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">
+                  {loginError}
+                </div>
+              )}
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1">Email</label>
+                <Input
+                  type="email"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  placeholder="admin@vetbuddy.it"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1">Password</label>
+                <Input
+                  type="password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+              <Button 
+                type="submit" 
+                className="w-full bg-coral-500 hover:bg-coral-600"
+                disabled={loginLoading}
+              >
+                {loginLoading ? (
+                  <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <LogIn className="h-4 w-4 mr-2" />
+                )}
+                {loginLoading ? 'Accesso in corso...' : 'Accedi'}
+              </Button>
+            </form>
+            <div className="mt-6 text-center">
+              <Link href="/" className="text-sm text-gray-500 hover:text-coral-500">
+                ← Torna alla home
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -223,10 +298,15 @@ export default function AdminPage() {
                 <p className="text-sm text-gray-500">Gestisci le richieste di adesione al Pilot</p>
               </div>
             </div>
-            <Button onClick={loadApplications} variant="outline" size="sm">
-              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Aggiorna
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button onClick={loadApplications} variant="outline" size="sm">
+                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                Aggiorna
+              </Button>
+              <Button onClick={handleLogout} variant="ghost" size="sm" className="text-gray-500">
+                Esci
+              </Button>
+            </div>
           </div>
         </div>
       </div>
