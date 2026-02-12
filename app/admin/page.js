@@ -510,6 +510,84 @@ export default function AdminPage() {
       </Dialog>
 
       {/* Reject Dialog */}
+      {/* Approve Dialog con selezione piano */}
+      <Dialog open={showApproveDialog} onOpenChange={setShowApproveDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>✅ Approva Candidatura</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-gray-600">
+              Stai approvando la candidatura di <strong>{appToApprove?.clinicName}</strong>.
+            </p>
+            
+            <div>
+              <label className="text-sm font-medium mb-3 block">Seleziona il piano da assegnare:</label>
+              <div className="space-y-2">
+                <label className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${selectedPlan === 'starter' ? 'border-gray-500 bg-gray-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                  <input 
+                    type="radio" 
+                    name="plan" 
+                    value="starter"
+                    checked={selectedPlan === 'starter'}
+                    onChange={(e) => setSelectedPlan(e.target.value)}
+                    className="h-4 w-4"
+                  />
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-700">Starter</div>
+                    <div className="text-xs text-gray-500">1 utente, 50 pazienti, NO automazioni</div>
+                  </div>
+                  <Badge className="bg-gray-100 text-gray-600">Gratis</Badge>
+                </label>
+                
+                <label className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${selectedPlan === 'pilot' ? 'border-coral-500 bg-coral-50' : 'border-gray-200 hover:border-coral-300'}`}>
+                  <input 
+                    type="radio" 
+                    name="plan" 
+                    value="pilot"
+                    checked={selectedPlan === 'pilot'}
+                    onChange={(e) => setSelectedPlan(e.target.value)}
+                    className="h-4 w-4"
+                  />
+                  <div className="flex-1">
+                    <div className="font-semibold text-coral-600">Pilot</div>
+                    <div className="text-xs text-gray-500">5 utenti, pazienti illimitati, 20 automazioni</div>
+                  </div>
+                  <Badge className="bg-coral-100 text-coral-600">⭐ Consigliato</Badge>
+                </label>
+                
+                <label className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${selectedPlan === 'custom' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}>
+                  <input 
+                    type="radio" 
+                    name="plan" 
+                    value="custom"
+                    checked={selectedPlan === 'custom'}
+                    onChange={(e) => setSelectedPlan(e.target.value)}
+                    className="h-4 w-4"
+                  />
+                  <div className="flex-1">
+                    <div className="font-semibold text-purple-600">Custom</div>
+                    <div className="text-xs text-gray-500">Utenti illimitati, multi-sede, 44+ automazioni, WhatsApp</div>
+                  </div>
+                  <Badge className="bg-purple-100 text-purple-600">Enterprise</Badge>
+                </label>
+              </div>
+            </div>
+
+            <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-700">
+              <strong>Nota:</strong> Verrà creato un account per la clinica e inviate le credenziali via email.
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowApproveDialog(false)}>Annulla</Button>
+            <Button className="bg-green-600 hover:bg-green-700" onClick={handleApprove} disabled={actionLoading}>
+              <CheckCircle className="h-4 w-4 mr-2" />
+              {actionLoading ? 'Elaborazione...' : `Approva con piano ${selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1)}`}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
         <DialogContent>
           <DialogHeader>
