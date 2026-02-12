@@ -135,6 +135,14 @@ export async function GET(request) {
     for (const vaccine of vaccinesExpiring) {
       try {
         const pet = await db.collection('pets').findOne({ id: vaccine.petId });
+        
+        // Check if clinic has this automation enabled
+        const clinic = pet?.clinicId ? clinicsMap.get(pet.clinicId) : null;
+        if (clinic && !isAutomationEnabled(clinic, 'vaccineRecalls')) {
+          results.richiamiVaccini.skipped++;
+          continue;
+        }
+        
         const owner = pet ? await db.collection('users').findOne({ id: pet.ownerId }) : null;
 
         if (owner?.email && pet) {
