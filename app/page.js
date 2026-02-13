@@ -8459,6 +8459,8 @@ function ClinicEvents({ user }) {
       <div className="flex flex-wrap gap-2 mb-6">
         {[
           { id: 'upcoming', label: 'Prossimi', icon: CalendarRange },
+          { id: 'saved', label: `Salvati (${savedCount})`, icon: Heart },
+          { id: 'featured', label: 'In Evidenza', icon: Star },
           { id: 'ecm', label: 'Con ECM', icon: GraduationCap },
           { id: 'online', label: 'Online', icon: Globe },
           { id: 'all', label: 'Tutti', icon: CalendarDays },
