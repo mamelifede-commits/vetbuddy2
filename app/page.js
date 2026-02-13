@@ -7945,10 +7945,11 @@ function OwnerDashboard({ user, onLogout }) {
   const [documents, setDocuments] = useState([]);
   const [messages, setMessages] = useState([]);
   const [pets, setPets] = useState([]);
+  const [clinics, setClinics] = useState([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => { loadData(); }, []);
-  const loadData = async () => { try { const [appts, docs, msgs, petsList] = await Promise.all([api.get('appointments'), api.get('documents'), api.get('messages'), api.get('pets')]); setAppointments(appts); setDocuments(docs); setMessages(msgs); setPets(petsList); } catch (error) { console.error('Error:', error); } };
+  const loadData = async () => { try { const [appts, docs, msgs, petsList, clinicsList] = await Promise.all([api.get('appointments'), api.get('documents'), api.get('messages'), api.get('pets'), api.get('clinics/search?city=Milano&maxDistance=100')]); setAppointments(appts); setDocuments(docs); setMessages(msgs); setPets(petsList); setClinics(clinicsList || []); } catch (error) { console.error('Error:', error); } };
 
   const NavItem = ({ icon: Icon, label, value, badge }) => <button onClick={() => { setActiveTab(value); setSelectedPetId(null); setMobileMenuOpen(false); }} className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${activeTab === value ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-100'}`}><div className="flex items-center gap-3"><Icon className="h-5 w-5" />{label}</div>{badge > 0 && <Badge className="bg-blue-500 text-white text-xs">{badge}</Badge>}</button>;
 
