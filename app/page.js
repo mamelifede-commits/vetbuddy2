@@ -1017,6 +1017,131 @@ function LandingPage({ onLogin }) {
         </div>
       </section>
 
+      {/* Import Dati Section */}
+      <section id="import" className="py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-4 font-semibold">
+              <Upload className="h-5 w-5" /> MIGRAZIONE FACILE
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Importa i tuoi Pazienti Esistenti 📁</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Passa a VetBuddy senza perdere nulla. Importa in pochi click i dati dal tuo gestionale attuale.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            {/* Left: Features */}
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <FileText className="h-6 w-6 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Import da CSV/Excel</h3>
+                  <p className="text-gray-600 text-sm">Esporta dal tuo gestionale e carica su VetBuddy. Supportiamo tutti i formati comuni.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-4">
+                <div className="h-12 w-12 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <Users className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Proprietari + Animali + Vaccini</h3>
+                  <p className="text-gray-600 text-sm">Importa tutto in un colpo solo: anagrafica, dati sanitari, storico vaccinazioni.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-4">
+                <div className="h-12 w-12 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
+                  <Upload className="h-6 w-6 text-purple-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Documenti con Abbinamento Auto</h3>
+                  <p className="text-gray-600 text-sm">Carica referti ed esami. VetBuddy li associa automaticamente ai pazienti giusti.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-4">
+                <div className="h-12 w-12 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <Shield className="h-6 w-6 text-amber-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">100% Sicuro e Conforme GDPR</h3>
+                  <p className="text-gray-600 text-sm">I dati sono criptati e trattati secondo le normative europee sulla privacy.</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right: Visual Demo */}
+            <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-200">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 pb-4 border-b">
+                  <div className="h-10 w-10 rounded-lg bg-blue-500 flex items-center justify-center">
+                    <Upload className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Import Wizard</h4>
+                    <p className="text-xs text-gray-500">4 semplici passaggi</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                    <div className="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">1</div>
+                    <span className="text-sm text-green-800">Scarica template CSV</span>
+                    <CheckCircle className="h-4 w-4 text-green-500 ml-auto" />
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                    <div className="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">2</div>
+                    <span className="text-sm text-green-800">Compila con i tuoi dati</span>
+                    <CheckCircle className="h-4 w-4 text-green-500 ml-auto" />
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">3</div>
+                    <span className="text-sm text-blue-800">Carica il file</span>
+                    <Loader2 className="h-4 w-4 text-blue-500 ml-auto animate-spin" />
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="h-6 w-6 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs font-bold">4</div>
+                    <span className="text-sm text-gray-500">Aggiungi documenti (opzionale)</span>
+                  </div>
+                </div>
+                
+                <div className="pt-4 border-t text-center">
+                  <p className="text-sm text-gray-500 mb-3">Esempio risultato import:</p>
+                  <div className="flex justify-center gap-4">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-blue-600">127</p>
+                      <p className="text-xs text-gray-500">Pazienti</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-green-600">89</p>
+                      <p className="text-xs text-gray-500">Proprietari</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-purple-600">234</p>
+                      <p className="text-xs text-gray-500">Vaccini</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-10 text-center">
+            <p className="text-gray-500 text-sm mb-4">Supportiamo import da:</p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <span className="bg-white px-4 py-2 rounded-full shadow border text-gray-700 font-medium">📄 CSV</span>
+              <span className="bg-white px-4 py-2 rounded-full shadow border text-gray-700 font-medium">📊 Excel (.xlsx)</span>
+              <span className="bg-white px-4 py-2 rounded-full shadow border text-gray-700 font-medium">📑 PDF (documenti)</span>
+              <span className="bg-white px-4 py-2 rounded-full shadow border text-gray-700 font-medium">🖼️ Immagini (JPG, PNG)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Premi Fedeltà Section */}
       <section id="premi" className="py-16 px-4 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
         <div className="max-w-6xl mx-auto">
