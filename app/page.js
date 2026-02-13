@@ -145,6 +145,7 @@ function EcosystemToggle() {
         'Ricevi referti e prescrizioni via email',
         'Cartella clinica digitale per ogni animale',
         'Storico spese veterinarie annuali',
+        '🎁 Premi Fedeltà dalla tua clinica',
         'Invita la tua clinica su VetBuddy'
       ]
     }
