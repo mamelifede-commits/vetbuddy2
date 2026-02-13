@@ -2023,6 +2023,8 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'rewards' && <ClinicRewardsManagement user={user} owners={owners} />}
         {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} onNavigate={setActiveTab} />}
         {activeTab === 'automations' && <ClinicAutomations user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'archive' && <ClinicArchive user={user} />}
+        {activeTab === 'events' && <ClinicEvents user={user} />}
         {activeTab === 'settings' && <ClinicSettings user={user} onNavigate={setActiveTab} />}
         {activeTab === 'feedback' && <ClinicFeedbackPage user={user} />}
       </main>
