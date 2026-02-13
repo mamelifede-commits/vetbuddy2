@@ -8096,6 +8096,35 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'findClinic' && <FindClinic user={user} />}
         {activeTab === 'inviteClinic' && <InviteClinic user={user} />}
       </main>
+      
+      {/* Dialog Cancellazione Appuntamento */}
+      <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertCircle className="h-5 w-5" />
+              Cancella Appuntamento
+            </DialogTitle>
+            <DialogDescription>
+              Sei sicuro di voler cancellare questo appuntamento?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 my-4">
+            <p className="text-amber-800 text-sm">
+              <strong>⚠️ Attenzione:</strong> Ti ricordiamo che la cancellazione potrebbe comportare un costo 
+              se effettuata a meno di 24 ore dall'appuntamento, secondo la politica della clinica.
+            </p>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setShowCancelDialog(false)}>
+              Annulla
+            </Button>
+            <Button variant="destructive" onClick={handleCancelAppointment}>
+              Conferma Cancellazione
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
