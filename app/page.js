@@ -2133,7 +2133,6 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
               <NavItem icon={MessageCircle} label="Feedback" value="feedback" />
               <NavItem icon={Settings} label="Impostazioni" value="settings" />
             </nav>
-            <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
           </div>
         </>
       )}
