@@ -1853,6 +1853,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const [staff, setStaff] = useState([]);
   const [pets, setPets] = useState([]);
   const [owners, setOwners] = useState([]);
+  const [rewards, setRewards] = useState([]); // Premi assegnati
   const [setupProgress, setSetupProgress] = useState({ payments: false, video: false, team: false, automations: false });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
