@@ -6208,26 +6208,58 @@ function ClinicRewardsManagement({ user, owners = [] }) {
       {/* Assigned Tab */}
       {activeTab === 'assigned' && (
         <div className="space-y-4">
-          {assignedRewards.length === 0 ? (
-            <Card className="text-center py-12 bg-gray-50">
-              <CardContent>
-                <UserPlus className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Nessun premio assegnato</h3>
-                <p className="text-gray-500">Assegna il tuo primo premio a un cliente</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-3">
-              {assignedRewards.map((reward) => {
-                const isPending = reward.status === 'pending';
-                const isUsed = reward.status === 'used';
-                const isAvailable = reward.status === 'available';
-                
-                return (
-                  <Card key={reward.id} className={`
-                    ${isUsed ? 'opacity-60 bg-gray-50' : ''}
-                    ${isPending ? 'border-2 border-amber-400 bg-amber-50 shadow-md' : ''}
-                  `}>
+          {(() => {
+            // Filter rewards by search query
+            const filteredRewards = searchQuery 
+              ? assignedRewards.filter(r => 
+                  r.redeemCode?.includes(searchQuery) || 
+                  r.ownerName?.toUpperCase().includes(searchQuery) ||
+                  r.rewardName?.toUpperCase().includes(searchQuery)
+                )
+              : assignedRewards;
+            
+            if (assignedRewards.length === 0) {
+              return (
+                <Card className="text-center py-12 bg-gray-50">
+                  <CardContent>
+                    <UserPlus className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Nessun premio assegnato</h3>
+                    <p className="text-gray-500">Assegna il tuo primo premio a un cliente</p>
+                  </CardContent>
+                </Card>
+              );
+            }
+            
+            if (searchQuery && filteredRewards.length === 0) {
+              return (
+                <Card className="text-center py-12 bg-amber-50 border-amber-200">
+                  <CardContent>
+                    <Search className="h-12 w-12 mx-auto text-amber-400 mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Nessun premio trovato</h3>
+                    <p className="text-gray-500">Nessun premio corrisponde al codice "<strong className="font-mono">{searchQuery}</strong>"</p>
+                  </CardContent>
+                </Card>
+              );
+            }
+            
+            return (
+              <div className="grid gap-3">
+                {searchQuery && (
+                  <p className="text-sm text-gray-500">
+                    Trovati <strong>{filteredRewards.length}</strong> premi per "<span className="font-mono">{searchQuery}</span>"
+                  </p>
+                )}
+                {filteredRewards.map((reward) => {
+                  const isPending = reward.status === 'pending';
+                  const isUsed = reward.status === 'used';
+                  const isAvailable = reward.status === 'available';
+                  
+                  return (
+                    <Card key={reward.id} className={`
+                      ${isUsed ? 'opacity-60 bg-gray-50' : ''}
+                      ${isPending ? 'border-2 border-amber-400 bg-amber-50 shadow-md' : ''}
+                      ${searchQuery && reward.redeemCode?.includes(searchQuery) ? 'ring-2 ring-green-400' : ''}
+                    `}>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
