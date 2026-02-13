@@ -2158,6 +2158,23 @@ export async function POST(request, { params }) {
       return NextResponse.json({ success: true }, { headers: corsHeaders });
     }
 
+    // Save Video Consult settings
+    if (path === 'clinic/video-consult-settings') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const users = await getCollection('users');
+      
+      await users.updateOne(
+        { id: user.id },
+        { $set: { videoConsultSettings: body, updatedAt: new Date().toISOString() } }
+      );
+
+      return NextResponse.json({ success: true }, { headers: corsHeaders });
+    }
+
     // Create payment session for visit (owner pays clinic)
     if (path === 'stripe/checkout/visit') {
       const user = getUserFromRequest(request);
