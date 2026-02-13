@@ -8262,7 +8262,7 @@ function SubscriptionPlans({ user }) {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-gray-600 text-center">Piani disponibili solo tramite Pilot (su invito). Prezzi IVA esclusa.</p>
+      <p className="text-sm text-gray-600 text-center mb-6">Piani disponibili solo tramite Pilot (su invito). Prezzi IVA esclusa.</p>
       
       {paymentSuccess && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
@@ -8276,9 +8276,10 @@ function SubscriptionPlans({ user }) {
 
       <div className="grid md:grid-cols-3 gap-4">
         {/* Starter */}
-        <div className="border rounded-lg p-4 bg-white">
-          <h3 className="font-semibold">Starter</h3>
-          <p className="text-xs text-gray-500 mb-2">Per cliniche in fase di valutazione</p>
+        <div className="border rounded-lg p-4 bg-white relative">
+          <div className="absolute -top-2.5 left-3 bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">👨‍⚕️ Per Freelance</div>
+          <h3 className="font-semibold mt-2">Starter</h3>
+          <p className="text-xs text-gray-500 mb-2">Per veterinari freelance e cliniche in fase di valutazione</p>
           <div className="mb-2">
             <span className="text-2xl font-bold text-gray-400">Gratis</span>
             <p className="text-xs text-gray-500">solo su invito – Pilot Milano</p>
