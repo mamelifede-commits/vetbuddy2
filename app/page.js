@@ -13326,7 +13326,14 @@ export default function App() {
           appointmentId: params.get('appointmentId'),
           clinicId: params.get('clinicId'),
           petId: params.get('petId'),
-          reason: params.get('reason')
+          reason: params.get('reason'),
+          // New parameters for enhanced email actions
+          serviceType: params.get('serviceType'),
+          amount: params.get('amount'),
+          docId: params.get('docId'),
+          rewardId: params.get('rewardId'),
+          use: params.get('use') === 'true',
+          newMessage: params.get('newMessage') === 'true'
         };
         // Save to sessionStorage so it persists after login
         sessionStorage.setItem('vetbuddy_email_action', JSON.stringify(emailActionData));
