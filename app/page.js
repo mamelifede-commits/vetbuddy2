@@ -42,17 +42,93 @@ const VetBuddyLogo = ({ size = 40 }) => (
 // Helper function for pet species info
 const getPetSpeciesInfo = (species) => {
   const speciesMap = {
-    dog: { emoji: '🐕', name: 'Cane', icon: Dog },
-    cat: { emoji: '🐱', name: 'Gatto', icon: Cat },
-    horse: { emoji: '🐴', name: 'Cavallo', icon: PawPrint },
-    bird: { emoji: '🦜', name: 'Uccello', icon: PawPrint },
-    rabbit: { emoji: '🐰', name: 'Coniglio', icon: PawPrint },
-    hamster: { emoji: '🐹', name: 'Criceto', icon: PawPrint },
-    fish: { emoji: '🐠', name: 'Pesce', icon: PawPrint },
-    reptile: { emoji: '🦎', name: 'Rettile', icon: PawPrint },
-    other: { emoji: '🐾', name: 'Altro', icon: PawPrint }
+    dog: { emoji: '🐕', name: 'Cane', icon: Dog, color: 'blue' },
+    cat: { emoji: '🐱', name: 'Gatto', icon: Cat, color: 'purple' },
+    horse: { emoji: '🐴', name: 'Cavallo', icon: PawPrint, color: 'amber' },
+    bird: { emoji: '🦜', name: 'Uccello', icon: PawPrint, color: 'green' },
+    rabbit: { emoji: '🐰', name: 'Coniglio', icon: PawPrint, color: 'pink' },
+    hamster: { emoji: '🐹', name: 'Criceto', icon: PawPrint, color: 'orange' },
+    fish: { emoji: '🐠', name: 'Pesce', icon: PawPrint, color: 'cyan' },
+    reptile: { emoji: '🦎', name: 'Rettile', icon: PawPrint, color: 'emerald' },
+    other: { emoji: '🐾', name: 'Altro', icon: PawPrint, color: 'gray' }
   };
   return speciesMap[species] || speciesMap.other;
+};
+
+// Pet Avatar Component - Shows photo or species icon
+const PetAvatar = ({ pet, size = 'md', onClick, className = '' }) => {
+  const sizeClasses = {
+    sm: 'h-10 w-10',
+    md: 'h-16 w-16',
+    lg: 'h-24 w-24',
+    xl: 'h-32 w-32'
+  };
+  const iconSizes = {
+    sm: 'h-5 w-5',
+    md: 'h-8 w-8',
+    lg: 'h-12 w-12',
+    xl: 'h-16 w-16'
+  };
+  const emojiSizes = {
+    sm: 'text-xl',
+    md: 'text-3xl',
+    lg: 'text-5xl',
+    xl: 'text-6xl'
+  };
+  
+  const speciesInfo = getPetSpeciesInfo(pet?.species);
+  const colorMap = {
+    blue: 'from-blue-100 to-blue-200',
+    purple: 'from-purple-100 to-purple-200',
+    amber: 'from-amber-100 to-amber-200',
+    green: 'from-green-100 to-green-200',
+    pink: 'from-pink-100 to-pink-200',
+    orange: 'from-orange-100 to-orange-200',
+    cyan: 'from-cyan-100 to-cyan-200',
+    emerald: 'from-emerald-100 to-emerald-200',
+    gray: 'from-gray-100 to-gray-200'
+  };
+  const iconColorMap = {
+    blue: 'text-blue-600',
+    purple: 'text-purple-600',
+    amber: 'text-amber-600',
+    green: 'text-green-600',
+    pink: 'text-pink-600',
+    orange: 'text-orange-600',
+    cyan: 'text-cyan-600',
+    emerald: 'text-emerald-600',
+    gray: 'text-gray-600'
+  };
+  
+  if (pet?.photoUrl) {
+    return (
+      <div 
+        className={`${sizeClasses[size]} rounded-full overflow-hidden flex-shrink-0 ${onClick ? 'cursor-pointer' : ''} ${className}`}
+        onClick={onClick}
+      >
+        <img 
+          src={pet.photoUrl} 
+          alt={pet.name || 'Pet'} 
+          className="w-full h-full object-cover"
+          onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+        />
+        <div 
+          className={`w-full h-full bg-gradient-to-br ${colorMap[speciesInfo.color]} items-center justify-center hidden`}
+        >
+          <span className={emojiSizes[size]}>{speciesInfo.emoji}</span>
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <div 
+      className={`${sizeClasses[size]} bg-gradient-to-br ${colorMap[speciesInfo.color]} rounded-full flex items-center justify-center flex-shrink-0 ${onClick ? 'cursor-pointer' : ''} ${className}`}
+      onClick={onClick}
+    >
+      <span className={emojiSizes[size]}>{speciesInfo.emoji}</span>
+    </div>
+  );
 };
 
 // ==================== ACCESSO NON AUTORIZZATO ====================
