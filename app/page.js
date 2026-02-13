@@ -1707,6 +1707,7 @@ function ClinicDashboard({ user, onLogout }) {
         {activeTab === 'inbox' && <ClinicInbox messages={messages} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'documents' && <ClinicDocuments documents={documents} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'services' && <ClinicServices onNavigate={setActiveTab} user={user} />}
+        {activeTab === 'videoconsult' && <ClinicVideoConsult user={user} onNavigate={setActiveTab} />}
         {activeTab === 'patients' && <ClinicPatients pets={pets} owners={owners} onRefresh={loadData} onNavigate={setActiveTab} onOpenOwner={handleOpenOwnerFromPet} initialPet={selectedPetFromOwner} onClearInitialPet={() => setSelectedPetFromOwner(null)} />}
         {activeTab === 'owners' && <ClinicOwners owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} onOpenPet={handleOpenPetFromOwner} initialOwner={selectedOwnerFromPet} onClearInitialOwner={() => setSelectedOwnerFromPet(null)} />}
         {activeTab === 'staff' && <ClinicStaff staff={staff} onRefresh={loadData} onNavigate={setActiveTab} />}
