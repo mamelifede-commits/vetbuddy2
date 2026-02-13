@@ -41,6 +41,24 @@ const SUBSCRIPTION_PLANS = {
   enterprise: { name: 'Enterprise', price: 299.00, description: 'Per gruppi e catene' }
 };
 
+// Automazioni incluse nel piano Starter (gratuite ma essenziali)
+const STARTER_AUTOMATIONS = [
+  'appointmentReminders',    // Promemoria appuntamenti 24h prima
+  'bookingConfirmation',     // Conferma prenotazione
+  'welcomeNewPet',           // Benvenuto nuovo pet
+  'petBirthday',             // Compleanno pet (fidelizzazione)
+  'appointmentConfirmation'  // Conferma appuntamento
+];
+
+// Automazioni incluse nel piano Pro (tutto di Starter + avanzate)
+const PRO_AUTOMATIONS = [
+  ...STARTER_AUTOMATIONS,
+  'vaccineRecalls', 'postVisitFollowup', 'noShowDetection', 'waitlistNotification',
+  'suggestedSlots', 'documentReminders', 'autoTicketAssignment', 'urgencyNotifications',
+  'weeklyReport', 'reviewRequest', 'inactiveClientReactivation', 'antiparasiticReminder',
+  'annualCheckup', 'labResultsReady', 'paymentReminder', 'postSurgeryFollowup'
+];
+
 // Veterinary Services Catalog
 const VETERINARY_SERVICES = {
   video_consulto: {
