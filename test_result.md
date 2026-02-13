@@ -581,13 +581,7 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus:
-    - "Landing Page Fatturazione Section"
-    - "Clinic Dashboard Logout Button Position"  
-    - "Owner Dashboard Logout Button Position"
-    - "Invoicing Tab in Clinic Dashboard"
-    - "Animal Species Horse Addition"
-    - "Favicon Display"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
