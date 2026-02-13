@@ -7938,7 +7938,7 @@ function ClinicSettings({ user, onNavigate }) {
 }
 
 // ==================== OWNER DASHBOARD ====================
-function OwnerDashboard({ user, onLogout }) {
+function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const [activeTab, setActiveTab] = useState('appointments');
   const [selectedPetId, setSelectedPetId] = useState(null);
   const [appointments, setAppointments] = useState([]);
@@ -7947,9 +7947,59 @@ function OwnerDashboard({ user, onLogout }) {
   const [pets, setPets] = useState([]);
   const [clinics, setClinics] = useState([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [cancelAppointmentId, setCancelAppointmentId] = useState(null);
+  const [showBookingFromEmail, setShowBookingFromEmail] = useState(false);
 
   useEffect(() => { loadData(); }, []);
+  
+  // Handle email action parameters
+  useEffect(() => {
+    if (emailAction && emailAction.action) {
+      switch (emailAction.action) {
+        case 'cancel':
+          // Show cancellation dialog
+          if (emailAction.appointmentId) {
+            setCancelAppointmentId(emailAction.appointmentId);
+            setShowCancelDialog(true);
+          }
+          break;
+        case 'book':
+          // Show booking dialog/tab
+          setActiveTab('appointments');
+          setShowBookingFromEmail(true);
+          break;
+        case 'message':
+          // Go to messages tab
+          setActiveTab('messages');
+          break;
+        case 'review':
+          // Go to reviews tab
+          setActiveTab('reviews');
+          break;
+        default:
+          break;
+      }
+      // Clear the action after handling
+      if (onClearEmailAction) onClearEmailAction();
+    }
+  }, [emailAction, onClearEmailAction]);
+  
   const loadData = async () => { try { const [appts, docs, msgs, petsList, clinicsList] = await Promise.all([api.get('appointments'), api.get('documents'), api.get('messages'), api.get('pets'), api.get('clinics/search?city=Milano&maxDistance=100')]); setAppointments(appts); setDocuments(docs); setMessages(msgs); setPets(petsList); setClinics(clinicsList || []); } catch (error) { console.error('Error:', error); } };
+  
+  // Cancel appointment handler
+  const handleCancelAppointment = async () => {
+    if (!cancelAppointmentId) return;
+    try {
+      await api.put(`appointments/${cancelAppointmentId}`, { status: 'cancelled' });
+      alert('✅ Appuntamento cancellato con successo');
+      setShowCancelDialog(false);
+      setCancelAppointmentId(null);
+      loadData(); // Refresh data
+    } catch (error) {
+      alert('❌ Errore nella cancellazione: ' + error.message);
+    }
+  };
 
   const NavItem = ({ icon: Icon, label, value, badge }) => <button onClick={() => { setActiveTab(value); setSelectedPetId(null); setMobileMenuOpen(false); }} className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${activeTab === value ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-100'}`}><div className="flex items-center gap-3"><Icon className="h-5 w-5" />{label}</div>{badge > 0 && <Badge className="bg-blue-500 text-white text-xs">{badge}</Badge>}</button>;
 
