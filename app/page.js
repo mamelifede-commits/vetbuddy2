@@ -12821,47 +12821,62 @@ function OwnerAppointments({ appointments, pets }) {
         <div className="space-y-3">
           {appointments.map((appt) => (
             <Card key={appt.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setSelectedAppointment(appt)}>
-              <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${appt.type === 'videoconsulto' ? 'bg-blue-100' : 'bg-coral-100'}`}>
-                    {appt.type === 'videoconsulto' ? <Video className="h-6 w-6 text-blue-600" /> : <PawPrint className="h-6 w-6 text-coral-600" />}
-                  </div>
-                  <div>
-                    <p className="font-medium">{appt.petName}</p>
-                    <p className="text-sm text-gray-500">{appt.reason || 'Visita'}</p>
-                    {/* Badge stato pagamento */}
-                    {appt.paymentStatus === 'paid' ? (
-                      <Badge className="bg-green-100 text-green-700 text-xs mt-1">✓ Pagato</Badge>
-                    ) : appt.price && appt.price > 0 && appt.status !== 'cancelled' && appt.status !== 'completed' && (
-                      <Badge className="bg-amber-100 text-amber-700 text-xs mt-1">€{appt.price} da pagare</Badge>
-                    )}
-                  </div>
-                </div>
-                <div className="text-right flex flex-col items-end gap-2">
-                  <div>
-                    <p className="font-medium">{appt.date}</p>
-                    <p className="text-sm text-gray-500">{appt.time}</p>
-                  </div>
-                  {/* Pulsante Paga se non pagato */}
-                  {appt.paymentStatus !== 'paid' && appt.price && appt.price > 0 && appt.status !== 'cancelled' && appt.status !== 'completed' && (
-                    <Button 
-                      size="sm" 
-                      className="bg-emerald-500 hover:bg-emerald-600" 
-                      onClick={(e) => { e.stopPropagation(); handlePayment(appt); }}
-                      disabled={paymentLoading === appt.id}
-                    >
-                      {paymentLoading === appt.id ? (
-                        <><RefreshCw className="h-3 w-3 mr-1 animate-spin" />Caricamento...</>
-                      ) : (
-                        <><CreditCard className="h-3 w-3 mr-1" />Paga €{appt.price}</>
+              <CardContent className="p-3 sm:p-4">
+                {/* Mobile: stack layout, Desktop: side by side */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  {/* Left section: Pet info */}
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`h-10 w-10 sm:h-12 sm:w-12 rounded-lg flex items-center justify-center flex-shrink-0 ${appt.type === 'videoconsulto' ? 'bg-blue-100' : 'bg-coral-100'}`}>
+                      {appt.type === 'videoconsulto' ? <Video className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" /> : <PawPrint className="h-5 w-5 sm:h-6 sm:w-6 text-coral-600" />}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium truncate">{appt.petName}</p>
+                      <p className="text-sm text-gray-500 truncate">{appt.reason || 'Visita'}</p>
+                      {/* Badge stato pagamento */}
+                      {appt.paymentStatus === 'paid' ? (
+                        <Badge className="bg-green-100 text-green-700 text-xs mt-1">✓ Pagato</Badge>
+                      ) : appt.price && appt.price > 0 && appt.status !== 'cancelled' && appt.status !== 'completed' && (
+                        <Badge className="bg-amber-100 text-amber-700 text-xs mt-1">€{appt.price} da pagare</Badge>
                       )}
-                    </Button>
-                  )}
-                  {appt.type === 'videoconsulto' && appt.videoLink && (
-                    <Button size="sm" className="bg-blue-500 hover:bg-blue-600" onClick={(e) => { e.stopPropagation(); window.open(appt.videoLink, '_blank'); }}>
-                      <Video className="h-3 w-3 mr-1" />Entra nel Video Consulto
-                    </Button>
-                  )}
+                    </div>
+                    {/* Date on mobile - inline */}
+                    <div className="sm:hidden text-right flex-shrink-0">
+                      <p className="font-medium text-sm">{appt.date}</p>
+                      <p className="text-xs text-gray-500">{appt.time}</p>
+                    </div>
+                  </div>
+                  
+                  {/* Right section: Date (desktop) + Actions */}
+                  <div className="flex flex-col sm:items-end gap-2">
+                    {/* Date on desktop */}
+                    <div className="hidden sm:block text-right">
+                      <p className="font-medium">{appt.date}</p>
+                      <p className="text-sm text-gray-500">{appt.time}</p>
+                    </div>
+                    {/* Action buttons - full width on mobile */}
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                      {/* Pulsante Paga se non pagato */}
+                      {appt.paymentStatus !== 'paid' && appt.price && appt.price > 0 && appt.status !== 'cancelled' && appt.status !== 'completed' && (
+                        <Button 
+                          size="sm" 
+                          className="bg-emerald-500 hover:bg-emerald-600 w-full sm:w-auto justify-center" 
+                          onClick={(e) => { e.stopPropagation(); handlePayment(appt); }}
+                          disabled={paymentLoading === appt.id}
+                        >
+                          {paymentLoading === appt.id ? (
+                            <><RefreshCw className="h-3 w-3 mr-1 animate-spin" />Caricamento...</>
+                          ) : (
+                            <><CreditCard className="h-3 w-3 mr-1" />Paga €{appt.price}</>
+                          )}
+                        </Button>
+                      )}
+                      {appt.type === 'videoconsulto' && appt.videoLink && (
+                        <Button size="sm" className="bg-blue-500 hover:bg-blue-600 w-full sm:w-auto justify-center" onClick={(e) => { e.stopPropagation(); window.open(appt.videoLink, '_blank'); }}>
+                          <Video className="h-3 w-3 mr-1" />Video Consulto
+                        </Button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
