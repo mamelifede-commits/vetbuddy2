@@ -97,6 +97,125 @@ Puoi tornare su questa configurazione in qualsiasi momento dalle Impostazioni.
       ]
     },
     {
+      id: 'mobile-app',
+      title: 'Installa su Mobile',
+      icon: Smartphone,
+      color: 'violet',
+      description: 'Come usare VetBuddy come app sul telefono',
+      duration: '3 min',
+      steps: [
+        {
+          title: 'Perché installare l\'app',
+          content: `
+## 📱 VetBuddy come App
+
+VetBuddy funziona come una **Progressive Web App (PWA)**. Questo significa che puoi installarla sul tuo telefono e usarla esattamente come un'app nativa!
+
+### Vantaggi:
+- 🚀 **Accesso rapido** - Icona sulla home screen
+- 📴 **Funziona offline** - Alcune funzioni disponibili senza internet
+- 🔔 **Notifiche push** - Ricevi avvisi in tempo reale
+- 💾 **Meno spazio** - Non occupa memoria come un'app tradizionale
+- 🔄 **Sempre aggiornata** - Nessun bisogno di scaricare aggiornamenti
+
+### ⚠️ Importante
+Per un'esperienza ottimale, installa l'app seguendo le istruzioni per il tuo dispositivo (iPhone o Android).
+          `,
+          image: '📱'
+        },
+        {
+          title: 'Installare su iPhone/iPad',
+          content: `
+## 🍎 Installazione su iOS (iPhone/iPad)
+
+### Passo 1: Apri Safari
+Apri **Safari** (il browser predefinito di Apple). 
+⚠️ Non usare Chrome o altri browser, funziona solo con Safari!
+
+### Passo 2: Vai su VetBuddy
+Digita l'indirizzo del sito nella barra degli indirizzi:
+\`clinic-pet-portal.preview.emergentagent.com\`
+
+### Passo 3: Tocca il pulsante Condividi
+Tocca l'icona **Condividi** (il quadrato con la freccia verso l'alto ⬆️) nella barra in basso.
+
+### Passo 4: Aggiungi alla schermata Home
+Scorri verso il basso nel menu e tocca **"Aggiungi alla schermata Home"**.
+
+### Passo 5: Conferma
+- Dai un nome (es. "VetBuddy")
+- Tocca **"Aggiungi"** in alto a destra
+
+### ✅ Fatto!
+Ora vedrai l'icona di VetBuddy (zampa rossa) sulla tua schermata Home!
+          `,
+          image: '🍎'
+        },
+        {
+          title: 'Installare su Android',
+          content: `
+## 🤖 Installazione su Android
+
+### Metodo 1: Chrome (Consigliato)
+
+1. Apri **Google Chrome**
+2. Vai su \`clinic-pet-portal.preview.emergentagent.com\`
+3. Tocca i **tre puntini ⋮** in alto a destra
+4. Seleziona **"Aggiungi a schermata Home"** o **"Installa app"**
+5. Conferma toccando **"Aggiungi"**
+
+### Metodo 2: Banner automatico
+
+A volte Chrome mostra automaticamente un banner in basso:
+\`Aggiungi VetBuddy alla schermata Home\`
+
+Tocca semplicemente **"Installa"** o **"Aggiungi"**!
+
+### Metodo 3: Samsung Internet
+
+1. Apri **Samsung Internet**
+2. Vai sul sito VetBuddy
+3. Tocca il menu ☰
+4. Seleziona **"Aggiungi pagina a"** → **"Schermata Home"**
+
+### ✅ Fatto!
+L'icona di VetBuddy apparirà nel tuo drawer delle app!
+          `,
+          image: '🤖'
+        },
+        {
+          title: 'Usare l\'app installata',
+          content: `
+## 🚀 Dopo l'installazione
+
+### Come aprire l'app
+Tocca semplicemente l'icona **VetBuddy** (zampa rossa su sfondo rosso) dalla schermata Home!
+
+### Differenze rispetto al browser:
+- ✅ **Niente barra degli indirizzi** - Schermo intero
+- ✅ **Navigazione fluida** - Come un'app nativa
+- ✅ **Pulsante "indietro"** - Funziona normalmente su Android
+- ✅ **Gesture swipe** - Torna indietro con swipe su iPhone
+
+### ⚠️ Problemi di navigazione?
+Se dopo aver cliccato su un documento o link non riesci a tornare indietro:
+
+**Su iPhone:**
+- Fai **swipe da sinistra** verso destra per tornare indietro
+- Oppure tocca **"← Indietro"** se disponibile
+
+**Su Android:**
+- Usa il **pulsante indietro** del telefono
+- Oppure tocca **"← Indietro"** se disponibile
+
+### 💡 Tip
+Per la migliore esperienza, usa sempre l'app installata invece del browser!
+          `,
+          image: '🚀'
+        }
+      ]
+    },
+    {
       id: 'agenda',
       title: 'Gestione Agenda',
       icon: Calendar,
