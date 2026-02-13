@@ -13163,6 +13163,78 @@ function OwnerDocuments({ documents, pets, onRefresh }) {
         </Dialog>
       </div>
       
+      {/* Sezione Fatture Pagate - Separata */}
+      {(() => {
+        const invoiceDocs = documents.filter(d => d.type === 'invoice' || d.category === 'fattura');
+        if (invoiceDocs.length > 0) {
+          return (
+            <Card className="mb-6 border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-emerald-700">
+                  <Receipt className="h-5 w-5" />
+                  Le mie fatture ({invoiceDocs.length})
+                </CardTitle>
+                <p className="text-sm text-emerald-600">Fatture dei pagamenti online</p>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {invoiceDocs.map((doc) => {
+                  const handleDownloadInvoice = () => {
+                    if (doc.content) {
+                      // Base64 content - create download link
+                      const link = document.createElement('a');
+                      // Check if it's raw base64 or data URL
+                      if (doc.content.startsWith('data:')) {
+                        link.href = doc.content;
+                      } else {
+                        link.href = `data:application/pdf;base64,${doc.content}`;
+                      }
+                      link.download = doc.fileName || doc.name || `Fattura_${doc.invoiceNumber || 'documento'}.pdf`;
+                      link.style.display = 'none';
+                      document.body.appendChild(link);
+                      link.click();
+                      setTimeout(() => document.body.removeChild(link), 100);
+                    } else if (doc.id) {
+                      // Use API download
+                      window.open(`/api/documents/download?id=${doc.id}`, '_blank');
+                    } else {
+                      alert('Fattura non disponibile per il download');
+                    }
+                  };
+                  return (
+                    <div key={doc.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-emerald-100">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                          <Receipt className="h-5 w-5 text-emerald-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-800">
+                            Fattura {doc.invoiceNumber || doc.name}
+                          </p>
+                          <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <span>{new Date(doc.createdAt || doc.issuedAt).toLocaleDateString('it-IT')}</span>
+                            {doc.amount && <span className="font-medium text-emerald-600">€{doc.amount.toFixed(2)}</span>}
+                            {doc.petName && <span>• {doc.petName}</span>}
+                          </div>
+                        </div>
+                      </div>
+                      <Button 
+                        size="sm" 
+                        className="bg-emerald-500 hover:bg-emerald-600"
+                        onClick={handleDownloadInvoice}
+                      >
+                        <Download className="h-4 w-4 mr-1" />
+                        PDF
+                      </Button>
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          );
+        }
+        return null;
+      })()}
+      
       <Tabs defaultValue="dalla-clinica">
         <TabsList>
           <TabsTrigger value="dalla-clinica">Dalla clinica</TabsTrigger>
@@ -13170,7 +13242,7 @@ function OwnerDocuments({ documents, pets, onRefresh }) {
         </TabsList>
         
         <TabsContent value="dalla-clinica" className="mt-4">
-          {documents.filter(d => !d.fromClient).length === 0 ? (
+          {documents.filter(d => !d.fromClient && d.type !== 'invoice' && d.category !== 'fattura').length === 0 ? (
             <Card>
               <CardContent className="p-12 text-center text-gray-500">
                 <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
