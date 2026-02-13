@@ -13266,6 +13266,47 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
               <DialogDescription>{editingPet ? 'Modifica i dati del tuo animale' : 'Inserisci i dati del tuo animale'}</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+              {/* Sezione Foto */}
+              <div className="space-y-4">
+                <h4 className="font-semibold text-gray-700 flex items-center gap-2"><Camera className="h-4 w-4" /> Foto</h4>
+                <div className="flex items-center gap-6">
+                  <PetAvatar pet={{ ...formData, photoUrl: formData.photoUrl }} size="lg" />
+                  <div className="flex-1 space-y-2">
+                    <input
+                      type="file"
+                      id="pet-photo-upload"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        if (file.size > 5 * 1024 * 1024) {
+                          alert('File troppo grande. Massimo 5MB.');
+                          return;
+                        }
+                        // Preview immediately
+                        const reader = new FileReader();
+                        reader.onload = () => setFormData({...formData, photoUrl: reader.result, photoFile: file });
+                        reader.readAsDataURL(file);
+                      }}
+                    />
+                    <Button type="button" variant="outline" size="sm" onClick={() => document.getElementById('pet-photo-upload').click()}>
+                      <Upload className="h-4 w-4 mr-2" />
+                      {formData.photoUrl ? 'Cambia foto' : 'Carica foto'}
+                    </Button>
+                    {formData.photoUrl && (
+                      <Button type="button" variant="ghost" size="sm" className="text-red-500" onClick={() => setFormData({...formData, photoUrl: null, photoFile: null })}>
+                        <Trash2 className="h-4 w-4 mr-1" /> Rimuovi
+                      </Button>
+                    )}
+                    <p className="text-xs text-gray-500">JPG, PNG, WebP o GIF. Max 5MB.</p>
+                    {!formData.photoUrl && (
+                      <p className="text-xs text-gray-400">Se non carichi una foto, verrà mostrata l'icona della specie</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               {/* Sezione Dati Base */}
               <div className="space-y-4">
                 <h4 className="font-semibold text-gray-700 flex items-center gap-2"><PawPrint className="h-4 w-4" /> Dati Generali</h4>
