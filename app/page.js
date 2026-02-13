@@ -13773,8 +13773,8 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
-                        if (file.size > 5 * 1024 * 1024) {
-                          alert('File troppo grande. Massimo 5MB.');
+                        if (file.size > 20 * 1024 * 1024) {
+                          alert('File troppo grande. Massimo 20MB.');
                           return;
                         }
                         // Preview immediately
