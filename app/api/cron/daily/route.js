@@ -997,9 +997,6 @@ export async function GET(request) {
       if (owner?.email && clinic) {
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
         const payUrl = `${baseUrl}?action=payment&invoiceId=${invoice.id}`;
-        const messageUrl = `${baseUrl}?action=message&clinicId=${clinic.id}&subject=Fattura%20${invoice.id}`;
-        const phoneNumber = clinic?.phone || clinic?.telefono || '';
-        const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
         
         try {
           await sendEmail({
@@ -1024,14 +1021,7 @@ export async function GET(request) {
                     <a href="${payUrl}" style="display: inline-block; background: #27AE60; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                       💳 Paga Ora
                     </a>
-                    <a href="${messageUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                      💬 Scrivi alla Clinica
-                    </a>
-                    ${phoneLink ? `
-                    <a href="${phoneLink}" style="display: inline-block; background: #9B59B6; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                      📞 Chiama
-                    </a>
-                    ` : ''}
+                    ${getContactButton(clinic, baseUrl, 'Scrivi alla Clinica', `Ciao, ho una domanda sulla fattura €${invoice.amount?.toFixed(2) || '0'}...`)}
                   </div>
                   
                   <p style="color: #999; font-size: 12px; text-align: center;">Per qualsiasi domanda, non esitare a contattarci.</p>
