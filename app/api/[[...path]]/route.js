@@ -320,15 +320,21 @@ export async function GET(request, { params }) {
       const clinic = await users.findOne({ id: user.id });
       const clinicPlan = clinic?.subscriptionPlan || clinic?.plan || 'starter';
 
-      // Define which automations are allowed per plan
-      const PRO_AUTOMATIONS = [
-        'appointmentReminders', 'bookingConfirmation', 'vaccineRecalls', 'postVisitFollowup',
-        'noShowDetection', 'waitlistNotification', 'suggestedSlots', 'documentReminders',
-        'autoTicketAssignment', 'urgencyNotifications', 'weeklyReport',
-        'petBirthday', 'reviewRequest', 'inactiveClientReactivation',
-        'antiparasiticReminder', 'annualCheckup', 'appointmentConfirmation', 'labResultsReady',
-        'paymentReminder', 'postSurgeryFollowup'
-      ];
+      // Determine allowed automations based on plan
+      let allowedAutomations;
+      let automationsCount;
+      
+      if (clinicPlan === 'custom' || clinicPlan === 'enterprise') {
+        allowedAutomations = 'all';
+        automationsCount = 44;
+      } else if (clinicPlan === 'pro') {
+        allowedAutomations = PRO_AUTOMATIONS;
+        automationsCount = PRO_AUTOMATIONS.length;
+      } else {
+        // Starter plan - include basic automations
+        allowedAutomations = STARTER_AUTOMATIONS;
+        automationsCount = STARTER_AUTOMATIONS.length;
+      }
 
       // Get saved settings
       const automationSettings = await getCollection('automation_settings');
@@ -359,8 +365,9 @@ export async function GET(request, { params }) {
         success: true, 
         settings: mergedSettings,
         plan: clinicPlan,
-        allowedAutomations: clinicPlan === 'custom' ? 'all' : (clinicPlan === 'pro' ? PRO_AUTOMATIONS : []),
-        automationsCount: clinicPlan === 'custom' ? 44 : (clinicPlan === 'pro' ? 20 : 0)
+        allowedAutomations,
+        automationsCount,
+        starterAutomations: STARTER_AUTOMATIONS
       }, { headers: corsHeaders });
     }
 
