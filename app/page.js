@@ -8422,8 +8422,12 @@ function ClinicEvents({ user }) {
     if (activeFilter === 'past') return eventDate < today;
     if (activeFilter === 'ecm') return e.ecm;
     if (activeFilter === 'online') return e.location.toLowerCase().includes('online');
+    if (activeFilter === 'saved') return e.saved;
+    if (activeFilter === 'featured') return e.featured;
     return true;
   });
+
+  const savedCount = events.filter(e => e.saved).length;
 
   const formatDateRange = (start, end) => {
     const startDate = new Date(start);
