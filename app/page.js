@@ -10481,15 +10481,15 @@ function OwnerRewardsSection({ user }) {
                         WhatsApp
                       </Button>
                     )}
-                    {reward.clinicPhone && (
+                    {reward.clinicEmail && (
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="flex-1"
-                        onClick={() => window.location.href = `tel:${reward.clinicPhone}`}
+                        className="flex-1 text-blue-600 border-blue-300 hover:bg-blue-50"
+                        onClick={() => window.location.href = `mailto:${reward.clinicEmail}?subject=${encodeURIComponent(`Riscatto Premio: ${reward.rewardName}`)}&body=${encodeURIComponent(`Buongiorno,\n\nVorrei riscattare il mio premio "${reward.rewardName}".\n\nCodice premio: ${reward.redeemCode}\n\nGrazie!`)}`}
                       >
-                        <Phone className="h-4 w-4 mr-1" />
-                        Chiama
+                        <Mail className="h-4 w-4 mr-1" />
+                        Messaggio
                       </Button>
                     )}
                   </div>
