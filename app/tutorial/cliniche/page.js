@@ -1,12 +1,39 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Download, ArrowLeft, Building2, Calendar, FileText, Users, CreditCard, BarChart3, Settings, MessageSquare, Bell, Shield, Zap, Package, ClipboardList, PieChart, Send, ChevronRight, HelpCircle, Smartphone, Receipt } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Download, ArrowLeft, Building2, Calendar, FileText, Users, CreditCard, BarChart3, Settings, MessageSquare, Bell, Shield, Zap, Package, ClipboardList, PieChart, Send, ChevronRight, HelpCircle, Smartphone, Receipt, Lock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 export default function TutorialCliniche() {
   const [downloadingPDF, setDownloadingPDF] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+
+  // Check user role on mount
+  useEffect(() => {
+    const checkAuthorization = async () => {
+      try {
+        // Try to get user from sessionStorage
+        const storedUser = sessionStorage.getItem('vetbuddy_user');
+        if (storedUser) {
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+          // Only clinics can access this tutorial
+          if (userData.role === 'clinic') {
+            setIsAuthorized(true);
+          }
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    checkAuthorization();
+  }, []);
 
   const handleDownloadPDF = async () => {
     setDownloadingPDF(true);
@@ -30,6 +57,60 @@ export default function TutorialCliniche() {
       setDownloadingPDF(false);
     }
   };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-coral-50 via-white to-orange-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-coral-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Verifica accesso...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show access denied if not authorized
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 flex items-center justify-center p-4">
+        <div className="max-w-md mx-auto text-center bg-white rounded-2xl shadow-xl p-8">
+          <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Lock className="h-8 w-8 text-red-500" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Accesso Riservato</h1>
+          <p className="text-gray-600 mb-6">
+            Questo tutorial è riservato alle <strong>cliniche veterinarie</strong> registrate su VetBuddy.
+          </p>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-amber-700 text-left">
+                {user ? 
+                  `Sei loggato come "${user.role === 'owner' ? 'Proprietario' : user.role}". Questo tutorial è solo per cliniche.` :
+                  'Effettua il login come clinica per accedere a questo contenuto.'
+                }
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <Link href="/">
+              <Button className="w-full bg-coral-500 hover:bg-coral-600">
+                Vai alla Home e Accedi
+              </Button>
+            </Link>
+            {user?.role === 'owner' && (
+              <Link href="/tutorial/proprietari">
+                <Button variant="outline" className="w-full">
+                  Vai al Tutorial Proprietari
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const sections = [
     {
@@ -219,7 +300,7 @@ export default function TutorialCliniche() {
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-coral-600 transition">
             <ArrowLeft className="h-5 w-5" />
-            <span>Torna alla Home</span>
+            <span>Torna alla Dashboard</span>
           </Link>
           <Button 
             onClick={handleDownloadPDF} 
@@ -328,12 +409,12 @@ export default function TutorialCliniche() {
       <section className="py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-gradient-to-r from-coral-500 to-orange-600 rounded-2xl p-8 text-white">
-            <h2 className="text-2xl font-bold mb-4">Pronto a digitalizzare la tua clinica?</h2>
-            <p className="text-coral-100 mb-6">Registrati ora e inizia il periodo di prova gratuito del Piano Premium.</p>
+            <h2 className="text-2xl font-bold mb-4">Hai bisogno di supporto?</h2>
+            <p className="text-coral-100 mb-6">Contatta il nostro team o consulta la documentazione tecnica.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/">
                 <Button size="lg" className="bg-white text-coral-600 hover:bg-coral-50 w-full sm:w-auto">
-                  Vai alla Home
+                  Torna alla Dashboard
                 </Button>
               </Link>
               <Button 
