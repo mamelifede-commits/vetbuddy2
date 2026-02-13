@@ -647,26 +647,6 @@ function LandingPage({ onLogin }) {
               </div>
             </div>
           </div>
-
-          {/* Stats impatto */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
-              <div className="text-3xl font-bold text-green-600 mb-1">-80%</div>
-              <p className="text-sm text-gray-600">Telefonate</p>
-            </div>
-            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
-              <div className="text-3xl font-bold text-blue-600 mb-1">-60%</div>
-              <p className="text-sm text-gray-600">No-show</p>
-            </div>
-            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
-              <div className="text-3xl font-bold text-amber-600 mb-1">+40%</div>
-              <p className="text-sm text-gray-600">Clienti fedeli</p>
-            </div>
-            <div className="bg-white/80 backdrop-blur rounded-xl p-4 text-center border">
-              <div className="text-3xl font-bold text-purple-600 mb-1">2h</div>
-              <p className="text-sm text-gray-600">Risparmiate/giorno</p>
-            </div>
-          </div>
         </div>
       </section>
 
