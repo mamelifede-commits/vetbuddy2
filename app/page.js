@@ -1771,12 +1771,14 @@ function LandingPage({ onLogin }) {
           </div>
 
           {/* Pricing Cards - Pilot Coherence */}
-          <p className="text-center text-sm text-gray-600 mb-6">Piani disponibili solo tramite Pilot (su invito). Prezzi IVA esclusa.</p>
+          <p className="text-center text-sm text-gray-600 mb-10">Piani disponibili solo tramite Pilot (su invito). Prezzi IVA esclusa.</p>
           
           <div className="grid md:grid-cols-3 gap-6 mb-4">
             {/* Starter - Piano base con automazioni essenziali */}
-            <Card className="border-2 border-green-200 hover:border-green-300 transition-colors">
-              <CardHeader>
+            <Card className="border-2 border-green-200 hover:border-green-300 transition-colors relative">
+              {/* Badge Freelance */}
+              <div className="absolute -top-3 left-4 bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">👨‍⚕️ IDEALE PER FREELANCE</div>
+              <CardHeader className="pt-6">
                 <CardTitle className="flex items-center gap-2">Starter <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">GRATUITO</span></CardTitle>
                 <CardDescription>Per iniziare con le automazioni essenziali</CardDescription>
                 <div className="mt-4">
@@ -1788,7 +1790,7 @@ function LandingPage({ onLogin }) {
                 <p className="text-xs font-medium text-gray-700 mb-3">Include:</p>
                 <ul className="space-y-2 text-sm mb-4">
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>1 sede, 1 utente</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Fino a 50 pazienti</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span className="underline decoration-purple-300 decoration-2">Fino a 50 pazienti</span></li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Agenda base</span></li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Posizione su mappa</span></li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span><strong>5 Automazioni base</strong></span></li>
