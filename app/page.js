@@ -12193,6 +12193,13 @@ function OwnerEvents({ user }) {
       case 'veterinaria': return 'Salute & Benessere';
       case 'cani': return 'Per Cani';
       case 'gatti': return 'Per Gatti';
+      case 'conigli': return 'Per Conigli';
+      case 'uccelli': return 'Per Uccelli';
+      case 'rettili': return 'Per Rettili';
+      case 'pesci': return 'Per Pesci';
+      case 'roditori': return 'Per Roditori';
+      case 'furetti': return 'Per Furetti';
+      case 'generale': return 'Tutti gli Animali';
       case 'promo': return 'Promozioni';
       case 'eventi': return 'Eventi Locali';
       default: return 'News';
