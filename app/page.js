@@ -869,6 +869,19 @@ function LandingPage({ onLogin }) {
             </div>
           </div>
           
+          {/* Freelancer callout */}
+          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-4 max-w-2xl mx-auto mb-6 animate-fade-in-up animate-delay-400">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Stethoscope className="h-5 w-5 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="font-semibold text-gray-900 text-sm">Sei un veterinario freelance?</p>
+                <p className="text-xs text-gray-600">Registrati come clinica e inizia con il <span className="font-bold text-purple-600">Piano Starter gratuito</span>. Ideale per gestire i tuoi clienti in autonomia!</p>
+              </div>
+            </div>
+          </div>
+          
           {/* Trust indicators */}
           <p className="text-sm text-gray-400">Pilot attivo a Milano e provincia • Accesso prioritario per cliniche selezionate</p>
         </div>
