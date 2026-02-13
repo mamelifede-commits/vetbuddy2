@@ -2271,7 +2271,7 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate
 
   // Reset form
   const resetForm = () => {
-    setFormData({ petId: '', petName: '', ownerId: '', ownerName: '', ownerEmail: '', date: '', time: '', reason: '', type: 'visita', staffId: '', duration: 30, notes: '' });
+    setFormData({ petId: '', petName: '', ownerId: '', ownerName: '', ownerEmail: '', date: '', time: '', reason: '', type: 'visita', staffId: '', duration: 30, notes: '', showOwnerSuggestions: false, showPetSuggestions: false });
     setEditingAppt(null);
   };
 
