@@ -3,6 +3,80 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 
 export const dynamic = 'force-dynamic';
 
+// Helper to sanitize text for PDF (remove unsupported unicode characters)
+function sanitizeText(text) {
+  if (!text) return '';
+  return text
+    .replace(/→/g, '->')
+    .replace(/←/g, '<-')
+    .replace(/€/g, 'EUR')
+    .replace(/•/g, '-')
+    .replace(/…/g, '...')
+    .replace(/–/g, '-')
+    .replace(/—/g, '-')
+    .replace(/'/g, "'")
+    .replace(/'/g, "'")
+    .replace(/"/g, '"')
+    .replace(/"/g, '"')
+    .replace(/✅/g, '[OK]')
+    .replace(/❌/g, '[X]')
+    .replace(/⚠️/g, '[!]')
+    .replace(/💡/g, '*')
+    .replace(/📱/g, '')
+    .replace(/📧/g, '')
+    .replace(/📅/g, '')
+    .replace(/📊/g, '')
+    .replace(/📄/g, '')
+    .replace(/📤/g, '')
+    .replace(/📝/g, '')
+    .replace(/📋/g, '')
+    .replace(/📞/g, '')
+    .replace(/💬/g, '')
+    .replace(/💳/g, '')
+    .replace(/💰/g, '')
+    .replace(/💉/g, '')
+    .replace(/🎁/g, '')
+    .replace(/🐾/g, '')
+    .replace(/🏥/g, '')
+    .replace(/🔐/g, '')
+    .replace(/🚀/g, '')
+    .replace(/⭐/g, '*')
+    .replace(/🎂/g, '')
+    .replace(/🔔/g, '')
+    .replace(/🤖/g, '')
+    .replace(/⚡/g, '')
+    .replace(/🩺/g, '')
+    .replace(/✂️/g, '')
+    .replace(/🦷/g, '')
+    .replace(/🔬/g, '')
+    .replace(/🎬/g, '')
+    .replace(/📹/g, '')
+    .replace(/🖼️/g, '')
+    .replace(/🎥/g, '')
+    .replace(/🎤/g, '')
+    .replace(/🌐/g, '')
+    .replace(/💻/g, '')
+    .replace(/🏆/g, '')
+    .replace(/📥/g, '')
+    .replace(/⏳/g, '')
+    .replace(/🔴/g, '')
+    .replace(/🟢/g, '')
+    .replace(/🟡/g, '')
+    .replace(/⬆️/g, '^')
+    .replace(/🆓/g, '[FREE]')
+    .replace(/💶/g, '')
+    .replace(/👨‍⚕️/g, '')
+    .replace(/👤/g, '')
+    .replace(/🏠/g, '')
+    .replace(/🚐/g, '')
+    .replace(/🤝/g, '')
+    .replace(/🗺️/g, '')
+    .replace(/⏰/g, '')
+    .replace(/✨/g, '')
+    .replace(/❓/g, '?')
+    .replace(/[^\x00-\x7F]/g, ''); // Remove any remaining non-ASCII characters
+}
+
 // Owner tutorial content
 const ownerTutorial = {
   title: 'VetBuddy - Guida per Proprietari di Animali',
@@ -35,7 +109,7 @@ const ownerTutorial = {
       content: [
         '1. Vai alla sezione "Trova Clinica"',
         '2. Usa la mappa interattiva',
-        '3. Filtra per città o servizi offerti',
+        '3. Filtra per citta o servizi offerti',
         '4. Visualizza orari, servizi e recensioni',
         '5. Salva le cliniche preferite'
       ]
@@ -73,21 +147,21 @@ const ownerTutorial = {
       ]
     },
     {
-      title: 'Programma Fedeltà',
+      title: 'Programma Fedelta',
       content: [
         '- Accumula punti con ogni prenotazione',
         '- Punti bonus per recensioni e referral',
         '- Riscatta per sconti sulle visite',
-        '- 100 punti = €5 di sconto'
+        '- 100 punti = 5 EUR di sconto'
       ]
     },
     {
       title: 'Installare l\'App',
       content: [
-        'VetBuddy è una PWA (Progressive Web App):',
+        'VetBuddy e una PWA (Progressive Web App):',
         '',
-        'iPhone: Safari → Condividi → Aggiungi a Home',
-        'Android: Chrome → Menu → Installa app',
+        'iPhone: Safari -> Condividi -> Aggiungi a Home',
+        'Android: Chrome -> Menu -> Installa app',
         '',
         'Funziona anche offline!'
       ]
@@ -95,8 +169,8 @@ const ownerTutorial = {
   ],
   faqs: [
     { q: 'Quanto costa usare VetBuddy?', a: 'Completamente gratuito per i proprietari!' },
-    { q: 'I miei dati sono al sicuro?', a: 'Sì, crittografia avanzata e conformità GDPR.' },
-    { q: 'Posso gestire più animali?', a: 'Sì, aggiungi tutti gli animali che desideri.' }
+    { q: 'I miei dati sono al sicuro?', a: 'Si, crittografia avanzata e conformita GDPR.' },
+    { q: 'Posso gestire piu animali?', a: 'Si, aggiungi tutti gli animali che desideri.' }
   ]
 };
 
@@ -119,7 +193,7 @@ const clinicTutorial = {
     {
       title: 'Gestione Servizi',
       content: [
-        '1. Vai a "Impostazioni" → "Servizi"',
+        '1. Vai a "Impostazioni" -> "Servizi"',
         '2. Aggiungi: nome, descrizione, prezzo, durata',
         '3. Categorizza (visite, vaccini, chirurgia...)',
         '4. Prezzi diversi per specie se necessario',
@@ -164,7 +238,7 @@ const clinicTutorial = {
       content: [
         '1. Vai a "Fatturazione"',
         '2. Crea nuova fattura PROFORMA',
-        '3. Aggiungi servizi, prezzi, quantità',
+        '3. Aggiungi servizi, prezzi, quantita',
         '4. Applica IVA e sconti',
         '5. Genera PDF',
         '6. Invia via email o stampa',
@@ -199,7 +273,7 @@ const clinicTutorial = {
     {
       title: 'Notifiche WhatsApp',
       content: [
-        '1. Vai a "Impostazioni" → "Notifiche WhatsApp"',
+        '1. Vai a "Impostazioni" -> "Notifiche WhatsApp"',
         '2. Inserisci credenziali Twilio',
         '3. Configura numero WhatsApp Business',
         '4. Personalizza i template',
@@ -221,8 +295,8 @@ const clinicTutorial = {
     }
   ],
   faqs: [
-    { q: 'Quanto costa VetBuddy?', a: 'Starter: gratis. Premium: €49/mese. Pilot: 90 giorni gratis.' },
-    { q: 'Posso importare dati?', a: 'Sì, supportiamo import da CSV.' },
+    { q: 'Quanto costa VetBuddy?', a: 'Starter: gratis. Premium: 49 EUR/mese. Pilot: 90 giorni gratis.' },
+    { q: 'Posso importare dati?', a: 'Si, supportiamo import da CSV.' },
     { q: 'VetBuddy sostituisce la fatturazione?', a: 'No, genera PROFORMA. Usa il tuo gestionale per fatture elettroniche.' }
   ]
 };
@@ -250,7 +324,8 @@ async function generateTutorialPDF(tutorial) {
   
   // Helper to draw text with word wrap
   const drawWrappedText = (page, text, x, y, maxWidth, fontSize, textFont, color) => {
-    const words = text.split(' ');
+    const safeText = sanitizeText(text);
+    const words = safeText.split(' ');
     let currentLine = '';
     let currentY = y;
     
@@ -294,7 +369,7 @@ async function generateTutorialPDF(tutorial) {
   
   // Title
   yPosition = pageHeight - 280;
-  page.drawText(tutorial.title, {
+  page.drawText(sanitizeText(tutorial.title), {
     x: margin, y: yPosition, size: 24, font: boldFont, color: darkGray
   });
   
@@ -330,7 +405,7 @@ async function generateTutorialPDF(tutorial) {
       color: coralColor
     });
     
-    page.drawText(section.title, {
+    page.drawText(sanitizeText(section.title), {
       x: margin + 5, y: yPosition + 5, size: 14, font: boldFont, color: darkGray
     });
     
@@ -371,7 +446,7 @@ async function generateTutorialPDF(tutorial) {
         ({ page, yPosition } = addPage());
       }
       
-      page.drawText(`D: ${faq.q}`, {
+      page.drawText(`D: ${sanitizeText(faq.q)}`, {
         x: margin, y: yPosition, size: 11, font: boldFont, color: darkGray
       });
       yPosition -= lineHeight;
