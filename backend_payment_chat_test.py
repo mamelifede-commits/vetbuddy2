@@ -56,8 +56,11 @@ def make_request(method, endpoint, headers=None, data=None, json_data=None, auth
         
         log_test(f"{method} {endpoint} -> Status: {response.status_code}")
         return response
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
         log_test(f"Request error for {method} {endpoint}: {str(e)}", False)
+        return None
+    except Exception as e:
+        log_test(f"Unexpected error for {method} {endpoint}: {str(e)}", False)
         return None
 
 def login_user(email, password):
