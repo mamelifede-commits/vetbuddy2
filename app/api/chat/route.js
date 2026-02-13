@@ -52,10 +52,21 @@ export async function POST(request) {
       );
     }
 
-    // Get API key from environment
-    const apiKey = process.env.EMERGENT_LLM_KEY || process.env.OPENAI_API_KEY;
+    // Determine API URL and key
+    // Use Emergent proxy for Emergent keys, otherwise standard OpenAI
+    const emergentKey = process.env.EMERGENT_LLM_KEY;
+    const openaiKey = process.env.OPENAI_API_KEY;
     
-    if (!apiKey) {
+    let apiKey, apiUrl;
+    if (emergentKey && emergentKey.startsWith('sk-emergent-')) {
+      apiKey = emergentKey;
+      apiUrl = EMERGENT_API_URL;
+      console.log('Using Emergent LLM proxy');
+    } else if (openaiKey) {
+      apiKey = openaiKey;
+      apiUrl = OPENAI_API_URL;
+      console.log('Using OpenAI API');
+    } else {
       console.error('Chat API: No API key configured');
       return NextResponse.json(
         { error: 'Servizio chat non configurato' },
