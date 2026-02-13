@@ -1,501 +1,347 @@
 #!/usr/bin/env python3
 """
-VetBuddy Backend API Test Suite
-Test all backend APIs focusing on:
-1. Login & Authentication
-2. Automazioni - Verifica personalizzazione email
-3. Ricerca Cliniche
-4. Feedback
-5. API Generali
+VetBuddy Import API Backend Test
+Testing Patient Import functionality via CSV
 """
 
 import requests
 import json
-import sys
-from typing import Dict, Any, Optional
+import os
+import time
+from datetime import datetime
 
-class VetBuddyAPITester:
-    def __init__(self, base_url: str):
-        self.base_url = base_url
-        self.session = requests.Session()
-        self.clinic_token = None
-        self.owner_token = None
-        
-    def test_health_api(self) -> dict:
-        """Test GET /api/health"""
-        print("🏥 Testing Health API...")
-        try:
-            response = self.session.get(f"{self.base_url}/api/health")
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 200,
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
-            
-            if result['success']:
-                print("✅ Health API working correctly")
-                print(f"   Response: {result['data']}")
-            else:
-                print(f"❌ Health API failed with status {result['status_code']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Health API error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
+# Configuration
+NEXT_PUBLIC_BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://bulk-import-feature.preview.emergentagent.com')
+BASE_URL = f"{NEXT_PUBLIC_BASE_URL}/api"
+
+# Authentication token provided in review request
+AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMwY2MzOTMzLTI0NGMtNDRiOS1iNmYzLWIyYjYzNzJjNjI2MCIsImVtYWlsIjoiZGVtb0B2ZXRidWRkeS5pdCIsInJvbGUiOiJjbGluaWMiLCJpYXQiOjE3NzA5ODE4MzYsImV4cCI6MTc3MTU4NjYzNn0.n3VGgI21Bcf5K5J54pOOvW3gsR4-6lk86WCaimyHw74"
+
+def log_test(message, is_success=None):
+    """Log test results with timestamp"""
+    timestamp = datetime.now().strftime("%H:%M:%S")
+    status = ""
+    if is_success is True:
+        status = "✅ PASS"
+    elif is_success is False:
+        status = "❌ FAIL"
+    print(f"[{timestamp}] {status} {message}")
+
+def make_request(method, endpoint, headers=None, data=None, files=None):
+    """Make HTTP request with error handling"""
+    url = f"{BASE_URL}/{endpoint}" if not endpoint.startswith('http') else endpoint
     
-    def test_services_api(self) -> dict:
-        """Test GET /api/services"""
-        print("🛠️ Testing Services API...")
-        try:
-            response = self.session.get(f"{self.base_url}/api/services")
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 200,
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
-            
-            if result['success']:
-                services = result['data']
-                categories = len(services.keys()) if isinstance(services, dict) else 0
-                total_services = sum(len(cat.get('services', [])) for cat in services.values()) if isinstance(services, dict) else 0
-                print("✅ Services API working correctly")
-                print(f"   Categories: {categories}")
-                print(f"   Total Services: {total_services}")
-                print(f"   Sample categories: {list(services.keys())[:3] if isinstance(services, dict) else 'N/A'}")
+    default_headers = {
+        'Authorization': f'Bearer {AUTH_TOKEN}',
+    }
+    
+    if headers:
+        default_headers.update(headers)
+    
+    try:
+        if method.upper() == 'GET':
+            response = requests.get(url, headers=default_headers, timeout=30)
+        elif method.upper() == 'POST':
+            if files:
+                # For file uploads, don't set Content-Type header
+                response = requests.post(url, headers={'Authorization': f'Bearer {AUTH_TOKEN}'}, data=data, files=files, timeout=30)
             else:
-                print(f"❌ Services API failed with status {result['status_code']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Services API error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
+                response = requests.post(url, headers=default_headers, json=data, timeout=30)
+        
+        log_test(f"{method} {endpoint} -> Status: {response.status_code}")
+        return response
+    except Exception as e:
+        log_test(f"Request error for {method} {endpoint}: {str(e)}", False)
+        return None
 
-    def test_clinic_login(self, email: str, password: str) -> dict:
-        """Test clinic login"""
-        print(f"🏥 Testing clinic login with {email}...")
-        try:
-            response = self.session.post(
-                f"{self.base_url}/api/auth/login",
-                json={'email': email, 'password': password}
-            )
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 200,
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
+def test_import_api_get():
+    """Test 1: GET /api/import - Should return template info"""
+    log_test("=" * 60)
+    log_test("TEST 1: GET /api/import - Template Information")
+    log_test("=" * 60)
+    
+    try:
+        response = make_request('GET', 'import')
+        
+        if not response:
+            log_test("Failed to make request", False)
+            return False
+        
+        if response.status_code != 200:
+            log_test(f"Expected status 200, got {response.status_code}", False)
+            log_test(f"Response: {response.text}")
+            return False
+        
+        data = response.json()
+        
+        # Check required fields
+        required_fields = ['success', 'requiredColumns', 'optionalColumns', 'exampleRow']
+        for field in required_fields:
+            if field not in data:
+                log_test(f"Missing required field: {field}", False)
+                return False
+        
+        # Check required columns
+        if 'nome' not in data['requiredColumns'] or 'specie' not in data['requiredColumns']:
+            log_test("Missing expected required columns (nome, specie)", False)
+            return False
             
-            if result['success']:
-                self.clinic_token = result['data'].get('token')
-                user_info = result['data'].get('user', {})
-                print("✅ Clinic login successful")
-                print(f"   User: {user_info.get('name', 'N/A')}")
-                print(f"   Clinic: {user_info.get('clinicName', 'N/A')}")
-                print(f"   Role: {user_info.get('role', 'N/A')}")
-                print(f"   Token: {self.clinic_token[:20]}..." if self.clinic_token else "   No token received")
-            else:
-                print(f"❌ Clinic login failed with status {result['status_code']}")
-                if isinstance(result['data'], dict) and 'error' in result['data']:
-                    print(f"   Error: {result['data']['error']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Clinic login error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
+        # Check optional columns
+        expected_optional = ['razza', 'data_nascita', 'microchip', 'proprietario', 'email', 'vaccino']
+        for col in expected_optional:
+            if col not in data['optionalColumns']:
+                log_test(f"Missing expected optional column: {col}", False)
+                return False
+        
+        # Check example row
+        example = data['exampleRow']
+        if not example.get('nome') or not example.get('specie'):
+            log_test("Example row missing required data", False)
+            return False
+            
+        log_test("✅ Template info returned correctly", True)
+        log_test(f"Required columns: {data['requiredColumns']}")
+        log_test(f"Optional columns count: {len(data['optionalColumns'])}")
+        log_test(f"Example pet: {example['nome']} ({example['specie']})")
+        
+        return True
+        
+    except Exception as e:
+        log_test(f"Test failed with exception: {str(e)}", False)
+        return False
 
-    def test_owner_login(self, email: str, password: str) -> dict:
-        """Test owner login"""
-        print(f"👤 Testing owner login with {email}...")
-        try:
-            response = self.session.post(
-                f"{self.base_url}/api/auth/login",
-                json={'email': email, 'password': password}
-            )
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 200,
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
+def test_import_csv_success():
+    """Test 2: POST /api/import with CSV file - Should import patients successfully"""
+    log_test("=" * 60)
+    log_test("TEST 2: POST /api/import - CSV Import (Success)")
+    log_test("=" * 60)
+    
+    try:
+        # Read the template CSV file
+        csv_file_path = '/app/public/downloads/template_import_pazienti.csv'
+        
+        if not os.path.exists(csv_file_path):
+            log_test(f"Template CSV file not found at {csv_file_path}", False)
+            return False
             
-            if result['success']:
-                self.owner_token = result['data'].get('token')
-                user_info = result['data'].get('user', {})
-                print("✅ Owner login successful")
-                print(f"   User: {user_info.get('name', 'N/A')}")
-                print(f"   Role: {user_info.get('role', 'N/A')}")
-                print(f"   Token: {self.owner_token[:20]}..." if self.owner_token else "   No token received")
-            else:
-                print(f"❌ Owner login failed with status {result['status_code']}")
-                if isinstance(result['data'], dict) and 'error' in result['data']:
-                    print(f"   Error: {result['data']['error']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Owner login error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
+        with open(csv_file_path, 'r', encoding='utf-8') as f:
+            csv_content = f.read()
+        
+        log_test(f"CSV file loaded, size: {len(csv_content)} bytes")
+        
+        # Prepare multipart form data
+        files = {
+            'file': ('template_import_pazienti.csv', csv_content, 'text/csv')
+        }
+        data = {
+            'type': 'data'
+        }
+        
+        response = make_request('POST', 'import', data=data, files=files)
+        
+        if not response:
+            log_test("Failed to make request", False)
+            return False
+        
+        if response.status_code != 200:
+            log_test(f"Expected status 200, got {response.status_code}", False)
+            log_test(f"Response: {response.text}")
+            return False
+        
+        result = response.json()
+        
+        # Check success field
+        if not result.get('success'):
+            log_test(f"Import failed: {result.get('error', 'Unknown error')}", False)
+            log_test(f"Errors: {result.get('errors', [])}")
+            return False
+        
+        # Check imported counts
+        imported = result.get('imported', {})
+        log_test(f"✅ Import successful!")
+        log_test(f"Imported owners: {imported.get('owners', 0)}")
+        log_test(f"Imported pets: {imported.get('pets', 0)}")
+        log_test(f"Imported vaccines: {imported.get('vaccines', 0)}")
+        
+        # Check for warnings (acceptable)
+        warnings = result.get('warnings', [])
+        if warnings:
+            log_test(f"Warnings: {len(warnings)}")
+            for warning in warnings[:3]:  # Show first 3 warnings
+                log_test(f"  - {warning}")
+        
+        # Check for errors (should be minimal)
+        errors = result.get('errors', [])
+        if errors:
+            log_test(f"Errors encountered: {len(errors)}")
+            for error in errors[:3]:  # Show first 3 errors
+                log_test(f"  - {error}")
+        
+        # Verify at least some data was imported
+        if imported.get('pets', 0) == 0:
+            log_test("No pets were imported - this might be an issue", False)
+            return False
+            
+        log_test(f"✅ CSV import completed successfully", True)
+        return True
+        
+    except Exception as e:
+        log_test(f"Test failed with exception: {str(e)}", False)
+        return False
 
-    def test_auth_me(self, token: str, user_type: str) -> dict:
-        """Test GET /api/auth/me with authentication"""
-        print(f"🔐 Testing auth/me for {user_type}...")
-        try:
-            headers = {'Authorization': f'Bearer {token}'}
-            response = self.session.get(f"{self.base_url}/api/auth/me", headers=headers)
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 200,
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
-            
-            if result['success']:
-                user_info = result['data']
-                print("✅ Auth/me working correctly")
-                print(f"   User ID: {user_info.get('id', 'N/A')}")
-                print(f"   Name: {user_info.get('name', 'N/A')}")
-                print(f"   Role: {user_info.get('role', 'N/A')}")
-                if user_info.get('role') == 'clinic':
-                    print(f"   Clinic: {user_info.get('clinicName', 'N/A')}")
-            else:
-                print(f"❌ Auth/me failed with status {result['status_code']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Auth/me error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
+def test_import_no_file():
+    """Test 3: POST /api/import without file - Should return error"""
+    log_test("=" * 60)
+    log_test("TEST 3: POST /api/import - No File Error")
+    log_test("=" * 60)
+    
+    try:
+        # Send request without file
+        data = {'type': 'data'}
+        response = make_request('POST', 'import', data=data)
+        
+        if not response:
+            log_test("Failed to make request", False)
+            return False
+        
+        if response.status_code != 400:
+            log_test(f"Expected status 400, got {response.status_code}", False)
+            return False
+        
+        result = response.json()
+        
+        if 'error' not in result:
+            log_test("Expected error field in response", False)
+            return False
+        
+        error_message = result['error'].lower()
+        if 'file' not in error_message or 'caricato' not in error_message:
+            log_test(f"Unexpected error message: {result['error']}", False)
+            return False
+        
+        log_test(f"✅ Correctly returned error: {result['error']}", True)
+        return True
+        
+    except Exception as e:
+        log_test(f"Test failed with exception: {str(e)}", False)
+        return False
 
-    def test_automation_settings(self, token: str) -> dict:
-        """Test GET /api/automations/settings"""
-        print("⚙️ Testing automation settings API...")
-        try:
-            headers = {'Authorization': f'Bearer {token}'}
-            response = self.session.get(f"{self.base_url}/api/automations/settings", headers=headers)
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 200,
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
-            
-            if result['success']:
-                settings_data = result['data']
-                settings = settings_data.get('settings', {}) if isinstance(settings_data, dict) else {}
-                total_settings = len(settings)
-                enabled_count = sum(1 for v in settings.values() if v is True)
-                print("✅ Automation settings API working correctly")
-                print(f"   Total settings: {total_settings}")
-                print(f"   Enabled: {enabled_count}")
-                print(f"   Disabled: {total_settings - enabled_count}")
-                print(f"   Sample settings: {list(settings.keys())[:5]}")
-            else:
-                print(f"❌ Automation settings failed with status {result['status_code']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Automation settings error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
+def test_import_empty_file():
+    """Test 4: POST /api/import with empty file - Should return error"""
+    log_test("=" * 60)
+    log_test("TEST 4: POST /api/import - Empty File Error")
+    log_test("=" * 60)
+    
+    try:
+        # Create empty CSV content
+        empty_csv = ""
+        
+        files = {
+            'file': ('empty.csv', empty_csv, 'text/csv')
+        }
+        data = {
+            'type': 'data'
+        }
+        
+        response = make_request('POST', 'import', data=data, files=files)
+        
+        if not response:
+            log_test("Failed to make request", False)
+            return False
+        
+        if response.status_code != 400:
+            log_test(f"Expected status 400, got {response.status_code}", False)
+            return False
+        
+        result = response.json()
+        
+        if 'error' not in result:
+            log_test("Expected error field in response", False)
+            return False
+        
+        error_message = result['error'].lower()
+        if 'vuoto' not in error_message and 'formato' not in error_message:
+            log_test(f"Unexpected error message: {result['error']}", False)
+            return False
+        
+        log_test(f"✅ Correctly returned error for empty file: {result['error']}", True)
+        return True
+        
+    except Exception as e:
+        log_test(f"Test failed with exception: {str(e)}", False)
+        return False
 
-    def test_automation_toggle(self, token: str, key: str = 'appointmentReminders', enabled: bool = False) -> dict:
-        """Test POST /api/automations/settings - toggle single setting"""
-        print(f"🔄 Testing automation setting toggle ({key} = {enabled})...")
-        try:
-            headers = {'Authorization': f'Bearer {token}'}
-            response = self.session.post(
-                f"{self.base_url}/api/automations/settings",
-                json={'key': key, 'enabled': enabled},
-                headers=headers
-            )
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 200,
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
-            
-            if result['success']:
-                print("✅ Automation toggle working correctly")
-                print(f"   Setting '{key}' set to: {enabled}")
-            else:
-                print(f"❌ Automation toggle failed with status {result['status_code']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Automation toggle error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
-
-    def test_cron_daily(self) -> dict:
-        """Test GET /api/cron/daily"""
-        print("⏰ Testing daily cron job API...")
-        try:
-            response = self.session.get(f"{self.base_url}/api/cron/daily")
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 200,
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
-            
-            if result['success']:
-                cron_data = result['data']
-                results = cron_data.get('results', {}) if isinstance(cron_data, dict) else {}
-                print("✅ Daily cron API working correctly")
-                print(f"   Success: {cron_data.get('success', False)}")
-                print(f"   Automation categories: {len(results)}")
-                
-                # Show summary of each automation
-                for category, stats in results.items():
-                    if isinstance(stats, dict):
-                        sent = stats.get('sent', 0)
-                        errors = stats.get('errors', 0)
-                        skipped = stats.get('skipped', 0)
-                        print(f"   {category}: sent={sent}, errors={errors}, skipped={skipped}")
-            else:
-                print(f"❌ Daily cron failed with status {result['status_code']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Daily cron error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
-
-    def test_clinic_search(self) -> dict:
-        """Test GET /api/clinics/search"""
-        print("🔍 Testing clinic search API...")
-        try:
-            response = self.session.get(f"{self.base_url}/api/clinics/search")
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 200,
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
-            
-            if result['success']:
-                clinics = result['data'] if isinstance(result['data'], list) else []
-                print("✅ Clinic search API working correctly")
-                print(f"   Total clinics found: {len(clinics)}")
-                if clinics:
-                    sample_clinic = clinics[0]
-                    print(f"   Sample clinic: {sample_clinic.get('clinicName', 'N/A')}")
-                    print(f"   Location: {sample_clinic.get('city', 'N/A')}")
-                    print(f"   Rating: {sample_clinic.get('avgRating', 'N/A')}")
-            else:
-                print(f"❌ Clinic search failed with status {result['status_code']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Clinic search error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
-
-    def test_clinic_search_city_filter(self, city: str = "Milano") -> dict:
-        """Test GET /api/clinics/search?city=Milano"""
-        print(f"🏙️ Testing clinic search with city filter ({city})...")
-        try:
-            response = self.session.get(f"{self.base_url}/api/clinics/search?city={city}")
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 200,
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
-            
-            if result['success']:
-                clinics = result['data'] if isinstance(result['data'], list) else []
-                print("✅ Clinic search with city filter working correctly")
-                print(f"   Clinics in {city}: {len(clinics)}")
-                for clinic in clinics[:3]:  # Show first 3
-                    print(f"   - {clinic.get('clinicName', 'N/A')} ({clinic.get('city', 'N/A')})")
-            else:
-                print(f"❌ Clinic search with city filter failed with status {result['status_code']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Clinic search with city filter error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
-
-    def test_feedback_submission(self, token: str) -> dict:
-        """Test POST /api/feedback with clinic authentication"""
-        print("💬 Testing feedback submission API...")
-        try:
-            headers = {'Authorization': f'Bearer {token}'}
-            feedback_data = {
-                'type': 'suggestion',
-                'subject': 'Test Feedback da API Test',
-                'message': 'Questo è un feedback di test inviato dalla suite di test automatici. Sistema funzionante correttamente!',
-                'rating': 5
-            }
-            
-            response = self.session.post(
-                f"{self.base_url}/api/feedback",
-                json=feedback_data,
-                headers=headers
-            )
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 200,
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
-            
-            if result['success']:
-                feedback_response = result['data']
-                print("✅ Feedback submission working correctly")
-                print(f"   Success: {feedback_response.get('success', False)}")
-                print(f"   Message: {feedback_response.get('message', 'N/A')}")
-                print(f"   Feedback ID: {feedback_response.get('feedbackId', 'N/A')}")
-            else:
-                print(f"❌ Feedback submission failed with status {result['status_code']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Feedback submission error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
-
-    def test_feedback_unauthorized(self) -> dict:
-        """Test POST /api/feedback without authentication"""
-        print("🔒 Testing feedback submission without authentication...")
-        try:
-            feedback_data = {
-                'type': 'bug',
-                'message': 'Test unauthorized access'
-            }
-            
-            response = self.session.post(
-                f"{self.base_url}/api/feedback",
-                json=feedback_data
-            )
-            result = {
-                'status_code': response.status_code,
-                'success': response.status_code == 401,  # Should be unauthorized
-                'data': response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-            }
-            
-            if result['success']:
-                print("✅ Feedback unauthorized access correctly blocked")
-            else:
-                print(f"❌ Feedback should return 401 but got {result['status_code']}")
-                
-            return result
-        except Exception as e:
-            print(f"❌ Feedback unauthorized test error: {str(e)}")
-            return {'status_code': 0, 'success': False, 'error': str(e)}
+def test_authentication():
+    """Test 5: Authentication check"""
+    log_test("=" * 60)
+    log_test("TEST 5: Authentication Verification")
+    log_test("=" * 60)
+    
+    try:
+        # Test without auth token
+        response = requests.get(f"{BASE_URL}/import", timeout=30)
+        
+        if response.status_code != 401:
+            log_test(f"Expected 401 without auth, got {response.status_code}", False)
+            return False
+        
+        # Test with provided token
+        response = make_request('GET', 'import')
+        
+        if not response or response.status_code != 200:
+            log_test(f"Authentication with provided token failed: {response.status_code if response else 'No response'}", False)
+            return False
+        
+        log_test("✅ Authentication working correctly", True)
+        return True
+        
+    except Exception as e:
+        log_test(f"Test failed with exception: {str(e)}", False)
+        return False
 
 def main():
-    """Run all backend API tests"""
+    """Run all import API tests"""
+    log_test("🐾 VetBuddy Import API Backend Test Suite")
+    log_test("=" * 60)
+    log_test(f"Base URL: {BASE_URL}")
+    log_test(f"Testing with clinic credentials: demo@vetbuddy.it")
+    log_test("=" * 60)
     
-    # Configuration
-    BASE_URL = "https://bulk-import-feature.preview.emergentagent.com"
-    CLINIC_EMAIL = "demo@vetbuddy.it"
-    CLINIC_PASSWORD = "DemoVet2025!"
-    OWNER_EMAIL = "proprietario.demo@vetbuddy.it"  
-    OWNER_PASSWORD = "demo123"
+    tests = [
+        ("Authentication Check", test_authentication),
+        ("GET Template Info", test_import_api_get),
+        ("POST CSV Import Success", test_import_csv_success),
+        ("POST No File Error", test_import_no_file),
+        ("POST Empty File Error", test_import_empty_file),
+    ]
     
-    tester = VetBuddyAPITester(BASE_URL)
+    passed = 0
+    total = len(tests)
     
-    print("=" * 60)
-    print("🐾 VETBUDDY BACKEND API TEST SUITE")
-    print("=" * 60)
-    print(f"Base URL: {BASE_URL}")
-    print()
-    
-    # Track test results
-    test_results = {}
-    
-    # 1. Test General APIs (no auth required)
-    print("📋 SECTION 1: GENERAL APIs")
-    print("-" * 40)
-    
-    test_results['health'] = tester.test_health_api()
-    print()
-    
-    test_results['services'] = tester.test_services_api()
-    print()
-    
-    test_results['clinic_search'] = tester.test_clinic_search()
-    print()
-    
-    test_results['clinic_search_city'] = tester.test_clinic_search_city_filter("Milano")
-    print()
-    
-    # 2. Test Authentication
-    print("🔐 SECTION 2: AUTHENTICATION")
-    print("-" * 40)
-    
-    test_results['clinic_login'] = tester.test_clinic_login(CLINIC_EMAIL, CLINIC_PASSWORD)
-    print()
-    
-    test_results['owner_login'] = tester.test_owner_login(OWNER_EMAIL, OWNER_PASSWORD)
-    print()
-    
-    # Test auth/me if we have tokens
-    if tester.clinic_token:
-        test_results['auth_me_clinic'] = tester.test_auth_me(tester.clinic_token, "clinic")
-        print()
-    
-    if tester.owner_token:
-        test_results['auth_me_owner'] = tester.test_auth_me(tester.owner_token, "owner")
-        print()
-    
-    # 3. Test Automation APIs (clinic auth required)
-    print("⚙️ SECTION 3: AUTOMATION APIs")
-    print("-" * 40)
-    
-    if tester.clinic_token:
-        test_results['automation_settings'] = tester.test_automation_settings(tester.clinic_token)
-        print()
+    for test_name, test_func in tests:
+        try:
+            result = test_func()
+            if result:
+                passed += 1
+        except Exception as e:
+            log_test(f"Test {test_name} crashed: {str(e)}", False)
         
-        test_results['automation_toggle'] = tester.test_automation_toggle(tester.clinic_token, 'appointmentReminders', False)
-        print()
-        
-        # Test cron job (no auth required)
-        test_results['cron_daily'] = tester.test_cron_daily()
-        print()
+        time.sleep(1)  # Brief pause between tests
+    
+    log_test("=" * 60)
+    log_test("🔍 IMPORT API TEST RESULTS SUMMARY")
+    log_test("=" * 60)
+    log_test(f"Tests Passed: {passed}/{total}")
+    
+    if passed == total:
+        log_test("✅ ALL IMPORT API TESTS PASSED", True)
     else:
-        print("❌ Skipping automation tests - no clinic token")
-        print()
+        log_test(f"❌ {total - passed} TESTS FAILED", False)
     
-    # 4. Test Feedback API
-    print("💬 SECTION 4: FEEDBACK API")  
-    print("-" * 40)
+    log_test("=" * 60)
     
-    test_results['feedback_unauthorized'] = tester.test_feedback_unauthorized()
-    print()
-    
-    if tester.clinic_token:
-        test_results['feedback_submission'] = tester.test_feedback_submission(tester.clinic_token)
-        print()
-    else:
-        print("❌ Skipping feedback submission test - no clinic token")
-        print()
-    
-    # 5. Test Summary
-    print("📊 SECTION 5: TEST SUMMARY")
-    print("-" * 40)
-    
-    total_tests = len(test_results)
-    passed_tests = sum(1 for result in test_results.values() if result.get('success', False))
-    failed_tests = total_tests - passed_tests
-    
-    print(f"Total tests: {total_tests}")
-    print(f"Passed: {passed_tests}")
-    print(f"Failed: {failed_tests}")
-    print()
-    
-    # Show failures
-    if failed_tests > 0:
-        print("❌ FAILED TESTS:")
-        for test_name, result in test_results.items():
-            if not result.get('success', False):
-                status = result.get('status_code', 'N/A')
-                error = result.get('error', result.get('data', 'Unknown error'))
-                print(f"   - {test_name}: Status {status} - {error}")
-        print()
-    
-    # Show successes
-    if passed_tests > 0:
-        print("✅ PASSED TESTS:")
-        for test_name, result in test_results.items():
-            if result.get('success', False):
-                print(f"   - {test_name}")
-        print()
-    
-    # Return appropriate exit code
-    if failed_tests > 0:
-        print("🔴 Some tests failed")
-        return 1
-    else:
-        print("🟢 All tests passed!")
-        return 0
+    return passed == total
 
 if __name__ == "__main__":
-    sys.exit(main())
+    success = main()
+    exit(0 if success else 1)
