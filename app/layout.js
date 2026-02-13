@@ -1,5 +1,6 @@
 import './globals.css'
 import CookieBanner from '@/components/CookieBanner'
+import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 
 export const metadata = {
   title: 'VetBuddy - Gestionale Veterinario | Pilot Milano',
@@ -70,6 +71,7 @@ export default function RootLayout({ children }) {
       <body>
         {children}
         <CookieBanner />
+        <ServiceWorkerRegistration />
       </body>
     </html>
   )
