@@ -10011,6 +10011,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const [messages, setMessages] = useState([]);
   const [pets, setPets] = useState([]);
   const [clinics, setClinics] = useState([]);
+  const [rewards, setRewards] = useState([]); // Premi del proprietario
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancelAppointmentId, setCancelAppointmentId] = useState(null);
