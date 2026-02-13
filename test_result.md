@@ -509,7 +509,6 @@ test_plan:
   current_focus:
     - "VetBuddy Owner Dashboard Pet Modification Flow" # Critical login authentication issue
   stuck_tasks:
-    - "Services Management" # Major functionality gap
     - "VetBuddy Owner Dashboard Pet Modification Flow" # Login authentication blocking access
   test_all: false
   test_priority: "high_first"
