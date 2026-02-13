@@ -560,12 +560,6 @@ export default function PresentazionePage() {
                       Richiedi Invito <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
-                  
-                  <Link href="/tutorial">
-                    <Button size="lg" variant="outline" className="w-full border-2 border-white text-white hover:bg-white/10">
-                      📖 Guida per Freelance
-                    </Button>
-                  </Link>
                 </div>
               </div>
             </div>
