@@ -370,12 +370,10 @@ export async function GET(request) {
         const pet = await db.collection('pets').findOne({ id: apt.petId });
 
         if (owner?.email && pet && clinic) {
-          // Get clinic info for buttons
-          const phoneNumber = clinic.phone || clinic.telefono || '';
-          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+          // Get URLs and buttons
           const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
           const reviewUrl = clinic.googlePlaceId ? `https://g.page/r/${clinic.googlePlaceId}/review` : `${baseUrl}?action=review&clinicId=${clinic.id}`;
-          const messageUrl = `${baseUrl}?action=message&clinicId=${clinic.id}`;
+          const contactButton = getContactButton(clinic, baseUrl, 'Scrivi alla Clinica', `Ciao, ho una domanda riguardo la visita di ${pet.name}...`);
           
           await sendEmail({
             to: owner.email,
@@ -394,14 +392,7 @@ export async function GET(request) {
                   
                   <!-- Action Buttons -->
                   <div style="text-align: center; margin: 30px 0;">
-                    <a href="${messageUrl}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                      💬 Scrivi alla Clinica
-                    </a>
-                    ${phoneLink ? `
-                    <a href="${phoneLink}" style="display: inline-block; background: #2196F3; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                      📞 Chiama la Clinica
-                    </a>
-                    ` : ''}
+                    ${contactButton}
                   </div>
                   
                   <div style="text-align: center; margin: 20px 0;">
