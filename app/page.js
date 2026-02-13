@@ -9499,7 +9499,7 @@ function ClinicSettings({ user, onNavigate }) {
                   <Input 
                     value={stripeForm.publishableKey} 
                     onChange={(e) => setStripeForm({...stripeForm, publishableKey: e.target.value})}
-                    placeholder="pk_test_... o pk_live_..."
+                    placeholder="Inserisci la tua Publishable Key Stripe"
                   />
                 </div>
                 <div>
