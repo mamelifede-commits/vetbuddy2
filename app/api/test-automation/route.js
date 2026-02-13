@@ -34,11 +34,12 @@ export async function GET(request) {
         pets: pets.length,
         petsData: pets.map(p => ({ id: p.id, name: p.name, species: p.species, ownerId: p.ownerId, clinicId: p.clinicId, birthDate: p.birthDate })),
         appointments: appointments.length,
-        appointmentsData: appointments.map(a => ({ id: a.id, date: a.date, time: a.time, status: a.status, petId: a.petId, ownerId: a.ownerId, clinicId: a.clinicId })),
+        appointmentsData: appointments.map(a => ({ id: a.id, date: a.date, time: a.time, status: a.status, petId: a.petId, ownerId: a.ownerId, clinicId: a.clinicId, reminderSent: a.reminderSent })),
         owners: owners.map(o => ({ id: o.id, name: o.name, email: o.email })),
         clinics: clinics.map(c => ({ id: c.id, name: c.name, clinicName: c.clinicName, email: c.email })),
         treatments: treatments.length,
-        treatmentsData: treatments
+        treatmentsData: treatments,
+        clinicSettings
       }
     });
   } catch (error) {
