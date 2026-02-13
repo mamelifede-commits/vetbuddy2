@@ -39,6 +39,22 @@ const VetBuddyLogo = ({ size = 40 }) => (
   </svg>
 );
 
+// Helper function for pet species info
+const getPetSpeciesInfo = (species) => {
+  const speciesMap = {
+    dog: { emoji: '🐕', name: 'Cane', icon: Dog },
+    cat: { emoji: '🐱', name: 'Gatto', icon: Cat },
+    horse: { emoji: '🐴', name: 'Cavallo', icon: PawPrint },
+    bird: { emoji: '🦜', name: 'Uccello', icon: PawPrint },
+    rabbit: { emoji: '🐰', name: 'Coniglio', icon: PawPrint },
+    hamster: { emoji: '🐹', name: 'Criceto', icon: PawPrint },
+    fish: { emoji: '🐠', name: 'Pesce', icon: PawPrint },
+    reptile: { emoji: '🦎', name: 'Rettile', icon: PawPrint },
+    other: { emoji: '🐾', name: 'Altro', icon: PawPrint }
+  };
+  return speciesMap[species] || speciesMap.other;
+};
+
 // ==================== ACCESSO NON AUTORIZZATO ====================
 function AccessDenied({ userRole, requiredRole, onGoBack }) {
   const roleLabels = {
