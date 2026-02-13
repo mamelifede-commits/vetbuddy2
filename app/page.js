@@ -1949,6 +1949,8 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
               <NavItem icon={Calendar} label="Agenda" value="agenda" />
               <NavItem icon={Inbox} label="Team Inbox" value="inbox" badge={unreadMessages} />
               <NavItem icon={FileText} label="Documenti" value="documents" />
+              <NavItem icon={FolderArchive} label="Archivio Clinica" value="archive" />
+              <NavItem icon={CalendarDays} label="Eventi" value="events" />
               <NavItem icon={Stethoscope} label="Servizi" value="services" />
               <NavItem icon={PawPrint} label="Pazienti" value="patients" />
               <NavItem icon={User} label="Proprietari" value="owners" />
