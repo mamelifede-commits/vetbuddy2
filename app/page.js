@@ -4259,69 +4259,141 @@ Milo,cane,Golden Retriever,10/08/2021,,maschio,28,dorato,si,,Apoquel 16mg,Dermat
           {/* Step 1: Choose */}
           {importStep === 1 && (
             <div className="space-y-4">
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h3 className="font-semibold text-blue-800 mb-2">📋 Come funziona l'import</h3>
-                <ol className="text-sm text-blue-700 space-y-1 list-decimal list-inside">
-                  <li>Scarica il template CSV con le colonne predefinite</li>
-                  <li>Compila il file con i dati dei tuoi pazienti</li>
-                  <li>Carica il file compilato</li>
-                  <li>Opzionalmente, carica i documenti (referti, esami, etc.)</li>
-                </ol>
+              {/* Quick Start - Super chiaro */}
+              <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-5 rounded-xl text-white">
+                <h3 className="font-bold text-lg mb-3">⚡ Import Rapido in 3 Passi</h3>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div className="bg-white/20 rounded-lg p-3">
+                    <div className="text-2xl mb-1">1️⃣</div>
+                    <p className="text-sm font-medium">Scarica il template</p>
+                    <p className="text-xs opacity-80">File Excel/CSV pronto</p>
+                  </div>
+                  <div className="bg-white/20 rounded-lg p-3">
+                    <div className="text-2xl mb-1">2️⃣</div>
+                    <p className="text-sm font-medium">Compila i dati</p>
+                    <p className="text-xs opacity-80">Copia dal tuo gestionale</p>
+                  </div>
+                  <div className="bg-white/20 rounded-lg p-3">
+                    <div className="text-2xl mb-1">3️⃣</div>
+                    <p className="text-sm font-medium">Carica il file</p>
+                    <p className="text-xs opacity-80">Import automatico!</p>
+                  </div>
+                </div>
               </div>
               
+              {/* Main Actions */}
               <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" onClick={downloadTemplate} className="h-24 flex-col">
-                  <Download className="h-6 w-6 mb-2" />
-                  <span>Scarica Template CSV</span>
+                <Button variant="outline" onClick={downloadTemplate} className="h-28 flex-col border-2 border-blue-300 hover:border-blue-500 hover:bg-blue-50">
+                  <Download className="h-8 w-8 mb-2 text-blue-500" />
+                  <span className="font-semibold">Scarica Template</span>
+                  <span className="text-xs text-gray-500">File CSV con esempi</span>
                 </Button>
-                <Button className="h-24 flex-col bg-blue-500 hover:bg-blue-600" onClick={() => setImportStep(2)}>
-                  <Upload className="h-6 w-6 mb-2" />
-                  <span>Ho già il file, procedi</span>
+                <Button className="h-28 flex-col bg-green-500 hover:bg-green-600" onClick={() => setImportStep(2)}>
+                  <Upload className="h-8 w-8 mb-2" />
+                  <span className="font-semibold">Ho già il file</span>
+                  <span className="text-xs opacity-80">Vai all'upload →</span>
                 </Button>
               </div>
               
-              {/* Detailed instructions */}
+              {/* Cosa viene importato */}
+              <div className="bg-gray-50 p-4 rounded-lg border">
+                <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-500" /> Cosa viene importato automaticamente:
+                </h4>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🐾</span>
+                    <span><strong>Animali:</strong> nome, specie, razza, peso, microchip</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">👤</span>
+                    <span><strong>Proprietari:</strong> nome, email, telefono</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">💉</span>
+                    <span><strong>Vaccini:</strong> nome, data, scadenza</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">📋</span>
+                    <span><strong>Info cliniche:</strong> allergie, farmaci, note</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Detailed instructions - Accordion */}
               <Accordion type="single" collapsible className="border rounded-lg">
                 <AccordionItem value="columns" className="border-0">
                   <AccordionTrigger className="px-4 py-3 text-sm hover:no-underline">
-                    <span className="flex items-center gap-2"><Info className="h-4 w-4" /> Descrizione colonne del template</span>
+                    <span className="flex items-center gap-2"><Info className="h-4 w-4" /> 📖 Guida completa alle colonne del template</span>
                   </AccordionTrigger>
                   <AccordionContent className="px-4 pb-4">
-                    <div className="space-y-3 text-xs">
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="space-y-1">
-                          <p><strong className="text-coral-600">nome*</strong> - Nome dell'animale</p>
-                          <p><strong className="text-coral-600">specie*</strong> - cane, gatto, uccello, coniglio, criceto, altro</p>
-                          <p><strong>razza</strong> - Razza dell'animale</p>
-                          <p><strong>data_nascita</strong> - GG/MM/AAAA o AAAA-MM-GG</p>
-                          <p><strong>microchip</strong> - Numero microchip</p>
-                          <p><strong>sesso</strong> - maschio o femmina</p>
-                          <p><strong>peso</strong> - Peso in kg (numero)</p>
-                          <p><strong>colore</strong> - Colore del mantello</p>
-                        </div>
-                        <div className="space-y-1">
-                          <p><strong>sterilizzato</strong> - si o no</p>
-                          <p><strong>allergie</strong> - Allergie note</p>
-                          <p><strong>farmaci</strong> - Farmaci in corso</p>
-                          <p><strong>note</strong> - Note aggiuntive</p>
-                          <p><strong>proprietario</strong> - Nome completo proprietario</p>
-                          <p><strong>email</strong> - Email proprietario</p>
-                          <p><strong>telefono</strong> - Telefono proprietario</p>
-                          <p><strong>vaccino</strong> - Nome vaccino</p>
+                    <div className="space-y-4 text-sm">
+                      <div className="bg-coral-50 p-3 rounded-lg">
+                        <p className="font-semibold text-coral-700 mb-2">⚠️ Campi obbligatori (solo 2!):</p>
+                        <ul className="space-y-1 text-coral-600">
+                          <li>• <strong>nome</strong> - Nome dell'animale (es. "Luna")</li>
+                          <li>• <strong>specie</strong> - Scrivi: cane, gatto, uccello, coniglio, criceto, altro</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-700 mb-2">Campi opzionali animale:</p>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-gray-600">
+                          <p>• <strong>razza</strong> - es. "Labrador"</p>
+                          <p>• <strong>data_nascita</strong> - formato: 15/03/2020</p>
+                          <p>• <strong>microchip</strong> - es. "380260000123456"</p>
+                          <p>• <strong>sesso</strong> - scrivi: maschio o femmina</p>
+                          <p>• <strong>peso</strong> - solo numero, es. "25"</p>
+                          <p>• <strong>colore</strong> - es. "biondo"</p>
+                          <p>• <strong>sterilizzato</strong> - scrivi: si o no</p>
+                          <p>• <strong>allergie</strong> - testo libero</p>
+                          <p>• <strong>farmaci</strong> - farmaci in corso</p>
+                          <p>• <strong>note</strong> - note aggiuntive</p>
                         </div>
                       </div>
-                      <p className="text-gray-500 italic mt-2">* Campi obbligatori. Puoi aggiungere più righe con lo stesso proprietario se ha più animali.</p>
+                      <div>
+                        <p className="font-semibold text-gray-700 mb-2">Campi opzionali proprietario:</p>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-gray-600">
+                          <p>• <strong>proprietario</strong> - es. "Mario Rossi"</p>
+                          <p>• <strong>email</strong> - email del proprietario</p>
+                          <p>• <strong>telefono</strong> - es. "+39 333 1234567"</p>
+                          <p>• <strong>indirizzo</strong> - indirizzo completo</p>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-700 mb-2">Campi opzionali vaccino:</p>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-gray-600">
+                          <p>• <strong>vaccino</strong> - es. "Polivalente"</p>
+                          <p>• <strong>data_vaccino</strong> - formato: 01/01/2024</p>
+                          <p>• <strong>scadenza_vaccino</strong> - formato: 01/01/2025</p>
+                        </div>
+                      </div>
+                      <div className="bg-blue-50 p-3 rounded-lg mt-3">
+                        <p className="text-blue-700"><strong>💡 Tip:</strong> Se un proprietario ha più animali, aggiungi una riga per ogni animale con lo stesso email del proprietario.</p>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="gestionale" className="border-0 border-t">
+                  <AccordionTrigger className="px-4 py-3 text-sm hover:no-underline">
+                    <span className="flex items-center gap-2"><FileText className="h-4 w-4" /> 🔄 Come esportare dal tuo gestionale</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 pb-4">
+                    <div className="space-y-3 text-sm text-gray-600">
+                      <p><strong>1.</strong> Nel tuo gestionale attuale, cerca la funzione "Esporta" o "Export"</p>
+                      <p><strong>2.</strong> Seleziona formato CSV o Excel</p>
+                      <p><strong>3.</strong> Apri il file esportato con Excel o Google Sheets</p>
+                      <p><strong>4.</strong> Rinomina le colonne secondo il nostro template</p>
+                      <p><strong>5.</strong> Salva come CSV e caricalo qui</p>
+                      <div className="bg-amber-50 p-3 rounded-lg mt-3">
+                        <p className="text-amber-700"><strong>⏱️ Tempo stimato:</strong> 5-10 minuti per preparare il file, poi l'import è istantaneo!</p>
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
               
-              <div className="bg-amber-50 p-3 rounded-lg border border-amber-200 text-sm">
-                <p className="text-amber-800"><strong>💡 Suggerimento:</strong> Puoi esportare i dati dal tuo gestionale attuale in formato CSV e poi adattare le colonne al nostro template.</p>
-              </div>
-              
               <div className="bg-green-50 p-3 rounded-lg border border-green-200 text-sm">
-                <p className="text-green-800"><strong>🔒 Privacy:</strong> I dati vengono importati in modo sicuro e conforme al GDPR. Solo la tua clinica avrà accesso a queste informazioni.</p>
+                <p className="text-green-800"><strong>🔒 Privacy e GDPR:</strong> I dati vengono importati in modo sicuro e criptato. Solo la tua clinica avrà accesso. Conforme alle normative europee sulla protezione dei dati.</p>
               </div>
             </div>
           )}
