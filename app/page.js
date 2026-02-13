@@ -2290,7 +2290,9 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate
       type: appt.type || 'visita',
       staffId: appt.staffId || '',
       duration: appt.duration || 30,
-      notes: appt.notes || ''
+      notes: appt.notes || '',
+      showOwnerSuggestions: false,
+      showPetSuggestions: false
     });
     setShowDialog(true);
   };
