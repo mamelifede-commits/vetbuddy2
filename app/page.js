@@ -8284,8 +8284,8 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           setActiveTab('reviews');
           break;
         case 'profile':
-          // Go to profile/settings
-          setActiveTab('pets'); // Pets section has profile info
+          // Go to pets/profile section
+          setActiveTab('pets');
           break;
         case 'payment':
           // Go to documents (where invoices are)
@@ -8296,8 +8296,8 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           setActiveTab('appointments');
           break;
         case 'rewards':
-          // Go to rewards section (using reviews tab for now)
-          setActiveTab('reviews');
+          // Go to rewards section
+          setActiveTab('rewards');
           break;
         default:
           break;
@@ -8313,10 +8313,12 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const handleCancelAppointment = async () => {
     if (!cancelAppointmentId) return;
     try {
-      await api.put(`appointments/${cancelAppointmentId}`, { status: 'cancelled' });
+      await api.put(`appointments/${cancelAppointmentId}`, { status: 'cancelled', cancellationReason });
       alert('✅ Appuntamento cancellato con successo');
       setShowCancelDialog(false);
       setCancelAppointmentId(null);
+      setCancelAppointmentDetails(null);
+      setCancellationReason('');
       loadData(); // Refresh data
     } catch (error) {
       alert('❌ Errore nella cancellazione: ' + error.message);
