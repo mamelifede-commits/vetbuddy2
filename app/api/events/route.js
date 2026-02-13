@@ -159,6 +159,69 @@ const DEFAULT_EVENTS = [
     location: 'Roma',
     source: 'vetbuddy',
     sourceLabel: 'VetBuddy'
+  },
+  // EVENTI PER CAVALLI
+  {
+    id: 'demo-13',
+    title: 'Fiera Internazionale del Cavallo - Verona',
+    description: 'La più grande manifestazione equestre italiana. Show jumping, dressage, endurance e tanto altro. Non perdere i campionati nazionali!',
+    eventDate: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'cavalli',
+    location: 'Fiera di Verona',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy',
+    isFeatured: true
+  },
+  {
+    id: 'demo-14',
+    title: 'Corso di Mascalcia e Cura dello Zoccolo',
+    description: 'Workshop pratico sulla ferratura e cura dello zoccolo equino. Tenuto da maniscalchi professionisti certificati FISE.',
+    eventDate: new Date(Date.now() + 22 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'cavalli',
+    location: 'Centro Ippico Milano',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy'
+  },
+  {
+    id: 'demo-15',
+    title: 'Giornata di Visite Veterinarie Equine Gratuite',
+    description: 'Check-up gratuito per il tuo cavallo: controllo generale, denti, arti e consulenza nutrizionale con veterinari specializzati.',
+    eventDate: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'cavalli',
+    location: 'Maneggi convenzionati Lombardia',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy',
+    isFeatured: true
+  },
+  {
+    id: 'demo-16',
+    title: 'Seminario: Alimentazione del Cavallo Sportivo',
+    description: 'Come nutrire correttamente il cavallo atleta. Integrazione, timing dei pasti e gestione del peso con esperti di nutrizione equina.',
+    eventDate: new Date(Date.now() + 40 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'cavalli',
+    location: 'Online - Webinar',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy'
+  },
+  {
+    id: 'demo-17',
+    title: 'Passeggiata a Cavallo nel Parco del Ticino',
+    description: 'Escursione guidata di 3 ore nella natura. Adatta a tutti i livelli. Veterinario presente per emergenze.',
+    eventDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'cavalli',
+    location: 'Parco del Ticino, Vigevano',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy'
+  },
+  {
+    id: 'demo-18',
+    title: 'Corso First Aid Equino',
+    description: 'Impara a gestire le emergenze del cavallo: coliche, ferite, problemi respiratori. Certificato rilasciato dalla FISE.',
+    eventDate: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'cavalli',
+    location: 'Bologna - Centro Equestre',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy'
   }
 ];
 
