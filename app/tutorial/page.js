@@ -657,6 +657,178 @@ Clicca **"📤 Export CSV"** per scaricare i dati.
           image: '📊'
         }
       ]
+    },
+    {
+      id: 'invoicing',
+      title: 'Fatturazione',
+      icon: CreditCard,
+      color: 'emerald',
+      description: 'Gestione fatture e integrazione con software esterni',
+      duration: '6 min',
+      steps: [
+        {
+          title: 'Panoramica Fatturazione',
+          content: `
+## 🧾 Sistema di Fatturazione
+
+VetBuddy ti permette di gestire le fatture in due modi:
+
+### Opzione 1: Usa VetBuddy + Tuo Software
+1. Crea fatture/pre-fatture in VetBuddy
+2. Esporta in CSV, PDF o JSON
+3. Importa nel tuo software di fatturazione elettronica
+4. Il tuo software invia al SdI (Sistema di Interscambio)
+
+### Opzione 2: Fatture in Cloud (prossimamente)
+Integrazione diretta per inviare automaticamente le fatture al SdI.
+
+### ⚠️ Importante
+Le fatture VetBuddy sono **pre-fatture/proforma**. Per essere valide fiscalmente devono essere inviate al Sistema di Interscambio tramite un software certificato.
+          `,
+          image: '🧾'
+        },
+        {
+          title: 'Creare il Listino Prezzi',
+          content: `
+## 💰 Listino Prestazioni
+
+Prima di creare fatture, configura il tuo listino prezzi.
+
+### Come fare:
+1. Vai su **Fatturazione** nel menu
+2. Clicca sulla tab **"Servizi"**
+3. Clicca **"+ Aggiungi"**
+
+### Campi da compilare:
+- **Nome** - Es. "Visita generica"
+- **Descrizione** - Dettagli opzionali
+- **Prezzo** - Importo IVA esclusa
+- **IVA** - Aliquota (di solito 22%)
+
+### 💡 Tip
+Puoi importare i servizi già configurati dalla sezione "Servizi" della clinica.
+          `,
+          image: '💰'
+        },
+        {
+          title: 'Creare una Fattura',
+          content: `
+## 📝 Nuova Fattura
+
+### Come creare:
+1. Vai su **Fatturazione**
+2. Clicca **"+ Nuova Fattura"**
+3. Seleziona il cliente
+4. Aggiungi le prestazioni dal listino
+5. Salva come bozza o emetti
+
+### Dettagli automatici:
+- **Numero fattura** - Progressivo automatico (2024/001, 2024/002, etc.)
+- **IVA 22%** - Calcolata automaticamente
+- **Marca da bollo** - €2 se imponibile > €77.47
+
+### Stati fattura:
+- 📝 **Bozza** - In preparazione
+- 📄 **Emessa** - Pronta per il pagamento
+- ✅ **Pagata** - Incassata
+          `,
+          image: '📝'
+        },
+        {
+          title: 'Esportare le Fatture',
+          content: `
+## 📤 Export per Software Esterni
+
+### Come esportare:
+1. Vai su **Fatturazione** → **Impostazioni**
+2. Scegli il formato: CSV, PDF o JSON
+3. Clicca **"Export"**
+
+### Formati disponibili:
+- **CSV** - Per Excel e importazione in gestionali
+- **PDF/HTML** - Per stampa e invio email
+- **JSON** - Per integrazione API
+
+### Software compatibili:
+Il CSV può essere importato in:
+- Fatture in Cloud
+- TeamSystem
+- Aruba Fatturazione
+- Zucchetti
+- E molti altri...
+
+### 💡 Guida passo-passo
+Nella sezione Impostazioni trovi guide specifiche per ogni software!
+          `,
+          image: '📤'
+        }
+      ]
+    },
+    {
+      id: 'whatsapp',
+      title: 'WhatsApp Business',
+      icon: MessageSquare,
+      color: 'green',
+      description: 'Configurare WhatsApp per comunicare con i clienti',
+      duration: '3 min',
+      steps: [
+        {
+          title: 'Configurare WhatsApp',
+          content: `
+## 💬 WhatsApp Business
+
+Permetti ai clienti di contattarti via WhatsApp direttamente dall'app!
+
+### Come configurare:
+1. Vai su **Impostazioni** → **Profilo Clinica**
+2. Clicca **"Modifica"**
+3. Nel campo **"WhatsApp Business"** inserisci il numero
+4. Usa il formato internazionale: +39 333 1234567
+5. Salva
+
+### Requisiti:
+- 📱 Scarica **WhatsApp Business** (non WhatsApp normale)
+- Registrati con il numero della clinica
+- Configura il profilo aziendale
+
+### Cosa succede:
+- I clienti vedranno il pulsante "WhatsApp" nella loro app
+- Cliccandolo si apre una chat diretta con te
+- Puoi impostare risposte automatiche in WhatsApp Business
+          `,
+          image: '💬'
+        },
+        {
+          title: 'Consigli WhatsApp Business',
+          content: `
+## 📱 Best Practices
+
+### Configura il profilo:
+- Nome azienda
+- Descrizione
+- Indirizzo
+- Orari di apertura
+- Sito web
+
+### Risposte automatiche:
+In WhatsApp Business puoi impostare:
+- **Messaggio di benvenuto** - Per nuove chat
+- **Messaggio di assenza** - Fuori orario
+- **Risposte rapide** - Per domande frequenti
+
+### Etichette:
+Usa le etichette per organizzare le chat:
+- 🟢 Nuovo cliente
+- 🟡 In attesa di risposta
+- 🔴 Urgente
+- ✅ Risolto
+
+### 💡 Tip
+Rispondi entro 24 ore per mantenere alta la soddisfazione cliente!
+          `,
+          image: '📱'
+        }
+      ]
     }
   ];
 
