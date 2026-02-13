@@ -26,7 +26,7 @@ import {
   MapPin, Globe, Receipt, Syringe, Weight, AlertTriangle, ChevronLeft,
   Euro, Wallet, Camera, Edit, Trash2, Info, StarHalf, Image as ImageIcon, Scissors,
   BarChart3, Gift, Lock, Sparkles, UserPlus, PlusCircle, Loader2, Image,
-  FolderArchive, BookOpen, GraduationCap, Newspaper, Link2, CalendarRange
+  FolderArchive, BookOpen, GraduationCap, Newspaper, Link2, CalendarRange, Droplet
 } from 'lucide-react';
 
 // Logo Component
