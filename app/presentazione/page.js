@@ -156,11 +156,6 @@ export default function PresentazionePage() {
               <Printer className="h-4 w-4 mr-2" />
               Salva PDF
             </Button>
-            <Link href="/tutorial">
-              <Button variant="outline">
-                🎓 Tutorial
-              </Button>
-            </Link>
             <Link href="/">
               <Button className="bg-coral-500 hover:bg-coral-600">
                 Prova Gratis
