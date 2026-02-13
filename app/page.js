@@ -511,6 +511,7 @@ function LandingPage({ onLogin }) {
             <nav className="flex flex-col gap-3">
               <button onClick={() => { scrollToSection('funzionalita'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Funzionalità</button>
               <button onClick={() => { scrollToSection('automazioni'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Automazioni</button>
+              <button onClick={() => { scrollToSection('import'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-blue-500 transition">📁 Import</button>
               <button onClick={() => { scrollToSection('premi'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-amber-500 transition">🎁 Premi</button>
               <button onClick={() => { scrollToSection('come-funziona'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Come funziona</button>
               <button onClick={() => { scrollToSection('pilot'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Prezzi</button>
