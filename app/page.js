@@ -848,26 +848,6 @@ function LandingPage({ onLogin }) {
             </p>
           </div>
 
-          {/* Hero stats - impatto sul lavoro */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-green-100">
-              <div className="text-3xl font-bold text-green-600 mb-1">-80%</div>
-              <p className="text-sm text-gray-600">Telefonate per promemoria</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-blue-100">
-              <div className="text-3xl font-bold text-blue-600 mb-1">-60%</div>
-              <p className="text-sm text-gray-600">No-show e appuntamenti persi</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-amber-100">
-              <div className="text-3xl font-bold text-amber-600 mb-1">+40%</div>
-              <p className="text-sm text-gray-600">Clienti che tornano</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-purple-100">
-              <div className="text-3xl font-bold text-purple-600 mb-1">2h/giorno</div>
-              <p className="text-sm text-gray-600">Risparmiate in media</p>
-            </div>
-          </div>
-
           {/* Striscia 44+ automazioni - SOPRA le card */}
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 text-white mb-12">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
