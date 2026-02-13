@@ -181,10 +181,23 @@ export async function GET(request) {
     },
     supportedFormats: ['CSV', 'Excel (.xlsx)'],
     documentFormats: ['PDF', 'JPG', 'JPEG', 'PNG'],
+    smartMatching: {
+      description: 'I documenti vengono abbinati automaticamente ai pazienti con questa priorità:',
+      priority: [
+        '1. MICROCHIP - Se il nome file contiene un microchip (15 cifre), viene abbinato al paziente con quel microchip',
+        '2. NOME - Se il nome file contiene il nome del paziente, viene abbinato automaticamente',
+        '3. MANUALE - Se non viene trovata corrispondenza, potrai assegnare manualmente il documento'
+      ],
+      examples: [
+        '380260000123456_referto.pdf → Abbinato via microchip',
+        'Luna_vaccino_2024.pdf → Abbinato via nome "Luna"',
+        'referto_generico.pdf → Richiede assegnazione manuale'
+      ]
+    },
     notes: {
       sterilizzato: 'Usa "si" o "no"',
       data_nascita: 'Formato: GG/MM/AAAA o AAAA-MM-GG',
-      documenti: 'Nomina i documenti con il nome del paziente per abbinamento automatico (es. Luna_referto.pdf)'
+      documenti: 'Per abbinamento automatico: includi microchip (380260000123456_referto.pdf) o nome paziente (Luna_referto.pdf)'
     }
   };
   
