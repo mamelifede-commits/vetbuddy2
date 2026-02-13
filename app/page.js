@@ -7505,10 +7505,12 @@ function ClinicSettings({ user, onNavigate }) {
     clinicName: user.clinicName || '',
     vatNumber: user.vatNumber || '',
     phone: user.phone || '',
+    whatsappNumber: user.whatsappNumber || '',
     website: user.website || '',
     description: user.description || '',
     openingTime: user.openingTime || '09:00',
-    closingTime: user.closingTime || '18:00'
+    closingTime: user.closingTime || '18:00',
+    cancellationPolicyText: user.cancellationPolicyText || 'Ti preghiamo di avvisarci almeno 24 ore prima in caso di disdetta.'
   });
   
   // Payment settings state
