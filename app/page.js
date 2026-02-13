@@ -6201,47 +6201,70 @@ function ClinicRewardsManagement({ user, owners = [] }) {
             </Card>
           ) : (
             <div className="grid gap-3">
-              {assignedRewards.map((reward) => (
-                <Card key={reward.id} className={`${reward.status === 'used' ? 'opacity-60 bg-gray-50' : ''}`}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                          reward.status === 'available' 
-                            ? 'bg-gradient-to-br from-amber-400 to-yellow-500 text-white' 
-                            : 'bg-gray-300 text-gray-500'
-                        }`}>
-                          {reward.status === 'used' ? <CheckCircle className="h-5 w-5" /> : <Gift className="h-5 w-5" />}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{reward.ownerName}</span>
-                            <Badge variant={reward.status === 'available' ? 'default' : 'secondary'} className={reward.status === 'available' ? 'bg-green-500' : ''}>
-                              {reward.status === 'available' ? 'Disponibile' : 'Utilizzato'}
-                            </Badge>
+              {assignedRewards.map((reward) => {
+                const isPending = reward.status === 'pending';
+                const isUsed = reward.status === 'used';
+                const isAvailable = reward.status === 'available';
+                
+                return (
+                  <Card key={reward.id} className={`
+                    ${isUsed ? 'opacity-60 bg-gray-50' : ''}
+                    ${isPending ? 'border-2 border-amber-400 bg-amber-50 shadow-md' : ''}
+                  `}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                            isPending 
+                              ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white animate-pulse'
+                              : isAvailable 
+                                ? 'bg-gradient-to-br from-amber-400 to-yellow-500 text-white' 
+                                : 'bg-gray-300 text-gray-500'
+                          }`}>
+                            {isUsed ? <CheckCircle className="h-5 w-5" /> : isPending ? <Clock className="h-5 w-5" /> : <Gift className="h-5 w-5" />}
                           </div>
-                          <p className="text-sm text-gray-500">{reward.rewardName} - {reward.reason}</p>
-                          <p className="text-xs text-gray-400">
-                            Assegnato il {new Date(reward.createdAt).toLocaleDateString('it-IT')}
-                            {reward.usedAt && ` • Usato il ${new Date(reward.usedAt).toLocaleDateString('it-IT')}`}
-                          </p>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-medium">{reward.ownerName}</span>
+                              <Badge variant={isAvailable ? 'default' : 'secondary'} className={`
+                                ${isAvailable ? 'bg-green-500' : ''}
+                                ${isPending ? 'bg-amber-500 text-white animate-pulse' : ''}
+                              `}>
+                                {isAvailable ? 'Disponibile' : isPending ? '⏳ DA CONFERMARE' : 'Utilizzato'}
+                              </Badge>
+                              {reward.redeemCode && (
+                                <Badge variant="outline" className="font-mono tracking-wider">
+                                  {reward.redeemCode}
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-500">{reward.rewardName} - {reward.reason}</p>
+                            <p className="text-xs text-gray-400">
+                              Assegnato il {new Date(reward.createdAt).toLocaleDateString('it-IT')}
+                              {reward.redeemedAt && ` • Riscattato il ${new Date(reward.redeemedAt).toLocaleDateString('it-IT')}`}
+                              {reward.usedAt && ` • Confermato il ${new Date(reward.usedAt).toLocaleDateString('it-IT')}`}
+                            </p>
+                          </div>
                         </div>
+                        {(isAvailable || isPending) && (
+                          <Button 
+                            variant={isPending ? 'default' : 'outline'}
+                            size="sm" 
+                            onClick={() => handleMarkUsed(reward.id)}
+                            className={isPending 
+                              ? 'bg-green-600 hover:bg-green-700 text-white'
+                              : 'text-green-600 border-green-300 hover:bg-green-50'
+                            }
+                          >
+                            <CheckCircle className="h-4 w-4 mr-1" />
+                            {isPending ? 'Conferma Utilizzo' : 'Segna Usato'}
+                          </Button>
+                        )}
                       </div>
-                      {reward.status === 'available' && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => handleMarkUsed(reward.id)}
-                          className="text-green-600 border-green-300 hover:bg-green-50"
-                        >
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Segna Usato
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>
