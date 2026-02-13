@@ -487,6 +487,102 @@ export default function PresentazionePage() {
         </div>
       </section>
 
+      {/* Freelance Section */}
+      <section className="py-20 px-4 bg-purple-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="bg-purple-100 text-purple-700 mb-4">👨‍⚕️ Per Veterinari Freelance</Badge>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Lavori come libero professionista?
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              VetBuddy non è solo per le grandi cliniche. È perfetto anche per veterinari freelance, 
+              ambulatori a domicilio e professionisti singoli.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            {/* Left - Benefits */}
+            <div className="space-y-6">
+              <div className="flex items-start gap-4 bg-white rounded-xl p-6 shadow-sm">
+                <div className="bg-purple-100 p-3 rounded-lg">
+                  <Users className="h-6 w-6 text-purple-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-gray-900">Registrati come "Clinica"</h3>
+                  <p className="text-gray-600">Anche se non hai un locale fisico. Il tuo "studio" può essere dove vuoi tu!</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-4 bg-white rounded-xl p-6 shadow-sm">
+                <div className="bg-green-100 p-3 rounded-lg">
+                  <Gift className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-gray-900">Piano Starter Gratuito</h3>
+                  <p className="text-gray-600">Perfetto per iniziare: 1 utente, fino a 50 pazienti, 5 automazioni. Gratis per sempre!</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-4 bg-white rounded-xl p-6 shadow-sm">
+                <div className="bg-blue-100 p-3 rounded-lg">
+                  <Smartphone className="h-6 w-6 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-gray-900">Gestisci tutto dal telefono</h3>
+                  <p className="text-gray-600">App PWA installabile. Agenda, prenotazioni e messaggi sempre con te.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-4 bg-white rounded-xl p-6 shadow-sm">
+                <div className="bg-amber-100 p-3 rounded-lg">
+                  <CreditCard className="h-6 w-6 text-amber-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-gray-900">Incassa con carta</h3>
+                  <p className="text-gray-600">Collega Stripe e accetta pagamenti online. Professionale e sicuro.</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right - CTA Card */}
+            <div className="bg-gradient-to-br from-purple-600 to-purple-800 rounded-3xl p-8 text-white">
+              <div className="text-center">
+                <span className="text-6xl mb-4 block">👨‍⚕️</span>
+                <h3 className="text-2xl font-bold mb-4">Sei un veterinario freelance?</h3>
+                <p className="text-purple-200 mb-6">
+                  Inizia con il piano Starter gratuito. Registrati come clinica e configura il tuo profilo in pochi minuti.
+                </p>
+                
+                <div className="space-y-4">
+                  <div className="bg-white/10 rounded-lg p-4 text-left">
+                    <p className="font-semibold mb-2">✅ Come iniziare:</p>
+                    <ol className="text-sm text-purple-200 space-y-1">
+                      <li>1. Clicca "Richiedi Invito"</li>
+                      <li>2. Registrati come "Clinica"</li>
+                      <li>3. Usa il tuo nome come nome clinica</li>
+                      <li>4. Configura i tuoi servizi</li>
+                    </ol>
+                  </div>
+                  
+                  <Link href="/">
+                    <Button size="lg" className="w-full bg-white text-purple-700 hover:bg-purple-50">
+                      Richiedi Invito <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                  
+                  <Link href="/tutorial">
+                    <Button size="lg" variant="outline" className="w-full border-2 border-white text-white hover:bg-white/10">
+                      📖 Guida per Freelance
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials */}
       <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
