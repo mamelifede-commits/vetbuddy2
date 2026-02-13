@@ -1959,6 +1959,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
               <NavItem icon={PawPrint} label="Pazienti" value="patients" />
               <NavItem icon={User} label="Proprietari" value="owners" />
               <NavItem icon={Users} label="Staff" value="staff" />
+              <NavItem icon={Receipt} label="Fatturazione" value="invoicing" />
               <NavItem icon={TrendingUp} label="Report" value="reports" />
               <NavItem icon={Star} label="Recensioni" value="reviews" />
               <NavItem icon={Gift} label="Premi Fedeltà" value="rewards" />
