@@ -59,6 +59,10 @@ function mapRowToPatient(row) {
     address: row['indirizzo'] || row['address'] || row['indirizzo_proprietario'] || ''
   };
   
+  // Parse sterilized field (si/no, true/false, 1/0)
+  const sterilizedValue = (row['sterilizzato'] || row['sterilized'] || row['castrato'] || '').toLowerCase();
+  const isSterilized = ['si', 'sì', 'yes', 'true', '1', 'vero'].includes(sterilizedValue);
+  
   // Try to find pet data
   const pet = {
     name: row['nome'] || row['nome_animale'] || row['pet_name'] || row['name'] || '',
@@ -69,6 +73,9 @@ function mapRowToPatient(row) {
     sex: mapSex(row['sesso'] || row['sex'] || row['genere'] || ''),
     weight: parseFloat(row['peso'] || row['weight'] || '') || null,
     color: row['colore'] || row['color'] || row['mantello'] || '',
+    sterilized: isSterilized,
+    allergies: row['allergie'] || row['allergies'] || row['allergia'] || '',
+    medications: row['farmaci'] || row['medications'] || row['terapia'] || '',
     notes: row['note'] || row['notes'] || ''
   };
   
