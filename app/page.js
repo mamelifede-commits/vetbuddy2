@@ -25,7 +25,7 @@ import {
   LayoutDashboard, ListTodo, CircleDot, Timer, TrendingUp, Activity,
   MapPin, Globe, Receipt, Syringe, Weight, AlertTriangle, ChevronLeft,
   Euro, Wallet, Camera, Edit, Trash2, Info, StarHalf, Image as ImageIcon, Scissors,
-  BarChart3, Gift, Lock, Sparkles
+  BarChart3, Gift, Lock, Sparkles, UserPlus, PlusCircle
 } from 'lucide-react';
 
 // Logo Component
