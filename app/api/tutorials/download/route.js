@@ -256,7 +256,7 @@ const clinicTutorial = {
   
   contacts: {
     website: 'www.vetbuddy.it',
-    email: 'cliniche@vetbuddy.it'
+    email: 'support@vetbuddy.it'
   }
 };
 
