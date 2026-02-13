@@ -62,6 +62,47 @@ function getCurrentMonth() {
   return new Date().getMonth() + 1;
 }
 
+// Helper: Generate contact button - prioritizes WhatsApp if available
+function getContactButton(clinic, baseUrl, buttonText = 'Scrivi alla Clinica', subject = '') {
+  const whatsappNumber = clinic?.whatsappNumber;
+  const phoneNumber = clinic?.phone || clinic?.telefono || '';
+  
+  if (whatsappNumber) {
+    // Use WhatsApp if configured
+    const cleanNumber = whatsappNumber.replace(/\D/g, '');
+    const whatsappUrl = `https://wa.me/${cleanNumber}${subject ? `?text=${encodeURIComponent(subject)}` : ''}`;
+    return `<a href="${whatsappUrl}" style="display: inline-block; background: #25D366; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+      💬 ${buttonText} (WhatsApp)
+    </a>`;
+  } else {
+    // Fallback to in-app messaging
+    const messageUrl = `${baseUrl}?action=message&clinicId=${clinic?.id || ''}`;
+    return `<a href="${messageUrl}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+      💬 ${buttonText}
+    </a>`;
+  }
+}
+
+// Helper: Generate phone button (only for urgent communications)
+function getPhoneButton(clinic, showButton = false) {
+  if (!showButton) return '';
+  
+  const phoneNumber = clinic?.phone || clinic?.telefono || '';
+  if (!phoneNumber) return '';
+  
+  const phoneLink = `tel:${phoneNumber.replace(/\s/g, '')}`;
+  return `<a href="${phoneLink}" style="display: inline-block; background: #E74C3C; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+    📞 Chiama (Urgenze)
+  </a>`;
+}
+
+// Helper: Get cancellation policy text
+function getCancellationPolicyText(clinic) {
+  return clinic?.cancellationPolicyText || 
+         clinic?.cancellationPolicy?.message || 
+         'Ti preghiamo di avvisarci almeno 24 ore prima in caso di disdetta.';
+}
+
 export async function GET(request) {
   // Verifica che sia una richiesta cron autorizzata
   const authHeader = request.headers.get('authorization');
