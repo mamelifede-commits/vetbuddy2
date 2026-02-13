@@ -4046,15 +4046,34 @@ function ClinicDocuments({ documents, owners, pets, onRefresh, onNavigate }) {
   };
 
   const downloadDoc = (doc) => {
-    if (doc.content) {
-      const link = document.createElement('a');
-      link.href = doc.content;
-      link.download = doc.fileName || `${doc.name}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      alert('Contenuto del documento non disponibile');
+    try {
+      if (doc.content && doc.content.startsWith('data:')) {
+        // Data URL - scarica direttamente
+        const link = document.createElement('a');
+        link.href = doc.content;
+        link.download = doc.fileName || `${doc.name}.pdf`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => document.body.removeChild(link), 100);
+      } else if (doc.id) {
+        // Usa l'API di download per documenti salvati nel DB
+        const downloadUrl = `/api/documents/download?id=${doc.id}`;
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = doc.fileName || `${doc.name}.pdf`;
+        link.target = '_blank'; // Apri in nuovo tab per evitare perdita navigazione
+        link.rel = 'noopener noreferrer';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => document.body.removeChild(link), 100);
+      } else {
+        alert('Contenuto del documento non disponibile');
+      }
+    } catch (error) {
+      console.error('Errore download documento:', error);
+      alert('Errore durante il download. Riprova.');
     }
   };
 
