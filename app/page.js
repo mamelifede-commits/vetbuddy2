@@ -1890,12 +1890,14 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
 
   const loadData = async () => {
     try {
-      const [appts, docs, msgs, staffList, petsList, ownersList] = await Promise.all([
+      const [appts, docs, msgs, staffList, petsList, ownersList, rewardsList] = await Promise.all([
         api.get('appointments'), api.get('documents'), api.get('messages'),
         api.get('staff'), api.get('pets'), api.get('owners'),
+        api.get('rewards/assigned').catch(() => [])
       ]);
       setAppointments(appts); setDocuments(docs); setMessages(msgs);
       setStaff(staffList); setPets(petsList); setOwners(ownersList);
+      setRewards(rewardsList || []);
       // Calculate setup progress
       setSetupProgress({
         payments: false, // Stripe not connected
