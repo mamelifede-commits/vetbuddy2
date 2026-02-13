@@ -584,8 +584,6 @@ export async function GET(request) {
           const age = today.getFullYear() - birthDate.getFullYear();
           const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
           const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&petId=${pet.id}&reason=Controllo%20Compleanno`;
-          const phoneNumber = clinic?.phone || clinic?.telefono || '';
-          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
           
           try {
             await sendEmail({
@@ -607,11 +605,7 @@ export async function GET(request) {
                       <a href="${bookUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                         🎁 Prenota Checkup Regalo
                       </a>
-                      ${phoneLink ? `
-                      <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                        📞 Chiama per Auguri
-                      </a>
-                      ` : ''}
+                      ${getContactButton(clinic, baseUrl, 'Fai gli Auguri', `Ciao! Oggi ${pet.name} compie ${age} anni! 🎂`)}
                     </div>
                   </div>
                   <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
