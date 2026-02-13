@@ -12577,8 +12577,29 @@ function OwnerEvents({ user }) {
         <div className="grid gap-4 md:grid-cols-2">
           {filteredEvents.map(event => {
             const catStyle = getCategoryColor(event.category);
+            const eventLink = event.link || (event.id ? `/eventi/${event.id}` : null);
+            
+            const CardWrapper = ({ children }) => {
+              if (eventLink && event.link) {
+                return (
+                  <a href={eventLink} target="_blank" rel="noopener noreferrer" className="block">
+                    {children}
+                  </a>
+                );
+              }
+              return <div className="block cursor-pointer" onClick={() => {
+                if (event.link) {
+                  window.open(event.link, '_blank');
+                } else {
+                  // Show event details in alert for now
+                  alert(`📅 ${event.title}\n\n${event.description || 'Nessuna descrizione'}\n\n📍 ${event.location || 'Location non specificata'}\n📆 ${event.eventDate ? formatDate(event.eventDate) : 'Data non specificata'}`);
+                }
+              }}>{children}</div>;
+            };
+            
             return (
-              <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-all duration-200 group">
+              <CardWrapper key={event.id}>
+                <Card className="overflow-hidden hover:shadow-lg transition-all duration-200 group cursor-pointer">
                 <CardContent className="p-0">
                   {/* Event Image/Icon Header */}
                   <div className={`${catStyle.bg} p-4 flex items-center justify-between`}>
@@ -12643,21 +12664,15 @@ function OwnerEvents({ user }) {
                         )}
                       </span>
                       
-                      {event.link && (
-                        <a 
-                          href={event.link} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-coral-500 hover:text-coral-600 text-sm font-medium flex items-center gap-1"
-                        >
-                          Scopri di più
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
-                      )}
+                      <span className="text-coral-500 hover:text-coral-600 text-sm font-medium flex items-center gap-1">
+                        Scopri di più
+                        <ExternalLink className="h-3 w-3" />
+                      </span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
+              </CardWrapper>
             );
           })}
         </div>
