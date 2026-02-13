@@ -150,11 +150,14 @@ export async function GET(request) {
     message: 'Template per import pazienti',
     requiredColumns: ['nome', 'specie'],
     optionalColumns: [
-      'razza', 'data_nascita', 'microchip', 'sesso', 'peso', 'colore', 'note',
+      'razza', 'data_nascita', 'microchip', 'sesso', 'peso', 'colore', 
+      'sterilizzato', 'allergie', 'farmaci', 'note',
       'proprietario', 'email', 'telefono', 'indirizzo',
       'vaccino', 'data_vaccino', 'scadenza_vaccino'
     ],
     speciesValues: ['cane', 'gatto', 'uccello', 'coniglio', 'criceto', 'pesce', 'rettile', 'altro'],
+    sexValues: ['maschio', 'femmina'],
+    sterilizedValues: ['si', 'no'],
     exampleRow: {
       nome: 'Luna',
       specie: 'cane',
@@ -163,15 +166,26 @@ export async function GET(request) {
       microchip: '380260000123456',
       sesso: 'femmina',
       peso: '25',
+      colore: 'biondo',
+      sterilizzato: 'si',
+      allergie: 'Allergia al pollo',
+      farmaci: '',
+      note: 'Cane molto socievole',
       proprietario: 'Mario Rossi',
       email: 'mario.rossi@email.it',
       telefono: '+39 333 1234567',
+      indirizzo: 'Via Roma 123, Milano',
       vaccino: 'Polivalente',
       data_vaccino: '01/01/2024',
       scadenza_vaccino: '01/01/2025'
     },
     supportedFormats: ['CSV', 'Excel (.xlsx)'],
-    documentFormats: ['PDF', 'JPG', 'JPEG', 'PNG']
+    documentFormats: ['PDF', 'JPG', 'JPEG', 'PNG'],
+    notes: {
+      sterilizzato: 'Usa "si" o "no"',
+      data_nascita: 'Formato: GG/MM/AAAA o AAAA-MM-GG',
+      documenti: 'Nomina i documenti con il nome del paziente per abbinamento automatico (es. Luna_referto.pdf)'
+    }
   };
   
   return NextResponse.json(templateInfo, { headers: corsHeaders });
