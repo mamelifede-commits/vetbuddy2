@@ -561,6 +561,11 @@ export async function GET(request) {
         const owner = await db.collection('users').findOne({ id: pet.ownerId });
         if (owner?.email) {
           const age = today.getFullYear() - birthDate.getFullYear();
+          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+          const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&petId=${pet.id}&reason=Controllo%20Compleanno`;
+          const phoneNumber = clinic?.phone || clinic?.telefono || '';
+          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+          
           try {
             await sendEmail({
               to: owner.email,
@@ -574,7 +579,22 @@ export async function GET(request) {
                     <h2 style="color: #333;">${pet.name} compie ${age} anni oggi!</h2>
                     <p style="color: #666; font-size: 16px;">Tanti auguri da tutto il team VetBuddy!</p>
                     <p style="font-size: 48px;">🎁🐾🎈</p>
-                    <p style="color: #999; font-size: 14px;">Per festeggiare, perché non prenotare un controllo di salute?</p>
+                    <p style="color: #666; font-size: 14px;">Per festeggiare, perché non prenotare un controllo di salute?</p>
+                    
+                    <!-- Action Buttons -->
+                    <div style="margin: 25px 0;">
+                      <a href="${bookUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        🎁 Prenota Checkup Regalo
+                      </a>
+                      ${phoneLink ? `
+                      <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        📞 Chiama per Auguri
+                      </a>
+                      ` : ''}
+                    </div>
+                  </div>
+                  <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
                   </div>
                 </div>
               `
