@@ -13571,6 +13571,7 @@ function OwnerDocuments({ documents, pets, onRefresh }) {
             </form>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
       
       <Tabs defaultValue="dalla-clinica">
