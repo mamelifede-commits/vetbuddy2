@@ -4113,7 +4113,21 @@ function ClinicDocuments({ documents, owners, pets, onRefresh, onNavigate }) {
       {onNavigate && <BackToDashboard onNavigate={onNavigate} />}
       <div className="flex justify-between items-center mb-6">
         <div><h2 className="text-2xl font-bold text-gray-800">Documenti</h2><p className="text-gray-500 text-sm">Carica PDF e inviali automaticamente via email</p></div>
-        <Button className="bg-coral-500 hover:bg-coral-600" onClick={() => setShowUpload(true)}><Upload className="h-4 w-4 mr-2" />Carica documento</Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={async () => {
+            try {
+              const response = await fetch(`/api/documents/download-all?clinicId=${user?.id || user?.clinicId}&role=clinic`);
+              if (!response.ok) throw new Error('Nessun documento da scaricare');
+              const blob = await response.blob();
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a'); a.href = url;
+              a.download = `VetBuddy_Documenti_${new Date().toISOString().split('T')[0]}.zip`;
+              document.body.appendChild(a); a.click();
+              window.URL.revokeObjectURL(url); a.remove();
+            } catch (e) { alert(e.message || 'Errore download'); }
+          }}><Download className="h-4 w-4 mr-2" />Scarica tutto</Button>
+          <Button className="bg-coral-500 hover:bg-coral-600" onClick={() => setShowUpload(true)}><Upload className="h-4 w-4 mr-2" />Carica documento</Button>
+        </div>
       </div>
       <div className="bg-coral-50 border border-coral-200 rounded-lg p-4 mb-6"><div className="flex items-start gap-3"><FileText className="h-5 w-5 text-coral-600 mt-0.5" /><div><h4 className="font-medium text-coral-800">Come funziona</h4><p className="text-sm text-coral-700">Carichi il PDF → il proprietario lo riceve via email come allegato → lo ritrova in app nella sezione Documenti.</p></div></div></div>
       
