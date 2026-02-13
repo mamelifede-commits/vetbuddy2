@@ -27,6 +27,8 @@ def make_request(method, endpoint, json_data=None):
     except Exception as e:
         print(f"Exception: {e}")
         print(f"Exception type: {type(e)}")
+        import traceback
+        traceback.print_exc()
         return None
 
 # Test the problematic request
@@ -43,6 +45,7 @@ if response:
         try:
             data = response.json()
             print(f"JSON data: {data}")
+            print("TEST WOULD PASS")
         except Exception as e:
             print(f"JSON parsing error: {e}")
     else:
