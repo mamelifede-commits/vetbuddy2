@@ -11119,17 +11119,27 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
               <NavItem icon={Search} label="Trova clinica" value="findClinic" />
               <NavItem icon={Mail} label="Invita la tua clinica" value="inviteClinic" />
             </nav>
-            <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
           </div>
         </>
       )}
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 bg-white border-r p-4 flex-col flex-shrink-0">
-        <div className="flex items-center gap-3 mb-2"><VetBuddyLogo size={36} /><div><h1 className="font-bold text-coral-500">VetBuddy</h1><p className="text-xs text-gray-500 truncate max-w-[140px]">{user.name}</p></div></div>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <VetBuddyLogo size={36} />
+            <div>
+              <h1 className="font-bold text-coral-500">VetBuddy</h1>
+              <p className="text-xs text-gray-500 truncate max-w-[100px]">{user.name}</p>
+            </div>
+          </div>
+          <Button variant="ghost" size="sm" onClick={onLogout} className="text-gray-500 hover:text-red-600 hover:bg-red-50" title="Esci">
+            <LogOut className="h-4 w-4" />
+          </Button>
+        </div>
         <div className="mb-2"><RoleBadge role="owner" /></div>
         <Badge variant="outline" className="mb-6 justify-center text-amber-600 border-amber-300 bg-amber-50"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
-        <nav className="space-y-1 flex-1">
+        <nav className="space-y-1 flex-1 overflow-y-auto">
           <NavItem icon={Calendar} label="Appuntamenti" value="appointments" />
           <NavItem icon={FileText} label="Documenti" value="documents" badge={documents.length} />
           <NavItem icon={MessageCircle} label="Messaggi" value="messages" />
@@ -11140,7 +11150,6 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           <NavItem icon={Search} label="Trova clinica" value="findClinic" />
           <NavItem icon={Mail} label="Invita la tua clinica" value="inviteClinic" />
         </nav>
-        <Button variant="ghost" onClick={onLogout} className="mt-auto text-gray-600"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
       </aside>
 
       {/* Main Content */}
