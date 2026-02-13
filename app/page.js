@@ -14580,11 +14580,11 @@ function FindClinic({ user }) {
         </div>
 
         {/* Google Maps Embed */}
-        <div className="h-[500px] rounded-2xl overflow-hidden border shadow-lg">
+        <div className="h-[300px] sm:h-[400px] md:h-[500px] rounded-2xl overflow-hidden border shadow-lg">
           <iframe
             width="100%"
             height="100%"
-            style={{ border: 0 }}
+            style={{ border: 0, minHeight: '250px' }}
             loading="lazy"
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
