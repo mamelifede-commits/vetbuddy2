@@ -4231,8 +4231,11 @@ Milo,cane,Golden Retriever,10/08/2021,,maschio,28,dorato,si,,Apoquel 16mg,Dermat
               <Upload className="h-5 w-5 text-blue-500" />
               Import Pazienti Esistenti
             </DialogTitle>
-            <DialogDescription>
-              Carica i tuoi pazienti esistenti da file CSV/Excel
+            <DialogDescription className="flex items-center justify-between">
+              <span>Carica i tuoi pazienti esistenti da file CSV/Excel</span>
+              <a href="/guida-import" target="_blank" className="text-blue-500 hover:underline text-sm flex items-center gap-1">
+                📖 Guida completa
+              </a>
             </DialogDescription>
           </DialogHeader>
           
