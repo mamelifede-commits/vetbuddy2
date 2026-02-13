@@ -12027,6 +12027,244 @@ function OwnerReviews({ user }) {
   );
 }
 
+// Componente Eventi & News per Proprietari
+function OwnerEvents({ user }) {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [error, setError] = useState(null);
+
+  const loadEvents = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/events');
+      if (res.ok) {
+        const data = await res.json();
+        setEvents(data.events || []);
+      } else {
+        setError('Impossibile caricare gli eventi');
+      }
+    } catch (err) {
+      console.error('Error loading events:', err);
+      setError('Errore di connessione');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  const getCategoryColor = (category) => {
+    switch(category) {
+      case 'veterinaria': return { bg: 'bg-blue-100', text: 'text-blue-700', icon: '🏥' };
+      case 'cani': return { bg: 'bg-amber-100', text: 'text-amber-700', icon: '🐕' };
+      case 'gatti': return { bg: 'bg-purple-100', text: 'text-purple-700', icon: '🐱' };
+      case 'promo': return { bg: 'bg-green-100', text: 'text-green-700', icon: '🎁' };
+      case 'eventi': return { bg: 'bg-coral-100', text: 'text-coral-700', icon: '🎉' };
+      default: return { bg: 'bg-gray-100', text: 'text-gray-700', icon: '📰' };
+    }
+  };
+
+  const getCategoryLabel = (category) => {
+    switch(category) {
+      case 'veterinaria': return 'Salute & Benessere';
+      case 'cani': return 'Per Cani';
+      case 'gatti': return 'Per Gatti';
+      case 'promo': return 'Promozioni';
+      case 'eventi': return 'Eventi Locali';
+      default: return 'News';
+    }
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
+  const filteredEvents = activeCategory === 'all' 
+    ? events 
+    : events.filter(e => e.category === activeCategory);
+
+  const categories = [
+    { id: 'all', label: 'Tutti', icon: CalendarDays },
+    { id: 'veterinaria', label: 'Salute', icon: Stethoscope },
+    { id: 'cani', label: 'Cani', icon: PawPrint },
+    { id: 'gatti', label: 'Gatti', icon: PawPrint },
+    { id: 'promo', label: 'Promo', icon: Gift },
+    { id: 'eventi', label: 'Eventi', icon: MapPin },
+  ];
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <CalendarDays className="h-7 w-7 text-coral-500" />
+          Eventi & News
+        </h1>
+        <p className="text-gray-500 mt-1">Scopri eventi, notizie e promozioni per te e il tuo animale</p>
+      </div>
+
+      {/* Categories Filter */}
+      <div className="flex flex-wrap gap-2 mb-6 overflow-x-auto pb-2">
+        {categories.map(cat => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveCategory(cat.id)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+              activeCategory === cat.id
+                ? 'bg-coral-500 text-white shadow-md'
+                : 'bg-white border border-gray-200 hover:bg-gray-50 text-gray-700'
+            }`}
+          >
+            <cat.icon className="h-4 w-4" />
+            {cat.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="text-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-coral-500 mb-4" />
+          <p className="text-gray-500">Caricamento eventi...</p>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && !loading && (
+        <Card className="p-6 text-center border-red-200 bg-red-50">
+          <AlertCircle className="h-12 w-12 mx-auto text-red-400 mb-3" />
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={loadEvents} variant="outline" className="border-red-300 text-red-600">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Riprova
+          </Button>
+        </Card>
+      )}
+
+      {/* Empty State */}
+      {!loading && !error && filteredEvents.length === 0 && (
+        <Card className="p-12 text-center">
+          <CalendarDays className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Nessun evento disponibile</h3>
+          <p className="text-gray-500">Non ci sono eventi in questa categoria al momento. Torna presto!</p>
+        </Card>
+      )}
+
+      {/* Events Grid */}
+      {!loading && !error && filteredEvents.length > 0 && (
+        <div className="grid gap-4 md:grid-cols-2">
+          {filteredEvents.map(event => {
+            const catStyle = getCategoryColor(event.category);
+            return (
+              <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-all duration-200 group">
+                <CardContent className="p-0">
+                  {/* Event Image/Icon Header */}
+                  <div className={`${catStyle.bg} p-4 flex items-center justify-between`}>
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl">{catStyle.icon}</span>
+                      <Badge className={`${catStyle.bg} ${catStyle.text} border-0`}>
+                        {getCategoryLabel(event.category)}
+                      </Badge>
+                    </div>
+                    {event.isFeatured && (
+                      <Badge className="bg-amber-500 text-white">
+                        <Star className="h-3 w-3 mr-1" /> In evidenza
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="p-4">
+                    <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-coral-600 transition-colors">
+                      {event.title}
+                    </h3>
+                    
+                    {event.description && (
+                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                        {event.description}
+                      </p>
+                    )}
+                    
+                    <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-3">
+                      {event.eventDate && (
+                        <span className="flex items-center gap-1">
+                          <CalendarDays className="h-4 w-4" />
+                          {formatDate(event.eventDate)}
+                        </span>
+                      )}
+                      {event.location && (
+                        <span className="flex items-center gap-1">
+                          <MapPin className="h-4 w-4" />
+                          {event.location}
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* Source */}
+                    <div className="flex items-center justify-between pt-3 border-t">
+                      <span className="text-xs text-gray-400 flex items-center gap-1">
+                        {event.source === 'vetbuddy' ? (
+                          <>
+                            <PawPrint className="h-3 w-3 text-coral-400" />
+                            VetBuddy
+                          </>
+                        ) : event.source === 'rss' ? (
+                          <>
+                            <Globe className="h-3 w-3" />
+                            {event.sourceLabel || 'News Esterna'}
+                          </>
+                        ) : (
+                          <>
+                            <Building2 className="h-3 w-3" />
+                            {event.organizer || 'Organizzatore'}
+                          </>
+                        )}
+                      </span>
+                      
+                      {event.link && (
+                        <a 
+                          href={event.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-coral-500 hover:text-coral-600 text-sm font-medium flex items-center gap-1"
+                        >
+                          Scopri di più
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Info Box */}
+      {!loading && (
+        <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+          <div className="flex items-start gap-3">
+            <Bell className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium text-blue-800">Ricevi aggiornamenti</p>
+              <p className="text-sm text-blue-600 mt-1">
+                Presto potrai attivare le notifiche per ricevere aggiornamenti su eventi e promozioni nella tua zona!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Componente Invita la tua Clinica
 function InviteClinic({ user }) {
   const [email, setEmail] = useState('');
