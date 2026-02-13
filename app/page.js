@@ -12175,12 +12175,14 @@ function OwnerEvents({ user }) {
       case 'veterinaria': return { bg: 'bg-blue-100', text: 'text-blue-700', icon: '🏥' };
       case 'cani': return { bg: 'bg-amber-100', text: 'text-amber-700', icon: '🐕' };
       case 'gatti': return { bg: 'bg-purple-100', text: 'text-purple-700', icon: '🐱' };
+      case 'cavalli': return { bg: 'bg-brown-100', text: 'text-yellow-800', icon: '🐴' };
       case 'conigli': return { bg: 'bg-pink-100', text: 'text-pink-700', icon: '🐰' };
       case 'uccelli': return { bg: 'bg-sky-100', text: 'text-sky-700', icon: '🐦' };
       case 'rettili': return { bg: 'bg-emerald-100', text: 'text-emerald-700', icon: '🦎' };
       case 'pesci': return { bg: 'bg-cyan-100', text: 'text-cyan-700', icon: '🐠' };
       case 'roditori': return { bg: 'bg-orange-100', text: 'text-orange-700', icon: '🐹' };
       case 'furetti': return { bg: 'bg-rose-100', text: 'text-rose-700', icon: '🦡' };
+      case 'altro': return { bg: 'bg-slate-100', text: 'text-slate-700', icon: '🐾' };
       case 'generale': return { bg: 'bg-indigo-100', text: 'text-indigo-700', icon: '🐾' };
       case 'promo': return { bg: 'bg-green-100', text: 'text-green-700', icon: '🎁' };
       case 'eventi': return { bg: 'bg-coral-100', text: 'text-coral-700', icon: '🎉' };
