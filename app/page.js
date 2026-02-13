@@ -8159,12 +8159,36 @@ function ClinicSettings({ user, onNavigate }) {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label>Telefono</Label><Input value={profileForm.phone} onChange={(e) => setProfileForm({...profileForm, phone: e.target.value})} placeholder="+39 02 1234567" /></div>
+                  <div>
+                    <Label className="flex items-center gap-2">
+                      <MessageCircle className="h-4 w-4 text-green-500" />
+                      WhatsApp Business
+                    </Label>
+                    <Input 
+                      value={profileForm.whatsappNumber} 
+                      onChange={(e) => setProfileForm({...profileForm, whatsappNumber: e.target.value})} 
+                      placeholder="+39 333 1234567" 
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Se configurato, i clienti potranno contattarti via WhatsApp</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   <div><Label>Sito web</Label><Input value={profileForm.website} onChange={(e) => setProfileForm({...profileForm, website: e.target.value})} placeholder="www.clinicaveterinaria.it" /></div>
                 </div>
                 <div><Label>Descrizione clinica</Label><Textarea value={profileForm.description} onChange={(e) => setProfileForm({...profileForm, description: e.target.value})} placeholder="Descrivi i servizi e le specializzazioni della tua clinica..." rows={3} /></div>
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label>Orario apertura</Label><Input type="time" value={profileForm.openingTime} onChange={(e) => setProfileForm({...profileForm, openingTime: e.target.value})} /></div>
                   <div><Label>Orario chiusura</Label><Input type="time" value={profileForm.closingTime} onChange={(e) => setProfileForm({...profileForm, closingTime: e.target.value})} /></div>
+                </div>
+                <div>
+                  <Label>Policy di cancellazione (testo personalizzato)</Label>
+                  <Textarea 
+                    value={profileForm.cancellationPolicyText} 
+                    onChange={(e) => setProfileForm({...profileForm, cancellationPolicyText: e.target.value})} 
+                    placeholder="Es: Ti preghiamo di avvisarci almeno 24 ore prima in caso di disdetta. La mancata comunicazione comporterà un addebito di €30." 
+                    rows={2} 
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Questo messaggio apparirà nelle email di promemoria e nella conferma di cancellazione</p>
                 </div>
                 <div className="flex gap-2">
                   <Button type="button" variant="outline" onClick={() => setEditingProfile(false)} className="flex-1">Annulla</Button>
