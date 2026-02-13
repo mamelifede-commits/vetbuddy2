@@ -1684,6 +1684,7 @@ function ClinicDashboard({ user, onLogout }) {
           <NavItem icon={Inbox} label="Team Inbox" value="inbox" badge={unreadMessages} />
           <NavItem icon={FileText} label="Documenti" value="documents" />
           <NavItem icon={Stethoscope} label="Servizi" value="services" />
+          <NavItem icon={Video} label="Video Consulto" value="videoconsult" />
           <NavItem icon={PawPrint} label="Pazienti" value="patients" />
           <NavItem icon={User} label="Proprietari" value="owners" />
           <NavItem icon={Users} label="Staff" value="staff" />
