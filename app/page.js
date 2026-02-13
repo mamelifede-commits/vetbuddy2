@@ -2036,7 +2036,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
 }
 
 // ==================== CONTROL ROOM DASHBOARD ====================
-function ClinicControlRoom({ appointments, documents, messages, owners, pets, setupProgress, onRefresh, onNavigate, onOpenPet }) {
+function ClinicControlRoom({ appointments, documents, messages, owners, pets, rewards, setupProgress, onRefresh, onNavigate, onOpenPet }) {
   const [selectedPetPopup, setSelectedPetPopup] = useState(null);
   
   const today = new Date().toISOString().split('T')[0];
@@ -2044,6 +2044,10 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, se
   const videoAppts = todayAppts.filter(a => a.type === 'videoconsulto');
   const unreadMessages = messages.filter(m => !m.read).length;
   const newFromClients = documents.filter(d => d.fromClient).length + messages.filter(m => !m.read && m.fromClient).length;
+  
+  // Premi attivi (disponibili o pending)
+  const activeRewards = rewards?.filter(r => r.status === 'available' || r.status === 'pending') || [];
+  const pendingRewards = rewards?.filter(r => r.status === 'pending') || [];
   
   const completedSteps = Object.values(setupProgress).filter(Boolean).length;
   const progressPercent = (completedSteps / 4) * 100;
