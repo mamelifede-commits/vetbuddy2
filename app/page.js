@@ -13252,16 +13252,25 @@ function OwnerDocuments({ documents, pets, onRefresh }) {
             </Card>
           ) : (
             <div className="space-y-3">
-              {documents.filter(d => !d.fromClient).map((doc) => {
+              {documents.filter(d => !d.fromClient && d.type !== 'invoice' && d.category !== 'fattura').map((doc) => {
                 const handleDownload = () => {
                   if (doc.content) {
                     // If we have base64 content, create a download link
                     const link = document.createElement('a');
-                    link.href = doc.content;
+                    // Check if it's raw base64 or data URL
+                    if (doc.content.startsWith('data:')) {
+                      link.href = doc.content;
+                    } else {
+                      link.href = `data:application/pdf;base64,${doc.content}`;
+                    }
                     link.download = doc.fileName || doc.name || 'documento';
+                    link.style.display = 'none';
                     document.body.appendChild(link);
                     link.click();
-                    document.body.removeChild(link);
+                    setTimeout(() => document.body.removeChild(link), 100);
+                  } else if (doc.id) {
+                    // Use API download
+                    window.open(`/api/documents/download?id=${doc.id}`, '_blank');
                   } else if (doc.fileUrl) {
                     // If we have a URL, open it
                     window.open(doc.fileUrl, '_blank');
