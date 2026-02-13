@@ -12,7 +12,7 @@ import csv
 from io import StringIO
 
 # Configuration
-BASE_URL = "https://invoicing-system.preview.emergentagent.com/api"
+BASE_URL = "https://pet-care-hub-28.preview.emergentagent.com/api"
 TEST_CLINIC_EMAIL = "demo@vetbuddy.it"
 TEST_CLINIC_PASSWORD = "password123"
 
