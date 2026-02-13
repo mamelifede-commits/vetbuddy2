@@ -22,78 +22,24 @@ function sanitizeText(text) {
     .replace(/❌/g, '[X]')
     .replace(/⚠️/g, '[!]')
     .replace(/💡/g, '*')
-    .replace(/📱/g, '')
-    .replace(/📧/g, '')
-    .replace(/📅/g, '')
-    .replace(/📊/g, '')
-    .replace(/📄/g, '')
-    .replace(/📤/g, '')
-    .replace(/📝/g, '')
-    .replace(/📋/g, '')
-    .replace(/📞/g, '')
-    .replace(/💬/g, '')
-    .replace(/💳/g, '')
-    .replace(/💰/g, '')
-    .replace(/💉/g, '')
-    .replace(/🎁/g, '')
-    .replace(/🐾/g, '')
-    .replace(/🏥/g, '')
-    .replace(/🔐/g, '')
-    .replace(/🚀/g, '')
-    .replace(/⭐/g, '*')
-    .replace(/🎂/g, '')
-    .replace(/🔔/g, '')
-    .replace(/🤖/g, '')
-    .replace(/⚡/g, '')
-    .replace(/🩺/g, '')
-    .replace(/✂️/g, '')
-    .replace(/🦷/g, '')
-    .replace(/🔬/g, '')
-    .replace(/🎬/g, '')
-    .replace(/📹/g, '')
-    .replace(/🖼️/g, '')
-    .replace(/🎥/g, '')
-    .replace(/🎤/g, '')
-    .replace(/🌐/g, '')
-    .replace(/💻/g, '')
-    .replace(/🏆/g, '')
-    .replace(/📥/g, '')
-    .replace(/⏳/g, '')
-    .replace(/🔴/g, '')
-    .replace(/🟢/g, '')
-    .replace(/🟡/g, '')
-    .replace(/⬆️/g, '^')
-    .replace(/🆓/g, '[FREE]')
-    .replace(/💶/g, '')
-    .replace(/👨‍⚕️/g, '')
-    .replace(/👤/g, '')
-    .replace(/🏠/g, '')
-    .replace(/🚐/g, '')
-    .replace(/🤝/g, '')
-    .replace(/🗺️/g, '')
-    .replace(/⏰/g, '')
-    .replace(/✨/g, '')
-    .replace(/❓/g, '?')
-    .replace(/[^\x00-\x7F]/g, ''); // Remove any remaining non-ASCII characters
+    .replace(/[^\x00-\x7F]/g, '');
 }
 
 // ==================== OWNER TUTORIAL CONTENT ====================
 const ownerTutorial = {
-  title: 'VetBuddy',
-  subtitle: 'Guida Completa per Proprietari di Animali',
-  tagline: 'Tutto quello che devi sapere per gestire la salute dei tuoi amici pelosi',
+  title: 'VetBuddy - Guida per Proprietari',
+  subtitle: 'Tutto quello che devi sapere per gestire la salute dei tuoi animali',
   
   quickStart: [
-    { step: '1', text: 'Registrati gratis su vetbuddy.it' },
-    { step: '2', text: 'Aggiungi i tuoi animali al profilo' },
-    { step: '3', text: 'Trova una clinica veterinaria' },
-    { step: '4', text: 'Prenota la tua prima visita' }
+    'Registrati gratis su vetbuddy.it',
+    'Aggiungi i tuoi animali al profilo',
+    'Trova una clinica veterinaria',
+    'Prenota la tua prima visita'
   ],
   
   sections: [
     {
       title: 'REGISTRAZIONE E PRIMO ACCESSO',
-      icon: 'user',
       content: [
         'Vai su vetbuddy.it e clicca "Registrati"',
         'Seleziona "Proprietario di Animali"',
@@ -105,60 +51,52 @@ const ownerTutorial = {
     },
     {
       title: 'AGGIUNGERE I TUOI ANIMALI',
-      icon: 'pet',
       content: [
         'Dalla dashboard, clicca su "I Miei Animali"',
         'Premi il pulsante "+" per aggiungere un nuovo animale',
         'Inserisci: nome, specie, razza, data di nascita',
         'Aggiungi peso attuale, numero microchip e foto',
-        'Indica eventuali allergie o condizioni particolari',
-        'Puoi aggiungere note comportamentali importanti'
+        'Indica eventuali allergie o condizioni particolari'
       ],
       tip: 'VetBuddy supporta: cani, gatti, conigli, uccelli, rettili, pesci, cavalli e altri!'
     },
     {
       title: 'TROVARE UNA CLINICA VETERINARIA',
-      icon: 'map',
       content: [
         'Vai alla sezione "Trova Clinica"',
         'Usa la mappa interattiva per vedere le cliniche vicine',
         'Filtra per citta o servizi offerti',
         'Clicca su una clinica per vedere dettagli e recensioni',
-        'Visualizza orari di apertura e contatti',
         'Salva le cliniche preferite per accesso rapido'
       ],
       tip: 'La mappa mostra tutte le cliniche partner in Italia!'
     },
     {
       title: 'PRENOTARE UN APPUNTAMENTO',
-      icon: 'calendar',
       content: [
         'Clicca su "Prenota Visita" dalla dashboard',
         'Seleziona la clinica desiderata',
-        'Scegli il tipo di servizio (visita, vaccino, chirurgia...)',
+        'Scegli il tipo di servizio',
         'Seleziona l\'animale per cui stai prenotando',
         'Scegli data e orario tra quelli disponibili',
-        'Aggiungi note per il veterinario (sintomi, urgenze)',
-        'Conferma la prenotazione e ricevi email di conferma'
+        'Aggiungi note per il veterinario',
+        'Conferma la prenotazione'
       ],
       tip: 'Puoi gestire, modificare o cancellare i tuoi appuntamenti dalla dashboard.'
     },
     {
       title: 'GESTIRE I TUOI DOCUMENTI',
-      icon: 'document',
       content: [
         'Accedi a "I Miei Documenti" dalla dashboard',
         'Visualizza prescrizioni, referti e fatture ricevute',
         'Scarica singoli documenti in formato PDF',
         'Scarica TUTTI i documenti in un file ZIP',
-        'Organizza i documenti per animale o per data',
         'I documenti della clinica arrivano automaticamente'
       ],
       tip: 'Tutti i tuoi documenti sono sempre disponibili, anche offline!'
     },
     {
       title: 'NOTIFICHE E PROMEMORIA',
-      icon: 'bell',
       content: [
         'Ricevi notifiche per appuntamenti in arrivo',
         'Promemoria automatici per vaccini e controlli',
@@ -170,107 +108,82 @@ const ownerTutorial = {
     },
     {
       title: 'PROGRAMMA FEDELTA',
-      icon: 'star',
       content: [
         'Accumula punti con ogni prenotazione completata',
         'Ricevi punti bonus per recensioni e referral',
         'Riscatta i punti per sconti sulle visite',
-        'Visualizza il tuo saldo punti nella dashboard',
-        'Invita amici e guadagna punti extra'
+        'Visualizza il tuo saldo punti nella dashboard'
       ],
       tip: 'Ogni 100 punti = 5 EUR di sconto sulla prossima visita!'
-    },
-    {
-      title: 'INSTALLARE L\'APP',
-      icon: 'phone',
-      content: [
-        'VetBuddy funziona come app installabile (PWA)',
-        'Su iPhone: Safari -> Condividi -> Aggiungi a Home',
-        'Su Android: Chrome -> Menu -> Installa app',
-        'L\'app funziona anche offline',
-        'Ricevi notifiche push come un\'app nativa'
-      ],
-      tip: 'L\'app non occupa spazio e si aggiorna automaticamente!'
     }
   ],
   
   faqs: [
-    { q: 'Quanto costa usare VetBuddy?', a: 'VetBuddy e completamente GRATUITO per i proprietari di animali. Nessun costo nascosto!' },
-    { q: 'Posso usare VetBuddy con qualsiasi clinica?', a: 'Puoi prenotare solo presso le cliniche registrate su VetBuddy. Invita la tua clinica di fiducia!' },
-    { q: 'I miei dati sono al sicuro?', a: 'Assolutamente si! Utilizziamo crittografia avanzata e rispettiamo il GDPR.' },
-    { q: 'Posso gestire piu animali?', a: 'Si, puoi aggiungere tutti gli animali che desideri al tuo profilo.' },
-    { q: 'Come annullo un appuntamento?', a: 'Dalla dashboard, vai su "I Miei Appuntamenti", seleziona l\'appuntamento e clicca "Annulla".' },
-    { q: 'Posso caricare documenti per la clinica?', a: 'Si! Puoi caricare foto, referti esterni e documenti nella sezione "I Miei Documenti".' }
+    { q: 'Quanto costa usare VetBuddy?', a: 'Completamente GRATUITO per i proprietari.' },
+    { q: 'Posso usare VetBuddy con qualsiasi clinica?', a: 'Solo con le cliniche registrate su VetBuddy.' },
+    { q: 'I miei dati sono al sicuro?', a: 'Si, crittografia avanzata e conformita GDPR.' },
+    { q: 'Posso gestire piu animali?', a: 'Si, puoi aggiungere tutti gli animali che desideri.' }
   ],
   
   contacts: {
     website: 'www.vetbuddy.it',
-    email: 'supporto@vetbuddy.it',
-    support: 'Assistente virtuale disponibile 24/7 nella dashboard'
+    email: 'supporto@vetbuddy.it'
   }
 };
 
 // ==================== CLINIC TUTORIAL CONTENT ====================
 const clinicTutorial = {
-  title: 'VetBuddy',
-  subtitle: 'Guida Completa per Cliniche Veterinarie',
-  tagline: 'Il gestionale veterinario che semplifica il lavoro quotidiano',
+  title: 'VetBuddy - Guida per Cliniche',
+  subtitle: 'Il gestionale veterinario che semplifica il lavoro quotidiano',
   
   quickStart: [
-    { step: '1', text: 'Registrati come clinica' },
-    { step: '2', text: 'Configura servizi e orari' },
-    { step: '3', text: 'Importa i pazienti esistenti' },
-    { step: '4', text: 'Inizia a ricevere prenotazioni' }
+    'Registrati come clinica',
+    'Configura servizi e orari',
+    'Importa i pazienti esistenti',
+    'Inizia a ricevere prenotazioni'
   ],
   
   sections: [
     {
       title: 'CONFIGURAZIONE INIZIALE',
-      icon: 'settings',
       content: [
         'Registrati come clinica su vetbuddy.it',
         'Completa il profilo: nome clinica, indirizzo, P.IVA, orari',
         'Aggiungi logo e foto della struttura',
         'Configura i servizi offerti con prezzi e durata',
-        'Imposta la posizione sulla mappa (indirizzo o coordinate)',
+        'Imposta la posizione sulla mappa',
         'Scegli il piano: Starter (gratuito) o Premium'
       ],
-      tip: 'Il Piano Starter e perfetto per veterinari freelance. Premium sblocca tutte le automazioni.'
+      tip: 'Il Piano Starter e perfetto per veterinari freelance.'
     },
     {
       title: 'GESTIONE SERVIZI E LISTINO',
-      icon: 'list',
       content: [
         'Vai a "Impostazioni" -> "Servizi"',
         'Aggiungi servizi: nome, descrizione, prezzo, durata',
         'Categorizza (visite, vaccini, chirurgia, diagnostica...)',
         'Imposta prezzi differenti per specie se necessario',
-        'Attiva/disattiva servizi in base alla stagione',
-        'I servizi saranno visibili ai clienti durante la prenotazione'
+        'Attiva/disattiva servizi in base alla stagione'
       ],
       tip: 'Servizi ben descritti aumentano le prenotazioni del 40%!'
     },
     {
       title: 'GESTIONE APPUNTAMENTI',
-      icon: 'calendar',
       content: [
         'Visualizza il calendario dalla dashboard principale',
         'Vedi appuntamenti: giornalieri, settimanali o mensili',
         'Clicca su uno slot per creare un appuntamento',
         'Gestisci richieste: accetta, rifiuta o riprogramma',
-        'Aggiungi note interne per ogni appuntamento',
-        'Imposta promemoria automatici via email/WhatsApp'
+        'Aggiungi note interne per ogni appuntamento'
       ],
-      tip: 'Usa i codici colore per distinguere i tipi di appuntamento a colpo d\'occhio.'
+      tip: 'Usa i codici colore per distinguere i tipi di appuntamento.'
     },
     {
       title: 'GESTIONE CLIENTI E PAZIENTI',
-      icon: 'users',
       content: [
         'Accedi a "Pazienti" per vedere tutti i clienti',
         'Visualizza la scheda completa di ogni animale',
         'Consulta lo storico visite e trattamenti',
-        'Aggiungi note, allergie e patologie croniche',
         'IMPORTA clienti esistenti da file CSV',
         'Esporta i dati per backup o analisi'
       ],
@@ -278,130 +191,76 @@ const clinicTutorial = {
     },
     {
       title: 'DOCUMENTI E PRESCRIZIONI',
-      icon: 'document',
       content: [
         'Vai a "Documenti" dalla dashboard',
         'Crea: prescrizioni, referti, certificati, vaccinazioni',
         'Carica PDF esistenti o genera da template',
         'Associa il documento al paziente e proprietario',
-        'Il documento viene inviato automaticamente via email',
-        'Il cliente lo ritrova anche nell\'app VetBuddy'
+        'Il documento viene inviato automaticamente via email'
       ],
       tip: 'I documenti digitali riducono le chiamate "ho perso la prescrizione" del 90%!'
     },
     {
       title: 'FATTURAZIONE PROFORMA',
-      icon: 'invoice',
       content: [
         'Vai a "Fatturazione" nella dashboard',
         'Crea nuova fattura PROFORMA selezionando il cliente',
         'Aggiungi servizi prestati con prezzi e quantita',
         'Applica IVA 22% e marca da bollo se necessario',
         'Genera PDF professionale con tutti i dati',
-        'Invia via email o salva per stampa',
         'Esporta in CSV, JSON o PDF per il commercialista'
       ],
-      tip: 'Le fatture PROFORMA sono documenti non fiscali. Per la fatturazione elettronica usa il tuo gestionale fiscale.'
+      tip: 'Le fatture PROFORMA sono documenti non fiscali.'
     },
     {
       title: 'PAGAMENTI ONLINE',
-      icon: 'payment',
       content: [
         'I proprietari possono pagare online prima della visita',
         'Pagamento sicuro tramite Stripe',
         'Accetta carte, Apple Pay, Google Pay',
         'Ricevi notifica immediata del pagamento',
-        'Lo stato "pagato" e visibile nella scheda appuntamento',
-        'Report mensile dei pagamenti ricevuti',
         'NESSUNA commissione VetBuddy sulle transazioni'
       ],
-      tip: 'Il pagamento anticipato riduce i no-show del 60% e migliora il cash flow!'
+      tip: 'Il pagamento anticipato riduce i no-show del 60%!'
     },
     {
       title: 'AUTOMAZIONI (PIANO PREMIUM)',
-      icon: 'automation',
       content: [
         'Promemoria automatici 24h prima dell\'appuntamento',
         'Follow-up post visita con istruzioni personalizzate',
         'Reminder per vaccini e controlli periodici',
-        'Richiesta recensioni automatica',
         'Notifiche WhatsApp Business',
-        'Auto-assegnazione slot disponibili',
         'Report settimanale automatico'
       ],
-      tip: 'Le automazioni fanno risparmiare in media 2 ore al giorno di lavoro!'
-    },
-    {
-      title: 'NOTIFICHE WHATSAPP',
-      icon: 'whatsapp',
-      content: [
-        'Vai a "Impostazioni" -> "Notifiche WhatsApp"',
-        'Inserisci le credenziali Twilio',
-        'Configura il numero WhatsApp Business',
-        'Personalizza i template dei messaggi',
-        'Attiva/disattiva tipi di notifica specifici',
-        'I clienti riceveranno promemoria su WhatsApp'
-      ],
-      tip: 'WhatsApp ha un tasso di apertura del 98% vs 20% delle email!'
+      tip: 'Le automazioni fanno risparmiare in media 2 ore al giorno!'
     },
     {
       title: 'ANALYTICS E REPORT',
-      icon: 'chart',
       content: [
         'Dashboard con KPI principali in tempo reale',
         'Visualizza: visite, fatturato, nuovi clienti',
         'Confronta con periodi precedenti',
         'Report esportabili in CSV',
-        'Analisi per tipo di servizio e specie animale',
-        'Trend mensili e stagionali'
+        'Analisi per tipo di servizio e specie animale'
       ],
-      tip: 'Usa i dati per identificare i servizi piu richiesti e ottimizzare l\'offerta.'
-    },
-    {
-      title: 'SICUREZZA E PRIVACY',
-      icon: 'security',
-      content: [
-        'Tutti i dati sono crittografati',
-        'Backup automatici giornalieri',
-        'Conforme al GDPR',
-        'Log di accesso e modifiche',
-        'Esportazione/cancellazione dati su richiesta',
-        'Autenticazione sicura'
-      ],
-      tip: 'VetBuddy non condivide mai i dati dei tuoi clienti con terze parti.'
-    },
-    {
-      title: 'IMPORT PAZIENTI DA CSV',
-      icon: 'import',
-      content: [
-        'Vai a "Pazienti" -> "Importa"',
-        'Scarica il template CSV',
-        'Compila con i dati dei tuoi pazienti',
-        'Carica il file compilato',
-        'VetBuddy importa: proprietari, animali, vaccini',
-        'Gestisce automaticamente i duplicati'
-      ],
-      tip: 'Migra da qualsiasi gestionale in pochi minuti!'
+      tip: 'Usa i dati per identificare i servizi piu richiesti.'
     }
   ],
   
   faqs: [
-    { q: 'Quanto costa VetBuddy per le cliniche?', a: 'Piano Starter: GRATUITO per sempre. Piano Premium: EUR 49/mese con tutte le automazioni. Pilot Milano: 90 giorni gratis Premium.' },
-    { q: 'Posso importare dati dal mio gestionale attuale?', a: 'Si! Supportiamo import da CSV. Contattaci per assistenza nella migrazione.' },
-    { q: 'VetBuddy sostituisce il software di fatturazione?', a: 'No, VetBuddy genera PROFORMA. Per la fatturazione elettronica usa il tuo gestionale fiscale.' },
-    { q: 'Come funziona il pagamento dei clienti?', a: 'I clienti pagano via Stripe. I fondi vanno sul tuo conto. Nessuna commissione VetBuddy.' },
-    { q: 'Posso avere piu utenti per la clinica?', a: 'Si, nel Piano Premium puoi aggiungere collaboratori con ruoli diversi.' },
-    { q: 'I dati dei miei pazienti sono al sicuro?', a: 'Assolutamente. Crittografia, backup automatici e conformita GDPR garantiti.' }
+    { q: 'Quanto costa VetBuddy?', a: 'Starter: GRATUITO. Premium: EUR 49/mese.' },
+    { q: 'Posso importare dati dal gestionale attuale?', a: 'Si! Supportiamo import da CSV.' },
+    { q: 'VetBuddy sostituisce il software di fatturazione?', a: 'No, genera solo PROFORMA.' },
+    { q: 'Come funziona il pagamento dei clienti?', a: 'Via Stripe. Nessuna commissione VetBuddy.' }
   ],
   
   contacts: {
     website: 'www.vetbuddy.it',
-    email: 'cliniche@vetbuddy.it',
-    support: 'Assistente virtuale disponibile 24/7 nella dashboard'
+    email: 'cliniche@vetbuddy.it'
   }
 };
 
-// ==================== PDF GENERATION ====================
+// ==================== PDF GENERATION (MINIMALIST STYLE) ====================
 async function generateTutorialPDF(tutorial, isClinic = false) {
   const pdfDoc = await PDFDocument.create();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -410,29 +269,24 @@ async function generateTutorialPDF(tutorial, isClinic = false) {
   const pageWidth = 595;
   const pageHeight = 842;
   const margin = 50;
-  const lineHeight = 16;
+  const contentWidth = pageWidth - 2 * margin;
+  const lineHeight = 14;
+  const sectionGap = 25;
   
   // Colors
   const coralColor = rgb(0.96, 0.42, 0.42);
-  const coralLight = rgb(0.99, 0.93, 0.93);
-  const darkGray = rgb(0.15, 0.15, 0.15);
-  const mediumGray = rgb(0.4, 0.4, 0.4);
-  const lightGray = rgb(0.6, 0.6, 0.6);
-  const white = rgb(1, 1, 1);
-  const blueColor = rgb(0.23, 0.51, 0.98);
-  const greenColor = rgb(0.16, 0.65, 0.40);
-  const purpleColor = rgb(0.55, 0.36, 0.87);
-  const orangeColor = rgb(0.96, 0.58, 0.27);
+  const darkGray = rgb(0.2, 0.2, 0.2);
+  const mediumGray = rgb(0.45, 0.45, 0.45);
+  const lightGray = rgb(0.7, 0.7, 0.7);
+  const bgLight = rgb(0.97, 0.97, 0.97);
   
-  // Section colors rotation
-  const sectionColors = [coralColor, blueColor, greenColor, purpleColor, orangeColor, rgb(0.89, 0.32, 0.53)];
-  
-  // Helper functions
+  // Helper: Add new page and return starting Y position
   const addPage = () => {
     const page = pdfDoc.addPage([pageWidth, pageHeight]);
-    return { page, yPosition: pageHeight - margin };
+    return { page, y: pageHeight - margin };
   };
   
+  // Helper: Draw wrapped text and return new Y position
   const drawWrappedText = (page, text, x, y, maxWidth, fontSize, textFont, color) => {
     const safeText = sanitizeText(text);
     const words = safeText.split(' ');
@@ -460,339 +314,226 @@ async function generateTutorialPDF(tutorial, isClinic = false) {
     return currentY;
   };
   
-  // ==================== COVER PAGE ====================
-  let { page, yPosition } = addPage();
+  // ==================== PAGE 1: COVER ====================
+  let { page, y } = addPage();
   
-  // Full page coral header
+  // Top color bar
   page.drawRectangle({
-    x: 0, y: pageHeight - 280, width: pageWidth, height: 280,
+    x: 0, y: pageHeight - 120, width: pageWidth, height: 120,
     color: coralColor
   });
   
-  // Decorative circles
-  page.drawCircle({ x: 80, y: pageHeight - 80, size: 60, color: rgb(1, 1, 1, 0.1) });
-  page.drawCircle({ x: pageWidth - 100, y: pageHeight - 200, size: 80, color: rgb(1, 1, 1, 0.1) });
-  
-  // Logo text
+  // Title
   page.drawText('VetBuddy', {
-    x: margin, y: pageHeight - 100, size: 56, font: boldFont, color: white
+    x: margin, y: pageHeight - 70, size: 36, font: boldFont, color: rgb(1, 1, 1)
   });
-  
-  // Paw icon (simulated with circles)
-  const pawX = pageWidth - 130;
-  const pawY = pageHeight - 100;
-  page.drawCircle({ x: pawX, y: pawY, size: 20, color: white });
-  page.drawCircle({ x: pawX - 18, y: pawY + 22, size: 10, color: white });
-  page.drawCircle({ x: pawX + 18, y: pawY + 22, size: 10, color: white });
-  page.drawCircle({ x: pawX - 28, y: pawY + 5, size: 8, color: white });
-  page.drawCircle({ x: pawX + 28, y: pawY + 5, size: 8, color: white });
   
   // Subtitle
-  page.drawText('Gestionale Veterinario', {
-    x: margin, y: pageHeight - 145, size: 20, font: font, color: white
+  page.drawText(isClinic ? 'Guida per Cliniche Veterinarie' : 'Guida per Proprietari di Animali', {
+    x: margin, y: pageHeight - 100, size: 14, font: font, color: rgb(1, 1, 1)
   });
   
-  // Badge
-  const badgeText = isClinic ? 'GUIDA PER CLINICHE' : 'GUIDA PER PROPRIETARI';
-  const badgeWidth = boldFont.widthOfTextAtSize(badgeText, 12) + 30;
+  y = pageHeight - 170;
+  
+  // Tagline
+  y = drawWrappedText(page, tutorial.subtitle, margin, y, contentWidth, 16, font, darkGray);
+  y -= 40;
+  
+  // Quick Start Box
   page.drawRectangle({
-    x: margin, y: pageHeight - 200, width: badgeWidth, height: 28,
-    color: white, borderRadius: 14
-  });
-  page.drawText(badgeText, {
-    x: margin + 15, y: pageHeight - 192, size: 12, font: boldFont, color: coralColor
+    x: margin, y: y - 120, width: contentWidth, height: 130,
+    color: bgLight
   });
   
-  // Main title below header
-  yPosition = pageHeight - 330;
-  page.drawText(sanitizeText(tutorial.subtitle), {
-    x: margin, y: yPosition, size: 28, font: boldFont, color: darkGray
-  });
-  
-  yPosition -= 35;
-  yPosition = drawWrappedText(page, tutorial.tagline, margin, yPosition, pageWidth - 2 * margin, 14, font, mediumGray);
-  
-  // Quick Start box
-  yPosition -= 40;
-  const qsBoxHeight = 120;
+  // Accent bar
   page.drawRectangle({
-    x: margin, y: yPosition - qsBoxHeight + 30, width: pageWidth - 2 * margin, height: qsBoxHeight,
-    color: coralLight
-  });
-  page.drawRectangle({
-    x: margin, y: yPosition - qsBoxHeight + 30, width: 5, height: qsBoxHeight,
+    x: margin, y: y - 120, width: 4, height: 130,
     color: coralColor
   });
   
-  page.drawText('QUICK START - ' + (isClinic ? 'Operativi in 15 minuti' : 'Inizia in 5 minuti'), {
-    x: margin + 20, y: yPosition + 10, size: 14, font: boldFont, color: coralColor
+  page.drawText('QUICK START', {
+    x: margin + 20, y: y - 20, size: 12, font: boldFont, color: coralColor
   });
   
-  yPosition -= 15;
-  for (let i = 0; i < tutorial.quickStart.length; i++) {
-    const item = tutorial.quickStart[i];
-    // Circle with number
-    page.drawCircle({ x: margin + 35, y: yPosition - 5, size: 12, color: coralColor });
-    page.drawText(item.step, {
-      x: margin + 31, y: yPosition - 9, size: 10, font: boldFont, color: white
+  let qsY = y - 45;
+  tutorial.quickStart.forEach((step, i) => {
+    page.drawText(`${i + 1}.`, {
+      x: margin + 20, y: qsY, size: 11, font: boldFont, color: coralColor
     });
-    page.drawText(sanitizeText(item.text), {
-      x: margin + 55, y: yPosition - 9, size: 11, font: font, color: darkGray
+    page.drawText(sanitizeText(step), {
+      x: margin + 40, y: qsY, size: 11, font: font, color: darkGray
     });
-    yPosition -= 22;
-  }
+    qsY -= 20;
+  });
   
-  // Footer info
-  yPosition = margin + 80;
+  y -= 160;
+  
+  // Generation date
   page.drawText(`Generato il ${new Date().toLocaleDateString('it-IT')}`, {
-    x: margin, y: yPosition, size: 10, font: font, color: lightGray
+    x: margin, y: margin + 20, size: 9, font: font, color: lightGray
   });
   
   page.drawText('www.vetbuddy.it', {
-    x: pageWidth - margin - 80, y: yPosition, size: 10, font: boldFont, color: coralColor
+    x: pageWidth - margin - 80, y: margin + 20, size: 9, font: boldFont, color: coralColor
   });
   
-  // ==================== TABLE OF CONTENTS ====================
-  ({ page, yPosition } = addPage());
+  // ==================== CONTENT PAGES ====================
+  ({ page, y } = addPage());
   
-  // Header
-  page.drawRectangle({
-    x: 0, y: pageHeight - 80, width: pageWidth, height: 80,
-    color: coralLight
-  });
+  // Index header
   page.drawText('INDICE', {
-    x: margin, y: pageHeight - 50, size: 24, font: boldFont, color: coralColor
+    x: margin, y, size: 18, font: boldFont, color: coralColor
+  });
+  y -= 30;
+  
+  // List sections
+  tutorial.sections.forEach((section, i) => {
+    page.drawText(`${i + 1}. ${sanitizeText(section.title)}`, {
+      x: margin, y, size: 11, font: font, color: darkGray
+    });
+    y -= 20;
   });
   
-  yPosition = pageHeight - 120;
+  y -= 10;
+  page.drawText(`${tutorial.sections.length + 1}. DOMANDE FREQUENTI`, {
+    x: margin, y, size: 11, font: font, color: darkGray
+  });
   
+  y -= 20;
+  page.drawText(`${tutorial.sections.length + 2}. CONTATTI`, {
+    x: margin, y, size: 11, font: font, color: darkGray
+  });
+  
+  // ==================== SECTIONS ====================
   for (let i = 0; i < tutorial.sections.length; i++) {
     const section = tutorial.sections[i];
-    const sectionColor = sectionColors[i % sectionColors.length];
     
-    // Colored bullet
-    page.drawCircle({ x: margin + 8, y: yPosition - 3, size: 6, color: sectionColor });
-    
-    // Section number
-    page.drawText(`${i + 1}.`, {
-      x: margin + 25, y: yPosition - 8, size: 12, font: boldFont, color: sectionColor
-    });
-    
-    // Section title
-    page.drawText(sanitizeText(section.title), {
-      x: margin + 50, y: yPosition - 8, size: 12, font: font, color: darkGray
-    });
-    
-    yPosition -= 28;
-    
-    if (yPosition < margin + 100) {
-      ({ page, yPosition } = addPage());
-      yPosition = pageHeight - margin;
+    // Check if we need a new page
+    if (y < 300) {
+      ({ page, y } = addPage());
     }
-  }
-  
-  // Add FAQ entry
-  yPosition -= 20;
-  page.drawCircle({ x: margin + 8, y: yPosition - 3, size: 6, color: coralColor });
-  page.drawText('FAQ', {
-    x: margin + 25, y: yPosition - 8, size: 12, font: boldFont, color: coralColor
-  });
-  page.drawText('Domande Frequenti', {
-    x: margin + 60, y: yPosition - 8, size: 12, font: font, color: darkGray
-  });
-  
-  // ==================== CONTENT SECTIONS ====================
-  for (let i = 0; i < tutorial.sections.length; i++) {
-    const section = tutorial.sections[i];
-    const sectionColor = sectionColors[i % sectionColors.length];
     
-    ({ page, yPosition } = addPage());
+    y -= sectionGap;
     
     // Section header bar
     page.drawRectangle({
-      x: 0, y: pageHeight - 100, width: pageWidth, height: 100,
-      color: sectionColor
+      x: margin, y: y - 5, width: contentWidth, height: 30,
+      color: coralColor
     });
     
-    // Section number badge
-    page.drawCircle({ x: margin + 25, y: pageHeight - 50, size: 22, color: white });
-    const numText = `${i + 1}`;
-    const numWidth = boldFont.widthOfTextAtSize(numText, 20);
-    page.drawText(numText, {
-      x: margin + 25 - numWidth / 2, y: pageHeight - 57, size: 20, font: boldFont, color: sectionColor
+    page.drawText(`${i + 1}. ${sanitizeText(section.title)}`, {
+      x: margin + 10, y: y, size: 12, font: boldFont, color: rgb(1, 1, 1)
     });
     
-    // Section title
-    page.drawText(sanitizeText(section.title), {
-      x: margin + 60, y: pageHeight - 55, size: 20, font: boldFont, color: white
-    });
-    
-    yPosition = pageHeight - 140;
+    y -= 40;
     
     // Content items
-    for (let j = 0; j < section.content.length; j++) {
-      const item = section.content[j];
-      
-      if (yPosition < margin + 80) {
-        ({ page, yPosition } = addPage());
-        // Mini header on continuation pages
-        page.drawRectangle({
-          x: 0, y: pageHeight - 40, width: pageWidth, height: 40,
-          color: sectionColor
-        });
-        page.drawText(sanitizeText(section.title) + ' (continua)', {
-          x: margin, y: pageHeight - 28, size: 12, font: boldFont, color: white
-        });
-        yPosition = pageHeight - 70;
+    for (const item of section.content) {
+      if (y < 100) {
+        ({ page, y } = addPage());
       }
       
-      // Bullet point
-      page.drawCircle({ x: margin + 8, y: yPosition - 4, size: 4, color: sectionColor });
+      page.drawText('-', {
+        x: margin, y, size: 10, font: font, color: coralColor
+      });
       
-      // Item text
-      yPosition = drawWrappedText(page, item, margin + 25, yPosition, pageWidth - 2 * margin - 30, 12, font, darkGray);
-      yPosition -= 8;
+      y = drawWrappedText(page, item, margin + 15, y, contentWidth - 15, 10, font, darkGray);
+      y -= 6;
     }
     
     // Tip box
     if (section.tip) {
-      yPosition -= 15;
+      y -= 10;
       
-      if (yPosition < margin + 80) {
-        ({ page, yPosition } = addPage());
-        yPosition = pageHeight - margin - 30;
+      if (y < 80) {
+        ({ page, y } = addPage());
       }
       
-      const tipBoxHeight = 60;
       page.drawRectangle({
-        x: margin, y: yPosition - tipBoxHeight + 20, width: pageWidth - 2 * margin, height: tipBoxHeight,
-        color: coralLight
-      });
-      page.drawRectangle({
-        x: margin, y: yPosition - tipBoxHeight + 20, width: 4, height: tipBoxHeight,
-        color: coralColor
+        x: margin, y: y - 30, width: contentWidth, height: 40,
+        color: bgLight
       });
       
-      page.drawText('SUGGERIMENTO', {
-        x: margin + 15, y: yPosition + 2, size: 10, font: boldFont, color: coralColor
+      page.drawText('Suggerimento:', {
+        x: margin + 10, y: y - 10, size: 9, font: boldFont, color: coralColor
       });
       
-      drawWrappedText(page, section.tip, margin + 15, yPosition - 15, pageWidth - 2 * margin - 35, 11, font, mediumGray);
+      drawWrappedText(page, section.tip, margin + 10, y - 22, contentWidth - 20, 9, font, mediumGray);
+      
+      y -= 50;
     }
   }
   
   // ==================== FAQ PAGE ====================
-  ({ page, yPosition } = addPage());
+  if (y < 300) {
+    ({ page, y } = addPage());
+  }
   
-  // Header
+  y -= sectionGap;
+  
   page.drawRectangle({
-    x: 0, y: pageHeight - 100, width: pageWidth, height: 100,
+    x: margin, y: y - 5, width: contentWidth, height: 30,
     color: coralColor
   });
   
   page.drawText('DOMANDE FREQUENTI', {
-    x: margin, y: pageHeight - 55, size: 24, font: boldFont, color: white
-  });
-  page.drawText('Le risposte alle domande piu comuni', {
-    x: margin, y: pageHeight - 80, size: 12, font: font, color: white
+    x: margin + 10, y, size: 12, font: boldFont, color: rgb(1, 1, 1)
   });
   
-  yPosition = pageHeight - 140;
+  y -= 45;
   
-  for (let i = 0; i < tutorial.faqs.length; i++) {
-    const faq = tutorial.faqs[i];
-    
-    if (yPosition < margin + 100) {
-      ({ page, yPosition } = addPage());
-      page.drawRectangle({
-        x: 0, y: pageHeight - 40, width: pageWidth, height: 40,
-        color: coralLight
-      });
-      page.drawText('DOMANDE FREQUENTI (continua)', {
-        x: margin, y: pageHeight - 28, size: 12, font: boldFont, color: coralColor
-      });
-      yPosition = pageHeight - 70;
+  for (const faq of tutorial.faqs) {
+    if (y < 100) {
+      ({ page, y } = addPage());
     }
     
-    // Question
     page.drawText(`D: ${sanitizeText(faq.q)}`, {
-      x: margin, y: yPosition, size: 12, font: boldFont, color: darkGray
+      x: margin, y, size: 10, font: boldFont, color: darkGray
     });
-    yPosition -= 20;
+    y -= 16;
     
-    // Answer
-    yPosition = drawWrappedText(page, `R: ${faq.a}`, margin, yPosition, pageWidth - 2 * margin, 11, font, mediumGray);
-    yPosition -= 20;
+    y = drawWrappedText(page, `R: ${faq.a}`, margin, y, contentWidth, 10, font, mediumGray);
+    y -= 15;
   }
   
   // ==================== CONTACT PAGE ====================
-  ({ page, yPosition } = addPage());
+  if (y < 200) {
+    ({ page, y } = addPage());
+  }
   
-  // Full coral background
+  y -= sectionGap;
+  
   page.drawRectangle({
-    x: 0, y: 0, width: pageWidth, height: pageHeight,
+    x: margin, y: y - 5, width: contentWidth, height: 30,
     color: coralColor
   });
   
-  // Content
-  yPosition = pageHeight - 150;
-  
-  page.drawText('HAI BISOGNO DI AIUTO?', {
-    x: margin, y: yPosition, size: 28, font: boldFont, color: white
+  page.drawText('CONTATTI E SUPPORTO', {
+    x: margin + 10, y, size: 12, font: boldFont, color: rgb(1, 1, 1)
   });
   
-  yPosition -= 50;
-  page.drawText('Il nostro team e sempre a disposizione', {
-    x: margin, y: yPosition, size: 16, font: font, color: white
-  });
+  y -= 50;
   
-  yPosition -= 80;
-  
-  // Contact cards
-  const cardWidth = (pageWidth - 2 * margin - 30) / 2;
-  const cardHeight = 120;
-  
-  // Website card
-  page.drawRectangle({
-    x: margin, y: yPosition - cardHeight, width: cardWidth, height: cardHeight,
-    color: white
-  });
-  page.drawText('SITO WEB', {
-    x: margin + 20, y: yPosition - 30, size: 10, font: boldFont, color: mediumGray
+  page.drawText('Sito web:', {
+    x: margin, y, size: 10, font: boldFont, color: darkGray
   });
   page.drawText(sanitizeText(tutorial.contacts.website), {
-    x: margin + 20, y: yPosition - 55, size: 14, font: boldFont, color: coralColor
+    x: margin + 80, y, size: 10, font: font, color: coralColor
   });
   
-  // Email card
-  page.drawRectangle({
-    x: margin + cardWidth + 30, y: yPosition - cardHeight, width: cardWidth, height: cardHeight,
-    color: white
-  });
-  page.drawText('EMAIL', {
-    x: margin + cardWidth + 50, y: yPosition - 30, size: 10, font: boldFont, color: mediumGray
+  y -= 20;
+  
+  page.drawText('Email:', {
+    x: margin, y, size: 10, font: boldFont, color: darkGray
   });
   page.drawText(sanitizeText(tutorial.contacts.email), {
-    x: margin + cardWidth + 50, y: yPosition - 55, size: 14, font: boldFont, color: coralColor
+    x: margin + 80, y, size: 10, font: font, color: coralColor
   });
   
-  yPosition -= cardHeight + 40;
+  y -= 40;
   
-  // Support info
-  page.drawRectangle({
-    x: margin, y: yPosition - 80, width: pageWidth - 2 * margin, height: 80,
-    color: white
-  });
-  page.drawText('SUPPORTO', {
-    x: margin + 20, y: yPosition - 25, size: 10, font: boldFont, color: mediumGray
-  });
-  page.drawText(sanitizeText(tutorial.contacts.support), {
-    x: margin + 20, y: yPosition - 50, size: 12, font: font, color: darkGray
-  });
-  
-  // Footer
-  page.drawText('Grazie per aver scelto VetBuddy!', {
-    x: pageWidth / 2 - 100, y: margin + 30, size: 14, font: boldFont, color: white
+  page.drawText('Assistente virtuale disponibile 24/7 nella dashboard VetBuddy.', {
+    x: margin, y, size: 10, font: font, color: mediumGray
   });
   
   // ==================== ADD PAGE NUMBERS ====================
@@ -800,22 +541,21 @@ async function generateTutorialPDF(tutorial, isClinic = false) {
   for (let i = 0; i < pages.length; i++) {
     const pg = pages[i];
     
-    // Skip first page (cover)
-    if (i === 0) continue;
-    
-    // Page number
-    pg.drawText(`${i}`, {
-      x: pageWidth / 2 - 5, y: 25, size: 10, font: font, color: lightGray
-    });
-    
     // Footer line
     pg.drawRectangle({
-      x: margin, y: 20, width: pageWidth - 2 * margin, height: 1,
+      x: margin, y: 15, width: contentWidth, height: 0.5,
       color: rgb(0.9, 0.9, 0.9)
     });
     
-    pg.drawText('VetBuddy - www.vetbuddy.it', {
-      x: margin, y: 8, size: 8, font: font, color: lightGray
+    // Page number (skip first page)
+    if (i > 0) {
+      pg.drawText(`Pagina ${i}`, {
+        x: pageWidth / 2 - 20, y: 5, size: 8, font: font, color: lightGray
+      });
+    }
+    
+    pg.drawText('VetBuddy', {
+      x: margin, y: 5, size: 8, font: font, color: lightGray
     });
   }
   
