@@ -12781,13 +12781,36 @@ function OwnerAppointments({ appointments, pets }) {
                   <div>
                     <p className="font-medium">{appt.petName}</p>
                     <p className="text-sm text-gray-500">{appt.reason || 'Visita'}</p>
+                    {/* Badge stato pagamento */}
+                    {appt.paymentStatus === 'paid' ? (
+                      <Badge className="bg-green-100 text-green-700 text-xs mt-1">✓ Pagato</Badge>
+                    ) : appt.price && appt.price > 0 && appt.status !== 'cancelled' && appt.status !== 'completed' && (
+                      <Badge className="bg-amber-100 text-amber-700 text-xs mt-1">€{appt.price} da pagare</Badge>
+                    )}
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-medium">{appt.date}</p>
-                  <p className="text-sm text-gray-500">{appt.time}</p>
+                <div className="text-right flex flex-col items-end gap-2">
+                  <div>
+                    <p className="font-medium">{appt.date}</p>
+                    <p className="text-sm text-gray-500">{appt.time}</p>
+                  </div>
+                  {/* Pulsante Paga se non pagato */}
+                  {appt.paymentStatus !== 'paid' && appt.price && appt.price > 0 && appt.status !== 'cancelled' && appt.status !== 'completed' && (
+                    <Button 
+                      size="sm" 
+                      className="bg-emerald-500 hover:bg-emerald-600" 
+                      onClick={(e) => { e.stopPropagation(); handlePayment(appt); }}
+                      disabled={paymentLoading === appt.id}
+                    >
+                      {paymentLoading === appt.id ? (
+                        <><RefreshCw className="h-3 w-3 mr-1 animate-spin" />Caricamento...</>
+                      ) : (
+                        <><CreditCard className="h-3 w-3 mr-1" />Paga €{appt.price}</>
+                      )}
+                    </Button>
+                  )}
                   {appt.type === 'videoconsulto' && appt.videoLink && (
-                    <Button size="sm" className="mt-2 bg-blue-500 hover:bg-blue-600" onClick={(e) => { e.stopPropagation(); window.open(appt.videoLink, '_blank'); }}>
+                    <Button size="sm" className="bg-blue-500 hover:bg-blue-600" onClick={(e) => { e.stopPropagation(); window.open(appt.videoLink, '_blank'); }}>
                       <Video className="h-3 w-3 mr-1" />Entra nel Video Consulto
                     </Button>
                   )}
