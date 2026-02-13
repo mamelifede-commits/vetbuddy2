@@ -8342,107 +8342,57 @@ function ClinicEvents({ user }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('upcoming');
+  const [savingEvent, setSavingEvent] = useState(null);
 
-  // Eventi veterinari di esempio (in produzione verrebbero da API/feed)
-  const mockEvents = [
-    {
-      id: '1',
-      title: 'Congresso Nazionale SCIVAC',
-      organizer: 'SCIVAC',
-      date: '2026-03-15',
-      endDate: '2026-03-17',
-      location: 'Rimini Fiera',
-      type: 'congresso',
-      description: 'Il più grande congresso veterinario italiano con oltre 5000 partecipanti',
-      url: 'https://www.scivac.it',
-      topics: ['Medicina interna', 'Chirurgia', 'Dermatologia'],
-      ecm: true,
-      ecmCredits: 24,
-      image: '🏛️'
-    },
-    {
-      id: '2',
-      title: 'Corso Avanzato di Ecografia Addominale',
-      organizer: 'AIVPA',
-      date: '2026-02-28',
-      endDate: '2026-03-01',
-      location: 'Milano - Hotel Marriott',
-      type: 'corso',
-      description: 'Corso pratico con esercitazioni su animali vivi',
-      url: 'https://www.aivpa.it',
-      topics: ['Ecografia', 'Diagnostica'],
-      ecm: true,
-      ecmCredits: 12,
-      image: '🔬'
-    },
-    {
-      id: '3',
-      title: 'Webinar: Novità in Cardiologia Veterinaria',
-      organizer: 'CARDIOVET',
-      date: '2026-02-20',
-      endDate: '2026-02-20',
-      location: 'Online',
-      type: 'webinar',
-      description: 'Le ultime novità nella diagnosi e terapia delle cardiopatie',
-      url: 'https://www.cardiovet.it',
-      topics: ['Cardiologia', 'Ecocardiografia'],
-      ecm: true,
-      ecmCredits: 4,
-      image: '💻'
-    },
-    {
-      id: '4',
-      title: 'FNOVI Day 2026',
-      organizer: 'FNOVI',
-      date: '2026-04-10',
-      endDate: '2026-04-10',
-      location: 'Roma - Auditorium Parco della Musica',
-      type: 'congresso',
-      description: 'Giornata nazionale della professione veterinaria',
-      url: 'https://www.fnovi.it',
-      topics: ['Deontologia', 'Normativa', 'Professione'],
-      ecm: true,
-      ecmCredits: 8,
-      image: '🎓'
-    },
-    {
-      id: '5',
-      title: 'Workshop Odontostomatologia Veterinaria',
-      organizer: 'SIODOV',
-      date: '2026-05-22',
-      endDate: '2026-05-23',
-      location: 'Torino - Centro Congressi',
-      type: 'workshop',
-      description: 'Pratica intensiva su modelli anatomici e casi clinici',
-      url: 'https://www.siodov.it',
-      topics: ['Odontostomatologia', 'Chirurgia orale'],
-      ecm: true,
-      ecmCredits: 16,
-      image: '🦷'
-    },
-    {
-      id: '6',
-      title: 'Congresso SIVAE - Animali Esotici',
-      organizer: 'SIVAE',
-      date: '2026-06-05',
-      endDate: '2026-06-07',
-      location: 'Bologna Fiere',
-      type: 'congresso',
-      description: 'Tutto sugli animali esotici: rettili, uccelli, piccoli mammiferi',
-      url: 'https://www.sivae.it',
-      topics: ['Animali esotici', 'Rettili', 'Uccelli'],
-      ecm: true,
-      ecmCredits: 20,
-      image: '🦎'
+  // Carica eventi dall'API
+  const loadEvents = async () => {
+    try {
+      const token = localStorage.getItem('vetbuddy_token');
+      const res = await fetch('/api/clinic/events', {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setEvents(data.events || []);
+      }
+    } catch (err) {
+      console.error('Error loading events:', err);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  // Salva/rimuovi evento dai preferiti
+  const toggleSaveEvent = async (eventId, currentlySaved) => {
+    setSavingEvent(eventId);
+    try {
+      const token = localStorage.getItem('vetbuddy_token');
+      const res = await fetch('/api/clinic/events', {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: currentlySaved ? 'unsave' : 'save',
+          eventId
+        })
+      });
+      if (res.ok) {
+        // Aggiorna lo stato locale
+        setEvents(prev => prev.map(e => 
+          e.id === eventId ? { ...e, saved: !currentlySaved } : e
+        ));
+      }
+    } catch (err) {
+      console.error('Error toggling save:', err);
+    } finally {
+      setSavingEvent(null);
+    }
+  };
 
   useEffect(() => {
-    // Simula caricamento eventi
-    setTimeout(() => {
-      setEvents(mockEvents);
-      setLoading(false);
-    }, 500);
+    loadEvents();
   }, []);
 
   const getTypeColor = (type) => {
