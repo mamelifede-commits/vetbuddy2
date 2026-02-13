@@ -5011,6 +5011,7 @@ Milo,cane,Golden Retriever,10/08/2021,,maschio,28,dorato,si,,Apoquel 16mg,Dermat
                 <SelectContent>
                   <SelectItem value="dog">🐕 Cane</SelectItem>
                   <SelectItem value="cat">🐱 Gatto</SelectItem>
+                  <SelectItem value="horse">🐴 Cavallo</SelectItem>
                   <SelectItem value="bird">🦜 Uccello</SelectItem>
                   <SelectItem value="rabbit">🐰 Coniglio</SelectItem>
                   <SelectItem value="other">🐾 Altro</SelectItem>
