@@ -794,7 +794,6 @@ function LandingPage({ onLogin }) {
               <button onClick={() => scrollToSection('premi')} className="text-gray-600 hover:text-coral-500 transition">Premi</button>
               <button onClick={() => scrollToSection('pilot')} className="text-gray-600 hover:text-coral-500 transition">Prezzi</button>
               <a href="/presentazione" className="text-gray-600 hover:text-coral-500 transition">Brochure</a>
-              <a href="/tutorial" className="text-gray-600 hover:text-coral-500 transition">Tutorial</a>
             </nav>
             <div className="hidden md:flex items-center gap-4">
               <Button variant="ghost" onClick={() => { setAuthMode('login'); setShowAuth(true); }}>Accedi</Button>
