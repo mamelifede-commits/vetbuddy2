@@ -645,8 +645,6 @@ export async function GET(request) {
       
       if (owner?.email && clinic) {
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
-        const phoneNumber = clinic?.phone || clinic?.telefono || '';
-        const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
         const bookUrl = `${baseUrl}?action=book&clinicId=${clinic.id}`;
         const reviewUrl = clinic.googlePlaceId ? `https://g.page/r/${clinic.googlePlaceId}` : `${baseUrl}?action=review&clinicId=${clinic.id}`;
         
@@ -672,11 +670,7 @@ export async function GET(request) {
                     <a href="${bookUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                       📅 Prenota Prossima Visita
                     </a>
-                    ${phoneLink ? `
-                    <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                      📞 Chiama la Clinica
-                    </a>
-                    ` : ''}
+                    ${getContactButton(clinic, baseUrl, 'Scrivi Feedback', `Ciao, volevo condividere il mio feedback sulla visita di ${pet?.name || 'oggi'}...`)}
                   </div>
                   
                   <p style="color: #999; font-size: 12px; text-align: center;">Grazie per il tuo feedback!</p>
