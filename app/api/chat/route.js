@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
-// Emergent LLM keys use the Emergent proxy endpoint
-const EMERGENT_API_URL = 'https://emergent-llm-proxy.fly.dev/v1/chat/completions';
+// Emergent LLM keys use the Emergent integration proxy
+const EMERGENT_API_URL = 'https://integrations.emergentagent.com/llm/chat/completions';
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 // Sistema prompt per l'assistente VetBuddy
