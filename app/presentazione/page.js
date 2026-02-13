@@ -682,7 +682,6 @@ export default function PresentazionePage() {
             </div>
             <div className="flex gap-6 text-gray-400">
               <Link href="/" className="hover:text-white">Home</Link>
-              <Link href="/tutorial" className="hover:text-white">Tutorial</Link>
               <Link href="/guida-import" className="hover:text-white">Guida Import</Link>
             </div>
           </div>
