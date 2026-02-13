@@ -1122,6 +1122,11 @@ export async function GET(request) {
         
         const owner = await db.collection('users').findOne({ id: pet.ownerId });
         if (owner?.email) {
+          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+          const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&petId=${pet.id}&reason=Sterilizzazione`;
+          const phoneNumber = clinic?.phone || clinic?.telefono || '';
+          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+          
           try {
             await sendEmail({
               to: owner.email,
@@ -1132,16 +1137,32 @@ export async function GET(request) {
                     <h1 style="color: white; margin: 0;">🐾 Consiglio Importante</h1>
                   </div>
                   <div style="padding: 30px; background: #f9f9f9;">
-                    <p>Ciao ${owner.name || ''},</p>
-                    <p><strong>${pet.name}</strong> ha ${ageMonths} mesi - l'età ideale per la sterilizzazione!</p>
-                    <h3>Perché sterilizzare?</h3>
-                    <ul>
+                    <p style="color: #666; font-size: 16px;">Ciao ${owner.name || ''},</p>
+                    <p style="color: #666; font-size: 16px;"><strong>${pet.name}</strong> ha ${ageMonths} mesi - l'età ideale per la sterilizzazione!</p>
+                    <h3 style="color: #333;">Perché sterilizzare?</h3>
+                    <ul style="color: #666;">
                       <li>✅ Previene tumori e malattie</li>
                       <li>✅ Comportamento più equilibrato</li>
                       <li>✅ Niente cucciolate indesiderate</li>
                       <li>✅ Vita più lunga e sana</li>
                     </ul>
-                    <p>Parlane con il tuo veterinario alla prossima visita!</p>
+                    
+                    <!-- Action Buttons -->
+                    <div style="text-align: center; margin: 25px 0;">
+                      <a href="${bookUrl}" style="display: inline-block; background: #9B59B6; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        🏥 Prenota Consulto Sterilizzazione
+                      </a>
+                      ${phoneLink ? `
+                      <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        📞 Chiama per Info
+                      </a>
+                      ` : ''}
+                    </div>
+                    
+                    <p style="color: #999; font-size: 14px; text-align: center;">Parlane con il tuo veterinario alla prossima visita!</p>
+                  </div>
+                  <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
                   </div>
                 </div>
               `
@@ -1183,6 +1204,11 @@ export async function GET(request) {
           if (monthsSinceVisit >= 6 && !pet.seniorCheckupReminderSent) {
             const owner = await db.collection('users').findOne({ id: pet.ownerId });
             if (owner?.email) {
+              const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+              const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&petId=${pet.id}&reason=Checkup%20Senior`;
+              const phoneNumber = clinic?.phone || clinic?.telefono || '';
+              const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+              
               try {
                 await sendEmail({
                   to: owner.email,
@@ -1193,10 +1219,10 @@ export async function GET(request) {
                         <h1 style="color: white; margin: 0;">👴 Checkup Senior</h1>
                       </div>
                       <div style="padding: 30px; background: #f9f9f9;">
-                        <p>Ciao ${owner.name || ''},</p>
-                        <p><strong>${pet.name}</strong> ha ${ageYears} anni e merita cure speciali!</p>
-                        <p>Per gli animali senior consigliamo:</p>
-                        <ul>
+                        <p style="color: #666; font-size: 16px;">Ciao ${owner.name || ''},</p>
+                        <p style="color: #666; font-size: 16px;"><strong>${pet.name}</strong> ha ${ageYears} anni e merita cure speciali!</p>
+                        <p style="color: #666; font-size: 16px;">Per gli animali senior consigliamo:</p>
+                        <ul style="color: #666;">
                           <li>🩺 Controlli ogni 6 mesi</li>
                           <li>🧪 Esami del sangue annuali</li>
                           <li>🦴 Controllo articolazioni</li>
