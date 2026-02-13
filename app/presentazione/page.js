@@ -108,10 +108,10 @@ export default function PresentazionePage() {
   ];
 
   const competitors = [
-    { name: "VetBuddy", price: "€0*", agenda: true, automazioni: "44+", video: true, inbox: true, premi: true, import: true, mobile: true, support: "24/7" },
-    { name: "Gestionale A", price: "€150/mese", agenda: true, automazioni: "5-10", video: false, inbox: false, premi: false, import: false, mobile: "Parziale", support: "Email" },
-    { name: "Gestionale B", price: "€200/mese", agenda: true, automazioni: "10-15", video: false, inbox: true, premi: false, import: true, mobile: true, support: "Telefono" },
-    { name: "Gestionale C", price: "€100/mese", agenda: true, automazioni: "0", video: false, inbox: false, premi: false, import: false, mobile: false, support: "Email" },
+    { name: "VetBuddy", price: "€0*", agenda: true, automazioni: "44+", video: true, inbox: true, premi: true, fatturazione: true, whatsapp: true, import: true, mobile: true, support: "24/7" },
+    { name: "Gestionale A", price: "€150/mese", agenda: true, automazioni: "5-10", video: false, inbox: false, premi: false, fatturazione: true, whatsapp: false, import: false, mobile: "Parziale", support: "Email" },
+    { name: "Gestionale B", price: "€200/mese", agenda: true, automazioni: "10-15", video: false, inbox: true, premi: false, fatturazione: true, whatsapp: false, import: true, mobile: true, support: "Telefono" },
+    { name: "Gestionale C", price: "€100/mese", agenda: true, automazioni: "0", video: false, inbox: false, premi: false, fatturazione: false, whatsapp: false, import: false, mobile: false, support: "Email" },
   ];
 
   const testimonials = [
