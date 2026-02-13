@@ -30,9 +30,12 @@ async function generateInvoiceNumber(db, clinicId) {
 
 // Funzione per creare fattura automatica dopo pagamento
 async function createAutoInvoice(db, paymentData) {
-  const { clinicId, ownerId, ownerName, ownerEmail, ownerCF, amount, description, appointmentId, petName } = paymentData;
+  const { clinicId, ownerId, ownerName, ownerEmail, ownerCF, amount, description, appointmentId, petName, petId } = paymentData;
   
   const invoiceNumber = await generateInvoiceNumber(db, clinicId);
+  
+  // Recupera info clinica
+  const clinic = await db.collection('users').findOne({ id: clinicId });
   
   // Calcoli IVA e marca da bollo
   const subtotal = amount / 1.22; // Scorporo IVA 22%
@@ -43,26 +46,63 @@ async function createAutoInvoice(db, paymentData) {
   const invoice = {
     id: uuidv4(),
     clinicId,
+    ownerId,
     invoiceNumber,
-    date: new Date().toISOString(),
+    
+    // Info clinica
+    clinicName: clinic?.clinicName || clinic?.name || 'Clinica Veterinaria',
+    clinicAddress: clinic?.address || '',
+    clinicPhone: clinic?.phone || '',
+    clinicEmail: clinic?.email || '',
+    clinicVAT: clinic?.vatNumber || clinic?.partitaIva || '',
+    
+    // Info cliente
     customerName: ownerName,
     customerEmail: ownerEmail,
     customerCF: ownerCF || '',
+    customerAddress: '',
+    customerId: ownerId,
+    
+    // Info paziente
+    petId: petId || '',
+    petName: petName || '',
+    
+    // Date
+    date: new Date().toISOString(),
+    issueDate: new Date().toLocaleDateString('it-IT'),
+    dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('it-IT'),
+    
+    // Items
     items: [{
+      id: uuidv4(),
       description: description || `Prestazione veterinaria${petName ? ` per ${petName}` : ''}`,
       quantity: 1,
-      unitPrice: subtotal,
-      total: subtotal
+      unitPrice: parseFloat(subtotal.toFixed(2)),
+      total: parseFloat(subtotal.toFixed(2))
     }],
-    subtotal,
+    
+    // Totali
+    totals: {
+      subtotal: parseFloat(subtotal.toFixed(2)),
+      vatRate: 22,
+      vatAmount: parseFloat(iva.toFixed(2)),
+      bolloAmount: marcaBollo,
+      total: parseFloat(total.toFixed(2))
+    },
+    
+    // Legacy fields
+    subtotal: parseFloat(subtotal.toFixed(2)),
     vatRate: 22,
-    vatAmount: iva,
+    vatAmount: parseFloat(iva.toFixed(2)),
     marcaBollo,
-    total,
+    total: parseFloat(total.toFixed(2)),
+    
+    // Stato
     status: 'paid',
     paidAt: new Date().toISOString(),
     paymentMethod: 'stripe',
     appointmentId,
+    
     notes: 'Fattura generata automaticamente dopo pagamento online',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
