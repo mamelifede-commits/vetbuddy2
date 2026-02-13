@@ -130,7 +130,7 @@ export async function GET(request) {
       );
     }
     
-    const { db } = await connectToDatabase();
+    const db = await getDb();
     
     // Build query based on role
     let query = {};
