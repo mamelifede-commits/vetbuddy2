@@ -1336,7 +1336,7 @@ function LandingPage({ onLogin }) {
             <span className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-4 font-semibold">
               <Upload className="h-5 w-5" /> MIGRAZIONE FACILE
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Importa i tuoi Pazienti Esistenti 📁</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Importa i tuoi Pazienti Esistenti</h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Passa a VetBuddy senza perdere nulla. Importa in pochi click i dati dal tuo gestionale attuale.
             </p>
