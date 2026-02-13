@@ -83,6 +83,16 @@ android-sdk/
 node_modules/@next/swc-linux-arm64-gnu/next-swc.linux-arm64-gnu.node
 node_modules/@next/swc-linux-arm64-musl/next-swc.linux-arm64-musl.node
 
-# Environment files - DO NOT IGNORE for Kubernetes deployment
-# *.env
-# *.env.*
+# Environment files - MUST be ignored for security
+.env
+.env.*
+.env.local
+.env.production
+-e 
+# Environment files
+*.env
+*.env.*
+-e 
+# Environment files
+*.env
+*.env.*
