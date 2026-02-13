@@ -1104,10 +1104,7 @@ export async function GET(request) {
         const ownerIds = [...new Set(clinicApts.map(a => a.ownerId))];
         
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
-        const phoneNumber = clinic?.phone || clinic?.telefono || '';
-        const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
         const bookUrl = `${baseUrl}?action=book&clinicId=${clinic.id}`;
-        const messageUrl = `${baseUrl}?action=message&clinicId=${clinic.id}`;
 
         for (const ownerId of ownerIds) {
           const owner = await db.collection('users').findOne({ id: ownerId });
@@ -1130,14 +1127,7 @@ export async function GET(request) {
                       <a href="${bookUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                         📅 Prenota Visita
                       </a>
-                      <a href="${messageUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                        💬 Chiedi Consiglio
-                      </a>
-                      ${phoneLink ? `
-                      <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                        📞 Chiama la Clinica
-                      </a>
-                      ` : ''}
+                      ${getContactButton(clinic, baseUrl, 'Chiedi Consiglio', 'Ciao, avrei bisogno di un consiglio...')}
                     </div>
                     
                     <p style="color: #999; margin-top: 30px;">Dalla tua clinica di fiducia: ${clinic.clinicName}</p>
