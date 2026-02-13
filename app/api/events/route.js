@@ -282,11 +282,25 @@ export async function GET(request) {
       allEvents = [...formattedManualEvents, ...rssEvents];
     }
     
+    // If no events found, use default demo events
+    if (allEvents.length === 0) {
+      // Filter default events by category if specified
+      let defaultEventsToUse = [...DEFAULT_EVENTS];
+      if (category) {
+        defaultEventsToUse = defaultEventsToUse.filter(e => e.category === category || e.category === 'generale');
+      }
+      allEvents = defaultEventsToUse;
+    }
+    
     // Sort by date (upcoming first, then recent)
     const now = new Date();
     allEvents.sort((a, b) => {
       const dateA = new Date(a.eventDate || a.createdAt);
       const dateB = new Date(b.eventDate || b.createdAt);
+      
+      // Featured events first
+      if (a.isFeatured && !b.isFeatured) return -1;
+      if (!a.isFeatured && b.isFeatured) return 1;
       
       // Upcoming events first
       const aIsUpcoming = dateA >= now;
@@ -299,9 +313,29 @@ export async function GET(request) {
       return dateA - dateB;
     });
     
+    // Add category labels for UI
+    const categoryLabels = {
+      'cani': 'Cani',
+      'gatti': 'Gatti',
+      'conigli': 'Conigli',
+      'uccelli': 'Uccelli',
+      'rettili': 'Rettili',
+      'pesci': 'Pesci',
+      'roditori': 'Roditori',
+      'furetti': 'Furetti',
+      'veterinaria': 'Veterinaria',
+      'generale': 'Tutti gli animali'
+    };
+    
+    const enrichedEvents = allEvents.map(e => ({
+      ...e,
+      categoryLabel: categoryLabels[e.category] || e.category
+    }));
+    
     return NextResponse.json({ 
-      events: allEvents.slice(0, 30),
-      sources: RSS_FEEDS.map(f => ({ id: f.id, name: f.name }))
+      events: enrichedEvents.slice(0, 30),
+      sources: RSS_FEEDS.map(f => ({ id: f.id, name: f.name })),
+      categories: Object.entries(categoryLabels).map(([id, label]) => ({ id, label }))
     }, { headers: corsHeaders });
     
   } catch (error) {
