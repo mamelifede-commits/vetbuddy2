@@ -6102,11 +6102,11 @@ function ClinicServices({ onNavigate, user }) {
       )}
 
       {/* Select All for category */}
-      {activeCategory !== 'all' && activeCategory !== 'custom' && (
+      {activeCategory !== 'all' && activeCategory !== 'custom' && serviceCatalog[activeCategory]?.services && (
         <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
           <span className="text-sm text-gray-600">Seleziona tutti i servizi di questa categoria</span>
           <Button variant="outline" size="sm" onClick={() => selectAll(activeCategory)}>
-            {serviceCatalog[activeCategory]?.services.every(s => isServiceSelected(s.id)) ? 'Deseleziona tutti' : 'Seleziona tutti'}
+            {serviceCatalog[activeCategory]?.services?.every(s => isServiceSelected(s.id)) ? 'Deseleziona tutti' : 'Seleziona tutti'}
           </Button>
         </div>
       )}
