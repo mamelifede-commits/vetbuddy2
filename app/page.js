@@ -2026,6 +2026,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'reports' && <ClinicReports appointments={appointments} documents={documents} messages={messages} owners={owners} pets={pets} onNavigate={setActiveTab} onOpenOwner={handleOpenOwnerFromPet} onOpenPet={handleOpenPetFromOwner} />}
         {activeTab === 'reviews' && <ClinicReviews onNavigate={setActiveTab} />}
         {activeTab === 'rewards' && <ClinicRewardsManagement user={user} owners={owners} />}
+        {activeTab === 'invoicing' && <ClinicInvoicing user={user} owners={owners} pets={pets} />}
         {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} onNavigate={setActiveTab} />}
         {activeTab === 'automations' && <ClinicAutomations user={user} onNavigate={setActiveTab} />}
         {activeTab === 'archive' && <ClinicArchive user={user} />}
