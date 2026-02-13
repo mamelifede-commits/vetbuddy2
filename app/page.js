@@ -11499,7 +11499,8 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         <Badge variant="outline" className="mb-6 justify-center text-amber-600 border-amber-300 bg-amber-50"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
         <nav className="space-y-1 flex-1 overflow-y-auto">
           <NavItem icon={Calendar} label="Appuntamenti" value="appointments" />
-          <NavItem icon={FileText} label="Documenti" value="documents" badge={documents.length} />
+          <NavItem icon={FileText} label="Documenti" value="documents" badge={documents.filter(d => d.type !== 'invoice' && d.category !== 'fattura').length || null} />
+          <NavItem icon={Receipt} label="Le mie Fatture" value="invoices" badge={documents.filter(d => d.type === 'invoice' || d.category === 'fattura').length || null} />
           <NavItem icon={MessageCircle} label="Messaggi" value="messages" />
           <NavItem icon={PawPrint} label="I miei animali" value="pets" />
           <NavItem icon={Gift} label="I miei premi" value="rewards" badge={rewards.filter(r => r.status === 'available').length} />
