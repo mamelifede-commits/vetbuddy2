@@ -11670,6 +11670,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
               <div className="border-t my-3"></div>
               <NavItem icon={Search} label="Trova clinica" value="findClinic" />
               <NavItem icon={Mail} label="Invita la tua clinica" value="inviteClinic" />
+              <NavItem icon={BookOpen} label="Tutorial" value="tutorial" />
             </nav>
           </div>
         </>
