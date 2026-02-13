@@ -127,7 +127,7 @@ const ownerTutorial = {
   
   contacts: {
     website: 'www.vetbuddy.it',
-    email: 'supporto@vetbuddy.it'
+    email: 'support@vetbuddy.it'
   }
 };
 
