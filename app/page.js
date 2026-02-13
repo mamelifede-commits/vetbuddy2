@@ -11314,16 +11314,32 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           setActiveTab('pets');
           break;
         case 'pay':
-          // Go to payment - find the specific appointment to pay
+          // Go to payment - find the specific appointment and start payment
           setActiveTab('appointments');
           if (emailAction.appointmentId) {
-            // Store appointment ID to show payment dialog
-            sessionStorage.setItem('vetbuddy_pay_appointment', emailAction.appointmentId);
-            // Find and show payment for this appointment
+            // Find the appointment
             const aptToPay = appointments.find(a => a.id === emailAction.appointmentId);
-            if (aptToPay) {
+            if (aptToPay && aptToPay.paymentStatus !== 'paid') {
+              // Avvia il pagamento Stripe automaticamente
+              const startPayment = async () => {
+                try {
+                  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+                  const response = await api.post('payments/appointment', {
+                    appointmentId: aptToPay.id,
+                    originUrl: baseUrl
+                  });
+                  if (response.url) {
+                    window.location.href = response.url;
+                  }
+                } catch (error) {
+                  console.error('Auto payment error:', error);
+                  // Fallback: mostra l'appuntamento
+                  setSelectedAppointment(aptToPay);
+                }
+              };
+              startPayment();
+            } else if (aptToPay) {
               setSelectedAppointment(aptToPay);
-              // Could trigger payment modal here
             }
           }
           break;
