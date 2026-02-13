@@ -233,6 +233,28 @@ export async function POST(request) {
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME || 'vetbuddy');
 
+    // Get clinic to check plan
+    const clinic = await db.collection('users').findOne({ id: user.id });
+    const clinicPlan = clinic?.subscriptionPlan || clinic?.plan || 'starter';
+
+    // Determine allowed automations based on plan
+    let allowedAutomations;
+    if (clinicPlan === 'custom' || clinicPlan === 'enterprise') {
+      allowedAutomations = 'all';
+    } else if (clinicPlan === 'pro') {
+      allowedAutomations = PRO_AUTOMATIONS;
+    } else {
+      allowedAutomations = STARTER_AUTOMATIONS;
+    }
+
+    // Check if this automation is allowed for the plan
+    if (allowedAutomations !== 'all' && !allowedAutomations.includes(key)) {
+      return NextResponse.json({ 
+        error: `Questa automazione non è inclusa nel piano ${clinicPlan}. Effettua l'upgrade per sbloccarla.`,
+        planRequired: allowedAutomations === 'all' ? clinicPlan : 'pro'
+      }, { status: 403 });
+    }
+
     await db.collection('users').updateOne(
       { id: user.id },
       { 
