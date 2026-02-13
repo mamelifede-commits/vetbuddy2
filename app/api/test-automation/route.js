@@ -11,22 +11,61 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-// Helper: Generate contact button - prioritizes WhatsApp if available
-function getContactButton(clinic, baseUrl, buttonText = 'Scrivi alla Clinica', subject = '') {
+// Helper: Generate contact buttons - WhatsApp + In-App Messaging
+function getContactButtons(clinic, baseUrl, subject = '') {
   const whatsappNumber = clinic?.whatsappNumber;
+  const clinicId = clinic?.id || '';
   
+  // Always include in-app message button
+  const inAppMessageUrl = `${baseUrl}?action=messages&clinicId=${clinicId}&newMessage=true`;
+  const inAppButton = `<a href="${inAppMessageUrl}" style="display: inline-block; background: #3B82F6; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+    💬 Scrivi in App
+  </a>`;
+  
+  // WhatsApp button if available
+  let whatsappButton = '';
   if (whatsappNumber) {
     const cleanNumber = whatsappNumber.replace(/\D/g, '');
     const whatsappUrl = `https://wa.me/${cleanNumber}${subject ? `?text=${encodeURIComponent(subject)}` : ''}`;
-    return `<a href="${whatsappUrl}" style="display: inline-block; background: #25D366; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-      💬 ${buttonText} (WhatsApp)
-    </a>`;
-  } else {
-    const messageUrl = `${baseUrl}?action=message&clinicId=${clinic?.id || ''}`;
-    return `<a href="${messageUrl}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-      💬 ${buttonText}
+    whatsappButton = `<a href="${whatsappUrl}" style="display: inline-block; background: #25D366; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+      📱 WhatsApp
     </a>`;
   }
+  
+  return whatsappButton + inAppButton;
+}
+
+// Helper: Generate booking button for specific service
+function getBookServiceButton(baseUrl, clinic, serviceType, serviceName) {
+  const bookingUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&serviceType=${serviceType}`;
+  return `<a href="${bookingUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+    📅 Prenota ${serviceName}
+  </a>`;
+}
+
+// Helper: Generate payment button
+function getPaymentButton(baseUrl, appointmentId, amount) {
+  const payUrl = `${baseUrl}?action=pay&appointmentId=${appointmentId}&amount=${amount}`;
+  return `<a href="${payUrl}" style="display: inline-block; background: #EF4444; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+    💳 Paga Ora ${amount ? `€${amount}` : ''}
+  </a>`;
+}
+
+// Helper: Generate document view button
+function getDocumentButton(baseUrl, documentId) {
+  const docUrl = `${baseUrl}?action=documents${documentId ? `&docId=${documentId}` : ''}`;
+  return `<a href="${docUrl}" style="display: inline-block; background: #06B6D4; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+    📋 Visualizza Documento
+  </a>`;
+}
+
+// Helper: Generate rewards button
+function getRewardsButton(baseUrl, rewardId, action = 'view') {
+  const rewardUrl = `${baseUrl}?action=rewards${rewardId ? `&rewardId=${rewardId}&use=${action === 'use'}` : ''}`;
+  const buttonText = action === 'use' ? '🎁 Usa il Premio' : '🎁 Vedi i miei Premi';
+  return `<a href="${rewardUrl}" style="display: inline-block; background: #8B5CF6; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+    ${buttonText}
+  </a>`;
 }
 
 // Helper: Get cancellation policy text
