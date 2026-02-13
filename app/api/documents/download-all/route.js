@@ -137,9 +137,10 @@ export async function GET(request) {
     if (role === 'clinic' && clinicId) {
       query = { clinicId: clinicId };
     } else if (role === 'owner' && userId) {
-      query = { userId: userId };
+      // Support both userId and ownerId field names
+      query = { $or: [{ userId: userId }, { ownerId: userId }] };
     } else if (userId) {
-      query = { userId: userId };
+      query = { $or: [{ userId: userId }, { ownerId: userId }] };
     } else {
       query = { clinicId: clinicId };
     }
