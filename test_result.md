@@ -310,6 +310,18 @@ backend:
         agent: "testing"
         comment: "Cron job API tested successfully. ✅ GET /api/cron/daily executes and returns proper results structure with sent/errors/skipped counts for all 6 automation categories (promemoria, richiamiVaccini, followUp, noShow, documentReminders, weeklyReports). API responding correctly with no authentication required as expected for cron job endpoint. Ready for integration with disabled automation settings to show in skipped counts when clinics have automations disabled."
 
+  - task: "Patient Import API"
+    implemented: true
+    working: true
+    file: "/app/app/api/import/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE IMPORT API TESTING COMPLETED - ALL 5/5 TESTS PASSED ✅: Successfully tested VetBuddy Patient Import API as specified in review request. ✅ GET /api/import returns complete template information with required columns (nome, specie), 17 optional columns (razza, data_nascita, microchip, proprietario, email, telefono, vaccino, etc.), example row data, and usage notes. Template endpoint is public (no authentication required). ✅ POST /api/import with CSV file successfully imports patients - tested with template_import_pazienti.csv from /app/public/downloads/. Import working correctly: imported 2 pets, 2 vaccines, 0 new owners (owners already existed - shows duplicate handling working). Warnings properly returned for existing pets with microchips - clinic association added correctly. ✅ POST /api/import error handling working: returns 400 'Nessun file caricato' for no file, returns 400 'File vuoto o formato non valido' for empty CSV. ✅ Authentication working: GET endpoint public, POST endpoint requires Bearer token (clinic authentication working with provided token). All import functionality operational: CSV parsing, owner creation/lookup, pet creation with duplicate microchip handling, vaccination import, proper error responses."
+
 frontend:
   - task: "Landing Page UI"
     implemented: true
