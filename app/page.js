@@ -6116,23 +6116,40 @@ function ClinicRewardsManagement({ user, owners = [] }) {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2">
-        <Button 
-          variant={activeTab === 'types' ? 'default' : 'outline'} 
-          size="sm"
-          onClick={() => setActiveTab('types')}
-          className={activeTab === 'types' ? 'bg-amber-500 hover:bg-amber-600' : ''}
-        >
-          Tipi di Premio ({rewardTypes.length})
-        </Button>
-        <Button 
-          variant={activeTab === 'assigned' ? 'default' : 'outline'} 
-          size="sm"
-          onClick={() => setActiveTab('assigned')}
-          className={activeTab === 'assigned' ? 'bg-amber-500 hover:bg-amber-600' : ''}
-        >
-          Premi Assegnati ({assignedRewards.length})
-        </Button>
+      <div className="flex flex-col md:flex-row md:items-center gap-4">
+        <div className="flex gap-2">
+          <Button 
+            variant={activeTab === 'types' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setActiveTab('types')}
+            className={activeTab === 'types' ? 'bg-amber-500 hover:bg-amber-600' : ''}
+          >
+            Tipi di Premio ({rewardTypes.length})
+          </Button>
+          <Button 
+            variant={activeTab === 'assigned' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setActiveTab('assigned')}
+            className={activeTab === 'assigned' ? 'bg-amber-500 hover:bg-amber-600' : ''}
+          >
+            Premi Assegnati ({assignedRewards.length})
+          </Button>
+        </div>
+        
+        {/* Search by Code */}
+        {activeTab === 'assigned' && (
+          <div className="flex-1 max-w-md">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Cerca per codice premio (es. ABC123)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value.toUpperCase())}
+                className="pl-10 font-mono uppercase tracking-wider"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Types Tab */}
