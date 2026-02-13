@@ -90,6 +90,20 @@ export default function PresentazionePage() {
       description: "Fidelizza i clienti con sconti e premi personalizzati",
       benefits: ["Clienti più fedeli", "Passaparola", "Differenziazione"],
       color: "pink"
+    },
+    {
+      icon: CreditCard,
+      title: "Fatturazione Flessibile",
+      description: "Crea fatture ed esportale per il tuo software di contabilità preferito",
+      benefits: ["Export CSV/PDF", "IVA automatica", "Compatibile con tutti"],
+      color: "emerald"
+    },
+    {
+      icon: Smartphone,
+      title: "WhatsApp Business",
+      description: "I clienti ti contattano direttamente via WhatsApp dall'app",
+      benefits: ["Comunicazione diretta", "Risposte rapide", "Più engagement"],
+      color: "green"
     }
   ];
 
