@@ -8215,9 +8215,14 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     if (emailAction && emailAction.action) {
       switch (emailAction.action) {
         case 'cancel':
-          // Show cancellation dialog
+          // Show cancellation dialog with appointment details
           if (emailAction.appointmentId) {
             setCancelAppointmentId(emailAction.appointmentId);
+            // Find the appointment to show details
+            const apt = appointments.find(a => a.id === emailAction.appointmentId);
+            if (apt) {
+              setCancelAppointmentDetails(apt);
+            }
             setShowCancelDialog(true);
           }
           break;
@@ -8231,7 +8236,24 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           setActiveTab('messages');
           break;
         case 'review':
+        case 'reviews':
           // Go to reviews tab
+          setActiveTab('reviews');
+          break;
+        case 'profile':
+          // Go to profile/settings
+          setActiveTab('pets'); // Pets section has profile info
+          break;
+        case 'payment':
+          // Go to documents (where invoices are)
+          setActiveTab('documents');
+          break;
+        case 'appointments':
+          // Go to appointments
+          setActiveTab('appointments');
+          break;
+        case 'rewards':
+          // Go to rewards section (using reviews tab for now)
           setActiveTab('reviews');
           break;
         default:
@@ -8240,7 +8262,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
       // Clear the action after handling
       if (onClearEmailAction) onClearEmailAction();
     }
-  }, [emailAction, onClearEmailAction]);
+  }, [emailAction, onClearEmailAction, appointments]);
   
   const loadData = async () => { try { const [appts, docs, msgs, petsList, clinicsList] = await Promise.all([api.get('appointments'), api.get('documents'), api.get('messages'), api.get('pets'), api.get('clinics/search?city=Milano&maxDistance=100')]); setAppointments(appts); setDocuments(docs); setMessages(msgs); setPets(petsList); setClinics(clinicsList || []); } catch (error) { console.error('Error:', error); } };
   
