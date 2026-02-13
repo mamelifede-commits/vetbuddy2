@@ -13669,6 +13669,7 @@ function PetProfile({ petId, onBack, appointments, documents }) {
                   <SelectContent>
                     <SelectItem value="dog">🐕 Cane</SelectItem>
                     <SelectItem value="cat">🐈 Gatto</SelectItem>
+                    <SelectItem value="horse">🐴 Cavallo</SelectItem>
                     <SelectItem value="other">🐾 Altro</SelectItem>
                   </SelectContent>
                 </Select>
