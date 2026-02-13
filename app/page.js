@@ -8539,6 +8539,21 @@ function OwnerAppointments({ appointments, pets }) {
                 <span className="text-amber-600">⚠️</span> Per emergenze contatta subito la clinica o il pronto soccorso veterinario.
               </div>
               
+              {/* Missing fields indicator */}
+              {(!formData.petId || !formData.serviceId || !formData.date || !formData.time || !formData.clinicId || (selectedService?.type === 'online' && !videoConsultoConfirmed)) && (
+                <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded-lg">
+                  <span className="font-medium">Completa tutti i campi:</span>
+                  <ul className="list-disc list-inside mt-1 space-y-0.5">
+                    {!formData.petId && <li>Seleziona un animale</li>}
+                    {!formData.clinicId && <li>Seleziona una clinica</li>}
+                    {!formData.serviceId && <li>Seleziona un servizio</li>}
+                    {!formData.date && <li>Inserisci la data</li>}
+                    {!formData.time && <li>Inserisci l'orario</li>}
+                    {selectedService?.type === 'online' && !videoConsultoConfirmed && <li>Conferma di aver compreso le condizioni del video consulto</li>}
+                  </ul>
+                </div>
+              )}
+              
               <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600" disabled={!formData.petId || !formData.serviceId || !formData.date || !formData.time || !formData.clinicId || (selectedService?.type === 'online' && !videoConsultoConfirmed)}>
                 Prenota appuntamento
               </Button>
