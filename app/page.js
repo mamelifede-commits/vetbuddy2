@@ -2278,7 +2278,9 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate
   const openEditDialog = (appt) => {
     setEditingAppt(appt);
     setFormData({
+      petId: appt.petId || '',
       petName: appt.petName || '',
+      ownerId: appt.ownerId || '',
       ownerName: appt.ownerName || '',
       ownerEmail: appt.ownerEmail || '',
       date: appt.date || '',
