@@ -198,16 +198,19 @@ def test_import_no_file():
     log_test("=" * 60)
     
     try:
-        # Send request without file
-        data = {'type': 'data'}
-        response = make_request('POST', 'import', data=data)
+        # Send request without file using form data
+        response = requests.post(
+            f"{BASE_URL}/import", 
+            headers={'Authorization': f'Bearer {AUTH_TOKEN}'}, 
+            data={'type': 'data'},
+            timeout=30
+        )
         
-        if not response:
-            log_test("Failed to make request", False)
-            return False
+        log_test(f"POST import -> Status: {response.status_code}")
         
         if response.status_code != 400:
             log_test(f"Expected status 400, got {response.status_code}", False)
+            log_test(f"Response: {response.text}")
             return False
         
         result = response.json()
