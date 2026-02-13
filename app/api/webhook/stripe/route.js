@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import clientPromise from '@/lib/db';
 import { v4 as uuidv4 } from 'uuid';
 import { sendEmail } from '@/lib/email';
+import { generateInvoicePDF, saveInvoicePDFAsDocument } from '@/lib/invoicePDF';
 
 // Force dynamic rendering to prevent static generation errors
 export const dynamic = 'force-dynamic';
