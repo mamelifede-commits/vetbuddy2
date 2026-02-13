@@ -2517,6 +2517,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'events' && <ClinicEvents user={user} />}
         {activeTab === 'settings' && <ClinicSettings user={user} onNavigate={setActiveTab} />}
         {activeTab === 'feedback' && <ClinicFeedbackPage user={user} />}
+        {activeTab === 'tutorial' && <ClinicTutorialInline />}
       </main>
     </div>
   );
