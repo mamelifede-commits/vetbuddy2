@@ -8422,27 +8422,79 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'inviteClinic' && <InviteClinic user={user} />}
       </main>
       
-      {/* Dialog Cancellazione Appuntamento */}
+      {/* Dialog Cancellazione Appuntamento - Migliorata con dettagli */}
       <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-red-600">
               <AlertCircle className="h-5 w-5" />
               Cancella Appuntamento
             </DialogTitle>
             <DialogDescription>
-              Sei sicuro di voler cancellare questo appuntamento?
+              Stai per cancellare il seguente appuntamento:
             </DialogDescription>
           </DialogHeader>
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 my-4">
-            <p className="text-amber-800 text-sm">
-              <strong>⚠️ Attenzione:</strong> Ti ricordiamo che la cancellazione potrebbe comportare un costo 
-              se effettuata a meno di 24 ore dall'appuntamento, secondo la politica della clinica.
+          
+          {/* Appointment Details */}
+          {cancelAppointmentDetails && (
+            <div className="bg-white border border-gray-200 rounded-lg p-4 my-2">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-gray-500" />
+                  <span className="font-medium">{cancelAppointmentDetails.date}</span>
+                  <span className="text-gray-500">alle</span>
+                  <span className="font-medium">{cancelAppointmentDetails.time}</span>
+                </div>
+                {cancelAppointmentDetails.petName && (
+                  <div className="flex items-center gap-2">
+                    <PawPrint className="h-4 w-4 text-coral-500" />
+                    <span>Paziente: <strong>{cancelAppointmentDetails.petName}</strong></span>
+                  </div>
+                )}
+                {cancelAppointmentDetails.reason && (
+                  <div className="flex items-center gap-2">
+                    <Stethoscope className="h-4 w-4 text-blue-500" />
+                    <span>Motivo: {cancelAppointmentDetails.reason}</span>
+                  </div>
+                )}
+                {cancelAppointmentDetails.clinicName && (
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4 text-gray-500" />
+                    <span>Clinica: {cancelAppointmentDetails.clinicName}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* Cancellation Policy */}
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <p className="font-semibold text-amber-800 mb-2 flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              Politica di Cancellazione
+            </p>
+            <p className="text-amber-700 text-sm">
+              {cancelAppointmentDetails?.cancellationPolicy || 
+               'Ti preghiamo di avvisarci almeno 24 ore prima in caso di disdetta. La mancata comunicazione potrebbe comportare un addebito secondo la politica della clinica.'}
             </p>
           </div>
-          <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setShowCancelDialog(false)}>
-              Annulla
+          
+          {/* Reason input */}
+          <div className="mt-2">
+            <Label htmlFor="cancel-reason" className="text-sm text-gray-600">Motivo della cancellazione (opzionale)</Label>
+            <Textarea 
+              id="cancel-reason"
+              value={cancellationReason}
+              onChange={(e) => setCancellationReason(e.target.value)}
+              placeholder="Es: Impegno improvviso, altro appuntamento..."
+              rows={2}
+              className="mt-1"
+            />
+          </div>
+          
+          <DialogFooter className="gap-2 mt-4">
+            <Button variant="outline" onClick={() => { setShowCancelDialog(false); setCancellationReason(''); }}>
+              Mantieni Appuntamento
             </Button>
             <Button variant="destructive" onClick={handleCancelAppointment}>
               Conferma Cancellazione
