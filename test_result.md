@@ -564,9 +564,13 @@ metadata:
 
 test_plan:
   current_focus:
-    - "VetBuddy Owner Dashboard Pet Modification Flow" # Critical login authentication issue
-  stuck_tasks:
-    - "VetBuddy Owner Dashboard Pet Modification Flow" # Login authentication blocking access
+    - "Landing Page Fatturazione Section"
+    - "Clinic Dashboard Logout Button Position"  
+    - "Owner Dashboard Logout Button Position"
+    - "Invoicing Tab in Clinic Dashboard"
+    - "Animal Species Horse Addition"
+    - "Favicon Display"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
