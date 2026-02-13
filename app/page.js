@@ -2570,6 +2570,24 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, re
         <p className="text-gray-500">Ecco cosa devi fare oggi</p>
       </div>
 
+      {/* Tutorial Box per Cliniche */}
+      <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-200">
+        <div className="flex items-start gap-3">
+          <div className="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <PlayCircle className="h-5 w-5 text-purple-600" />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-semibold text-gray-800 mb-1">📚 Tutorial per Cliniche</h3>
+            <p className="text-sm text-gray-600 mb-2">
+              Scopri tutte le funzionalità di VetBuddy per gestire al meglio la tua clinica.
+            </p>
+            <a href="/tutorial" className="inline-flex items-center gap-1 text-purple-600 font-medium text-sm hover:underline">
+              <PlayCircle className="h-4 w-4" /> Guarda il tutorial
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Setup Bar - Onboarding */}
       {completedSteps < 4 && (
         <Card className="bg-gradient-to-r from-coral-50 to-orange-50 border-coral-200">
