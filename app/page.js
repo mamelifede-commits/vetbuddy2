@@ -404,7 +404,38 @@ function LandingPage({ onLogin }) {
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
   const scrollToSection = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMobileMenuOpen(false); };
+
+  // Auto-open login if there's a pending email action
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedAction = sessionStorage.getItem('vetbuddy_email_action');
+      if (savedAction) {
+        try {
+          const actionData = JSON.parse(savedAction);
+          setPendingAction(actionData);
+          // Auto-open login dialog
+          setAuthMode('login');
+          setShowAuth(true);
+        } catch (e) {
+          // ignore
+        }
+      }
+    }
+  }, []);
+
+  // Get action message for display
+  const getActionMessage = () => {
+    if (!pendingAction) return null;
+    switch (pendingAction.action) {
+      case 'cancel': return '❌ Per disdire l\'appuntamento, effettua prima il login';
+      case 'book': return '📅 Per prenotare un appuntamento, effettua prima il login';
+      case 'message': return '💬 Per inviare un messaggio, effettua prima il login';
+      case 'review': return '⭐ Per lasciare una recensione, effettua prima il login';
+      default: return '🔐 Effettua il login per continuare';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
