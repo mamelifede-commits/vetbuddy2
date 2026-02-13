@@ -8736,48 +8736,200 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
 
       {/* Settings Tab */}
       {activeTab === 'settings' && (
-        <div className="space-y-6 max-w-2xl">
+        <div className="space-y-6 max-w-3xl">
+          {/* Export e Download */}
+          <Card className="border-green-200">
+            <CardContent className="p-6">
+              <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                <Download className="h-5 w-5 text-green-600" />
+                Esporta le Tue Fatture
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Scarica tutte le fatture in un formato compatibile con il tuo software di contabilità.
+              </p>
+              <div className="grid grid-cols-3 gap-4">
+                <Button variant="outline" className="flex-col h-auto py-4" onClick={() => handleExport('csv')}>
+                  <FileText className="h-6 w-6 mb-2 text-green-600" />
+                  <span className="font-semibold">CSV</span>
+                  <span className="text-xs text-gray-500">Per Excel</span>
+                </Button>
+                <Button variant="outline" className="flex-col h-auto py-4" onClick={() => handleExport('html')}>
+                  <Receipt className="h-6 w-6 mb-2 text-blue-600" />
+                  <span className="font-semibold">PDF/HTML</span>
+                  <span className="text-xs text-gray-500">Stampabile</span>
+                </Button>
+                <Button variant="outline" className="flex-col h-auto py-4" onClick={() => handleExport('json')}>
+                  <Download className="h-6 w-6 mb-2 text-purple-600" />
+                  <span className="font-semibold">JSON</span>
+                  <span className="text-xs text-gray-500">Per API</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Guida Integrazione Software Esterni */}
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-blue-500" />
+                Guida: Integra con il Tuo Software di Fatturazione
+              </h3>
+              
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="fattureincloud">
+                  <AccordionTrigger className="text-left">
+                    <div className="flex items-center gap-2">
+                      <div className="h-8 w-8 rounded bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">FiC</div>
+                      Come importare in Fatture in Cloud
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 text-sm text-gray-600 pl-10">
+                      <ol className="list-decimal list-inside space-y-2">
+                        <li><strong>Esporta da VetBuddy</strong> — Clicca "Export CSV" qui sopra</li>
+                        <li><strong>Accedi a Fatture in Cloud</strong> — Vai su fattureincloud.it</li>
+                        <li><strong>Vai su Documenti → Importa</strong> — Seleziona "Importa da file CSV"</li>
+                        <li><strong>Carica il file</strong> — Seleziona il CSV scaricato</li>
+                        <li><strong>Mappa i campi</strong> — Associa le colonne (Cliente, Importo, ecc.)</li>
+                        <li><strong>Conferma e Invia</strong> — Fatture in Cloud invierà al SdI</li>
+                      </ol>
+                      <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                        <p className="text-blue-700 text-xs">
+                          💡 <strong>Suggerimento:</strong> Salva la mappatura dei campi per velocizzare le importazioni future.
+                        </p>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="aruba">
+                  <AccordionTrigger className="text-left">
+                    <div className="flex items-center gap-2">
+                      <div className="h-8 w-8 rounded bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs">A</div>
+                      Come importare in Aruba
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 text-sm text-gray-600 pl-10">
+                      <ol className="list-decimal list-inside space-y-2">
+                        <li><strong>Esporta da VetBuddy</strong> — Scarica il file CSV</li>
+                        <li><strong>Accedi ad Aruba Fatturazione</strong> — fattura.aruba.it</li>
+                        <li><strong>Crea nuova fattura manualmente</strong> — Aruba non supporta import CSV diretto</li>
+                        <li><strong>Copia i dati dal CSV</strong> — Usa Excel per visualizzare i dati</li>
+                        <li><strong>Inserisci cliente e prestazioni</strong> — Compila i campi in Aruba</li>
+                        <li><strong>Invia al SdI</strong> — Aruba gestisce l'invio</li>
+                      </ol>
+                      <div className="mt-3 p-3 bg-orange-50 rounded-lg">
+                        <p className="text-orange-700 text-xs">
+                          ⚠️ <strong>Nota:</strong> Aruba richiede inserimento manuale. Per volumi alti, considera Fatture in Cloud o TeamSystem.
+                        </p>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="teamsystem">
+                  <AccordionTrigger className="text-left">
+                    <div className="flex items-center gap-2">
+                      <div className="h-8 w-8 rounded bg-green-100 flex items-center justify-center text-green-600 font-bold text-xs">TS</div>
+                      Come importare in TeamSystem
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 text-sm text-gray-600 pl-10">
+                      <ol className="list-decimal list-inside space-y-2">
+                        <li><strong>Esporta da VetBuddy</strong> — Scarica il file CSV o JSON</li>
+                        <li><strong>Accedi a TeamSystem</strong> — Usa il modulo Fatturazione Elettronica</li>
+                        <li><strong>Vai su Importazioni</strong> — Sezione "Import documenti"</li>
+                        <li><strong>Seleziona formato CSV</strong> — Configura il tracciato di import</li>
+                        <li><strong>Carica e verifica</strong> — TeamSystem mostra anteprima</li>
+                        <li><strong>Conferma l'invio</strong> — Le fatture vengono inviate al SdI</li>
+                      </ol>
+                      <div className="mt-3 p-3 bg-green-50 rounded-lg">
+                        <p className="text-green-700 text-xs">
+                          💡 <strong>Suggerimento:</strong> TeamSystem supporta anche import JSON per automazioni avanzate.
+                        </p>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="excel">
+                  <AccordionTrigger className="text-left">
+                    <div className="flex items-center gap-2">
+                      <div className="h-8 w-8 rounded bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-xs">XL</div>
+                      Come usare con Excel / il tuo commercialista
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 text-sm text-gray-600 pl-10">
+                      <ol className="list-decimal list-inside space-y-2">
+                        <li><strong>Esporta da VetBuddy</strong> — Scarica il file CSV</li>
+                        <li><strong>Apri in Excel</strong> — Il CSV è già formattato</li>
+                        <li><strong>Invia al commercialista</strong> — Allega il file Excel</li>
+                        <li><strong>Il commercialista emette le fatture</strong> — Usando i dati forniti</li>
+                      </ol>
+                      <div className="mt-3 p-3 bg-emerald-50 rounded-lg">
+                        <p className="text-emerald-700 text-xs">
+                          📧 <strong>Ideale per:</strong> Chi ha un commercialista che gestisce la fatturazione elettronica.
+                        </p>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
+
+          {/* Spiegazione VetBuddy vs Software */}
           <Card>
             <CardContent className="p-6">
               <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
                 <Info className="h-5 w-5 text-blue-500" />
-                Come Funziona la Fatturazione
+                VetBuddy e la Fatturazione Elettronica
               </h3>
               <div className="space-y-4 text-sm text-gray-600">
                 <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <h4 className="font-semibold text-blue-800 mb-2">📋 Opzione 1: Usa VetBuddy + Tuo Software</h4>
-                  <ol className="list-decimal list-inside space-y-1 text-blue-700">
-                    <li>Crea la fattura in VetBuddy</li>
-                    <li>Esporta in CSV o JSON</li>
-                    <li>Importa nel tuo software di fatturazione elettronica</li>
-                    <li>Il tuo software invia al SdI (Agenzia Entrate)</li>
-                  </ol>
+                  <h4 className="font-semibold text-blue-800 mb-2">📋 Cosa fa VetBuddy</h4>
+                  <ul className="list-disc list-inside space-y-1 text-blue-700">
+                    <li>Gestisce il <strong>listino prezzi</strong> delle prestazioni</li>
+                    <li>Crea <strong>pre-fatture</strong> con dati cliente e prestazioni</li>
+                    <li>Calcola automaticamente <strong>IVA e marca da bollo</strong></li>
+                    <li>Esporta in <strong>CSV, PDF e JSON</strong> per il tuo software</li>
+                    <li>Tiene traccia di <strong>pagamenti e statistiche</strong></li>
+                  </ul>
                 </div>
                 
                 <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                  <h4 className="font-semibold text-green-800 mb-2">🔗 Opzione 2: Integrazione Fatture in Cloud</h4>
-                  <p className="text-green-700 mb-2">Collega il tuo account Fatture in Cloud per inviare automaticamente le fatture al SdI.</p>
-                  <Button variant="outline" className="text-green-700 border-green-300" disabled>
-                    <Link2 className="h-4 w-4 mr-2" />
-                    Collega Fatture in Cloud (Prossimamente)
-                  </Button>
+                  <h4 className="font-semibold text-green-800 mb-2">✅ Cosa fa il tuo Software di Fatturazione</h4>
+                  <ul className="list-disc list-inside space-y-1 text-green-700">
+                    <li>Genera il <strong>file XML</strong> conforme alle norme</li>
+                    <li>Appone la <strong>firma digitale</strong></li>
+                    <li>Invia al <strong>Sistema di Interscambio (SdI)</strong></li>
+                    <li>Riceve le <strong>notifiche di consegna</strong></li>
+                    <li>Gestisce la <strong>conservazione sostitutiva</strong> a norma</li>
+                  </ul>
                 </div>
                 
                 <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
-                  <h4 className="font-semibold text-amber-800 mb-2">⚠️ Importante</h4>
+                  <h4 className="font-semibold text-amber-800 mb-2">⚠️ Perché due sistemi?</h4>
                   <p className="text-amber-700">
-                    Le fatture generate da VetBuddy sono <strong>pre-fatture/proforma</strong>. 
-                    Per essere valide fiscalmente devono essere inviate al Sistema di Interscambio (SdI) 
-                    tramite un software certificato.
+                    La fatturazione elettronica in Italia richiede certificazioni specifiche e integrazione con l'Agenzia delle Entrate. 
+                    VetBuddy si occupa della <strong>gestione veterinaria</strong> e prepara i dati; 
+                    il software di fatturazione (Fatture in Cloud, TeamSystem, Aruba, ecc.) si occupa della <strong>parte fiscale</strong>.
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
+          {/* Dati Fiscali */}
           <Card>
             <CardContent className="p-6">
               <h3 className="font-semibold text-lg mb-4">Dati Fiscali Clinica</h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Questi dati appariranno sulle fatture esportate.
+              </p>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <Label>Partita IVA</Label>
@@ -8791,8 +8943,16 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
                   <Label>Indirizzo Sede Legale</Label>
                   <Input placeholder="Via Roma 123, 20100 Milano" defaultValue={user?.address || ''} />
                 </div>
+                <div>
+                  <Label>PEC</Label>
+                  <Input placeholder="clinica@pec.it" defaultValue={user?.pec || ''} />
+                </div>
+                <div>
+                  <Label>Telefono</Label>
+                  <Input placeholder="+39 02 1234567" defaultValue={user?.phone || ''} />
+                </div>
               </div>
-              <Button className="mt-4">Salva Dati Fiscali</Button>
+              <Button className="mt-4 bg-green-600 hover:bg-green-700">Salva Dati Fiscali</Button>
             </CardContent>
           </Card>
         </div>
