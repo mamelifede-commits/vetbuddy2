@@ -5844,8 +5844,24 @@ function ClinicServices({ onNavigate, user }) {
 
   const loadServiceCatalog = async () => {
     try {
-      const catalog = await api.get('services');
-      setServiceCatalog(catalog);
+      const response = await api.get('services');
+      // L'API restituisce { services, categories, grouped }
+      // Usiamo 'grouped' che ha il formato corretto per il catalogo
+      if (response.grouped) {
+        setServiceCatalog(response.grouped);
+      } else if (response.categories) {
+        // Fallback: costruisci il catalogo dalle categorie
+        const catalog = {};
+        for (const cat of response.categories) {
+          catalog[cat.id] = {
+            ...cat,
+            services: (response.services || []).filter(s => s.category === cat.id)
+          };
+        }
+        setServiceCatalog(catalog);
+      } else {
+        setServiceCatalog(response);
+      }
     } catch (error) {
       console.error('Error loading services:', error);
     } finally {
