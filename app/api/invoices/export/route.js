@@ -169,9 +169,11 @@ function generateInvoiceHTML(invoice, clinic) {
   </div>
   
   <h1 class="invoice-title">
-    ${invoice.invoiceNumber ? `FATTURA N. ${invoice.invoiceNumber}` : 'BOZZA FATTURA'}
+    ${invoice.invoiceNumber ? `FATTURA PROFORMA N. ${invoice.invoiceNumber}` : 'BOZZA FATTURA PROFORMA'}
     <span class="status-badge status-${invoice.status}">${invoice.status === 'paid' ? 'PAGATA' : invoice.status === 'issued' ? 'EMESSA' : 'BOZZA'}</span>
   </h1>
+  
+  <p style="color: #999; font-size: 11px; margin-top: -15px; margin-bottom: 15px;">⚠️ Documento non valido ai fini fiscali - Pre-fattura di cortesia</p>
   
   <div class="invoice-meta">
     <table style="width: 100%;">
