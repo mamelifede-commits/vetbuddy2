@@ -5941,7 +5941,7 @@ function ClinicServices({ onNavigate, user }) {
   }
 
   const allCatalogServices = Object.entries(serviceCatalog).flatMap(([catId, cat]) => 
-    cat.services.map(s => ({ ...s, categoryId: catId, categoryName: cat.name }))
+    (cat?.services || []).map(s => ({ ...s, categoryId: catId, categoryName: cat?.name || catId }))
   );
 
   const baseFilteredServices = activeCategory === 'all' 
