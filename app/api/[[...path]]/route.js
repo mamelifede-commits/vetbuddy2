@@ -793,6 +793,63 @@ export async function GET(request, { params }) {
       }, { headers: corsHeaders });
     }
 
+    // ==================== REWARDS/PREMI API ====================
+    
+    // Get rewards for clinic (clinic view - all reward types they created)
+    if (path === 'rewards/types') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const rewards = await getCollection('rewards');
+      const rewardTypes = await rewards.find({ clinicId: user.id, type: 'definition' }).toArray();
+      
+      return NextResponse.json(rewardTypes, { headers: corsHeaders });
+    }
+    
+    // Get assigned rewards for a specific owner (clinic view)
+    if (path === 'rewards/assigned') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const { searchParams } = new URL(request.url);
+      const ownerId = searchParams.get('ownerId');
+      
+      const rewards = await getCollection('rewards');
+      const query = { clinicId: user.id, type: 'assigned' };
+      if (ownerId) query.ownerId = ownerId;
+      
+      const assignedRewards = await rewards.find(query).sort({ createdAt: -1 }).toArray();
+      
+      return NextResponse.json(assignedRewards, { headers: corsHeaders });
+    }
+    
+    // Get my rewards (owner view)
+    if (path === 'rewards/my-rewards') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const rewards = await getCollection('rewards');
+      const myRewards = await rewards.find({ 
+        ownerId: user.id, 
+        type: 'assigned' 
+      }).sort({ createdAt: -1 }).toArray();
+      
+      // Enrich with clinic info
+      const users = await getCollection('users');
+      const enrichedRewards = await Promise.all(myRewards.map(async (reward) => {
+        const clinic = await users.findOne({ id: reward.clinicId }, { projection: { clinicName: 1, phone: 1, whatsappNumber: 1 } });
+        return { ...reward, clinicName: clinic?.clinicName, clinicPhone: clinic?.phone, clinicWhatsapp: clinic?.whatsappNumber };
+      }));
+      
+      return NextResponse.json(enrichedRewards, { headers: corsHeaders });
+    }
+
     return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
   } catch (error) {
     console.error('GET Error:', error);
