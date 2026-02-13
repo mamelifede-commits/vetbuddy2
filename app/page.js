@@ -13463,12 +13463,25 @@ function OwnerDocuments({ documents, pets, onRefresh }) {
           <h2 className="text-2xl font-bold text-gray-800">I miei documenti</h2>
           <p className="text-gray-500 text-sm">Referti, prescrizioni e file condivisi</p>
         </div>
-        <Dialog open={showUpload} onOpenChange={setShowUpload}>
-          <DialogTrigger asChild>
-            <Button className="bg-blue-500 hover:bg-blue-600">
-              <Upload className="h-4 w-4 mr-2" />Carica per la clinica
-            </Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={async () => {
+            try {
+              const response = await fetch(`/api/documents/download-all?userId=${user?.id}&role=owner`);
+              if (!response.ok) throw new Error('Nessun documento da scaricare');
+              const blob = await response.blob();
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a'); a.href = url;
+              a.download = `VetBuddy_I_Miei_Documenti_${new Date().toISOString().split('T')[0]}.zip`;
+              document.body.appendChild(a); a.click();
+              window.URL.revokeObjectURL(url); a.remove();
+            } catch (e) { alert(e.message || 'Errore download'); }
+          }}><Download className="h-4 w-4 mr-2" />Scarica tutto</Button>
+          <Dialog open={showUpload} onOpenChange={setShowUpload}>
+            <DialogTrigger asChild>
+              <Button className="bg-blue-500 hover:bg-blue-600">
+                <Upload className="h-4 w-4 mr-2" />Carica per la clinica
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>Carica documento per la clinica</DialogTitle>
