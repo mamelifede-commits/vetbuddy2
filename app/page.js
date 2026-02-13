@@ -4062,14 +4062,19 @@ function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet, ini
               )}
               
               {/* Quick Actions */}
-              <div className="flex gap-2 pt-2">
-                <Button variant="outline" className="flex-1" onClick={() => window.location.href = `mailto:${selectedOwner.email}`}>
+              <div className="flex gap-2 pt-2 flex-wrap">
+                <Button variant="outline" className="flex-1 min-w-[100px]" onClick={() => window.location.href = `mailto:${selectedOwner.email}`}>
                   <Mail className="h-4 w-4 mr-2" /> Email
                 </Button>
                 {selectedOwner.phone && (
-                  <Button variant="outline" className="flex-1" onClick={() => window.location.href = `tel:${selectedOwner.phone}`}>
-                    <Phone className="h-4 w-4 mr-2" /> Chiama
-                  </Button>
+                  <>
+                    <Button variant="outline" className="flex-1 min-w-[100px]" onClick={() => window.location.href = `tel:${selectedOwner.phone}`}>
+                      <Phone className="h-4 w-4 mr-2" /> Chiama
+                    </Button>
+                    <Button variant="outline" className="flex-1 min-w-[100px] text-green-600 hover:text-green-700 hover:bg-green-50" onClick={() => window.open(`https://wa.me/${selectedOwner.phone.replace(/\s+/g, '').replace(/^\+/, '')}`, '_blank')}>
+                      <MessageCircle className="h-4 w-4 mr-2" /> WhatsApp
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
