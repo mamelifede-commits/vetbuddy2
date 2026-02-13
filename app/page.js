@@ -11633,7 +11633,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
                 <p className="text-sm text-gray-600 mb-2">
                   Scopri come utilizzare al meglio VetBuddy per gestire la salute del tuo animale.
                 </p>
-                <a href="/tutorial" className="inline-flex items-center gap-1 text-purple-600 font-medium text-sm hover:underline">
+                <a href="/tutorial/proprietari" className="inline-flex items-center gap-1 text-purple-600 font-medium text-sm hover:underline">
                   <PlayCircle className="h-4 w-4" /> Guarda il tutorial
                 </a>
               </div>
