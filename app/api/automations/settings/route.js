@@ -75,6 +75,25 @@ const DEFAULT_SETTINGS = {
   staffBirthday: true              // Ricorda compleanni staff
 };
 
+// Automazioni incluse nel piano Starter (gratuite ma essenziali)
+const STARTER_AUTOMATIONS = [
+  'appointmentReminders',    // Promemoria appuntamenti 24h prima
+  'bookingConfirmation',     // Conferma prenotazione
+  'welcomeNewPet',           // Benvenuto nuovo pet
+  'petBirthday',             // Compleanno pet (fidelizzazione)
+  'appointmentConfirmation'  // Conferma appuntamento
+];
+
+// Automazioni incluse nel piano Pro (tutto di Starter + avanzate)
+const PRO_AUTOMATIONS = [
+  ...STARTER_AUTOMATIONS,
+  'vaccineRecalls', 'postVisitFollowup', 'noShowDetection', 'waitlistNotification',
+  'suggestedSlots', 'documentReminders', 'autoTicketAssignment', 'urgencyNotifications',
+  'weeklyReport', 'reviewRequest', 'inactiveClientReactivation', 'antiparasiticReminder',
+  'annualCheckup', 'labResultsReady', 'paymentReminder', 'postSurgeryFollowup',
+  'aiQuickReplies', 'medicationRefill', 'weightAlert', 'dentalHygiene'
+];
+
 // GET - Retrieve automation settings for the authenticated clinic
 export async function GET(request) {
   try {
@@ -103,23 +122,17 @@ export async function GET(request) {
     let allowedAutomations = [];
     let automationsCount = 0;
     
-    if (plan === 'custom') {
+    if (plan === 'custom' || plan === 'enterprise') {
       allowedAutomations = 'all';
       automationsCount = 44;
     } else if (plan === 'pro') {
-      // Pro plan: 20 automations allowed
-      allowedAutomations = [
-        'appointmentReminders', 'bookingConfirmation', 'vaccineRecalls', 'postVisitFollowup',
-        'noShowDetection', 'waitlistNotification', 'suggestedSlots', 'documentReminders',
-        'autoTicketAssignment', 'aiQuickReplies', 'urgencyNotifications', 'weeklyReport',
-        'petBirthday', 'reviewRequest', 'inactiveClientReactivation',
-        'antiparasiticReminder', 'annualCheckup', 'medicationRefill', 'weightAlert', 'dentalHygiene'
-      ];
-      automationsCount = 20;
+      // Pro plan: all Pro automations allowed
+      allowedAutomations = PRO_AUTOMATIONS;
+      automationsCount = PRO_AUTOMATIONS.length;
     } else {
-      // Starter: no automations
-      allowedAutomations = [];
-      automationsCount = 0;
+      // Starter: 5 basic automations
+      allowedAutomations = STARTER_AUTOMATIONS;
+      automationsCount = STARTER_AUTOMATIONS.length;
     }
 
     return NextResponse.json({
@@ -131,7 +144,8 @@ export async function GET(request) {
       plan,
       planLimits,
       allowedAutomations,
-      automationsCount
+      automationsCount,
+      starterAutomations: STARTER_AUTOMATIONS
     });
   } catch (error) {
     console.error('Error getting automation settings:', error);
