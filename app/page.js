@@ -8205,12 +8205,27 @@ function ClinicSettings({ user, onNavigate }) {
                   <div><Label className="text-gray-500">Email</Label><p className="font-medium">{user.email || '-'}</p></div>
                   <div><Label className="text-gray-500">Telefono</Label><p className="font-medium">{user.phone || '-'}</p></div>
                 </div>
-                <div><Label className="text-gray-500">Sito web</Label><p className="font-medium">{user.website || '-'}</p></div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-500 flex items-center gap-1">
+                      <MessageCircle className="h-3 w-3 text-green-500" />
+                      WhatsApp Business
+                    </Label>
+                    <p className="font-medium">{user.whatsappNumber || <span className="text-amber-600 text-sm">Non configurato</span>}</p>
+                  </div>
+                  <div><Label className="text-gray-500">Sito web</Label><p className="font-medium">{user.website || '-'}</p></div>
+                </div>
                 {user.description && <div><Label className="text-gray-500">Descrizione</Label><p className="text-sm text-gray-600">{user.description}</p></div>}
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label className="text-gray-500">Orario apertura</Label><p className="font-medium">{user.openingTime || '09:00'}</p></div>
                   <div><Label className="text-gray-500">Orario chiusura</Label><p className="font-medium">{user.closingTime || '18:00'}</p></div>
                 </div>
+                {user.cancellationPolicyText && (
+                  <div>
+                    <Label className="text-gray-500">Policy di cancellazione</Label>
+                    <p className="text-sm text-gray-600 bg-amber-50 p-2 rounded border border-amber-200">{user.cancellationPolicyText}</p>
+                  </div>
+                )}
               </>
             )}
           </CardContent>
