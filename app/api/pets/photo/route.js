@@ -48,10 +48,10 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Tipo file non supportato. Usa JPG, PNG, WebP o GIF.' }, { status: 400, headers: corsHeaders });
     }
 
-    // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024;
+    // Validate file size (max 20MB)
+    const maxSize = 20 * 1024 * 1024;
     if (file.size > maxSize) {
-      return NextResponse.json({ error: 'File troppo grande. Massimo 5MB.' }, { status: 400, headers: corsHeaders });
+      return NextResponse.json({ error: 'File troppo grande. Massimo 20MB.' }, { status: 400, headers: corsHeaders });
     }
 
     // Create unique filename
