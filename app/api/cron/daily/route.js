@@ -807,6 +807,11 @@ export async function GET(request) {
       const pet = await db.collection('pets').findOne({ id: apt.petId });
 
       if (owner?.email && pet) {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+        const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&petId=${pet.id}&reason=Controllo%20Annuale`;
+        const phoneNumber = clinic?.phone || clinic?.telefono || '';
+        const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+        
         try {
           await sendEmail({
             to: owner.email,
@@ -817,17 +822,29 @@ export async function GET(request) {
                   <h1 style="color: white; margin: 0;">📅 Controllo Annuale</h1>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
-                  <p>Ciao ${owner.name || ''},</p>
-                  <p>È passato un anno dall'ultima visita di <strong>${pet.name}</strong>!</p>
-                  <p>Un controllo annuale è importante per:</p>
-                  <ul>
+                  <p style="color: #666; font-size: 16px;">Ciao ${owner.name || ''},</p>
+                  <p style="color: #666; font-size: 16px;">È passato un anno dall'ultima visita di <strong>${pet.name}</strong>!</p>
+                  <p style="color: #666; font-size: 16px;">Un controllo annuale è importante per:</p>
+                  <ul style="color: #666;">
                     <li>Verificare lo stato di salute generale</li>
                     <li>Aggiornare le vaccinazioni</li>
                     <li>Prevenire problemi futuri</li>
                   </ul>
+                  
+                  <!-- Action Buttons -->
                   <div style="text-align: center; margin: 30px 0;">
-                    <a href="https://vetbuddy.it" style="background: #3498DB; color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">Prenota Controllo</a>
+                    <a href="${bookUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      📅 Prenota Controllo Annuale
+                    </a>
+                    ${phoneLink ? `
+                    <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      📞 Chiama la Clinica
+                    </a>
+                    ` : ''}
                   </div>
+                </div>
+                <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
