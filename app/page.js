@@ -12138,6 +12138,33 @@ function OwnerAppointments({ appointments, pets }) {
   // Stato per visualizzare dettagli appuntamento
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   
+  // Stato per il pagamento
+  const [paymentLoading, setPaymentLoading] = useState(null);
+  
+  // Funzione per iniziare il pagamento
+  const handlePayment = async (appointment) => {
+    setPaymentLoading(appointment.id);
+    try {
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+      const response = await api.post('payments/appointment', {
+        appointmentId: appointment.id,
+        originUrl: baseUrl
+      });
+      
+      if (response.url) {
+        // Redirect a Stripe Checkout
+        window.location.href = response.url;
+      } else {
+        alert('❌ Errore: URL di pagamento non disponibile');
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('❌ Errore durante l\'avvio del pagamento: ' + (error.message || 'Riprova più tardi'));
+    } finally {
+      setPaymentLoading(null);
+    }
+  };
+  
   // Carica le cliniche disponibili quando si apre il dialog
   useEffect(() => {
     if (showBooking && clinics.length === 0) {
