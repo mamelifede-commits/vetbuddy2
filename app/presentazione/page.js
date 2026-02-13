@@ -194,11 +194,6 @@ export default function PresentazionePage() {
                   Inizia Gratis <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link href="/tutorial">
-                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 text-lg px-8 py-6">
-                  🎓 Guarda il Tutorial
-                </Button>
-              </Link>
             </div>
             
             {/* Stats */}
