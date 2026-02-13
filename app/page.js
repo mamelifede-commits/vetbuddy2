@@ -8543,13 +8543,27 @@ function ClinicEvents({ user }) {
                     </div>
                     
                     <div className="flex gap-2 mt-4">
+                      <Button 
+                        size="sm" 
+                        variant={event.saved ? "default" : "outline"}
+                        className={event.saved ? "bg-red-500 hover:bg-red-600" : ""}
+                        onClick={() => toggleSaveEvent(event.id, event.saved)}
+                        disabled={savingEvent === event.id}
+                      >
+                        {savingEvent === event.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Heart className={`h-4 w-4 mr-1 ${event.saved ? 'fill-current' : ''}`} />
+                        )}
+                        {event.saved ? 'Salvato' : 'Salva'}
+                      </Button>
                       <a href={event.url} target="_blank" rel="noopener noreferrer">
                         <Button size="sm" className={`bg-${getTypeColor(event.type)}-500 hover:bg-${getTypeColor(event.type)}-600`}>
-                          <ExternalLink className="h-4 w-4 mr-1" /> Maggiori Info
+                          <ExternalLink className="h-4 w-4 mr-1" /> Info
                         </Button>
                       </a>
                       <Button size="sm" variant="outline">
-                        <CalendarCheck className="h-4 w-4 mr-1" /> Aggiungi al Calendario
+                        <CalendarCheck className="h-4 w-4 mr-1" /> Calendario
                       </Button>
                     </div>
                   </div>
