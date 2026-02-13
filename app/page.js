@@ -8038,7 +8038,7 @@ function OwnerDashboard({ user, onLogout }) {
 
         {activeTab === 'appointments' && <OwnerAppointments appointments={appointments} pets={pets} />}
         {activeTab === 'documents' && <OwnerDocuments documents={documents} pets={pets} onRefresh={loadData} />}
-        {activeTab === 'messages' && <OwnerMessages messages={messages} />}
+        {activeTab === 'messages' && <OwnerMessages messages={messages} clinics={clinics} onRefresh={loadData} />}
         {activeTab === 'pets' && <OwnerPets pets={pets} onRefresh={loadData} onOpenProfile={handleOpenPetProfile} />}
         {activeTab === 'reviews' && <OwnerReviews user={user} />}
         {activeTab === 'petProfile' && selectedPetId && <PetProfile petId={selectedPetId} onBack={() => setActiveTab('pets')} appointments={appointments} documents={documents} />}
