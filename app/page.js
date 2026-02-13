@@ -12221,6 +12221,11 @@ function OwnerEvents({ user }) {
     { id: 'veterinaria', label: 'Salute', icon: Stethoscope },
     { id: 'cani', label: 'Cani', icon: PawPrint },
     { id: 'gatti', label: 'Gatti', icon: PawPrint },
+    { id: 'conigli', label: 'Conigli', icon: Heart },
+    { id: 'uccelli', label: 'Uccelli', icon: Sparkles },
+    { id: 'rettili', label: 'Rettili', icon: Zap },
+    { id: 'pesci', label: 'Pesci', icon: Droplet },
+    { id: 'roditori', label: 'Roditori', icon: Star },
     { id: 'promo', label: 'Promo', icon: Gift },
     { id: 'eventi', label: 'Eventi', icon: MapPin },
   ];
