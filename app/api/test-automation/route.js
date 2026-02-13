@@ -56,6 +56,23 @@ export async function POST(request) {
     
     const results = {};
     
+    if (action === 'reset_reminder_flags') {
+      // Reset reminder flags to re-test
+      const appointmentId = request.json()?.appointmentId || '507ee9e8-a713-4d23-98c2-ad933b079e3a';
+      
+      await db.collection('appointments').updateMany(
+        { reminderSent: true },
+        { $set: { reminderSent: false } }
+      );
+      
+      await db.collection('vaccinations').updateMany(
+        { reminderSent: true },
+        { $set: { reminderSent: false } }
+      );
+      
+      results.message = 'All reminder flags reset';
+    }
+    
     if (action === 'enable_all_automations') {
       // Enable all automations for a clinic
       const targetClinicId = clinicId || '30cc3933-244c-44b9-b6f3-b2b6372c6260';
