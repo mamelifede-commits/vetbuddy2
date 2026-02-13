@@ -12598,9 +12598,11 @@ function OwnerEvents({ user }) {
             const catStyle = getCategoryColor(event.category);
             const eventLink = event.link || null;
             
-            const handleCardClick = () => {
+            const handleCardClick = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
               if (eventLink) {
-                window.open(eventLink, '_blank');
+                window.open(eventLink, '_blank', 'noopener,noreferrer');
               } else {
                 // Show event details modal/alert
                 alert(`📅 ${event.title}\n\n${event.description || 'Nessuna descrizione disponibile.'}\n\n📍 Luogo: ${event.location || 'Non specificato'}\n📆 Data: ${event.eventDate ? new Date(event.eventDate).toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Non specificata'}`);
@@ -12608,66 +12610,91 @@ function OwnerEvents({ user }) {
             };
             
             return (
-              <Card 
+              <div 
                 key={event.id} 
-                className="overflow-hidden hover:shadow-lg transition-all duration-200 group cursor-pointer"
+                className="overflow-hidden hover:shadow-lg transition-all duration-200 group cursor-pointer bg-white rounded-lg border border-gray-200"
                 onClick={handleCardClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleCardClick(e)}
               >
-                <CardContent className="p-0">
-                  {/* Event Image/Icon Header */}
-                  <div className={`${catStyle.bg} p-4 flex items-center justify-between`}>
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl">{catStyle.icon}</span>
-                      <Badge className={`${catStyle.bg} ${catStyle.text} border-0`}>
-                        {getCategoryLabel(event.category)}
-                      </Badge>
-                    </div>
-                    {event.isFeatured && (
-                      <Badge className="bg-amber-500 text-white">
-                        <Star className="h-3 w-3 mr-1" /> In evidenza
-                      </Badge>
+                {/* Event Image/Icon Header */}
+                <div className={`${catStyle.bg} p-4 flex items-center justify-between`}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl">{catStyle.icon}</span>
+                    <Badge className={`${catStyle.bg} ${catStyle.text} border-0`}>
+                      {getCategoryLabel(event.category)}
+                    </Badge>
+                  </div>
+                  {event.isFeatured && (
+                    <Badge className="bg-amber-500 text-white">
+                      <Star className="h-3 w-3 mr-1" /> In evidenza
+                    </Badge>
+                  )}
+                </div>
+                
+                {/* Content */}
+                <div className="p-4">
+                  <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-coral-600 transition-colors">
+                    {event.title}
+                  </h3>
+                  
+                  {event.description && (
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                      {event.description}
+                    </p>
+                  )}
+                  
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-3">
+                    {event.eventDate && (
+                      <span className="flex items-center gap-1">
+                        <CalendarDays className="h-4 w-4" />
+                        {formatDate(event.eventDate)}
+                      </span>
+                    )}
+                    {event.location && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        {event.location}
+                      </span>
                     )}
                   </div>
                   
-                  {/* Content */}
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-coral-600 transition-colors">
-                      {event.title}
-                    </h3>
-                    
-                    {event.description && (
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                        {event.description}
-                      </p>
-                    )}
-                    
-                    <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-3">
-                      {event.eventDate && (
-                        <span className="flex items-center gap-1">
-                          <CalendarDays className="h-4 w-4" />
-                          {formatDate(event.eventDate)}
-                        </span>
+                  {/* Source and Action Button */}
+                  <div className="flex items-center justify-between pt-3 border-t">
+                    <span className="text-xs text-gray-400 flex items-center gap-1">
+                      {event.source === 'vetbuddy' ? (
+                        <>
+                          <PawPrint className="h-3 w-3 text-coral-400" />
+                          VetBuddy
+                        </>
+                      ) : event.source === 'rss' ? (
+                        <>
+                          <Globe className="h-3 w-3" />
+                          {event.sourceLabel || 'News Esterna'}
+                        </>
+                      ) : (
+                        <>
+                          <Building2 className="h-3 w-3" />
+                          {event.organizer || 'Organizzatore'}
+                        </>
                       )}
-                      {event.location && (
-                        <span className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4" />
-                          {event.location}
-                        </span>
-                      )}
-                    </div>
+                    </span>
                     
-                    {/* Source */}
-                    <div className="flex items-center justify-between pt-3 border-t">
-                      <span className="text-xs text-gray-400 flex items-center gap-1">
-                        {event.source === 'vetbuddy' ? (
-                          <>
-                            <PawPrint className="h-3 w-3 text-coral-400" />
-                            VetBuddy
-                          </>
-                        ) : event.source === 'rss' ? (
-                          <>
-                            <Globe className="h-3 w-3" />
-                            {event.sourceLabel || 'News Esterna'}
+                    <button 
+                      className="bg-coral-500 hover:bg-coral-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1 transition-colors"
+                      onClick={handleCardClick}
+                    >
+                      {eventLink ? 'Vai al sito' : 'Vedi dettagli'}
+                      <ExternalLink className="h-3 w-3" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
                           </>
                         ) : (
                           <>
