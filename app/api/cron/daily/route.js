@@ -629,6 +629,12 @@ export async function GET(request) {
       const pet = await db.collection('pets').findOne({ id: apt.petId });
       
       if (owner?.email && clinic) {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+        const phoneNumber = clinic?.phone || clinic?.telefono || '';
+        const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+        const bookUrl = `${baseUrl}?action=book&clinicId=${clinic.id}`;
+        const reviewUrl = clinic.googlePlaceId ? `https://g.page/r/${clinic.googlePlaceId}` : `${baseUrl}?action=review&clinicId=${clinic.id}`;
+        
         try {
           await sendEmail({
             to: owner.email,
@@ -642,10 +648,26 @@ export async function GET(request) {
                   <p style="color: #666;">Ciao ${owner.name || ''},</p>
                   <p style="color: #666;">Come è andata la visita di <strong>${pet?.name || 'il tuo animale'}</strong> presso <strong>${clinic.clinicName}</strong>?</p>
                   <p style="color: #666;">Se ti sei trovato bene, lasciaci una recensione! Aiuterà altri proprietari a trovare una clinica di fiducia.</p>
+                  
+                  <!-- Action Buttons -->
                   <div style="text-align: center; margin: 30px 0;">
-                    <a href="https://g.page/r/${clinic.googlePlaceId || 'review'}" style="background: #4285F4; color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; display: inline-block;">⭐ Lascia una recensione</a>
+                    <a href="${reviewUrl}" style="display: inline-block; background: #4285F4; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      ⭐ Lascia una Recensione
+                    </a>
+                    <a href="${bookUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      📅 Prenota Prossima Visita
+                    </a>
+                    ${phoneLink ? `
+                    <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      📞 Chiama la Clinica
+                    </a>
+                    ` : ''}
                   </div>
+                  
                   <p style="color: #999; font-size: 12px; text-align: center;">Grazie per il tuo feedback!</p>
+                </div>
+                <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
