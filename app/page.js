@@ -8384,6 +8384,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           <NavItem icon={FileText} label="Documenti" value="documents" badge={documents.length} />
           <NavItem icon={MessageCircle} label="Messaggi" value="messages" />
           <NavItem icon={PawPrint} label="I miei animali" value="pets" />
+          <NavItem icon={Gift} label="I miei premi" value="rewards" />
           <NavItem icon={Star} label="Le mie recensioni" value="reviews" />
           <div className="border-t my-3"></div>
           <NavItem icon={Search} label="Trova clinica" value="findClinic" />
