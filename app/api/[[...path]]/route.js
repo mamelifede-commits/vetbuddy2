@@ -2432,6 +2432,172 @@ export async function POST(request, { params }) {
       return NextResponse.json(vaccination, { headers: corsHeaders });
     }
 
+    // ==================== REWARDS/PREMI API ====================
+    
+    // Create reward type (clinic defines available reward types)
+    if (path === 'rewards/types') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Solo le cliniche possono creare tipi di premio' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { name, description, rewardType, value, icon } = body;
+      
+      if (!name || !rewardType) {
+        return NextResponse.json({ error: 'Nome e tipo premio sono obbligatori' }, { status: 400, headers: corsHeaders });
+      }
+
+      const rewards = await getCollection('rewards');
+      
+      const rewardDef = {
+        id: uuidv4(),
+        clinicId: user.id,
+        type: 'definition',
+        name,
+        description: description || '',
+        rewardType, // 'discount_percent', 'discount_fixed', 'free_service', 'free_product', 'gift'
+        value: value || 0, // % or fixed amount
+        icon: icon || 'Gift',
+        active: true,
+        createdAt: new Date().toISOString()
+      };
+
+      await rewards.insertOne(rewardDef);
+      return NextResponse.json(rewardDef, { headers: corsHeaders });
+    }
+
+    // Assign reward to owner
+    if (path === 'rewards/assign') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Solo le cliniche possono assegnare premi' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { ownerId, rewardTypeId, reason, expiresAt } = body;
+      
+      if (!ownerId || !rewardTypeId) {
+        return NextResponse.json({ error: 'Proprietario e tipo premio sono obbligatori' }, { status: 400, headers: corsHeaders });
+      }
+
+      const rewards = await getCollection('rewards');
+      
+      // Get reward type definition
+      const rewardType = await rewards.findOne({ id: rewardTypeId, clinicId: user.id, type: 'definition' });
+      if (!rewardType) {
+        return NextResponse.json({ error: 'Tipo premio non trovato' }, { status: 404, headers: corsHeaders });
+      }
+
+      // Get owner info
+      const users = await getCollection('users');
+      const owner = await users.findOne({ id: ownerId });
+      if (!owner) {
+        return NextResponse.json({ error: 'Proprietario non trovato' }, { status: 404, headers: corsHeaders });
+      }
+
+      const assignedReward = {
+        id: uuidv4(),
+        clinicId: user.id,
+        ownerId,
+        ownerName: owner.name,
+        ownerEmail: owner.email,
+        type: 'assigned',
+        rewardTypeId,
+        rewardName: rewardType.name,
+        rewardDescription: rewardType.description,
+        rewardType: rewardType.rewardType,
+        rewardValue: rewardType.value,
+        rewardIcon: rewardType.icon,
+        reason: reason || 'Premio fedeltà',
+        status: 'available', // 'available', 'used', 'expired'
+        expiresAt: expiresAt || null,
+        createdAt: new Date().toISOString(),
+        usedAt: null
+      };
+
+      await rewards.insertOne(assignedReward);
+      
+      // Send email notification to owner
+      try {
+        const clinic = await users.findOne({ id: user.id });
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+        
+        await sendEmail({
+          to: owner.email,
+          subject: `🎁 Hai ricevuto un premio da ${clinic?.clinicName || 'la tua clinica'}!`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <div style="background: linear-gradient(135deg, #FF6B6B, #FFD93D); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+                <h1 style="color: white; margin: 0; font-size: 28px;">🎁 Hai un Premio!</h1>
+              </div>
+              <div style="padding: 30px; background: #f9f9f9;">
+                <p style="color: #666; font-size: 16px;">Ciao ${owner.name || ''},</p>
+                <p style="color: #666; font-size: 16px;"><strong>${clinic?.clinicName}</strong> ti ha assegnato un premio fedeltà!</p>
+                
+                <div style="background: white; padding: 25px; border-radius: 15px; margin: 25px 0; text-align: center; border: 2px dashed #FFD93D;">
+                  <p style="font-size: 24px; margin: 0 0 10px 0;">🎁</p>
+                  <h2 style="color: #FF6B6B; margin: 0 0 10px 0;">${rewardType.name}</h2>
+                  <p style="color: #666; margin: 0;">${rewardType.description || ''}</p>
+                  ${rewardType.rewardType === 'discount_percent' ? `<p style="font-size: 28px; color: #27AE60; font-weight: bold; margin: 15px 0 0 0;">-${rewardType.value}%</p>` : ''}
+                  ${rewardType.rewardType === 'discount_fixed' ? `<p style="font-size: 28px; color: #27AE60; font-weight: bold; margin: 15px 0 0 0;">-€${rewardType.value}</p>` : ''}
+                  ${rewardType.rewardType === 'free_service' || rewardType.rewardType === 'free_product' ? `<p style="font-size: 18px; color: #27AE60; font-weight: bold; margin: 15px 0 0 0;">GRATIS</p>` : ''}
+                </div>
+                
+                <p style="color: #888; font-size: 14px; text-align: center;">Motivo: ${reason || 'Premio fedeltà'}</p>
+                ${expiresAt ? `<p style="color: #E74C3C; font-size: 14px; text-align: center;">⚠️ Valido fino al: ${new Date(expiresAt).toLocaleDateString('it-IT')}</p>` : ''}
+                
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${baseUrl}?action=rewards" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 35px; border-radius: 25px; text-decoration: none; font-weight: bold;">
+                    🎁 Vedi i Miei Premi
+                  </a>
+                </div>
+                
+                <p style="color: #999; font-size: 12px; text-align: center;">Presenta questo premio alla tua prossima visita!</p>
+              </div>
+              <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+              </div>
+            </div>
+          `
+        });
+      } catch (emailErr) {
+        console.error('Error sending reward email:', emailErr);
+      }
+
+      return NextResponse.json(assignedReward, { headers: corsHeaders });
+    }
+
+    // Mark reward as used
+    if (path === 'rewards/use') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Solo le cliniche possono segnare i premi come usati' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { rewardId } = body;
+      
+      if (!rewardId) {
+        return NextResponse.json({ error: 'ID premio obbligatorio' }, { status: 400, headers: corsHeaders });
+      }
+
+      const rewards = await getCollection('rewards');
+      const reward = await rewards.findOne({ id: rewardId, clinicId: user.id, type: 'assigned' });
+      
+      if (!reward) {
+        return NextResponse.json({ error: 'Premio non trovato' }, { status: 404, headers: corsHeaders });
+      }
+      
+      if (reward.status === 'used') {
+        return NextResponse.json({ error: 'Premio già utilizzato' }, { status: 400, headers: corsHeaders });
+      }
+
+      await rewards.updateOne(
+        { id: rewardId },
+        { $set: { status: 'used', usedAt: new Date().toISOString() } }
+      );
+
+      return NextResponse.json({ success: true, message: 'Premio segnato come utilizzato' }, { headers: corsHeaders });
+    }
+
     return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
   } catch (error) {
     console.error('POST Error:', error);
