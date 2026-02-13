@@ -1473,14 +1473,10 @@ export async function GET(request) {
                     
                     <!-- Action Buttons -->
                     <div style="margin: 25px 0;">
-                      <a href="${bookUrl}" style="display: inline-block; background: #F39C12; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                        📅 Usa il tuo Sconto - Prenota Ora
+                      <a href="${rewardsUrl}" style="display: inline-block; background: #F39C12; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        🎁 Vedi i Miei Premi
                       </a>
-                      ${phoneLink ? `
-                      <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                        📞 Chiama per Prenotare
-                      </a>
-                      ` : ''}
+                      ${getContactButton(clinic, baseUrl, 'Scrivi alla Clinica', `Ciao! Ho raggiunto ${clientStats.visitCount} visite e vorrei usare il mio sconto!`)}
                     </div>
                     
                     <p style="color: #999; font-size: 12px;">Mostra questa email alla prossima visita!</p>
@@ -1531,10 +1527,7 @@ export async function GET(request) {
           const owner = await db.collection('users').findOne({ id: cc.ownerId });
           if (owner?.email) {
             const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
-            const phoneNumber = clinic?.phone || clinic?.telefono || '';
-            const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
             const bookUrl = `${baseUrl}?action=book&clinicId=${clinic.id}`;
-            const messageUrl = `${baseUrl}?action=message&clinicId=${clinic.id}`;
             
             await sendEmail({
               to: owner.email,
@@ -1555,9 +1548,8 @@ export async function GET(request) {
                       <a href="${bookUrl}" style="display: inline-block; background: #27AE60; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                         📅 Prenota Prima/Dopo
                       </a>
-                      ${phoneLink ? `
-                      <a href="${phoneLink}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                        📞 Chiama la Clinica
+                      ${getContactButton(clinic, baseUrl, 'Scrivi alla Clinica', `Ciao, ho bisogno di info sulle chiusure festive...`)}
+                      ${getPhoneButton(clinic, true)}
                       </a>
                       ` : ''}
                       <a href="${messageUrl}" style="display: inline-block; background: #9B59B6; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
