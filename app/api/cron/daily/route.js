@@ -220,11 +220,7 @@ export async function GET(request) {
                   
                   <!-- Action Buttons -->
                   <div style="text-align: center; margin: 25px 0;">
-                    ${phoneLink ? `
-                    <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                      📞 Chiama la Clinica
-                    </a>
-                    ` : ''}
+                    ${getContactButton(clinic, baseUrl, 'Scrivi alla Clinica', `Ciao, ho una domanda sull'appuntamento di ${pet.name} del ${apt.date}...`)}
                     <a href="${cancelUrl}" style="display: inline-block; background: #E74C3C; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                       ❌ Disdici Appuntamento
                     </a>
@@ -234,7 +230,7 @@ export async function GET(request) {
                   <div style="background: #FFF3CD; padding: 15px; border-radius: 10px; margin-top: 20px; border-left: 4px solid #FFC107;">
                     <p style="margin: 0 0 10px 0; font-weight: bold; color: #856404;">📋 Politica di Cancellazione</p>
                     <p style="margin: 0; color: #856404; font-size: 14px;">
-                      ${cancellationPolicy.message || `Ti preghiamo di avvisarci almeno ${cancellationPolicy.hoursNotice || 24} ore prima in caso di disdetta.`}
+                      ${getCancellationPolicyText(clinic)}
                     </p>
                     ${cancellationPolicy.fee > 0 ? `
                     <p style="margin: 10px 0 0 0; color: #856404; font-size: 14px;">
