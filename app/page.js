@@ -493,6 +493,7 @@ function LandingPage({ onLogin }) {
             <nav className="hidden md:flex items-center gap-8">
               <button onClick={() => scrollToSection('funzionalita')} className="text-gray-600 hover:text-coral-500 transition">Funzionalità</button>
               <button onClick={() => scrollToSection('automazioni')} className="text-gray-600 hover:text-coral-500 transition">Automazioni</button>
+              <button onClick={() => scrollToSection('import')} className="text-gray-600 hover:text-blue-500 transition">📁 Import</button>
               <button onClick={() => scrollToSection('premi')} className="text-gray-600 hover:text-amber-500 transition">🎁 Premi</button>
               <button onClick={() => scrollToSection('come-funziona')} className="text-gray-600 hover:text-coral-500 transition">Come funziona</button>
               <button onClick={() => scrollToSection('pilot')} className="text-gray-600 hover:text-coral-500 transition">Prezzi</button>
