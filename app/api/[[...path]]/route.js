@@ -512,9 +512,24 @@ export async function GET(request, { params }) {
         return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
       }
       const pets = await getCollection('pets');
-      const query = user.role === 'owner' ? { ownerId: user.id } : { clinicId: user.id };
-      const list = await pets.find(query).toArray();
-      return NextResponse.json(list, { headers: corsHeaders });
+      
+      if (user.role === 'owner') {
+        const list = await pets.find({ ownerId: user.id }).toArray();
+        return NextResponse.json(list, { headers: corsHeaders });
+      } else {
+        // For clinics: get pets that are either directly assigned to clinic OR belong to owners associated with clinic
+        const users = await getCollection('users');
+        const ownersOfClinic = await users.find({ role: 'owner', clinicId: user.id }).project({ id: 1, _id: 1 }).toArray();
+        const ownerIds = ownersOfClinic.map(o => o.id || o._id?.toString());
+        
+        const list = await pets.find({
+          $or: [
+            { clinicId: user.id },
+            { ownerId: { $in: ownerIds } }
+          ]
+        }).toArray();
+        return NextResponse.json(list, { headers: corsHeaders });
+      }
     }
 
     // Get subscription plans
