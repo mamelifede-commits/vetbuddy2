@@ -317,12 +317,14 @@ export async function GET(request) {
     const categoryLabels = {
       'cani': 'Cani',
       'gatti': 'Gatti',
+      'cavalli': 'Cavalli',
       'conigli': 'Conigli',
       'uccelli': 'Uccelli',
       'rettili': 'Rettili',
       'pesci': 'Pesci',
       'roditori': 'Roditori',
       'furetti': 'Furetti',
+      'altro': 'Altri Animali',
       'veterinaria': 'Veterinaria',
       'generale': 'Tutti gli animali'
     };
