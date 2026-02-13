@@ -2423,7 +2423,7 @@ export async function PUT(request, { params }) {
     // Update clinic profile (including location and services)
     if (path === 'clinic/profile') {
       const users = await getCollection('users');
-      const { address, city, latitude, longitude, phone, website, services, googlePlaceId, googleRating, clinicName, vatNumber, description, openingTime, closingTime } = body;
+      const { address, city, latitude, longitude, phone, whatsappNumber, website, services, googlePlaceId, googleRating, clinicName, vatNumber, description, openingTime, closingTime, cancellationPolicyText } = body;
       
       const updateData = { updatedAt: new Date().toISOString() };
       if (address !== undefined) updateData.address = address;
@@ -2431,6 +2431,7 @@ export async function PUT(request, { params }) {
       if (latitude !== undefined) updateData.latitude = latitude;
       if (longitude !== undefined) updateData.longitude = longitude;
       if (phone !== undefined) updateData.phone = phone;
+      if (whatsappNumber !== undefined) updateData.whatsappNumber = whatsappNumber;
       if (website !== undefined) updateData.website = website;
       if (services !== undefined) updateData.services = services; // Array of service IDs
       if (googlePlaceId !== undefined) updateData.googlePlaceId = googlePlaceId;
@@ -2440,6 +2441,7 @@ export async function PUT(request, { params }) {
       if (description !== undefined) updateData.description = description;
       if (openingTime !== undefined) updateData.openingTime = openingTime;
       if (closingTime !== undefined) updateData.closingTime = closingTime;
+      if (cancellationPolicyText !== undefined) updateData.cancellationPolicyText = cancellationPolicyText;
       
       await users.updateOne({ id: user.id }, { $set: updateData });
       const updated = await users.findOne({ id: user.id }, { projection: { password: 0 } });
