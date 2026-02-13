@@ -385,20 +385,77 @@ backend:
 
 
 frontend:
-  - task: "Landing Page UI"
+  - task: "Landing Page Fatturazione Section"
     implemented: true
-    working: true
+    working: "NA"
     file: "/app/app/page.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
-      - working: true
+      - working: "NA"
         agent: "testing"
-        comment: "WORKING: Landing page loads correctly with Pilot Milano banner at top, both cards 'Sei una Clinica?' and 'Sei un Proprietario?' visible and well-aligned, footer with VetBuddy branding and Made in Italy text. All visual elements properly displayed."
-      - working: true
-        agent: "main"
-        comment: "UPDATED: Google Maps integration added to homepage. Interactive map showing Milano area with 5 demo clinic markers. Custom map styling, legend, stats badge '5 cliniche in zona'. InfoWindow popups on marker click. Screenshot verified - map loads correctly."
+        comment: "NEW REQUIREMENT: Verify 'Fatturazione' link in top navigation menu, test scrolling to invoicing section, check two options (Esporta per il Tuo Software and Sistema Integrato VetBuddy), verify 4-step process flow display."
+
+  - task: "Favicon Display"
+    implemented: true
+    working: "NA"
+    file: "/app/app/layout.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "NEW REQUIREMENT: Check if favicon is visible in browser tab showing VetBuddy paw logo in coral/red color."
+
+  - task: "Clinic Dashboard Logout Button Position"
+    implemented: true
+    working: "NA"
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "NEW REQUIREMENT: Login with demo@vetbuddy.it / password123, verify 'Esci' logout button moved to TOP of sidebar next to logo (small icon button with LogOut icon, red hover color)."
+
+  - task: "Owner Dashboard Logout Button Position"
+    implemented: true
+    working: "NA"
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "NEW REQUIREMENT: Login with proprietario.demo@vetbuddy.it / demo123, verify 'Esci' logout button moved to TOP of sidebar with same behavior as clinic dashboard."
+
+  - task: "Animal Species Horse Addition"
+    implemented: true
+    working: "NA"
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "NEW REQUIREMENT: In owner dashboard 'I miei animali', verify '🐴 Cavallo' (Horse) is available in species dropdown alongside existing species (dog, cat, bird, rabbit, hamster, fish, reptile, other)."
+
+  - task: "Invoicing Tab in Clinic Dashboard"
+    implemented: true
+    working: "NA"
+    file: "/app/app/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "NEW REQUIREMENT: In clinic dashboard, verify 'Fatturazione' tab with Settings showing export buttons (CSV, PDF, JSON), accordion guides for external software (Fatture in Cloud, Aruba, TeamSystem, Excel), and VetBuddy vs external invoicing explanation."
 
   - task: "VetBuddy Owner Dashboard Pet Modification Flow"
     implemented: true
