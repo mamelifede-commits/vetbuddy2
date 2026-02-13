@@ -1922,7 +1922,7 @@ function AuthForm({ mode, setMode, onLogin }) {
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="owner"><div className="flex items-center gap-2"><PawPrint className="h-4 w-4" />Proprietario di animale</div></SelectItem>
-                    <SelectItem value="clinic"><div className="flex items-center gap-2"><Building2 className="h-4 w-4" />Veterinario / Clinica</div></SelectItem>
+                    <SelectItem value="clinic"><div className="flex items-center gap-2"><Stethoscope className="h-4 w-4" />Veterinario (Clinica o Libero Professionista)</div></SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1930,8 +1930,15 @@ function AuthForm({ mode, setMode, onLogin }) {
               {/* Messaggio Pilot per cliniche */}
               {formData.role === 'clinic' && (
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p className="text-xs text-amber-700 mb-2">
+                    <strong>🏥 Per Cliniche e Liberi Professionisti:</strong>
+                  </p>
                   <p className="text-xs text-amber-700">
-                    <strong>Accesso Pilot:</strong> VetBuddy è disponibile solo su invito. Compila il form e ti contatteremo per l'attivazione.
+                    VetBuddy è perfetto sia per le cliniche veterinarie che per i <strong>veterinari liberi professionisti</strong>. 
+                    Seleziona "Solo io" nel campo Staff per indicare che lavori da solo.
+                  </p>
+                  <p className="text-xs text-amber-600 mt-1">
+                    Compila il form e ti contatteremo per l'attivazione (Accesso Pilot).
                   </p>
                 </div>
               )}
