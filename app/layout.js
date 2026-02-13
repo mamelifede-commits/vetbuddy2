@@ -7,7 +7,11 @@ export const metadata = {
   keywords: ['veterinario', 'clinica veterinaria', 'gestionale', 'animali', 'Milano', 'prenotazioni', 'pet'],
   authors: [{ name: 'VetBuddy' }],
   icons: {
-    icon: '/icon.svg',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/favicon.svg',
     apple: '/apple-icon.svg',
   },
   openGraph: {
