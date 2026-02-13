@@ -9544,6 +9544,9 @@ function OwnerAppointments({ appointments, pets }) {
   const [serviceSearch, setServiceSearch] = useState('');
   const [filteredClinics, setFilteredClinics] = useState([]);
   
+  // Stato per visualizzare dettagli appuntamento
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  
   // Carica le cliniche disponibili quando si apre il dialog
   useEffect(() => {
     if (showBooking && clinics.length === 0) {
