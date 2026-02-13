@@ -8206,7 +8206,9 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancelAppointmentId, setCancelAppointmentId] = useState(null);
+  const [cancelAppointmentDetails, setCancelAppointmentDetails] = useState(null);
   const [showBookingFromEmail, setShowBookingFromEmail] = useState(false);
+  const [cancellationReason, setCancellationReason] = useState('');
 
   useEffect(() => { loadData(); }, []);
   
