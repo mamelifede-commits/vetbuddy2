@@ -1298,7 +1298,25 @@ export async function GET(request) {
                     <li>📍 L'indirizzo è aggiornato?</li>
                     <li>✅ Il chip funziona correttamente?</li>
                   </ul>
-                  <p>Una verifica rapida può fare la differenza se ${pet.name} si perde!</p>
+                  <p style="color: #666; font-size: 16px;">Una verifica rapida può fare la differenza se ${pet.name} si perde!</p>
+                  
+                  <!-- Action Buttons -->
+                  <div style="text-align: center; margin: 25px 0;">
+                    <a href="${bookUrl}" style="display: inline-block; background: #1ABC9C; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      📍 Prenota Verifica Microchip
+                    </a>
+                    <a href="${updateUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      ✏️ Aggiorna Dati Online
+                    </a>
+                    ${phoneLink ? `
+                    <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      📞 Chiama la Clinica
+                    </a>
+                    ` : ''}
+                  </div>
+                </div>
+                <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -1332,6 +1350,12 @@ export async function GET(request) {
       }
       
       if (client.email) {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+        const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}`;
+        const exploreUrl = baseUrl;
+        const phoneNumber = clinic?.phone || clinic?.telefono || '';
+        const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+        
         try {
           await sendEmail({
             to: client.email,
