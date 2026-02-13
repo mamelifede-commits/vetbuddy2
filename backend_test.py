@@ -374,7 +374,7 @@ def main():
     """Run all backend API tests"""
     
     # Configuration
-    BASE_URL = "https://automation-verify.preview.emergentagent.com"
+    BASE_URL = "https://google-sync.preview.emergentagent.com"
     CLINIC_EMAIL = "demo@vetbuddy.it"
     CLINIC_PASSWORD = "DemoVet2025!"
     OWNER_EMAIL = "proprietario.demo@vetbuddy.it"  
