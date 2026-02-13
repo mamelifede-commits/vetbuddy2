@@ -2222,6 +2222,7 @@ function AuthForm({ mode, setMode, onLogin }) {
                     </div>
                     <div className="max-h-48 overflow-y-auto border rounded-lg p-3 bg-gray-50">
                       {Object.entries(serviceCatalog).map(([catId, category]) => (
+                        category?.services && (
                         <div key={catId} className="mb-3 last:mb-0">
                           <p className="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wider">{category.name}</p>
                           <div className="grid grid-cols-2 gap-1">
@@ -2238,6 +2239,7 @@ function AuthForm({ mode, setMode, onLogin }) {
                             ))}
                           </div>
                         </div>
+                        )
                       ))}
                       {Object.keys(serviceCatalog).length === 0 && (
                         <p className="text-center text-gray-400 py-4 text-sm">Caricamento servizi...</p>
