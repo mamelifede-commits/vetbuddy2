@@ -4075,19 +4075,272 @@ Max,gatto,Europeo,20/06/2019,380260000789012,maschio,5,tigrato,,Anna Bianchi,ann
           <h2 className="text-2xl font-bold">Pazienti</h2>
           <p className="text-gray-500 text-sm">Animali registrati - clicca per vedere i dettagli</p>
         </div>
-        <Dialog open={showDialog} onOpenChange={setShowDialog}>
-          <DialogTrigger asChild><Button className="bg-coral-500 hover:bg-coral-600"><Plus className="h-4 w-4 mr-2" />Nuovo</Button></DialogTrigger>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Nuovo paziente</DialogTitle></DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div><Label>Nome</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required /></div>
-              <div><Label>Specie</Label><Select value={formData.species} onValueChange={(v) => setFormData({...formData, species: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="dog">🐕 Cane</SelectItem><SelectItem value="cat">🐱 Gatto</SelectItem><SelectItem value="bird">🦜 Uccello</SelectItem><SelectItem value="rabbit">🐰 Coniglio</SelectItem><SelectItem value="hamster">🐹 Criceto</SelectItem><SelectItem value="fish">🐠 Pesce</SelectItem><SelectItem value="reptile">🦎 Rettile</SelectItem><SelectItem value="other">🐾 Altro</SelectItem></SelectContent></Select></div>
-              <div><Label>Razza</Label><Input value={formData.breed} onChange={(e) => setFormData({...formData, breed: e.target.value})} /></div>
-              <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">Aggiungi</Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <div className="flex gap-2">
+          {/* Import Button */}
+          <Button variant="outline" onClick={() => setShowImportDialog(true)} className="border-blue-300 text-blue-600 hover:bg-blue-50">
+            <Upload className="h-4 w-4 mr-2" />Import Dati
+          </Button>
+          <Dialog open={showDialog} onOpenChange={setShowDialog}>
+            <DialogTrigger asChild><Button className="bg-coral-500 hover:bg-coral-600"><Plus className="h-4 w-4 mr-2" />Nuovo</Button></DialogTrigger>
+            <DialogContent>
+              <DialogHeader><DialogTitle>Nuovo paziente</DialogTitle></DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div><Label>Nome</Label><Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required /></div>
+                <div><Label>Specie</Label><Select value={formData.species} onValueChange={(v) => setFormData({...formData, species: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="dog">🐕 Cane</SelectItem><SelectItem value="cat">🐱 Gatto</SelectItem><SelectItem value="bird">🦜 Uccello</SelectItem><SelectItem value="rabbit">🐰 Coniglio</SelectItem><SelectItem value="hamster">🐹 Criceto</SelectItem><SelectItem value="fish">🐠 Pesce</SelectItem><SelectItem value="reptile">🦎 Rettile</SelectItem><SelectItem value="other">🐾 Altro</SelectItem></SelectContent></Select></div>
+                <div><Label>Razza</Label><Input value={formData.breed} onChange={(e) => setFormData({...formData, breed: e.target.value})} /></div>
+                <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">Aggiungi</Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
+      
+      {/* Import Dialog */}
+      <Dialog open={showImportDialog} onOpenChange={(open) => !open && resetImport()}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Upload className="h-5 w-5 text-blue-500" />
+              Import Pazienti Esistenti
+            </DialogTitle>
+            <DialogDescription>
+              Carica i tuoi pazienti esistenti da file CSV/Excel
+            </DialogDescription>
+          </DialogHeader>
+          
+          {/* Step Indicator */}
+          <div className="flex items-center justify-center gap-2 py-4">
+            {[1, 2, 3, 4].map((step) => (
+              <div key={step} className="flex items-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  importStep >= step ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'
+                }`}>
+                  {step === 4 && importStep === 4 ? '✓' : step}
+                </div>
+                {step < 4 && <div className={`w-8 h-1 ${importStep > step ? 'bg-blue-500' : 'bg-gray-200'}`} />}
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-center gap-8 text-xs text-gray-500 -mt-2 mb-4">
+            <span>Inizia</span>
+            <span>Dati</span>
+            <span>Documenti</span>
+            <span>Fatto</span>
+          </div>
+          
+          {/* Step 1: Choose */}
+          {importStep === 1 && (
+            <div className="space-y-4">
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <h3 className="font-semibold text-blue-800 mb-2">📋 Come funziona l'import</h3>
+                <ol className="text-sm text-blue-700 space-y-1 list-decimal list-inside">
+                  <li>Scarica il template CSV con le colonne predefinite</li>
+                  <li>Compila il file con i dati dei tuoi pazienti</li>
+                  <li>Carica il file compilato</li>
+                  <li>Opzionalmente, carica i documenti (referti, esami, etc.)</li>
+                </ol>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <Button variant="outline" onClick={downloadTemplate} className="h-24 flex-col">
+                  <Download className="h-6 w-6 mb-2" />
+                  <span>Scarica Template CSV</span>
+                </Button>
+                <Button className="h-24 flex-col bg-blue-500 hover:bg-blue-600" onClick={() => setImportStep(2)}>
+                  <Upload className="h-6 w-6 mb-2" />
+                  <span>Ho già il file, procedi</span>
+                </Button>
+              </div>
+              
+              <div className="bg-amber-50 p-3 rounded-lg border border-amber-200 text-sm">
+                <p className="text-amber-800"><strong>💡 Suggerimento:</strong> Puoi esportare i dati dal tuo gestionale attuale in formato CSV e poi adattare le colonne al nostro template.</p>
+              </div>
+            </div>
+          )}
+          
+          {/* Step 2: Upload Data */}
+          {importStep === 2 && (
+            <div className="space-y-4">
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
+                <input
+                  type="file"
+                  accept=".csv,.xlsx,.xls"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="import-file"
+                />
+                <label htmlFor="import-file" className="cursor-pointer">
+                  {importFile ? (
+                    <div className="flex items-center justify-center gap-3">
+                      <FileText className="h-10 w-10 text-green-500" />
+                      <div className="text-left">
+                        <p className="font-medium text-gray-900">{importFile.name}</p>
+                        <p className="text-sm text-gray-500">{(importFile.size / 1024).toFixed(1)} KB</p>
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={(e) => { e.preventDefault(); setImportFile(null); }}>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <Upload className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                      <p className="text-gray-600 font-medium">Trascina qui il file CSV o clicca per selezionare</p>
+                      <p className="text-sm text-gray-400 mt-1">Formati supportati: CSV, Excel (.xlsx, .xls)</p>
+                    </>
+                  )}
+                </label>
+              </div>
+              
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setImportStep(1)} className="flex-1">
+                  ← Indietro
+                </Button>
+                <Button 
+                  onClick={handleImportData} 
+                  disabled={!importFile || importing}
+                  className="flex-1 bg-blue-500 hover:bg-blue-600"
+                >
+                  {importing ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Importazione...</>
+                  ) : (
+                    <>Importa Dati →</>
+                  )}
+                </Button>
+              </div>
+              
+              {importResults && importResults.error && (
+                <div className="bg-red-50 p-3 rounded-lg border border-red-200 text-red-700 text-sm">
+                  <strong>Errore:</strong> {importResults.error}
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Step 3: Upload Documents */}
+          {importStep === 3 && (
+            <div className="space-y-4">
+              {importResults && (
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <h3 className="font-semibold text-green-800 flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5" /> Dati importati con successo!
+                  </h3>
+                  <div className="mt-2 text-sm text-green-700 grid grid-cols-3 gap-2">
+                    <span>👤 {importResults.imported?.owners || 0} proprietari</span>
+                    <span>🐾 {importResults.imported?.pets || 0} animali</span>
+                    <span>💉 {importResults.imported?.vaccines || 0} vaccini</span>
+                  </div>
+                  {importResults.warnings?.length > 0 && (
+                    <details className="mt-2">
+                      <summary className="text-amber-600 cursor-pointer text-sm">⚠️ {importResults.warnings.length} avvisi</summary>
+                      <ul className="text-xs text-amber-600 mt-1 max-h-20 overflow-auto">
+                        {importResults.warnings.map((w, i) => <li key={i}>{w}</li>)}
+                      </ul>
+                    </details>
+                  )}
+                </div>
+              )}
+              
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                <input
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  multiple
+                  onChange={handleDocsChange}
+                  className="hidden"
+                  id="import-docs"
+                />
+                <label htmlFor="import-docs" className="cursor-pointer">
+                  <FileText className="h-10 w-10 mx-auto text-gray-400 mb-2" />
+                  <p className="text-gray-600 font-medium">Carica documenti (opzionale)</p>
+                  <p className="text-sm text-gray-400">PDF, JPG, PNG - Nomina i file con il nome del paziente per associazione automatica</p>
+                </label>
+              </div>
+              
+              {importDocs.length > 0 && (
+                <div className="max-h-40 overflow-auto space-y-2">
+                  {importDocs.map((doc, i) => (
+                    <div key={i} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                      <div className="flex items-center gap-2">
+                        {doc.type.includes('pdf') ? <FileText className="h-4 w-4 text-red-500" /> : <Image className="h-4 w-4 text-blue-500" />}
+                        <span className="text-sm truncate max-w-xs">{doc.name}</span>
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={() => removeDoc(i)}>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setImportStep(4)} className="flex-1">
+                  Salta questo step
+                </Button>
+                <Button 
+                  onClick={handleImportDocs} 
+                  disabled={importing}
+                  className="flex-1 bg-blue-500 hover:bg-blue-600"
+                >
+                  {importing ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Caricamento...</>
+                  ) : (
+                    <>Carica {importDocs.length} documenti →</>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+          
+          {/* Step 4: Results */}
+          {importStep === 4 && (
+            <div className="space-y-4 text-center">
+              <div className="py-6">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="h-10 w-10 text-green-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">Import Completato!</h3>
+                <p className="text-gray-500 mt-2">I tuoi pazienti sono stati importati con successo.</p>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="grid grid-cols-4 gap-4 text-center">
+                  <div>
+                    <p className="text-2xl font-bold text-blue-600">{importResults?.imported?.owners || 0}</p>
+                    <p className="text-xs text-gray-500">Proprietari</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-coral-500">{importResults?.imported?.pets || 0}</p>
+                    <p className="text-xs text-gray-500">Animali</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-green-600">{importResults?.imported?.vaccines || 0}</p>
+                    <p className="text-xs text-gray-500">Vaccini</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-purple-600">{importResults?.imported?.documents || 0}</p>
+                    <p className="text-xs text-gray-500">Documenti</p>
+                  </div>
+                </div>
+              </div>
+              
+              {(importResults?.warnings?.length > 0 || importResults?.errors?.length > 0) && (
+                <div className="bg-amber-50 p-3 rounded-lg text-left text-sm">
+                  {importResults.errors?.length > 0 && (
+                    <p className="text-red-600 mb-1">❌ {importResults.errors.length} errori</p>
+                  )}
+                  {importResults.warnings?.length > 0 && (
+                    <p className="text-amber-600">⚠️ {importResults.warnings.length} avvisi - alcuni dati potrebbero richiedere revisione</p>
+                  )}
+                </div>
+              )}
+              
+              <Button onClick={resetImport} className="w-full bg-coral-500 hover:bg-coral-600">
+                Chiudi e vedi i pazienti
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
       
       {/* Barra di ricerca */}
       <div className="mb-6">
