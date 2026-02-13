@@ -1558,7 +1558,7 @@ function WelcomeScreen({ user, onContinue }) {
 }
 
 // ==================== CLINIC DASHBOARD - CONTROL ROOM ====================
-function ClinicDashboard({ user, onLogout }) {
+function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [appointments, setAppointments] = useState([]);
   const [documents, setDocuments] = useState([]);
@@ -1583,6 +1583,20 @@ function ClinicDashboard({ user, onLogout }) {
     setSelectedOwnerFromPet(owner);
     setActiveTab('owners');
   };
+  
+  // Handle email action parameters for clinic
+  useEffect(() => {
+    if (emailAction && emailAction.action) {
+      switch (emailAction.action) {
+        case 'message':
+          setActiveTab('messages');
+          break;
+        default:
+          break;
+      }
+      if (onClearEmailAction) onClearEmailAction();
+    }
+  }, [emailAction, onClearEmailAction]);
 
   useEffect(() => { loadData(); }, []);
 
