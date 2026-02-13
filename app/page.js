@@ -11086,9 +11086,14 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
             <p className="text-xs text-gray-500 truncate max-w-[120px]">{user.name}</p>
           </div>
         </div>
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 hover:bg-gray-100 rounded-lg">
-          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={onLogout} className="text-gray-500 hover:text-red-600">
+            <LogOut className="h-4 w-4" />
+          </Button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 hover:bg-gray-100 rounded-lg">
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu Overlay */}
