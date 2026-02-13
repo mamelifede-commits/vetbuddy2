@@ -13571,7 +13571,7 @@ function OwnerTutorialInline() {
   );
 }
 
-function OwnerDocuments({ documents, pets, onRefresh }) {
+function OwnerDocuments({ documents, pets, onRefresh, user }) {
   const [showUpload, setShowUpload] = useState(false);
   const [formData, setFormData] = useState({ petId: '', type: 'foto', notes: '', file: null, fileName: '' });
   const [uploading, setUploading] = useState(false);
