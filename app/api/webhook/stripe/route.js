@@ -199,36 +199,73 @@ export async function POST(request) {
             try {
               const invoice = await createAutoInvoice(db, invoiceData);
               
-              // Invia fattura via email
+              // Genera il PDF della fattura
+              let pdfBuffer = null;
+              let pdfDocument = null;
+              try {
+                pdfBuffer = await generateInvoicePDF(invoice);
+                pdfDocument = await saveInvoicePDFAsDocument(db, invoice, pdfBuffer);
+                console.log(`PDF fattura ${invoice.invoiceNumber} generato e salvato come documento ${pdfDocument.id}`);
+              } catch (pdfError) {
+                console.error('Error generating invoice PDF:', pdfError);
+              }
+              
+              // Invia fattura via email con allegato PDF
               if (invoiceData.ownerEmail) {
                 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
-                await sendEmail({
+                
+                const emailConfig = {
                   to: invoiceData.ownerEmail,
-                  subject: `Fattura ${invoice.invoiceNumber} - VetBuddy`,
+                  subject: `📋 Fattura ${invoice.invoiceNumber} - Pagamento Confermato`,
                   html: `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                      <h2 style="color: #FF6B6B;">Grazie per il tuo pagamento! 🎉</h2>
-                      <p>Ciao ${invoiceData.ownerName},</p>
-                      <p>Il tuo pagamento di <strong>€${invoice.total.toFixed(2)}</strong> è stato confermato.</p>
-                      
-                      <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                        <p style="margin: 0;"><strong>Fattura N°:</strong> ${invoice.invoiceNumber}</p>
-                        <p style="margin: 5px 0;"><strong>Data:</strong> ${new Date(invoice.date).toLocaleDateString('it-IT')}</p>
-                        <p style="margin: 5px 0;"><strong>Importo:</strong> €${invoice.total.toFixed(2)}</p>
+                      <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E); padding: 25px; border-radius: 12px 12px 0 0; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 24px;">🐾 VetBuddy</h1>
                       </div>
                       
-                      <p>Puoi trovare la fattura nella sezione <strong>Documenti</strong> della tua dashboard VetBuddy.</p>
+                      <div style="padding: 30px; background: #ffffff;">
+                        <h2 style="color: #FF6B6B; margin-top: 0;">Grazie per il tuo pagamento! 🎉</h2>
+                        <p style="color: #333;">Ciao <strong>${invoiceData.ownerName}</strong>,</p>
+                        <p style="color: #666;">Il tuo pagamento è stato confermato con successo. In allegato trovi la fattura in formato PDF.</p>
+                        
+                        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #FF6B6B;">
+                          <p style="margin: 0 0 8px;"><strong>📋 Fattura N°:</strong> ${invoice.invoiceNumber}</p>
+                          <p style="margin: 0 0 8px;"><strong>📅 Data:</strong> ${invoice.issueDate}</p>
+                          <p style="margin: 0 0 8px;"><strong>💰 Importo:</strong> €${invoice.totals.total.toFixed(2)}</p>
+                          ${invoice.petName ? `<p style="margin: 0;"><strong>🐕 Paziente:</strong> ${invoice.petName}</p>` : ''}
+                        </div>
+                        
+                        <p style="color: #666;">📎 <strong>La fattura PDF è allegata a questa email.</strong></p>
+                        <p style="color: #666;">Puoi anche trovarla nella sezione <strong>Documenti</strong> della tua dashboard VetBuddy.</p>
+                        
+                        <div style="text-align: center; margin-top: 30px;">
+                          <a href="${baseUrl}" style="display: inline-block; background: linear-gradient(135deg, #FF6B6B, #FF8E8E); color: white; padding: 14px 35px; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 16px;">
+                            Vai alla Dashboard
+                          </a>
+                        </div>
+                      </div>
                       
-                      <a href="${baseUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin-top: 15px;">
-                        Vai a VetBuddy
-                      </a>
-                      
-                      <p style="color: #888; font-size: 12px; margin-top: 30px;">
-                        Questa è una email automatica generata da VetBuddy.
-                      </p>
+                      <div style="padding: 20px; background: #f5f5f5; border-radius: 0 0 12px 12px; text-align: center;">
+                        <p style="color: #888; font-size: 12px; margin: 0;">
+                          Questa è una email automatica generata da VetBuddy.<br>
+                          Per assistenza, contatta la tua clinica veterinaria.
+                        </p>
+                      </div>
                     </div>
                   `
-                });
+                };
+                
+                // Aggiungi allegato PDF se disponibile
+                if (pdfBuffer) {
+                  emailConfig.attachments = [{
+                    filename: `Fattura_${invoice.invoiceNumber.replace('/', '-')}.pdf`,
+                    content: pdfBuffer.toString('base64'),
+                    type: 'application/pdf'
+                  }];
+                }
+                
+                await sendEmail(emailConfig);
+                console.log(`Email fattura ${invoice.invoiceNumber} inviata a ${invoiceData.ownerEmail}`);
               }
             } catch (invoiceError) {
               console.error('Error creating auto invoice:', invoiceError);
