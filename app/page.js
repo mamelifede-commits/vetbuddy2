@@ -11506,6 +11506,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           <NavItem icon={PawPrint} label="I miei animali" value="pets" />
           <NavItem icon={Gift} label="I miei premi" value="rewards" badge={rewards.filter(r => r.status === 'available').length} />
           <NavItem icon={Star} label="Le mie recensioni" value="reviews" />
+          <NavItem icon={CalendarDays} label="Eventi & News" value="events" />
           <div className="border-t my-3"></div>
           <NavItem icon={Search} label="Trova clinica" value="findClinic" />
           <NavItem icon={Mail} label="Invita la tua clinica" value="inviteClinic" />
