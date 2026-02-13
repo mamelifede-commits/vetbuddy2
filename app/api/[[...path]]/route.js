@@ -2637,9 +2637,15 @@ export async function POST(request, { params }) {
       
       const redeemCode = generateRedeemCode();
       
+      // Get clinic info to include in reward
+      const clinic = await users.findOne({ id: user.id });
+      
       const assignedReward = {
         id: uuidv4(),
         clinicId: user.id,
+        clinicName: clinic?.clinicName || clinic?.name || 'Clinica',
+        clinicEmail: clinic?.email,
+        clinicWhatsapp: clinic?.whatsapp,
         ownerId,
         ownerName: owner.name,
         ownerEmail: owner.email,
@@ -2663,12 +2669,11 @@ export async function POST(request, { params }) {
       
       // Send email notification to owner
       try {
-        const clinic = await users.findOne({ id: user.id });
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
         
-        // QR Code URL (using free QR code API)
-        const qrData = encodeURIComponent(`VETBUDDY-REWARD:${redeemCode}`);
-        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrData}&bgcolor=ffffff&color=FF6B6B`;
+        // QR Code URL (using quickchart.io - more reliable for emails)
+        const qrData = encodeURIComponent(`VETBUDDY:${redeemCode}`);
+        const qrCodeUrl = `https://quickchart.io/qr?text=${qrData}&size=150&dark=FF6B6B&light=ffffff&ecLevel=M&format=png`;
         
         // Determine reward value display
         let rewardValueDisplay = '';
