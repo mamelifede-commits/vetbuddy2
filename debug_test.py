@@ -3,7 +3,7 @@
 import requests
 import json
 
-BASE_URL = "https://clinic-zip-export.preview.emergentagent.com/api"
+BASE_URL = "https://vetbuddy-refine.preview.emergentagent.com/api"
 
 def make_request(method, endpoint, json_data=None):
     """Debug version of make request"""
