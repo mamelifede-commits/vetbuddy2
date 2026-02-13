@@ -1,11 +1,76 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import clientPromise from '@/lib/db';
+import { v4 as uuidv4 } from 'uuid';
+import { sendEmail } from '@/lib/email';
 
 // Force dynamic rendering to prevent static generation errors
 export const dynamic = 'force-dynamic';
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY || process.env.STRIPE_SECRET_KEY);
+
+// Funzione per generare numero fattura progressivo
+async function generateInvoiceNumber(db, clinicId) {
+  const year = new Date().getFullYear();
+  const lastInvoice = await db.collection('invoices')
+    .find({ clinicId, invoiceNumber: { $regex: `^${year}/` } })
+    .sort({ invoiceNumber: -1 })
+    .limit(1)
+    .toArray();
+  
+  let nextNumber = 1;
+  if (lastInvoice.length > 0) {
+    const lastNum = parseInt(lastInvoice[0].invoiceNumber.split('/')[1]);
+    nextNumber = lastNum + 1;
+  }
+  
+  return `${year}/${String(nextNumber).padStart(3, '0')}`;
+}
+
+// Funzione per creare fattura automatica dopo pagamento
+async function createAutoInvoice(db, paymentData) {
+  const { clinicId, ownerId, ownerName, ownerEmail, ownerCF, amount, description, appointmentId, petName } = paymentData;
+  
+  const invoiceNumber = await generateInvoiceNumber(db, clinicId);
+  
+  // Calcoli IVA e marca da bollo
+  const subtotal = amount / 1.22; // Scorporo IVA 22%
+  const iva = amount - subtotal;
+  const marcaBollo = subtotal > 77.47 ? 2.00 : 0;
+  const total = amount + marcaBollo;
+  
+  const invoice = {
+    id: uuidv4(),
+    clinicId,
+    invoiceNumber,
+    date: new Date().toISOString(),
+    customerName: ownerName,
+    customerEmail: ownerEmail,
+    customerCF: ownerCF || '',
+    items: [{
+      description: description || `Prestazione veterinaria${petName ? ` per ${petName}` : ''}`,
+      quantity: 1,
+      unitPrice: subtotal,
+      total: subtotal
+    }],
+    subtotal,
+    vatRate: 22,
+    vatAmount: iva,
+    marcaBollo,
+    total,
+    status: 'paid',
+    paidAt: new Date().toISOString(),
+    paymentMethod: 'stripe',
+    appointmentId,
+    notes: 'Fattura generata automaticamente dopo pagamento online',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  
+  await db.collection('invoices').insertOne(invoice);
+  
+  return invoice;
+}
 
 export async function POST(request) {
   try {
@@ -44,18 +109,90 @@ export async function POST(request) {
           }
         );
 
-        // Se il pagamento è completato, aggiorna la clinica
-        if (session.payment_status === 'paid' && session.metadata?.clinicId) {
-          await db.collection('users').updateOne(
-            { id: session.metadata.clinicId },
-            { 
-              $set: { 
-                subscriptionPlan: session.metadata.planId,
-                subscriptionStatus: 'active',
-                subscriptionUpdatedAt: new Date()
-              } 
+        // Se il pagamento è completato
+        if (session.payment_status === 'paid') {
+          const metadata = session.metadata || {};
+          
+          // Caso 1: Pagamento sottoscrizione clinica
+          if (metadata.clinicId && metadata.planId) {
+            await db.collection('users').updateOne(
+              { id: metadata.clinicId },
+              { 
+                $set: { 
+                  subscriptionPlan: metadata.planId,
+                  subscriptionStatus: 'active',
+                  subscriptionUpdatedAt: new Date()
+                } 
+              }
+            );
+          }
+          
+          // Caso 2: Pagamento appuntamento da parte di proprietario
+          if (metadata.appointmentId && metadata.ownerId) {
+            // Aggiorna stato appuntamento come pagato
+            await db.collection('appointments').updateOne(
+              { id: metadata.appointmentId },
+              { 
+                $set: { 
+                  paymentStatus: 'paid',
+                  paidAt: new Date().toISOString(),
+                  paidAmount: session.amount_total / 100,
+                  stripeSessionId: session.id
+                } 
+              }
+            );
+            
+            // Genera fattura automatica
+            const invoiceData = {
+              clinicId: metadata.clinicId,
+              ownerId: metadata.ownerId,
+              ownerName: metadata.ownerName || session.customer_details?.name,
+              ownerEmail: metadata.ownerEmail || session.customer_details?.email,
+              ownerCF: metadata.ownerCF || '',
+              amount: session.amount_total / 100,
+              description: metadata.description || 'Prestazione veterinaria',
+              appointmentId: metadata.appointmentId,
+              petName: metadata.petName || ''
+            };
+            
+            try {
+              const invoice = await createAutoInvoice(db, invoiceData);
+              
+              // Invia fattura via email
+              if (invoiceData.ownerEmail) {
+                const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+                await sendEmail({
+                  to: invoiceData.ownerEmail,
+                  subject: `Fattura ${invoice.invoiceNumber} - VetBuddy`,
+                  html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                      <h2 style="color: #FF6B6B;">Grazie per il tuo pagamento! 🎉</h2>
+                      <p>Ciao ${invoiceData.ownerName},</p>
+                      <p>Il tuo pagamento di <strong>€${invoice.total.toFixed(2)}</strong> è stato confermato.</p>
+                      
+                      <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                        <p style="margin: 0;"><strong>Fattura N°:</strong> ${invoice.invoiceNumber}</p>
+                        <p style="margin: 5px 0;"><strong>Data:</strong> ${new Date(invoice.date).toLocaleDateString('it-IT')}</p>
+                        <p style="margin: 5px 0;"><strong>Importo:</strong> €${invoice.total.toFixed(2)}</p>
+                      </div>
+                      
+                      <p>Puoi trovare la fattura nella sezione <strong>Documenti</strong> della tua dashboard VetBuddy.</p>
+                      
+                      <a href="${baseUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin-top: 15px;">
+                        Vai a VetBuddy
+                      </a>
+                      
+                      <p style="color: #888; font-size: 12px; margin-top: 30px;">
+                        Questa è una email automatica generata da VetBuddy.
+                      </p>
+                    </div>
+                  `
+                });
+              }
+            } catch (invoiceError) {
+              console.error('Error creating auto invoice:', invoiceError);
             }
-          );
+          }
         }
         break;
       }
