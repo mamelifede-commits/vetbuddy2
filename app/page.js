@@ -868,15 +868,18 @@ function LandingPage({ onLogin }) {
           </div>
           
           {/* Freelancer callout */}
-          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-4 max-w-2xl mx-auto mb-6 animate-fade-in-up animate-delay-400">
+          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-4 max-w-2xl mx-auto mb-6 animate-fade-in-up animate-delay-400 cursor-pointer hover:shadow-lg hover:border-purple-300 transition-all" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-lg flex items-center justify-center flex-shrink-0">
                 <Stethoscope className="h-5 w-5 text-white" />
               </div>
-              <div className="text-left">
+              <div className="text-left flex-1">
                 <p className="font-semibold text-gray-900 text-sm">Sei un veterinario freelance?</p>
                 <p className="text-xs text-gray-600">Registrati come clinica e inizia con il <span className="font-bold text-purple-600">Piano Starter gratuito</span>. Ideale per gestire i tuoi clienti in autonomia!</p>
               </div>
+              <Button size="sm" className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white flex-shrink-0">
+                Richiedi Invito →
+              </Button>
             </div>
           </div>
           
