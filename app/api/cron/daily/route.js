@@ -734,6 +734,11 @@ export async function GET(request) {
 
       const owner = pet ? await db.collection('users').findOne({ id: pet.ownerId }) : null;
       if (owner?.email) {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+        const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&petId=${pet.id}&reason=Antiparassitario`;
+        const phoneNumber = clinic?.phone || clinic?.telefono || '';
+        const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+        
         try {
           await sendEmail({
             to: owner.email,
@@ -744,12 +749,28 @@ export async function GET(request) {
                   <h1 style="color: white; margin: 0;">🛡️ Protezione Antiparassitaria</h1>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
-                  <p>Ciao ${owner.name || ''},</p>
-                  <p>È tempo di rinnovare il trattamento antiparassitario di <strong>${pet.name}</strong>!</p>
-                  <p>Gli antiparassitari proteggono il tuo animale da pulci, zecche e altri parassiti.</p>
+                  <p style="color: #666; font-size: 16px;">Ciao ${owner.name || ''},</p>
+                  <p style="color: #666; font-size: 16px;">È tempo di rinnovare il trattamento antiparassitario di <strong>${pet.name}</strong>!</p>
+                  <p style="color: #666; font-size: 16px;">Gli antiparassitari proteggono il tuo animale da pulci, zecche e altri parassiti.</p>
+                  
                   <div style="background: #E8F5E9; padding: 15px; border-radius: 10px; margin: 20px 0;">
-                    <p style="margin: 0;"><strong>💡 Consiglio:</strong> Il trattamento andrebbe ripetuto ogni 1-3 mesi a seconda del prodotto.</p>
+                    <p style="margin: 0; color: #2E7D32;"><strong>💡 Consiglio:</strong> Il trattamento andrebbe ripetuto ogni 1-3 mesi a seconda del prodotto.</p>
                   </div>
+                  
+                  <!-- Action Buttons -->
+                  <div style="text-align: center; margin: 25px 0;">
+                    <a href="${bookUrl}" style="display: inline-block; background: #27AE60; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      💊 Prenota Trattamento
+                    </a>
+                    ${phoneLink ? `
+                    <a href="${phoneLink}" style="display: inline-block; background: #2196F3; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      📞 Chiama la Clinica
+                    </a>
+                    ` : ''}
+                  </div>
+                </div>
+                <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
