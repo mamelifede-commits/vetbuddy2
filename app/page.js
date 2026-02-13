@@ -1145,6 +1145,165 @@ function LandingPage({ onLogin }) {
         </div>
       </section>
 
+      {/* Sistema Fatturazione Section */}
+      <section id="fatturazione" className="py-16 px-4 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full mb-4 font-semibold">
+              <Receipt className="h-5 w-5" /> FATTURAZIONE
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Fatturazione <span className="text-green-600">Flessibile</span>
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Crea fatture direttamente in VetBuddy ed esportale nel formato che preferisci. 
+              <strong> Integra con il tuo software di fatturazione</strong> o usa il nostro sistema.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            {/* Opzione 1: Export per software esterni */}
+            <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-green-200 hover:shadow-xl transition-shadow">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-lg">
+                  <Download className="h-7 w-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Esporta per il Tuo Software</h3>
+                  <p className="text-sm text-green-600">Usa il tuo sistema preferito</p>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Crea le fatture in VetBuddy ed esportale in CSV, JSON o PDF. 
+                Importale nel tuo software di fatturazione elettronica per l'invio al Sistema di Interscambio (SdI).
+              </p>
+              <ul className="space-y-3 mb-6">
+                <li className="flex items-center gap-3">
+                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center">
+                    <Check className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700"><strong>Export CSV</strong> - Compatibile con Excel e gestionali</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center">
+                    <Check className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700"><strong>Export PDF</strong> - Fattura professionale stampabile</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center">
+                    <Check className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700"><strong>Export JSON</strong> - Per integrazione API</span>
+                </li>
+              </ul>
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <p className="text-sm text-green-800">
+                  💡 <strong>Software compatibili:</strong> Fatture in Cloud, TeamSystem, Aruba, 
+                  Zucchetti, Buffetti, e qualsiasi software che accetta import CSV/Excel.
+                </p>
+              </div>
+            </div>
+
+            {/* Opzione 2: Funzionalità integrate */}
+            <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-emerald-200 hover:shadow-xl transition-shadow">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg">
+                  <Receipt className="h-7 w-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Sistema Integrato VetBuddy</h3>
+                  <p className="text-sm text-emerald-600">Tutto in un unico posto</p>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Gestisci tutto direttamente in VetBuddy: listino prezzi, creazione fatture, 
+                tracciamento pagamenti e statistiche finanziarie.
+              </p>
+              <ul className="space-y-3 mb-6">
+                <li className="flex items-center gap-3">
+                  <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <Check className="h-4 w-4 text-emerald-600" />
+                  </div>
+                  <span className="text-gray-700"><strong>Listino Prezzi</strong> - Crea e gestisci le tue tariffe</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <Check className="h-4 w-4 text-emerald-600" />
+                  </div>
+                  <span className="text-gray-700"><strong>Fatture Rapide</strong> - Seleziona cliente e prestazioni</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <Check className="h-4 w-4 text-emerald-600" />
+                  </div>
+                  <span className="text-gray-700"><strong>Dashboard Finanziaria</strong> - Fatturato, pagati, in attesa</span>
+                </li>
+              </ul>
+              <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-200">
+                <p className="text-sm text-emerald-800">
+                  📊 <strong>Calcolo automatico:</strong> IVA 22%, marca da bollo per importi {'>'} €77.47, 
+                  numerazione progressiva.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Come funziona il flusso */}
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+            <h3 className="text-lg font-bold text-gray-900 mb-6 text-center">
+              📋 Come Funziona: Da VetBuddy al Tuo Software
+            </h3>
+            <div className="grid md:grid-cols-4 gap-4">
+              <div className="text-center p-4">
+                <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-3">
+                  <span className="text-blue-600 font-bold">1</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900 mb-1">Crea Fattura</p>
+                <p className="text-xs text-gray-500">Seleziona cliente e prestazioni in VetBuddy</p>
+              </div>
+              <div className="text-center p-4">
+                <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
+                  <span className="text-green-600 font-bold">2</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900 mb-1">Esporta CSV/PDF</p>
+                <p className="text-xs text-gray-500">Un click per scaricare i dati</p>
+              </div>
+              <div className="text-center p-4">
+                <div className="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-3">
+                  <span className="text-purple-600 font-bold">3</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900 mb-1">Importa nel Tuo SW</p>
+                <p className="text-xs text-gray-500">Fatture in Cloud, TeamSystem, etc.</p>
+              </div>
+              <div className="text-center p-4">
+                <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-3">
+                  <span className="text-amber-600 font-bold">4</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900 mb-1">Invio al SdI</p>
+                <p className="text-xs text-gray-500">Il tuo software invia all'Agenzia Entrate</p>
+              </div>
+            </div>
+            <div className="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-200 text-center">
+              <p className="text-sm text-amber-800">
+                ⚠️ <strong>Nota importante:</strong> Le fatture VetBuddy sono <strong>pre-fatture/proforma</strong>. 
+                Per essere valide fiscalmente devono essere inviate al SdI tramite un software certificato.
+              </p>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="mt-10 text-center">
+            <p className="text-gray-600 mb-4">Formati di export disponibili:</p>
+            <div className="flex flex-wrap justify-center gap-3 mb-6">
+              <span className="bg-white px-4 py-2 rounded-full shadow border border-green-200 text-green-700 font-medium">📄 CSV (Excel)</span>
+              <span className="bg-white px-4 py-2 rounded-full shadow border border-blue-200 text-blue-700 font-medium">📑 PDF</span>
+              <span className="bg-white px-4 py-2 rounded-full shadow border border-purple-200 text-purple-700 font-medium">💾 JSON (API)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Premi Fedeltà Section */}
       <section id="premi" className="py-16 px-4 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
         <div className="max-w-6xl mx-auto">
