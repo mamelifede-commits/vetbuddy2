@@ -1247,8 +1247,6 @@ export async function GET(request) {
             if (owner?.email) {
               const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
               const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&petId=${pet.id}&reason=Checkup%20Senior`;
-              const phoneNumber = clinic?.phone || clinic?.telefono || '';
-              const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
               
               try {
                 await sendEmail({
@@ -1275,11 +1273,7 @@ export async function GET(request) {
                           <a href="${bookUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                             🩺 Prenota Checkup Senior
                           </a>
-                          ${phoneLink ? `
-                          <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                            📞 Chiama la Clinica
-                          </a>
-                          ` : ''}
+                          ${getContactButton(clinic, baseUrl, 'Scrivi alla Clinica', `Ciao, vorrei prenotare un checkup senior per ${pet.name}...`)}
                         </div>
                       </div>
                       <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
@@ -1318,8 +1312,6 @@ export async function GET(request) {
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
         const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&petId=${pet.id}&reason=Verifica%20Microchip`;
         const updateUrl = `${baseUrl}?action=updateMicrochip&petId=${pet.id}`;
-        const phoneNumber = clinic?.phone || clinic?.telefono || '';
-        const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
         
         try {
           await sendEmail({
