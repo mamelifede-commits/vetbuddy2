@@ -131,19 +131,16 @@ def test_import_csv_success():
         
         log_test(f"CSV file loaded, size: {len(csv_content)} bytes")
         
-        # Prepare multipart form data
-        files = {
-            'file': ('template_import_pazienti.csv', csv_content, 'text/csv')
-        }
-        data = {
-            'type': 'data'
-        }
+        # Prepare request using requests directly
+        response = requests.post(
+            f"{BASE_URL}/import", 
+            headers={'Authorization': f'Bearer {AUTH_TOKEN}'}, 
+            data={'type': 'data'},
+            files={'file': ('template_import_pazienti.csv', csv_content, 'text/csv')},
+            timeout=30
+        )
         
-        response = make_request('POST', 'import', data=data, files=files)
-        
-        if not response:
-            log_test("Failed to make request", False)
-            return False
+        log_test(f"POST import -> Status: {response.status_code}")
         
         if response.status_code != 200:
             log_test(f"Expected status 200, got {response.status_code}", False)
