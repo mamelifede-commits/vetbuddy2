@@ -1968,7 +1968,7 @@ function AuthForm({ mode, setMode, onLogin }) {
                       <Select value={formData.staffCount} onValueChange={(v) => setFormData({...formData, staffCount: v})}>
                         <SelectTrigger><SelectValue placeholder="Seleziona" /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="1">Solo io</SelectItem>
+                          <SelectItem value="1">Solo io (Libero professionista)</SelectItem>
                           <SelectItem value="2-5">2-5 persone</SelectItem>
                           <SelectItem value="6-10">6-10 persone</SelectItem>
                           <SelectItem value="10+">Più di 10</SelectItem>
