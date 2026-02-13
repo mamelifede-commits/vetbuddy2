@@ -326,114 +326,189 @@ export default function PresentazionePage() {
         </div>
       </section>
 
-      {/* Comparison Table */}
-      <section className="py-20 px-4 bg-gray-50" id="confronto">
+      {/* Detailed Features for Clinics Section */}
+      <section className="py-20 px-4 bg-gray-50" id="funzionalita-cliniche">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <Badge className="bg-purple-100 text-purple-700 mb-4">📊 Confronto Completo</Badge>
+            <Badge className="bg-coral-100 text-coral-700 mb-4">🏥 Per Cliniche Veterinarie</Badge>
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              VetBuddy vs Altri Gestionali
+              Funzionalità Complete per la Tua Clinica
             </h2>
-            <p className="text-gray-600 text-lg">
-              Confronto trasparente con i principali gestionali veterinari sul mercato
+            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+              VetBuddy è stato progettato ascoltando le esigenze reali di veterinari e cliniche. 
+              Ecco tutto ciò che puoi fare con la nostra piattaforma.
             </p>
           </div>
           
-          <div className="overflow-x-auto">
-            <table className="w-full bg-white rounded-2xl shadow-xl overflow-hidden">
-              <thead>
-                <tr className="bg-gradient-to-r from-coral-500 to-red-500 text-white">
-                  <th className="p-4 text-left font-bold">Funzionalità</th>
-                  {competitors.map((c, i) => (
-                    <th key={i} className={`p-4 text-center font-bold ${i === 0 ? 'bg-white/20' : ''}`}>
-                      {c.name}
-                      {i === 0 && <span className="block text-xs mt-1">⭐ Consigliato</span>}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="p-4 font-medium">💰 Prezzo</td>
-                  {competitors.map((c, i) => (
-                    <td key={i} className={`p-4 text-center ${i === 0 ? 'bg-green-50 font-bold text-green-600' : ''}`}>
-                      {c.price}
-                      {i === 0 && <span className="block text-xs">*Pilot gratuito</span>}
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b bg-gray-50">
-                  <td className="p-4 font-medium">📅 Agenda Multi-veterinario</td>
-                  {competitors.map((c, i) => (
-                    <td key={i} className={`p-4 text-center ${i === 0 ? 'bg-green-50' : ''}`}>
-                      {c.agenda ? <Check className="h-5 w-5 text-green-500 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />}
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4 font-medium">🤖 Automazioni Email/SMS</td>
-                  {competitors.map((c, i) => (
-                    <td key={i} className={`p-4 text-center ${i === 0 ? 'bg-green-50 font-bold text-green-600' : ''}`}>
-                      {c.automazioni}
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b bg-gray-50">
-                  <td className="p-4 font-medium">📹 Video Consulto</td>
-                  {competitors.map((c, i) => (
-                    <td key={i} className={`p-4 text-center ${i === 0 ? 'bg-green-50' : ''}`}>
-                      {c.video ? <Check className="h-5 w-5 text-green-500 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />}
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4 font-medium">💬 Team Inbox</td>
-                  {competitors.map((c, i) => (
-                    <td key={i} className={`p-4 text-center ${i === 0 ? 'bg-green-50' : ''}`}>
-                      {c.inbox ? <Check className="h-5 w-5 text-green-500 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />}
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b bg-gray-50">
-                  <td className="p-4 font-medium">🎁 Sistema Premi Fedeltà</td>
-                  {competitors.map((c, i) => (
-                    <td key={i} className={`p-4 text-center ${i === 0 ? 'bg-green-50' : ''}`}>
-                      {c.premi ? <Check className="h-5 w-5 text-green-500 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />}
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4 font-medium">📤 Import Pazienti</td>
-                  {competitors.map((c, i) => (
-                    <td key={i} className={`p-4 text-center ${i === 0 ? 'bg-green-50' : ''}`}>
-                      {c.import ? <Check className="h-5 w-5 text-green-500 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />}
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b bg-gray-50">
-                  <td className="p-4 font-medium">📱 App Mobile</td>
-                  {competitors.map((c, i) => (
-                    <td key={i} className={`p-4 text-center ${i === 0 ? 'bg-green-50' : ''}`}>
-                      {c.mobile === true ? <Check className="h-5 w-5 text-green-500 mx-auto" /> : 
-                       c.mobile === false ? <X className="h-5 w-5 text-red-400 mx-auto" /> :
-                       <span className="text-amber-500 text-sm">{c.mobile}</span>}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="p-4 font-medium">🎧 Supporto</td>
-                  {competitors.map((c, i) => (
-                    <td key={i} className={`p-4 text-center ${i === 0 ? 'bg-green-50 font-bold text-green-600' : ''}`}>
-                      {c.support}
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { 
+                icon: Calendar, 
+                title: 'Agenda Intelligente',
+                desc: 'Gestisci appuntamenti con vista giornaliera, settimanale e mensile. Supporto multi-veterinario con colori distintivi.',
+                features: ['Drag & drop', 'Blocchi orari', 'Promemoria automatici']
+              },
+              { 
+                icon: Users, 
+                title: 'Gestione Pazienti',
+                desc: 'Schede cliniche complete per ogni animale. Storico visite, allergie, vaccinazioni e note importanti.',
+                features: ['Import da CSV', 'Ricerca avanzata', 'Export dati']
+              },
+              { 
+                icon: FileText, 
+                title: 'Documenti Cloud',
+                desc: 'Carica referti, prescrizioni e certificati. Invio automatico via email al proprietario.',
+                features: ['Upload drag & drop', 'Firma digitale', 'Archiviazione sicura']
+              },
+              { 
+                icon: CreditCard, 
+                title: 'Fatturazione PROFORMA',
+                desc: 'Crea preventivi e fatture PROFORMA. Export CSV compatibile con tutti i gestionali fiscali.',
+                features: ['IVA automatica', 'Template personalizzabili', 'Storico completo']
+              },
+              { 
+                icon: Bell, 
+                title: 'Automazioni',
+                desc: 'Oltre 44 automazioni disponibili: richiami vaccini, follow-up post visita, auguri compleanno pet.',
+                features: ['Email automatiche', 'WhatsApp (Twilio)', 'Notifiche push']
+              },
+              { 
+                icon: MessageSquare, 
+                title: 'Team Inbox',
+                desc: 'Tutti i messaggi dei clienti in un unico posto. Sistema ticket per gestire richieste e urgenze.',
+                features: ['Quick replies', 'Assegnazione ticket', 'Storico conversazioni']
+              },
+              { 
+                icon: Video, 
+                title: 'Video Consulto',
+                desc: 'Consulenze online in HD. Link automatico inviato al cliente, nessun software da installare.',
+                features: ['1-click per iniziare', 'Qualità HD', 'Registrazione opzionale']
+              },
+              { 
+                icon: Gift, 
+                title: 'Premi Fedeltà',
+                desc: 'Fidelizza i clienti con un sistema di punti. Ogni visita completata genera punti riscattabili.',
+                features: ['Punti automatici', 'Sconti personalizzati', 'Report fedeltà']
+              },
+              { 
+                icon: BarChart3, 
+                title: 'Analytics e Report',
+                desc: 'Dashboard con KPI in tempo reale. Monitora visite, fatturato, clienti e trend.',
+                features: ['Export CSV/PDF', 'Confronto periodi', 'Grafici interattivi']
+              }
+            ].map((item, i) => (
+              <Card key={i} className="border-2 hover:border-coral-200 hover:shadow-lg transition-all">
+                <CardContent className="p-6">
+                  <div className="bg-coral-100 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                    <item.icon className="h-6 w-6 text-coral-600" />
+                  </div>
+                  <h3 className="font-bold text-lg text-gray-900 mb-2">{item.title}</h3>
+                  <p className="text-gray-600 text-sm mb-4">{item.desc}</p>
+                  <ul className="space-y-1">
+                    {item.features.map((f, j) => (
+                      <li key={j} className="text-xs text-gray-500 flex items-center gap-2">
+                        <Check className="h-3 w-3 text-green-500" /> {f}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Detailed Features for Pet Owners Section */}
+      <section className="py-20 px-4 bg-white" id="funzionalita-proprietari">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="bg-blue-100 text-blue-700 mb-4">🐾 Per Proprietari di Animali</Badge>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Tutto per la Salute del Tuo Amico
+            </h2>
+            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+              VetBuddy è completamente <strong>gratuito</strong> per i proprietari di animali. 
+              Gestisci visite, documenti e promemoria in modo semplice e organizzato.
+            </p>
           </div>
           
-          <div className="mt-8 text-center">
-            <p className="text-gray-500 text-sm">* Dati aggiornati a Febbraio 2026. I prezzi dei competitor sono indicativi.</p>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              {[
+                { 
+                  icon: Heart, 
+                  title: 'Profili Animali',
+                  desc: 'Crea schede complete per tutti i tuoi animali: cani, gatti, conigli, uccelli, rettili, pesci, cavalli e altri. Registra peso, allergie, microchip e foto.'
+                },
+                { 
+                  icon: Calendar, 
+                  title: 'Prenotazioni Facili',
+                  desc: 'Prenota visite con pochi click. Scegli la clinica, il servizio, la data e l\'orario. Ricevi conferma immediata via email.'
+                },
+                { 
+                  icon: FileText, 
+                  title: 'Documenti Sempre Disponibili',
+                  desc: 'Tutti i referti, prescrizioni e fatture in un unico posto. Scaricabili in PDF, accessibili anche offline.'
+                },
+                { 
+                  icon: Bell, 
+                  title: 'Promemoria Automatici',
+                  desc: 'Non dimenticare mai un vaccino o un controllo. Ricevi notifiche per appuntamenti e scadenze importanti.'
+                }
+              ].map((item, i) => (
+                <div key={i} className="flex gap-4 bg-blue-50 rounded-xl p-6">
+                  <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <item.icon className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                    <p className="text-gray-600 text-sm">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="space-y-6">
+              {[
+                { 
+                  icon: MapPin, 
+                  title: 'Trova Clinica',
+                  desc: 'Mappa interattiva con tutte le cliniche registrate. Filtra per città, servizi e recensioni. Trova la clinica perfetta vicino a te.'
+                },
+                { 
+                  icon: Gift, 
+                  title: 'Programma Fedeltà',
+                  desc: 'Accumula punti con ogni visita completata. 100 punti = €5 di sconto. Invita amici e guadagna punti extra.'
+                },
+                { 
+                  icon: MessageSquare, 
+                  title: 'Assistente AI',
+                  desc: 'Hai domande su VetBuddy? L\'assistente virtuale è disponibile 24/7 per guidarti nell\'uso della piattaforma.'
+                },
+                { 
+                  icon: Smartphone, 
+                  title: 'App Installabile',
+                  desc: 'VetBuddy è una PWA: installala sul telefono come un\'app normale. Funziona anche offline per consultare i documenti salvati.'
+                }
+              ].map((item, i) => (
+                <div key={i} className="flex gap-4 bg-green-50 rounded-xl p-6">
+                  <div className="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <item.icon className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                    <p className="text-gray-600 text-sm">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="mt-12 text-center">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-6 py-3 rounded-full text-lg font-semibold">
+              <Check className="h-6 w-6" />
+              100% Gratuito per i Proprietari di Animali
+            </div>
           </div>
         </div>
       </section>
