@@ -10975,7 +10975,12 @@ function ClinicSettings({ user, onNavigate }) {
                       onChange={(e) => setProfileForm({...profileForm, whatsappNumber: e.target.value})} 
                       placeholder="+39 333 1234567" 
                     />
-                    <p className="text-xs text-gray-500 mt-1">Se configurato, i clienti potranno contattarti via WhatsApp</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Inserisci il numero con prefisso internazionale (es. +39 333...).
+                      <a href="#" onClick={(e) => { e.preventDefault(); alert('📱 Come configurare WhatsApp Business:\n\n1. Scarica WhatsApp Business dal Play Store o App Store\n2. Registrati con il numero della clinica\n3. Configura il profilo: nome, descrizione, orari, indirizzo\n4. Inserisci lo stesso numero qui su VetBuddy\n\n✅ I clienti potranno contattarti direttamente dall\'app!\n\n💡 Consiglio: Usa i messaggi automatici per rispondere quando sei occupato.'); }} className="text-blue-500 hover:underline ml-1">
+                        Come configurare?
+                      </a>
+                    </p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
