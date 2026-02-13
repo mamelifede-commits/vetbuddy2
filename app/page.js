@@ -4153,8 +4153,48 @@ Milo,cane,Golden Retriever,10/08/2021,,maschio,28,dorato,si,,Apoquel 16mg,Dermat
                 </Button>
               </div>
               
+              {/* Detailed instructions */}
+              <Accordion type="single" collapsible className="border rounded-lg">
+                <AccordionItem value="columns" className="border-0">
+                  <AccordionTrigger className="px-4 py-3 text-sm hover:no-underline">
+                    <span className="flex items-center gap-2"><Info className="h-4 w-4" /> Descrizione colonne del template</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 pb-4">
+                    <div className="space-y-3 text-xs">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <p><strong className="text-coral-600">nome*</strong> - Nome dell'animale</p>
+                          <p><strong className="text-coral-600">specie*</strong> - cane, gatto, uccello, coniglio, criceto, altro</p>
+                          <p><strong>razza</strong> - Razza dell'animale</p>
+                          <p><strong>data_nascita</strong> - GG/MM/AAAA o AAAA-MM-GG</p>
+                          <p><strong>microchip</strong> - Numero microchip</p>
+                          <p><strong>sesso</strong> - maschio o femmina</p>
+                          <p><strong>peso</strong> - Peso in kg (numero)</p>
+                          <p><strong>colore</strong> - Colore del mantello</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p><strong>sterilizzato</strong> - si o no</p>
+                          <p><strong>allergie</strong> - Allergie note</p>
+                          <p><strong>farmaci</strong> - Farmaci in corso</p>
+                          <p><strong>note</strong> - Note aggiuntive</p>
+                          <p><strong>proprietario</strong> - Nome completo proprietario</p>
+                          <p><strong>email</strong> - Email proprietario</p>
+                          <p><strong>telefono</strong> - Telefono proprietario</p>
+                          <p><strong>vaccino</strong> - Nome vaccino</p>
+                        </div>
+                      </div>
+                      <p className="text-gray-500 italic mt-2">* Campi obbligatori. Puoi aggiungere più righe con lo stesso proprietario se ha più animali.</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+              
               <div className="bg-amber-50 p-3 rounded-lg border border-amber-200 text-sm">
                 <p className="text-amber-800"><strong>💡 Suggerimento:</strong> Puoi esportare i dati dal tuo gestionale attuale in formato CSV e poi adattare le colonne al nostro template.</p>
+              </div>
+              
+              <div className="bg-green-50 p-3 rounded-lg border border-green-200 text-sm">
+                <p className="text-green-800"><strong>🔒 Privacy:</strong> I dati vengono importati in modo sicuro e conforme al GDPR. Solo la tua clinica avrà accesso a queste informazioni.</p>
               </div>
             </div>
           )}
