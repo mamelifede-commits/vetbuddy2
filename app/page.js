@@ -1178,14 +1178,14 @@ function LandingPage({ onLogin }) {
           <p className="text-center text-sm text-gray-600 mb-6">Piani disponibili solo tramite Pilot (su invito). Prezzi IVA esclusa.</p>
           
           <div className="grid md:grid-cols-3 gap-6 mb-4">
-            {/* Starter - Piano base */}
-            <Card className="border-2 border-gray-200">
+            {/* Starter - Piano base con automazioni essenziali */}
+            <Card className="border-2 border-green-200 hover:border-green-300 transition-colors">
               <CardHeader>
-                <CardTitle>Starter</CardTitle>
-                <CardDescription>Per iniziare a esplorare VetBuddy</CardDescription>
+                <CardTitle className="flex items-center gap-2">Starter <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">GRATUITO</span></CardTitle>
+                <CardDescription>Per iniziare con le automazioni essenziali</CardDescription>
                 <div className="mt-4">
-                  <span className="text-3xl font-bold text-gray-500">Gratis</span>
-                  <p className="text-xs text-gray-500 mt-1">solo su invito – Pilot Milano</p>
+                  <span className="text-3xl font-bold text-green-600">Gratis</span>
+                  <p className="text-xs text-gray-500 mt-1">per sempre – su invito Pilot Milano</p>
                 </div>
               </CardHeader>
               <CardContent>
@@ -1195,12 +1195,15 @@ function LandingPage({ onLogin }) {
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Fino a 50 pazienti</span></li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Agenda base</span></li>
                   <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Posizione su mappa</span></li>
-                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300 flex-shrink-0" /> <span>Automazioni</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span><strong>5 Automazioni base</strong></span></li>
+                  <li className="flex items-start gap-2 ml-6 text-xs text-gray-500">
+                    <span>✓ Promemoria appuntamenti<br/>✓ Conferma prenotazione<br/>✓ Benvenuto nuovo pet<br/>✓ Compleanno pet<br/>✓ Conferma automatica</span>
+                  </li>
                   <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300 flex-shrink-0" /> <span>Team Inbox</span></li>
                   <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300 flex-shrink-0" /> <span>Report avanzati</span></li>
                 </ul>
-                <Button className="w-full bg-gray-500 hover:bg-gray-600 mb-2" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi invito</Button>
-                <p className="text-xs text-gray-500 mt-3 text-center">Ideale per valutare la piattaforma</p>
+                <Button className="w-full bg-green-500 hover:bg-green-600 mb-2" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Inizia Gratis</Button>
+                <p className="text-xs text-gray-500 mt-3 text-center">Nessuna carta richiesta</p>
               </CardContent>
             </Card>
             
