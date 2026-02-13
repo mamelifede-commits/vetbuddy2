@@ -83,8 +83,8 @@ export async function POST(request) {
       }))
     ];
 
-    // Call OpenAI API
-    const response = await fetch(OPENAI_API_URL, {
+    // Call AI API
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
