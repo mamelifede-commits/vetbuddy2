@@ -2249,7 +2249,8 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate
   const [shareDialog, setShareDialog] = useState(null);
   const [formData, setFormData] = useState({ 
     petId: '', petName: '', ownerId: '', ownerName: '', ownerEmail: '', date: '', time: '', 
-    reason: '', type: 'visita', staffId: '', duration: 30, notes: '' 
+    reason: '', type: 'visita', staffId: '', duration: 30, notes: '',
+    showOwnerSuggestions: false, showPetSuggestions: false
   });
 
   // Appointment types with colors
