@@ -520,3 +520,64 @@ export async function POST(request) {
 export async function OPTIONS() {
   return new NextResponse(null, { status: 200, headers: corsHeaders });
 }
+
+// PUT - Assign document to pet manually
+export async function PUT(request) {
+  try {
+    const user = await getUserFromRequest(request);
+    if (!user || (user.role !== 'clinic' && user.role !== 'staff')) {
+      return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    }
+    
+    const body = await request.json();
+    const { documentId, petId } = body;
+    
+    if (!documentId || !petId) {
+      return NextResponse.json({ error: 'documentId e petId sono obbligatori' }, { status: 400, headers: corsHeaders });
+    }
+    
+    const clinicId = user.clinicId || user.id;
+    const documents = await getCollection('documents');
+    const pets = await getCollection('pets');
+    
+    // Verify document belongs to clinic
+    const doc = await documents.findOne({ id: documentId, clinicId });
+    if (!doc) {
+      return NextResponse.json({ error: 'Documento non trovato' }, { status: 404, headers: corsHeaders });
+    }
+    
+    // Verify pet belongs to clinic
+    const pet = await pets.findOne({ id: petId, clinics: clinicId });
+    if (!pet) {
+      return NextResponse.json({ error: 'Paziente non trovato' }, { status: 404, headers: corsHeaders });
+    }
+    
+    // Update document
+    await documents.updateOne(
+      { id: documentId },
+      { 
+        $set: { 
+          petId: petId,
+          petName: pet.name,
+          status: 'active',
+          matchInfo: { matchType: 'manual_assigned', confidence: 'high' },
+          assignedAt: new Date().toISOString(),
+          assignedBy: user.id
+        }
+      }
+    );
+    
+    return NextResponse.json({ 
+      success: true, 
+      message: `Documento assegnato a ${pet.name}`,
+      document: { ...doc, petId, petName: pet.name, status: 'active' }
+    }, { headers: corsHeaders });
+    
+  } catch (error) {
+    console.error('Document assignment error:', error);
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message 
+    }, { status: 500, headers: corsHeaders });
+  }
+}
