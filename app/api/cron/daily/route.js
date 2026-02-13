@@ -1550,11 +1550,6 @@ export async function GET(request) {
                       </a>
                       ${getContactButton(clinic, baseUrl, 'Scrivi alla Clinica', `Ciao, ho bisogno di info sulle chiusure festive...`)}
                       ${getPhoneButton(clinic, true)}
-                      </a>
-                      ` : ''}
-                      <a href="${messageUrl}" style="display: inline-block; background: #9B59B6; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                        💬 Scrivi un Messaggio
-                      </a>
                     </div>
                     
                     <p>Ti auguriamo buone feste! 🎉</p>
