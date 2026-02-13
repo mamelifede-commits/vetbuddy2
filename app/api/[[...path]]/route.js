@@ -2625,6 +2625,18 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Proprietario non trovato' }, { status: 404, headers: corsHeaders });
       }
 
+      // Generate unique redeem code (6 chars alphanumeric)
+      const generateRedeemCode = () => {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluded confusing chars: I,O,0,1
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+          code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
+      };
+      
+      const redeemCode = generateRedeemCode();
+      
       const assignedReward = {
         id: uuidv4(),
         clinicId: user.id,
@@ -2638,11 +2650,13 @@ export async function POST(request, { params }) {
         rewardType: rewardType.rewardType,
         rewardValue: rewardType.value,
         rewardIcon: rewardType.icon,
+        redeemCode, // Unique code for redemption
         reason: reason || 'Premio fedeltà',
-        status: 'available', // 'available', 'used', 'expired'
+        status: 'available', // 'available', 'pending', 'used', 'expired'
         expiresAt: expiresAt || null,
         createdAt: new Date().toISOString(),
-        usedAt: null
+        redeemedAt: null, // When owner requests redemption online
+        usedAt: null // When clinic confirms usage
       };
 
       await rewards.insertOne(assignedReward);
@@ -2651,6 +2665,20 @@ export async function POST(request, { params }) {
       try {
         const clinic = await users.findOne({ id: user.id });
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+        
+        // QR Code URL (using free QR code API)
+        const qrData = encodeURIComponent(`VETBUDDY-REWARD:${redeemCode}`);
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrData}&bgcolor=ffffff&color=FF6B6B`;
+        
+        // Determine reward value display
+        let rewardValueDisplay = '';
+        if (rewardType.rewardType === 'discount_percent') {
+          rewardValueDisplay = `<p style="font-size: 32px; color: #27AE60; font-weight: bold; margin: 15px 0 0 0;">-${rewardType.value}%</p>`;
+        } else if (rewardType.rewardType === 'discount_fixed') {
+          rewardValueDisplay = `<p style="font-size: 32px; color: #27AE60; font-weight: bold; margin: 15px 0 0 0;">-€${rewardType.value}</p>`;
+        } else if (rewardType.rewardType === 'free_service' || rewardType.rewardType === 'free_product' || rewardType.rewardType === 'gift') {
+          rewardValueDisplay = `<p style="font-size: 22px; color: #27AE60; font-weight: bold; margin: 15px 0 0 0;">🎁 GRATIS</p>`;
+        }
         
         await sendEmail({
           to: owner.email,
@@ -2661,28 +2689,56 @@ export async function POST(request, { params }) {
                 <h1 style="color: white; margin: 0; font-size: 28px;">🎁 Hai un Premio!</h1>
               </div>
               <div style="padding: 30px; background: #f9f9f9;">
-                <p style="color: #666; font-size: 16px;">Ciao ${owner.name || ''},</p>
+                <p style="color: #666; font-size: 16px;">Ciao <strong>${owner.name || ''}</strong>,</p>
                 <p style="color: #666; font-size: 16px;"><strong>${clinic?.clinicName}</strong> ti ha assegnato un premio fedeltà!</p>
                 
-                <div style="background: white; padding: 25px; border-radius: 15px; margin: 25px 0; text-align: center; border: 2px dashed #FFD93D;">
-                  <p style="font-size: 24px; margin: 0 0 10px 0;">🎁</p>
-                  <h2 style="color: #FF6B6B; margin: 0 0 10px 0;">${rewardType.name}</h2>
-                  <p style="color: #666; margin: 0;">${rewardType.description || ''}</p>
-                  ${rewardType.rewardType === 'discount_percent' ? `<p style="font-size: 28px; color: #27AE60; font-weight: bold; margin: 15px 0 0 0;">-${rewardType.value}%</p>` : ''}
-                  ${rewardType.rewardType === 'discount_fixed' ? `<p style="font-size: 28px; color: #27AE60; font-weight: bold; margin: 15px 0 0 0;">-€${rewardType.value}</p>` : ''}
-                  ${rewardType.rewardType === 'free_service' || rewardType.rewardType === 'free_product' ? `<p style="font-size: 18px; color: #27AE60; font-weight: bold; margin: 15px 0 0 0;">GRATIS</p>` : ''}
+                <!-- Premio Card -->
+                <div style="background: white; padding: 25px; border-radius: 15px; margin: 25px 0; text-align: center; border: 2px dashed #FFD93D; box-shadow: 0 4px 15px rgba(255,107,107,0.1);">
+                  <p style="font-size: 28px; margin: 0 0 10px 0;">🎁</p>
+                  <h2 style="color: #FF6B6B; margin: 0 0 10px 0; font-size: 24px;">${rewardType.name}</h2>
+                  <p style="color: #666; margin: 0; font-size: 14px;">${rewardType.description || ''}</p>
+                  ${rewardValueDisplay}
                 </div>
                 
-                <p style="color: #888; font-size: 14px; text-align: center;">Motivo: ${reason || 'Premio fedeltà'}</p>
-                ${expiresAt ? `<p style="color: #E74C3C; font-size: 14px; text-align: center;">⚠️ Valido fino al: ${new Date(expiresAt).toLocaleDateString('it-IT')}</p>` : ''}
+                <!-- Codice Univoco -->
+                <div style="background: #333; padding: 20px; border-radius: 10px; margin: 25px 0; text-align: center;">
+                  <p style="color: #FFD93D; margin: 0 0 10px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Il tuo codice premio</p>
+                  <p style="color: white; margin: 0; font-size: 36px; font-weight: bold; letter-spacing: 8px; font-family: monospace;">${redeemCode}</p>
+                </div>
                 
+                <!-- QR Code -->
+                <div style="text-align: center; margin: 25px 0;">
+                  <p style="color: #888; font-size: 12px; margin-bottom: 10px;">Oppure mostra questo QR Code in clinica:</p>
+                  <img src="${qrCodeUrl}" alt="QR Code Premio" style="width: 150px; height: 150px; border-radius: 10px; border: 3px solid #FFD93D;" />
+                </div>
+                
+                <p style="color: #888; font-size: 14px; text-align: center; margin-top: 20px;">
+                  <strong>Motivo:</strong> ${reason || 'Premio fedeltà'}
+                </p>
+                ${expiresAt ? `<p style="color: #E74C3C; font-size: 14px; text-align: center; background: #FFF5F5; padding: 10px; border-radius: 8px;">⚠️ <strong>Scade il:</strong> ${new Date(expiresAt).toLocaleDateString('it-IT')}</p>` : ''}
+                
+                <!-- Istruzioni Riscatto -->
+                <div style="background: #E8F5E9; padding: 20px; border-radius: 10px; margin: 25px 0;">
+                  <h3 style="color: #27AE60; margin: 0 0 15px 0; font-size: 16px;">📋 Come riscattare il premio:</h3>
+                  <ol style="color: #666; margin: 0; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>In clinica:</strong> Mostra il codice <strong>${redeemCode}</strong> o il QR Code al momento del pagamento</li>
+                    <li><strong>Online:</strong> Accedi a VetBuddy, vai su "I Miei Premi" e clicca "Riscatta" per prenotare l'utilizzo</li>
+                  </ol>
+                </div>
+                
+                <!-- CTA Buttons -->
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="${baseUrl}?action=rewards" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 35px; border-radius: 25px; text-decoration: none; font-weight: bold;">
-                    🎁 Vedi i Miei Premi
+                  <a href="${baseUrl}?action=rewards" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 35px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                    🎁 Riscatta Online
+                  </a>
+                  <a href="${baseUrl}?action=book&clinic=${user.id}" style="display: inline-block; background: #27AE60; color: white; padding: 14px 35px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                    📅 Prenota Visita
                   </a>
                 </div>
                 
-                <p style="color: #999; font-size: 12px; text-align: center;">Presenta questo premio alla tua prossima visita!</p>
+                <p style="color: #999; font-size: 12px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px;">
+                  Il premio verrà applicato automaticamente quando lo riscatti. Grazie per la tua fedeltà! 🐾
+                </p>
               </div>
               <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
                 <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
@@ -2695,6 +2751,96 @@ export async function POST(request, { params }) {
       }
 
       return NextResponse.json(assignedReward, { headers: corsHeaders });
+    }
+    
+    // Redeem reward online (owner requests to use it)
+    if (path === 'rewards/redeem') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'owner') {
+        return NextResponse.json({ error: 'Solo i proprietari possono riscattare i premi' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { rewardId } = body;
+      
+      if (!rewardId) {
+        return NextResponse.json({ error: 'ID premio obbligatorio' }, { status: 400, headers: corsHeaders });
+      }
+
+      const rewards = await getCollection('rewards');
+      const reward = await rewards.findOne({ id: rewardId, ownerId: user.id, type: 'assigned' });
+      
+      if (!reward) {
+        return NextResponse.json({ error: 'Premio non trovato' }, { status: 404, headers: corsHeaders });
+      }
+      
+      if (reward.status !== 'available') {
+        return NextResponse.json({ error: 'Questo premio non è più disponibile' }, { status: 400, headers: corsHeaders });
+      }
+      
+      // Check expiration
+      if (reward.expiresAt && new Date(reward.expiresAt) < new Date()) {
+        await rewards.updateOne({ id: rewardId }, { $set: { status: 'expired' } });
+        return NextResponse.json({ error: 'Questo premio è scaduto' }, { status: 400, headers: corsHeaders });
+      }
+      
+      // Update reward status to pending (waiting for clinic confirmation)
+      await rewards.updateOne(
+        { id: rewardId },
+        { $set: { status: 'pending', redeemedAt: new Date().toISOString() } }
+      );
+      
+      // Notify clinic about the redemption request
+      try {
+        const users = await getCollection('users');
+        const clinic = await users.findOne({ id: reward.clinicId });
+        const owner = await users.findOne({ id: user.id });
+        
+        if (clinic?.email) {
+          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+          
+          await sendEmail({
+            to: clinic.email,
+            subject: `🎁 Richiesta riscatto premio da ${owner?.name || 'un cliente'}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #FF6B6B, #FFD93D); padding: 25px; border-radius: 10px 10px 0 0; text-align: center;">
+                  <h1 style="color: white; margin: 0; font-size: 24px;">🎁 Richiesta Riscatto Premio</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <p style="color: #666; font-size: 16px;"><strong>${owner?.name || 'Un cliente'}</strong> vuole riscattare un premio!</p>
+                  
+                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FFD93D;">
+                    <h3 style="color: #FF6B6B; margin: 0 0 10px 0;">${reward.rewardName}</h3>
+                    <p style="color: #666; margin: 0;">Codice: <strong style="font-family: monospace; font-size: 18px;">${reward.redeemCode}</strong></p>
+                    <p style="color: #888; margin: 10px 0 0 0; font-size: 14px;">Cliente: ${owner?.email}</p>
+                  </div>
+                  
+                  <p style="color: #666; font-size: 14px;">
+                    Quando il cliente si presenta o utilizza il servizio, conferma l'utilizzo del premio dalla tua dashboard.
+                  </p>
+                  
+                  <div style="text-align: center; margin: 25px 0;">
+                    <a href="${baseUrl}?tab=rewards" style="display: inline-block; background: #FF6B6B; color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">
+                      ✓ Gestisci Premi
+                    </a>
+                  </div>
+                </div>
+                <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+                </div>
+              </div>
+            `
+          });
+        }
+      } catch (emailErr) {
+        console.error('Error sending redemption notification:', emailErr);
+      }
+      
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Premio riscattato! La clinica è stata notificata.',
+        reward: { ...reward, status: 'pending', redeemedAt: new Date().toISOString() }
+      }, { headers: corsHeaders });
     }
 
     // Mark reward as used
