@@ -5918,7 +5918,7 @@ function ClinicServices({ onNavigate, user }) {
 
   const selectAll = (categoryId) => {
     const category = serviceCatalog[categoryId];
-    if (!category) return;
+    if (!category || !category.services) return;
     const categoryServiceIds = category.services.map(s => s.id);
     const allSelected = categoryServiceIds.every(id => isServiceSelected(id));
     if (allSelected) {
