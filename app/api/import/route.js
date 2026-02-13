@@ -342,11 +342,16 @@ export async function POST(request) {
       }
       
     } else if (importType === 'documents') {
-      // Handle document upload
+      // Handle document upload with SMART MATCHING
+      // Priority: 1. Microchip > 2. Pet Name > 3. Manual assignment
       const files = formData.getAll('files');
       const petId = formData.get('petId'); // Optional: associate with specific pet
+      const manualMatches = formData.get('manualMatches'); // JSON string of {filename: petId} for unmatched docs
+      
+      const parsedManualMatches = manualMatches ? JSON.parse(manualMatches) : {};
       
       const documents = await getCollection('documents');
+      const petsCollection = await getCollection('pets');
       const uploadDir = path.join(process.cwd(), 'public', 'uploads', clinicId);
       
       // Create upload directory if it doesn't exist
@@ -355,6 +360,65 @@ export async function POST(request) {
       } catch (e) {
         // Directory might already exist
       }
+      
+      // Get all clinic pets for matching
+      const clinicPets = await petsCollection.find({ clinics: clinicId }).toArray();
+      
+      // Smart matching function
+      const findMatchingPet = (filename) => {
+        const cleanFilename = filename.toLowerCase().replace(/[_\-\.]/g, ' ');
+        
+        // 1. Try to match by MICROCHIP (highest priority)
+        // Look for 15-digit microchip pattern in filename
+        const microchipMatch = filename.match(/(\d{15})/);
+        if (microchipMatch) {
+          const matchedPet = clinicPets.find(p => p.microchip === microchipMatch[1]);
+          if (matchedPet) {
+            return { pet: matchedPet, matchType: 'microchip', confidence: 'high' };
+          }
+        }
+        
+        // Also try shorter microchip patterns (some use last 10 digits)
+        const shortMicrochipMatch = filename.match(/(\d{10,14})/);
+        if (shortMicrochipMatch) {
+          const matchedPet = clinicPets.find(p => 
+            p.microchip && p.microchip.endsWith(shortMicrochipMatch[1])
+          );
+          if (matchedPet) {
+            return { pet: matchedPet, matchType: 'microchip_partial', confidence: 'medium' };
+          }
+        }
+        
+        // 2. Try to match by PET NAME (second priority)
+        // Extract potential pet name from filename (before first _ or -)
+        const nameParts = filename.replace(/\.[^/.]+$/, '').split(/[_\-\s]+/);
+        
+        for (const namePart of nameParts) {
+          if (namePart.length < 2) continue; // Skip single chars
+          
+          // Exact match (case insensitive)
+          const exactMatch = clinicPets.find(p => 
+            p.name.toLowerCase() === namePart.toLowerCase()
+          );
+          if (exactMatch) {
+            return { pet: exactMatch, matchType: 'name_exact', confidence: 'high' };
+          }
+          
+          // Partial match (name starts with or contains)
+          const partialMatch = clinicPets.find(p => 
+            p.name.toLowerCase().includes(namePart.toLowerCase()) ||
+            namePart.toLowerCase().includes(p.name.toLowerCase())
+          );
+          if (partialMatch && namePart.length >= 3) {
+            return { pet: partialMatch, matchType: 'name_partial', confidence: 'medium' };
+          }
+        }
+        
+        // 3. No automatic match found - needs manual assignment
+        return { pet: null, matchType: 'none', confidence: 'none' };
+      };
+      
+      const unmatchedDocs = [];
       
       for (const docFile of files) {
         try {
@@ -366,19 +430,28 @@ export async function POST(request) {
           
           await writeFile(filepath, buffer);
           
-          // Try to match document to pet by filename
-          let matchedPetId = petId;
+          // Determine pet assignment
+          let matchedPetId = petId; // Use explicit petId if provided
+          let matchInfo = { matchType: 'manual', confidence: 'high' };
+          
           if (!matchedPetId) {
-            // Try to extract pet name from filename
-            const nameMatch = docFile.name.match(/^([^_]+)/);
-            if (nameMatch) {
-              const petsCollection = await getCollection('pets');
-              const matchedPet = await petsCollection.findOne({
-                clinics: clinicId,
-                name: { $regex: new RegExp(nameMatch[1], 'i') }
-              });
-              if (matchedPet) {
-                matchedPetId = matchedPet.id;
+            // Check manual matches first
+            if (parsedManualMatches[docFile.name]) {
+              matchedPetId = parsedManualMatches[docFile.name];
+              matchInfo = { matchType: 'manual_assigned', confidence: 'high' };
+            } else {
+              // Try smart matching
+              const match = findMatchingPet(docFile.name);
+              if (match.pet) {
+                matchedPetId = match.pet.id;
+                matchInfo = match;
+              } else {
+                // Document unmatched - add to list for user to assign
+                unmatchedDocs.push({
+                  filename: docFile.name,
+                  savedAs: filename,
+                  filepath: `/uploads/${clinicId}/${filename}`
+                });
               }
             }
           }
@@ -389,9 +462,11 @@ export async function POST(request) {
             type: docFile.type.includes('pdf') ? 'report' : 'image',
             filename: filename,
             filepath: `/uploads/${clinicId}/${filename}`,
-            petId: matchedPetId,
+            petId: matchedPetId || null,
+            petName: matchedPetId ? clinicPets.find(p => p.id === matchedPetId)?.name : null,
             clinicId: clinicId,
-            status: 'active',
+            status: matchedPetId ? 'active' : 'pending_assignment',
+            matchInfo: matchInfo,
             createdAt: new Date().toISOString(),
             importedAt: new Date().toISOString()
           };
@@ -399,13 +474,22 @@ export async function POST(request) {
           await documents.insertOne(newDoc);
           results.imported.documents++;
           
-          if (!matchedPetId) {
-            results.warnings.push(`${docFile.name}: Documento caricato ma non associato a nessun paziente`);
+          if (matchedPetId && matchInfo.matchType !== 'manual') {
+            const petName = clinicPets.find(p => p.id === matchedPetId)?.name;
+            results.warnings.push(`✅ ${docFile.name}: Associato a "${petName}" (${matchInfo.matchType})`);
+          } else if (!matchedPetId) {
+            results.warnings.push(`⚠️ ${docFile.name}: Nessun paziente trovato - assegnazione manuale richiesta`);
           }
           
         } catch (docError) {
           results.errors.push(`${docFile.name}: ${docError.message}`);
         }
+      }
+      
+      // Add unmatched documents info
+      if (unmatchedDocs.length > 0) {
+        results.unmatchedDocuments = unmatchedDocs;
+        results.needsManualAssignment = true;
       }
     }
     
