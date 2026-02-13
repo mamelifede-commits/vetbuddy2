@@ -9,7 +9,7 @@ import {
   ChevronRight, ChevronLeft, Check, Play, Pause, ArrowLeft,
   Calendar, Users, MessageSquare, FileText, Bell, Video, Gift,
   Settings, Upload, BarChart3, CreditCard, PawPrint, Home,
-  Lock, Printer, CheckCircle, Circle, BookOpen
+  Lock, Printer, CheckCircle, Circle, BookOpen, Smartphone, Share, PlusSquare, Download
 } from 'lucide-react';
 import Link from 'next/link';
 
