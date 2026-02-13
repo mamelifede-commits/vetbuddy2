@@ -2248,7 +2248,7 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate
   const [currentDate, setCurrentDate] = useState(new Date());
   const [shareDialog, setShareDialog] = useState(null);
   const [formData, setFormData] = useState({ 
-    petName: '', ownerName: '', ownerEmail: '', date: '', time: '', 
+    petId: '', petName: '', ownerId: '', ownerName: '', ownerEmail: '', date: '', time: '', 
     reason: '', type: 'visita', staffId: '', duration: 30, notes: '' 
   });
 
