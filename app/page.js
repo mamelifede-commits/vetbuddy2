@@ -12055,9 +12055,8 @@ export default function App() {
   const [googleOAuthResult, setGoogleOAuthResult] = useState(null);
   const [emailAction, setEmailAction] = useState(null);
 
+  // Save email action params to sessionStorage for after login
   useEffect(() => { 
-    checkAuth(); 
-    // Check for Google OAuth callback params and email action params
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       
@@ -12070,30 +12069,68 @@ export default function App() {
         window.history.replaceState({}, '', window.location.pathname);
       }
       
-      // Email action handling (from email buttons)
+      // Email action handling - SAVE to sessionStorage for after login
       const action = params.get('action');
       if (action) {
-        setEmailAction({
+        const emailActionData = {
           action: action,
           appointmentId: params.get('appointmentId'),
           clinicId: params.get('clinicId'),
           petId: params.get('petId'),
           reason: params.get('reason')
-        });
-        // Don't clear URL yet - let the dashboard handle it
+        };
+        // Save to sessionStorage so it persists after login
+        sessionStorage.setItem('vetbuddy_email_action', JSON.stringify(emailActionData));
+        // Clear URL immediately
+        window.history.replaceState({}, '', window.location.pathname);
       }
     }
+    checkAuth(); 
   }, []);
 
   const checkAuth = async () => {
     const token = api.getToken();
-    if (token) { try { const userData = await api.get('auth/me'); setUser(userData); } catch (error) { localStorage.removeItem('vetbuddy_token'); api.token = null; } }
+    if (token) { 
+      try { 
+        const userData = await api.get('auth/me'); 
+        setUser(userData);
+        // After successful auth, check for pending email action
+        loadPendingEmailAction();
+      } catch (error) { 
+        localStorage.removeItem('vetbuddy_token'); 
+        api.token = null; 
+      } 
+    }
     setLoading(false);
   };
 
-  const handleLogin = (userData) => { setUser(userData); if (!localStorage.getItem('vetbuddy_welcomed_' + userData.id)) { setShowWelcome(true); } };
+  // Load pending email action from sessionStorage (after login)
+  const loadPendingEmailAction = () => {
+    if (typeof window !== 'undefined') {
+      const savedAction = sessionStorage.getItem('vetbuddy_email_action');
+      if (savedAction) {
+        try {
+          const actionData = JSON.parse(savedAction);
+          setEmailAction(actionData);
+          // Clear from sessionStorage after loading
+          sessionStorage.removeItem('vetbuddy_email_action');
+        } catch (e) {
+          sessionStorage.removeItem('vetbuddy_email_action');
+        }
+      }
+    }
+  };
+
+  const handleLogin = (userData) => { 
+    setUser(userData); 
+    // Load pending email action after login
+    loadPendingEmailAction();
+    if (!localStorage.getItem('vetbuddy_welcomed_' + userData.id)) { 
+      setShowWelcome(true); 
+    } 
+  };
   const handleWelcomeContinue = () => { localStorage.setItem('vetbuddy_welcomed_' + user.id, 'true'); setShowWelcome(false); };
-  const handleLogout = () => { localStorage.removeItem('vetbuddy_token'); api.token = null; setUser(null); setShowWelcome(false); };
+  const handleLogout = () => { localStorage.removeItem('vetbuddy_token'); api.token = null; setUser(null); setShowWelcome(false); sessionStorage.removeItem('vetbuddy_email_action'); };
 
   // Show Google OAuth result toast
   useEffect(() => {
