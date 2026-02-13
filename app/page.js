@@ -13360,9 +13360,7 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
           <Card key={pet.id} className="hover:shadow-md transition-shadow group">
             <CardContent className="p-4">
               <div className="flex items-start gap-4">
-                <div className="h-16 w-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer" onClick={() => onOpenProfile?.(pet.id)}>
-                  {pet.species === 'dog' ? <Dog className="h-8 w-8 text-blue-600" /> : pet.species === 'cat' ? <Cat className="h-8 w-8 text-blue-600" /> : <PawPrint className="h-8 w-8 text-blue-600" />}
-                </div>
+                <PetAvatar pet={pet} size="md" onClick={() => onOpenProfile?.(pet.id)} />
                 <div className="flex-1 min-w-0 cursor-pointer" onClick={() => onOpenProfile?.(pet.id)}>
                   <p className="font-semibold text-lg">{pet.name}</p>
                   <p className="text-sm text-gray-500">{pet.breed || (pet.species === 'dog' ? 'Cane' : pet.species === 'cat' ? 'Gatto' : 'Animale')}</p>
