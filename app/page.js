@@ -13752,12 +13752,14 @@ function OwnerDocuments({ documents, pets, onRefresh, user }) {
             <div className="space-y-3">
               {documents.filter(d => !d.fromClient && d.type !== 'invoice' && d.category !== 'fattura').map((doc) => {
                 const handleDownload = () => {
-                  if (doc.content) {
-                    // Check if content is base64 PDF or plain text
-                    const isBase64PDF = doc.content.startsWith('data:') || doc.content.startsWith('JVBERi') || doc.content.length > 500;
+                  // Always use API download which generates PDF
+                  if (doc.id) {
+                    window.open(`/api/documents/download?id=${doc.id}`, '_blank');
+                  } else if (doc.content) {
+                    // Check if content is base64 PDF
+                    const isBase64PDF = doc.content.startsWith('data:') || doc.content.startsWith('JVBERi');
                     
                     if (isBase64PDF) {
-                      // If we have base64 content, create a download link
                       const link = document.createElement('a');
                       if (doc.content.startsWith('data:')) {
                         link.href = doc.content;
@@ -13765,29 +13767,13 @@ function OwnerDocuments({ documents, pets, onRefresh, user }) {
                         link.href = `data:application/pdf;base64,${doc.content}`;
                       }
                       link.download = doc.fileName || doc.name || 'documento.pdf';
-                      link.style.display = 'none';
                       document.body.appendChild(link);
                       link.click();
                       setTimeout(() => document.body.removeChild(link), 100);
                     } else {
-                      // Content is plain text (like prescription text), create a text file
-                      const blob = new Blob([`${doc.name || 'Prescrizione'}\n\nData: ${new Date(doc.createdAt).toLocaleDateString('it-IT')}\nPaziente: ${doc.petName || 'N/A'}\n\n${doc.content}`], { type: 'text/plain;charset=utf-8' });
-                      const url = URL.createObjectURL(blob);
-                      const link = document.createElement('a');
-                      link.href = url;
-                      link.download = `${doc.name || 'prescrizione'}.txt`;
-                      document.body.appendChild(link);
-                      link.click();
-                      setTimeout(() => {
-                        document.body.removeChild(link);
-                        URL.revokeObjectURL(url);
-                      }, 100);
+                      alert('Usa il pulsante Scarica per ottenere il PDF');
                     }
-                  } else if (doc.id) {
-                    // Use API download
-                    window.open(`/api/documents/download?id=${doc.id}`, '_blank');
                   } else if (doc.fileUrl) {
-                    // If we have a URL, open it
                     window.open(doc.fileUrl, '_blank');
                   } else {
                     alert('File non disponibile per il download');
