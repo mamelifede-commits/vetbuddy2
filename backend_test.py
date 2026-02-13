@@ -278,11 +278,18 @@ def test_authentication():
     log_test("=" * 60)
     
     try:
-        # Test without auth token
+        # Test GET without auth token (should be public)
         response = requests.get(f"{BASE_URL}/import", timeout=30)
         
+        if response.status_code != 200:
+            log_test(f"GET /import should be public, got {response.status_code}", False)
+            return False
+        
+        # Test POST without auth token (should require auth)
+        response = requests.post(f"{BASE_URL}/import", json={'type': 'data'}, timeout=30)
+        
         if response.status_code != 401:
-            log_test(f"Expected 401 without auth, got {response.status_code}", False)
+            log_test(f"Expected 401 for POST without auth, got {response.status_code}", False)
             return False
         
         # Test with provided token
