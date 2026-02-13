@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/db';
 import { sendEmail } from '@/lib/email';
+import { generateInvoicePDF, saveInvoicePDFAsDocument } from '@/lib/invoicePDF';
 
 // POST - Invia fattura via email
 export async function POST(request) {
