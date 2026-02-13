@@ -10111,7 +10111,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     }
   }, [emailAction, onClearEmailAction, appointments]);
   
-  const loadData = async () => { try { const [appts, docs, msgs, petsList, clinicsList] = await Promise.all([api.get('appointments'), api.get('documents'), api.get('messages'), api.get('pets'), api.get('clinics/search?city=Milano&maxDistance=100')]); setAppointments(appts); setDocuments(docs); setMessages(msgs); setPets(petsList); setClinics(clinicsList || []); } catch (error) { console.error('Error:', error); } };
+  const loadData = async () => { try { const [appts, docs, msgs, petsList, clinicsList, rewardsList] = await Promise.all([api.get('appointments'), api.get('documents'), api.get('messages'), api.get('pets'), api.get('clinics/search?city=Milano&maxDistance=100'), api.get('rewards/my-rewards').catch(() => [])]); setAppointments(appts); setDocuments(docs); setMessages(msgs); setPets(petsList); setClinics(clinicsList || []); setRewards(rewardsList || []); } catch (error) { console.error('Error:', error); } };
   
   // Cancel appointment handler
   const handleCancelAppointment = async () => {
