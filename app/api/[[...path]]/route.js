@@ -1396,6 +1396,115 @@ export async function POST(request, { params }) {
       };
 
       await appointments.insertOne(appointment);
+      
+      // AUTO-SEND CONFIRMATION EMAIL
+      try {
+        // Get owner email
+        const users = await getCollection('users');
+        const owner = await users.findOne({ id: appointment.ownerId });
+        const clinic = await users.findOne({ id: appointment.clinicId });
+        
+        if (owner?.email) {
+          const clinicName = clinic?.clinicName || body.clinicName || 'Clinica Veterinaria';
+          const clinicPhone = clinic?.phone || '';
+          const clinicAddress = clinic?.address || '';
+          
+          const typeLabels = {
+            visita: 'Visita generale',
+            vaccino: 'Vaccino',
+            videoconsulto: 'Video Consulto',
+            online: 'Video Consulto'
+          };
+          const typeLabel = typeLabels[appointment.type] || appointment.reason || 'Appuntamento';
+          const formattedDate = new Date(appointment.date).toLocaleDateString('it-IT', { 
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+          });
+          
+          await sendEmail({
+            to: owner.email,
+            subject: `✅ Prenotazione Confermata - ${appointment.petName} | ${clinicName}`,
+            html: `
+              <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+                <div style="background: linear-gradient(135deg, #10B981, #059669); padding: 32px; text-align: center;">
+                  <h1 style="color: white; margin: 0; font-size: 28px;">🐾 Prenotazione Confermata!</h1>
+                  <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 16px;">${clinicName}</p>
+                </div>
+                
+                <div style="padding: 32px;">
+                  <div style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+                    <table style="width: 100%;">
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <span style="color: #64748b; font-size: 14px;">🐕 Paziente</span><br/>
+                          <strong style="font-size: 18px; color: #1e293b;">${appointment.petName}</strong>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <span style="color: #64748b; font-size: 14px;">📋 Tipo</span><br/>
+                          <strong style="font-size: 16px; color: #1e293b;">${typeLabel}</strong>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <span style="color: #64748b; font-size: 14px;">📅 Data e ora</span><br/>
+                          <strong style="font-size: 18px; color: #10B981;">${formattedDate}</strong><br/>
+                          <strong style="font-size: 24px; color: #1e293b;">🕐 ${appointment.time}</strong>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+
+                  ${appointment.videoLink ? `
+                  <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 16px; padding: 24px; margin-bottom: 24px; text-align: center;">
+                    <h3 style="color: white; margin: 0 0 12px; font-size: 18px;">🎥 Video Consulto</h3>
+                    <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin: 0 0 16px;">
+                      Il giorno dell'appuntamento, clicca il pulsante qui sotto per avviare la videochiamata.
+                    </p>
+                    <a href="${appointment.videoLink}" target="_blank" style="display: inline-block; background: white; color: #6366f1; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
+                      📹 Entra nel Video Consulto
+                    </a>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin: 12px 0 0;">
+                      Riceverai un promemoria 24h e 1h prima dell'appuntamento
+                    </p>
+                  </div>
+                  
+                  <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin-bottom: 24px; border-radius: 0 8px 8px 0;">
+                    <p style="margin: 0; font-size: 14px; color: #92400e;">
+                      <strong>⚠️ Importante:</strong> Il video consulto è una consulenza a distanza e non sostituisce una visita clinica in presenza quando è necessario un esame fisico.
+                    </p>
+                  </div>
+                  ` : `
+                  <div style="background: #f0fdf4; border-left: 4px solid #10B981; padding: 16px; margin-bottom: 24px; border-radius: 0 8px 8px 0;">
+                    <p style="margin: 0; font-size: 14px; color: #166534;">
+                      <strong>📍 Dove:</strong> ${clinicAddress || clinicName}
+                      ${clinicPhone ? `<br/><strong>📞 Tel:</strong> ${clinicPhone}` : ''}
+                    </p>
+                  </div>
+                  `}
+                  
+                  <p style="color: #64748b; font-size: 14px; text-align: center;">
+                    Riceverai un promemoria 24h prima dell'appuntamento.<br/>
+                    Per modifiche o cancellazioni, contatta la clinica.
+                  </p>
+                </div>
+                
+                <div style="background: #f8fafc; padding: 24px; text-align: center; border-top: 1px solid #e2e8f0;">
+                  <p style="color: #94a3b8; font-size: 12px; margin: 0;">
+                    Email inviata automaticamente da VetBuddy<br/>
+                    <a href="https://vetbuddy.it" style="color: #FF6B6B;">vetbuddy.it</a>
+                  </p>
+                </div>
+              </div>
+            `
+          });
+          console.log('Confirmation email sent to:', owner.email);
+        }
+      } catch (emailError) {
+        console.error('Error sending confirmation email:', emailError);
+        // Don't fail the appointment creation if email fails
+      }
+      
       return NextResponse.json(appointment, { headers: corsHeaders });
     }
 
