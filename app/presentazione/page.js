@@ -583,37 +583,6 @@ export default function PresentazionePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 px-4 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <Badge className="bg-amber-100 text-amber-700 mb-4">⭐ Testimonianze</Badge>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Cosa dicono le cliniche
-            </h2>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <Card key={i} className="bg-white hover:shadow-xl transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex gap-1 mb-4">
-                    {[...Array(t.rating)].map((_, j) => (
-                      <Star key={j} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                  <p className="text-gray-700 mb-6 italic">"{t.text}"</p>
-                  <div className="border-t pt-4">
-                    <p className="font-bold text-gray-900">{t.name}</p>
-                    <p className="text-sm text-gray-500">{t.clinic}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Pricing */}
       <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto">
