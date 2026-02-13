@@ -7839,16 +7839,24 @@ function ClinicAutomations({ user, onNavigate }) {
         <div className="space-y-6">
           {/* Plan Info Banner */}
           {clinicPlan === 'starter' && (
-            <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 rounded-xl">
+            <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-300 rounded-xl">
               <div className="flex items-start gap-3">
-                <Lock className="h-5 w-5 text-amber-600 mt-0.5" />
+                <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                 <div>
-                  <p className="text-amber-800 font-semibold">Piano Starter - Automazioni non incluse</p>
-                  <p className="text-amber-700 text-sm mt-1">
-                    Il tuo piano attuale non include le automazioni. Effettua l'upgrade al piano <strong>Pro</strong> per sbloccare 20 automazioni o al piano <strong>Custom</strong> per tutte le 44+ automazioni.
+                  <p className="text-green-800 font-semibold">Piano Starter - 5 Automazioni Incluse</p>
+                  <p className="text-green-700 text-sm mt-1">
+                    Il tuo piano include <strong>5 automazioni essenziali</strong>: Promemoria appuntamenti, Conferma prenotazione, Benvenuto nuovo pet, Compleanno pet, Conferma automatica.
+                    <br/>Per sbloccare tutte le 21+ automazioni avanzate, effettua l'upgrade al piano <strong>Pro</strong>.
                   </p>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">✓ Promemoria</span>
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">✓ Conferma</span>
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">✓ Benvenuto Pet</span>
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">✓ Compleanno</span>
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">✓ Conferma Auto</span>
+                  </div>
                   <Button size="sm" className="mt-3 bg-coral-500 hover:bg-coral-600">
-                    <Zap className="h-4 w-4 mr-2" /> Upgrade a Pro
+                    <Zap className="h-4 w-4 mr-2" /> Upgrade a Pro - Sblocca Altre 16 Automazioni
                   </Button>
                 </div>
               </div>
