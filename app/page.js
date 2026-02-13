@@ -2445,108 +2445,212 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate
                   </div>
                 </div>
                 
-                {/* Owner Selection - First select owner, then pet */}
-                <div>
+                {/* Owner Selection with Autocomplete */}
+                <div className="relative">
                   <Label>Proprietario *</Label>
-                  <Select 
-                    value={formData.ownerId || 'manual'} 
-                    onValueChange={(v) => {
-                      if (v === 'manual') {
-                        setFormData({...formData, ownerId: '', ownerName: '', ownerEmail: '', petId: '', petName: ''});
-                      } else {
-                        const owner = owners.find(o => o.id === v);
-                        if (owner) {
-                          setFormData({...formData, ownerId: v, ownerName: owner.name, ownerEmail: owner.email || '', petId: '', petName: ''});
-                        }
-                      }
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleziona proprietario registrato o inserisci manualmente" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="manual">
-                        <div className="flex items-center gap-2 text-gray-500">
-                          <UserPlus className="h-4 w-4" />
-                          Inserisci manualmente (nuovo cliente)
-                        </div>
-                      </SelectItem>
-                      {owners?.filter(o => o.role === 'owner').map(owner => (
-                        <SelectItem key={owner.id} value={owner.id}>
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4 text-green-600" />
-                            {owner.name}
-                            <span className="text-xs text-gray-400">({owner.email})</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Manual owner input if not selecting from list */}
-                {(!formData.ownerId || formData.ownerId === '') && (
-                  <div className="grid grid-cols-2 gap-4 p-3 bg-gray-50 rounded-lg border border-dashed">
-                    <div>
-                      <Label>Nome proprietario *</Label>
-                      <Input value={formData.ownerName} onChange={(e) => setFormData({...formData, ownerName: e.target.value})} placeholder="Nome e cognome" required />
-                    </div>
-                    <div>
-                      <Label>Email proprietario</Label>
-                      <Input type="email" value={formData.ownerEmail} onChange={(e) => setFormData({...formData, ownerEmail: e.target.value})} placeholder="email@esempio.it" />
-                    </div>
-                  </div>
-                )}
-
-                {/* Pet Selection - Shows registered pets if owner selected, or manual input */}
-                <div>
-                  <Label>Animale *</Label>
-                  {formData.ownerId ? (
-                    <Select 
-                      value={formData.petId || 'manual'} 
-                      onValueChange={(v) => {
-                        if (v === 'manual') {
-                          setFormData({...formData, petId: '', petName: ''});
-                        } else {
-                          const pet = pets.find(p => p.id === v);
-                          if (pet) {
-                            setFormData({...formData, petId: v, petName: pet.name});
-                          }
-                        }
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleziona animale" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="manual">
-                          <div className="flex items-center gap-2 text-gray-500">
-                            <PlusCircle className="h-4 w-4" />
-                            Nuovo animale (inserisci nome)
-                          </div>
-                        </SelectItem>
-                        {pets?.filter(p => p.ownerId === formData.ownerId).map(pet => (
-                          <SelectItem key={pet.id} value={pet.id}>
-                            <div className="flex items-center gap-2">
-                              <PawPrint className="h-4 w-4 text-coral-500" />
-                              {pet.name}
-                              <span className="text-xs text-gray-400">({pet.species} - {pet.breed})</span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <Input value={formData.petName} onChange={(e) => setFormData({...formData, petName: e.target.value})} placeholder="Nome animale" required />
-                  )}
-                  {formData.ownerId && (!formData.petId || formData.petId === '') && (
+                  <div className="relative">
                     <Input 
-                      className="mt-2" 
-                      value={formData.petName} 
-                      onChange={(e) => setFormData({...formData, petName: e.target.value})} 
-                      placeholder="Nome del nuovo animale" 
+                      value={formData.ownerName} 
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setFormData({...formData, ownerName: value, ownerId: '', ownerEmail: '', petId: '', petName: ''});
+                      }}
+                      onFocus={() => setFormData({...formData, showOwnerSuggestions: true})}
+                      onBlur={() => setTimeout(() => setFormData(prev => ({...prev, showOwnerSuggestions: false})), 200)}
+                      placeholder="Digita nome proprietario..." 
+                      className="pr-10"
                       required 
                     />
+                    <User className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  </div>
+                  {/* Suggestions dropdown */}
+                  {formData.showOwnerSuggestions && formData.ownerName && (
+                    <div className="absolute z-50 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-48 overflow-auto">
+                      {owners?.filter(o => 
+                        o.role === 'owner' && 
+                        (o.name?.toLowerCase().includes(formData.ownerName.toLowerCase()) ||
+                         o.email?.toLowerCase().includes(formData.ownerName.toLowerCase()))
+                      ).length > 0 ? (
+                        <>
+                          <div className="px-3 py-2 text-xs text-gray-500 bg-gray-50 border-b">
+                            Proprietari registrati
+                          </div>
+                          {owners?.filter(o => 
+                            o.role === 'owner' && 
+                            (o.name?.toLowerCase().includes(formData.ownerName.toLowerCase()) ||
+                             o.email?.toLowerCase().includes(formData.ownerName.toLowerCase()))
+                          ).map(owner => (
+                            <button
+                              key={owner.id}
+                              type="button"
+                              className="w-full px-3 py-2 text-left hover:bg-coral-50 flex items-center gap-2 border-b last:border-b-0"
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                setFormData({
+                                  ...formData, 
+                                  ownerId: owner.id, 
+                                  ownerName: owner.name, 
+                                  ownerEmail: owner.email || '',
+                                  petId: '',
+                                  petName: '',
+                                  showOwnerSuggestions: false
+                                });
+                              }}
+                            >
+                              <User className="h-4 w-4 text-green-600" />
+                              <div>
+                                <p className="font-medium">{owner.name}</p>
+                                <p className="text-xs text-gray-500">{owner.email}</p>
+                              </div>
+                            </button>
+                          ))}
+                        </>
+                      ) : (
+                        <div className="px-3 py-2 text-sm text-gray-500">
+                          <UserPlus className="h-4 w-4 inline mr-2" />
+                          Nuovo proprietario: "{formData.ownerName}"
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {/* Show email field for new owners */}
+                  {formData.ownerName && !formData.ownerId && (
+                    <div className="mt-2">
+                      <Label className="text-xs text-gray-500">Email nuovo proprietario</Label>
+                      <Input 
+                        type="email" 
+                        value={formData.ownerEmail} 
+                        onChange={(e) => setFormData({...formData, ownerEmail: e.target.value})} 
+                        placeholder="email@esempio.it (opzionale)" 
+                        className="mt-1"
+                      />
+                    </div>
+                  )}
+                  {/* Show selected owner badge */}
+                  {formData.ownerId && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        <User className="h-3 w-3 mr-1" />
+                        Proprietario registrato
+                      </Badge>
+                      <span className="text-xs text-gray-500">{formData.ownerEmail}</span>
+                      <button 
+                        type="button"
+                        onClick={() => setFormData({...formData, ownerId: '', ownerName: '', ownerEmail: '', petId: '', petName: ''})}
+                        className="text-xs text-red-500 hover:text-red-700"
+                      >
+                        Cambia
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Pet Selection with Autocomplete */}
+                <div className="relative">
+                  <Label>Animale *</Label>
+                  <div className="relative">
+                    <Input 
+                      value={formData.petName} 
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setFormData({...formData, petName: value, petId: ''});
+                      }}
+                      onFocus={() => setFormData({...formData, showPetSuggestions: true})}
+                      onBlur={() => setTimeout(() => setFormData(prev => ({...prev, showPetSuggestions: false})), 200)}
+                      placeholder="Digita nome animale..." 
+                      className="pr-10"
+                      required 
+                    />
+                    <PawPrint className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  </div>
+                  {/* Pet suggestions dropdown */}
+                  {formData.showPetSuggestions && formData.petName && (
+                    <div className="absolute z-50 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-48 overflow-auto">
+                      {(() => {
+                        // If owner is selected, show only their pets
+                        const availablePets = formData.ownerId 
+                          ? pets?.filter(p => p.ownerId === formData.ownerId && p.name?.toLowerCase().includes(formData.petName.toLowerCase()))
+                          : pets?.filter(p => p.name?.toLowerCase().includes(formData.petName.toLowerCase()));
+                        
+                        if (availablePets?.length > 0) {
+                          return (
+                            <>
+                              <div className="px-3 py-2 text-xs text-gray-500 bg-gray-50 border-b">
+                                {formData.ownerId ? 'Pet di questo proprietario' : 'Pet registrati'}
+                              </div>
+                              {availablePets.map(pet => {
+                                const petOwner = owners?.find(o => o.id === pet.ownerId);
+                                return (
+                                  <button
+                                    key={pet.id}
+                                    type="button"
+                                    className="w-full px-3 py-2 text-left hover:bg-coral-50 flex items-center gap-2 border-b last:border-b-0"
+                                    onMouseDown={(e) => {
+                                      e.preventDefault();
+                                      // If selecting a pet, also set the owner if not already set
+                                      if (!formData.ownerId && petOwner) {
+                                        setFormData({
+                                          ...formData, 
+                                          petId: pet.id, 
+                                          petName: pet.name,
+                                          ownerId: petOwner.id,
+                                          ownerName: petOwner.name,
+                                          ownerEmail: petOwner.email || '',
+                                          showPetSuggestions: false
+                                        });
+                                      } else {
+                                        setFormData({
+                                          ...formData, 
+                                          petId: pet.id, 
+                                          petName: pet.name,
+                                          showPetSuggestions: false
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    <PawPrint className="h-4 w-4 text-coral-500" />
+                                    <div>
+                                      <p className="font-medium">{pet.name}</p>
+                                      <p className="text-xs text-gray-500">
+                                        {pet.species} {pet.breed && `• ${pet.breed}`}
+                                        {!formData.ownerId && petOwner && ` • ${petOwner.name}`}
+                                      </p>
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            </>
+                          );
+                        } else {
+                          return (
+                            <div className="px-3 py-2 text-sm text-gray-500">
+                              <PlusCircle className="h-4 w-4 inline mr-2" />
+                              Nuovo animale: "{formData.petName}"
+                            </div>
+                          );
+                        }
+                      })()}
+                    </div>
+                  )}
+                  {/* Show selected pet badge */}
+                  {formData.petId && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <Badge variant="outline" className="bg-coral-50 text-coral-700 border-coral-200">
+                        <PawPrint className="h-3 w-3 mr-1" />
+                        Pet registrato
+                      </Badge>
+                      {(() => {
+                        const pet = pets?.find(p => p.id === formData.petId);
+                        return pet && <span className="text-xs text-gray-500">{pet.species} - {pet.breed}</span>;
+                      })()}
+                      <button 
+                        type="button"
+                        onClick={() => setFormData({...formData, petId: '', petName: ''})}
+                        className="text-xs text-red-500 hover:text-red-700"
+                      >
+                        Cambia
+                      </button>
+                    </div>
                   )}
                 </div>
                 
