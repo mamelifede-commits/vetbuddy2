@@ -709,6 +709,12 @@ export async function GET(request) {
           const owner = await db.collection('users').findOne({ id: ownerId, reactivationSent: { $ne: true } });
           if (!owner?.email) continue;
 
+          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+          const phoneNumber = clinic?.phone || clinic?.telefono || '';
+          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+          const bookUrl = `${baseUrl}?action=book&clinicId=${clinic.id}`;
+          const messageUrl = `${baseUrl}?action=message&clinicId=${clinic.id}`;
+
           try {
             await sendEmail({
               to: owner.email,
@@ -722,9 +728,24 @@ export async function GET(request) {
                     <p>Ciao ${owner.name || ''},</p>
                     <p>È passato un po' di tempo dalla tua ultima visita presso <strong>${clinic.clinicName}</strong>.</p>
                     <p>I controlli regolari sono importanti per la salute del tuo animale. Prenota una visita!</p>
+                    
+                    <!-- Action Buttons -->
                     <div style="text-align: center; margin: 30px 0;">
-                      <a href="https://vetbuddy.it" style="background: #FF6B6B; color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">Prenota Ora</a>
+                      <a href="${bookUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        📅 Prenota Ora
+                      </a>
+                      ${phoneLink ? `
+                      <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        📞 Chiama la Clinica
+                      </a>
+                      ` : ''}
+                      <a href="${messageUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        💬 Scrivi un Messaggio
+                      </a>
                     </div>
+                  </div>
+                  <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
                   </div>
                 </div>
               `
