@@ -11019,6 +11019,80 @@ function ClinicSettings({ user, onNavigate }) {
           </CardContent>
         </Card>
 
+        {/* WhatsApp Business Notifications */}
+        <Card className="border-green-200">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <MessageCircle className="h-5 w-5 text-green-500" />Notifiche WhatsApp
+              <Badge className="bg-green-100 text-green-700 ml-2">Attivo</Badge>
+            </CardTitle>
+            <CardDescription>Invia promemoria appuntamenti e notifiche ai clienti via WhatsApp</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center gap-3 mb-3">
+                <CheckCircle className="h-6 w-6 text-green-600" />
+                <div>
+                  <p className="font-medium text-green-800">WhatsApp Business configurato</p>
+                  <p className="text-sm text-green-600">Numero: +39 388 744 1417</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-medium">Notifiche automatiche disponibili:</h4>
+              <div className="grid md:grid-cols-2 gap-3">
+                <div className="p-3 bg-gray-50 rounded-lg flex items-center gap-3">
+                  <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Calendar className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Promemoria appuntamento</p>
+                    <p className="text-xs text-gray-500">24h e 2h prima della visita</p>
+                  </div>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg flex items-center gap-3">
+                  <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Conferma prenotazione</p>
+                    <p className="text-xs text-gray-500">Automatica alla prenotazione</p>
+                  </div>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg flex items-center gap-3">
+                  <div className="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center">
+                    <FileText className="h-4 w-4 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Documento pronto</p>
+                    <p className="text-xs text-gray-500">Quando carichi referti/prescrizioni</p>
+                  </div>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg flex items-center gap-3">
+                  <div className="h-8 w-8 bg-amber-100 rounded-full flex items-center justify-center">
+                    <CreditCard className="h-4 w-4 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Pagamento ricevuto</p>
+                    <p className="text-xs text-gray-500">Conferma pagamenti online</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-start gap-2">
+                <Bell className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                <div className="text-sm">
+                  <p className="font-medium text-blue-800">Come funziona</p>
+                  <p className="text-blue-600">I clienti devono avere un numero WhatsApp registrato nel loro profilo. Le notifiche verranno inviate automaticamente in base alle tue automazioni.</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Posizione su Google Maps */}
         <Card className="border-blue-200">
           <CardHeader>
