@@ -848,18 +848,6 @@ function LandingPage({ onLogin }) {
               <p className="text-gray-400 text-sm">Dashboard con KPI, report finanziari e analytics per prendere decisioni informate.</p>
             </div>
           </div>
-
-          <div className="mt-12 p-8 bg-white/5 rounded-2xl border border-white/10">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="flex-1">
-                <h3 className="text-xl font-bold mb-2">🚀 Roadmap 2025</h3>
-                <p className="text-gray-400 text-sm">Stiamo lavorando su: AI per triage automatico, integrazione con laboratori di analisi, telemedicina avanzata, e app mobile nativa.</p>
-              </div>
-              <Button className="bg-coral-500 hover:bg-coral-600 whitespace-nowrap" onClick={() => scrollToSection('pilot')}>
-                Entra nel Pilot
-              </Button>
-            </div>
-          </div>
         </div>
       </section>
 
