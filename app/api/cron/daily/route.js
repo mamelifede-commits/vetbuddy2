@@ -1444,13 +1444,29 @@ export async function GET(request) {
                   </div>
                   <div style="padding: 30px; background: #f9f9f9; text-align: center;">
                     <p style="font-size: 48px; margin: 0;">🎉</p>
-                    <h2>${clientStats.visitCount} visite con noi!</h2>
-                    <p>Per ringraziarti della tua fedeltà, ecco un regalo:</p>
+                    <h2 style="color: #333;">${clientStats.visitCount} visite con noi!</h2>
+                    <p style="color: #666;">Per ringraziarti della tua fedeltà, ecco un regalo:</p>
                     <div style="background: #27AE60; color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
                       <p style="font-size: 32px; font-weight: bold; margin: 0;">${discount} DI SCONTO</p>
                       <p style="margin: 5px 0;">sulla prossima visita</p>
                     </div>
-                    <p style="color: #999;">Mostra questa email alla prossima visita!</p>
+                    
+                    <!-- Action Buttons -->
+                    <div style="margin: 25px 0;">
+                      <a href="${bookUrl}" style="display: inline-block; background: #F39C12; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        📅 Usa il tuo Sconto - Prenota Ora
+                      </a>
+                      ${phoneLink ? `
+                      <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        📞 Chiama per Prenotare
+                      </a>
+                      ` : ''}
+                    </div>
+                    
+                    <p style="color: #999; font-size: 12px;">Mostra questa email alla prossima visita!</p>
+                  </div>
+                  <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
                   </div>
                 </div>
               `
