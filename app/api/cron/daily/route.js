@@ -192,10 +192,6 @@ export async function GET(request) {
           const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
           const cancelUrl = `${baseUrl}?action=cancel&appointmentId=${apt.id}`;
           
-          // Format phone number for tel: link
-          const phoneNumber = clinic.phone || clinic.telefono || '';
-          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
-          
           await sendEmail({
             to: owner.email,
             subject: `⏰ Promemoria: Appuntamento domani per ${pet.name}`,
