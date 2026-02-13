@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the VetBuddy veterinary clinic management API with comprehensive endpoint testing including authentication, appointments, documents, staff, pets, and email functionality."
+user_problem_statement: "Test the VetBuddy frontend focusing on recent changes: Landing Page Fatturazione Section, Favicon, Clinic/Owner Dashboard Logout Button positioning, Animal Species Horse addition, and Invoicing Tab in Clinic Dashboard."
 
 backend:
   - task: "Health Check API"
