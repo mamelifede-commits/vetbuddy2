@@ -1015,6 +1015,113 @@ function LandingPage({ onLogin }) {
         </div>
       </section>
 
+      {/* Premi Fedeltà Section */}
+      <section id="premi" className="py-16 px-4 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full mb-4 font-semibold">
+              <Gift className="h-5 w-5" /> NOVITÀ
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Premi Fedeltà 🎁</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Le cliniche possono premiare i clienti più fedeli. Sconti, servizi gratuiti e regali speciali direttamente dalla tua clinica di fiducia.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            {/* Left: For Pet Owners */}
+            <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-amber-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                  <PawPrint className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">Per i Proprietari</h3>
+              </div>
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3">
+                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">Ricevi <strong>premi fedeltà</strong> dalla tua clinica</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">Sconti %, servizi gratis, prodotti omaggio</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">Notifica email quando ricevi un premio</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">Sezione dedicata "I Miei Premi" nella dashboard</span>
+                </li>
+              </ul>
+              <p className="mt-6 text-sm text-gray-500 bg-blue-50 p-3 rounded-lg">
+                💡 <strong>100% gratuito</strong> per i proprietari. È la clinica che decide quando premiarti!
+              </p>
+            </div>
+            
+            {/* Right: For Clinics */}
+            <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-coral-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-coral-400 to-coral-600 flex items-center justify-center">
+                  <Building2 className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">Per le Cliniche</h3>
+              </div>
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3">
+                  <div className="h-6 w-6 rounded-full bg-coral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Star className="h-4 w-4 text-coral-600" />
+                  </div>
+                  <span className="text-gray-700">Crea <strong>tipi di premio</strong> personalizzati</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="h-6 w-6 rounded-full bg-coral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Star className="h-4 w-4 text-coral-600" />
+                  </div>
+                  <span className="text-gray-700">Assegna premi ai clienti più fedeli</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="h-6 w-6 rounded-full bg-coral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Star className="h-4 w-4 text-coral-600" />
+                  </div>
+                  <span className="text-gray-700">Email automatica di notifica al cliente</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="h-6 w-6 rounded-full bg-coral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Star className="h-4 w-4 text-coral-600" />
+                  </div>
+                  <span className="text-gray-700">Traccia premi assegnati e utilizzati</span>
+                </li>
+              </ul>
+              <p className="mt-6 text-sm text-gray-500 bg-coral-50 p-3 rounded-lg">
+                🎯 <strong>Fidelizza i clienti</strong> e aumenta il ritorno. I premi creano legame!
+              </p>
+            </div>
+          </div>
+          
+          {/* Example Rewards */}
+          <div className="mt-12 text-center">
+            <p className="text-gray-500 mb-6">Esempi di premi che puoi creare:</p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <span className="bg-white px-4 py-2 rounded-full shadow border border-amber-200 text-amber-700 font-medium">🏷️ -10% prossima visita</span>
+              <span className="bg-white px-4 py-2 rounded-full shadow border border-green-200 text-green-700 font-medium">🎁 Visita gratuita</span>
+              <span className="bg-white px-4 py-2 rounded-full shadow border border-blue-200 text-blue-700 font-medium">💊 Antiparassitario omaggio</span>
+              <span className="bg-white px-4 py-2 rounded-full shadow border border-purple-200 text-purple-700 font-medium">✂️ Toelettatura gratis</span>
+              <span className="bg-white px-4 py-2 rounded-full shadow border border-pink-200 text-pink-700 font-medium">🎂 Regalo compleanno pet</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Come Funziona */}
       <section id="come-funziona" className="py-12 px-4 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-4xl mx-auto">
