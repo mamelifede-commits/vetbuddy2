@@ -1459,7 +1459,7 @@ function LandingPage({ onLogin }) {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <span className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full mb-4 font-semibold">
-              <Receipt className="h-5 w-5" /> FATTURAZIONE
+              FATTURAZIONE
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Fatturazione <span className="text-green-600">Flessibile</span>
