@@ -1388,21 +1388,12 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Clinica non trovata' }, { status: 404, headers: corsHeaders });
       }
 
-      // Define automation limits by plan
+      // Define automation limits by plan - USE GLOBAL CONSTANTS
       const PLAN_AUTOMATION_LIMITS = {
-        starter: { count: 0, allowed: [] },
-        pro: { 
-          count: 20, 
-          allowed: [
-            'appointmentReminders', 'bookingConfirmation', 'vaccineRecalls', 'postVisitFollowup',
-            'noShowDetection', 'waitlistNotification', 'suggestedSlots', 'documentReminders',
-            'autoTicketAssignment', 'urgencyNotifications', 'weeklyReport',
-            'petBirthday', 'reviewRequest', 'inactiveClientReactivation',
-            'antiparasiticReminder', 'annualCheckup', 'appointmentConfirmation', 'labResultsReady',
-            'paymentReminder', 'postSurgeryFollowup'
-          ]
-        },
-        custom: { count: 44, allowed: 'all' }
+        starter: { count: STARTER_AUTOMATIONS.length, allowed: STARTER_AUTOMATIONS },
+        pro: { count: PRO_AUTOMATIONS.length, allowed: PRO_AUTOMATIONS },
+        custom: { count: 44, allowed: 'all' },
+        enterprise: { count: 44, allowed: 'all' }
       };
 
       const clinicPlan = clinic.subscriptionPlan || clinic.plan || 'starter';
