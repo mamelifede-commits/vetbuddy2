@@ -12695,27 +12695,6 @@ function OwnerEvents({ user }) {
           })}
         </div>
       )}
-                          </>
-                        ) : (
-                          <>
-                            <Building2 className="h-3 w-3" />
-                            {event.organizer || 'Organizzatore'}
-                          </>
-                        )}
-                      </span>
-                      
-                      <span className="text-coral-500 hover:text-coral-600 text-sm font-medium flex items-center gap-1">
-                        {eventLink ? 'Vai al sito' : 'Dettagli'}
-                        <ExternalLink className="h-3 w-3" />
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
 
       {/* Info Box */}
       {!loading && (
