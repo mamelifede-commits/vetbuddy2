@@ -1366,17 +1366,35 @@ export async function GET(request) {
                   <h1 style="color: white; margin: 0;">🎉 Benvenuto!</h1>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
-                  <p>Ciao ${client.name || ''},</p>
-                  <p>Siamo felicissimi di averti con noi! 🐾</p>
-                  <h3>Cosa puoi fare con VetBuddy:</h3>
-                  <ul>
+                  <p style="color: #666; font-size: 16px;">Ciao ${client.name || ''},</p>
+                  <p style="color: #666; font-size: 16px;">Siamo felicissimi di averti con noi! 🐾</p>
+                  <h3 style="color: #333;">Cosa puoi fare con VetBuddy:</h3>
+                  <ul style="color: #666;">
                     <li>📅 Prenotare appuntamenti online</li>
                     <li>📄 Ricevere documenti e referti</li>
                     <li>💬 Chattare con la clinica</li>
                     <li>🔔 Ricevere promemoria automatici</li>
                   </ul>
-                  <p>Se hai domande, siamo sempre qui per te!</p>
+                  
+                  <!-- Action Buttons -->
+                  <div style="text-align: center; margin: 25px 0;">
+                    <a href="${bookUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      📅 Prenota Prima Visita
+                    </a>
+                    <a href="${exploreUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      🔍 Esplora VetBuddy
+                    </a>
+                    ${phoneLink ? `
+                    <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      📞 Chiama la Clinica
+                    </a>
+                    ` : ''}
+                  </div>
+                  
                   <p style="font-size: 24px; text-align: center;">🐕 🐈 🐰</p>
+                </div>
+                <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -1410,6 +1428,11 @@ export async function GET(request) {
         
         if (owner?.email) {
           const discount = clientStats.visitCount === 5 ? '10%' : clientStats.visitCount === 10 ? '15%' : '20%';
+          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+          const bookUrl = `${baseUrl}?action=book&clinicId=${clinic.id}`;
+          const phoneNumber = clinic.phone || clinic.telefono || '';
+          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+          
           try {
             await sendEmail({
               to: owner.email,
