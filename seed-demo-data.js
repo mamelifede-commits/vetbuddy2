@@ -2,8 +2,8 @@ const { MongoClient } = require('mongodb');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
-// MongoDB Atlas connection string
-const MONGO_URL = 'mongodb+srv://mamelifede_db_user:8XjA0yK3dnnyxy0M@cluster0.kk2vrpt.mongodb.net/vetbuddy?appName=Cluster0';
+// MongoDB Atlas connection string - use environment variable
+const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/vetbuddy';
 
 function hashPassword(password) {
   return bcrypt.hashSync(password, 10);
