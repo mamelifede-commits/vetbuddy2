@@ -6314,8 +6314,9 @@ function ClinicRewardsManagement({ user, owners = [] }) {
                   </Card>
                 );
               })}
-            </div>
-          )}
+              </div>
+            );
+          })()}
         </div>
       )}
 
