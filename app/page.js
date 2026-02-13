@@ -12889,6 +12889,20 @@ function OwnerAppointments({ appointments, pets }) {
               
               {/* Azioni */}
               <div className="flex gap-2 pt-4 border-t">
+                {/* Pulsante Paga se non pagato */}
+                {selectedAppointment.paymentStatus !== 'paid' && selectedAppointment.price && selectedAppointment.price > 0 && selectedAppointment.status !== 'cancelled' && selectedAppointment.status !== 'completed' && (
+                  <Button 
+                    className="flex-1 bg-emerald-500 hover:bg-emerald-600" 
+                    onClick={() => handlePayment(selectedAppointment)}
+                    disabled={paymentLoading === selectedAppointment.id}
+                  >
+                    {paymentLoading === selectedAppointment.id ? (
+                      <><RefreshCw className="h-4 w-4 mr-2 animate-spin" />Caricamento...</>
+                    ) : (
+                      <><CreditCard className="h-4 w-4 mr-2" />Paga €{selectedAppointment.price}</>
+                    )}
+                  </Button>
+                )}
                 {selectedAppointment.type === 'videoconsulto' && selectedAppointment.videoLink && (
                   <Button className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={() => window.open(selectedAppointment.videoLink, '_blank')}>
                     <Video className="h-4 w-4 mr-2" />Entra nel Video Consulto
