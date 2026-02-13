@@ -619,47 +619,6 @@ export default function PresentazionePage() {
         </div>
       </section>
 
-      {/* ==================== TESTIMONIALS ==================== */}
-      <section className="py-20 px-6 bg-gradient-to-br from-coral-50 to-orange-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-6 font-medium">
-              <Star className="h-4 w-4" />
-              Dicono di Noi
-            </div>
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900">
-              Amato dai <span className="text-coral-500">veterinari</span>
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { name: 'Dr.ssa Maria Colombo', clinic: 'Clinica Veterinaria Milano Nord', text: 'Le telefonate per promemoria sono calate dell\'80%. I clienti adorano ricevere gli auguri per il compleanno del loro pet.' },
-              { name: 'Dr. Luca Ferretti', clinic: 'Ambulatorio Veterinario Monza', text: 'L\'import dei pazienti dal vecchio gestionale è stato semplicissimo. In 10 minuti avevamo tutti i dati migrati.' },
-              { name: 'Dr.ssa Giulia Rossi', clinic: 'Pet Care Center', text: 'Il video consulto ci ha aperto un nuovo canale di servizio. I clienti lo adorano per i controlli post-operatori.' },
-            ].map((t, i) => (
-              <div key={i} className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, j) => (
-                    <Star key={j} className="h-5 w-5 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-6 leading-relaxed italic">"{t.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 bg-gradient-to-br from-coral-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">
-                    {t.name.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="font-bold text-gray-900">{t.name}</div>
-                    <div className="text-sm text-gray-500">{t.clinic}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ==================== CTA FINALE ==================== */}
       <section className="py-24 px-6 bg-gradient-to-br from-coral-500 via-coral-400 to-orange-400 relative overflow-hidden">
         <div className="absolute inset-0">
