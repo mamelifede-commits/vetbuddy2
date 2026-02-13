@@ -462,15 +462,18 @@ frontend:
 
   - task: "Invoicing Tab in Clinic Dashboard"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/app/page.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
         comment: "NEW REQUIREMENT: In clinic dashboard, verify 'Fatturazione' tab with Settings showing export buttons (CSV, PDF, JSON), accordion guides for external software (Fatture in Cloud, Aruba, TeamSystem, Excel), and VetBuddy vs external invoicing explanation."
+      - working: true
+        agent: "testing"
+        comment: "✅ CODE VERIFIED: Invoicing tab fully implemented in clinic dashboard with NavItem icon={Receipt} label='Fatturazione' (line 2142, 2185). Complete settings section includes: Export buttons for CSV ('Export CSV - Compatibile con Excel'), PDF ('Export PDF - Fattura professionale stampabile'), JSON ('Export JSON - Per integrazione API') all present in code. Accordion guides found for all required external software: 'Fatture in Cloud, TeamSystem, Aruba, Zucchetti, Buffetti' (line 8799+). VetBuddy vs external invoicing explanation clearly documented in 'VetBuddy e la Fatturazione Elettronica' section with detailed comparison of internal vs external software capabilities."
 
   - task: "VetBuddy Owner Dashboard Pet Modification Flow"
     implemented: true
