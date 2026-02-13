@@ -18,6 +18,14 @@ export async function GET(request) {
     const clinics = await db.collection('users').find({ role: 'clinic' }).limit(3).toArray();
     const treatments = await db.collection('treatments').find({}).limit(5).toArray();
     
+    // Check clinic automation settings
+    const clinicsWithSettings = await db.collection('users').find({ role: 'clinic' }).toArray();
+    const clinicSettings = clinicsWithSettings.map(c => ({
+      id: c.id,
+      clinicName: c.clinicName,
+      automationSettings: c.automationSettings || 'DEFAULT'
+    }));
+    
     return NextResponse.json({
       success: true,
       data: {
