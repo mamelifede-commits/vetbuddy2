@@ -27,7 +27,7 @@ def log_test(message, is_success=None):
         status = "❌ FAIL"
     print(f"[{timestamp}] {status} {message}")
 
-def make_request(method, endpoint, headers=None, data=None, files=None):
+def make_request(method, endpoint, headers=None, data=None, files=None, json_data=None):
     """Make HTTP request with error handling"""
     url = f"{BASE_URL}/{endpoint}" if not endpoint.startswith('http') else endpoint
     
@@ -45,8 +45,10 @@ def make_request(method, endpoint, headers=None, data=None, files=None):
             if files:
                 # For file uploads, don't set Content-Type header
                 response = requests.post(url, headers={'Authorization': f'Bearer {AUTH_TOKEN}'}, data=data, files=files, timeout=30)
+            elif json_data:
+                response = requests.post(url, headers=default_headers, json=json_data, timeout=30)
             else:
-                response = requests.post(url, headers=default_headers, json=data, timeout=30)
+                response = requests.post(url, headers=default_headers, data=data, timeout=30)
         
         log_test(f"{method} {endpoint} -> Status: {response.status_code}")
         return response
