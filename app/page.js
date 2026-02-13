@@ -8112,6 +8112,521 @@ function FeedbackSection({ user }) {
   );
 }
 
+
+// ==================== CLINIC ARCHIVE ====================
+function ClinicArchive({ user }) {
+  const [archiveFiles, setArchiveFiles] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadForm, setUploadForm] = useState({ name: '', category: 'protocolli', description: '' });
+
+  const categories = [
+    { id: 'all', label: 'Tutti', icon: FolderArchive, color: 'gray' },
+    { id: 'protocolli', label: 'Protocolli Clinici', icon: ClipboardList, color: 'blue', desc: 'Procedure, linee guida, SOP' },
+    { id: 'casi_studio', label: 'Casi Studio', icon: BookOpen, color: 'purple', desc: 'Case history interessanti' },
+    { id: 'template', label: 'Template', icon: FileText, color: 'green', desc: 'Moduli consenso, contratti' },
+    { id: 'formazione', label: 'Formazione', icon: GraduationCap, color: 'amber', desc: 'Materiale didattico staff' },
+    { id: 'schede_tecniche', label: 'Schede Tecniche', icon: Stethoscope, color: 'red', desc: 'Farmaci, attrezzature' },
+    { id: 'amministrazione', label: 'Amministrazione', icon: Receipt, color: 'indigo', desc: 'Certificazioni, GDPR, assicurazioni' },
+  ];
+
+  useEffect(() => {
+    loadArchive();
+  }, []);
+
+  const loadArchive = async () => {
+    try {
+      const token = localStorage.getItem('vetbuddy_token');
+      const res = await fetch('/api/clinic/archive', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setArchiveFiles(data.files || []);
+      }
+    } catch (err) {
+      console.error('Error loading archive:', err);
+    }
+  };
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    const fileInput = document.getElementById('archive-file-input');
+    if (!fileInput?.files?.length) return;
+
+    setUploading(true);
+    try {
+      const token = localStorage.getItem('vetbuddy_token');
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+      formData.append('name', uploadForm.name || fileInput.files[0].name);
+      formData.append('category', uploadForm.category);
+      formData.append('description', uploadForm.description);
+
+      const res = await fetch('/api/clinic/archive', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+
+      if (res.ok) {
+        setShowUploadModal(false);
+        setUploadForm({ name: '', category: 'protocolli', description: '' });
+        loadArchive();
+      }
+    } catch (err) {
+      console.error('Error uploading:', err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const filteredFiles = activeCategory === 'all' 
+    ? archiveFiles 
+    : archiveFiles.filter(f => f.category === activeCategory);
+
+  const getCategoryInfo = (catId) => categories.find(c => c.id === catId) || categories[0];
+
+  return (
+    <div className="p-6 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <FolderArchive className="h-7 w-7 text-blue-500" />
+            Archivio Clinica
+          </h1>
+          <p className="text-gray-500">Documenti, protocolli e materiale della clinica</p>
+        </div>
+        <Button onClick={() => setShowUploadModal(true)} className="bg-blue-500 hover:bg-blue-600">
+          <Upload className="h-4 w-4 mr-2" /> Carica Documento
+        </Button>
+      </div>
+
+      {/* Categories */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
+        {categories.map(cat => {
+          const count = cat.id === 'all' ? archiveFiles.length : archiveFiles.filter(f => f.category === cat.id).length;
+          return (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`p-4 rounded-xl text-left transition-all ${
+                activeCategory === cat.id 
+                  ? `bg-${cat.color}-100 border-2 border-${cat.color}-500` 
+                  : 'bg-white border-2 border-transparent hover:border-gray-200'
+              }`}
+            >
+              <cat.icon className={`h-6 w-6 mb-2 text-${cat.color}-500`} />
+              <p className="font-medium text-sm text-gray-900">{cat.label}</p>
+              <p className="text-xs text-gray-500">{count} file</p>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Files Grid */}
+      {filteredFiles.length === 0 ? (
+        <Card className="p-12 text-center">
+          <FolderArchive className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Nessun documento</h3>
+          <p className="text-gray-500 mb-4">
+            {activeCategory === 'all' 
+              ? "L'archivio è vuoto. Carica il primo documento!"
+              : `Nessun documento nella categoria "${getCategoryInfo(activeCategory).label}"`}
+          </p>
+          <Button onClick={() => setShowUploadModal(true)} variant="outline">
+            <Upload className="h-4 w-4 mr-2" /> Carica Documento
+          </Button>
+        </Card>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredFiles.map((file, i) => {
+            const cat = getCategoryInfo(file.category);
+            return (
+              <Card key={i} className="hover:shadow-lg transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className={`p-3 rounded-lg bg-${cat.color}-100`}>
+                      <cat.icon className={`h-6 w-6 text-${cat.color}-500`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-900 truncate">{file.name}</h4>
+                      <p className="text-xs text-gray-500">{cat.label}</p>
+                      {file.description && (
+                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">{file.description}</p>
+                      )}
+                      <div className="flex items-center gap-2 mt-3">
+                        <Badge variant="outline" className="text-xs">
+                          {new Date(file.createdAt).toLocaleDateString('it-IT')}
+                        </Badge>
+                        <Button size="sm" variant="ghost" className="h-7">
+                          <Eye className="h-3 w-3 mr-1" /> Apri
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7">
+                          <Download className="h-3 w-3 mr-1" /> Scarica
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Upload Modal */}
+      <Dialog open={showUploadModal} onOpenChange={setShowUploadModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Upload className="h-5 w-5 text-blue-500" />
+              Carica Documento nell'Archivio
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpload} className="space-y-4">
+            <div>
+              <Label>File *</Label>
+              <Input type="file" id="archive-file-input" required />
+            </div>
+            <div>
+              <Label>Nome documento</Label>
+              <Input 
+                value={uploadForm.name} 
+                onChange={e => setUploadForm({...uploadForm, name: e.target.value})}
+                placeholder="Lascia vuoto per usare nome file"
+              />
+            </div>
+            <div>
+              <Label>Categoria *</Label>
+              <select 
+                className="w-full p-2 border rounded-lg"
+                value={uploadForm.category}
+                onChange={e => setUploadForm({...uploadForm, category: e.target.value})}
+              >
+                {categories.filter(c => c.id !== 'all').map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.label} - {cat.desc}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <Label>Descrizione</Label>
+              <textarea 
+                className="w-full p-2 border rounded-lg"
+                rows={3}
+                value={uploadForm.description}
+                onChange={e => setUploadForm({...uploadForm, description: e.target.value})}
+                placeholder="Descrizione opzionale del documento..."
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button type="button" variant="outline" onClick={() => setShowUploadModal(false)}>
+                Annulla
+              </Button>
+              <Button type="submit" disabled={uploading} className="bg-blue-500 hover:bg-blue-600">
+                {uploading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Upload className="h-4 w-4 mr-2" />}
+                Carica
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+// ==================== CLINIC EVENTS ====================
+function ClinicEvents({ user }) {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState('upcoming');
+
+  // Eventi veterinari di esempio (in produzione verrebbero da API/feed)
+  const mockEvents = [
+    {
+      id: '1',
+      title: 'Congresso Nazionale SCIVAC',
+      organizer: 'SCIVAC',
+      date: '2026-03-15',
+      endDate: '2026-03-17',
+      location: 'Rimini Fiera',
+      type: 'congresso',
+      description: 'Il più grande congresso veterinario italiano con oltre 5000 partecipanti',
+      url: 'https://www.scivac.it',
+      topics: ['Medicina interna', 'Chirurgia', 'Dermatologia'],
+      ecm: true,
+      ecmCredits: 24,
+      image: '🏛️'
+    },
+    {
+      id: '2',
+      title: 'Corso Avanzato di Ecografia Addominale',
+      organizer: 'AIVPA',
+      date: '2026-02-28',
+      endDate: '2026-03-01',
+      location: 'Milano - Hotel Marriott',
+      type: 'corso',
+      description: 'Corso pratico con esercitazioni su animali vivi',
+      url: 'https://www.aivpa.it',
+      topics: ['Ecografia', 'Diagnostica'],
+      ecm: true,
+      ecmCredits: 12,
+      image: '🔬'
+    },
+    {
+      id: '3',
+      title: 'Webinar: Novità in Cardiologia Veterinaria',
+      organizer: 'CARDIOVET',
+      date: '2026-02-20',
+      endDate: '2026-02-20',
+      location: 'Online',
+      type: 'webinar',
+      description: 'Le ultime novità nella diagnosi e terapia delle cardiopatie',
+      url: 'https://www.cardiovet.it',
+      topics: ['Cardiologia', 'Ecocardiografia'],
+      ecm: true,
+      ecmCredits: 4,
+      image: '💻'
+    },
+    {
+      id: '4',
+      title: 'FNOVI Day 2026',
+      organizer: 'FNOVI',
+      date: '2026-04-10',
+      endDate: '2026-04-10',
+      location: 'Roma - Auditorium Parco della Musica',
+      type: 'congresso',
+      description: 'Giornata nazionale della professione veterinaria',
+      url: 'https://www.fnovi.it',
+      topics: ['Deontologia', 'Normativa', 'Professione'],
+      ecm: true,
+      ecmCredits: 8,
+      image: '🎓'
+    },
+    {
+      id: '5',
+      title: 'Workshop Odontostomatologia Veterinaria',
+      organizer: 'SIODOV',
+      date: '2026-05-22',
+      endDate: '2026-05-23',
+      location: 'Torino - Centro Congressi',
+      type: 'workshop',
+      description: 'Pratica intensiva su modelli anatomici e casi clinici',
+      url: 'https://www.siodov.it',
+      topics: ['Odontostomatologia', 'Chirurgia orale'],
+      ecm: true,
+      ecmCredits: 16,
+      image: '🦷'
+    },
+    {
+      id: '6',
+      title: 'Congresso SIVAE - Animali Esotici',
+      organizer: 'SIVAE',
+      date: '2026-06-05',
+      endDate: '2026-06-07',
+      location: 'Bologna Fiere',
+      type: 'congresso',
+      description: 'Tutto sugli animali esotici: rettili, uccelli, piccoli mammiferi',
+      url: 'https://www.sivae.it',
+      topics: ['Animali esotici', 'Rettili', 'Uccelli'],
+      ecm: true,
+      ecmCredits: 20,
+      image: '🦎'
+    }
+  ];
+
+  useEffect(() => {
+    // Simula caricamento eventi
+    setTimeout(() => {
+      setEvents(mockEvents);
+      setLoading(false);
+    }, 500);
+  }, []);
+
+  const getTypeColor = (type) => {
+    switch(type) {
+      case 'congresso': return 'purple';
+      case 'corso': return 'blue';
+      case 'webinar': return 'green';
+      case 'workshop': return 'amber';
+      default: return 'gray';
+    }
+  };
+
+  const getTypeLabel = (type) => {
+    switch(type) {
+      case 'congresso': return 'Congresso';
+      case 'corso': return 'Corso';
+      case 'webinar': return 'Webinar';
+      case 'workshop': return 'Workshop';
+      default: return type;
+    }
+  };
+
+  const filteredEvents = events.filter(e => {
+    const eventDate = new Date(e.date);
+    const today = new Date();
+    if (activeFilter === 'upcoming') return eventDate >= today;
+    if (activeFilter === 'past') return eventDate < today;
+    if (activeFilter === 'ecm') return e.ecm;
+    if (activeFilter === 'online') return e.location.toLowerCase().includes('online');
+    return true;
+  });
+
+  const formatDateRange = (start, end) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const options = { day: 'numeric', month: 'short' };
+    if (start === end) {
+      return startDate.toLocaleDateString('it-IT', { ...options, year: 'numeric' });
+    }
+    return `${startDate.toLocaleDateString('it-IT', options)} - ${endDate.toLocaleDateString('it-IT', { ...options, year: 'numeric' })}`;
+  };
+
+  return (
+    <div className="p-6 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <CalendarDays className="h-7 w-7 text-purple-500" />
+            Eventi & Convegni
+          </h1>
+          <p className="text-gray-500">Corsi, congressi e formazione continua per veterinari</p>
+        </div>
+        <Badge className="bg-purple-100 text-purple-700">
+          <Bell className="h-3 w-3 mr-1" /> Aggiornamento automatico
+        </Badge>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {[
+          { id: 'upcoming', label: 'Prossimi', icon: CalendarRange },
+          { id: 'ecm', label: 'Con ECM', icon: GraduationCap },
+          { id: 'online', label: 'Online', icon: Globe },
+          { id: 'all', label: 'Tutti', icon: CalendarDays },
+        ].map(filter => (
+          <button
+            key={filter.id}
+            onClick={() => setActiveFilter(filter.id)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              activeFilter === filter.id
+                ? 'bg-purple-500 text-white'
+                : 'bg-white border hover:bg-gray-50 text-gray-700'
+            }`}
+          >
+            <filter.icon className="h-4 w-4" />
+            {filter.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Events List */}
+      {loading ? (
+        <div className="text-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-purple-500 mb-4" />
+          <p className="text-gray-500">Caricamento eventi...</p>
+        </div>
+      ) : filteredEvents.length === 0 ? (
+        <Card className="p-12 text-center">
+          <CalendarDays className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Nessun evento trovato</h3>
+          <p className="text-gray-500">Prova a cambiare i filtri di ricerca</p>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {filteredEvents.map(event => (
+            <Card key={event.id} className="hover:shadow-lg transition-shadow overflow-hidden">
+              <CardContent className="p-0">
+                <div className="flex">
+                  {/* Date Box */}
+                  <div className={`w-32 bg-${getTypeColor(event.type)}-500 text-white p-4 flex flex-col items-center justify-center`}>
+                    <span className="text-4xl mb-2">{event.image}</span>
+                    <span className="text-xs opacity-80 uppercase">{getTypeLabel(event.type)}</span>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="flex-1 p-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="font-bold text-lg text-gray-900">{event.title}</h3>
+                        <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
+                          <Building2 className="h-4 w-4" /> {event.organizer}
+                        </p>
+                      </div>
+                      {event.ecm && (
+                        <Badge className="bg-green-100 text-green-700">
+                          <GraduationCap className="h-3 w-3 mr-1" />
+                          {event.ecmCredits} ECM
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    <p className="text-gray-600 mt-2 line-clamp-2">{event.description}</p>
+                    
+                    <div className="flex flex-wrap items-center gap-4 mt-4">
+                      <span className="text-sm text-gray-500 flex items-center gap-1">
+                        <CalendarDays className="h-4 w-4" />
+                        {formatDateRange(event.date, event.endDate)}
+                      </span>
+                      <span className="text-sm text-gray-500 flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        {event.location}
+                      </span>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {event.topics.map((topic, i) => (
+                        <Badge key={i} variant="outline" className="text-xs">
+                          {topic}
+                        </Badge>
+                      ))}
+                    </div>
+                    
+                    <div className="flex gap-2 mt-4">
+                      <a href={event.url} target="_blank" rel="noopener noreferrer">
+                        <Button size="sm" className={`bg-${getTypeColor(event.type)}-500 hover:bg-${getTypeColor(event.type)}-600`}>
+                          <ExternalLink className="h-4 w-4 mr-1" /> Maggiori Info
+                        </Button>
+                      </a>
+                      <Button size="sm" variant="outline">
+                        <CalendarCheck className="h-4 w-4 mr-1" /> Aggiungi al Calendario
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Info Box */}
+      <Card className="mt-8 bg-purple-50 border-purple-200">
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            <Info className="h-5 w-5 text-purple-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="font-medium text-purple-900">Come funziona?</h4>
+              <p className="text-sm text-purple-700 mt-1">
+                VetBuddy raccoglie automaticamente eventi e convegni veterinari da fonti come SCIVAC, FNOVI, AIVPA e altre 
+                associazioni veterinarie italiane. Gli eventi vengono aggiornati settimanalmente.
+              </p>
+              <p className="text-sm text-purple-600 mt-2">
+                💡 <strong>Suggerimento:</strong> Filtra per "Con ECM" per vedere solo gli eventi che offrono crediti formativi.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+
 // ==================== CLINIC FEEDBACK PAGE ====================
 function ClinicFeedbackPage({ user }) {
   const [feedbackForm, setFeedbackForm] = useState({
