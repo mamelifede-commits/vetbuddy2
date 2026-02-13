@@ -562,6 +562,30 @@ export async function GET(request, { params }) {
       }, { headers: corsHeaders });
     }
 
+    // Get Video Consult settings
+    if (path === 'clinic/video-consult-settings') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: user.id });
+      return NextResponse.json(clinic?.videoConsultSettings || {
+        enabled: true,
+        price: 35,
+        duration: 20,
+        availableDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+        timeSlots: [
+          { start: '09:00', end: '12:00' },
+          { start: '14:00', end: '18:00' }
+        ],
+        maxPerDay: 5,
+        reminderEmail24h: true,
+        reminderEmail1h: true,
+        autoConfirm: true
+      }, { headers: corsHeaders });
+    }
+
     // Geocoding endpoint (secure - uses backend API key)
     if (path === 'geocode') {
       const { searchParams } = new URL(request.url);
