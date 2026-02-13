@@ -140,6 +140,21 @@ export async function GET(request) {
         const pet = await db.collection('pets').findOne({ id: apt.petId });
 
         if (owner?.email && pet && clinic) {
+          // Get clinic cancellation policy
+          const cancellationPolicy = clinic.cancellationPolicy || {
+            hoursNotice: 24,
+            fee: 0,
+            message: 'Ti preghiamo di avvisarci almeno 24 ore prima in caso di disdetta.'
+          };
+          
+          // Build cancellation URL
+          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+          const cancelUrl = `${baseUrl}?action=cancel&appointmentId=${apt.id}`;
+          
+          // Format phone number for tel: link
+          const phoneNumber = clinic.phone || clinic.telefono || '';
+          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+          
           await sendEmail({
             to: owner.email,
             subject: `⏰ Promemoria: Appuntamento domani per ${pet.name}`,
@@ -149,18 +164,43 @@ export async function GET(request) {
                   <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
-                  <h2 style="color: #333;">Promemoria Appuntamento</h2>
+                  <h2 style="color: #333;">⏰ Promemoria Appuntamento</h2>
                   <p style="color: #666; font-size: 16px;">Ciao ${owner.name || 'Proprietario'},</p>
-                  <p style="color: #666; font-size: 16px;">Ti ricordiamo che <strong>${pet.name}</strong> ha un appuntamento domani:</p>
+                  <p style="color: #666; font-size: 16px;">Ti ricordiamo che <strong>${pet.name}</strong> ha un appuntamento <strong>domani</strong>:</p>
                   
                   <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FF6B6B;">
                     <p style="margin: 5px 0;"><strong>📅 Data:</strong> ${apt.date}</p>
                     <p style="margin: 5px 0;"><strong>🕐 Ora:</strong> ${apt.time}</p>
                     <p style="margin: 5px 0;"><strong>🏥 Clinica:</strong> ${clinic.clinicName || clinic.name}</p>
                     <p style="margin: 5px 0;"><strong>📋 Motivo:</strong> ${apt.reason || 'Visita'}</p>
+                    ${clinic.address ? `<p style="margin: 5px 0;"><strong>📍 Indirizzo:</strong> ${clinic.address}</p>` : ''}
+                    ${phoneNumber ? `<p style="margin: 5px 0;"><strong>📞 Telefono:</strong> ${phoneNumber}</p>` : ''}
                   </div>
                   
-                  <p style="color: #666; font-size: 14px;">Se non puoi presentarti, ti preghiamo di avvisare la clinica il prima possibile.</p>
+                  <!-- Action Buttons -->
+                  <div style="text-align: center; margin: 25px 0;">
+                    ${phoneLink ? `
+                    <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      📞 Chiama la Clinica
+                    </a>
+                    ` : ''}
+                    <a href="${cancelUrl}" style="display: inline-block; background: #E74C3C; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                      ❌ Disdici Appuntamento
+                    </a>
+                  </div>
+                  
+                  <!-- Cancellation Policy -->
+                  <div style="background: #FFF3CD; padding: 15px; border-radius: 10px; margin-top: 20px; border-left: 4px solid #FFC107;">
+                    <p style="margin: 0 0 10px 0; font-weight: bold; color: #856404;">📋 Politica di Cancellazione</p>
+                    <p style="margin: 0; color: #856404; font-size: 14px;">
+                      ${cancellationPolicy.message || `Ti preghiamo di avvisarci almeno ${cancellationPolicy.hoursNotice || 24} ore prima in caso di disdetta.`}
+                    </p>
+                    ${cancellationPolicy.fee > 0 ? `
+                    <p style="margin: 10px 0 0 0; color: #856404; font-size: 14px;">
+                      <strong>⚠️ Nota:</strong> La mancata disdetta comporta un addebito di €${cancellationPolicy.fee.toFixed(2)}.
+                    </p>
+                    ` : ''}
+                  </div>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
                   <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
