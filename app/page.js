@@ -2492,6 +2492,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           <div className="border-t my-2"></div>
           <NavItem icon={MessageCircle} label="Feedback" value="feedback" />
           <NavItem icon={Settings} label="Impostazioni" value="settings" />
+          <NavItem icon={BookOpen} label="Tutorial" value="tutorial" />
         </nav>
       </aside>
 
