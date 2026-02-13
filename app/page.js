@@ -9508,7 +9508,7 @@ function ClinicSettings({ user, onNavigate }) {
                     type="password"
                     value={stripeForm.secretKey} 
                     onChange={(e) => setStripeForm({...stripeForm, secretKey: e.target.value})}
-                    placeholder="sk_test_... o sk_live_..."
+                    placeholder="Inserisci la tua Secret Key Stripe"
                   />
                 </div>
                 <div className="flex gap-2">
