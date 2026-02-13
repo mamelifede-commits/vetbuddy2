@@ -2581,7 +2581,7 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, re
             <p className="text-sm text-gray-600 mb-2">
               Scopri tutte le funzionalità di VetBuddy per gestire al meglio la tua clinica.
             </p>
-            <a href="/tutorial" className="inline-flex items-center gap-1 text-purple-600 font-medium text-sm hover:underline">
+            <a href="/tutorial/cliniche" className="inline-flex items-center gap-1 text-purple-600 font-medium text-sm hover:underline">
               <PlayCircle className="h-4 w-4" /> Guarda il tutorial
             </a>
           </div>
