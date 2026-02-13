@@ -9,7 +9,7 @@ import Stripe from 'stripe';
 export const dynamic = 'force-dynamic';
 
 // Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder');
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'missing_stripe_key');
 
 // Google OAuth Config
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
