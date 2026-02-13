@@ -11757,6 +11757,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'petProfile' && selectedPetId && <PetProfile petId={selectedPetId} onBack={() => setActiveTab('pets')} appointments={appointments} documents={documents} />}
         {activeTab === 'findClinic' && <FindClinic user={user} />}
         {activeTab === 'inviteClinic' && <InviteClinic user={user} />}
+        {activeTab === 'tutorial' && <OwnerTutorialInline />}
       </main>
       
       {/* Dialog Cancellazione Appuntamento - Migliorata con dettagli */}
