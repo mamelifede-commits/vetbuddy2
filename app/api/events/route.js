@@ -24,6 +24,141 @@ const RSS_FEEDS = [
     name: 'ANMVI - Associazione Veterinari',
     url: 'https://www.anmvioggi.it/rss',
     category: 'veterinaria'
+  },
+  {
+    id: 'anfi',
+    name: 'ANFI - Associazione Nazionale Felina',
+    url: 'https://www.anfitalia.it/feed',
+    category: 'gatti'
+  }
+];
+
+// Default/Demo events when no RSS available - includes ALL pet types
+const DEFAULT_EVENTS = [
+  {
+    id: 'demo-1',
+    title: 'Giornata Mondiale del Cane',
+    description: 'Celebra con noi la giornata dedicata ai nostri amici a 4 zampe! Eventi, sconti e attività in tutte le cliniche partner.',
+    eventDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'cani',
+    location: 'Tutta Italia',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy',
+    isFeatured: true
+  },
+  {
+    id: 'demo-2',
+    title: 'Campagna Vaccinazioni Gatti - Primavera 2026',
+    description: 'Promozione speciale sulle vaccinazioni per gatti. Proteggi il tuo micio con i vaccini essenziali a prezzo ridotto.',
+    eventDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'gatti',
+    location: 'Milano e provincia',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy',
+    isFeatured: true
+  },
+  {
+    id: 'demo-3',
+    title: 'Workshop: Cura del Coniglio Domestico',
+    description: 'Impara tutto sulla cura, alimentazione e salute del coniglio. Tenuto da veterinari specializzati in animali esotici.',
+    eventDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'conigli',
+    location: 'Online - Webinar',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy',
+    link: ''
+  },
+  {
+    id: 'demo-4',
+    title: 'Giornata degli Uccelli da Compagnia',
+    description: 'Evento dedicato a pappagalli, canarini e altri volatili. Visite specialistiche gratuite e consulenze nutrizionali.',
+    eventDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'uccelli',
+    location: 'Roma',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy'
+  },
+  {
+    id: 'demo-5',
+    title: 'Corso Base: Terrariofilia Responsabile',
+    description: 'Tutto quello che devi sapere su tartarughe, serpenti, lucertole e altri rettili. Dalla sistemazione alla nutrizione.',
+    eventDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'rettili',
+    location: 'Torino',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy'
+  },
+  {
+    id: 'demo-6',
+    title: 'Acquariofilia per Principianti',
+    description: 'Workshop pratico sulla gestione dell\'acquario domestico. Dalla scelta dei pesci alla manutenzione del filtro.',
+    eventDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'pesci',
+    location: 'Online - Webinar',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy'
+  },
+  {
+    id: 'demo-7',
+    title: 'Fiera del Criceto e Piccoli Roditori',
+    description: 'Esposizione e concorso dedicato a criceti, cavie, gerbilli e altri piccoli roditori. Premi e gadget per tutti!',
+    eventDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'roditori',
+    location: 'Bologna',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy'
+  },
+  {
+    id: 'demo-8',
+    title: 'Seminario: Primo Soccorso per Animali',
+    description: 'Impara le manovre di primo soccorso per cani, gatti e piccoli animali. Certificato di partecipazione incluso.',
+    eventDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'veterinaria',
+    location: 'Milano',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy',
+    isFeatured: true
+  },
+  {
+    id: 'demo-9',
+    title: 'Expo Felina Internazionale Milano',
+    description: 'La più grande esposizione di gatti d\'Italia. Razze rare, concorsi di bellezza e incontri con allevatori.',
+    eventDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'gatti',
+    location: 'Fiera Milano',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy'
+  },
+  {
+    id: 'demo-10',
+    title: 'Dog Walking Day - Passeggiata di Gruppo',
+    description: 'Unisciti alla passeggiata collettiva con il tuo cane! Percorso di 5km nel parco cittadino con veterinari a disposizione.',
+    eventDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'cani',
+    location: 'Parco Sempione, Milano',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy'
+  },
+  {
+    id: 'demo-11',
+    title: 'Controllo Gratuito Microchip',
+    description: 'Porta il tuo animale per un controllo gratuito del microchip. Valido per cani, gatti, furetti e conigli.',
+    eventDate: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'generale',
+    location: 'Tutte le cliniche VetBuddy',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy',
+    isFeatured: true
+  },
+  {
+    id: 'demo-12',
+    title: 'Adotta un Furetto - Giornata di Adozioni',
+    description: 'In collaborazione con i rifugi locali, giornata dedicata all\'adozione di furetti e altri mustelidi.',
+    eventDate: new Date(Date.now() + 18 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'furetti',
+    location: 'Roma',
+    source: 'vetbuddy',
+    sourceLabel: 'VetBuddy'
   }
 ];
 
