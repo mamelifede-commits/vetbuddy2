@@ -1116,7 +1116,7 @@ function LandingPage({ onLogin }) {
               </CardContent>
             </Card>
           </div>
-          <p className="text-center text-xs text-gray-500">Non è una prova libera: stiamo selezionando un numero limitato di cliniche.</p>
+          <p className="text-center text-xs text-gray-500 mt-8 mb-4">Non è una prova libera: stiamo selezionando un numero limitato di cliniche.</p>
         </div>
       </section>
 
