@@ -921,10 +921,6 @@ export async function GET(request) {
           const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
           const cancelUrl = `${baseUrl}?action=cancel&appointmentId=${apt.id}`;
           
-          // Format phone number for tel: link
-          const phoneNumber = clinic.phone || clinic.telefono || '';
-          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
-          
           await sendEmail({
             to: owner.email,
             subject: `✅ Conferma appuntamento per ${pet?.name || 'il tuo animale'}`,
@@ -943,18 +939,13 @@ export async function GET(request) {
                     <p style="margin: 5px 0;"><strong>🐾 Paziente:</strong> ${pet?.name || 'N/A'}</p>
                     <p style="margin: 5px 0;"><strong>🏥 Clinica:</strong> ${clinic.clinicName}</p>
                     ${clinic.address ? `<p style="margin: 5px 0;"><strong>📍 Indirizzo:</strong> ${clinic.address}</p>` : ''}
-                    ${phoneNumber ? `<p style="margin: 5px 0;"><strong>📞 Telefono:</strong> ${phoneNumber}</p>` : ''}
                   </div>
                   
                   <p style="text-align: center; font-weight: bold; color: #333; margin: 25px 0 15px;">Puoi confermare la tua presenza?</p>
                   
                   <!-- Action Buttons -->
                   <div style="text-align: center; margin: 25px 0;">
-                    ${phoneLink ? `
-                    <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                      📞 Chiama la Clinica
-                    </a>
-                    ` : ''}
+                    ${getContactButton(clinic, baseUrl, 'Conferma Presenza', `Ciao! Confermo la mia presenza all'appuntamento del ${apt.date} alle ${apt.time} per ${pet?.name || 'il mio animale'}.`)}
                     <a href="${cancelUrl}" style="display: inline-block; background: #E74C3C; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                       ❌ Disdici Appuntamento
                     </a>
@@ -964,7 +955,7 @@ export async function GET(request) {
                   <div style="background: #FFF3CD; padding: 15px; border-radius: 10px; margin-top: 25px; border-left: 4px solid #FFC107;">
                     <p style="margin: 0 0 10px 0; font-weight: bold; color: #856404;">📋 Politica di Cancellazione</p>
                     <p style="margin: 0; color: #856404; font-size: 14px;">
-                      ${cancellationPolicy.message || `Ti preghiamo di avvisarci almeno ${cancellationPolicy.hoursNotice || 24} ore prima in caso di disdetta.`}
+                      ${getCancellationPolicyText(clinic)}
                     </p>
                     ${cancellationPolicy.fee > 0 ? `
                     <p style="margin: 10px 0 0 0; color: #856404; font-size: 14px;">
