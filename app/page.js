@@ -13221,7 +13221,8 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
       microchip: '', sterilized: false, allergies: '', medications: '', notes: '',
       insurance: false, insuranceCompany: '', insurancePolicy: '',
       medicalHistory: '', currentConditions: '', chronicDiseases: '',
-      weightHistory: []
+      weightHistory: [],
+      photoUrl: null, photoFile: null
     });
   };
 
