@@ -13361,6 +13361,90 @@ function OwnerDocuments({ documents, pets, onRefresh }) {
   );
 }
 
+// Componente separato per le fatture del proprietario
+function OwnerInvoices({ invoices = [], pets, onRefresh }) {
+  const handleDownloadInvoice = (doc) => {
+    if (doc.content) {
+      const link = document.createElement('a');
+      if (doc.content.startsWith('data:')) {
+        link.href = doc.content;
+      } else {
+        link.href = `data:application/pdf;base64,${doc.content}`;
+      }
+      link.download = doc.fileName || doc.name || `Fattura_${doc.invoiceNumber || 'documento'}.pdf`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => document.body.removeChild(link), 100);
+    } else if (doc.id) {
+      window.open(`/api/documents/download?id=${doc.id}`, '_blank');
+    }
+  };
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Le mie fatture</h2>
+          <p className="text-gray-500 text-sm">Fatture dei pagamenti effettuati online</p>
+        </div>
+      </div>
+      
+      {invoices.length === 0 ? (
+        <Card className="p-8 text-center">
+          <Receipt className="h-12 w-12 mx-auto text-gray-300 mb-4" />
+          <p className="text-gray-500 mb-2">Nessuna fattura</p>
+          <p className="text-sm text-gray-400">Le fatture dei pagamenti online appariranno qui</p>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          {invoices.map((invoice) => {
+            const pet = pets?.find(p => p.name === invoice.petName || p.id === invoice.petId);
+            return (
+              <Card key={invoice.id} className="hover:shadow-md transition-shadow border-emerald-100">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <Receipt className="h-6 w-6 text-emerald-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-800">
+                          Fattura {invoice.invoiceNumber || invoice.name}
+                        </h4>
+                        <div className="flex items-center gap-3 text-sm text-gray-500">
+                          <span>{new Date(invoice.issuedAt || invoice.createdAt).toLocaleDateString('it-IT')}</span>
+                          {invoice.amount && (
+                            <span className="font-semibold text-emerald-600">€{invoice.amount.toFixed(2)}</span>
+                          )}
+                          {invoice.petName && (
+                            <span className="flex items-center gap-1">
+                              <PawPrint className="h-3 w-3" />
+                              {invoice.petName}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      className="bg-emerald-500 hover:bg-emerald-600"
+                      onClick={() => handleDownloadInvoice(invoice)}
+                    >
+                      <Download className="h-4 w-4 mr-1" />
+                      PDF
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function OwnerMessages({ messages, clinics = [], onRefresh }) {
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState(null);
