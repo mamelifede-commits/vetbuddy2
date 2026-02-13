@@ -8924,10 +8924,30 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
           </h1>
           <p className="text-gray-500">Gestisci fatture, listino prezzi ed export</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button variant="outline" onClick={() => handleExport('csv')}>
             <Download className="h-4 w-4 mr-2" />
             Export CSV
+          </Button>
+          <Button variant="outline" onClick={async () => {
+            try {
+              const response = await fetch(`/api/invoices/download-all?clinicId=${user.id}&role=clinic`);
+              if (!response.ok) throw new Error('Download fallito');
+              const blob = await response.blob();
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `VetBuddy_Fatture_${new Date().toISOString().split('T')[0]}.zip`;
+              document.body.appendChild(a);
+              a.click();
+              window.URL.revokeObjectURL(url);
+              a.remove();
+            } catch (error) {
+              alert('Errore durante il download: ' + error.message);
+            }
+          }}>
+            <Archive className="h-4 w-4 mr-2" />
+            Scarica Tutto
           </Button>
           <Button onClick={() => setShowNewInvoice(true)} className="bg-green-600 hover:bg-green-700">
             <Plus className="h-4 w-4 mr-2" />
