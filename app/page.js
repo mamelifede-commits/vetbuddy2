@@ -6034,6 +6034,7 @@ function ClinicServices({ onNavigate, user }) {
           Catalogo ({allCatalogServices.length})
         </Button>
         {Object.entries(serviceCatalog).map(([catId, cat]) => {
+          if (!cat?.services) return null;
           const Icon = getCategoryIcon(cat.icon);
           const selectedCount = cat.services.filter(s => isServiceSelected(s.id)).length;
           return (
