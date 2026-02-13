@@ -13792,7 +13792,7 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
                         <Trash2 className="h-4 w-4 mr-1" /> Rimuovi
                       </Button>
                     )}
-                    <p className="text-xs text-gray-500">JPG, PNG, WebP o GIF. Max 5MB.</p>
+                    <p className="text-xs text-gray-500">JPG, PNG, WebP o GIF. Max 20MB.</p>
                     {!formData.photoUrl && (
                       <p className="text-xs text-gray-400">Se non carichi una foto, verrà mostrata l'icona della specie</p>
                     )}
