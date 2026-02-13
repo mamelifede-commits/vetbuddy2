@@ -50,11 +50,66 @@ export async function GET(request) {
 // POST: Create test data for automation testing
 export async function POST(request) {
   try {
-    const { action } = await request.json();
+    const { action, clinicId } = await request.json();
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME || 'vetbuddy');
     
     const results = {};
+    
+    if (action === 'enable_all_automations') {
+      // Enable all automations for a clinic
+      const targetClinicId = clinicId || '30cc3933-244c-44b9-b6f3-b2b6372c6260';
+      
+      // Default settings - all enabled
+      const allAutomationsEnabled = {
+        appointmentReminders: true,
+        vaccineRecalls: true,
+        postVisitFollowup: true,
+        noShowDetection: true,
+        documentReminders: true,
+        weeklyReport: true,
+        petBirthday: true,
+        reviewRequest: true,
+        inactiveClientReactivation: true,
+        antiparasiticReminder: true,
+        annualCheckup: true,
+        medicationRefill: true,
+        weightAlert: true,
+        dentalHygiene: true,
+        appointmentConfirmation: true,
+        labResultsReady: true,
+        paymentReminder: true,
+        postSurgeryFollowup: true,
+        summerHeatAlert: true,
+        tickSeasonAlert: true,
+        newYearFireworksAlert: true,
+        whatsappReminders: false,
+        smsEmergency: false,
+        sterilizationReminder: true,
+        seniorPetCare: true,
+        microchipCheck: true,
+        welcomeNewPet: true,
+        aiLabExplanation: true,
+        breedRiskAlert: true,
+        dietSuggestions: true,
+        loyaltyProgram: true,
+        referralProgram: true,
+        holidayClosures: true,
+        petCondolences: true,
+        griefFollowup: true,
+        dailySummary: true,
+        lowStockAlert: true,
+        staffBirthday: true
+      };
+      
+      await db.collection('users').updateOne(
+        { id: targetClinicId, role: 'clinic' },
+        { $set: { automationSettings: allAutomationsEnabled } }
+      );
+      
+      results.message = `All automations enabled for clinic ${targetClinicId}`;
+      results.settings = allAutomationsEnabled;
+    }
     
     if (action === 'create_vaccine_test') {
       // Find a pet and owner
