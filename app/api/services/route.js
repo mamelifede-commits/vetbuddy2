@@ -11,48 +11,88 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-// Default service categories
-const defaultCategories = [
-  { id: 'visita', name: 'Visite', icon: 'Stethoscope' },
-  { id: 'vaccino', name: 'Vaccinazioni', icon: 'Syringe' },
-  { id: 'chirurgia', name: 'Chirurgia', icon: 'Scissors' },
-  { id: 'diagnostica', name: 'Diagnostica', icon: 'Search' },
-  { id: 'laboratorio', name: 'Laboratorio', icon: 'FlaskConical' },
-  { id: 'dentale', name: 'Cure Dentali', icon: 'Smile' },
-  { id: 'toelettatura', name: 'Toelettatura', icon: 'Sparkles' },
-  { id: 'altro', name: 'Altro', icon: 'MoreHorizontal' }
-];
+// CATALOGO COMPLETO DEI SERVIZI VETERINARI
+const VETERINARY_SERVICES = {
+  video_consulto: {
+    name: 'Video Consulto',
+    icon: 'Video',
+    services: [
+      { id: 'consulenza_online', name: 'Consulenza Online', description: 'Consulenza a distanza per triage, dubbi, follow-up e interpretazione referti', type: 'online', duration: 20 },
+      { id: 'follow_up_online', name: 'Follow-up Online', description: 'Controllo post-visita o post-intervento in videochiamata', type: 'online', duration: 15 },
+      { id: 'interpretazione_referti', name: 'Interpretazione Referti', description: 'Spiegazione e discussione di esami e analisi', type: 'online', duration: 15 },
+      { id: 'consulto_comportamentale', name: 'Consulto Comportamentale', description: 'Valutazione iniziale problemi comportamentali', type: 'online', duration: 30 },
+      { id: 'seconda_opinione', name: 'Seconda Opinione', description: 'Valutazione caso clinico per secondo parere', type: 'online', duration: 25 }
+    ]
+  },
+  visite_generali: {
+    name: 'Visite Generali',
+    icon: 'Stethoscope',
+    services: [
+      { id: 'visita_clinica', name: 'Visita Clinica Generale', description: 'Controllo stato di salute, peso, parassiti e piano vaccinale' },
+      { id: 'vaccini', name: 'Vaccinazioni', description: 'Piano vaccinale completo per cani e gatti' },
+      { id: 'check_up', name: 'Check-up Preventivo', description: 'Controllo generale periodico dello stato di salute' },
+      { id: 'visita_preanestesia', name: 'Visita Pre-anestesiologica', description: 'Valutazione del rischio prima di interventi chirurgici' }
+    ]
+  },
+  visite_specialistiche: {
+    name: 'Visite Specialistiche',
+    icon: 'UserCog',
+    services: [
+      { id: 'cardiologia', name: 'Cardiologia', description: 'ECG, ecocardiografia e patologie cardiache' },
+      { id: 'dermatologia', name: 'Dermatologia', description: 'Problemi della pelle, allergie e parassiti cutanei' },
+      { id: 'oculistica', name: 'Oculistica', description: 'Patologie oculari e problemi alla vista' },
+      { id: 'ortopedia', name: 'Ortopedia', description: 'Problemi muscolo-scheletrici e articolari' },
+      { id: 'oncologia', name: 'Oncologia', description: 'Diagnosi e trattamento tumori e neoplasie' },
+      { id: 'riproduzione', name: 'Riproduzione e Neonatologia', description: 'Gravidanza, parto e cura dei cuccioli' },
+      { id: 'neurologia', name: 'Neurologia', description: 'Patologie del sistema nervoso' },
+      { id: 'esotici', name: 'Animali Esotici', description: 'Cura di rettili, uccelli e piccoli mammiferi' }
+    ]
+  },
+  chirurgia: {
+    name: 'Chirurgia',
+    icon: 'Scissors',
+    services: [
+      { id: 'sterilizzazione', name: 'Sterilizzazione', description: 'Ovariectomie, ovarioisterectomie e castrazioni' },
+      { id: 'tessuti_molli', name: 'Chirurgia Tessuti Molli', description: 'Rimozione masse, chirurgia gastrointestinale, cistotomie' },
+      { id: 'ortopedica', name: 'Chirurgia Ortopedica', description: 'Fratture, lussazioni, rottura legamento crociato' },
+      { id: 'odontoiatria', name: 'Odontoiatria Veterinaria', description: 'Detartrasi, estrazioni e cure dentali' },
+      { id: 'urgenze', name: 'Chirurgia d\'Urgenza', description: 'Torsioni gastriche, traumi, emorragie' },
+      { id: 'oculistica_chir', name: 'Chirurgia Oculistica', description: 'Correzione entropion, ectropion e cataratta' }
+    ]
+  },
+  diagnostica: {
+    name: 'Diagnostica',
+    icon: 'Search',
+    services: [
+      { id: 'radiografia', name: 'Radiografia (RX)', description: 'Immagini diagnostiche con raggi X' },
+      { id: 'ecografia', name: 'Ecografia', description: 'Diagnostica ad ultrasuoni addominale e cardiaca' },
+      { id: 'esami_sangue', name: 'Esami del Sangue', description: 'Emocromo, biochimico e profili specifici' },
+      { id: 'esami_urine', name: 'Esami Urine', description: 'Analisi completa delle urine' },
+      { id: 'tac', name: 'TAC', description: 'Tomografia computerizzata' },
+      { id: 'risonanza', name: 'Risonanza Magnetica (RM)', description: 'Imaging avanzato per tessuti molli' },
+      { id: 'endoscopia', name: 'Endoscopia', description: 'Esplorazione visiva di organi interni' }
+    ]
+  },
+  altri_servizi: {
+    name: 'Altri Servizi',
+    icon: 'Plus',
+    services: [
+      { id: 'pronto_soccorso', name: 'Pronto Soccorso 24h', description: 'Emergenze veterinarie h24' },
+      { id: 'degenza', name: 'Degenza e Ricovero', description: 'Ospedalizzazione e osservazione' },
+      { id: 'terapia_intensiva', name: 'Terapia Intensiva', description: 'Cure intensive per casi critici' },
+      { id: 'igiene_orale', name: 'Igiene Orale', description: 'Pulizia dentale professionale e ablazione tartaro' },
+      { id: 'microchip', name: 'Microchip e Anagrafe', description: 'Inserimento microchip e registrazione' },
+      { id: 'pet_passport', name: 'Passaporto e Certificati', description: 'Documenti per viaggi e certificazioni sanitarie' }
+    ]
+  }
+};
 
-// GET - Get price list
+// GET - Restituisce il catalogo servizi completo
 export async function GET(request) {
   try {
-    const user = await getUserFromRequest(request);
-    if (!user) {
-      return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
-    }
-    
-    const clinicId = user.role === 'clinic' ? user.id : user.clinicId;
-    const services = await getCollection('services');
-    
-    const serviceList = await services
-      .find({ clinicId })
-      .sort({ category: 1, name: 1 })
-      .toArray();
-    
-    // Group by category
-    const groupedServices = {};
-    for (const cat of defaultCategories) {
-      groupedServices[cat.id] = {
-        ...cat,
-        services: serviceList.filter(s => s.category === cat.id)
-      };
-    }
-    
-    return NextResponse.json({
-      services: serviceList,
-      categories: defaultCategories,
-      grouped: groupedServices
-    }, { headers: corsHeaders });
+    // Restituisce sempre il catalogo completo dei servizi
+    // Questo è il catalogo standard che le cliniche possono selezionare
+    return NextResponse.json(VETERINARY_SERVICES, { headers: corsHeaders });
     
   } catch (error) {
     console.error('GET services error:', error);
@@ -60,7 +100,7 @@ export async function GET(request) {
   }
 }
 
-// POST - Create new service
+// POST - Create new custom service
 export async function POST(request) {
   try {
     const user = await getUserFromRequest(request);
@@ -87,8 +127,8 @@ export async function POST(request) {
       description: description || '',
       category: category || 'altro',
       price: parseFloat(price),
-      vatIncluded: vatIncluded !== false, // Default true (price includes VAT)
-      duration: duration || null, // Duration in minutes
+      vatIncluded: vatIncluded !== false,
+      duration: duration || null,
       isActive: true,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
