@@ -1,12 +1,39 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Download, ArrowLeft, PawPrint, Calendar, FileText, MessageSquare, Heart, Bell, Shield, Star, MapPin, Phone, Clock, CheckCircle, ChevronRight, HelpCircle, Smartphone } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Download, ArrowLeft, PawPrint, Calendar, FileText, MessageSquare, Heart, Bell, Shield, Star, MapPin, Phone, Clock, CheckCircle, ChevronRight, HelpCircle, Smartphone, Lock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 export default function TutorialProprietari() {
   const [downloadingPDF, setDownloadingPDF] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+
+  // Check user role on mount
+  useEffect(() => {
+    const checkAuthorization = async () => {
+      try {
+        // Try to get user from sessionStorage
+        const storedUser = sessionStorage.getItem('vetbuddy_user');
+        if (storedUser) {
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+          // Only owners can access this tutorial
+          if (userData.role === 'owner') {
+            setIsAuthorized(true);
+          }
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    checkAuthorization();
+  }, []);
 
   const handleDownloadPDF = async () => {
     setDownloadingPDF(true);
@@ -31,6 +58,60 @@ export default function TutorialProprietari() {
     }
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Verifica accesso...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show access denied if not authorized
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 flex items-center justify-center p-4">
+        <div className="max-w-md mx-auto text-center bg-white rounded-2xl shadow-xl p-8">
+          <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Lock className="h-8 w-8 text-red-500" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Accesso Riservato</h1>
+          <p className="text-gray-600 mb-6">
+            Questo tutorial è riservato ai <strong>proprietari di animali</strong> registrati su VetBuddy.
+          </p>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-amber-700 text-left">
+                {user ? 
+                  `Sei loggato come "${user.role === 'clinic' ? 'Clinica' : user.role}". Questo tutorial è solo per proprietari.` :
+                  'Effettua il login come proprietario per accedere a questo contenuto.'
+                }
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <Link href="/">
+              <Button className="w-full bg-blue-500 hover:bg-blue-600">
+                Vai alla Home e Accedi
+              </Button>
+            </Link>
+            {user?.role === 'clinic' && (
+              <Link href="/tutorial/cliniche">
+                <Button variant="outline" className="w-full">
+                  Vai al Tutorial Cliniche
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const sections = [
     {
       icon: PawPrint,
@@ -52,12 +133,12 @@ export default function TutorialProprietari() {
       content: [
         '1. Dalla dashboard, clicca "I Miei Animali"',
         '2. Premi il pulsante "+" o "Aggiungi Animale"',
-        '3. Inserisci: nome, specie (cane, gatto, coniglio, uccello, rettile, pesce, altro)',
+        '3. Inserisci: nome, specie (cane, gatto, coniglio, uccello, rettile, pesce, cavallo, altro)',
         '4. Aggiungi razza, data di nascita, peso, microchip',
         '5. Carica una foto del tuo amico a 4 zampe',
         '6. Indica allergie o condizioni particolari'
       ],
-      tip: 'Puoi aggiungere animali di qualsiasi specie: cani, gatti, conigli, uccelli, rettili, pesci e altri!'
+      tip: 'Puoi aggiungere animali di qualsiasi specie: cani, gatti, conigli, uccelli, rettili, pesci, cavalli e altri!'
     },
     {
       icon: MapPin,
@@ -169,7 +250,7 @@ export default function TutorialProprietari() {
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition">
             <ArrowLeft className="h-5 w-5" />
-            <span>Torna alla Home</span>
+            <span>Torna alla Dashboard</span>
           </Link>
           <Button 
             onClick={handleDownloadPDF} 
@@ -278,12 +359,12 @@ export default function TutorialProprietari() {
       <section className="py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-8 text-white">
-            <h2 className="text-2xl font-bold mb-4">Pronto a iniziare?</h2>
-            <p className="text-blue-100 mb-6">Registrati gratuitamente e scopri quanto è facile gestire la salute dei tuoi animali.</p>
+            <h2 className="text-2xl font-bold mb-4">Hai altre domande?</h2>
+            <p className="text-blue-100 mb-6">Usa l'assistente virtuale nella dashboard oppure contatta il supporto.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/">
                 <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 w-full sm:w-auto">
-                  Vai alla Home
+                  Torna alla Dashboard
                 </Button>
               </Link>
               <Button 
