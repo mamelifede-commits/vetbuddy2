@@ -948,6 +948,127 @@ Rispondi entro 24 ore per mantenere alta la soddisfazione cliente!
           image: '📱'
         }
       ]
+    },
+    {
+      id: 'freelance',
+      title: 'Per Veterinari Freelance',
+      icon: Users,
+      color: 'purple',
+      description: 'Guida speciale per veterinari liberi professionisti',
+      duration: '4 min',
+      steps: [
+        {
+          title: 'Freelance? Benvenuto!',
+          content: `
+## 👨‍⚕️ VetBuddy per Veterinari Freelance
+
+Sei un **veterinario libero professionista** senza una struttura fisica? VetBuddy è perfetto anche per te!
+
+### Come funziona:
+VetBuddy è pensato per "cliniche", ma questo include anche:
+- 🏠 **Ambulatori a domicilio**
+- 🚐 **Servizi mobili**
+- 👤 **Professionisti singoli**
+- 🤝 **Collaborazioni occasionali**
+
+### 💡 Come registrarsi
+Registrati normalmente come **"Clinica"** - anche se non hai un locale fisico. Il tuo "studio" può essere semplicemente dove ricevi i pazienti!
+
+### Piano consigliato: Starter
+Il piano **Starter gratuito** è ideale per iniziare:
+- ✅ 1 utente (tu!)
+- ✅ Fino a 50 pazienti
+- ✅ Agenda completa
+- ✅ 5 automazioni base
+- ✅ Posizione su mappa (opzionale)
+          `,
+          image: '👨‍⚕️'
+        },
+        {
+          title: 'Configurazione per Freelance',
+          content: `
+## ⚙️ Setup Consigliato
+
+### 1. Profilo Clinica
+Quando compili il profilo:
+- **Nome clinica** → Usa il tuo nome: "Dr. Mario Rossi - Veterinario"
+- **Indirizzo** → Il tuo studio o "Visite a domicilio - Milano"
+- **Telefono** → Il tuo cellulare professionale
+- **Descrizione** → Descrivi i tuoi servizi
+
+### 2. Servizi
+Configura i servizi che offri:
+- Visita a domicilio
+- Vaccinazioni
+- Controlli periodici
+- Consulenze telefoniche
+
+### 3. Disponibilità
+Nell'agenda puoi impostare:
+- Giorni e orari disponibili
+- Slot per visite a domicilio
+- Pausa pranzo, ferie, etc.
+
+### 💡 Tip
+Se fai visite a domicilio, disabilita "Mostra indirizzo su mappa" dalle impostazioni - i clienti ti contatteranno direttamente!
+          `,
+          image: '⚙️'
+        },
+        {
+          title: 'Vantaggi per Freelance',
+          content: `
+## ✨ Perché VetBuddy per Freelance
+
+### Risparmia tempo:
+- ⏰ **Automazioni** - Promemoria appuntamenti automatici
+- 📧 **Email conferma** - Inviate automaticamente
+- 📱 **Prenotazioni online** - I clienti prenotano da soli
+
+### Professionalità:
+- 📄 **Documenti digitali** - Referti, preventivi, ricette
+- 💳 **Pagamenti online** - Incassa con carta (Stripe)
+- 📊 **Report** - Tieni traccia del tuo lavoro
+
+### Visibilità:
+- 🗺️ **Mappa** - I proprietari ti trovano nella ricerca
+- ⭐ **Recensioni** - Costruisci la tua reputazione
+- 📱 **App** - I tuoi clienti ti hanno sempre a portata di mano
+
+### Costo:
+- 🆓 **Piano Starter gratuito** per sempre
+- 💶 Upgrade a Pro quando cresci
+          `,
+          image: '✨'
+        },
+        {
+          title: 'FAQ Freelance',
+          content: `
+## ❓ Domande Frequenti
+
+### Devo avere un ambulatorio fisico?
+**No!** Puoi usare VetBuddy anche se fai solo visite a domicilio.
+
+### Posso nascondere l'indirizzo dalla mappa?
+**Sì!** Vai su Impostazioni → Profilo → Disattiva "Mostra su mappa" se preferisci che i clienti ti contattino prima.
+
+### Cosa scrivo come "Nome Clinica"?
+Puoi usare il tuo nome professionale:
+- "Dr. Maria Bianchi"
+- "Veterinario a Domicilio Milano"
+- "Studio Veterinario Mobile"
+
+### Ho pochi pazienti, quale piano?
+Il piano **Starter** supporta fino a 50 pazienti ed è gratuito per sempre. Perfetto per iniziare!
+
+### Posso passare a Pro dopo?
+**Certo!** Puoi fare upgrade in qualsiasi momento mantenendo tutti i tuoi dati.
+
+### Come ricevo i pagamenti?
+Puoi collegare **Stripe** per accettare carte di credito online, oppure continuare con contanti/bonifico.
+          `,
+          image: '❓'
+        }
+      ]
     }
   ];
 
