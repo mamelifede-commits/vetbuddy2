@@ -1095,6 +1095,12 @@ export async function GET(request) {
         // Trova tutti i proprietari della clinica
         const clinicApts = await db.collection('appointments').find({ clinicId: clinic.id }).toArray();
         const ownerIds = [...new Set(clinicApts.map(a => a.ownerId))];
+        
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+        const phoneNumber = clinic?.phone || clinic?.telefono || '';
+        const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+        const bookUrl = `${baseUrl}?action=book&clinicId=${clinic.id}`;
+        const messageUrl = `${baseUrl}?action=message&clinicId=${clinic.id}`;
 
         for (const ownerId of ownerIds) {
           const owner = await db.collection('users').findOne({ id: ownerId });
@@ -1111,7 +1117,26 @@ export async function GET(request) {
                   </div>
                   <div style="padding: 30px; background: #f9f9f9;">
                     ${seasonalContent}
+                    
+                    <!-- Action Buttons -->
+                    <div style="text-align: center; margin: 25px 0;">
+                      <a href="${bookUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        📅 Prenota Visita
+                      </a>
+                      <a href="${messageUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        💬 Chiedi Consiglio
+                      </a>
+                      ${phoneLink ? `
+                      <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                        📞 Chiama la Clinica
+                      </a>
+                      ` : ''}
+                    </div>
+                    
                     <p style="color: #999; margin-top: 30px;">Dalla tua clinica di fiducia: ${clinic.clinicName}</p>
+                  </div>
+                  <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
                   </div>
                 </div>
               `
