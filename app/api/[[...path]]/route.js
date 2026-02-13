@@ -2705,16 +2705,11 @@ export async function POST(request, { params }) {
                   ${rewardValueDisplay}
                 </div>
                 
-                <!-- Codice Univoco -->
-                <div style="background: #333; padding: 20px; border-radius: 10px; margin: 25px 0; text-align: center;">
-                  <p style="color: #FFD93D; margin: 0 0 10px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Il tuo codice premio</p>
-                  <p style="color: white; margin: 0; font-size: 36px; font-weight: bold; letter-spacing: 8px; font-family: monospace;">${redeemCode}</p>
-                </div>
-                
-                <!-- QR Code -->
-                <div style="text-align: center; margin: 25px 0;">
-                  <p style="color: #888; font-size: 12px; margin-bottom: 10px;">Oppure mostra questo QR Code in clinica:</p>
-                  <img src="${qrCodeUrl}" alt="QR Code Premio" style="width: 150px; height: 150px; border-radius: 10px; border: 3px solid #FFD93D;" />
+                <!-- Codice Univoco - BIG AND CLEAR -->
+                <div style="background: #333; padding: 25px; border-radius: 15px; margin: 25px 0; text-align: center;">
+                  <p style="color: #FFD93D; margin: 0 0 15px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 3px;">🎟️ Il tuo codice premio</p>
+                  <p style="color: white; margin: 0; font-size: 42px; font-weight: bold; letter-spacing: 10px; font-family: 'Courier New', monospace; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">${redeemCode}</p>
+                  <p style="color: #aaa; margin: 15px 0 0 0; font-size: 12px;">Comunica questo codice in clinica</p>
                 </div>
                 
                 <p style="color: #888; font-size: 14px; text-align: center; margin-top: 20px;">
@@ -2722,27 +2717,24 @@ export async function POST(request, { params }) {
                 </p>
                 ${expiresAt ? `<p style="color: #E74C3C; font-size: 14px; text-align: center; background: #FFF5F5; padding: 10px; border-radius: 8px;">⚠️ <strong>Scade il:</strong> ${new Date(expiresAt).toLocaleDateString('it-IT')}</p>` : ''}
                 
-                <!-- Istruzioni Riscatto -->
+                <!-- Istruzioni Riscatto - SIMPLIFIED -->
                 <div style="background: #E8F5E9; padding: 20px; border-radius: 10px; margin: 25px 0;">
-                  <h3 style="color: #27AE60; margin: 0 0 15px 0; font-size: 16px;">📋 Come riscattare il premio:</h3>
-                  <ol style="color: #666; margin: 0; padding-left: 20px; line-height: 1.8;">
-                    <li><strong>In clinica:</strong> Mostra il codice <strong>${redeemCode}</strong> o il QR Code al momento del pagamento</li>
-                    <li><strong>Online:</strong> Accedi a VetBuddy, vai su "I Miei Premi" e clicca "Riscatta" per prenotare l'utilizzo</li>
+                  <h3 style="color: #27AE60; margin: 0 0 15px 0; font-size: 16px;">📋 Come usare il premio:</h3>
+                  <ol style="color: #666; margin: 0; padding-left: 20px; line-height: 2;">
+                    <li><strong>In clinica:</strong> Comunica il codice <strong style="background: #333; color: #FFD93D; padding: 2px 8px; border-radius: 4px; font-family: monospace;">${redeemCode}</strong> al momento del pagamento</li>
+                    <li><strong>Online:</strong> Clicca "Riscatta Online" qui sotto per prenotare l'utilizzo</li>
                   </ol>
                 </div>
                 
                 <!-- CTA Buttons -->
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="${baseUrl}?action=rewards" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 35px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                  <a href="${baseUrl}?action=rewards" style="display: inline-block; background: #FF6B6B; color: white; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(255,107,107,0.4);">
                     🎁 Riscatta Online
-                  </a>
-                  <a href="${baseUrl}?action=book&clinic=${user.id}" style="display: inline-block; background: #27AE60; color: white; padding: 14px 35px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                    📅 Prenota Visita
                   </a>
                 </div>
                 
                 <p style="color: #999; font-size: 12px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px;">
-                  Il premio verrà applicato automaticamente quando lo riscatti. Grazie per la tua fedeltà! 🐾
+                  Il premio verrà applicato quando lo comunichi in clinica. Grazie per la tua fedeltà! 🐾
                 </p>
               </div>
               <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
