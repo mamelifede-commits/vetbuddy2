@@ -6208,115 +6208,105 @@ function ClinicRewardsManagement({ user, owners = [] }) {
       {/* Assigned Tab */}
       {activeTab === 'assigned' && (
         <div className="space-y-4">
-          {(() => {
-            // Filter rewards by search query
-            const filteredRewards = searchQuery 
-              ? assignedRewards.filter(r => 
-                  r.redeemCode?.includes(searchQuery) || 
-                  r.ownerName?.toUpperCase().includes(searchQuery) ||
-                  r.rewardName?.toUpperCase().includes(searchQuery)
-                )
-              : assignedRewards;
-            
-            if (assignedRewards.length === 0) {
-              return (
-                <Card className="text-center py-12 bg-gray-50">
-                  <CardContent>
-                    <UserPlus className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Nessun premio assegnato</h3>
-                    <p className="text-gray-500">Assegna il tuo primo premio a un cliente</p>
-                  </CardContent>
-                </Card>
-              );
-            }
-            
-            if (searchQuery && filteredRewards.length === 0) {
-              return (
+          {assignedRewards.length === 0 ? (
+            <Card className="text-center py-12 bg-gray-50">
+              <CardContent>
+                <UserPlus className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                <h3 className="text-lg font-semibold text-gray-700 mb-2">Nessun premio assegnato</h3>
+                <p className="text-gray-500">Assegna il tuo primo premio a un cliente</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              {searchQuery && assignedRewards.filter(r => 
+                r.redeemCode?.includes(searchQuery) || 
+                r.ownerName?.toUpperCase().includes(searchQuery)
+              ).length === 0 ? (
                 <Card className="text-center py-12 bg-amber-50 border-amber-200">
                   <CardContent>
                     <Search className="h-12 w-12 mx-auto text-amber-400 mb-4" />
                     <h3 className="text-lg font-semibold text-gray-700 mb-2">Nessun premio trovato</h3>
-                    <p className="text-gray-500">Nessun premio corrisponde al codice "<strong className="font-mono">{searchQuery}</strong>"</p>
+                    <p className="text-gray-500">Codice "<strong className="font-mono">{searchQuery}</strong>" non trovato</p>
                   </CardContent>
                 </Card>
-              );
-            }
-            
-            return (
-              <div className="grid gap-3">
-                {searchQuery && (
-                  <p className="text-sm text-gray-500">
-                    Trovati <strong>{filteredRewards.length}</strong> premi per "<span className="font-mono">{searchQuery}</span>"
-                  </p>
-                )}
-                {filteredRewards.map((reward) => {
-                  const isPending = reward.status === 'pending';
-                  const isUsed = reward.status === 'used';
-                  const isAvailable = reward.status === 'available';
-                  
-                  return (
-                    <Card key={reward.id} className={`
-                      ${isUsed ? 'opacity-60 bg-gray-50' : ''}
-                      ${isPending ? 'border-2 border-amber-400 bg-amber-50 shadow-md' : ''}
-                      ${searchQuery && reward.redeemCode?.includes(searchQuery) ? 'ring-2 ring-green-400' : ''}
-                    `}>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                            isPending 
-                              ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white animate-pulse'
-                              : isAvailable 
-                                ? 'bg-gradient-to-br from-amber-400 to-yellow-500 text-white' 
-                                : 'bg-gray-300 text-gray-500'
-                          }`}>
-                            {isUsed ? <CheckCircle className="h-5 w-5" /> : isPending ? <Clock className="h-5 w-5" /> : <Gift className="h-5 w-5" />}
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-medium">{reward.ownerName}</span>
-                              <Badge variant={isAvailable ? 'default' : 'secondary'} className={`
-                                ${isAvailable ? 'bg-green-500' : ''}
-                                ${isPending ? 'bg-amber-500 text-white animate-pulse' : ''}
-                              `}>
-                                {isAvailable ? 'Disponibile' : isPending ? '⏳ DA CONFERMARE' : 'Utilizzato'}
-                              </Badge>
-                              {reward.redeemCode && (
-                                <Badge variant="outline" className="font-mono tracking-wider">
-                                  {reward.redeemCode}
-                                </Badge>
+              ) : (
+                <div className="grid gap-3">
+                  {searchQuery && (
+                    <p className="text-sm text-gray-500">
+                      Risultati per "<span className="font-mono font-bold">{searchQuery}</span>"
+                    </p>
+                  )}
+                  {assignedRewards
+                    .filter(r => !searchQuery || r.redeemCode?.includes(searchQuery) || r.ownerName?.toUpperCase().includes(searchQuery))
+                    .map((reward) => {
+                      const isPending = reward.status === 'pending';
+                      const isUsed = reward.status === 'used';
+                      const isAvailable = reward.status === 'available';
+                      
+                      return (
+                        <Card key={reward.id} className={`
+                          ${isUsed ? 'opacity-60 bg-gray-50' : ''}
+                          ${isPending ? 'border-2 border-amber-400 bg-amber-50 shadow-md' : ''}
+                          ${searchQuery && reward.redeemCode?.includes(searchQuery) ? 'ring-2 ring-green-500' : ''}
+                        `}>
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4">
+                                <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                                  isPending 
+                                    ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white animate-pulse'
+                                    : isAvailable 
+                                      ? 'bg-gradient-to-br from-amber-400 to-yellow-500 text-white' 
+                                      : 'bg-gray-300 text-gray-500'
+                                }`}>
+                                  {isUsed ? <CheckCircle className="h-5 w-5" /> : isPending ? <Clock className="h-5 w-5" /> : <Gift className="h-5 w-5" />}
+                                </div>
+                                <div>
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <span className="font-medium">{reward.ownerName}</span>
+                                    <Badge variant={isAvailable ? 'default' : 'secondary'} className={`
+                                      ${isAvailable ? 'bg-green-500' : ''}
+                                      ${isPending ? 'bg-amber-500 text-white animate-pulse' : ''}
+                                    `}>
+                                      {isAvailable ? 'Disponibile' : isPending ? '⏳ DA CONFERMARE' : 'Utilizzato'}
+                                    </Badge>
+                                    {reward.redeemCode && (
+                                      <Badge variant="outline" className={`font-mono tracking-wider ${searchQuery && reward.redeemCode?.includes(searchQuery) ? 'bg-green-100 border-green-500 text-green-700' : ''}`}>
+                                        {reward.redeemCode}
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <p className="text-sm text-gray-500">{reward.rewardName} - {reward.reason}</p>
+                                  <p className="text-xs text-gray-400">
+                                    Assegnato il {new Date(reward.createdAt).toLocaleDateString('it-IT')}
+                                    {reward.redeemedAt && ` • Riscattato il ${new Date(reward.redeemedAt).toLocaleDateString('it-IT')}`}
+                                    {reward.usedAt && ` • Confermato il ${new Date(reward.usedAt).toLocaleDateString('it-IT')}`}
+                                  </p>
+                                </div>
+                              </div>
+                              {(isAvailable || isPending) && (
+                                <Button 
+                                  variant={isPending ? 'default' : 'outline'}
+                                  size="sm" 
+                                  onClick={() => handleMarkUsed(reward.id)}
+                                  className={isPending 
+                                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                                    : 'text-green-600 border-green-300 hover:bg-green-50'
+                                  }
+                                >
+                                  <CheckCircle className="h-4 w-4 mr-1" />
+                                  {isPending ? 'Conferma Utilizzo' : 'Segna Usato'}
+                                </Button>
                               )}
                             </div>
-                            <p className="text-sm text-gray-500">{reward.rewardName} - {reward.reason}</p>
-                            <p className="text-xs text-gray-400">
-                              Assegnato il {new Date(reward.createdAt).toLocaleDateString('it-IT')}
-                              {reward.redeemedAt && ` • Riscattato il ${new Date(reward.redeemedAt).toLocaleDateString('it-IT')}`}
-                              {reward.usedAt && ` • Confermato il ${new Date(reward.usedAt).toLocaleDateString('it-IT')}`}
-                            </p>
-                          </div>
-                        </div>
-                        {(isAvailable || isPending) && (
-                          <Button 
-                            variant={isPending ? 'default' : 'outline'}
-                            size="sm" 
-                            onClick={() => handleMarkUsed(reward.id)}
-                            className={isPending 
-                              ? 'bg-green-600 hover:bg-green-700 text-white'
-                              : 'text-green-600 border-green-300 hover:bg-green-50'
-                            }
-                          >
-                            <CheckCircle className="h-4 w-4 mr-1" />
-                            {isPending ? 'Conferma Utilizzo' : 'Segna Usato'}
-                          </Button>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-              </div>
-            );
-          })()}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                </div>
+              )}
+            </>
+          )}
         </div>
       )}
 
