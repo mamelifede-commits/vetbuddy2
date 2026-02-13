@@ -12226,9 +12226,40 @@ function OwnerReviews({ user }) {
 // Componente Eventi & News per Proprietari
 function OwnerEvents({ user }) {
   const [events, setEvents] = useState([]);
+  const [userPets, setUserPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('all');
   const [error, setError] = useState(null);
+  const [showPersonalized, setShowPersonalized] = useState(true);
+
+  // Mappa specie animali a categorie eventi
+  const speciestoCategory = {
+    'dog': 'cani',
+    'cat': 'gatti',
+    'horse': 'cavalli',
+    'rabbit': 'conigli',
+    'bird': 'uccelli',
+    'reptile': 'rettili',
+    'fish': 'pesci',
+    'hamster': 'roditori',
+    'ferret': 'furetti',
+    'other': 'altro'
+  };
+
+  // Carica animali dell'utente
+  const loadUserPets = async () => {
+    try {
+      const res = await fetch('/api/pets', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('vetbuddy_token')}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUserPets(data.pets || []);
+      }
+    } catch (err) {
+      console.error('Error loading pets:', err);
+    }
+  };
 
   const loadEvents = async () => {
     setLoading(true);
@@ -12251,7 +12282,39 @@ function OwnerEvents({ user }) {
 
   useEffect(() => {
     loadEvents();
+    loadUserPets();
   }, []);
+
+  // Ottieni categorie basate sugli animali dell'utente
+  const getUserPetCategories = () => {
+    const categories = new Set();
+    userPets.forEach(pet => {
+      const category = speciestoCategory[pet.species] || 'altro';
+      categories.add(category);
+    });
+    return Array.from(categories);
+  };
+
+  // Eventi personalizzati per l'utente basati sui suoi animali
+  const getPersonalizedEvents = () => {
+    const petCategories = getUserPetCategories();
+    if (petCategories.length === 0) return [];
+    
+    return events.filter(event => 
+      petCategories.includes(event.category) || 
+      event.category === 'generale' || 
+      event.category === 'veterinaria' ||
+      event.category === 'promo'
+    ).sort((a, b) => {
+      // Prioritizza eventi delle categorie degli animali dell'utente
+      const aInPetCat = petCategories.includes(a.category);
+      const bInPetCat = petCategories.includes(b.category);
+      if (aInPetCat && !bInPetCat) return -1;
+      if (!aInPetCat && bInPetCat) return 1;
+      // Poi per data
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+  };
 
   const getCategoryColor = (category) => {
     switch(category) {
