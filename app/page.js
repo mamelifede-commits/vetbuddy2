@@ -13175,6 +13175,8 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
     try {
       // Se c'è un peso, aggiungilo alla history
       const dataToSubmit = { ...formData };
+      delete dataToSubmit.photoFile; // Non inviare il file direttamente
+      
       if (formData.weight && formData.weightDate) {
         dataToSubmit.weightHistory = [
           ...(formData.weightHistory || []),
@@ -13182,11 +13184,30 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
         ];
       }
       
+      let savedPet;
       if (editingPet) {
-        await api.put(`pets/${editingPet.id}`, dataToSubmit);
+        savedPet = await api.put(`pets/${editingPet.id}`, dataToSubmit);
       } else {
-        await api.post('pets', dataToSubmit);
+        savedPet = await api.post('pets', dataToSubmit);
       }
+      
+      // Upload foto se presente (dopo aver salvato il pet per avere l'ID)
+      if (formData.photoFile && savedPet?.id) {
+        const photoFormData = new FormData();
+        photoFormData.append('photo', formData.photoFile);
+        photoFormData.append('petId', savedPet.id);
+        
+        try {
+          await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/pets/photo`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${api.getToken()}` },
+            body: photoFormData
+          });
+        } catch (photoError) {
+          console.error('Error uploading photo:', photoError);
+        }
+      }
+      
       setShowDialog(false);
       setEditingPet(null);
       resetForm();
