@@ -8586,7 +8586,7 @@ function ClinicEvents({ user }) {
                 associazioni veterinarie italiane. Gli eventi vengono aggiornati settimanalmente.
               </p>
               <p className="text-sm text-purple-600 mt-2">
-                💡 <strong>Suggerimento:</strong> Filtra per "Con ECM" per vedere solo gli eventi che offrono crediti formativi.
+                💡 <strong>Suggerimento:</strong> Usa il pulsante ❤️ per salvare gli eventi che ti interessano e ritrovarli facilmente nel filtro "Salvati".
               </p>
             </div>
           </div>
