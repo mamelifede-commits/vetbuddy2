@@ -4023,9 +4023,10 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner,
   };
   
   const downloadTemplate = () => {
-    const csvContent = `nome,specie,razza,data_nascita,microchip,sesso,peso,colore,note,proprietario,email,telefono,vaccino,data_vaccino,scadenza_vaccino
-Luna,cane,Labrador,15/03/2020,380260000123456,femmina,25,biondo,Cane molto socievole,Mario Rossi,mario.rossi@email.it,+39 333 1234567,Polivalente,01/01/2024,01/01/2025
-Max,gatto,Europeo,20/06/2019,380260000789012,maschio,5,tigrato,,Anna Bianchi,anna.bianchi@email.it,+39 338 9876543,Trivalente,15/03/2024,15/03/2025`;
+    const csvContent = `nome,specie,razza,data_nascita,microchip,sesso,peso,colore,sterilizzato,allergie,farmaci,note,proprietario,email,telefono,indirizzo,vaccino,data_vaccino,scadenza_vaccino
+Luna,cane,Labrador,15/03/2020,380260000123456,femmina,25,biondo,si,Allergia al pollo,,Cane molto socievole,Mario Rossi,mario.rossi@email.it,+39 333 1234567,Via Roma 123 Milano,Polivalente,01/01/2024,01/01/2025
+Max,gatto,Europeo,20/06/2019,380260000789012,maschio,5,tigrato,no,,,Gatto indoor,Anna Bianchi,anna.bianchi@email.it,+39 338 9876543,Via Verdi 45 Roma,Trivalente,15/03/2024,15/03/2025
+Milo,cane,Golden Retriever,10/08/2021,,maschio,28,dorato,si,,Apoquel 16mg,Dermatite atopica in cura,Luca Verdi,luca.verdi@email.it,+39 340 5551234,Via Dante 78 Torino,Rabbia,20/06/2024,20/06/2025`;
     
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
