@@ -719,10 +719,7 @@ export async function GET(request) {
           if (!owner?.email) continue;
 
           const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
-          const phoneNumber = clinic?.phone || clinic?.telefono || '';
-          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
           const bookUrl = `${baseUrl}?action=book&clinicId=${clinic.id}`;
-          const messageUrl = `${baseUrl}?action=message&clinicId=${clinic.id}`;
 
           try {
             await sendEmail({
@@ -743,14 +740,7 @@ export async function GET(request) {
                       <a href="${bookUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                         📅 Prenota Ora
                       </a>
-                      ${phoneLink ? `
-                      <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                        📞 Chiama la Clinica
-                      </a>
-                      ` : ''}
-                      <a href="${messageUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                        💬 Scrivi un Messaggio
-                      </a>
+                      ${getContactButton(clinic, baseUrl, 'Scrivi alla Clinica', `Ciao, vorrei prenotare un controllo...`)}
                     </div>
                   </div>
                   <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
