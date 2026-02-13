@@ -1228,7 +1228,21 @@ export async function GET(request) {
                           <li>🦴 Controllo articolazioni</li>
                           <li>❤️ Monitoraggio cardiaco</li>
                         </ul>
-                        <p>Prenota un checkup senior per ${pet.name}!</p>
+                        
+                        <!-- Action Buttons -->
+                        <div style="text-align: center; margin: 25px 0;">
+                          <a href="${bookUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                            🩺 Prenota Checkup Senior
+                          </a>
+                          ${phoneLink ? `
+                          <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
+                            📞 Chiama la Clinica
+                          </a>
+                          ` : ''}
+                        </div>
+                      </div>
+                      <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                        <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
                       </div>
                     </div>
                   `
@@ -1260,6 +1274,12 @@ export async function GET(request) {
       
       const owner = await db.collection('users').findOne({ id: pet.ownerId });
       if (owner?.email) {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+        const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&petId=${pet.id}&reason=Verifica%20Microchip`;
+        const updateUrl = `${baseUrl}?action=updateMicrochip&petId=${pet.id}`;
+        const phoneNumber = clinic?.phone || clinic?.telefono || '';
+        const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+        
         try {
           await sendEmail({
             to: owner.email,
@@ -1270,10 +1290,10 @@ export async function GET(request) {
                   <h1 style="color: white; margin: 0;">📍 Verifica Microchip</h1>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
-                  <p>Ciao ${owner.name || ''},</p>
-                  <p>È passato un anno dall'ultima verifica del microchip di <strong>${pet.name}</strong>.</p>
-                  <p><strong>Perché è importante?</strong></p>
-                  <ul>
+                  <p style="color: #666; font-size: 16px;">Ciao ${owner.name || ''},</p>
+                  <p style="color: #666; font-size: 16px;">È passato un anno dall'ultima verifica del microchip di <strong>${pet.name}</strong>.</p>
+                  <p style="color: #666; font-size: 16px;"><strong>Perché è importante?</strong></p>
+                  <ul style="color: #666;">
                     <li>📞 I tuoi dati di contatto sono ancora corretti?</li>
                     <li>📍 L'indirizzo è aggiornato?</li>
                     <li>✅ Il chip funziona correttamente?</li>
