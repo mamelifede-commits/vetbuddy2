@@ -11960,18 +11960,34 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
   const [googleOAuthResult, setGoogleOAuthResult] = useState(null);
+  const [emailAction, setEmailAction] = useState(null);
 
   useEffect(() => { 
     checkAuth(); 
-    // Check for Google OAuth callback params
+    // Check for Google OAuth callback params and email action params
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
+      
+      // Google OAuth handling
       if (params.get('google_success')) {
         setGoogleOAuthResult({ success: true, message: 'Google Calendar connesso con successo!' });
         window.history.replaceState({}, '', window.location.pathname);
       } else if (params.get('google_error')) {
         setGoogleOAuthResult({ success: false, message: 'Errore: ' + params.get('google_error') });
         window.history.replaceState({}, '', window.location.pathname);
+      }
+      
+      // Email action handling (from email buttons)
+      const action = params.get('action');
+      if (action) {
+        setEmailAction({
+          action: action,
+          appointmentId: params.get('appointmentId'),
+          clinicId: params.get('clinicId'),
+          petId: params.get('petId'),
+          reason: params.get('reason')
+        });
+        // Don't clear URL yet - let the dashboard handle it
       }
     }
   }, []);
