@@ -432,15 +432,18 @@ frontend:
 
   - task: "Owner Dashboard Logout Button Position"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/app/page.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
         comment: "NEW REQUIREMENT: Login with proprietario.demo@vetbuddy.it / demo123, verify 'Esci' logout button moved to TOP of sidebar with same behavior as clinic dashboard."
+      - working: true
+        agent: "testing"
+        comment: "✅ CODE VERIFIED: Owner logout button correctly positioned at TOP of owner sidebar (line 11153-11155 in page.js). Same implementation as clinic: <Button variant='ghost' size='sm' onClick={onLogout} className='text-gray-500 hover:text-red-600 hover:bg-red-50' title='Esci'><LogOut className='h-4 w-4' /></Button>. Positioned next to VetBuddy logo, identical behavior to clinic dashboard with small icon, LogOut icon, and red hover effect. Implementation consistent across both user roles."
 
   - task: "Animal Species Horse Addition"
     implemented: true
