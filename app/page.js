@@ -12879,6 +12879,19 @@ function OwnerAppointments({ appointments, pets }) {
                   </div>
                 </div>
                 
+                {/* Stato Pagamento */}
+                {selectedAppointment.price && selectedAppointment.price > 0 && (
+                  <div className={`flex items-center gap-3 p-3 rounded-lg ${selectedAppointment.paymentStatus === 'paid' ? 'bg-green-50' : 'bg-amber-50'}`}>
+                    <CreditCard className={`h-5 w-5 ${selectedAppointment.paymentStatus === 'paid' ? 'text-green-500' : 'text-amber-500'}`} />
+                    <div>
+                      <p className="text-sm text-gray-500">Pagamento</p>
+                      <p className={`font-medium ${selectedAppointment.paymentStatus === 'paid' ? 'text-green-600' : 'text-amber-600'}`}>
+                        {selectedAppointment.paymentStatus === 'paid' ? '✓ Pagato' : `€${selectedAppointment.price} da pagare`}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                
                 {selectedAppointment.notes && (
                   <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
                     <p className="text-sm text-gray-500 mb-1">Note</p>
