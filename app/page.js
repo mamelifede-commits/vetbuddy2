@@ -12366,6 +12366,9 @@ function OwnerEvents({ user }) {
     ? events 
     : events.filter(e => e.category === activeCategory);
 
+  const personalizedEvents = getPersonalizedEvents();
+  const petCategories = getUserPetCategories();
+
   const categories = [
     { id: 'all', label: 'Tutti', icon: CalendarDays },
     { id: 'veterinaria', label: 'Salute', icon: Stethoscope },
@@ -12382,6 +12385,16 @@ function OwnerEvents({ user }) {
     { id: 'eventi', label: 'Eventi', icon: MapPin },
   ];
 
+  // Helper per ottenere emoji animale
+  const getPetEmoji = (species) => {
+    const emojiMap = {
+      'dog': '🐕', 'cat': '🐱', 'horse': '🐴', 'rabbit': '🐰',
+      'bird': '🦜', 'reptile': '🦎', 'fish': '🐠', 'hamster': '🐹',
+      'ferret': '🦡', 'other': '🐾'
+    };
+    return emojiMap[species] || '🐾';
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       {/* Header */}
@@ -12392,6 +12405,104 @@ function OwnerEvents({ user }) {
         </h1>
         <p className="text-gray-500 mt-1">Scopri eventi, notizie e promozioni per te e il tuo animale</p>
       </div>
+
+      {/* Sezione Eventi Personalizzati per i tuoi animali */}
+      {userPets.length > 0 && personalizedEvents.length > 0 && (
+        <div className="mb-8">
+          <div 
+            className="bg-gradient-to-r from-coral-500 via-orange-500 to-amber-500 rounded-2xl p-5 mb-4 cursor-pointer hover:shadow-lg transition-all"
+            onClick={() => setShowPersonalized(!showPersonalized)}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 backdrop-blur-sm p-2 rounded-xl">
+                  <Sparkles className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-white font-bold text-lg">📌 Eventi per te e i tuoi animali</h2>
+                  <p className="text-white/80 text-sm">
+                    {personalizedEvents.length} eventi consigliati per {' '}
+                    {userPets.map(p => getPetEmoji(p.species)).join(' ')}
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className={`h-6 w-6 text-white transition-transform ${showPersonalized ? 'rotate-90' : ''}`} />
+            </div>
+            
+            {/* Mini cards degli animali dell'utente */}
+            <div className="flex flex-wrap gap-2 mt-4">
+              {userPets.slice(0, 5).map(pet => (
+                <div key={pet.id} className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-2">
+                  <span>{getPetEmoji(pet.species)}</span>
+                  <span className="text-white text-sm font-medium">{pet.name}</span>
+                </div>
+              ))}
+              {userPets.length > 5 && (
+                <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                  <span className="text-white text-sm">+{userPets.length - 5} altri</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Eventi personalizzati espansi */}
+          {showPersonalized && (
+            <div className="grid gap-4 md:grid-cols-2 mb-6 animate-in slide-in-from-top duration-300">
+              {personalizedEvents.slice(0, 4).map(event => {
+                const catStyle = getCategoryColor(event.category);
+                const isForUserPet = petCategories.includes(event.category);
+                return (
+                  <Card key={event.id} className={`overflow-hidden hover:shadow-lg transition-all duration-200 group ${isForUserPet ? 'ring-2 ring-coral-300 ring-offset-2' : ''}`}>
+                    <CardContent className="p-0">
+                      <div className={`${catStyle.bg} p-3 flex items-center justify-between`}>
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">{catStyle.icon}</span>
+                          <Badge className={`${catStyle.bg} ${catStyle.text} border-0 text-xs`}>
+                            {getCategoryLabel(event.category)}
+                          </Badge>
+                        </div>
+                        {isForUserPet && (
+                          <Badge className="bg-coral-500 text-white text-xs">
+                            <Heart className="h-3 w-3 mr-1" /> Per te
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="p-3">
+                        <h3 className="font-bold text-gray-900 mb-1 line-clamp-1 group-hover:text-coral-600 transition-colors">
+                          {event.title}
+                        </h3>
+                        {event.eventDate && (
+                          <span className="flex items-center gap-1 text-xs text-gray-500">
+                            <CalendarDays className="h-3 w-3" />
+                            {formatDate(event.eventDate)}
+                          </span>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Info se l'utente non ha animali */}
+      {userPets.length === 0 && !loading && (
+        <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl">
+          <div className="flex items-start gap-3">
+            <div className="bg-blue-100 p-2 rounded-lg">
+              <PawPrint className="h-5 w-5 text-blue-600" />
+            </div>
+            <div>
+              <p className="font-semibold text-blue-800">Aggiungi i tuoi animali!</p>
+              <p className="text-sm text-blue-600 mt-1">
+                Registra i tuoi animali per ricevere eventi e consigli personalizzati per cani, gatti, cavalli, conigli e molto altro.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Categories Filter */}
       <div className="flex flex-wrap gap-2 mb-6 overflow-x-auto pb-2">
