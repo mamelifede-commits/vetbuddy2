@@ -284,9 +284,6 @@ export async function GET(request) {
         const owner = pet ? await db.collection('users').findOne({ id: pet.ownerId }) : null;
 
         if (owner?.email && pet) {
-          // Get clinic info for buttons
-          const phoneNumber = clinic?.phone || clinic?.telefono || '';
-          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
           const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
           const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&petId=${pet.id}`;
           
@@ -316,11 +313,7 @@ export async function GET(request) {
                     <a href="${bookUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                       📅 Prenota Appuntamento
                     </a>
-                    ${phoneLink ? `
-                    <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                      📞 Chiama la Clinica
-                    </a>
-                    ` : ''}
+                    ${getContactButton(clinic, baseUrl, 'Scrivi alla Clinica', `Ciao, vorrei prenotare il richiamo vaccino ${vaccine.name} per ${pet.name}...`)}
                   </div>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
