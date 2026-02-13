@@ -346,6 +346,42 @@ backend:
         agent: "main"
         comment: "CLINIC EVENTS API IMPLEMENTED ✅: GET /api/clinic/events returns 10 veterinary events from Italian organizations (SCIVAC, FNOVI, AIVPA, etc.) with saved status. POST /api/clinic/events with action='save' saves event to favorites. POST with action='unsave' removes from favorites. POST with action='add_custom' creates custom events. Events include: title, organizer, date, location, type (congresso/corso/webinar/workshop), description, ECM credits, topics. Frontend updated to use API instead of mock data. Save button working with heart icon animation."
 
+  - task: "Invoicing/Billing System API"
+    implemented: true
+    working: true
+    file: "/app/app/api/invoices/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE INVOICING/BILLING API TESTING COMPLETED - ALL 12/12 TESTS PASSED ✅: Successfully tested all invoicing API endpoints as specified in review request. ✅ **Authentication**: Login with demo@vetbuddy.it / password123 successful. ✅ **GET /api/invoices**: List invoices with stats (total, draft, sent, paid) working perfectly. Filter support for status, fromDate, toDate, customerId all functional. ✅ **POST /api/invoices**: Create draft and issued invoices working. Customer data (name, email, phone, address, CF), pet information, items array with description/quantity/unitPrice all handled correctly. ✅ **PUT /api/invoices**: Update functionality working - draft to issued conversion generates progressive invoice number (2026/001), mark as paid updates status and paidDate. ✅ **Invoice Number Generation**: Progressive format YYYY/NNN working correctly (tested: 2026/001). ✅ **VAT Calculations**: 22% IVA calculated correctly (€100 subtotal → €22 VAT → €122 total). ✅ **Marca da Bollo**: €2.00 correctly applied for invoices >€77.47, not applied for smaller amounts. ✅ **Export Functionality**: CSV export with proper headers and filename, JSON export with clinic info and summary totals, HTML export for single invoices with VetBuddy branding and proper formatting. ✅ **GET /api/services**: Price list with 8 categories (Visite, Vaccinazioni, Chirurgia, Diagnostica, Laboratorio, Cure Dentali, Toelettatura, Altro). ✅ **POST /api/services**: Create services with name, description, category, price, duration, VAT settings. All 11 review requirements met - invoicing system fully functional for VetBuddy clinics."
+
+  - task: "Invoicing Export API"
+    implemented: true
+    working: true
+    file: "/app/app/api/invoices/export/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "INVOICING EXPORT API FULLY FUNCTIONAL ✅: All export formats working perfectly. ✅ **CSV Export**: GET /api/invoices/export?format=csv returns proper CSV with 20 columns (Numero Fattura, Data Emissione, Cliente, IVA, Totale, etc.), correct content-type text/csv, attachment filename fatture_YYYY-MM-DD.csv. ✅ **JSON Export**: GET /api/invoices/export?format=json returns structured data with export_date, clinic info, fatture array, totale_fatture and totale_importo summary. ✅ **HTML Export**: GET /api/invoices/export?format=html&id={invoiceId} generates complete HTML invoice with VetBuddy branding, clinic details, customer info, itemized services, VAT calculations, marca da bollo, payment terms. HTML includes professional styling and is ready for PDF conversion. Export API supports date filtering (from/to), status filtering, and single invoice selection. All exports respect clinic authentication and data isolation."
+
+  - task: "Services Management API"
+    implemented: true
+    working: true
+    file: "/app/app/api/services/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "SERVICES MANAGEMENT API FULLY OPERATIONAL ✅: Complete price list management for veterinary clinics. ✅ **GET /api/services**: Returns services grouped by 8 categories (Visite, Vaccinazioni, Chirurgia, Diagnostica, Laboratorio, Cure Dentali, Toelettatura, Altro) with proper category icons and structure. Empty services list initially but categories framework ready. ✅ **POST /api/services**: Successfully creates new services with all fields - name, description, category, price (€65.00 tested), duration in minutes (30 min tested), VAT inclusion flag. Service creation generates UUID and saves to clinic-specific collection. ✅ **Service Structure**: Each service includes clinicId isolation, isActive flag, created/updated timestamps. Categories use standardized IDs (visita, vaccino, chirurgia, diagnostica, laboratorio, dentale, toelettatura, altro) for consistent organization. Services API ready for clinic price list management and invoice item integration."
+
 
 
 frontend:
