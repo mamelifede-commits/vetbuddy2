@@ -12157,6 +12157,25 @@ function OwnerAppointments({ appointments, pets }) {
   // Stato per il pagamento
   const [paymentLoading, setPaymentLoading] = useState(null);
   
+  // Effetto per leggere il servizio pre-selezionato dalle email
+  useEffect(() => {
+    if (showBooking) {
+      const savedService = sessionStorage.getItem('vetbuddy_book_service');
+      if (savedService) {
+        // Trova la categoria corrispondente al servizio
+        const category = SERVICE_CATEGORIES.find(c => 
+          c.keywords.some(k => savedService.toLowerCase().includes(k.toLowerCase())) ||
+          c.id === savedService
+        );
+        if (category) {
+          setSearchMode('service');
+          setSelectedCategory(category.id);
+        }
+        sessionStorage.removeItem('vetbuddy_book_service');
+      }
+    }
+  }, [showBooking]);
+  
   // Funzione per iniziare il pagamento
   const handlePayment = async (appointment) => {
     setPaymentLoading(appointment.id);
