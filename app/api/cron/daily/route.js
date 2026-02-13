@@ -1171,8 +1171,6 @@ export async function GET(request) {
         if (owner?.email) {
           const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
           const bookUrl = `${baseUrl}?action=book&clinicId=${clinic?.id || ''}&petId=${pet.id}&reason=Sterilizzazione`;
-          const phoneNumber = clinic?.phone || clinic?.telefono || '';
-          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
           
           try {
             await sendEmail({
@@ -1199,11 +1197,7 @@ export async function GET(request) {
                       <a href="${bookUrl}" style="display: inline-block; background: #9B59B6; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                         🏥 Prenota Consulto Sterilizzazione
                       </a>
-                      ${phoneLink ? `
-                      <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                        📞 Chiama per Info
-                      </a>
-                      ` : ''}
+                      ${getContactButton(clinic, baseUrl, 'Chiedi Info', `Ciao, vorrei informazioni sulla sterilizzazione di ${pet.name}...`)}
                     </div>
                     
                     <p style="color: #999; font-size: 14px; text-align: center;">Parlane con il tuo veterinario alla prossima visita!</p>
