@@ -3931,6 +3931,119 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner,
     }
   };
   
+  // Import functions
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImportFile(file);
+    }
+  };
+  
+  const handleDocsChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImportDocs(prev => [...prev, ...files]);
+  };
+  
+  const removeDoc = (index) => {
+    setImportDocs(prev => prev.filter((_, i) => i !== index));
+  };
+  
+  const handleImportData = async () => {
+    if (!importFile) return;
+    
+    setImporting(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', importFile);
+      formData.append('type', 'data');
+      
+      const response = await fetch('/api/import', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${api.getToken()}`
+        },
+        body: formData
+      });
+      
+      const result = await response.json();
+      setImportResults(result);
+      
+      if (result.success) {
+        setImportStep(3); // Go to documents step
+        onRefresh();
+      }
+    } catch (error) {
+      setImportResults({ success: false, error: error.message });
+    } finally {
+      setImporting(false);
+    }
+  };
+  
+  const handleImportDocs = async () => {
+    if (importDocs.length === 0) {
+      setImportStep(4);
+      return;
+    }
+    
+    setImporting(true);
+    try {
+      const formData = new FormData();
+      importDocs.forEach(file => formData.append('files', file));
+      formData.append('type', 'documents');
+      
+      const response = await fetch('/api/import', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${api.getToken()}`
+        },
+        body: formData
+      });
+      
+      const result = await response.json();
+      setImportResults(prev => ({
+        ...prev,
+        imported: {
+          ...prev?.imported,
+          documents: result.imported?.documents || 0
+        },
+        warnings: [...(prev?.warnings || []), ...(result.warnings || [])],
+        errors: [...(prev?.errors || []), ...(result.errors || [])]
+      }));
+      
+      setImportStep(4);
+      onRefresh();
+    } catch (error) {
+      setImportResults(prev => ({
+        ...prev,
+        errors: [...(prev?.errors || []), error.message]
+      }));
+    } finally {
+      setImporting(false);
+    }
+  };
+  
+  const downloadTemplate = () => {
+    const csvContent = `nome,specie,razza,data_nascita,microchip,sesso,peso,colore,note,proprietario,email,telefono,vaccino,data_vaccino,scadenza_vaccino
+Luna,cane,Labrador,15/03/2020,380260000123456,femmina,25,biondo,Cane molto socievole,Mario Rossi,mario.rossi@email.it,+39 333 1234567,Polivalente,01/01/2024,01/01/2025
+Max,gatto,Europeo,20/06/2019,380260000789012,maschio,5,tigrato,,Anna Bianchi,anna.bianchi@email.it,+39 338 9876543,Trivalente,15/03/2024,15/03/2025`;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'template_import_pazienti.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+  
+  const resetImport = () => {
+    setImportStep(1);
+    setImportFile(null);
+    setImportDocs([]);
+    setImportResults(null);
+    setShowImportDialog(false);
+  };
+  
   // Filtra i pazienti per la ricerca
   const filteredPets = pets.filter(pet => {
     if (!searchQuery) return true;
