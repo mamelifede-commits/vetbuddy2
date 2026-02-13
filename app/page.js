@@ -10154,7 +10154,7 @@ function OwnerAppointments({ appointments, pets }) {
       ) : (
         <div className="space-y-3">
           {appointments.map((appt) => (
-            <Card key={appt.id}>
+            <Card key={appt.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setSelectedAppointment(appt)}>
               <CardContent className="p-4 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${appt.type === 'videoconsulto' ? 'bg-blue-100' : 'bg-coral-100'}`}>
@@ -10169,7 +10169,7 @@ function OwnerAppointments({ appointments, pets }) {
                   <p className="font-medium">{appt.date}</p>
                   <p className="text-sm text-gray-500">{appt.time}</p>
                   {appt.type === 'videoconsulto' && appt.videoLink && (
-                    <Button size="sm" className="mt-2 bg-blue-500 hover:bg-blue-600" onClick={() => window.open(appt.videoLink, '_blank')}>
+                    <Button size="sm" className="mt-2 bg-blue-500 hover:bg-blue-600" onClick={(e) => { e.stopPropagation(); window.open(appt.videoLink, '_blank'); }}>
                       <Video className="h-3 w-3 mr-1" />Entra nel Video Consulto
                     </Button>
                   )}
@@ -10179,6 +10179,88 @@ function OwnerAppointments({ appointments, pets }) {
           ))}
         </div>
       )}
+      
+      {/* Modal Dettagli Appuntamento */}
+      <Dialog open={!!selectedAppointment} onOpenChange={(open) => !open && setSelectedAppointment(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-blue-500" />
+              Dettagli Appuntamento
+            </DialogTitle>
+          </DialogHeader>
+          {selectedAppointment && (
+            <div className="space-y-4">
+              {/* Info Paziente */}
+              <div className="flex items-center gap-3 p-3 bg-coral-50 rounded-lg">
+                <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
+                  <PawPrint className="h-5 w-5 text-coral-600" />
+                </div>
+                <div>
+                  <p className="font-semibold">{selectedAppointment.petName}</p>
+                  <p className="text-sm text-gray-500">{selectedAppointment.petSpecies || 'Animale'}</p>
+                </div>
+              </div>
+              
+              {/* Info Appuntamento */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <Calendar className="h-5 w-5 text-blue-500" />
+                  <div>
+                    <p className="text-sm text-gray-500">Data e Ora</p>
+                    <p className="font-medium">{selectedAppointment.date} alle {selectedAppointment.time}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <Stethoscope className="h-5 w-5 text-green-500" />
+                  <div>
+                    <p className="text-sm text-gray-500">Motivo Visita</p>
+                    <p className="font-medium">{selectedAppointment.reason || 'Visita di controllo'}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <MapPin className="h-5 w-5 text-coral-500" />
+                  <div>
+                    <p className="text-sm text-gray-500">Clinica</p>
+                    <p className="font-medium">{selectedAppointment.clinicName || 'Clinica Veterinaria'}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <AlertCircle className={`h-5 w-5 ${selectedAppointment.status === 'confirmed' ? 'text-green-500' : selectedAppointment.status === 'pending' ? 'text-amber-500' : 'text-gray-500'}`} />
+                  <div>
+                    <p className="text-sm text-gray-500">Stato</p>
+                    <p className={`font-medium ${selectedAppointment.status === 'confirmed' ? 'text-green-600' : selectedAppointment.status === 'pending' ? 'text-amber-600' : 'text-gray-600'}`}>
+                      {selectedAppointment.status === 'confirmed' ? '✓ Confermato' : selectedAppointment.status === 'pending' ? '⏳ In attesa' : selectedAppointment.status === 'completed' ? '✓ Completato' : selectedAppointment.status}
+                    </p>
+                  </div>
+                </div>
+                
+                {selectedAppointment.notes && (
+                  <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                    <p className="text-sm text-gray-500 mb-1">Note</p>
+                    <p className="text-sm text-gray-700">{selectedAppointment.notes}</p>
+                  </div>
+                )}
+              </div>
+              
+              {/* Azioni */}
+              <div className="flex gap-2 pt-4 border-t">
+                {selectedAppointment.type === 'videoconsulto' && selectedAppointment.videoLink && (
+                  <Button className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={() => window.open(selectedAppointment.videoLink, '_blank')}>
+                    <Video className="h-4 w-4 mr-2" />Entra nel Video Consulto
+                  </Button>
+                )}
+                <Button variant="outline" className="flex-1" onClick={() => setSelectedAppointment(null)}>
+                  Chiudi
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
