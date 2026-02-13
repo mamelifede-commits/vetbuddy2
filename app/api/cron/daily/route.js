@@ -1400,6 +1400,7 @@ export async function GET(request) {
                     <li>📄 Ricevere documenti e referti</li>
                     <li>💬 Chattare con la clinica</li>
                     <li>🔔 Ricevere promemoria automatici</li>
+                    <li>🎁 Ricevere premi fedeltà</li>
                   </ul>
                   
                   <!-- Action Buttons -->
@@ -1410,11 +1411,6 @@ export async function GET(request) {
                     <a href="${exploreUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
                       🔍 Esplora VetBuddy
                     </a>
-                    ${phoneLink ? `
-                    <a href="${phoneLink}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                      📞 Chiama la Clinica
-                    </a>
-                    ` : ''}
                   </div>
                   
                   <p style="font-size: 24px; text-align: center;">🐕 🐈 🐰</p>
@@ -1455,9 +1451,7 @@ export async function GET(request) {
         if (owner?.email) {
           const discount = clientStats.visitCount === 5 ? '10%' : clientStats.visitCount === 10 ? '15%' : '20%';
           const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
-          const bookUrl = `${baseUrl}?action=book&clinicId=${clinic.id}`;
-          const phoneNumber = clinic.phone || clinic.telefono || '';
-          const phoneLink = phoneNumber ? `tel:${phoneNumber.replace(/\s/g, '')}` : '';
+          const rewardsUrl = `${baseUrl}?action=rewards`;
           
           try {
             await sendEmail({
