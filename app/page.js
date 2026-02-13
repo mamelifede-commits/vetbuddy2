@@ -11529,6 +11529,26 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           </div>
         </div>
 
+        {/* Tutorial Box per Proprietari */}
+        {activeTab === 'appointments' && (
+          <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-200">
+            <div className="flex items-start gap-3">
+              <div className="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <PlayCircle className="h-5 w-5 text-purple-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-800 mb-1">📚 Tutorial per Proprietari</h3>
+                <p className="text-sm text-gray-600 mb-2">
+                  Scopri come utilizzare al meglio VetBuddy per gestire la salute del tuo animale.
+                </p>
+                <a href="/tutorial" className="inline-flex items-center gap-1 text-purple-600 font-medium text-sm hover:underline">
+                  <PlayCircle className="h-4 w-4" /> Guarda il tutorial
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
         {activeTab === 'appointments' && <OwnerAppointments appointments={appointments} pets={pets} />}
         {activeTab === 'documents' && <OwnerDocuments documents={documents.filter(d => d.type !== 'invoice' && d.category !== 'fattura')} pets={pets} onRefresh={loadData} />}
         {activeTab === 'invoices' && <OwnerInvoices invoices={documents.filter(d => d.type === 'invoice' || d.category === 'fattura')} pets={pets} onRefresh={loadData} />}
