@@ -1,4 +1,4 @@
-// Test script to send a reward email (ES Module)
+// Test script to send a reward email with fixed QR code
 import { Resend } from 'resend';
 import { readFileSync } from 'fs';
 
@@ -16,12 +16,12 @@ const resend = new Resend(envVars.RESEND_API_KEY);
 
 async function sendTestRewardEmail() {
   const testEmail = 'info@vetbuddy.it';
-  const redeemCode = 'TEST42';
+  const redeemCode = 'PREMIO';
   const baseUrl = envVars.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
   
-  // QR Code URL
-  const qrData = encodeURIComponent(`VETBUDDY-REWARD:${redeemCode}`);
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrData}&bgcolor=ffffff&color=FF6B6B`;
+  // QR Code URL - using quickchart.io (more reliable for emails)
+  const qrData = encodeURIComponent(`VETBUDDY:${redeemCode}`);
+  const qrCodeUrl = `https://quickchart.io/qr?text=${qrData}&size=150&dark=FF6B6B&light=ffffff&ecLevel=M&format=png`;
   
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -47,9 +47,10 @@ async function sendTestRewardEmail() {
         </div>
         
         <!-- QR Code -->
-        <div style="text-align: center; margin: 25px 0;">
-          <p style="color: #888; font-size: 12px; margin-bottom: 10px;">Oppure mostra questo QR Code in clinica:</p>
-          <img src="${qrCodeUrl}" alt="QR Code Premio" style="width: 150px; height: 150px; border-radius: 10px; border: 3px solid #FFD93D;" />
+        <div style="text-align: center; margin: 25px 0; padding: 20px; background: white; border-radius: 10px;">
+          <p style="color: #888; font-size: 12px; margin-bottom: 15px;">Oppure mostra questo QR Code in clinica:</p>
+          <img src="${qrCodeUrl}" alt="QR Code Premio" width="150" height="150" style="display: block; margin: 0 auto; border-radius: 10px; border: 3px solid #FFD93D;" />
+          <p style="color: #999; font-size: 10px; margin-top: 10px;">Scansiona per verificare il codice</p>
         </div>
         
         <p style="color: #888; font-size: 14px; text-align: center; margin-top: 20px;">
@@ -88,21 +89,20 @@ async function sendTestRewardEmail() {
 
   try {
     console.log('📧 Invio email di test a:', testEmail);
-    console.log('🔑 API Key presente:', !!envVars.RESEND_API_KEY);
+    console.log('🔗 QR Code URL:', qrCodeUrl);
     
     const result = await resend.emails.send({
       from: 'VetBuddy <noreply@vetbuddy.it>',
       to: testEmail,
-      subject: '🎁 [TEST] Hai ricevuto un premio da Clinica Veterinaria Milano!',
+      subject: '🎁 [TEST v2] Premio con QR Code corretto!',
       html: html
     });
     
     console.log('✅ Email inviata con successo!');
-    console.log('📬 Result:', JSON.stringify(result, null, 2));
+    console.log('📬 ID:', result.data?.id);
     return result;
   } catch (error) {
     console.error('❌ Errore invio email:', error.message);
-    console.error('Details:', error);
     throw error;
   }
 }
