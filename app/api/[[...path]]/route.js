@@ -1201,6 +1201,121 @@ export async function POST(request, { params }) {
       const token = generateToken({ id: user.id, email: user.email, role: user.role });
       const { password: _, ...userWithoutPassword } = user;
       
+      // Invia email di benvenuto in background
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+      try {
+        if (role === 'owner') {
+          // Email di benvenuto per proprietari
+          await sendEmail({
+            to: email,
+            subject: '🐾 Benvenuto in VetBuddy! Grazie per esserti iscritto',
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <h2 style="color: #333;">Benvenuto ${name}! 🎉</h2>
+                  <p style="color: #666; font-size: 16px;">Grazie per esserti iscritto a VetBuddy, la piattaforma che ti aiuta a prenderti cura dei tuoi amici a 4 zampe!</p>
+                  
+                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FF6B6B;">
+                    <h3 style="color: #333; margin-top: 0;">Cosa puoi fare ora:</h3>
+                    <ul style="color: #666; font-size: 16px; padding-left: 20px;">
+                      <li>📋 Registra i tuoi animali</li>
+                      <li>📅 Prenota visite online</li>
+                      <li>💉 Ricevi promemoria vaccini automatici</li>
+                      <li>📱 Comunica facilmente con la tua clinica</li>
+                      <li>🎁 Accumula premi fedeltà</li>
+                    </ul>
+                  </div>
+                  
+                  <div style="text-align: center; margin: 30px 0;">
+                    <a href="${baseUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold;">
+                      🚀 Accedi a VetBuddy
+                    </a>
+                  </div>
+                  
+                  <p style="color: #999; font-size: 14px; text-align: center;">Hai domande? Rispondi a questa email e ti aiuteremo!</p>
+                </div>
+                <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                </div>
+              </div>
+            `
+          });
+        } else if (role === 'clinic') {
+          // Email di benvenuto per cliniche nel Pilot
+          await sendEmail({
+            to: email,
+            subject: '🏥 Benvenuto nel Pilot VetBuddy Milano! Grazie per aver aderito',
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #4CAF50, #8BC34A); padding: 20px; border-radius: 10px 10px 0 0;">
+                  <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                  <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0;">Pilot Milano</p>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <h2 style="color: #333;">Grazie ${clinicName || name}! 🎉</h2>
+                  <p style="color: #666; font-size: 16px;">Siamo entusiasti di avervi nel Pilot di VetBuddy a Milano!</p>
+                  
+                  <div style="background: linear-gradient(135deg, #E8F5E9, #C8E6C9); padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #4CAF50;">
+                    <h3 style="color: #2E7D32; margin-top: 0;">🎁 Vantaggi Pilot:</h3>
+                    <ul style="color: #388E3C; font-size: 16px; padding-left: 20px;">
+                      <li><strong>90 giorni gratuiti</strong> del piano Pro (estendibili a 6 mesi)</li>
+                      <li>Accesso anticipato a tutte le funzionalità</li>
+                      <li>Supporto dedicato durante il pilot</li>
+                      <li>Influenza diretta sullo sviluppo del prodotto</li>
+                    </ul>
+                  </div>
+                  
+                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #333; margin-top: 0;">📋 Prossimi passi:</h3>
+                    <ol style="color: #666; font-size: 16px; padding-left: 20px;">
+                      <li>Completa il profilo della clinica</li>
+                      <li>Configura i servizi e i prezzi</li>
+                      <li>Attiva le automazioni (email, promemoria...)</li>
+                      <li>Invita il tuo staff</li>
+                    </ol>
+                  </div>
+                  
+                  <div style="text-align: center; margin: 30px 0;">
+                    <a href="${baseUrl}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold;">
+                      🚀 Accedi alla Dashboard
+                    </a>
+                  </div>
+                  
+                  <p style="color: #666; font-size: 14px;">Il team VetBuddy vi contatterà presto per una sessione di onboarding personalizzata.</p>
+                  <p style="color: #999; font-size: 14px; text-align: center;">Domande? Scrivici a <a href="mailto:info@vetbuddy.it" style="color: #4CAF50;">info@vetbuddy.it</a></p>
+                </div>
+                <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                </div>
+              </div>
+            `
+          });
+          
+          // Notifica anche l'admin di una nuova clinica
+          await sendEmail({
+            to: 'info@vetbuddy.it',
+            subject: `🏥 Nuova clinica registrata: ${clinicName || name}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2>🎉 Nuova Clinica nel Pilot!</h2>
+                <p><strong>Nome:</strong> ${clinicName || name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Telefono:</strong> ${phone || 'Non specificato'}</p>
+                <p><strong>Città:</strong> ${city || 'Non specificata'}</p>
+                <p><strong>Data:</strong> ${new Date().toLocaleDateString('it-IT')} ${new Date().toLocaleTimeString('it-IT')}</p>
+                <a href="${baseUrl}/admin" style="display: inline-block; background: #FF6B6B; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; margin-top: 15px;">Vai all'Admin Panel</a>
+              </div>
+            `
+          });
+        }
+      } catch (emailError) {
+        console.error('Error sending welcome email:', emailError);
+        // Non bloccare la registrazione se l'email fallisce
+      }
+      
       return NextResponse.json({ user: userWithoutPassword, token }, { headers: corsHeaders });
     }
 
