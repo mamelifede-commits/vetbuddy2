@@ -310,7 +310,7 @@ def main():
     """Run Pet Management PUT API tests"""
     
     # Configuration from review request
-    BASE_URL = "https://bulk-import-feature.preview.emergentagent.com"
+    BASE_URL = "https://archivio-clinica.preview.emergentagent.com"
     OWNER_EMAIL = "proprietario.demo@vetbuddy.it"  
     OWNER_PASSWORD = "demo123"
     CLINIC_EMAIL = "demo@vetbuddy.it"
