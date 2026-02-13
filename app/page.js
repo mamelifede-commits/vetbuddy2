@@ -11727,7 +11727,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         </div>
 
         {activeTab === 'appointments' && <OwnerAppointments appointments={appointments} pets={pets} />}
-        {activeTab === 'documents' && <OwnerDocuments documents={documents.filter(d => d.type !== 'invoice' && d.category !== 'fattura')} pets={pets} onRefresh={loadData} />}
+        {activeTab === 'documents' && <OwnerDocuments documents={documents.filter(d => d.type !== 'invoice' && d.category !== 'fattura')} pets={pets} onRefresh={loadData} user={user} />}
         {activeTab === 'invoices' && <OwnerInvoices invoices={documents.filter(d => d.type === 'invoice' || d.category === 'fattura')} pets={pets} onRefresh={loadData} />}
         {activeTab === 'messages' && <OwnerMessages messages={messages} clinics={clinics} onRefresh={loadData} />}
         {activeTab === 'pets' && <OwnerPets pets={pets} onRefresh={loadData} onOpenProfile={handleOpenPetProfile} />}
