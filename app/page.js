@@ -2111,11 +2111,19 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, re
       )}
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <KPICard icon={Calendar} label="Appuntamenti oggi" value={todayAppts.length} color="coral" onClick={() => onNavigate('agenda')} />
         <KPICard icon={Video} label="Video visite oggi" value={videoAppts.length} color="blue" highlight={videoAppts[0]?.time} onClick={() => onNavigate('agenda')} />
         <KPICard icon={MessageCircle} label="Messaggi in attesa" value={unreadMessages} color="amber" onClick={() => onNavigate('inbox')} />
         <KPICard icon={FileText} label="Nuovi da clienti" value={newFromClients} color="green" onClick={() => onNavigate('documents')} />
+        <KPICard 
+          icon={Gift} 
+          label="Premi attivi" 
+          value={activeRewards.length} 
+          color="yellow" 
+          highlight={pendingRewards.length > 0 ? `${pendingRewards.length} da confermare` : null}
+          onClick={() => onNavigate('rewards')} 
+        />
       </div>
 
       {/* Main Content Grid */}
