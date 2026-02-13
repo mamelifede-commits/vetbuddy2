@@ -128,12 +128,38 @@ export async function POST(request) {
       </div>
     `;
 
-    // Invia l'email
-    await sendEmail({
+    // Genera il PDF della fattura
+    let pdfBuffer = null;
+    try {
+      pdfBuffer = await generateInvoicePDF(invoice);
+      
+      // Se il PDF non è già salvato come documento, salvalo
+      if (!invoice.pdfDocumentId) {
+        const pdfDocument = await saveInvoicePDFAsDocument(db, invoice, pdfBuffer);
+        console.log(`PDF fattura ${invoice.invoiceNumber} salvato come documento ${pdfDocument.id}`);
+      }
+    } catch (pdfError) {
+      console.error('Error generating invoice PDF:', pdfError);
+    }
+
+    // Prepara l'email
+    const emailConfig = {
       to: toEmail,
       subject: `📋 Fattura ${invoice.invoiceNumber} - ${invoice.clinicName || 'VetBuddy'}`,
       html: emailHtml
-    });
+    };
+    
+    // Aggiungi allegato PDF se disponibile
+    if (pdfBuffer) {
+      emailConfig.attachments = [{
+        filename: `Fattura_${invoice.invoiceNumber.replace('/', '-')}.pdf`,
+        content: pdfBuffer.toString('base64'),
+        type: 'application/pdf'
+      }];
+    }
+
+    // Invia l'email
+    await sendEmail(emailConfig);
 
     // Aggiorna la fattura con lo stato di invio
     await db.collection('invoices').updateOne(
