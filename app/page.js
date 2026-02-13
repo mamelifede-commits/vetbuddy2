@@ -3854,6 +3854,14 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner,
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editFormData, setEditFormData] = useState({});
   
+  // Import states
+  const [showImportDialog, setShowImportDialog] = useState(false);
+  const [importStep, setImportStep] = useState(1); // 1: choose, 2: upload data, 3: upload docs, 4: results
+  const [importFile, setImportFile] = useState(null);
+  const [importDocs, setImportDocs] = useState([]);
+  const [importing, setImporting] = useState(false);
+  const [importResults, setImportResults] = useState(null);
+  
   // Apri automaticamente il pet se viene passato da un altro componente
   useEffect(() => {
     if (initialPet) {
