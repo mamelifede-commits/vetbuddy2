@@ -837,7 +837,7 @@ function LandingPage({ onLogin }) {
           
           {/* Headline principale */}
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight animate-fade-in-up animate-delay-100">
-            La piattaforma per <span className="text-coral-500">cliniche veterinarie</span> e <span className="text-blue-500">proprietari di animali</span>
+            <span className="text-coral-500">Cliniche veterinarie</span> e <span className="text-blue-500">proprietari di pet</span> in un'unica piattaforma
           </h1>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto animate-fade-in-up animate-delay-200">
             Gestisci appuntamenti, documenti e comunicazione in un'unica piattaforma. Zero carta, zero caos.
