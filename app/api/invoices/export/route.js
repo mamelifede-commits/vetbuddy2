@@ -243,12 +243,15 @@ function generateInvoiceHTML(invoice, clinic) {
   ` : ''}
   
   <div class="footer">
+    <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+      <p style="margin: 0; color: #856404; font-weight: bold;">⚠️ FATTURA PROFORMA - DOCUMENTO NON FISCALE</p>
+      <p style="margin: 5px 0 0; color: #856404; font-size: 11px;">
+        Questo documento è una pre-fattura di cortesia e non ha valore fiscale. 
+        Per la fattura ufficiale ai fini fiscali, contattare direttamente la clinica.
+      </p>
+    </div>
     <p><strong>Modalità di pagamento:</strong> Bonifico bancario / Contanti / POS</p>
     <p>Documento generato da VetBuddy - www.vetbuddy.it</p>
-    <p style="margin-top: 10px; font-size: 10px;">
-      Ai sensi dell'art. 1 comma 3 del D.Lgs 127/2015, questo documento non costituisce fattura elettronica 
-      ai fini fiscali se non trasmesso al Sistema di Interscambio (SdI).
-    </p>
   </div>
 </body>
 </html>
