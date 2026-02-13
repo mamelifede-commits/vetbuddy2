@@ -322,6 +322,32 @@ backend:
         agent: "testing"
         comment: "COMPREHENSIVE IMPORT API TESTING COMPLETED - ALL 5/5 TESTS PASSED ✅: Successfully tested VetBuddy Patient Import API as specified in review request. ✅ GET /api/import returns complete template information with required columns (nome, specie), 17 optional columns (razza, data_nascita, microchip, proprietario, email, telefono, vaccino, etc.), example row data, and usage notes. Template endpoint is public (no authentication required). ✅ POST /api/import with CSV file successfully imports patients - tested with template_import_pazienti.csv from /app/public/downloads/. Import working correctly: imported 2 pets, 2 vaccines, 0 new owners (owners already existed - shows duplicate handling working). Warnings properly returned for existing pets with microchips - clinic association added correctly. ✅ POST /api/import error handling working: returns 400 'Nessun file caricato' for no file, returns 400 'File vuoto o formato non valido' for empty CSV. ✅ Authentication working: GET endpoint public, POST endpoint requires Bearer token (clinic authentication working with provided token). All import functionality operational: CSV parsing, owner creation/lookup, pet creation with duplicate microchip handling, vaccination import, proper error responses."
 
+  - task: "Clinic Archive API"
+    implemented: true
+    working: true
+    file: "/app/app/api/clinic/archive/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "CLINIC ARCHIVE API IMPLEMENTED ✅: GET /api/clinic/archive returns all files for the authenticated clinic. POST /api/clinic/archive uploads new files with name, category, description. DELETE /api/clinic/archive?id={fileId} deletes files. Categories supported: protocolli, casi_studio, template, formazione, schede_tecniche, amministrazione. Tested via curl with demo@vetbuddy.it credentials. File metadata stored in MongoDB 'clinic_archive' collection."
+
+  - task: "Clinic Events API"
+    implemented: true
+    working: true
+    file: "/app/app/api/clinic/events/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "CLINIC EVENTS API IMPLEMENTED ✅: GET /api/clinic/events returns 10 veterinary events from Italian organizations (SCIVAC, FNOVI, AIVPA, etc.) with saved status. POST /api/clinic/events with action='save' saves event to favorites. POST with action='unsave' removes from favorites. POST with action='add_custom' creates custom events. Events include: title, organizer, date, location, type (congresso/corso/webinar/workshop), description, ECM credits, topics. Frontend updated to use API instead of mock data. Save button working with heart icon animation."
+
+
+
 frontend:
   - task: "Landing Page UI"
     implemented: true
