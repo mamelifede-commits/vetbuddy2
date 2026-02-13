@@ -8850,13 +8850,22 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           }
           break;
         case 'book':
-          // Show booking dialog/tab
+          // Show booking dialog/tab - with optional pre-selected service
           setActiveTab('appointments');
           setShowBookingFromEmail(true);
+          if (emailAction.serviceType) {
+            // Store service type to pre-select in booking form
+            sessionStorage.setItem('vetbuddy_book_service', emailAction.serviceType);
+          }
           break;
         case 'message':
-          // Go to messages tab
+        case 'messages':
+          // Go to messages tab - optionally create new message
           setActiveTab('messages');
+          if (emailAction.newMessage && emailAction.clinicId) {
+            // Trigger new message to specific clinic
+            sessionStorage.setItem('vetbuddy_new_message_clinic', emailAction.clinicId);
+          }
           break;
         case 'review':
         case 'reviews':
@@ -8864,11 +8873,34 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           setActiveTab('reviews');
           break;
         case 'profile':
+        case 'pets':
           // Go to pets/profile section
           setActiveTab('pets');
           break;
+        case 'pay':
+          // Go to payment - find the specific appointment to pay
+          setActiveTab('appointments');
+          if (emailAction.appointmentId) {
+            // Store appointment ID to show payment dialog
+            sessionStorage.setItem('vetbuddy_pay_appointment', emailAction.appointmentId);
+            // Find and show payment for this appointment
+            const aptToPay = appointments.find(a => a.id === emailAction.appointmentId);
+            if (aptToPay) {
+              setSelectedAppointment(aptToPay);
+              // Could trigger payment modal here
+            }
+          }
+          break;
+        case 'documents':
+          // Go to documents section
+          setActiveTab('documents');
+          if (emailAction.docId) {
+            // Store doc ID to highlight/open specific document
+            sessionStorage.setItem('vetbuddy_open_doc', emailAction.docId);
+          }
+          break;
         case 'payment':
-          // Go to documents (where invoices are)
+          // Legacy - go to documents (where invoices are)
           setActiveTab('documents');
           break;
         case 'appointments':
@@ -8878,6 +8910,10 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         case 'rewards':
           // Go to rewards section
           setActiveTab('rewards');
+          if (emailAction.rewardId && emailAction.use) {
+            // Store reward ID to show usage dialog
+            sessionStorage.setItem('vetbuddy_use_reward', emailAction.rewardId);
+          }
           break;
         default:
           break;
