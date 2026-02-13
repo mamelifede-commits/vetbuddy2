@@ -512,11 +512,11 @@ function LandingPage({ onLogin }) {
             <nav className="flex flex-col gap-3">
               <button onClick={() => { scrollToSection('funzionalita'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Funzionalità</button>
               <button onClick={() => { scrollToSection('automazioni'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Automazioni</button>
-              <button onClick={() => { scrollToSection('import'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-blue-500 transition">📁 Import</button>
-              <button onClick={() => { scrollToSection('premi'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-amber-500 transition">🎁 Premi</button>
+              <button onClick={() => { scrollToSection('import'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Import</button>
+              <button onClick={() => { scrollToSection('premi'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Premi</button>
               <button onClick={() => { scrollToSection('pilot'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Prezzi</button>
-              <a href="/presentazione" className="text-gray-600 text-left py-2 hover:text-purple-500 transition block">📊 Brochure</a>
-              <a href="/tutorial" className="text-gray-600 text-left py-2 hover:text-green-500 transition block">🎓 Tutorial</a>
+              <a href="/presentazione" className="text-gray-600 text-left py-2 hover:text-coral-500 transition block">Brochure</a>
+              <a href="/tutorial" className="text-gray-600 text-left py-2 hover:text-coral-500 transition block">Tutorial</a>
               <hr className="my-2" />
               <Button variant="ghost" className="justify-start" onClick={() => { setAuthMode('login'); setShowAuth(true); setMobileMenuOpen(false); }}>Accedi</Button>
               <Button className="bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); setMobileMenuOpen(false); }}>Registrati</Button>
