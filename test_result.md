@@ -447,15 +447,18 @@ frontend:
 
   - task: "Animal Species Horse Addition"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/app/page.js"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
         comment: "NEW REQUIREMENT: In owner dashboard 'I miei animali', verify '🐴 Cavallo' (Horse) is available in species dropdown alongside existing species (dog, cat, bird, rabbit, hamster, fish, reptile, other)."
+      - working: true
+        agent: "testing"
+        comment: "✅ CODE VERIFIED: Horse species correctly added to getPetSpeciesInfo function (line 47 in page.js): horse: { emoji: '🐴', name: 'Cavallo', icon: PawPrint }. Complete species map includes all required species: dog (🐕 Cane), cat (🐱 Gatto), horse (🐴 Cavallo), bird (🦜 Uccello), rabbit (🐰 Coniglio), hamster (🐹 Criceto), fish (🐠 Pesce), reptile (🦎 Rettile), other (🐾 Altro). Horse addition implemented correctly with proper emoji and Italian translation."
 
   - task: "Invoicing Tab in Clinic Dashboard"
     implemented: true
