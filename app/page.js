@@ -1618,7 +1618,7 @@ function LandingPage({ onLogin }) {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <span className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full mb-4 font-semibold">
-              <Gift className="h-5 w-5" /> NOVITÀ
+              NOVITÀ
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Premi Fedeltà</h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
