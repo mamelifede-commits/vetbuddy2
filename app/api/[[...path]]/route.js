@@ -1287,7 +1287,7 @@ export async function POST(request, { params }) {
                   
                   <div style="background: #FFF3CD; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FFC107;">
                     <p style="color: #856404; margin: 0; font-size: 14px;">
-                      <strong>⚠️ Importante:</strong> Dopo la verifica email, riceverai un codice OTP su WhatsApp per confermare il numero di telefono della clinica.
+                      <strong>⚠️ Importante:</strong> Dopo la verifica email, riceverai un codice OTP via SMS per confermare il numero di telefono della clinica.
                     </p>
                   </div>
                   
