@@ -15922,7 +15922,7 @@ function PetProfile({ petId, onBack, appointments, documents }) {
                       <p className="font-medium">{lastDocument.name}</p>
                       <p className="text-sm text-gray-500">{new Date(lastDocument.createdAt).toLocaleDateString()}</p>
                     </div>
-                    <Button size="sm" variant="outline"><Eye className="h-4 w-4 mr-1" />Apri</Button>
+                    <Button size="sm" variant="outline" onClick={() => handleOpenDocument(lastDocument)}><Eye className="h-4 w-4 mr-1" />Apri</Button>
                   </div>
                 ) : (
                   <p className="text-gray-500 text-sm">Nessun documento</p>
