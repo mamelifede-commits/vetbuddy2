@@ -2097,6 +2097,39 @@ function AuthForm({ mode, setMode, onLogin }) {
     );
   }
 
+  // Schermata conferma registrazione proprietario (richiede verifica email)
+  if (registrationComplete) {
+    return (
+      <div className="text-center py-4">
+        <div className="mx-auto h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+          <Mail className="h-8 w-8 text-blue-500" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Quasi fatto! 📧</h3>
+        <p className="text-gray-600 mb-4">
+          Abbiamo inviato un'email di verifica a <strong>{formData.email}</strong>
+        </p>
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg mb-4 text-left">
+          <p className="text-sm text-blue-700 mb-2">
+            <strong>📋 Completa la verifica:</strong>
+          </p>
+          <ol className="text-sm text-blue-700 list-decimal ml-4 mt-1 space-y-1">
+            <li>Apri l'email che ti abbiamo inviato</li>
+            <li>Clicca sul pulsante <strong>"Verifica Email"</strong></li>
+            <li>Inserisci il codice OTP che riceverai su <strong>WhatsApp</strong></li>
+          </ol>
+        </div>
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg mb-4">
+          <p className="text-sm text-amber-700">
+            <strong>💡 Non trovi l'email?</strong> Controlla nella cartella spam o promozioni.
+          </p>
+        </div>
+        <Button onClick={() => { setRegistrationComplete(false); setMode('login'); }} variant="outline" className="w-full">
+          Ho verificato, accedi
+        </Button>
+      </div>
+    );
+  }
+
   if (showForgotPassword) {
     return (
       <div>
