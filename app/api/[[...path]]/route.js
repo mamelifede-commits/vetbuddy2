@@ -1348,51 +1348,63 @@ export async function POST(request, { params }) {
         return NextResponse.json({ success: true, message: 'Email già verificata', alreadyVerified: true }, { headers: corsHeaders });
       }
 
-      // Verify email
+      // Verify email - account is now fully verified (no phone verification needed)
       await users.updateOne(
         { id: user.id },
         { 
-          $set: { emailVerified: true, emailVerifiedAt: new Date().toISOString() },
-          $unset: { emailVerificationToken: '' }
+          $set: { 
+            emailVerified: true, 
+            emailVerifiedAt: new Date().toISOString(),
+            phoneVerified: true // Auto-verify phone since we're not requiring SMS
+          },
+          $unset: { emailVerificationToken: '', phoneOTP: '', phoneOTPExpiry: '' }
         }
       );
 
-      // Now send OTP via SMS if phone exists
-      if (user.phone) {
-        try {
-          // Generate new OTP
-          const phoneOTP = Math.floor(100000 + Math.random() * 900000).toString();
-          const otpExpiry = new Date(Date.now() + 10 * 60 * 1000).toISOString();
-          
-          await users.updateOne(
-            { id: user.id },
-            { $set: { phoneOTP, phoneOTPExpiry: otpExpiry } }
-          );
-
-          // Send OTP via SMS
-          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
-          const smsResponse = await fetch(`${baseUrl}/api/sms/send`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              to: user.phone,
-              message: `VetBuddy - Il tuo codice OTP è: ${phoneOTP}. Scade tra 10 minuti.`
-            })
-          });
-
-          const smsResult = await smsResponse.json();
-          console.log('📱 SMS OTP sent:', smsResult);
-        } catch (smsError) {
-          console.error('Error sending SMS OTP:', smsError);
-        }
+      // Send welcome email now that email is verified
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+      try {
+        await sendEmail({
+          to: user.email,
+          subject: '🎉 Account verificato - Benvenuto in VetBuddy!',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
+                <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+              </div>
+              <div style="padding: 30px; background: #f9f9f9;">
+                <h2 style="color: #333;">Account verificato! 🎉</h2>
+                <p style="color: #666; font-size: 16px;">Ciao ${user.name}, il tuo account è ora attivo!</p>
+                
+                <div style="background: #D4EDDA; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #28A745;">
+                  <p style="color: #155724; margin: 0;">
+                    ✅ Email verificata<br/>
+                    ✅ Account attivo
+                  </p>
+                </div>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${baseUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold;">
+                    🚀 Inizia a usare VetBuddy
+                  </a>
+                </div>
+              </div>
+              <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+              </div>
+            </div>
+          `
+        });
+      } catch (e) {
+        console.error('Error sending welcome email:', e);
       }
 
       return NextResponse.json({ 
         success: true, 
-        message: 'Email verificata! Ti abbiamo inviato un codice OTP via SMS.',
+        message: 'Email verificata! Il tuo account è ora attivo. Puoi effettuare il login.',
         emailVerified: true,
-        requiresPhoneVerification: !!user.phone,
-        userId: user.id
+        fullyVerified: true,
+        requiresPhoneVerification: false
       }, { headers: corsHeaders });
     }
 
