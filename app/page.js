@@ -3108,13 +3108,7 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate
     const shareUrl = `${window.location.origin}?appointment=${appt.id}`;
     const shareText = `📅 Appuntamento VetBuddy\n\n🐾 ${appt.petName}\n📆 ${appt.date} ore ${appt.time}\n🏥 ${appt.type}\n\nDettagli: ${shareUrl}`;
     
-    // Try native share first
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: 'Appuntamento VetBuddy', text: shareText, url: shareUrl });
-        return;
-      } catch (e) { /* fallback to dialog */ }
-    }
+    // Use share dialog directly (navigator.share doesn't work in iframes)
     setShareDialog({ appt, url: shareUrl, text: shareText });
   };
 
