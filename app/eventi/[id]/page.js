@@ -326,75 +326,95 @@ export default function EventDetailPage() {
                 </a>
               )}
               
-              {/* Share Button with Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowShareMenu(!showShareMenu)}
-                  className="bg-white hover:bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-medium flex items-center gap-2 transition-colors border shadow-sm"
-                >
-                  <Share2 className="h-5 w-5" />
-                  Condividi
-                </button>
-                
-                {showShareMenu && (
-                  <div className="absolute bottom-full left-0 mb-2 bg-white rounded-xl shadow-lg border p-2 z-50 min-w-[200px]">
-                    {navigator.share && (
-                      <button
-                        onClick={() => handleShare('native')}
-                        className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-3"
-                      >
-                        <Share2 className="h-5 w-5 text-gray-600" />
-                        Condividi...
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleShare('whatsapp')}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-3"
-                    >
-                      <MessageCircle className="h-5 w-5 text-green-600" />
-                      WhatsApp
-                    </button>
-                    <button
-                      onClick={() => handleShare('telegram')}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-3"
-                    >
-                      <svg className="h-5 w-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.442-.751-.244-1.349-.374-1.297-.789.027-.216.324-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.144.121.101.154.237.169.333.015.095.034.312.019.481z"/>
-                      </svg>
-                      Telegram
-                    </button>
-                    <button
-                      onClick={() => handleShare('facebook')}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-3"
-                    >
-                      <svg className="h-5 w-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                      </svg>
-                      Facebook
-                    </button>
-                    <hr className="my-2" />
-                    <button
-                      onClick={() => handleShare('copy')}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-3"
-                    >
-                      {copied ? (
-                        <>
-                          <Check className="h-5 w-5 text-green-600" />
-                          <span className="text-green-600">Link copiato!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="h-5 w-5 text-gray-600" />
-                          Copia link
-                        </>
-                      )}
-                    </button>
-                  </div>
-                )}
-              </div>
+              {/* Share Button with Modal */}
+              <button
+                onClick={() => setShowShareMenu(!showShareMenu)}
+                className="bg-white hover:bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-medium flex items-center gap-2 transition-colors border shadow-sm"
+              >
+                <Share2 className="h-5 w-5" />
+                Condividi
+              </button>
             </div>
           </div>
         </div>
+
+        {/* Share Modal - Fixed overlay */}
+        {showShareMenu && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowShareMenu(false)}>
+            <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Condividi evento</h3>
+                <button 
+                  onClick={() => setShowShareMenu(false)}
+                  className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+                >
+                  ×
+                </button>
+              </div>
+              
+              <div className="space-y-2">
+                {typeof navigator !== 'undefined' && navigator.share && (
+                  <button
+                    onClick={() => handleShare('native')}
+                    className="w-full text-left px-4 py-3 hover:bg-gray-100 rounded-xl flex items-center gap-3 transition-colors"
+                  >
+                    <div className="bg-gray-100 p-2 rounded-lg">
+                      <Share2 className="h-5 w-5 text-gray-600" />
+                    </div>
+                    <span className="font-medium">Condividi...</span>
+                  </button>
+                )}
+                <button
+                  onClick={() => handleShare('whatsapp')}
+                  className="w-full text-left px-4 py-3 hover:bg-green-50 rounded-xl flex items-center gap-3 transition-colors"
+                >
+                  <div className="bg-green-100 p-2 rounded-lg">
+                    <MessageCircle className="h-5 w-5 text-green-600" />
+                  </div>
+                  <span className="font-medium">WhatsApp</span>
+                </button>
+                <button
+                  onClick={() => handleShare('telegram')}
+                  className="w-full text-left px-4 py-3 hover:bg-blue-50 rounded-xl flex items-center gap-3 transition-colors"
+                >
+                  <div className="bg-blue-100 p-2 rounded-lg">
+                    <svg className="h-5 w-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.442-.751-.244-1.349-.374-1.297-.789.027-.216.324-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.144.121.101.154.237.169.333.015.095.034.312.019.481z"/>
+                    </svg>
+                  </div>
+                  <span className="font-medium">Telegram</span>
+                </button>
+                <button
+                  onClick={() => handleShare('facebook')}
+                  className="w-full text-left px-4 py-3 hover:bg-blue-50 rounded-xl flex items-center gap-3 transition-colors"
+                >
+                  <div className="bg-blue-100 p-2 rounded-lg">
+                    <svg className="h-5 w-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                  </div>
+                  <span className="font-medium">Facebook</span>
+                </button>
+                <hr className="my-3" />
+                <button
+                  onClick={() => handleShare('copy')}
+                  className="w-full text-left px-4 py-3 hover:bg-gray-100 rounded-xl flex items-center gap-3 transition-colors"
+                >
+                  <div className={`${copied ? 'bg-green-100' : 'bg-gray-100'} p-2 rounded-lg`}>
+                    {copied ? (
+                      <Check className="h-5 w-5 text-green-600" />
+                    ) : (
+                      <Copy className="h-5 w-5 text-gray-600" />
+                    )}
+                  </div>
+                  <span className={`font-medium ${copied ? 'text-green-600' : ''}`}>
+                    {copied ? 'Link copiato!' : 'Copia link'}
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Back Button */}
         <div className="text-center">
