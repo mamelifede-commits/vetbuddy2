@@ -1553,22 +1553,31 @@ export async function POST(request, { params }) {
       
       await users.updateOne({ email }, { $set: { resetToken, resetExpiry } });
 
-      // Send email
+      // Send email with proper error handling
       const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL}?reset=${resetToken}`;
-      await sendEmail({
-        to: email,
-        subject: 'VetBuddy - Reimposta la tua password',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #FF6B6B;">🐾 VetBuddy</h2>
-            <p>Hai richiesto di reimpostare la tua password.</p>
-            <p>Clicca il link qui sotto per creare una nuova password:</p>
-            <a href="${resetLink}" style="display: inline-block; background: #FF6B6B; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 20px 0;">Reimposta Password</a>
-            <p style="color: #666; font-size: 14px;">Il link scadrà tra 1 ora.</p>
-            <p style="color: #666; font-size: 14px;">Se non hai richiesto questo reset, ignora questa email.</p>
-          </div>
-        `
-      });
+      try {
+        const emailResult = await sendEmail({
+          to: email,
+          subject: 'VetBuddy - Reimposta la tua password',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #FF6B6B;">🐾 VetBuddy</h2>
+              <p>Hai richiesto di reimpostare la tua password.</p>
+              <p>Clicca il link qui sotto per creare una nuova password:</p>
+              <a href="${resetLink}" style="display: inline-block; background: #FF6B6B; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 20px 0;">Reimposta Password</a>
+              <p style="color: #666; font-size: 14px;">Il link scadrà tra 1 ora.</p>
+              <p style="color: #666; font-size: 14px;">Se non hai richiesto questo reset, ignora questa email.</p>
+            </div>
+          `
+        });
+        console.log('Password reset email result for', email, ':', emailResult);
+        
+        if (!emailResult.success) {
+          console.error('Failed to send password reset email to', email, ':', emailResult.error);
+        }
+      } catch (emailError) {
+        console.error('Error sending password reset email:', emailError);
+      }
 
       return NextResponse.json({ success: true, message: 'Se l\'email esiste, riceverai un link per reimpostare la password.' }, { headers: corsHeaders });
     }
