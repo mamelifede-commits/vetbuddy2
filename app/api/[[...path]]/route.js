@@ -696,9 +696,9 @@ export async function GET(request, { params }) {
       if (city) {
         filter.city = { $regex: city, $options: 'i' };
       }
-      // Filter by service offered
+      // Filter by service offered (services is an array)
       if (service) {
-        filter.services = service;
+        filter.services = { $in: [service] };
       }
       
       const clinics = await users.find(filter, { projection: { password: 0, resetToken: 0, resetExpiry: 0 } }).limit(50).toArray();
