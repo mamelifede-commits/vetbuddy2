@@ -12682,12 +12682,19 @@ function OwnerEvents({ user }) {
                     
                     {event.link && event.link.trim() !== '' ? (
                       <button 
+                        type="button"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          window.open(event.link, '_blank', 'noopener,noreferrer');
+                          console.log('CLICK VAI AL SITO - Link:', event.link);
+                          const externalUrl = event.link;
+                          if (externalUrl && externalUrl.startsWith('http')) {
+                            window.open(externalUrl, '_blank', 'noopener,noreferrer');
+                          } else {
+                            alert('Link non valido: ' + externalUrl);
+                          }
                         }}
-                        className="bg-coral-500 hover:bg-coral-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors cursor-pointer"
+                        className="bg-coral-500 hover:bg-coral-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors cursor-pointer z-50"
                       >
                         Vai al sito
                         <ExternalLink className="h-4 w-4" />
