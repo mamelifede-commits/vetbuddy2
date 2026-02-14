@@ -15101,7 +15101,7 @@ function OwnerMessages({ messages, clinics = [], pets = [], onRefresh }) {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label>Clinica</Label>
+              <Label>Clinica *</Label>
               <Select value={newMessage.clinicId} onValueChange={(v) => setNewMessage({...newMessage, clinicId: v})}>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleziona clinica" />
@@ -15114,7 +15114,23 @@ function OwnerMessages({ messages, clinics = [], pets = [], onRefresh }) {
               </Select>
             </div>
             <div>
-              <Label>Oggetto</Label>
+              <Label>Animale di riferimento (opzionale)</Label>
+              <Select value={newMessage.petId} onValueChange={(v) => setNewMessage({...newMessage, petId: v})}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleziona animale (opzionale)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Nessun animale specifico</SelectItem>
+                  {pets.map(pet => (
+                    <SelectItem key={pet.id} value={pet.id}>
+                      {getPetSpeciesInfo(pet.species).emoji} {pet.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Oggetto *</Label>
               <Input 
                 value={newMessage.subject}
                 onChange={(e) => setNewMessage({...newMessage, subject: e.target.value})}
@@ -15122,7 +15138,7 @@ function OwnerMessages({ messages, clinics = [], pets = [], onRefresh }) {
               />
             </div>
             <div>
-              <Label>Messaggio</Label>
+              <Label>Messaggio *</Label>
               <textarea 
                 className="w-full min-h-[100px] p-3 border rounded-lg resize-none"
                 value={newMessage.content}
