@@ -15624,7 +15624,7 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
           <div className="text-center py-6">
             <Calendar className="h-16 w-16 text-blue-500 mx-auto mb-4" />
             <p className="text-gray-600 mb-4">Per prenotare una visita, usa la sezione "I miei appuntamenti" nel menu laterale.</p>
-            <Button onClick={() => { setShowBookingDialog(false); onBack(); }} className="bg-blue-500 hover:bg-blue-600">
+            <Button onClick={() => { setShowBookingDialog(false); if (onNavigate) onNavigate('appointments'); else onBack(); }} className="bg-blue-500 hover:bg-blue-600">
               Vai agli Appuntamenti
             </Button>
           </div>
@@ -15641,7 +15641,7 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
           <div className="text-center py-6">
             <Upload className="h-16 w-16 text-green-500 mx-auto mb-4" />
             <p className="text-gray-600 mb-4">Per caricare documenti, usa la sezione "Documenti" nel menu laterale.</p>
-            <Button onClick={() => { setShowUploadDialog(false); onBack(); }} className="bg-green-500 hover:bg-green-600">
+            <Button onClick={() => { setShowUploadDialog(false); if (onNavigate) onNavigate('documents'); else onBack(); }} className="bg-green-500 hover:bg-green-600">
               Vai ai Documenti
             </Button>
           </div>
