@@ -2042,10 +2042,10 @@ function AuthForm({ mode, setMode, onLogin }) {
         await api.post('pilot-applications', formData);
         setPilotRequestSent(true);
       } else {
-        // Registrazione proprietari
+        // Registrazione proprietari - NON fare login automatico, richiedere verifica
         const data = await api.post('auth/register', formData);
-        api.setToken(data.token);
-        onLogin(data.user);
+        // Mostra schermata di conferma invece di fare login
+        setRegistrationComplete(true);
       }
     } catch (err) { setError(err.message); } finally { setLoading(false); }
   };
