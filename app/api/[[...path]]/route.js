@@ -1510,25 +1510,25 @@ export async function POST(request, { params }) {
         { $set: { phoneOTP, phoneOTPExpiry: otpExpiry } }
       );
 
-      // Send OTP via WhatsApp
+      // Send OTP via SMS
       try {
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
-        await fetch(`${baseUrl}/api/whatsapp/send`, {
+        await fetch(`${baseUrl}/api/sms/send`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             to: user.phone,
-            message: `🐾 *VetBuddy* - Nuovo codice di verifica\n\nIl tuo codice OTP è: *${phoneOTP}*\n\nInserisci questo codice nell'app per completare la registrazione.\n\n⏱️ Il codice scade tra 10 minuti.`
+            message: `VetBuddy - Il tuo nuovo codice OTP è: ${phoneOTP}. Scade tra 10 minuti.`
           })
         });
-      } catch (whatsappError) {
-        console.error('Error resending WhatsApp OTP:', whatsappError);
+      } catch (smsError) {
+        console.error('Error resending SMS OTP:', smsError);
         return NextResponse.json({ error: 'Errore invio OTP. Riprova.' }, { status: 500, headers: corsHeaders });
       }
 
       return NextResponse.json({ 
         success: true, 
-        message: 'Nuovo codice OTP inviato su WhatsApp.'
+        message: 'Nuovo codice OTP inviato via SMS.'
       }, { headers: corsHeaders });
     }
 
