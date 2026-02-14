@@ -1998,6 +1998,7 @@ function AuthForm({ mode, setMode, onLogin }) {
     address: '', postalCode: '', pilotMotivation: '' // Nuovi campi per candidatura
   });
   const [pilotRequestSent, setPilotRequestSent] = useState(false);
+  const [registrationComplete, setRegistrationComplete] = useState(false); // For email verification flow
   const [serviceCatalog, setServiceCatalog] = useState({});
   const [showServicesStep, setShowServicesStep] = useState(false);
 
