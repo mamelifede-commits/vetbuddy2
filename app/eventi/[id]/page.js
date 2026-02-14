@@ -122,6 +122,9 @@ export default function EventDetailPage() {
       case 'facebook':
         window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
         break;
+      case 'email':
+        window.open(`mailto:?subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`, '_blank');
+        break;
       case 'copy':
         await navigator.clipboard.writeText(shareUrl);
         setCopied(true);
