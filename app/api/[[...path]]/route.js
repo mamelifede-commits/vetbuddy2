@@ -764,6 +764,30 @@ export async function GET(request, { params }) {
       return NextResponse.json({ reviews: list }, { headers: corsHeaders });
     }
 
+    // Get my reviews (owner)
+    if (path === 'reviews/my-reviews') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const reviews = await getCollection('reviews');
+      const users = await getCollection('users');
+      
+      const myReviews = await reviews.find({ ownerId: user.id }).sort({ createdAt: -1 }).toArray();
+      
+      // Enrich with clinic info
+      const enrichedReviews = await Promise.all(myReviews.map(async (review) => {
+        const clinic = await users.findOne({ id: review.clinicId, role: 'clinic' });
+        return {
+          ...review,
+          clinicName: clinic?.clinicName || clinic?.name || 'Clinica',
+          clinicAddress: clinic?.address || ''
+        };
+      }));
+      
+      return NextResponse.json(enrichedReviews, { headers: corsHeaders });
+    }
+
     // Get clinic reviews
     if (path.startsWith('clinics/') && path.endsWith('/reviews')) {
       const clinicId = path.split('/')[1];
