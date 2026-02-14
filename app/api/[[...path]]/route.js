@@ -1192,6 +1192,11 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Email già registrata' }, { status: 400, headers: corsHeaders });
       }
 
+      // Generate verification tokens
+      const emailVerificationToken = uuidv4();
+      const phoneOTP = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit OTP
+      const otpExpiry = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // OTP valid for 10 minutes
+
       const user = {
         id: uuidv4(),
         email,
@@ -1207,12 +1212,18 @@ export async function POST(request, { params }) {
         latitude: role === 'clinic' ? (latitude || null) : null,
         longitude: role === 'clinic' ? (longitude || null) : null,
         services: role === 'clinic' ? (services || []) : null, // Array of service IDs
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        // Verification fields
+        emailVerified: false,
+        phoneVerified: false,
+        emailVerificationToken,
+        phoneOTP,
+        phoneOTPExpiry: otpExpiry
       };
 
       await users.insertOne(user);
       const token = generateToken({ id: user.id, email: user.email, role: user.role });
-      const { password: _, ...userWithoutPassword } = user;
+      const { password: _, emailVerificationToken: __, phoneOTP: ___, ...userWithoutPassword } = user;
       
       // Invia email di benvenuto in background
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
