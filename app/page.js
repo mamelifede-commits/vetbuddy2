@@ -16537,15 +16537,22 @@ function FindClinic({ user }) {
                   <Button size="sm" variant="outline" onClick={() => { setSelectedClinic(clinic); setShowReviewForm(true); }}>
                     <Star className="h-4 w-4 mr-1" />Recensisci
                   </Button>
-                  {clinic.latitude && clinic.longitude && (
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${clinic.latitude},${clinic.longitude}`, '_blank')}
-                    >
-                      <MapPin className="h-4 w-4" />
-                    </Button>
-                  )}
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => {
+                      // Use coordinates if available, otherwise use address
+                      if (clinic.latitude && clinic.longitude) {
+                        window.open(`https://www.google.com/maps/dir/?api=1&destination=${clinic.latitude},${clinic.longitude}`, '_blank');
+                      } else if (clinic.address || clinic.city) {
+                        const address = encodeURIComponent(`${clinic.address || ''} ${clinic.city || ''} Italia`.trim());
+                        window.open(`https://www.google.com/maps/search/?api=1&query=${address}`, '_blank');
+                      }
+                    }}
+                    title="Apri in Google Maps"
+                  >
+                    <MapPin className="h-4 w-4" />
+                  </Button>
                 </div>
               </CardContent>
             </Card>
