@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import twilio from 'twilio';
-import clientPromise from '@/lib/mongodb';
+import clientPromise from '@/lib/db';
 
 // Initialize Twilio client
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
