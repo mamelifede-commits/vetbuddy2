@@ -4625,6 +4625,83 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner,
     }
   };
   
+  // Lab exam functions
+  const openLabDialog = async () => {
+    setShowLabDialog(true);
+    setLabLoading(true);
+    try {
+      // Load exam catalog
+      const examData = await api.get('lab/exams');
+      setLabExams(examData.exams || []);
+      // Load existing requests for this pet
+      const requestData = await api.get(`lab/requests?patientId=${selectedPet?.id}`);
+      setLabRequests(requestData.requests || []);
+    } catch (error) {
+      console.error('Error loading lab data:', error);
+    } finally {
+      setLabLoading(false);
+    }
+  };
+  
+  const toggleExamSelection = (exam) => {
+    setSelectedLabExams(prev => {
+      const exists = prev.find(e => e.id === exam.id);
+      if (exists) {
+        return prev.filter(e => e.id !== exam.id);
+      } else {
+        return [...prev, exam];
+      }
+    });
+  };
+  
+  const submitLabRequest = async (sendNow = false) => {
+    if (selectedLabExams.length === 0) {
+      alert('Seleziona almeno un esame');
+      return;
+    }
+    try {
+      setLabLoading(true);
+      const owner = getOwnerDetails(petDetails?.ownerId);
+      await api.post('lab/requests', {
+        patientId: selectedPet?.id,
+        patientName: selectedPet?.name,
+        patientSpecies: selectedPet?.species,
+        patientBreed: selectedPet?.breed,
+        ownerId: petDetails?.ownerId,
+        ownerName: owner?.name,
+        ownerPhone: owner?.phone,
+        ownerEmail: owner?.email,
+        exams: selectedLabExams,
+        clinicalNotes: labClinicalNotes,
+        sendNow
+      });
+      alert(sendNow ? '✅ Richiesta inviata al laboratorio!' : '✅ Richiesta salvata come bozza!');
+      setSelectedLabExams([]);
+      setLabClinicalNotes('');
+      // Reload requests
+      const requestData = await api.get(`lab/requests?patientId=${selectedPet?.id}`);
+      setLabRequests(requestData.requests || []);
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    } finally {
+      setLabLoading(false);
+    }
+  };
+  
+  const getLabStatusBadge = (status) => {
+    const statusConfig = {
+      draft: { label: 'Bozza', className: 'bg-gray-100 text-gray-700' },
+      sent: { label: 'Inviata', className: 'bg-blue-100 text-blue-700' },
+      in_progress: { label: 'In lavorazione', className: 'bg-yellow-100 text-yellow-700' },
+      results_received: { label: 'Referti ricevuti', className: 'bg-purple-100 text-purple-700' },
+      validated: { label: 'Validati', className: 'bg-green-100 text-green-700' },
+      shared: { label: 'Condivisi', className: 'bg-emerald-100 text-emerald-700' },
+      cancelled: { label: 'Annullata', className: 'bg-red-100 text-red-700' }
+    };
+    const config = statusConfig[status] || statusConfig.draft;
+    return <Badge className={config.className}>{config.label}</Badge>;
+  };
+  
   // Import functions
   const handleFileChange = (e) => {
     const file = e.target.files[0];
