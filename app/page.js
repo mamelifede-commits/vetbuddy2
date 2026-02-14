@@ -10050,20 +10050,6 @@ function ClinicEvents({ user }) {
                           <ExternalLink className="h-4 w-4 mr-1" /> Dettagli
                         </Button>
                       </a>
-                      <Button size="sm" variant="outline">
-                        <CalendarCheck className="h-4 w-4 mr-1" /> Calendario
-                      </Button>
-                      {event.location && !event.location.toLowerCase().includes('online') && (
-                        <a 
-                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Button size="sm" variant="outline">
-                            <Navigation className="h-4 w-4 mr-1" /> Mappa
-                          </Button>
-                        </a>
-                      )}
                     </div>
                   </div>
                 </div>
