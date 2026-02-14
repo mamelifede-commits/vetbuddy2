@@ -11096,18 +11096,21 @@ function ClinicSettings({ user, onNavigate }) {
       setAvailabilitySettings(response);
     } catch (error) {
       console.error('Error loading availability settings:', error);
-      // Set defaults if not configured
+      // Set defaults if not configured - using new blocks format
       setAvailabilitySettings({
-        workingHours: {
-          monday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-          tuesday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-          wednesday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-          thursday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-          friday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-          saturday: { enabled: false, start: '09:00', end: '13:00', breakStart: null, breakEnd: null },
-          sunday: { enabled: false, start: null, end: null, breakStart: null, breakEnd: null }
+        weeklySchedule: {
+          monday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+          tuesday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+          wednesday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+          thursday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+          friday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+          saturday: { enabled: false, blocks: [] },
+          sunday: { enabled: false, blocks: [] }
         },
         slotDuration: 30,
+        dateOverrides: {},
+        blockedDates: [],
+        blockedSlots: [],
         acceptOnlineBooking: true,
         requireConfirmation: true
       });
@@ -11122,7 +11125,6 @@ function ClinicSettings({ user, onNavigate }) {
     try {
       await api.put('clinic/availability', availabilitySettings);
       alert('✅ Orari di disponibilità salvati!');
-      setShowAvailabilityForm(false);
     } catch (error) {
       console.error('Error saving availability:', error);
       alert('❌ Errore nel salvataggio degli orari');
@@ -11131,17 +11133,83 @@ function ClinicSettings({ user, onNavigate }) {
     }
   };
 
-  // Update working hours for a specific day
-  const updateDayHours = (day, field, value) => {
+  // Update day enabled/disabled
+  const updateDayEnabled = (day, enabled) => {
     setAvailabilitySettings(prev => ({
       ...prev,
-      workingHours: {
-        ...prev.workingHours,
+      weeklySchedule: {
+        ...prev.weeklySchedule,
         [day]: {
-          ...prev.workingHours[day],
-          [field]: value
+          ...prev.weeklySchedule[day],
+          enabled,
+          blocks: enabled && (!prev.weeklySchedule[day]?.blocks || prev.weeklySchedule[day].blocks.length === 0)
+            ? [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }]
+            : prev.weeklySchedule[day]?.blocks || []
         }
       }
+    }));
+  };
+
+  // Update a specific time block
+  const updateTimeBlock = (day, blockIndex, field, value) => {
+    setAvailabilitySettings(prev => ({
+      ...prev,
+      weeklySchedule: {
+        ...prev.weeklySchedule,
+        [day]: {
+          ...prev.weeklySchedule[day],
+          blocks: prev.weeklySchedule[day].blocks.map((block, i) => 
+            i === blockIndex ? { ...block, [field]: value } : block
+          )
+        }
+      }
+    }));
+  };
+
+  // Add a new time block to a day
+  const addTimeBlock = (day) => {
+    setAvailabilitySettings(prev => ({
+      ...prev,
+      weeklySchedule: {
+        ...prev.weeklySchedule,
+        [day]: {
+          ...prev.weeklySchedule[day],
+          blocks: [...(prev.weeklySchedule[day]?.blocks || []), { start: '09:00', end: '12:00' }]
+        }
+      }
+    }));
+  };
+
+  // Remove a time block from a day
+  const removeTimeBlock = (day, blockIndex) => {
+    setAvailabilitySettings(prev => ({
+      ...prev,
+      weeklySchedule: {
+        ...prev.weeklySchedule,
+        [day]: {
+          ...prev.weeklySchedule[day],
+          blocks: prev.weeklySchedule[day].blocks.filter((_, i) => i !== blockIndex)
+        }
+      }
+    }));
+  };
+
+  // Add a blocked date
+  const addBlockedDate = () => {
+    const date = prompt('Inserisci la data da bloccare (YYYY-MM-DD):');
+    if (!date) return;
+    const reason = prompt('Motivo (opzionale):') || 'Chiuso';
+    setAvailabilitySettings(prev => ({
+      ...prev,
+      blockedDates: [...(prev.blockedDates || []), { date, reason }]
+    }));
+  };
+
+  // Remove a blocked date
+  const removeBlockedDate = (index) => {
+    setAvailabilitySettings(prev => ({
+      ...prev,
+      blockedDates: prev.blockedDates.filter((_, i) => i !== index)
     }));
   };
 
