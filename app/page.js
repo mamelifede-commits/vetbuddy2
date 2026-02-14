@@ -17393,8 +17393,14 @@ function FindClinic({ user }) {
       </Dialog>
 
       {/* Dialog Richiesta Appuntamento */}
-      <Dialog open={showAppointmentForm} onOpenChange={setShowAppointmentForm}>
-        <DialogContent className="max-w-md">
+      <Dialog open={showAppointmentForm} onOpenChange={(open) => {
+        setShowAppointmentForm(open);
+        if (!open) {
+          setAvailableSlots([]);
+          setClinicAvailability(null);
+        }
+      }}>
+        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Richiedi Appuntamento</DialogTitle>
             <DialogDescription>
@@ -17407,23 +17413,67 @@ function FindClinic({ user }) {
               <Input 
                 type="date" 
                 value={appointmentForm.date}
-                onChange={(e) => setAppointmentForm({...appointmentForm, date: e.target.value})}
+                onChange={(e) => {
+                  setAppointmentForm({...appointmentForm, date: e.target.value, time: ''});
+                }}
                 min={new Date().toISOString().split('T')[0]}
               />
             </div>
+            
+            {/* Dynamic Time Slots */}
             <div>
-              <Label>Fascia oraria preferita</Label>
-              <Select value={appointmentForm.time || 'mattina'} onValueChange={(v) => setAppointmentForm({...appointmentForm, time: v})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleziona fascia oraria" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="mattina">🌅 Mattina (9:00 - 12:00)</SelectItem>
-                  <SelectItem value="pomeriggio">☀️ Pomeriggio (14:00 - 18:00)</SelectItem>
-                  <SelectItem value="qualsiasi">🕐 Qualsiasi orario</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label>Orario disponibile *</Label>
+              {!appointmentForm.date ? (
+                <p className="text-sm text-gray-500 mt-2 p-3 bg-gray-50 rounded-lg">
+                  Seleziona prima una data per vedere gli orari disponibili
+                </p>
+              ) : loadingSlots ? (
+                <div className="flex items-center justify-center p-4 bg-gray-50 rounded-lg">
+                  <RefreshCw className="h-4 w-4 animate-spin mr-2 text-blue-500" />
+                  <span className="text-sm text-gray-500">Caricamento orari...</span>
+                </div>
+              ) : availableSlots.length === 0 ? (
+                <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                  <p className="text-sm text-amber-700">
+                    Nessun orario disponibile per questa data. Prova un'altra data.
+                  </p>
+                </div>
+              ) : (
+                <div className="mt-2">
+                  {clinicAvailability?.workingHours && (
+                    <p className="text-xs text-gray-500 mb-2">
+                      Orario clinica: {clinicAvailability.workingHours.start} - {clinicAvailability.workingHours.end}
+                      {clinicAvailability.workingHours.breakStart && ` (pausa ${clinicAvailability.workingHours.breakStart}-${clinicAvailability.workingHours.breakEnd})`}
+                    </p>
+                  )}
+                  <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto p-1">
+                    {availableSlots.map((slot) => (
+                      <button
+                        key={slot.time}
+                        type="button"
+                        disabled={!slot.available}
+                        onClick={() => setAppointmentForm({...appointmentForm, time: slot.time})}
+                        className={`px-3 py-2 text-sm rounded-lg border transition-all ${
+                          appointmentForm.time === slot.time
+                            ? 'bg-blue-500 text-white border-blue-500'
+                            : slot.available
+                              ? 'bg-white hover:bg-blue-50 border-gray-200 hover:border-blue-300'
+                              : 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-100'
+                        }`}
+                      >
+                        {slot.time}
+                      </button>
+                    ))}
+                  </div>
+                  {clinicAvailability && (
+                    <p className="text-xs text-gray-400 mt-2">
+                      {clinicAvailability.availableCount} di {clinicAvailability.totalSlots} slot disponibili
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
+            
             <div>
               <Label>Servizio richiesto *</Label>
               <Select value={appointmentForm.service} onValueChange={(v) => setAppointmentForm({...appointmentForm, service: v})}>
@@ -17478,6 +17528,7 @@ function FindClinic({ user }) {
               <Button 
                 className="flex-1 bg-coral-500 hover:bg-coral-600"
                 onClick={handleRequestAppointment}
+                disabled={submittingAppointment || !appointmentForm.date || !appointmentForm.time || !appointmentForm.service}
                 disabled={submittingAppointment}
               >
                 {submittingAppointment ? (
