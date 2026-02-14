@@ -406,6 +406,18 @@ backend:
         agent: "testing"
         comment: "VIRTUAL ASSISTANT CHAT API FULLY OPERATIONAL ✅: Comprehensive testing completed successfully (3/3 chat tests passed). ✅ **POST /api/chat** - AI-powered virtual assistant working perfectly. Responds in Italian as required, mentions VetBuddy correctly, provides detailed information about platform features and pricing. Using GPT-4o-mini via Emergent LLM proxy (integrations.emergentagent.com). Response length appropriate (1100+ characters), session ID generation working. ✅ **System Prompt Integration** - Specialized VetBuddy system prompt active, covering platform info (dashboard features, automations, billing), navigation guidance, and general pet care advice. Pricing information accurate (Starter gratuito, Pro €39/mese, Custom personalizzato). ✅ **Error Handling** - Correctly validates message format, returns 400 'Messaggi non validi' for invalid message arrays. ✅ **Conversation Context** - Handles multi-message conversations correctly, maintains context, responds appropriately to pricing questions with relevant information. Chat API ready for production use with Italian language support and VetBuddy-specific knowledge."
 
+  - task: "Email and Phone Verification System"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "EMAIL & PHONE VERIFICATION SYSTEM FULLY FUNCTIONAL ✅: Comprehensive testing completed successfully as specified in review request. ALL 7/7 tests PASSED: ✅ **Registration with verification flags** - POST /api/auth/register creates users with requiresVerification: true, emailVerified: false, phoneVerified: false, and generates emailVerificationToken. ✅ **Email verification endpoint** - POST /api/auth/verify-email with valid token returns success: true, requiresPhoneVerification: true (when phone exists), and userId for OTP verification. Invalid tokens correctly return 400 error. ✅ **Phone OTP verification endpoint** - POST /api/auth/verify-phone with userId and correct OTP returns success: true and fullyVerified: true. Wrong OTP correctly returns 400 error with appropriate message. ✅ **Resend OTP endpoint** - POST /api/auth/resend-otp with userId generates new OTP and returns success message. ✅ **Database integration** - Email verification generates new phoneOTP after email confirmation. User state correctly updated: emailVerified and phoneVerified set to true, verification tokens removed after successful verification. ✅ **WhatsApp integration** - OTP sending via WhatsApp implemented (may fail in test environment but API logic working). ✅ **Test data compatibility** - Successfully tested with unique email test.verify.{timestamp}@example.com, phone +39 333 1234567, password testpassword123 as specified. Base URL http://localhost:3000/api working correctly. The complete email and phone verification flow is production-ready and handles all success/failure scenarios correctly."
+
 
 
 frontend:
