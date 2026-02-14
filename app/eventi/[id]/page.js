@@ -110,11 +110,18 @@ export default function EventDetailPage() {
   // Share functions
   const handleShare = async (method) => {
     const shareUrl = window.location.href;
-    const shareText = `${event.title}\n📅 ${formatDate(event.eventDate)}\n📍 ${event.location || 'Luogo da definire'}\n\n${event.description || ''}`;
+    const eventDate = formatDate(event.eventDate);
+    const eventLocation = event.location || 'Luogo da definire';
+    
+    // Messaggio formattato stile "card" per WhatsApp
+    const shareTextWhatsApp = `*${event.title}*\n📅 ${eventDate}\n📍 ${eventLocation}\n\n${shareUrl}`;
+    
+    // Messaggio per altri canali
+    const shareText = `${event.title}\n📅 ${eventDate}\n📍 ${eventLocation}`;
     
     switch (method) {
       case 'whatsapp':
-        window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`, '_blank');
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareTextWhatsApp)}`, '_blank');
         break;
       case 'telegram':
         window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, '_blank');
