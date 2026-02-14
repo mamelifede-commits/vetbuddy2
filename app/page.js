@@ -12542,19 +12542,25 @@ function OwnerEvents({ user, onNavigate }) {
 
       {/* Info se l'utente non ha animali */}
       {userPets.length === 0 && !loading && (
-        <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl">
+        <button 
+          onClick={() => onNavigate && onNavigate('pets')}
+          className="w-full mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all cursor-pointer text-left"
+        >
           <div className="flex items-start gap-3">
             <div className="bg-blue-100 p-2 rounded-lg">
               <PawPrint className="h-5 w-5 text-blue-600" />
             </div>
-            <div>
+            <div className="flex-1">
               <p className="font-semibold text-blue-800">Aggiungi i tuoi animali!</p>
               <p className="text-sm text-blue-600 mt-1">
                 Registra i tuoi animali per ricevere eventi e consigli personalizzati per cani, gatti, cavalli, conigli e molto altro.
               </p>
+              <p className="text-sm text-blue-700 mt-2 font-medium flex items-center gap-1">
+                Clicca qui per aggiungere un animale →
+              </p>
             </div>
           </div>
-        </div>
+        </button>
       )}
 
       {/* Categories Filter */}
