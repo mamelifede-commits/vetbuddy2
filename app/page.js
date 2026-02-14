@@ -395,27 +395,6 @@ function ChatWidget() {
   );
 }
 
-// API Helper
-const api = {
-  baseUrl: '/api',
-  token: null,
-  setToken(token) { this.token = token; if (typeof window !== 'undefined') localStorage.setItem('vetbuddy_token', token); },
-  getToken() { if (!this.token && typeof window !== 'undefined') this.token = localStorage.getItem('vetbuddy_token'); return this.token; },
-  async request(endpoint, options = {}) {
-    const headers = { 'Content-Type': 'application/json', ...options.headers };
-    const token = this.getToken();
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    const response = await fetch(`${this.baseUrl}/${endpoint}`, { ...options, headers });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Errore nella richiesta');
-    return data;
-  },
-  get: (endpoint) => api.request(endpoint),
-  post: (endpoint, body) => api.request(endpoint, { method: 'POST', body: JSON.stringify(body) }),
-  put: (endpoint, body) => api.request(endpoint, { method: 'PUT', body: JSON.stringify(body) }),
-  delete: (endpoint) => api.request(endpoint, { method: 'DELETE' })
-};
-
 // ==================== ECOSYSTEM TOGGLE ====================
 function EcosystemToggle() {
   const [activeTab, setActiveTab] = useState('cliniche');
