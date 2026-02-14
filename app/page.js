@@ -16210,11 +16210,83 @@ function FindClinic({ user }) {
   const [mapLoaded, setMapLoaded] = useState(false);
   const mapRef = useRef(null);
   
+  // Autocomplete states
+  const [showClinicSuggestions, setShowClinicSuggestions] = useState(false);
+  const [showCitySuggestions, setShowCitySuggestions] = useState(false);
+  const [showServiceSuggestions, setShowServiceSuggestions] = useState(false);
+  const [allClinics, setAllClinics] = useState([]); // All clinics for autocomplete
+  
   // Appointment request form
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
   const [appointmentForm, setAppointmentForm] = useState({ date: '', time: '', service: '', notes: '', petId: '' });
   const [userPets, setUserPets] = useState([]);
   const [submittingAppointment, setSubmittingAppointment] = useState(false);
+
+  // Load all clinics for autocomplete suggestions
+  useEffect(() => {
+    const loadAllClinics = async () => {
+      try {
+        const results = await api.get('clinics/search?');
+        setAllClinics(results || []);
+      } catch (error) {
+        console.error('Error loading clinics:', error);
+      }
+    };
+    loadAllClinics();
+  }, []);
+
+  // Get clinic name suggestions
+  const getClinicSuggestions = () => {
+    if (!searchQuery || searchQuery.length < 2) return [];
+    const query = searchQuery.toLowerCase();
+    const suggestions = new Set();
+    allClinics.forEach(clinic => {
+      if (clinic.clinicName && clinic.clinicName.toLowerCase().includes(query)) {
+        suggestions.add(clinic.clinicName);
+      }
+      if (clinic.name && clinic.name.toLowerCase().includes(query)) {
+        suggestions.add(clinic.name);
+      }
+    });
+    return Array.from(suggestions).slice(0, 5);
+  };
+
+  // Get city suggestions
+  const getCitySuggestions = () => {
+    if (!searchCity || searchCity.length < 2) return [];
+    const query = searchCity.toLowerCase();
+    const suggestions = new Set();
+    allClinics.forEach(clinic => {
+      if (clinic.city && clinic.city.toLowerCase().includes(query)) {
+        suggestions.add(clinic.city);
+      }
+    });
+    // Add common Italian cities
+    const commonCities = ['Milano', 'Roma', 'Napoli', 'Torino', 'Bologna', 'Firenze', 'Bari', 'Palermo', 'Genova', 'Padova', 'Verona', 'Brescia', 'Monza', 'Bergamo', 'Como'];
+    commonCities.forEach(city => {
+      if (city.toLowerCase().includes(query)) {
+        suggestions.add(city);
+      }
+    });
+    return Array.from(suggestions).slice(0, 5);
+  };
+
+  // Get service suggestions
+  const getServiceSuggestions = () => {
+    if (!searchService || searchService.length < 2) return [];
+    const query = searchService.toLowerCase();
+    const suggestions = [];
+    serviceCatalog.forEach(service => {
+      if (service.name && service.name.toLowerCase().includes(query)) {
+        suggestions.push({ id: service.id, name: service.name });
+      }
+    });
+    return suggestions.slice(0, 5);
+  };
+
+  const clinicSuggestions = getClinicSuggestions();
+  const citySuggestions = getCitySuggestions();
+  const serviceSuggestions = getServiceSuggestions();
   
   // Load user's pets for appointment form
   useEffect(() => {
