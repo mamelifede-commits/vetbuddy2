@@ -1596,6 +1596,84 @@ export async function POST(request, { params }) {
       return NextResponse.json({ user: userWithoutPassword, token }, { headers: corsHeaders });
     }
 
+    // Request appointment from owner to clinic (requires clinic confirmation)
+    if (path === 'appointments/request') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { clinicId, clinicName, date, time, service, notes, petId } = body;
+      const appointments = await getCollection('appointments');
+      const users = await getCollection('users');
+      const pets = await getCollection('pets');
+      
+      // Get pet details if petId provided
+      let petName = null;
+      if (petId) {
+        const pet = await pets.findOne({ id: petId });
+        petName = pet?.name || null;
+      }
+      
+      // Get owner details
+      const owner = await users.findOne({ id: user.id });
+      
+      const appointmentId = uuidv4();
+      const appointment = {
+        id: appointmentId,
+        clinicId,
+        clinicName: clinicName || null,
+        ownerId: user.id,
+        ownerName: owner?.name || owner?.email || 'Proprietario',
+        ownerEmail: owner?.email,
+        ownerPhone: owner?.phone,
+        petId: petId || null,
+        petName,
+        date,
+        time: time || 'mattina', // Can be a time slot like 'mattina', 'pomeriggio'
+        serviceId: service,
+        reason: service,
+        notes: notes || '',
+        status: 'pending', // Requires clinic confirmation
+        type: 'richiesta',
+        createdAt: new Date().toISOString()
+      };
+
+      await appointments.insertOne(appointment);
+      
+      // Notify clinic about the request
+      try {
+        const clinic = await users.findOne({ id: clinicId });
+        if (clinic?.email) {
+          await sendEmail({
+            to: clinic.email,
+            subject: `📅 Nuova Richiesta Appuntamento - ${owner?.name || 'Proprietario'}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #F97316;">🐾 Nuova Richiesta di Appuntamento</h2>
+                <p>Hai ricevuto una nuova richiesta di appuntamento:</p>
+                <ul>
+                  <li><strong>Proprietario:</strong> ${owner?.name || 'Non specificato'}</li>
+                  <li><strong>Email:</strong> ${owner?.email || '-'}</li>
+                  <li><strong>Telefono:</strong> ${owner?.phone || '-'}</li>
+                  ${petName ? `<li><strong>Animale:</strong> ${petName}</li>` : ''}
+                  <li><strong>Data richiesta:</strong> ${new Date(date).toLocaleDateString('it-IT')}</li>
+                  <li><strong>Fascia oraria:</strong> ${time === 'mattina' ? 'Mattina (9-12)' : time === 'pomeriggio' ? 'Pomeriggio (14-18)' : time}</li>
+                  <li><strong>Servizio:</strong> ${service}</li>
+                  ${notes ? `<li><strong>Note:</strong> ${notes}</li>` : ''}
+                </ul>
+                <p>Accedi alla dashboard di VetBuddy per confermare o proporre un orario alternativo.</p>
+              </div>
+            `
+          });
+        }
+      } catch (emailError) {
+        console.error('Error sending notification email:', emailError);
+      }
+      
+      return NextResponse.json({ success: true, appointment }, { headers: corsHeaders });
+    }
+
     // Create appointment
     if (path === 'appointments') {
       const user = getUserFromRequest(request);
