@@ -17960,7 +17960,6 @@ function FindClinic({ user }) {
                 className="flex-1 bg-coral-500 hover:bg-coral-600"
                 onClick={handleRequestAppointment}
                 disabled={submittingAppointment || !appointmentForm.date || !appointmentForm.time || !appointmentForm.service}
-                disabled={submittingAppointment}
               >
                 {submittingAppointment ? (
                   <><RefreshCw className="h-4 w-4 mr-2 animate-spin" />Invio...</>
