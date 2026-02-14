@@ -13136,6 +13136,41 @@ function OwnerEvents({ user, onNavigate }) {
     return date.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
+  // Autocomplete suggestions based on event titles and descriptions
+  const getSearchSuggestions = () => {
+    if (!searchQuery || searchQuery.length < 2) return [];
+    const query = searchQuery.toLowerCase();
+    const suggestions = new Set();
+    
+    events.forEach(event => {
+      // Suggest matching titles
+      if (event.title && event.title.toLowerCase().includes(query)) {
+        suggestions.add(event.title);
+      }
+      // Suggest matching locations
+      if (event.location && event.location.toLowerCase().includes(query)) {
+        suggestions.add(event.location);
+      }
+      // Suggest matching organizers
+      if (event.organizer && event.organizer.toLowerCase().includes(query)) {
+        suggestions.add(event.organizer);
+      }
+    });
+    
+    // Also add category suggestions
+    const categoryNames = ['Salute', 'Cani', 'Gatti', 'Cavalli', 'Conigli', 'Uccelli', 'Rettili', 'Pesci', 'Roditori', 'Promo', 'Eventi'];
+    categoryNames.forEach(cat => {
+      if (cat.toLowerCase().includes(query)) {
+        suggestions.add(cat);
+      }
+    });
+    
+    return Array.from(suggestions).slice(0, 6);
+  };
+
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchSuggestions = getSearchSuggestions();
+
   const filteredEvents = (activeCategory === 'all' 
     ? events 
     : events.filter(e => e.category === activeCategory)
