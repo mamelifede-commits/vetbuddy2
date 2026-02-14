@@ -16072,6 +16072,52 @@ function FindClinic({ user }) {
   const [mapCenter, setMapCenter] = useState({ lat: 45.4642, lng: 9.1900 }); // Milan default for Pilot
   const [mapLoaded, setMapLoaded] = useState(false);
   const mapRef = useRef(null);
+  
+  // Appointment request form
+  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+  const [appointmentForm, setAppointmentForm] = useState({ date: '', time: '', service: '', notes: '', petId: '' });
+  const [userPets, setUserPets] = useState([]);
+  const [submittingAppointment, setSubmittingAppointment] = useState(false);
+  
+  // Load user's pets for appointment form
+  useEffect(() => {
+    const loadUserPets = async () => {
+      try {
+        const pets = await api.get('pets');
+        setUserPets(pets || []);
+      } catch (error) {
+        console.error('Error loading pets:', error);
+      }
+    };
+    loadUserPets();
+  }, []);
+  
+  const handleRequestAppointment = async () => {
+    if (!appointmentForm.date || !appointmentForm.service) {
+      alert('Seleziona data e servizio');
+      return;
+    }
+    setSubmittingAppointment(true);
+    try {
+      await api.post('appointments/request', {
+        clinicId: selectedClinic.id,
+        clinicName: selectedClinic.clinicName,
+        date: appointmentForm.date,
+        time: appointmentForm.time || '09:00',
+        service: appointmentForm.service,
+        notes: appointmentForm.notes,
+        petId: appointmentForm.petId || null
+      });
+      alert('Richiesta inviata! La clinica ti contatterà per confermare.');
+      setShowAppointmentForm(false);
+      setAppointmentForm({ date: '', time: '', service: '', notes: '', petId: '' });
+      setSelectedClinic(null);
+    } catch (error) {
+      alert('Errore nell\'invio della richiesta');
+    } finally {
+      setSubmittingAppointment(false);
+    }
+  };
 
   // Load reviews when clinic is selected
   const loadClinicReviews = async (clinicId) => {
