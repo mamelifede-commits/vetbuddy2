@@ -16557,51 +16557,122 @@ function FindClinic({ user }) {
       <Card className="mb-6">
         <CardContent className="p-4">
           <div className="flex flex-wrap gap-4">
-            <div className="flex-1 min-w-[200px]">
+            {/* Nome clinica con autocomplete */}
+            <div className="flex-1 min-w-[200px] relative">
               <Label className="sr-only">Nome clinica</Label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
                 <Input 
                   placeholder="Nome clinica o veterinario..." 
                   value={searchQuery} 
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowClinicSuggestions(true);
+                  }}
+                  onFocus={() => setShowClinicSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowClinicSuggestions(false), 200)}
                   className="pl-10"
                   onKeyDown={(e) => e.key === 'Enter' && searchClinics()}
                 />
               </div>
+              {/* Autocomplete suggestions for clinic name */}
+              {showClinicSuggestions && clinicSuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
+                  {clinicSuggestions.map((suggestion, idx) => (
+                    <button
+                      key={idx}
+                      className="w-full px-4 py-2 text-left hover:bg-blue-50 flex items-center gap-2 text-sm border-b border-gray-100 last:border-0"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        setSearchQuery(suggestion);
+                        setShowClinicSuggestions(false);
+                      }}
+                    >
+                      <Building2 className="h-3 w-3 text-gray-400" />
+                      <span>{suggestion}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="w-48">
+            {/* Città con autocomplete */}
+            <div className="w-48 relative">
               <Label className="sr-only">Città</Label>
               <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
                 <Input 
                   placeholder="Città..." 
                   value={searchCity} 
-                  onChange={(e) => setSearchCity(e.target.value)}
+                  onChange={(e) => {
+                    setSearchCity(e.target.value);
+                    setShowCitySuggestions(true);
+                  }}
+                  onFocus={() => setShowCitySuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowCitySuggestions(false), 200)}
                   className="pl-10"
                   onKeyDown={(e) => e.key === 'Enter' && searchClinics()}
                 />
               </div>
-            </div>
-            <div className="w-56">
-              <Label className="sr-only">Servizio</Label>
-              <Select value={searchService || 'all'} onValueChange={(v) => { setSearchService(v === 'all' ? '' : v); }}>
-                <SelectTrigger>
-                  <Stethoscope className="h-4 w-4 mr-2 text-gray-400" />
-                  <SelectValue placeholder="Filtra per servizio..." />
-                </SelectTrigger>
-                <SelectContent className="max-h-80">
-                  <SelectItem value="all">Tutti i servizi</SelectItem>
-                  {serviceCatalog.map((service) => (
-                    <SelectItem key={service.id} value={service.id}>
-                      <span className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">{service.categoryName}</span>
-                        <span>{service.name}</span>
-                      </span>
-                    </SelectItem>
+              {/* Autocomplete suggestions for city */}
+              {showCitySuggestions && citySuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
+                  {citySuggestions.map((suggestion, idx) => (
+                    <button
+                      key={idx}
+                      className="w-full px-4 py-2 text-left hover:bg-blue-50 flex items-center gap-2 text-sm border-b border-gray-100 last:border-0"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        setSearchCity(suggestion);
+                        setShowCitySuggestions(false);
+                      }}
+                    >
+                      <MapPin className="h-3 w-3 text-gray-400" />
+                      <span>{suggestion}</span>
+                    </button>
                   ))}
-                </SelectContent>
-              </Select>
+                </div>
+              )}
+            </div>
+            {/* Servizi con autocomplete (input con dropdown) */}
+            <div className="w-56 relative">
+              <Label className="sr-only">Servizio</Label>
+              <div className="relative">
+                <Stethoscope className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
+                <Input 
+                  placeholder="Cerca servizio..." 
+                  value={searchService} 
+                  onChange={(e) => {
+                    setSearchService(e.target.value);
+                    setShowServiceSuggestions(true);
+                  }}
+                  onFocus={() => setShowServiceSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowServiceSuggestions(false), 200)}
+                  className="pl-10"
+                  onKeyDown={(e) => e.key === 'Enter' && searchClinics()}
+                />
+              </div>
+              {/* Autocomplete suggestions for services */}
+              {showServiceSuggestions && (searchService.length >= 2 ? serviceSuggestions : serviceCatalog.slice(0, 6)).length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden max-h-60 overflow-y-auto">
+                  {searchService.length < 2 && (
+                    <div className="px-4 py-2 text-xs text-gray-500 border-b">Servizi popolari:</div>
+                  )}
+                  {(searchService.length >= 2 ? serviceSuggestions : serviceCatalog.slice(0, 6)).map((service, idx) => (
+                    <button
+                      key={service.id || idx}
+                      className="w-full px-4 py-2 text-left hover:bg-blue-50 flex items-center gap-2 text-sm border-b border-gray-100 last:border-0"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        setSearchService(service.name || service);
+                        setShowServiceSuggestions(false);
+                      }}
+                    >
+                      <Stethoscope className="h-3 w-3 text-gray-400" />
+                      <span>{service.name || service}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             {userLocation && (
               <div className="w-40">
