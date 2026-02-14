@@ -374,6 +374,15 @@ export default function EventDetailPage() {
                   </div>
                   <span className="font-medium">Facebook</span>
                 </button>
+                <button
+                  onClick={() => handleShare('email')}
+                  className="w-full text-left px-4 py-3 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
+                >
+                  <div className="bg-gray-100 p-2 rounded-lg">
+                    <Mail className="h-5 w-5 text-gray-600" />
+                  </div>
+                  <span className="font-medium">Email</span>
+                </button>
                 <hr className="my-3" />
                 <button
                   onClick={() => handleShare('copy')}
