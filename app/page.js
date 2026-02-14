@@ -15222,6 +15222,7 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
       insurance: false, insuranceCompany: '', insurancePolicy: '',
       medicalHistory: '', currentConditions: '', chronicDiseases: '',
       weightHistory: [],
+      diet: '', dietNotes: '',
       photoUrl: null, photoFile: null
     });
   };
@@ -15247,7 +15248,9 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
       medicalHistory: pet.medicalHistory || '',
       currentConditions: pet.currentConditions || '',
       chronicDiseases: pet.chronicDiseases || '',
-      weightHistory: pet.weightHistory || []
+      weightHistory: pet.weightHistory || [],
+      diet: pet.diet || '',
+      dietNotes: pet.dietNotes || ''
     });
     setShowDialog(true);
   };
