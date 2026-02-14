@@ -20,6 +20,13 @@ class ApiClient {
     }
   }
 
+  getToken() {
+    if (!this.token && typeof window !== 'undefined') {
+      this.token = localStorage.getItem('vetbuddy_token');
+    }
+    return this.token;
+  }
+
   async request(endpoint, options = {}) {
     const headers = {
       'Content-Type': 'application/json',
