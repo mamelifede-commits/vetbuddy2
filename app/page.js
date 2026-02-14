@@ -2115,7 +2115,7 @@ function AuthForm({ mode, setMode, onLogin }) {
           <ol className="text-sm text-blue-700 list-decimal ml-4 mt-1 space-y-1">
             <li>Apri l'email che ti abbiamo inviato</li>
             <li>Clicca sul pulsante <strong>"Verifica Email"</strong></li>
-            <li>Inserisci il codice OTP che riceverai via <strong>SMS</strong></li>
+            <li>Il tuo account sarà subito attivo!</li>
           </ol>
         </div>
         <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg mb-4">
