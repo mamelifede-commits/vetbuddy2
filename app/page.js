@@ -16413,7 +16413,7 @@ function FindClinic({ user }) {
 
       {/* Clinic Detail Dialog */}
       <Dialog open={selectedClinic && !showReviewForm} onOpenChange={() => setSelectedClinic(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{selectedClinic?.clinicName}</DialogTitle>
             <DialogDescription>{selectedClinic?.name}</DialogDescription>
