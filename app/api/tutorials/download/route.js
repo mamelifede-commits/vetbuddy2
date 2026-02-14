@@ -235,6 +235,20 @@ const clinicTutorial = {
       tip: 'Le automazioni fanno risparmiare in media 2 ore al giorno!'
     },
     {
+      title: 'NOTIFICHE WHATSAPP',
+      content: [
+        'Vai su Impostazioni -> WhatsApp Business',
+        'Configura il numero WhatsApp della clinica',
+        'I clienti riceveranno automaticamente:',
+        '  - Promemoria appuntamenti',
+        '  - Notifiche documenti disponibili',
+        '  - Conferme di pagamento',
+        'Il cliente puo attivare/disattivare dal suo profilo',
+        'WhatsApp ha un tasso di apertura del 98%!'
+      ],
+      tip: 'Assicurati che i clienti abbiano il numero di telefono nel profilo.'
+    },
+    {
       title: 'ANALYTICS E REPORT',
       content: [
         'Dashboard con KPI principali in tempo reale',
