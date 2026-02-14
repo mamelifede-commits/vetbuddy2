@@ -11668,7 +11668,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const tabParam = urlParams.get('tab');
-      if (tabParam && ['appointments', 'documents', 'invoices', 'messages', 'pets', 'rewards', 'reviews', 'events', 'findClinic', 'inviteClinic', 'tutorial'].includes(tabParam)) {
+      if (tabParam && ['appointments', 'documents', 'invoices', 'messages', 'pets', 'rewards', 'reviews', 'events', 'findClinic', 'inviteClinic', 'tutorial', 'profile'].includes(tabParam)) {
         return tabParam;
       }
     }
