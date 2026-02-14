@@ -16035,7 +16035,10 @@ function PetProfile({ petId, onBack, appointments, documents }) {
                             <p className="text-sm text-gray-500">{new Date(doc.createdAt).toLocaleDateString()}</p>
                           </div>
                         </div>
-                        <Badge variant="outline" className="text-green-600">Inviato</Badge>
+                        <div className="flex gap-2 items-center">
+                          <Badge variant="outline" className="text-green-600">Inviato</Badge>
+                          <Button size="sm" variant="outline" onClick={() => handleOpenDocument(doc)}><Eye className="h-4 w-4 mr-1" />Apri</Button>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
