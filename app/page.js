@@ -15248,7 +15248,15 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
   const handleSaveEdit = async () => {
     setSaving(true);
     try {
-      await api.put(`pets/${petId}`, editForm);
+      // Prepara i dati includendo la weight history se c'è un nuovo peso
+      const dataToSubmit = { ...editForm };
+      if (editForm.weight && editForm.weightDate) {
+        dataToSubmit.weightHistory = [
+          ...(editForm.weightHistory || []),
+          { weight: parseFloat(editForm.weight), date: editForm.weightDate, addedAt: new Date().toISOString() }
+        ];
+      }
+      await api.put(`pets/${petId}`, dataToSubmit);
       await loadPetData();
       setShowEditDialog(false);
       alert('✅ Dati aggiornati con successo!');
