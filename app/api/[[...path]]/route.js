@@ -1322,7 +1322,213 @@ export async function POST(request, { params }) {
         // Non bloccare la registrazione se l'email fallisce
       }
       
-      return NextResponse.json({ user: userWithoutPassword, token }, { headers: corsHeaders });
+      return NextResponse.json({ 
+        user: userWithoutPassword, 
+        token,
+        requiresVerification: true,
+        message: 'Registrazione completata! Controlla la tua email per verificare l\'account.'
+      }, { headers: corsHeaders });
+    }
+
+    // Email Verification endpoint
+    if (path === 'auth/verify-email') {
+      const { token: verifyToken } = body;
+      if (!verifyToken) {
+        return NextResponse.json({ error: 'Token di verifica mancante' }, { status: 400, headers: corsHeaders });
+      }
+
+      const users = await getCollection('users');
+      const user = await users.findOne({ emailVerificationToken: verifyToken });
+      
+      if (!user) {
+        return NextResponse.json({ error: 'Token non valido o già utilizzato' }, { status: 400, headers: corsHeaders });
+      }
+
+      if (user.emailVerified) {
+        return NextResponse.json({ success: true, message: 'Email già verificata', alreadyVerified: true }, { headers: corsHeaders });
+      }
+
+      // Verify email
+      await users.updateOne(
+        { id: user.id },
+        { 
+          $set: { emailVerified: true, emailVerifiedAt: new Date().toISOString() },
+          $unset: { emailVerificationToken: '' }
+        }
+      );
+
+      // Now send OTP to WhatsApp if phone exists
+      if (user.phone) {
+        try {
+          // Generate new OTP
+          const phoneOTP = Math.floor(100000 + Math.random() * 900000).toString();
+          const otpExpiry = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+          
+          await users.updateOne(
+            { id: user.id },
+            { $set: { phoneOTP, phoneOTPExpiry: otpExpiry } }
+          );
+
+          // Send OTP via WhatsApp
+          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
+          const whatsappResponse = await fetch(`${baseUrl}/api/whatsapp/send`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: user.phone,
+              message: `🐾 *VetBuddy* - Codice di verifica\n\nIl tuo codice OTP è: *${phoneOTP}*\n\nInserisci questo codice nell'app per completare la registrazione.\n\n⏱️ Il codice scade tra 10 minuti.`
+            })
+          });
+
+          const whatsappResult = await whatsappResponse.json();
+          console.log('WhatsApp OTP sent:', whatsappResult);
+        } catch (whatsappError) {
+          console.error('Error sending WhatsApp OTP:', whatsappError);
+        }
+      }
+
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Email verificata! Ti abbiamo inviato un codice OTP su WhatsApp.',
+        emailVerified: true,
+        requiresPhoneVerification: !!user.phone
+      }, { headers: corsHeaders });
+    }
+
+    // Phone OTP Verification endpoint
+    if (path === 'auth/verify-phone') {
+      const { userId, otp } = body;
+      if (!userId || !otp) {
+        return NextResponse.json({ error: 'User ID e OTP sono obbligatori' }, { status: 400, headers: corsHeaders });
+      }
+
+      const users = await getCollection('users');
+      const user = await users.findOne({ id: userId });
+      
+      if (!user) {
+        return NextResponse.json({ error: 'Utente non trovato' }, { status: 404, headers: corsHeaders });
+      }
+
+      if (user.phoneVerified) {
+        return NextResponse.json({ success: true, message: 'Telefono già verificato', alreadyVerified: true }, { headers: corsHeaders });
+      }
+
+      // Check OTP
+      if (user.phoneOTP !== otp) {
+        return NextResponse.json({ error: 'Codice OTP non valido' }, { status: 400, headers: corsHeaders });
+      }
+
+      // Check OTP expiry
+      if (new Date(user.phoneOTPExpiry) < new Date()) {
+        return NextResponse.json({ error: 'Codice OTP scaduto. Richiedi un nuovo codice.' }, { status: 400, headers: corsHeaders });
+      }
+
+      // Verify phone
+      await users.updateOne(
+        { id: user.id },
+        { 
+          $set: { phoneVerified: true, phoneVerifiedAt: new Date().toISOString() },
+          $unset: { phoneOTP: '', phoneOTPExpiry: '' }
+        }
+      );
+
+      // Send welcome email now that both are verified
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+      try {
+        await sendEmail({
+          to: user.email,
+          subject: '🎉 Account verificato - Benvenuto in VetBuddy!',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
+                <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+              </div>
+              <div style="padding: 30px; background: #f9f9f9;">
+                <h2 style="color: #333;">Account verificato! 🎉</h2>
+                <p style="color: #666; font-size: 16px;">Ciao ${user.name}, il tuo account è ora completamente attivo!</p>
+                
+                <div style="background: #D4EDDA; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #28A745;">
+                  <p style="color: #155724; margin: 0;">
+                    ✅ Email verificata<br/>
+                    ✅ Telefono verificato
+                  </p>
+                </div>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${baseUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold;">
+                    🚀 Inizia a usare VetBuddy
+                  </a>
+                </div>
+              </div>
+              <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+              </div>
+            </div>
+          `
+        });
+      } catch (e) {
+        console.error('Error sending welcome email:', e);
+      }
+
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Telefono verificato! Il tuo account è ora attivo.',
+        phoneVerified: true,
+        fullyVerified: true
+      }, { headers: corsHeaders });
+    }
+
+    // Resend OTP endpoint
+    if (path === 'auth/resend-otp') {
+      const { userId } = body;
+      if (!userId) {
+        return NextResponse.json({ error: 'User ID obbligatorio' }, { status: 400, headers: corsHeaders });
+      }
+
+      const users = await getCollection('users');
+      const user = await users.findOne({ id: userId });
+      
+      if (!user) {
+        return NextResponse.json({ error: 'Utente non trovato' }, { status: 404, headers: corsHeaders });
+      }
+
+      if (!user.phone) {
+        return NextResponse.json({ error: 'Nessun numero di telefono registrato' }, { status: 400, headers: corsHeaders });
+      }
+
+      if (user.phoneVerified) {
+        return NextResponse.json({ success: true, message: 'Telefono già verificato', alreadyVerified: true }, { headers: corsHeaders });
+      }
+
+      // Generate new OTP
+      const phoneOTP = Math.floor(100000 + Math.random() * 900000).toString();
+      const otpExpiry = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+      
+      await users.updateOne(
+        { id: user.id },
+        { $set: { phoneOTP, phoneOTPExpiry: otpExpiry } }
+      );
+
+      // Send OTP via WhatsApp
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
+        await fetch(`${baseUrl}/api/whatsapp/send`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: user.phone,
+            message: `🐾 *VetBuddy* - Nuovo codice di verifica\n\nIl tuo codice OTP è: *${phoneOTP}*\n\nInserisci questo codice nell'app per completare la registrazione.\n\n⏱️ Il codice scade tra 10 minuti.`
+          })
+        });
+      } catch (whatsappError) {
+        console.error('Error resending WhatsApp OTP:', whatsappError);
+        return NextResponse.json({ error: 'Errore invio OTP. Riprova.' }, { status: 500, headers: corsHeaders });
+      }
+
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Nuovo codice OTP inviato su WhatsApp.'
+      }, { headers: corsHeaders });
     }
 
     // Password Reset Request
