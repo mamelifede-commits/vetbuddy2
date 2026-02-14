@@ -5432,6 +5432,37 @@ Milo,cane,Golden Retriever,10/08/2021,,maschio,28,dorato,si,,Apoquel 16mg,Dermat
                 </div>
               )}
               
+              {/* Esami Laboratorio */}
+              <div className="border-t pt-4">
+                <div className="flex justify-between items-center mb-3">
+                  <p className="font-medium flex items-center gap-2">🔬 Esami di Laboratorio</p>
+                  <Button size="sm" onClick={openLabDialog} className="bg-purple-500 hover:bg-purple-600">
+                    <Plus className="h-4 w-4 mr-1" />
+                    Richiedi Esami
+                  </Button>
+                </div>
+                {labRequests.length > 0 ? (
+                  <div className="space-y-2">
+                    {labRequests.slice(0, 3).map((req, i) => (
+                      <div key={i} className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                        <div>
+                          <p className="font-medium text-sm">{req.exams?.map(e => e.name).join(', ').substring(0, 50)}...</p>
+                          <p className="text-xs text-gray-500">{new Date(req.createdAt).toLocaleDateString('it-IT')} • {req.practiceCode}</p>
+                        </div>
+                        {getLabStatusBadge(req.status)}
+                      </div>
+                    ))}
+                    {labRequests.length > 3 && (
+                      <Button variant="link" size="sm" onClick={openLabDialog} className="text-purple-600">
+                        Vedi tutti ({labRequests.length})
+                      </Button>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500 italic">Nessuna richiesta esami</p>
+                )}
+              </div>
+              
               {/* Azioni - Modifica e Elimina */}
               <div className="flex gap-3 pt-4 border-t">
                 <Button variant="outline" className="flex-1" onClick={handleEditPet}>
