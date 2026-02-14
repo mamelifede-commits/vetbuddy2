@@ -15902,7 +15902,7 @@ function PetProfile({ petId, onBack, appointments, documents }) {
                       <p className="font-medium">{nextAppointment.reason || 'Visita'}</p>
                       <p className="text-sm text-gray-500">{new Date(nextAppointment.date).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })} alle {nextAppointment.time}</p>
                     </div>
-                    <Button size="sm" variant="outline">Gestisci</Button>
+                    <Button size="sm" variant="outline" onClick={() => handleManageAppointment(nextAppointment)}>Gestisci</Button>
                   </div>
                 ) : (
                   <p className="text-gray-500 text-sm">Nessun appuntamento programmato</p>
