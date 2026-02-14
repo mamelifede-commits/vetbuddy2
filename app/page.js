@@ -14881,10 +14881,10 @@ function OwnerInvoices({ invoices = [], pets, onRefresh }) {
   );
 }
 
-function OwnerMessages({ messages, clinics = [], onRefresh }) {
+function OwnerMessages({ messages, clinics = [], pets = [], onRefresh }) {
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState(null);
-  const [newMessage, setNewMessage] = useState({ clinicId: '', subject: '', content: '' });
+  const [newMessage, setNewMessage] = useState({ clinicId: '', subject: '', content: '', petId: '' });
   const [replyContent, setReplyContent] = useState('');
   const [sending, setSending] = useState(false);
 
