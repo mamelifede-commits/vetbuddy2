@@ -1357,7 +1357,7 @@ export async function POST(request, { params }) {
         }
       );
 
-      // Now send OTP to WhatsApp if phone exists
+      // Now send OTP via SMS if phone exists
       if (user.phone) {
         try {
           // Generate new OTP
@@ -1369,27 +1369,27 @@ export async function POST(request, { params }) {
             { $set: { phoneOTP, phoneOTPExpiry: otpExpiry } }
           );
 
-          // Send OTP via WhatsApp
+          // Send OTP via SMS
           const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
-          const whatsappResponse = await fetch(`${baseUrl}/api/whatsapp/send`, {
+          const smsResponse = await fetch(`${baseUrl}/api/sms/send`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               to: user.phone,
-              message: `🐾 *VetBuddy* - Codice di verifica\n\nIl tuo codice OTP è: *${phoneOTP}*\n\nInserisci questo codice nell'app per completare la registrazione.\n\n⏱️ Il codice scade tra 10 minuti.`
+              message: `VetBuddy - Il tuo codice OTP è: ${phoneOTP}. Scade tra 10 minuti.`
             })
           });
 
-          const whatsappResult = await whatsappResponse.json();
-          console.log('WhatsApp OTP sent:', whatsappResult);
-        } catch (whatsappError) {
-          console.error('Error sending WhatsApp OTP:', whatsappError);
+          const smsResult = await smsResponse.json();
+          console.log('📱 SMS OTP sent:', smsResult);
+        } catch (smsError) {
+          console.error('Error sending SMS OTP:', smsError);
         }
       }
 
       return NextResponse.json({ 
         success: true, 
-        message: 'Email verificata! Ti abbiamo inviato un codice OTP su WhatsApp.',
+        message: 'Email verificata! Ti abbiamo inviato un codice OTP via SMS.',
         emailVerified: true,
         requiresPhoneVerification: !!user.phone,
         userId: user.id
