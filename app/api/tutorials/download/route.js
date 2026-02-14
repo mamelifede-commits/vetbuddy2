@@ -107,6 +107,20 @@ const ownerTutorial = {
       tip: 'Attiva le notifiche WhatsApp per non perdere mai un promemoria!'
     },
     {
+      title: 'CONFIGURARE WHATSAPP',
+      content: [
+        'Vai su "Profilo e Notifiche" nel menu laterale',
+        'Inserisci il tuo numero di telefono con prefisso (+39)',
+        'Attiva l\'opzione "Notifiche WhatsApp"',
+        'Clicca "Invia messaggio di test" per verificare',
+        'Riceverai automaticamente:',
+        '  - Promemoria appuntamenti',
+        '  - Notifiche documenti disponibili',
+        '  - Conferme di pagamento'
+      ],
+      tip: 'WhatsApp ha un tasso di apertura del 98%!'
+    },
+    {
       title: 'PROGRAMMA FEDELTA',
       content: [
         'Accumula punti con ogni prenotazione completata',
