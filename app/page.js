@@ -15161,6 +15161,10 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
   const handleOpenDocument = (doc) => {
     if (doc.url || doc.fileUrl) {
       window.open(doc.url || doc.fileUrl, '_blank');
+    } else if (doc.content) {
+      // Se abbiamo il contenuto base64, aprilo in una nuova finestra
+      const base64Content = doc.content.startsWith('data:') ? doc.content : `data:application/pdf;base64,${doc.content}`;
+      window.open(base64Content, '_blank');
     } else {
       setSelectedDocument(doc);
       setShowDocumentViewer(true);
@@ -15174,13 +15178,22 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
       if (url) {
         const link = document.createElement('a');
         link.href = url;
-        link.download = doc.name || 'documento';
+        link.download = doc.fileName || doc.name || 'documento';
         link.target = '_blank';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+      } else if (doc.content) {
+        // Scarica da contenuto base64
+        const base64Content = doc.content.startsWith('data:') ? doc.content : `data:application/pdf;base64,${doc.content}`;
+        const link = document.createElement('a');
+        link.href = base64Content;
+        link.download = doc.fileName || doc.name || 'documento.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       } else {
-        alert('URL del documento non disponibile');
+        alert('Documento non disponibile per il download. Il file potrebbe non essere stato ancora caricato.');
       }
     } catch (error) {
       console.error('Error downloading document:', error);
