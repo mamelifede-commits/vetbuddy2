@@ -10,14 +10,14 @@ const corsHeaders = {
 };
 
 // Default working hours if clinic hasn't configured them
-const DEFAULT_WORKING_HOURS = {
-  monday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-  tuesday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-  wednesday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-  thursday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-  friday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-  saturday: { enabled: false, start: '09:00', end: '13:00', breakStart: null, breakEnd: null },
-  sunday: { enabled: false, start: null, end: null, breakStart: null, breakEnd: null }
+const DEFAULT_SCHEDULE = {
+  monday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+  tuesday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+  wednesday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+  thursday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+  friday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+  saturday: { enabled: false, blocks: [] },
+  sunday: { enabled: false, blocks: [] }
 };
 
 const DEFAULT_SLOT_DURATION = 30; // minutes
@@ -26,50 +26,60 @@ const DEFAULT_SLOT_DURATION = 30; // minutes
 const DAY_NAMES = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 /**
- * Generate time slots for a given date based on clinic's working hours
+ * Generate time slots from time blocks
  */
-function generateTimeSlots(date, workingHours, slotDuration = DEFAULT_SLOT_DURATION) {
-  const dayName = DAY_NAMES[date.getDay()];
-  const dayConfig = workingHours[dayName];
-  
-  if (!dayConfig || !dayConfig.enabled) {
-    return [];
-  }
-  
+function generateSlotsFromBlocks(blocks, slotDuration) {
   const slots = [];
-  const [startHour, startMin] = dayConfig.start.split(':').map(Number);
-  const [endHour, endMin] = dayConfig.end.split(':').map(Number);
   
-  let breakStart = null, breakEnd = null;
-  if (dayConfig.breakStart && dayConfig.breakEnd) {
-    const [bsH, bsM] = dayConfig.breakStart.split(':').map(Number);
-    const [beH, beM] = dayConfig.breakEnd.split(':').map(Number);
-    breakStart = bsH * 60 + bsM;
-    breakEnd = beH * 60 + beM;
-  }
-  
-  let currentMinutes = startHour * 60 + startMin;
-  const endMinutes = endHour * 60 + endMin;
-  
-  while (currentMinutes + slotDuration <= endMinutes) {
-    // Check if slot is during break
-    const slotEnd = currentMinutes + slotDuration;
-    const isDuringBreak = breakStart !== null && 
-      !((slotEnd <= breakStart) || (currentMinutes >= breakEnd));
+  for (const block of blocks) {
+    if (!block.start || !block.end) continue;
     
-    if (!isDuringBreak) {
+    const [startHour, startMin] = block.start.split(':').map(Number);
+    const [endHour, endMin] = block.end.split(':').map(Number);
+    
+    let currentMinutes = startHour * 60 + startMin;
+    const endMinutes = endHour * 60 + endMin;
+    
+    while (currentMinutes + slotDuration <= endMinutes) {
       const hours = Math.floor(currentMinutes / 60);
       const mins = currentMinutes % 60;
       slots.push({
         time: `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`,
         available: true
       });
+      currentMinutes += slotDuration;
     }
-    
-    currentMinutes += slotDuration;
   }
   
+  // Sort slots by time
+  slots.sort((a, b) => a.time.localeCompare(b.time));
+  
   return slots;
+}
+
+/**
+ * Check if a date is blocked
+ */
+function isDateBlocked(dateStr, blockedDates) {
+  if (!blockedDates || !Array.isArray(blockedDates)) return false;
+  return blockedDates.some(blocked => {
+    if (typeof blocked === 'string') return blocked === dateStr;
+    if (blocked.date === dateStr) return true;
+    // Check date ranges
+    if (blocked.startDate && blocked.endDate) {
+      return dateStr >= blocked.startDate && dateStr <= blocked.endDate;
+    }
+    return false;
+  });
+}
+
+/**
+ * Get blocked slots for a specific date
+ */
+function getBlockedSlots(dateStr, blockedSlots) {
+  if (!blockedSlots || !Array.isArray(blockedSlots)) return [];
+  const blocked = blockedSlots.filter(b => b.date === dateStr);
+  return blocked.map(b => b.time);
 }
 
 /**
@@ -110,12 +120,64 @@ export async function GET(request, { params }) {
       );
     }
     
-    // Get clinic's working hours or use defaults
-    const workingHours = clinic.workingHours || DEFAULT_WORKING_HOURS;
+    const dayName = DAY_NAMES[date.getDay()];
     const slotDuration = clinic.slotDuration || DEFAULT_SLOT_DURATION;
     
-    // Generate all possible slots
-    const slots = generateTimeSlots(date, workingHours, slotDuration);
+    // Check if entire date is blocked (holidays, closures)
+    if (isDateBlocked(dateStr, clinic.blockedDates)) {
+      return NextResponse.json({
+        clinicId,
+        clinicName: clinic.clinicName || clinic.name,
+        date: dateStr,
+        dayName,
+        blocked: true,
+        blockReason: clinic.blockedDates?.find(b => b.date === dateStr || (b.startDate && dateStr >= b.startDate && dateStr <= b.endDate))?.reason || 'Clinica chiusa',
+        slots: [],
+        totalSlots: 0,
+        availableCount: 0
+      }, { headers: corsHeaders });
+    }
+    
+    // Check for date-specific override (manual slots)
+    let slots = [];
+    let scheduleSource = 'default';
+    
+    if (clinic.dateOverrides && clinic.dateOverrides[dateStr]) {
+      // Use manual slots for this specific date
+      const override = clinic.dateOverrides[dateStr];
+      if (override.slots && Array.isArray(override.slots)) {
+        slots = override.slots.map(time => ({ time, available: true }));
+        scheduleSource = 'override';
+      } else if (override.blocks && Array.isArray(override.blocks)) {
+        slots = generateSlotsFromBlocks(override.blocks, slotDuration);
+        scheduleSource = 'override';
+      }
+    } else {
+      // Use weekly schedule
+      const schedule = clinic.weeklySchedule || DEFAULT_SCHEDULE;
+      const dayConfig = schedule[dayName];
+      
+      if (!dayConfig || !dayConfig.enabled) {
+        return NextResponse.json({
+          clinicId,
+          clinicName: clinic.clinicName || clinic.name,
+          date: dateStr,
+          dayName,
+          dayEnabled: false,
+          message: 'La clinica è chiusa in questo giorno',
+          slots: [],
+          totalSlots: 0,
+          availableCount: 0
+        }, { headers: corsHeaders });
+      }
+      
+      // Generate slots from time blocks
+      slots = generateSlotsFromBlocks(dayConfig.blocks || [], slotDuration);
+      scheduleSource = 'weekly';
+    }
+    
+    // Get blocked slots for this date
+    const blockedSlotTimes = getBlockedSlots(dateStr, clinic.blockedSlots);
     
     // Get existing appointments for this date
     const appointments = await getCollection('appointments');
@@ -125,14 +187,17 @@ export async function GET(request, { params }) {
       status: { $nin: ['cancelled', 'rejected'] }
     }).toArray();
     
-    // Mark booked slots as unavailable
     const bookedTimes = existingAppointments.map(a => a.time);
+    
+    // Mark booked and blocked slots as unavailable
     const availableSlots = slots.map(slot => ({
       ...slot,
-      available: !bookedTimes.includes(slot.time)
+      available: !bookedTimes.includes(slot.time) && !blockedSlotTimes.includes(slot.time),
+      booked: bookedTimes.includes(slot.time),
+      blocked: blockedSlotTimes.includes(slot.time)
     }));
     
-    // Get service duration if serviceId provided (affects slot selection)
+    // Get service duration if serviceId provided
     let serviceDuration = slotDuration;
     if (serviceId && clinic.servicesOffered) {
       const service = clinic.servicesOffered.find(s => s.id === serviceId);
@@ -145,13 +210,15 @@ export async function GET(request, { params }) {
       clinicId,
       clinicName: clinic.clinicName || clinic.name,
       date: dateStr,
-      dayName: DAY_NAMES[date.getDay()],
-      workingHours: workingHours[DAY_NAMES[date.getDay()]],
+      dayName,
+      scheduleSource,
       slotDuration,
       serviceDuration,
       slots: availableSlots,
       totalSlots: slots.length,
-      availableCount: availableSlots.filter(s => s.available).length
+      availableCount: availableSlots.filter(s => s.available).length,
+      acceptOnlineBooking: clinic.acceptOnlineBooking !== false,
+      requireConfirmation: clinic.requireConfirmation !== false
     }, { headers: corsHeaders });
     
   } catch (error) {
