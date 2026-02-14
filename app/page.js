@@ -12247,6 +12247,22 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
 
   useEffect(() => { loadData(); }, []);
   
+  // Check if user should see add pet dialog (new registration with no pets)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const showAddPet = sessionStorage.getItem('vetbuddy_show_add_pet');
+      if (showAddPet === 'true') {
+        sessionStorage.removeItem('vetbuddy_show_add_pet');
+        setActiveTab('pets');
+        // Set a flag to open the add pet dialog once the component mounts
+        setTimeout(() => {
+          const addPetEvent = new CustomEvent('vetbuddy_open_add_pet');
+          window.dispatchEvent(addPetEvent);
+        }, 500);
+      }
+    }
+  }, []);
+  
   // Handle email action parameters
   useEffect(() => {
     if (emailAction && emailAction.action) {
