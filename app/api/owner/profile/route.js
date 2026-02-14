@@ -44,11 +44,13 @@ export async function GET(request) {
 // PUT update owner profile
 export async function PUT(request) {
   try {
-    const userId = request.headers.get('x-user-id');
+    const userData = getUserFromRequest(request);
     
-    if (!userId) {
+    if (!userData || !userData.id) {
       return NextResponse.json({ error: 'Non autenticato' }, { status: 401 });
     }
+    
+    const userId = userData.id;
 
     const data = await request.json();
     
