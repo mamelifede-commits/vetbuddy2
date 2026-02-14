@@ -15143,7 +15143,7 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
 }
 
 // ==================== PET PROFILE (Cartella Clinica) ====================
-function PetProfile({ petId, onBack, appointments, documents }) {
+function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
   const [pet, setPet] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
