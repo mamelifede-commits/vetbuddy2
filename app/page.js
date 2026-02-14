@@ -19269,7 +19269,7 @@ function VerificationScreen({ state, onComplete }) {
                   <Smartphone className="h-5 w-5 text-blue-500 mt-0.5" />
                   <div>
                     <p className="text-sm text-blue-700 font-medium">Codice OTP inviato via SMS</p>
-                    <p className="text-xs text-blue-600 mt-1">Controlla i messaggi WhatsApp e inserisci il codice a 6 cifre</p>
+                    <p className="text-xs text-blue-600 mt-1">Controlla gli SMS e inserisci il codice a 6 cifre</p>
                   </div>
                 </div>
               </div>
