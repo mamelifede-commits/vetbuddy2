@@ -15337,6 +15337,26 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
     diet: '', // Tipo di alimentazione
     dietNotes: '' // Note sull'alimentazione
   });
+
+  // Listen for add pet event from welcome screen (new registration)
+  useEffect(() => {
+    const handleOpenAddPet = () => {
+      setEditingPet(null);
+      setFormData({ 
+        name: '', species: 'dog', breed: '', birthDate: '', weight: '', weightDate: new Date().toISOString().split('T')[0],
+        microchip: '', sterilized: false, allergies: '', medications: '', notes: '',
+        insurance: false, insuranceCompany: '', insurancePolicy: '',
+        medicalHistory: '', currentConditions: '', chronicDiseases: '',
+        weightHistory: [], diet: '', dietNotes: ''
+      });
+      setShowDialog(true);
+    };
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener('vetbuddy_open_add_pet', handleOpenAddPet);
+      return () => window.removeEventListener('vetbuddy_open_add_pet', handleOpenAddPet);
+    }
+  }, []);
   
   const handleSubmit = async (e) => { 
     e.preventDefault(); 
