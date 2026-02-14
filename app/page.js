@@ -12988,6 +12988,7 @@ function OwnerEvents({ user, onNavigate }) {
   const [activeCategory, setActiveCategory] = useState('all');
   const [error, setError] = useState(null);
   const [showPersonalized, setShowPersonalized] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Mappa specie animali a categorie eventi
   const speciestoCategory = {
