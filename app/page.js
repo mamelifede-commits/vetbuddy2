@@ -16330,7 +16330,7 @@ function FindClinic({ user }) {
             </div>
             <div className="w-56">
               <Label className="sr-only">Servizio</Label>
-              <Select value={searchService} onValueChange={(v) => { setSearchService(v); }}>
+              <Select value={searchService || 'all'} onValueChange={(v) => { setSearchService(v === 'all' ? '' : v); }}>
                 <SelectTrigger>
                   <Stethoscope className="h-4 w-4 mr-2 text-gray-400" />
                   <SelectValue placeholder="Filtra per servizio..." />
