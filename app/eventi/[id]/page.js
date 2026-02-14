@@ -113,19 +113,6 @@ export default function EventDetailPage() {
     const shareText = `${event.title}\n📅 ${formatDate(event.eventDate)}\n📍 ${event.location || 'Luogo da definire'}\n\n${event.description || ''}`;
     
     switch (method) {
-      case 'native':
-        if (navigator.share) {
-          try {
-            await navigator.share({
-              title: event.title,
-              text: shareText,
-              url: shareUrl
-            });
-          } catch (err) {
-            console.log('Condivisione annullata');
-          }
-        }
-        break;
       case 'whatsapp':
         window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`, '_blank');
         break;
