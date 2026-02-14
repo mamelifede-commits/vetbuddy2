@@ -18124,7 +18124,22 @@ export default function App() {
       setShowWelcome(true); 
     } 
   };
-  const handleWelcomeContinue = () => { localStorage.setItem('vetbuddy_welcomed_' + user.id, 'true'); setShowWelcome(false); };
+  const handleWelcomeContinue = async () => { 
+    localStorage.setItem('vetbuddy_welcomed_' + user.id, 'true'); 
+    setShowWelcome(false);
+    // For owners: check if they have pets, if not redirect to pets tab to add first pet
+    if (user.role === 'owner') {
+      try {
+        const pets = await api.get('pets');
+        if (!pets || pets.length === 0) {
+          // Set flag to show add pet dialog when entering dashboard
+          sessionStorage.setItem('vetbuddy_show_add_pet', 'true');
+        }
+      } catch (error) {
+        console.error('Error checking pets:', error);
+      }
+    }
+  };
   const handleLogout = () => { localStorage.removeItem('vetbuddy_token'); api.token = null; setUser(null); setShowWelcome(false); sessionStorage.removeItem('vetbuddy_email_action'); };
 
   // Show Google OAuth result toast
