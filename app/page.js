@@ -9772,6 +9772,9 @@ function ClinicEvents({ user }) {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('upcoming');
   const [savingEvent, setSavingEvent] = useState(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [selectedEventForShare, setSelectedEventForShare] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   // Carica eventi dall'API
   const loadEvents = async () => {
