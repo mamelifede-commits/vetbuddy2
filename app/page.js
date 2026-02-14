@@ -15042,7 +15042,7 @@ function OwnerMessages({ messages, clinics = [], pets = [], onRefresh }) {
     try {
       const clinic = clinics.find(c => c.id === newMessage.clinicId);
       const pet = newMessage.petId ? pets.find(p => p.id === newMessage.petId) : null;
-      await api.post('messages', {
+      const newMsg = await api.post('messages', {
         clinicId: newMessage.clinicId,
         clinicName: clinic?.clinicName || clinic?.name || 'Clinica',
         subject: newMessage.subject,
@@ -15052,6 +15052,17 @@ function OwnerMessages({ messages, clinics = [], pets = [], onRefresh }) {
         petId: pet?.id || null,
         petName: pet?.name || null
       });
+      // Immediately add new message to local state for instant UI update
+      if (newMsg) {
+        setLocalMessages(prev => [...prev, {
+          ...newMsg,
+          clinicName: clinic?.clinicName || clinic?.name || 'Clinica',
+          subject: newMessage.subject,
+          content: newMessage.content,
+          from: 'owner',
+          createdAt: new Date().toISOString()
+        }]);
+      }
       setShowNewMessage(false);
       setNewMessage({ clinicId: '', subject: '', content: '', petId: '' });
       onRefresh?.();
@@ -15066,7 +15077,7 @@ function OwnerMessages({ messages, clinics = [], pets = [], onRefresh }) {
     if (!replyContent.trim() || !selectedConversation) return;
     setSending(true);
     try {
-      await api.post('messages', {
+      const newMsg = await api.post('messages', {
         clinicId: selectedConversation.clinicId,
         clinicName: selectedConversation.clinicName,
         subject: selectedConversation.subject,
@@ -15075,6 +15086,28 @@ function OwnerMessages({ messages, clinics = [], pets = [], onRefresh }) {
         type: 'reply',
         conversationId: selectedConversation.id
       });
+      // Immediately add reply to local state for instant UI update
+      if (newMsg) {
+        setLocalMessages(prev => [...prev, {
+          ...newMsg,
+          clinicId: selectedConversation.clinicId,
+          clinicName: selectedConversation.clinicName,
+          subject: selectedConversation.subject,
+          content: replyContent,
+          from: 'owner',
+          createdAt: new Date().toISOString()
+        }]);
+        // Also update selected conversation messages for immediate display
+        setSelectedConversation(prev => ({
+          ...prev,
+          messages: [...prev.messages, {
+            ...newMsg,
+            content: replyContent,
+            from: 'owner',
+            createdAt: new Date().toISOString()
+          }]
+        }));
+      }
       setReplyContent('');
       onRefresh?.();
     } catch (error) {
