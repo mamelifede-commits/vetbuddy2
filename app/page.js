@@ -11073,6 +11073,7 @@ function ClinicSettings({ user, onNavigate }) {
     loadStaffColors();
     loadStaff();
     loadPaymentSettings();
+    loadAvailabilitySettings();
     
     // Check for Google OAuth callback
     const params = new URLSearchParams(window.location.search);
@@ -11086,6 +11087,63 @@ function ClinicSettings({ user, onNavigate }) {
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
+
+  // Load availability settings
+  const loadAvailabilitySettings = async () => {
+    setLoadingAvailability(true);
+    try {
+      const response = await api.get('clinic/availability');
+      setAvailabilitySettings(response);
+    } catch (error) {
+      console.error('Error loading availability settings:', error);
+      // Set defaults if not configured
+      setAvailabilitySettings({
+        workingHours: {
+          monday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
+          tuesday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
+          wednesday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
+          thursday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
+          friday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
+          saturday: { enabled: false, start: '09:00', end: '13:00', breakStart: null, breakEnd: null },
+          sunday: { enabled: false, start: null, end: null, breakStart: null, breakEnd: null }
+        },
+        slotDuration: 30,
+        acceptOnlineBooking: true,
+        requireConfirmation: true
+      });
+    } finally {
+      setLoadingAvailability(false);
+    }
+  };
+
+  // Save availability settings
+  const saveAvailabilitySettings = async () => {
+    setSavingAvailability(true);
+    try {
+      await api.put('clinic/availability', availabilitySettings);
+      alert('✅ Orari di disponibilità salvati!');
+      setShowAvailabilityForm(false);
+    } catch (error) {
+      console.error('Error saving availability:', error);
+      alert('❌ Errore nel salvataggio degli orari');
+    } finally {
+      setSavingAvailability(false);
+    }
+  };
+
+  // Update working hours for a specific day
+  const updateDayHours = (day, field, value) => {
+    setAvailabilitySettings(prev => ({
+      ...prev,
+      workingHours: {
+        ...prev.workingHours,
+        [day]: {
+          ...prev.workingHours[day],
+          [field]: value
+        }
+      }
+    }));
+  };
 
   // Load payment settings
   const loadPaymentSettings = async () => {
