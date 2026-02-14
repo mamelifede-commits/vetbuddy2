@@ -112,12 +112,13 @@ export default function EventDetailPage() {
     const shareUrl = window.location.href;
     const eventDate = formatDate(event.eventDate);
     const eventLocation = event.location || 'Luogo da definire';
+    const eventDescription = event.description || '';
     
-    // Messaggio formattato stile "card" per WhatsApp
-    const shareTextWhatsApp = `*${event.title}*\n📅 ${eventDate}\n📍 ${eventLocation}\n\n${shareUrl}`;
+    // Messaggio completo con descrizione per WhatsApp
+    const shareTextWhatsApp = `${event.title}\n📅 ${eventDate}\n📍 ${eventLocation}\n\n${eventDescription}\n\n${shareUrl}`;
     
     // Messaggio per altri canali
-    const shareText = `${event.title}\n📅 ${eventDate}\n📍 ${eventLocation}`;
+    const shareText = `${event.title}\n📅 ${eventDate}\n📍 ${eventLocation}\n\n${eventDescription}`;
     
     switch (method) {
       case 'whatsapp':
