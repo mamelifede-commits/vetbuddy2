@@ -1225,41 +1225,38 @@ export async function POST(request, { params }) {
       const token = generateToken({ id: user.id, email: user.email, role: user.role });
       const { password: _, emailVerificationToken: __, phoneOTP: ___, ...userWithoutPassword } = user;
       
-      // Invia email di benvenuto in background
+      // Invia email di VERIFICA (non più solo benvenuto)
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+      const verifyEmailUrl = `${baseUrl}?verify_email=${emailVerificationToken}`;
+      
       try {
         if (role === 'owner') {
-          // Email di benvenuto per proprietari
+          // Email di VERIFICA per proprietari
           await sendEmail({
             to: email,
-            subject: '🐾 Benvenuto in VetBuddy! Grazie per esserti iscritto',
+            subject: '📧 Verifica la tua email - VetBuddy',
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
                   <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
-                  <h2 style="color: #333;">Benvenuto ${name}! 🎉</h2>
-                  <p style="color: #666; font-size: 16px;">Grazie per esserti iscritto a VetBuddy, la piattaforma che ti aiuta a prenderti cura dei tuoi amici a 4 zampe!</p>
-                  
-                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FF6B6B;">
-                    <h3 style="color: #333; margin-top: 0;">Cosa puoi fare ora:</h3>
-                    <ul style="color: #666; font-size: 16px; padding-left: 20px;">
-                      <li>📋 Registra i tuoi animali</li>
-                      <li>📅 Prenota visite online</li>
-                      <li>💉 Ricevi promemoria vaccini automatici</li>
-                      <li>📱 Comunica facilmente con la tua clinica</li>
-                      <li>🎁 Accumula premi fedeltà</li>
-                    </ul>
-                  </div>
+                  <h2 style="color: #333;">Ciao ${name}! 👋</h2>
+                  <p style="color: #666; font-size: 16px;">Grazie per esserti iscritto a VetBuddy! Per completare la registrazione, verifica la tua email cliccando il pulsante qui sotto:</p>
                   
                   <div style="text-align: center; margin: 30px 0;">
-                    <a href="${baseUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold;">
-                      🚀 Accedi a VetBuddy
+                    <a href="${verifyEmailUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 16px 32px; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 18px;">
+                      ✅ Verifica Email
                     </a>
                   </div>
                   
-                  <p style="color: #999; font-size: 14px; text-align: center;">Hai domande? Rispondi a questa email e ti aiuteremo!</p>
+                  <div style="background: #FFF3CD; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FFC107;">
+                    <p style="color: #856404; margin: 0; font-size: 14px;">
+                      <strong>⚠️ Importante:</strong> Dopo la verifica email, riceverai un codice OTP su WhatsApp per confermare il tuo numero di telefono.
+                    </p>
+                  </div>
+                  
+                  <p style="color: #999; font-size: 12px; text-align: center;">Se non hai creato tu questo account, ignora questa email.</p>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
                   <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
