@@ -1285,9 +1285,9 @@ export async function POST(request, { params }) {
                     </a>
                   </div>
                   
-                  <div style="background: #FFF3CD; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FFC107;">
-                    <p style="color: #856404; margin: 0; font-size: 14px;">
-                      <strong>⚠️ Importante:</strong> Dopo la verifica email, riceverai un codice OTP via SMS per confermare il numero di telefono della clinica.
+                  <div style="background: #E8F5E9; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #4CAF50;">
+                    <p style="color: #2E7D32; margin: 0; font-size: 14px;">
+                      <strong>✅ Un solo click:</strong> Dopo aver cliccato il pulsante, il tuo account sarà attivo e potrai accedere subito!
                     </p>
                   </div>
                   
