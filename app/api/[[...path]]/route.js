@@ -1391,7 +1391,8 @@ export async function POST(request, { params }) {
         success: true, 
         message: 'Email verificata! Ti abbiamo inviato un codice OTP su WhatsApp.',
         emailVerified: true,
-        requiresPhoneVerification: !!user.phone
+        requiresPhoneVerification: !!user.phone,
+        userId: user.id
       }, { headers: corsHeaders });
     }
 
