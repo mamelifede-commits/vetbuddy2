@@ -12668,7 +12668,7 @@ function OwnerEvents({ user }) {
                       )}
                     </span>
                     
-                    {event.link ? (
+                    {event.link && event.link.trim() !== '' ? (
                       <a 
                         href={event.link}
                         target="_blank"
