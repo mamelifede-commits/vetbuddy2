@@ -15165,7 +15165,9 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
     // Nuovi campi
     insurance: false, insuranceCompany: '', insurancePolicy: '',
     medicalHistory: '', currentConditions: '', chronicDiseases: '',
-    weightHistory: [] // Array di { weight, date }
+    weightHistory: [], // Array di { weight, date }
+    diet: '', // Tipo di alimentazione
+    dietNotes: '' // Note sull'alimentazione
   });
   
   const handleSubmit = async (e) => { 
