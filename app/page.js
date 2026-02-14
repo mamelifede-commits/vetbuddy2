@@ -17762,6 +17762,7 @@ function FindClinic({ user }) {
         if (!open) {
           setAvailableSlots([]);
           setClinicAvailability(null);
+          setAppointmentFiles([]);
         }
       }}>
         <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
