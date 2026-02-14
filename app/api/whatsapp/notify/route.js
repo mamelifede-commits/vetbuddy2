@@ -36,13 +36,71 @@ A presto! 🐾
 
 Ciao ${data.ownerName}! 👋
 
-Il tuo appuntamento è stato confermato:
+La tua visita per ${data.petName} è confermata:
 📅 *Data:* ${data.date}
 ⏰ *Ora:* ${data.time}
 🏥 *Clinica:* ${data.clinicName}
-🐕 *Paziente:* ${data.petName}
+📍 *Indirizzo:* ${data.clinicAddress || 'Vedi app per dettagli'}
+🩺 *Servizio:* ${data.serviceType || 'Visita'}
 
-Ti aspettiamo! 🐾
+${data.calendarLink ? `📅 Aggiungi al calendario: ${data.calendarLink}` : ''}
+
+Devi modificare? Accedi all'app VetBuddy.
+
+A presto! 🐾
+  `.trim(),
+  
+  // NUOVO: Reminder pagamento non completato (2h dopo prenotazione)
+  payment_reminder: (data) => `
+💳 *Completa la prenotazione - VetBuddy*
+
+Ciao ${data.ownerName}! 👋
+
+Hai prenotato una visita per ${data.petName} ma il pagamento non è ancora completato.
+
+📅 *Data:* ${data.date}
+⏰ *Ora:* ${data.time}
+🏥 *Clinica:* ${data.clinicName}
+💰 *Totale:* €${data.amount}
+
+${data.paymentLink ? `👉 Completa il pagamento: ${data.paymentLink}` : 'Accedi all\'app per completare il pagamento.'}
+
+L'appuntamento sarà confermato dopo il pagamento.
+
+Problemi? Scrivi in chat alla clinica.
+  `.trim(),
+  
+  // NUOVO: Esami richiesti al laboratorio
+  lab_request_sent: (data) => `
+🔬 *Esami richiesti per ${data.petName} - VetBuddy*
+
+Ciao ${data.ownerName}! 👋
+
+Il Dr. ${data.vetName} ha richiesto degli esami per ${data.petName}:
+📋 *Esami:* ${data.examList}
+
+Ti avviseremo appena i risultati saranno disponibili (solitamente ${data.estimatedTime || '48-72 ore'}).
+
+Domande? Scrivi in chat alla clinica.
+
+🐾 Il team ${data.clinicName}
+  `.trim(),
+  
+  // NUOVO: Referti pronti
+  lab_results_ready: (data) => `
+📊 *Referti pronti per ${data.petName}! - VetBuddy*
+
+Ciao ${data.ownerName}! 👋
+
+I risultati degli esami di ${data.petName} sono pronti.
+
+${data.vetComment ? `💬 *Commento del veterinario:*\n"${data.vetComment}"` : ''}
+
+📄 Visualizza i referti nell'app VetBuddy nella sezione Documenti.
+
+${data.followUpSuggested ? `📅 Il veterinario suggerisce un controllo. Prenota dall'app!` : ''}
+
+🐾 Il team ${data.clinicName}
   `.trim(),
 
   appointment_cancelled: (data) => `
