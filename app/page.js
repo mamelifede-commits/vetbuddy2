@@ -13162,8 +13162,6 @@ function OwnerEvents({ user, onNavigate }) {
     return emojiMap[species] || '🐾';
   };
 
-  const [searchQuery, setSearchQuery] = useState('');
-
   return (
     <div className="max-w-4xl mx-auto">
       {/* Header */}
