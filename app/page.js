@@ -12679,14 +12679,13 @@ function OwnerEvents({ user }) {
                         <ExternalLink className="h-4 w-4" />
                       </a>
                     ) : (
-                      <button 
-                        type="button"
-                        className="bg-coral-500 hover:bg-coral-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors cursor-pointer"
-                        onClick={() => window.alert(detailText)}
+                      <a 
+                        href={`/eventi/${event.id}`}
+                        className="bg-coral-500 hover:bg-coral-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors no-underline"
                       >
                         Vedi dettagli
                         <ExternalLink className="h-4 w-4" />
-                      </button>
+                      </a>
                     )}
                   </div>
                 </div>
