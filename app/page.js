@@ -16730,15 +16730,15 @@ function FindClinic({ user }) {
                     size="sm" 
                     variant="outline"
                     onClick={() => {
-                      // Use coordinates if available, otherwise use address
+                      // Show clinic location on map
                       if (clinic.latitude && clinic.longitude) {
-                        window.open(`https://www.google.com/maps/dir/?api=1&destination=${clinic.latitude},${clinic.longitude}`, '_blank');
+                        window.open(`https://www.google.com/maps?q=${clinic.latitude},${clinic.longitude}`, '_blank');
                       } else if (clinic.address || clinic.city) {
-                        const address = encodeURIComponent(`${clinic.address || ''} ${clinic.city || ''} Italia`.trim());
+                        const address = encodeURIComponent(`${clinic.clinicName || ''} ${clinic.address || ''} ${clinic.city || ''} Italia`.trim());
                         window.open(`https://www.google.com/maps/search/?api=1&query=${address}`, '_blank');
                       }
                     }}
-                    title="Apri in Google Maps"
+                    title="Vedi su Google Maps"
                   >
                     <MapPin className="h-4 w-4" />
                   </Button>
