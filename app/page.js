@@ -15395,6 +15395,33 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
                 <div><Label>Storia medica generale</Label><Textarea value={formData.medicalHistory} onChange={(e) => setFormData({...formData, medicalHistory: e.target.value})} placeholder="Es. Intervento chirurgico nel 2023 per rimozione corpo estraneo, vaccinazioni regolari..." rows={3} /></div>
               </div>
 
+              {/* Sezione Alimentazione */}
+              <div className="space-y-4 border-t pt-4">
+                <h4 className="font-semibold text-gray-700 flex items-center gap-2"><Droplet className="h-4 w-4" /> Alimentazione</h4>
+                <div>
+                  <Label>Tipo di alimentazione</Label>
+                  <Select value={formData.diet} onValueChange={(v) => setFormData({...formData, diet: v})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleziona tipo alimentazione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Non specificato</SelectItem>
+                      <SelectItem value="crocchette">🥣 Crocchette (secco)</SelectItem>
+                      <SelectItem value="umido">🥫 Umido (scatolette)</SelectItem>
+                      <SelectItem value="misto">🍽️ Misto (secco + umido)</SelectItem>
+                      <SelectItem value="barf">🥩 BARF (carne cruda)</SelectItem>
+                      <SelectItem value="casalinga">🍳 Dieta casalinga</SelectItem>
+                      <SelectItem value="veterinaria">💊 Dieta veterinaria/terapeutica</SelectItem>
+                      <SelectItem value="altro">Altro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Note alimentazione</Label>
+                  <Textarea value={formData.dietNotes} onChange={(e) => setFormData({...formData, dietNotes: e.target.value})} placeholder="Es. Marca crocchette, frequenza pasti, intolleranze alimentari..." rows={2} />
+                </div>
+              </div>
+
               {/* Sezione Note */}
               <div className="space-y-4 border-t pt-4">
                 <h4 className="font-semibold text-gray-700 flex items-center gap-2"><FileText className="h-4 w-4" /> Note Comportamentali</h4>
