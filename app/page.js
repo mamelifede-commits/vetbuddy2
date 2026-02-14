@@ -15221,11 +15221,22 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
         breed: data.breed || '',
         birthDate: data.birthDate ? data.birthDate.split('T')[0] : '',
         weight: data.weight || '',
+        weightDate: new Date().toISOString().split('T')[0],
         microchip: data.microchip || '',
         sterilized: data.sterilized || false,
         allergies: data.allergies || '',
         medications: data.medications || '',
-        notes: data.notes || ''
+        notes: data.notes || '',
+        // Campi aggiuntivi
+        insurance: data.insurance || false,
+        insuranceCompany: data.insuranceCompany || '',
+        insurancePolicy: data.insurancePolicy || '',
+        medicalHistory: data.medicalHistory || '',
+        currentConditions: data.currentConditions || '',
+        chronicDiseases: data.chronicDiseases || '',
+        weightHistory: data.weightHistory || [],
+        diet: data.diet || '',
+        dietNotes: data.dietNotes || ''
       });
     } catch (error) {
       console.error('Error loading pet:', error);
