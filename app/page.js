@@ -15513,12 +15513,12 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
                 <h4 className="font-semibold text-gray-700 flex items-center gap-2"><Droplet className="h-4 w-4" /> Alimentazione</h4>
                 <div>
                   <Label>Tipo di alimentazione</Label>
-                  <Select value={formData.diet} onValueChange={(v) => setFormData({...formData, diet: v})}>
+                  <Select value={formData.diet || 'non_specificato'} onValueChange={(v) => setFormData({...formData, diet: v === 'non_specificato' ? '' : v})}>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleziona tipo alimentazione" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Non specificato</SelectItem>
+                      <SelectItem value="non_specificato">Non specificato</SelectItem>
                       <SelectItem value="crocchette">🥣 Crocchette (secco)</SelectItem>
                       <SelectItem value="umido">🥫 Umido (scatolette)</SelectItem>
                       <SelectItem value="misto">🍽️ Misto (secco + umido)</SelectItem>
