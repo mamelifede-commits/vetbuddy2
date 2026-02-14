@@ -686,24 +686,32 @@ export async function GET(request, { params }) {
       
       const users = await getCollection('users');
       const filter = { role: 'clinic' };
+      const andConditions = [];
       
       if (query) {
-        filter.$or = [
-          { clinicName: { $regex: query, $options: 'i' } },
-          { name: { $regex: query, $options: 'i' } }
-        ];
+        andConditions.push({
+          $or: [
+            { clinicName: { $regex: query, $options: 'i' } },
+            { name: { $regex: query, $options: 'i' } }
+          ]
+        });
       }
       if (city) {
         filter.city = { $regex: city, $options: 'i' };
       }
       // Filter by service offered (services can be array of IDs or names)
       if (service) {
-        filter.$or = filter.$or || [];
-        filter.$or.push(
-          { services: { $in: [service] } },
-          { services: { $regex: service, $options: 'i' } },
-          { servicesOffered: { $elemMatch: { id: service } } }
-        );
+        andConditions.push({
+          $or: [
+            { services: { $in: [service] } },
+            { services: { $regex: service, $options: 'i' } },
+            { servicesOffered: { $elemMatch: { id: service } } }
+          ]
+        });
+      }
+      
+      if (andConditions.length > 0) {
+        filter.$and = andConditions;
       }
       
       const clinics = await users.find(filter, { projection: { password: 0, resetToken: 0, resetExpiry: 0 } }).limit(50).toArray();
