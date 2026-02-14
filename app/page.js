@@ -12375,7 +12375,7 @@ function OwnerReviews({ user }) {
                     </div>
                   </div>
                   <div className="text-right">
-                    {renderStars(review.rating)}
+                    {renderStars(review.overallRating || review.rating)}
                     <p className="text-xs text-gray-400 mt-1">
                       {new Date(review.createdAt).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </p>
@@ -12385,6 +12385,30 @@ function OwnerReviews({ user }) {
                 {review.comment && (
                   <div className="bg-gray-50 rounded-lg p-4 mt-3">
                     <p className="text-gray-700 italic">"{review.comment}"</p>
+                  </div>
+                )}
+                
+                {/* Dettagli aggiuntivi recensione */}
+                {(review.punctuality || review.competence || review.price) && (
+                  <div className="mt-3 grid grid-cols-3 gap-4 p-3 bg-gray-50 rounded-lg">
+                    {review.punctuality && (
+                      <div className="text-center">
+                        <p className="text-xs text-gray-500">Puntualità</p>
+                        {renderStars(review.punctuality)}
+                      </div>
+                    )}
+                    {review.competence && (
+                      <div className="text-center">
+                        <p className="text-xs text-gray-500">Competenza</p>
+                        {renderStars(review.competence)}
+                      </div>
+                    )}
+                    {review.price && (
+                      <div className="text-center">
+                        <p className="text-xs text-gray-500">Prezzo</p>
+                        {renderStars(review.price)}
+                      </div>
+                    )}
                   </div>
                 )}
                 
