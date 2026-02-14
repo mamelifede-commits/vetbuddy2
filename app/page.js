@@ -14857,8 +14857,11 @@ function OwnerInvoices({ invoices = [], pets, onRefresh }) {
     if (invoices.length === 0) return;
     setDownloading(true);
     try {
-      const invoiceIds = invoices.map(inv => inv.id).join(',');
-      window.open(`/api/invoices/download-all?ids=${invoiceIds}`, '_blank');
+      // Download each invoice individually
+      for (const invoice of invoices) {
+        handleDownloadInvoice(invoice);
+        await new Promise(resolve => setTimeout(resolve, 500)); // Small delay between downloads
+      }
     } catch (error) {
       alert('Errore nel download');
     } finally {
