@@ -11904,6 +11904,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           <NavItem icon={Search} label="Trova clinica" value="findClinic" />
           <NavItem icon={Mail} label="Invita la tua clinica" value="inviteClinic" />
           <NavItem icon={BookOpen} label="Tutorial" value="tutorial" />
+          <NavItem icon={Settings} label="Profilo e Notifiche" value="profile" />
         </nav>
       </aside>
 
