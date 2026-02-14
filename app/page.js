@@ -11820,6 +11820,152 @@ function ClinicSettings({ user, onNavigate }) {
           </CardContent>
         </Card>
 
+        {/* 🕐 ORARI DI DISPONIBILITÀ */}
+        <Card className="border-blue-200">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Clock className="h-5 w-5 text-blue-500" />
+              Orari di Disponibilità
+            </CardTitle>
+            <CardDescription>Configura gli orari in cui i clienti possono prenotare appuntamenti online</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loadingAvailability ? (
+              <div className="flex items-center justify-center p-8">
+                <RefreshCw className="h-6 w-6 animate-spin text-blue-500" />
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Durata slot */}
+                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                  <div>
+                    <p className="font-medium">Durata slot appuntamento</p>
+                    <p className="text-sm text-gray-500">Quanto dura mediamente una visita</p>
+                  </div>
+                  <Select 
+                    value={String(availabilitySettings?.slotDuration || 30)} 
+                    onValueChange={(v) => setAvailabilitySettings(prev => ({...prev, slotDuration: parseInt(v)}))}
+                  >
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="15">15 min</SelectItem>
+                      <SelectItem value="20">20 min</SelectItem>
+                      <SelectItem value="30">30 min</SelectItem>
+                      <SelectItem value="45">45 min</SelectItem>
+                      <SelectItem value="60">60 min</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Orari settimanali */}
+                <div className="space-y-2">
+                  <h4 className="font-medium">Orari settimanali</h4>
+                  {availabilitySettings?.workingHours && [
+                    { key: 'monday', label: 'Lunedì' },
+                    { key: 'tuesday', label: 'Martedì' },
+                    { key: 'wednesday', label: 'Mercoledì' },
+                    { key: 'thursday', label: 'Giovedì' },
+                    { key: 'friday', label: 'Venerdì' },
+                    { key: 'saturday', label: 'Sabato' },
+                    { key: 'sunday', label: 'Domenica' }
+                  ].map(day => (
+                    <div key={day.key} className={`p-3 border rounded-lg ${availabilitySettings.workingHours[day.key]?.enabled ? 'bg-white' : 'bg-gray-50'}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            checked={availabilitySettings.workingHours[day.key]?.enabled || false}
+                            onChange={(e) => updateDayHours(day.key, 'enabled', e.target.checked)}
+                            className="h-4 w-4 text-blue-500 rounded"
+                          />
+                          <span className={`font-medium ${availabilitySettings.workingHours[day.key]?.enabled ? '' : 'text-gray-400'}`}>
+                            {day.label}
+                          </span>
+                        </div>
+                        {availabilitySettings.workingHours[day.key]?.enabled && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Input
+                              type="time"
+                              value={availabilitySettings.workingHours[day.key]?.start || '09:00'}
+                              onChange={(e) => updateDayHours(day.key, 'start', e.target.value)}
+                              className="w-24 h-8 text-sm"
+                            />
+                            <span>-</span>
+                            <Input
+                              type="time"
+                              value={availabilitySettings.workingHours[day.key]?.end || '18:00'}
+                              onChange={(e) => updateDayHours(day.key, 'end', e.target.value)}
+                              className="w-24 h-8 text-sm"
+                            />
+                            <span className="text-gray-400 mx-2">|</span>
+                            <span className="text-gray-500">Pausa:</span>
+                            <Input
+                              type="time"
+                              value={availabilitySettings.workingHours[day.key]?.breakStart || '13:00'}
+                              onChange={(e) => updateDayHours(day.key, 'breakStart', e.target.value)}
+                              className="w-24 h-8 text-sm"
+                            />
+                            <span>-</span>
+                            <Input
+                              type="time"
+                              value={availabilitySettings.workingHours[day.key]?.breakEnd || '14:00'}
+                              onChange={(e) => updateDayHours(day.key, 'breakEnd', e.target.value)}
+                              className="w-24 h-8 text-sm"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Opzioni aggiuntive */}
+                <div className="space-y-3 pt-4 border-t">
+                  <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={availabilitySettings?.acceptOnlineBooking !== false}
+                      onChange={(e) => setAvailabilitySettings(prev => ({...prev, acceptOnlineBooking: e.target.checked}))}
+                      className="h-4 w-4 text-blue-500 rounded"
+                    />
+                    <div>
+                      <span className="font-medium">Accetta prenotazioni online</span>
+                      <p className="text-sm text-gray-500">I clienti possono richiedere appuntamenti tramite l'app</p>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={availabilitySettings?.requireConfirmation !== false}
+                      onChange={(e) => setAvailabilitySettings(prev => ({...prev, requireConfirmation: e.target.checked}))}
+                      className="h-4 w-4 text-blue-500 rounded"
+                    />
+                    <div>
+                      <span className="font-medium">Richiedi conferma manuale</span>
+                      <p className="text-sm text-gray-500">Gli appuntamenti devono essere confermati dalla clinica</p>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Pulsante salva */}
+                <Button 
+                  onClick={saveAvailabilitySettings} 
+                  disabled={savingAvailability}
+                  className="w-full bg-blue-500 hover:bg-blue-600"
+                >
+                  {savingAvailability ? (
+                    <><RefreshCw className="h-4 w-4 animate-spin mr-2" />Salvataggio...</>
+                  ) : (
+                    <><Check className="h-4 w-4 mr-2" />Salva orari di disponibilità</>
+                  )}
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Profilo */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
