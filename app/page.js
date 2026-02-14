@@ -15416,17 +15416,27 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
               ) : (
                 <div className="space-y-3">
                   {petAppointments.map((appt, i) => (
-                    <div key={i} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div 
+                      key={i} 
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                      onClick={() => handleManageAppointment(appt)}
+                    >
                       <div className="flex items-center gap-4">
                         <div className={`h-10 w-10 rounded-full flex items-center justify-center ${new Date(appt.date) >= new Date() ? 'bg-blue-100' : 'bg-gray-100'}`}>
                           {appt.type === 'videoconsulto' ? <Video className="h-5 w-5 text-blue-600" /> : <Stethoscope className="h-5 w-5 text-gray-600" />}
                         </div>
                         <div>
                           <p className="font-medium">{appt.reason || 'Visita'}</p>
-                          <p className="text-sm text-gray-500">{new Date(appt.date).toLocaleDateString()} - {appt.time}</p>
+                          <p className="text-sm text-gray-500">{new Date(appt.date).toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} - {appt.time}</p>
+                          {appt.clinicName && <p className="text-xs text-gray-400">{appt.clinicName}</p>}
                         </div>
                       </div>
-                      <Badge variant="outline">{new Date(appt.date) >= new Date() ? 'Programmato' : 'Completato'}</Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className={new Date(appt.date) >= new Date() ? 'bg-blue-50 text-blue-700' : 'bg-gray-50 text-gray-600'}>
+                          {new Date(appt.date) >= new Date() ? 'Programmato' : 'Completato'}
+                        </Badge>
+                        <ChevronRight className="h-5 w-5 text-gray-300" />
+                      </div>
                     </div>
                   ))}
                 </div>
