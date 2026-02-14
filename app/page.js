@@ -14528,16 +14528,18 @@ function OwnerAppointments({ appointments, pets }) {
                 </div>
               )}
 
-              {/* Upload Documenti per Video Consulto */}
-              {selectedService?.type === 'online' && (
+              {/* Upload Documenti per tutti i tipi di appuntamento */}
+              {formData.clinicId && formData.serviceId && (
                 <div className="space-y-3">
                   <div>
                     <Label className="flex items-center gap-2">
                       <FileText className="h-4 w-4" />
-                      Documenti allegati (opzionale ma consigliato)
+                      Documenti allegati (opzionale)
                     </Label>
                     <p className="text-xs text-gray-500 mb-2">
-                      Carica referti, analisi, foto o video per aiutare il veterinario a prepararsi.
+                      {selectedService?.type === 'online' 
+                        ? 'Carica referti, analisi, foto o video per aiutare il veterinario a prepararsi.'
+                        : 'Carica referti precedenti, analisi del sangue, radiografie o altri documenti utili per la visita.'}
                     </p>
                   </div>
                   
@@ -14581,11 +14583,16 @@ function OwnerAppointments({ appointments, pets }) {
                         className="hidden"
                         onChange={(e) => {
                           const files = Array.from(e.target.files || []);
-                          setUploadedFiles(prev => [...prev, ...files]);
+                          // Check file size (max 10MB)
+                          const validFiles = files.filter(f => f.size <= 10 * 1024 * 1024);
+                          if (validFiles.length < files.length) {
+                            alert('Alcuni file superano il limite di 10MB e sono stati esclusi');
+                          }
+                          setUploadedFiles(prev => [...prev, ...validFiles]);
                           e.target.value = '';
                         }}
                       />
-                      <div className="flex items-center justify-center gap-2 p-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition">
+                      <div className="flex items-center justify-center gap-2 p-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition">
                         <Upload className="h-4 w-4 text-gray-500" />
                         <span className="text-sm text-gray-600">Carica file (PDF, immagini, video)</span>
                       </div>
