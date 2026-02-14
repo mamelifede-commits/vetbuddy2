@@ -16,13 +16,17 @@ export default function ClinicEventDetailPage() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
+        console.log('Fetching event with ID:', params.id);
         const response = await fetch(`/api/clinic/events/${params.id}`);
+        console.log('Response status:', response.status);
         if (!response.ok) {
           throw new Error('Evento non trovato');
         }
         const data = await response.json();
+        console.log('Event data:', data);
         setEvent(data);
       } catch (err) {
+        console.error('Error fetching event:', err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -31,6 +35,9 @@ export default function ClinicEventDetailPage() {
 
     if (params.id) {
       fetchEvent();
+    } else {
+      setLoading(false);
+      setError('ID evento non specificato');
     }
   }, [params.id]);
 
