@@ -10,20 +10,20 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-// Default working hours template
-const DEFAULT_WORKING_HOURS = {
-  monday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-  tuesday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-  wednesday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-  thursday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-  friday: { enabled: true, start: '09:00', end: '18:00', breakStart: '13:00', breakEnd: '14:00' },
-  saturday: { enabled: false, start: '09:00', end: '13:00', breakStart: null, breakEnd: null },
-  sunday: { enabled: false, start: null, end: null, breakStart: null, breakEnd: null }
+// Default weekly schedule with time blocks
+const DEFAULT_SCHEDULE = {
+  monday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+  tuesday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+  wednesday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+  thursday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+  friday: { enabled: true, blocks: [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '18:00' }] },
+  saturday: { enabled: false, blocks: [] },
+  sunday: { enabled: false, blocks: [] }
 };
 
 /**
  * GET /api/clinic/availability
- * Get clinic's availability settings (working hours and slot duration)
+ * Get clinic's full availability settings
  */
 export async function GET(request) {
   try {
@@ -46,13 +46,31 @@ export async function GET(request) {
     }
     
     return NextResponse.json({
-      workingHours: clinic.workingHours || DEFAULT_WORKING_HOURS,
+      // Weekly schedule with time blocks
+      weeklySchedule: clinic.weeklySchedule || DEFAULT_SCHEDULE,
+      
+      // Slot duration in minutes
       slotDuration: clinic.slotDuration || 30,
+      
+      // Date-specific overrides (manual slots or blocks for specific dates)
+      // Format: { "2026-02-20": { slots: ["09:00", "10:00", "14:00"] } }
+      // Or: { "2026-02-20": { blocks: [{ start: "09:00", end: "12:00" }] } }
+      dateOverrides: clinic.dateOverrides || {},
+      
+      // Blocked dates (closures, holidays)
+      // Format: [{ date: "2026-02-25", reason: "Ferie" }]
+      // Or: [{ startDate: "2026-08-01", endDate: "2026-08-15", reason: "Chiusura estiva" }]
+      blockedDates: clinic.blockedDates || [],
+      
+      // Blocked individual slots
+      // Format: [{ date: "2026-02-20", time: "14:00", reason: "Emergenza" }]
+      blockedSlots: clinic.blockedSlots || [],
+      
+      // Booking settings
       acceptOnlineBooking: clinic.acceptOnlineBooking !== false,
       requireConfirmation: clinic.requireConfirmation !== false,
       maxAdvanceBookingDays: clinic.maxAdvanceBookingDays || 60,
-      minAdvanceBookingHours: clinic.minAdvanceBookingHours || 2,
-      specialClosures: clinic.specialClosures || [] // Array of dates (YYYY-MM-DD) when clinic is closed
+      minAdvanceBookingHours: clinic.minAdvanceBookingHours || 2
     }, { headers: corsHeaders });
     
   } catch (error) {
@@ -80,30 +98,16 @@ export async function PUT(request) {
     
     const body = await request.json();
     const { 
-      workingHours, 
-      slotDuration, 
+      weeklySchedule,
+      slotDuration,
+      dateOverrides,
+      blockedDates,
+      blockedSlots,
       acceptOnlineBooking,
       requireConfirmation,
       maxAdvanceBookingDays,
-      minAdvanceBookingHours,
-      specialClosures
+      minAdvanceBookingHours
     } = body;
-    
-    // Validate working hours structure
-    if (workingHours) {
-      const validDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-      for (const day of validDays) {
-        if (workingHours[day]) {
-          const dayConfig = workingHours[day];
-          if (dayConfig.enabled && (!dayConfig.start || !dayConfig.end)) {
-            return NextResponse.json(
-              { error: `Orari mancanti per ${day}` },
-              { status: 400, headers: corsHeaders }
-            );
-          }
-        }
-      }
-    }
     
     // Validate slot duration
     if (slotDuration && (slotDuration < 10 || slotDuration > 120)) {
@@ -113,18 +117,53 @@ export async function PUT(request) {
       );
     }
     
+    // Validate weekly schedule structure
+    if (weeklySchedule) {
+      const validDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+      for (const day of validDays) {
+        if (weeklySchedule[day]) {
+          const dayConfig = weeklySchedule[day];
+          if (dayConfig.enabled && (!dayConfig.blocks || !Array.isArray(dayConfig.blocks))) {
+            return NextResponse.json(
+              { error: `Configurazione non valida per ${day}` },
+              { status: 400, headers: corsHeaders }
+            );
+          }
+          // Validate time blocks
+          if (dayConfig.blocks) {
+            for (const block of dayConfig.blocks) {
+              if (!block.start || !block.end) {
+                return NextResponse.json(
+                  { error: `Blocco orario incompleto per ${day}` },
+                  { status: 400, headers: corsHeaders }
+                );
+              }
+              if (block.start >= block.end) {
+                return NextResponse.json(
+                  { error: `Orario inizio deve essere prima di fine per ${day}` },
+                  { status: 400, headers: corsHeaders }
+                );
+              }
+            }
+          }
+        }
+      }
+    }
+    
     const users = await getCollection('users');
     const updateData = {
       updatedAt: new Date().toISOString()
     };
     
-    if (workingHours !== undefined) updateData.workingHours = workingHours;
+    if (weeklySchedule !== undefined) updateData.weeklySchedule = weeklySchedule;
     if (slotDuration !== undefined) updateData.slotDuration = slotDuration;
+    if (dateOverrides !== undefined) updateData.dateOverrides = dateOverrides;
+    if (blockedDates !== undefined) updateData.blockedDates = blockedDates;
+    if (blockedSlots !== undefined) updateData.blockedSlots = blockedSlots;
     if (acceptOnlineBooking !== undefined) updateData.acceptOnlineBooking = acceptOnlineBooking;
     if (requireConfirmation !== undefined) updateData.requireConfirmation = requireConfirmation;
     if (maxAdvanceBookingDays !== undefined) updateData.maxAdvanceBookingDays = maxAdvanceBookingDays;
     if (minAdvanceBookingHours !== undefined) updateData.minAdvanceBookingHours = minAdvanceBookingHours;
-    if (specialClosures !== undefined) updateData.specialClosures = specialClosures;
     
     await users.updateOne(
       { id: user.id },
@@ -137,13 +176,15 @@ export async function PUT(request) {
     return NextResponse.json({
       success: true,
       message: 'Disponibilità aggiornata',
-      workingHours: updatedClinic.workingHours || DEFAULT_WORKING_HOURS,
+      weeklySchedule: updatedClinic.weeklySchedule || DEFAULT_SCHEDULE,
       slotDuration: updatedClinic.slotDuration || 30,
+      dateOverrides: updatedClinic.dateOverrides || {},
+      blockedDates: updatedClinic.blockedDates || [],
+      blockedSlots: updatedClinic.blockedSlots || [],
       acceptOnlineBooking: updatedClinic.acceptOnlineBooking !== false,
       requireConfirmation: updatedClinic.requireConfirmation !== false,
       maxAdvanceBookingDays: updatedClinic.maxAdvanceBookingDays || 60,
-      minAdvanceBookingHours: updatedClinic.minAdvanceBookingHours || 2,
-      specialClosures: updatedClinic.specialClosures || []
+      minAdvanceBookingHours: updatedClinic.minAdvanceBookingHours || 2
     }, { headers: corsHeaders });
     
   } catch (error) {
