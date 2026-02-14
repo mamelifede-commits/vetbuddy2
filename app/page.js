@@ -19205,11 +19205,19 @@ export default function App() {
   const [googleOAuthResult, setGoogleOAuthResult] = useState(null);
   const [emailAction, setEmailAction] = useState(null);
   const [verificationState, setVerificationState] = useState(null); // For email/phone verification flow
+  const [resetPasswordToken, setResetPasswordToken] = useState(null); // For password reset flow
 
   // Save email action params to sessionStorage for after login
   useEffect(() => { 
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
+      
+      // Password reset handling
+      const resetToken = params.get('reset');
+      if (resetToken) {
+        setResetPasswordToken(resetToken);
+        window.history.replaceState({}, '', window.location.pathname);
+      }
       
       // Email verification handling
       const verifyEmailToken = params.get('verify_email');
