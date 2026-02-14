@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/db';
+import { getUserFromRequest } from '@/lib/auth';
 
 // Force dynamic rendering (required for request.headers access)
 export const dynamic = 'force-dynamic';
@@ -7,11 +8,13 @@ export const dynamic = 'force-dynamic';
 // GET owner profile
 export async function GET(request) {
   try {
-    const userId = request.headers.get('x-user-id');
+    const userData = getUserFromRequest(request);
     
-    if (!userId) {
+    if (!userData || !userData.id) {
       return NextResponse.json({ error: 'Non autenticato' }, { status: 401 });
     }
+    
+    const userId = userData.id;
 
     const client = await clientPromise;
     const db = client.db('vetbuddy');
