@@ -15735,8 +15735,49 @@ function PetProfile({ petId, onBack, appointments, documents }) {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showBookingDialog, setShowBookingDialog] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [showDocumentViewer, setShowDocumentViewer] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [showAppointmentDetails, setShowAppointmentDetails] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [saving, setSaving] = useState(false);
+  
+  // Handler per aprire documento
+  const handleOpenDocument = (doc) => {
+    if (doc.url || doc.fileUrl) {
+      window.open(doc.url || doc.fileUrl, '_blank');
+    } else {
+      setSelectedDocument(doc);
+      setShowDocumentViewer(true);
+    }
+  };
+  
+  // Handler per scaricare documento
+  const handleDownloadDocument = async (doc) => {
+    try {
+      const url = doc.url || doc.fileUrl;
+      if (url) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = doc.name || 'documento';
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert('URL del documento non disponibile');
+      }
+    } catch (error) {
+      console.error('Error downloading document:', error);
+      alert('Errore durante il download del documento');
+    }
+  };
+  
+  // Handler per gestire appuntamento
+  const handleManageAppointment = (appointment) => {
+    setSelectedAppointment(appointment);
+    setShowAppointmentDetails(true);
+  };
 
   useEffect(() => {
     loadPetData();
