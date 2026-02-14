@@ -11040,6 +11040,12 @@ function ClinicSettings({ user, onNavigate }) {
   const [staffColors, setStaffColors] = useState([]);
   const [staffList, setStaffList] = useState([]);
   
+  // Availability settings state
+  const [availabilitySettings, setAvailabilitySettings] = useState(null);
+  const [loadingAvailability, setLoadingAvailability] = useState(true);
+  const [savingAvailability, setSavingAvailability] = useState(false);
+  const [showAvailabilityForm, setShowAvailabilityForm] = useState(false);
+  
   // Profile editing state
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({
