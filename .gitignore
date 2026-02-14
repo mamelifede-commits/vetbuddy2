@@ -28,9 +28,14 @@ next-env.d.ts
 # Production builds
 /build
 dist/
-dist
 
-# Sensitive credential files (NOT .env - those are needed for deployment)
+# Environment files with secrets
+.env
+.env.*
+.env.local
+.env.production
+
+# Sensitive credential files
 *token.json*
 *credentials.json*
 CREDENZIALI_VETBUDDY.md
@@ -82,17 +87,3 @@ agenthub/agents/youtube/db
 android-sdk/
 node_modules/@next/swc-linux-arm64-gnu/next-swc.linux-arm64-gnu.node
 node_modules/@next/swc-linux-arm64-musl/next-swc.linux-arm64-musl.node
-
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
-
-# Environment files with secrets
-.env
-.env.local
-.env.production
