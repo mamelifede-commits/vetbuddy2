@@ -16477,9 +16477,56 @@ function FindClinic({ user }) {
     loadUserPets();
   }, []);
   
+  // Load available slots when date changes
+  const loadAvailableSlots = async (date) => {
+    if (!selectedClinic?.id || !date) {
+      setAvailableSlots([]);
+      return;
+    }
+    
+    setLoadingSlots(true);
+    try {
+      const response = await api.get(`clinics/${selectedClinic.id}/slots?date=${date}&serviceId=${appointmentForm.service || ''}`);
+      setAvailableSlots(response.slots || []);
+      setClinicAvailability(response);
+    } catch (error) {
+      console.error('Error loading slots:', error);
+      // Fallback to generic time slots if API fails
+      setAvailableSlots([
+        { time: '09:00', available: true },
+        { time: '09:30', available: true },
+        { time: '10:00', available: true },
+        { time: '10:30', available: true },
+        { time: '11:00', available: true },
+        { time: '11:30', available: true },
+        { time: '14:00', available: true },
+        { time: '14:30', available: true },
+        { time: '15:00', available: true },
+        { time: '15:30', available: true },
+        { time: '16:00', available: true },
+        { time: '16:30', available: true },
+        { time: '17:00', available: true },
+        { time: '17:30', available: true }
+      ]);
+    } finally {
+      setLoadingSlots(false);
+    }
+  };
+  
+  // Reload slots when date or clinic changes
+  useEffect(() => {
+    if (appointmentForm.date && selectedClinic?.id) {
+      loadAvailableSlots(appointmentForm.date);
+    }
+  }, [appointmentForm.date, selectedClinic?.id]);
+  
   const handleRequestAppointment = async () => {
     if (!appointmentForm.date || !appointmentForm.service) {
       alert('Seleziona data e servizio');
+      return;
+    }
+    if (!appointmentForm.time) {
+      alert('Seleziona un orario');
       return;
     }
     setSubmittingAppointment(true);
@@ -16488,7 +16535,7 @@ function FindClinic({ user }) {
         clinicId: selectedClinic.id,
         clinicName: selectedClinic.clinicName,
         date: appointmentForm.date,
-        time: appointmentForm.time || '09:00',
+        time: appointmentForm.time,
         service: appointmentForm.service,
         notes: appointmentForm.notes,
         petId: appointmentForm.petId || null
@@ -16496,6 +16543,7 @@ function FindClinic({ user }) {
       alert('Richiesta inviata! La clinica ti contatterà per confermare.');
       setShowAppointmentForm(false);
       setAppointmentForm({ date: '', time: '', service: '', notes: '', petId: '' });
+      setAvailableSlots([]);
       setSelectedClinic(null);
     } catch (error) {
       alert('Errore nell\'invio della richiesta');
