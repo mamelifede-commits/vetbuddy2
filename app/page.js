@@ -9876,16 +9876,18 @@ function ClinicEvents({ user }) {
   const shareEvent = (platform) => {
     if (!selectedEventForShare) return;
     
-    const eventUrl = selectedEventForShare.url || window.location.href;
+    // Usa il link alla pagina VetBuddy per l'anteprima
+    const eventUrl = `${window.location.origin}/eventi-clinica/${selectedEventForShare.id}`;
     const eventTitle = selectedEventForShare.title;
     const eventDate = formatDateRange(selectedEventForShare.date, selectedEventForShare.endDate);
     const eventLocation = selectedEventForShare.location;
+    const eventDescription = selectedEventForShare.description || '';
     
-    // Messaggio formattato per WhatsApp con bold
-    const whatsappText = `*${eventTitle}*\n📅 ${eventDate}\n📍 ${eventLocation}\n\n${eventUrl}`;
+    // Messaggio completo con descrizione per WhatsApp
+    const whatsappText = `${eventTitle}\n📅 ${eventDate}\n📍 ${eventLocation}\n\n${eventDescription}\n\n${eventUrl}`;
     
     // Messaggio per altri canali
-    const shareText = `${eventTitle}\n📅 ${eventDate}\n📍 ${eventLocation}`;
+    const shareText = `${eventTitle}\n📅 ${eventDate}\n📍 ${eventLocation}\n\n${eventDescription}`;
     
     switch(platform) {
       case 'whatsapp':
