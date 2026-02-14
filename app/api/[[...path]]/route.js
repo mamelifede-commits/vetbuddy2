@@ -2008,15 +2008,23 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
       }
 
-      const { receiverId, content, subject } = body;
+      // Support both receiverId and clinicId (owner sends to clinic)
+      const { receiverId, clinicId, clinicName, content, subject, from, type, petId, petName } = body;
       const messages = await getCollection('messages');
       
       const message = {
         id: uuidv4(),
         senderId: user.id,
-        receiverId,
+        senderName: user.name || user.clinicName,
+        receiverId: receiverId || clinicId,
+        clinicId: clinicId || receiverId,
+        clinicName: clinicName || '',
         subject: subject || 'Nuovo messaggio',
         content,
+        from: from || (user.role === 'owner' ? 'owner' : 'clinic'),
+        type: type || 'message',
+        petId: petId || null,
+        petName: petName || null,
         read: false,
         createdAt: new Date().toISOString()
       };
