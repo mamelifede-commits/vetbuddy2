@@ -12681,15 +12681,17 @@ function OwnerEvents({ user }) {
                     </span>
                     
                     {event.link && event.link.trim() !== '' ? (
-                      <a 
-                        href={event.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-coral-500 hover:bg-coral-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors no-underline"
+                      <button 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          window.open(event.link, '_blank', 'noopener,noreferrer');
+                        }}
+                        className="bg-coral-500 hover:bg-coral-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors cursor-pointer"
                       >
                         Vai al sito
                         <ExternalLink className="h-4 w-4" />
-                      </a>
+                      </button>
                     ) : (
                       <a 
                         href={`/eventi/${event.id}`}
