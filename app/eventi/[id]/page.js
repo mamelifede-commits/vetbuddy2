@@ -117,11 +117,11 @@ export default function EventDetailPage() {
       <div className={`${catStyle.bg} py-6`}>
         <div className="max-w-4xl mx-auto px-4">
           <button 
-            onClick={() => router.back()}
+            onClick={() => router.push('/')}
             className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-4 transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
-            <span>Torna agli eventi</span>
+            <span>Torna alla Home</span>
           </button>
           
           <div className="flex items-start gap-4">
