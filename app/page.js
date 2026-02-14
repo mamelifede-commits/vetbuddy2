@@ -14916,22 +14916,25 @@ function OwnerMessages({ messages, clinics = [], pets = [], onRefresh }) {
 
   const sendNewMessage = async () => {
     if (!newMessage.clinicId || !newMessage.subject || !newMessage.content) {
-      alert('Compila tutti i campi');
+      alert('Compila tutti i campi obbligatori');
       return;
     }
     setSending(true);
     try {
       const clinic = clinics.find(c => c.id === newMessage.clinicId);
+      const pet = newMessage.petId ? pets.find(p => p.id === newMessage.petId) : null;
       await api.post('messages', {
         clinicId: newMessage.clinicId,
         clinicName: clinic?.clinicName || clinic?.name || 'Clinica',
         subject: newMessage.subject,
         content: newMessage.content,
         from: 'owner',
-        type: 'message'
+        type: 'message',
+        petId: pet?.id || null,
+        petName: pet?.name || null
       });
       setShowNewMessage(false);
-      setNewMessage({ clinicId: '', subject: '', content: '' });
+      setNewMessage({ clinicId: '', subject: '', content: '', petId: '' });
       onRefresh?.();
     } catch (error) {
       alert('Errore nell\'invio del messaggio');
