@@ -13235,15 +13235,39 @@ function OwnerEvents({ user, onNavigate }) {
             </Button>
           </div>
         </div>
-        {/* Search Bar */}
+        {/* Search Bar with Autocomplete */}
         <div className="mt-4 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
           <Input
             placeholder="Cerca eventi, promozioni, notizie..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setShowSuggestions(true);
+            }}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             className="pl-10"
           />
+          {/* Autocomplete Suggestions Dropdown */}
+          {showSuggestions && searchSuggestions.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
+              {searchSuggestions.map((suggestion, idx) => (
+                <button
+                  key={idx}
+                  className="w-full px-4 py-2 text-left hover:bg-coral-50 flex items-center gap-2 text-sm border-b border-gray-100 last:border-0"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setSearchQuery(suggestion);
+                    setShowSuggestions(false);
+                  }}
+                >
+                  <Search className="h-3 w-3 text-gray-400" />
+                  <span>{suggestion}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
