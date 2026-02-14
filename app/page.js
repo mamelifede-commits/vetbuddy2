@@ -12265,6 +12265,7 @@ function OwnerReviews({ user }) {
 
 // Componente Eventi & News per Proprietari
 function OwnerEvents({ user }) {
+  // VERSIONE 2.0 - Fix bottoni cliccabili - 2026-02-14 01:10
   const [events, setEvents] = useState([]);
   const [userPets, setUserPets] = useState([]);
   const [loading, setLoading] = useState(true);
