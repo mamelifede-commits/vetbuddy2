@@ -12109,31 +12109,6 @@ function ClinicSettings({ user, onNavigate }) {
             )}
           </CardContent>
         </Card>
-                      className="h-4 w-4 text-blue-500 rounded"
-                    />
-                    <div>
-                      <span className="font-medium">Richiedi conferma manuale</span>
-                      <p className="text-sm text-gray-500">Gli appuntamenti devono essere confermati dalla clinica</p>
-                    </div>
-                  </label>
-                </div>
-
-                {/* Pulsante salva */}
-                <Button 
-                  onClick={saveAvailabilitySettings} 
-                  disabled={savingAvailability}
-                  className="w-full bg-blue-500 hover:bg-blue-600"
-                >
-                  {savingAvailability ? (
-                    <><RefreshCw className="h-4 w-4 animate-spin mr-2" />Salvataggio...</>
-                  ) : (
-                    <><Check className="h-4 w-4 mr-2" />Salva orari di disponibilità</>
-                  )}
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
 
         {/* Profilo */}
         <Card>
