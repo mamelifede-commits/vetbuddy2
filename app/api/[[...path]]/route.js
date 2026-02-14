@@ -1265,10 +1265,10 @@ export async function POST(request, { params }) {
             `
           });
         } else if (role === 'clinic') {
-          // Email di benvenuto per cliniche nel Pilot
+          // Email di VERIFICA per cliniche nel Pilot
           await sendEmail({
             to: email,
-            subject: '🏥 Benvenuto nel Pilot VetBuddy Milano! Grazie per aver aderito',
+            subject: '📧 Verifica la tua email - VetBuddy Pilot',
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <div style="background: linear-gradient(135deg, #4CAF50, #8BC34A); padding: 20px; border-radius: 10px 10px 0 0;">
@@ -1276,37 +1276,22 @@ export async function POST(request, { params }) {
                   <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0;">Pilot Milano</p>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
-                  <h2 style="color: #333;">Grazie ${clinicName || name}! 🎉</h2>
-                  <p style="color: #666; font-size: 16px;">Siamo entusiasti di avervi nel Pilot di VetBuddy a Milano!</p>
-                  
-                  <div style="background: linear-gradient(135deg, #E8F5E9, #C8E6C9); padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #4CAF50;">
-                    <h3 style="color: #2E7D32; margin-top: 0;">🎁 Vantaggi Pilot:</h3>
-                    <ul style="color: #388E3C; font-size: 16px; padding-left: 20px;">
-                      <li><strong>90 giorni gratuiti</strong> del piano Pro (estendibili a 6 mesi)</li>
-                      <li>Accesso anticipato a tutte le funzionalità</li>
-                      <li>Supporto dedicato durante il pilot</li>
-                      <li>Influenza diretta sullo sviluppo del prodotto</li>
-                    </ul>
-                  </div>
-                  
-                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                    <h3 style="color: #333; margin-top: 0;">📋 Prossimi passi:</h3>
-                    <ol style="color: #666; font-size: 16px; padding-left: 20px;">
-                      <li>Completa il profilo della clinica</li>
-                      <li>Configura i servizi e i prezzi</li>
-                      <li>Attiva le automazioni (email, promemoria...)</li>
-                      <li>Invita il tuo staff</li>
-                    </ol>
-                  </div>
+                  <h2 style="color: #333;">Ciao ${clinicName || name}! 👋</h2>
+                  <p style="color: #666; font-size: 16px;">Grazie per esserti candidato al Pilot VetBuddy! Per completare la registrazione, verifica la tua email:</p>
                   
                   <div style="text-align: center; margin: 30px 0;">
-                    <a href="${baseUrl}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold;">
-                      🚀 Accedi alla Dashboard
+                    <a href="${verifyEmailUrl}" style="display: inline-block; background: #4CAF50; color: white; padding: 16px 32px; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 18px;">
+                      ✅ Verifica Email
                     </a>
                   </div>
                   
-                  <p style="color: #666; font-size: 14px;">Il team VetBuddy vi contatterà presto per una sessione di onboarding personalizzata.</p>
-                  <p style="color: #999; font-size: 14px; text-align: center;">Domande? Scrivici a <a href="mailto:info@vetbuddy.it" style="color: #4CAF50;">info@vetbuddy.it</a></p>
+                  <div style="background: #FFF3CD; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FFC107;">
+                    <p style="color: #856404; margin: 0; font-size: 14px;">
+                      <strong>⚠️ Importante:</strong> Dopo la verifica email, riceverai un codice OTP su WhatsApp per confermare il numero di telefono della clinica.
+                    </p>
+                  </div>
+                  
+                  <p style="color: #999; font-size: 12px; text-align: center;">Se non hai creato tu questo account, ignora questa email.</p>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
                   <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
