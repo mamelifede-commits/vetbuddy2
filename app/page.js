@@ -17881,6 +17881,72 @@ function FindClinic({ user }) {
                 placeholder="Descrivi brevemente il motivo della visita..."
               />
             </div>
+            
+            {/* Upload Documenti */}
+            <div className="space-y-3">
+              <div>
+                <Label className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Documenti allegati (opzionale)
+                </Label>
+                <p className="text-xs text-gray-500 mb-2">
+                  Carica referti precedenti, analisi del sangue, radiografie o altri documenti utili.
+                </p>
+              </div>
+              
+              {/* File List */}
+              {appointmentFiles.length > 0 && (
+                <div className="space-y-2">
+                  {appointmentFiles.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        {file.type?.includes('image') ? (
+                          <ImageIcon className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <FileText className="h-4 w-4 text-green-600" />
+                        )}
+                        <span className="text-sm font-medium text-green-800 truncate max-w-32">{file.name}</span>
+                        <span className="text-xs text-green-600">({(file.size / 1024).toFixed(0)} KB)</span>
+                      </div>
+                      <Button 
+                        type="button"
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => setAppointmentFiles(files => files.filter((_, i) => i !== index))}
+                        className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Upload Button */}
+              <label className="block">
+                <input
+                  type="file"
+                  multiple
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  className="hidden"
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    const validFiles = files.filter(f => f.size <= 10 * 1024 * 1024);
+                    if (validFiles.length < files.length) {
+                      alert('Alcuni file superano il limite di 10MB e sono stati esclusi');
+                    }
+                    setAppointmentFiles(prev => [...prev, ...validFiles]);
+                    e.target.value = '';
+                  }}
+                />
+                <div className="flex items-center justify-center gap-2 p-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition">
+                  <Upload className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600">Carica file (PDF, JPG, PNG)</span>
+                </div>
+              </label>
+              <p className="text-xs text-gray-400">Max 10MB per file</p>
+            </div>
+            
             <div className="flex gap-3 pt-2">
               <Button 
                 variant="outline" 
