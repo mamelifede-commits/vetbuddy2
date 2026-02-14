@@ -11517,7 +11517,19 @@ function ClinicTutorialInline() {
 
 // ==================== OWNER DASHBOARD ====================
 function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
-  const [activeTab, setActiveTab] = useState('appointments');
+  // Leggi parametro tab dall'URL per navigazione diretta
+  const getInitialTab = () => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+      if (tabParam && ['appointments', 'documents', 'invoices', 'messages', 'pets', 'rewards', 'reviews', 'events', 'findClinic', 'inviteClinic', 'tutorial'].includes(tabParam)) {
+        return tabParam;
+      }
+    }
+    return 'appointments';
+  };
+  
+  const [activeTab, setActiveTab] = useState(getInitialTab);
   const [selectedPetId, setSelectedPetId] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [documents, setDocuments] = useState([]);
