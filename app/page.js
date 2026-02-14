@@ -18985,11 +18985,19 @@ export default function App() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [googleOAuthResult, setGoogleOAuthResult] = useState(null);
   const [emailAction, setEmailAction] = useState(null);
+  const [verificationState, setVerificationState] = useState(null); // For email/phone verification flow
 
   // Save email action params to sessionStorage for after login
   useEffect(() => { 
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
+      
+      // Email verification handling
+      const verifyEmailToken = params.get('verify_email');
+      if (verifyEmailToken) {
+        handleEmailVerification(verifyEmailToken);
+        window.history.replaceState({}, '', window.location.pathname);
+      }
       
       // Google OAuth handling
       if (params.get('google_success')) {
