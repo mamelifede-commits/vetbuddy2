@@ -10043,9 +10043,9 @@ function ClinicEvents({ user }) {
                         )}
                         {event.saved ? 'Salvato' : 'Salva'}
                       </Button>
-                      <a href={event.url} target="_blank" rel="noopener noreferrer">
+                      <a href={`/eventi-clinica/${event.id}`}>
                         <Button size="sm" className={`bg-${getTypeColor(event.type)}-500 hover:bg-${getTypeColor(event.type)}-600`}>
-                          <ExternalLink className="h-4 w-4 mr-1" /> Info
+                          <ExternalLink className="h-4 w-4 mr-1" /> Dettagli
                         </Button>
                       </a>
                       <Button size="sm" variant="outline">
