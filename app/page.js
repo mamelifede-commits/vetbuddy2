@@ -13152,15 +13152,40 @@ function OwnerEvents({ user, onNavigate }) {
     return emojiMap[species] || '🐾';
   };
 
+  const [searchQuery, setSearchQuery] = useState('');
+
   return (
     <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <CalendarDays className="h-7 w-7 text-coral-500" />
-          Eventi & News
-        </h1>
-        <p className="text-gray-500 mt-1">Scopri eventi, notizie e promozioni per te e il tuo animale</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+              <CalendarDays className="h-7 w-7 text-coral-500" />
+              Eventi & News
+            </h1>
+            <p className="text-gray-500 mt-1">Scopri eventi, notizie e promozioni per te e il tuo animale</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
+              <RefreshCw className="h-3 w-3" />
+              Aggiornamento auto
+            </Badge>
+            <Button variant="ghost" size="sm" onClick={loadEvents} disabled={loading}>
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            </Button>
+          </div>
+        </div>
+        {/* Search Bar */}
+        <div className="mt-4 relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Cerca eventi, promozioni, notizie..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
       </div>
 
       {/* Sezione Eventi Personalizzati per i tuoi animali */}
