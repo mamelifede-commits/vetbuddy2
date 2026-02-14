@@ -15225,12 +15225,12 @@ function OwnerMessages({ messages, clinics = [], pets = [], onRefresh }) {
             </div>
             <div>
               <Label>Animale di riferimento (opzionale)</Label>
-              <Select value={newMessage.petId} onValueChange={(v) => setNewMessage({...newMessage, petId: v})}>
+              <Select value={newMessage.petId || 'none'} onValueChange={(v) => setNewMessage({...newMessage, petId: v === 'none' ? '' : v})}>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleziona animale (opzionale)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Nessun animale specifico</SelectItem>
+                  <SelectItem value="none">Nessun animale specifico</SelectItem>
                   {pets.map(pet => (
                     <SelectItem key={pet.id} value={pet.id}>
                       {getPetSpeciesInfo(pet.species).emoji} {pet.name}
