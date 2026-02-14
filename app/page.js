@@ -15565,67 +15565,167 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
         </TabsContent>
       </Tabs>
       
-      {/* Dialog Modifica Pet */}
+      {/* Dialog Modifica Pet - Form Completo */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Modifica dati di {pet.name}</DialogTitle>
             <DialogDescription>Aggiorna le informazioni del tuo animale</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 mt-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Nome</Label>
-                <Input value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} />
+          <div className="space-y-6 mt-4">
+            {/* Dati Generali */}
+            <div className="space-y-4">
+              <h4 className="font-semibold text-gray-700 flex items-center gap-2"><PawPrint className="h-4 w-4" /> Dati Generali</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Nome *</Label>
+                  <Input value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} />
+                </div>
+                <div>
+                  <Label>Specie</Label>
+                  <Select value={editForm.species} onValueChange={(v) => setEditForm({...editForm, species: v})}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="dog">🐕 Cane</SelectItem>
+                      <SelectItem value="cat">🐱 Gatto</SelectItem>
+                      <SelectItem value="horse">🐴 Cavallo</SelectItem>
+                      <SelectItem value="bird">🦜 Uccello</SelectItem>
+                      <SelectItem value="rabbit">🐰 Coniglio</SelectItem>
+                      <SelectItem value="hamster">🐹 Criceto</SelectItem>
+                      <SelectItem value="fish">🐠 Pesce</SelectItem>
+                      <SelectItem value="reptile">🦎 Rettile</SelectItem>
+                      <SelectItem value="other">🐾 Altro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div>
-                <Label>Specie</Label>
-                <Select value={editForm.species} onValueChange={(v) => setEditForm({...editForm, species: v})}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="dog">🐕 Cane</SelectItem>
-                    <SelectItem value="cat">🐈 Gatto</SelectItem>
-                    <SelectItem value="horse">🐴 Cavallo</SelectItem>
-                    <SelectItem value="other">🐾 Altro</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Razza</Label>
-                <Input value={editForm.breed} onChange={(e) => setEditForm({...editForm, breed: e.target.value})} placeholder="Es. Golden Retriever" />
-              </div>
-              <div>
-                <Label>Data di nascita</Label>
-                <Input type="date" value={editForm.birthDate} onChange={(e) => setEditForm({...editForm, birthDate: e.target.value})} />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Peso (kg)</Label>
-                <Input type="number" step="0.1" value={editForm.weight} onChange={(e) => setEditForm({...editForm, weight: e.target.value})} placeholder="Es. 25.5" />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Razza</Label>
+                  <Input value={editForm.breed} onChange={(e) => setEditForm({...editForm, breed: e.target.value})} placeholder="Es. Golden Retriever" />
+                </div>
+                <div>
+                  <Label>Data di nascita</Label>
+                  <Input type="date" value={editForm.birthDate} onChange={(e) => setEditForm({...editForm, birthDate: e.target.value})} />
+                </div>
               </div>
               <div>
                 <Label>Microchip</Label>
                 <Input value={editForm.microchip} onChange={(e) => setEditForm({...editForm, microchip: e.target.value})} placeholder="Numero microchip" />
               </div>
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <Switch checked={editForm.sterilized} onCheckedChange={(v) => setEditForm({...editForm, sterilized: v})} />
+                <Label>Sterilizzato/a</Label>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <input type="checkbox" id="sterilized" checked={editForm.sterilized} onChange={(e) => setEditForm({...editForm, sterilized: e.target.checked})} className="h-4 w-4" />
-              <Label htmlFor="sterilized">Sterilizzato/Castrato</Label>
+
+            {/* Peso */}
+            <div className="space-y-4 border-t pt-4">
+              <h4 className="font-semibold text-gray-700 flex items-center gap-2"><Weight className="h-4 w-4" /> Peso Corporeo</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Peso attuale (kg)</Label>
+                  <Input type="number" step="0.1" value={editForm.weight} onChange={(e) => setEditForm({...editForm, weight: e.target.value})} placeholder="Es. 12.5" />
+                </div>
+                <div>
+                  <Label>Data pesatura</Label>
+                  <Input type="date" value={editForm.weightDate} onChange={(e) => setEditForm({...editForm, weightDate: e.target.value})} />
+                </div>
+              </div>
+              {editForm.weightHistory && editForm.weightHistory.length > 0 && (
+                <div className="bg-blue-50 rounded-lg p-3">
+                  <p className="text-sm font-medium text-blue-700 mb-2">📊 Storico Pesi</p>
+                  <div className="space-y-1">
+                    {editForm.weightHistory.slice(-5).reverse().map((w, i) => (
+                      <div key={i} className="flex justify-between text-sm">
+                        <span className="text-gray-600">{new Date(w.date).toLocaleDateString('it-IT')}</span>
+                        <span className="font-medium">{w.weight} kg</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <div>
-              <Label>Allergie</Label>
-              <Input value={editForm.allergies} onChange={(e) => setEditForm({...editForm, allergies: e.target.value})} placeholder="Es. Pollo, polline..." />
+
+            {/* Assicurazione */}
+            <div className="space-y-4 border-t pt-4">
+              <h4 className="font-semibold text-gray-700 flex items-center gap-2"><Shield className="h-4 w-4" /> Assicurazione</h4>
+              <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                <Switch checked={editForm.insurance} onCheckedChange={(v) => setEditForm({...editForm, insurance: v})} />
+                <Label>L'animale ha un'assicurazione sanitaria</Label>
+              </div>
+              {editForm.insurance && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Compagnia assicurativa</Label>
+                    <Input value={editForm.insuranceCompany} onChange={(e) => setEditForm({...editForm, insuranceCompany: e.target.value})} placeholder="Es. Sara Assicurazioni" />
+                  </div>
+                  <div>
+                    <Label>Numero polizza</Label>
+                    <Input value={editForm.insurancePolicy} onChange={(e) => setEditForm({...editForm, insurancePolicy: e.target.value})} placeholder="Es. POL-123456" />
+                  </div>
+                </div>
+              )}
             </div>
-            <div>
-              <Label>Farmaci/Terapie in corso</Label>
-              <Input value={editForm.medications} onChange={(e) => setEditForm({...editForm, medications: e.target.value})} placeholder="Es. Cardisure 2x al giorno" />
+
+            {/* Storia Medica */}
+            <div className="space-y-4 border-t pt-4">
+              <h4 className="font-semibold text-gray-700 flex items-center gap-2"><Heart className="h-4 w-4" /> Storia Medica</h4>
+              <div>
+                <Label>Patologie croniche / Condizioni note</Label>
+                <Textarea value={editForm.chronicDiseases} onChange={(e) => setEditForm({...editForm, chronicDiseases: e.target.value})} placeholder="Es. Diabete, problemi cardiaci..." rows={2} />
+              </div>
+              <div>
+                <Label>Condizioni attuali</Label>
+                <Textarea value={editForm.currentConditions} onChange={(e) => setEditForm({...editForm, currentConditions: e.target.value})} placeholder="Es. In cura per dermatite..." rows={2} />
+              </div>
+              <div>
+                <Label>Allergie note</Label>
+                <Input value={editForm.allergies} onChange={(e) => setEditForm({...editForm, allergies: e.target.value})} placeholder="Es. Pollo, polline..." />
+              </div>
+              <div>
+                <Label>Farmaci attuali</Label>
+                <Textarea value={editForm.medications} onChange={(e) => setEditForm({...editForm, medications: e.target.value})} placeholder="Es. Apoquel 16mg 1x/giorno..." rows={2} />
+              </div>
+              <div>
+                <Label>Storia medica generale</Label>
+                <Textarea value={editForm.medicalHistory} onChange={(e) => setEditForm({...editForm, medicalHistory: e.target.value})} placeholder="Es. Intervento chirurgico nel 2023..." rows={2} />
+              </div>
             </div>
-            <div>
-              <Label>Note aggiuntive</Label>
-              <Textarea value={editForm.notes} onChange={(e) => setEditForm({...editForm, notes: e.target.value})} placeholder="Altre informazioni utili..." rows={2} />
+
+            {/* Alimentazione */}
+            <div className="space-y-4 border-t pt-4">
+              <h4 className="font-semibold text-gray-700 flex items-center gap-2"><Droplet className="h-4 w-4" /> Alimentazione</h4>
+              <div>
+                <Label>Tipo di alimentazione</Label>
+                <Select value={editForm.diet || 'non_specificato'} onValueChange={(v) => setEditForm({...editForm, diet: v === 'non_specificato' ? '' : v})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleziona tipo alimentazione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="non_specificato">Non specificato</SelectItem>
+                    <SelectItem value="crocchette">🥣 Crocchette (secco)</SelectItem>
+                    <SelectItem value="umido">🥫 Umido (scatolette)</SelectItem>
+                    <SelectItem value="misto">🍽️ Misto (secco + umido)</SelectItem>
+                    <SelectItem value="barf">🥩 BARF (carne cruda)</SelectItem>
+                    <SelectItem value="casalinga">🍳 Dieta casalinga</SelectItem>
+                    <SelectItem value="veterinaria">💊 Dieta veterinaria/terapeutica</SelectItem>
+                    <SelectItem value="altro">Altro</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Note alimentazione</Label>
+                <Textarea value={editForm.dietNotes} onChange={(e) => setEditForm({...editForm, dietNotes: e.target.value})} placeholder="Es. Marca crocchette, frequenza pasti..." rows={2} />
+              </div>
+            </div>
+
+            {/* Note */}
+            <div className="space-y-4 border-t pt-4">
+              <h4 className="font-semibold text-gray-700 flex items-center gap-2"><FileText className="h-4 w-4" /> Note Comportamentali</h4>
+              <div>
+                <Textarea value={editForm.notes} onChange={(e) => setEditForm({...editForm, notes: e.target.value})} placeholder="Es. Timoroso dal veterinario..." rows={2} />
+              </div>
             </div>
           </div>
           <DialogFooter className="mt-4">
