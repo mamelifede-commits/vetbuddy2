@@ -137,7 +137,8 @@ const DEFAULT_EVENTS = [
     category: 'cani',
     location: 'Parco Sempione, Milano',
     source: 'vetbuddy',
-    sourceLabel: 'VetBuddy'
+    sourceLabel: 'VetBuddy',
+    link: 'https://www.comune.milano.it/aree-tematiche/verde/parchi-giardini-e-alberi/verde-pubblico/parco-sempione'
   },
   {
     id: 'demo-11',
