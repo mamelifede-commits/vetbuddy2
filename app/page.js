@@ -11895,7 +11895,7 @@ function ClinicSettings({ user, onNavigate }) {
               <Clock className="h-5 w-5 text-blue-500" />
               Orari di Disponibilità
             </CardTitle>
-            <CardDescription>Configura gli orari in cui i clienti possono prenotare appuntamenti online</CardDescription>
+            <CardDescription>Configura le fasce orarie in cui i clienti possono prenotare. Puoi aggiungere più blocchi per ogni giorno.</CardDescription>
           </CardHeader>
           <CardContent>
             {loadingAvailability ? (
@@ -11927,70 +11927,146 @@ function ClinicSettings({ user, onNavigate }) {
                   </Select>
                 </div>
 
-                {/* Orari settimanali */}
-                <div className="space-y-2">
-                  <h4 className="font-medium">Orari settimanali</h4>
-                  {availabilitySettings?.workingHours && [
-                    { key: 'monday', label: 'Lunedì' },
-                    { key: 'tuesday', label: 'Martedì' },
-                    { key: 'wednesday', label: 'Mercoledì' },
-                    { key: 'thursday', label: 'Giovedì' },
-                    { key: 'friday', label: 'Venerdì' },
-                    { key: 'saturday', label: 'Sabato' },
-                    { key: 'sunday', label: 'Domenica' }
-                  ].map(day => (
-                    <div key={day.key} className={`p-3 border rounded-lg ${availabilitySettings.workingHours[day.key]?.enabled ? 'bg-white' : 'bg-gray-50'}`}>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="checkbox"
-                            checked={availabilitySettings.workingHours[day.key]?.enabled || false}
-                            onChange={(e) => updateDayHours(day.key, 'enabled', e.target.checked)}
-                            className="h-4 w-4 text-blue-500 rounded"
-                          />
-                          <span className={`font-medium ${availabilitySettings.workingHours[day.key]?.enabled ? '' : 'text-gray-400'}`}>
-                            {day.label}
-                          </span>
+                {/* Orari settimanali con blocchi flessibili */}
+                <div className="space-y-3">
+                  <h4 className="font-medium flex items-center gap-2">
+                    📅 Orari settimanali
+                    <span className="text-xs font-normal text-gray-500">(aggiungi più fasce orarie per ogni giorno)</span>
+                  </h4>
+                  {availabilitySettings?.weeklySchedule && [
+                    { key: 'monday', label: 'Lunedì', short: 'LUN' },
+                    { key: 'tuesday', label: 'Martedì', short: 'MAR' },
+                    { key: 'wednesday', label: 'Mercoledì', short: 'MER' },
+                    { key: 'thursday', label: 'Giovedì', short: 'GIO' },
+                    { key: 'friday', label: 'Venerdì', short: 'VEN' },
+                    { key: 'saturday', label: 'Sabato', short: 'SAB' },
+                    { key: 'sunday', label: 'Domenica', short: 'DOM' }
+                  ].map(day => {
+                    const dayConfig = availabilitySettings.weeklySchedule[day.key] || { enabled: false, blocks: [] };
+                    return (
+                      <div key={day.key} className={`p-3 border rounded-lg transition-colors ${dayConfig.enabled ? 'bg-white border-blue-200' : 'bg-gray-50 border-gray-200'}`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="checkbox"
+                              checked={dayConfig.enabled || false}
+                              onChange={(e) => updateDayEnabled(day.key, e.target.checked)}
+                              className="h-4 w-4 text-blue-500 rounded"
+                            />
+                            <span className={`font-medium w-24 ${dayConfig.enabled ? 'text-gray-800' : 'text-gray-400'}`}>
+                              {day.label}
+                            </span>
+                          </div>
+                          {dayConfig.enabled && (
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => addTimeBlock(day.key)}
+                              className="text-xs h-7"
+                            >
+                              <Plus className="h-3 w-3 mr-1" />
+                              Aggiungi fascia
+                            </Button>
+                          )}
                         </div>
-                        {availabilitySettings.workingHours[day.key]?.enabled && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <Input
-                              type="time"
-                              value={availabilitySettings.workingHours[day.key]?.start || '09:00'}
-                              onChange={(e) => updateDayHours(day.key, 'start', e.target.value)}
-                              className="w-24 h-8 text-sm"
-                            />
-                            <span>-</span>
-                            <Input
-                              type="time"
-                              value={availabilitySettings.workingHours[day.key]?.end || '18:00'}
-                              onChange={(e) => updateDayHours(day.key, 'end', e.target.value)}
-                              className="w-24 h-8 text-sm"
-                            />
-                            <span className="text-gray-400 mx-2">|</span>
-                            <span className="text-gray-500">Pausa:</span>
-                            <Input
-                              type="time"
-                              value={availabilitySettings.workingHours[day.key]?.breakStart || '13:00'}
-                              onChange={(e) => updateDayHours(day.key, 'breakStart', e.target.value)}
-                              className="w-24 h-8 text-sm"
-                            />
-                            <span>-</span>
-                            <Input
-                              type="time"
-                              value={availabilitySettings.workingHours[day.key]?.breakEnd || '14:00'}
-                              onChange={(e) => updateDayHours(day.key, 'breakEnd', e.target.value)}
-                              className="w-24 h-8 text-sm"
-                            />
+                        
+                        {dayConfig.enabled && (
+                          <div className="space-y-2 ml-7">
+                            {(dayConfig.blocks || []).length === 0 ? (
+                              <p className="text-sm text-amber-600 bg-amber-50 p-2 rounded">
+                                ⚠️ Nessuna fascia oraria. Aggiungi almeno una fascia.
+                              </p>
+                            ) : (
+                              dayConfig.blocks.map((block, blockIndex) => (
+                                <div key={blockIndex} className="flex items-center gap-2 bg-blue-50 p-2 rounded-lg">
+                                  <span className="text-xs text-gray-500 w-16">Fascia {blockIndex + 1}:</span>
+                                  <Input
+                                    type="time"
+                                    value={block.start || '09:00'}
+                                    onChange={(e) => updateTimeBlock(day.key, blockIndex, 'start', e.target.value)}
+                                    className="w-28 h-8 text-sm"
+                                  />
+                                  <span className="text-gray-400">→</span>
+                                  <Input
+                                    type="time"
+                                    value={block.end || '13:00'}
+                                    onChange={(e) => updateTimeBlock(day.key, blockIndex, 'end', e.target.value)}
+                                    className="w-28 h-8 text-sm"
+                                  />
+                                  {dayConfig.blocks.length > 1 && (
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => removeTimeBlock(day.key, blockIndex)}
+                                      className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                </div>
+                              ))
+                            )}
                           </div>
                         )}
                       </div>
+                    );
+                  })}
+                </div>
+
+                {/* Date bloccate */}
+                <div className="space-y-3 pt-4 border-t">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium flex items-center gap-2">
+                      🚫 Chiusure straordinarie
+                      <span className="text-xs font-normal text-gray-500">(ferie, festività, ecc.)</span>
+                    </h4>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={addBlockedDate}
+                      className="text-xs"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Aggiungi chiusura
+                    </Button>
+                  </div>
+                  
+                  {(availabilitySettings?.blockedDates || []).length === 0 ? (
+                    <p className="text-sm text-gray-500 p-3 bg-gray-50 rounded-lg">
+                      Nessuna chiusura straordinaria programmata
+                    </p>
+                  ) : (
+                    <div className="space-y-2">
+                      {availabilitySettings.blockedDates.map((blocked, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 bg-red-50 border border-red-200 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <CalendarX className="h-4 w-4 text-red-500" />
+                            <span className="font-medium text-red-700">
+                              {blocked.date ? new Date(blocked.date).toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : 'Data non valida'}
+                            </span>
+                            {blocked.reason && <span className="text-sm text-red-600">- {blocked.reason}</span>}
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeBlockedDate(index)}
+                            className="h-7 w-7 p-0 text-red-500 hover:bg-red-100"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
 
                 {/* Opzioni aggiuntive */}
                 <div className="space-y-3 pt-4 border-t">
+                  <h4 className="font-medium">⚙️ Opzioni prenotazione</h4>
                   <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer">
                     <input
                       type="checkbox"
@@ -12008,6 +12084,31 @@ function ClinicSettings({ user, onNavigate }) {
                       type="checkbox"
                       checked={availabilitySettings?.requireConfirmation !== false}
                       onChange={(e) => setAvailabilitySettings(prev => ({...prev, requireConfirmation: e.target.checked}))}
+                      className="h-4 w-4 text-blue-500 rounded"
+                    />
+                    <div>
+                      <span className="font-medium">Richiedi conferma manuale</span>
+                      <p className="text-sm text-gray-500">Gli appuntamenti devono essere confermati dalla clinica</p>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Pulsante salva */}
+                <Button 
+                  onClick={saveAvailabilitySettings} 
+                  disabled={savingAvailability}
+                  className="w-full bg-blue-500 hover:bg-blue-600"
+                >
+                  {savingAvailability ? (
+                    <><RefreshCw className="h-4 w-4 animate-spin mr-2" />Salvataggio...</>
+                  ) : (
+                    <><Check className="h-4 w-4 mr-2" />Salva orari di disponibilità</>
+                  )}
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
                       className="h-4 w-4 text-blue-500 rounded"
                     />
                     <div>
