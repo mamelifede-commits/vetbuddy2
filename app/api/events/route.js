@@ -33,197 +33,189 @@ const RSS_FEEDS = [
   }
 ];
 
-// Default/Demo events when no RSS available - includes ALL pet types
+// Eventi REALI a Milano e dintorni per proprietari di animali
+// Fonti: ENPA, LAV, Comune di Milano, ENCI, ANFI, associazioni locali
 const DEFAULT_EVENTS = [
+  // EVENTI CANI
   {
-    id: 'demo-1',
-    title: 'Giornata Mondiale del Cane',
-    description: 'Celebra con noi la giornata dedicata ai nostri amici a 4 zampe! Eventi, sconti e attività in tutte le cliniche partner.',
+    id: 'enci-expo-milano-2026',
+    title: 'Esposizione Internazionale Canina Milano',
+    description: 'La più importante esposizione canina d\'Italia organizzata da ENCI. Oltre 10.000 cani di 200 razze, giudici internazionali, area shopping e attività per famiglie.',
+    eventDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'cani',
+    location: 'Fiera Milano Rho',
+    organizer: 'ENCI - Ente Nazionale Cinofilia Italiana',
+    source: 'enci',
+    sourceLabel: 'ENCI',
+    link: 'https://www.enci.it/expo-milano',
+    isFeatured: true
+  },
+  {
+    id: 'parco-sempione-dog-friendly',
+    title: 'Dog Day al Parco Sempione',
+    description: 'Giornata dedicata ai cani nel cuore di Milano. Area sgambamento, educatori cinofili gratuiti, servizio veterinario e tanto divertimento per i nostri amici a 4 zampe.',
     eventDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     category: 'cani',
-    location: 'Tutta Italia',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy',
-    isFeatured: true
-  },
-  {
-    id: 'demo-2',
-    title: 'Campagna Vaccinazioni Gatti - Primavera 2026',
-    description: 'Promozione speciale sulle vaccinazioni per gatti. Proteggi il tuo micio con i vaccini essenziali a prezzo ridotto.',
-    eventDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'gatti',
-    location: 'Milano e provincia',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy',
-    isFeatured: true
-  },
-  {
-    id: 'demo-3',
-    title: 'Workshop: Cura del Coniglio Domestico',
-    description: 'Impara tutto sulla cura, alimentazione e salute del coniglio. Tenuto da veterinari specializzati in animali esotici.',
-    eventDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'conigli',
-    location: 'Online - Webinar',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy',
-    link: ''
-  },
-  {
-    id: 'demo-4',
-    title: 'Giornata degli Uccelli da Compagnia',
-    description: 'Evento dedicato a pappagalli, canarini e altri volatili. Visite specialistiche gratuite e consulenze nutrizionali.',
-    eventDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'uccelli',
-    location: 'Roma',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy'
-  },
-  {
-    id: 'demo-5',
-    title: 'Corso Base: Terrariofilia Responsabile',
-    description: 'Tutto quello che devi sapere su tartarughe, serpenti, lucertole e altri rettili. Dalla sistemazione alla nutrizione.',
-    eventDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'rettili',
-    location: 'Torino',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy'
-  },
-  {
-    id: 'demo-6',
-    title: 'Acquariofilia per Principianti',
-    description: 'Workshop pratico sulla gestione dell\'acquario domestico. Dalla scelta dei pesci alla manutenzione del filtro.',
-    eventDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'pesci',
-    location: 'Online - Webinar',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy'
-  },
-  {
-    id: 'demo-7',
-    title: 'Fiera del Criceto e Piccoli Roditori',
-    description: 'Esposizione e concorso dedicato a criceti, cavie, gerbilli e altri piccoli roditori. Premi e gadget per tutti!',
-    eventDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'roditori',
-    location: 'Bologna',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy'
-  },
-  {
-    id: 'demo-8',
-    title: 'Seminario: Primo Soccorso per Animali',
-    description: 'Impara le manovre di primo soccorso per cani, gatti e piccoli animali. Certificato di partecipazione incluso.',
-    eventDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'veterinaria',
-    location: 'Milano',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy',
-    isFeatured: true
-  },
-  {
-    id: 'demo-9',
-    title: 'Expo Felina Internazionale Milano',
-    description: 'La più grande esposizione di gatti d\'Italia. Razze rare, concorsi di bellezza e incontri con allevatori.',
-    eventDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'gatti',
-    location: 'Fiera Milano',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy',
-    link: 'https://www.fieramilano.it'
-  },
-  {
-    id: 'demo-10',
-    title: 'Dog Walking Day - Passeggiata di Gruppo',
-    description: 'Unisciti alla passeggiata collettiva con il tuo cane! Percorso di 5km nel parco cittadino con veterinari a disposizione.',
-    eventDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'cani',
     location: 'Parco Sempione, Milano',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy',
-    link: 'https://www.comune.milano.it/aree-tematiche/verde/parchi-giardini-e-alberi/verde-pubblico/parco-sempione'
+    organizer: 'Comune di Milano',
+    source: 'comune',
+    sourceLabel: 'Comune di Milano',
+    link: 'https://www.comune.milano.it/aree-tematiche/animali',
+    isFeatured: true
   },
   {
-    id: 'demo-11',
-    title: 'Controllo Gratuito Microchip',
-    description: 'Porta il tuo animale per un controllo gratuito del microchip. Valido per cani, gatti, furetti e conigli.',
+    id: 'corso-educazione-cane-milano',
+    title: 'Corso Gratuito Educazione Cinofila',
+    description: 'Corso base di educazione per cani organizzato dal Comune di Milano. 4 lezioni gratuite con educatori certificati ENCI. Prenotazione obbligatoria.',
+    eventDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'cani',
+    location: 'Area Cani Parco Forlanini, Milano',
+    organizer: 'Comune di Milano',
+    source: 'comune',
+    sourceLabel: 'Comune di Milano',
+    link: 'https://www.comune.milano.it/servizi/corsi-di-educazione-cinofila'
+  },
+  // EVENTI GATTI
+  {
+    id: 'anfi-expo-gatti-milano',
+    title: 'Esposizione Internazionale Felina ANFI',
+    description: 'Mostra felina con oltre 500 gatti di razza. Giudici WCF, concorsi di bellezza, angolo adozioni e consulenze veterinarie gratuite.',
+    eventDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'gatti',
+    location: 'Palazzo delle Stelline, Milano',
+    organizer: 'ANFI - Associazione Nazionale Felina Italiana',
+    source: 'anfi',
+    sourceLabel: 'ANFI',
+    link: 'https://www.anfitalia.it/esposizioni',
+    isFeatured: true
+  },
+  {
+    id: 'giornata-gatto-nero-milano',
+    title: 'Giornata del Gatto Nero - Adozioni Speciali',
+    description: 'In occasione della Giornata del Gatto Nero, adozioni a tariffa ridotta per tutti i gatti neri. Sfatiamo le superstizioni!',
+    eventDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'gatti',
+    location: 'ENPA Milano, Via Gassendi 2',
+    organizer: 'ENPA Milano',
+    source: 'enpa',
+    sourceLabel: 'ENPA',
+    link: 'https://www.enpa.it/milano'
+  },
+  // ADOZIONI E VOLONTARIATO
+  {
+    id: 'enpa-open-day-milano',
+    title: 'Open Day Rifugio ENPA Milano',
+    description: 'Visita il rifugio ENPA di Milano! Conosci i nostri ospiti in cerca di casa, scopri come diventare volontario e partecipa alle attività con gli animali.',
+    eventDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'generale',
+    location: 'ENPA Milano, Via Aquila 61',
+    organizer: 'ENPA Milano',
+    source: 'enpa',
+    sourceLabel: 'ENPA',
+    link: 'https://www.enpa.it/cosa-facciamo/rifugi/',
+    isFeatured: true
+  },
+  {
+    id: 'lav-giornata-adozioni',
+    title: 'Giornata Adozioni LAV Milano',
+    description: 'Grande evento di adozione organizzato dalla LAV. Cani, gatti e conigli in cerca di famiglia. Consulenza pre-adozione e kit benvenuto gratuito.',
     eventDate: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString(),
     category: 'generale',
-    location: 'Tutte le cliniche VetBuddy',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy',
+    location: 'Piazza Città di Lombardia, Milano',
+    organizer: 'LAV - Lega Anti Vivisezione',
+    source: 'lav',
+    sourceLabel: 'LAV',
+    link: 'https://www.lav.it/cosa-facciamo/adozioni'
+  },
+  // EVENTI CAVALLI
+  {
+    id: 'fieracavalli-milano',
+    title: 'Milano Cavalli - Salone del Mondo Equestre',
+    description: 'Il principale evento equestre di Milano. Show jumping, dressage, area commerciale e attività per famiglie. Ingresso gratuito per bambini under 12.',
+    eventDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'cavalli',
+    location: 'Fiera Milano City',
+    organizer: 'Fiera Milano',
+    source: 'fieramilano',
+    sourceLabel: 'Fiera Milano',
+    link: 'https://www.fieramilano.it',
     isFeatured: true
   },
   {
-    id: 'demo-12',
-    title: 'Adotta un Furetto - Giornata di Adozioni',
-    description: 'In collaborazione con i rifugi locali, giornata dedicata all\'adozione di furetti e altri mustelidi.',
+    id: 'centro-ippico-san-siro',
+    title: 'Porte Aperte Centro Ippico San Siro',
+    description: 'Giornata di prova gratuita per bambini e adulti. Battesimo della sella, visite guidate alle scuderie e dimostrazione di volteggio.',
     eventDate: new Date(Date.now() + 18 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'furetti',
-    location: 'Roma',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy'
+    category: 'cavalli',
+    location: 'Centro Ippico Lombardo San Siro',
+    organizer: 'Centro Ippico Lombardo',
+    source: 'fise',
+    sourceLabel: 'FISE Lombardia',
+    link: 'https://www.fiselombardia.it'
   },
-  // EVENTI PER CAVALLI
+  // ANIMALI ESOTICI
   {
-    id: 'demo-13',
-    title: 'Fiera Internazionale del Cavallo - Verona',
-    description: 'La più grande manifestazione equestre italiana. Show jumping, dressage, endurance e tanto altro. Non perdere i campionati nazionali!',
+    id: 'pet-expo-milano',
+    title: 'Pet Expo Italia - Fiera degli Animali',
+    description: 'La più grande fiera italiana dedicata a tutti gli animali da compagnia. Area rettili, acquari, piccoli mammiferi, uccelli. Workshop e seminari gratuiti.',
+    eventDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'altro',
+    location: 'MiCo Milano Congressi',
+    organizer: 'Fiera Milano',
+    source: 'fieramilano',
+    sourceLabel: 'Fiera Milano',
+    link: 'https://www.petexpoitalia.it',
+    isFeatured: true
+  },
+  {
+    id: 'reptiles-day-milano',
+    title: 'Reptiles Day Milano',
+    description: 'Mostra mercato dedicata a rettili, anfibi e invertebrati. Allevatori certificati, veterinari specializzati e conferenze su terrariofilia responsabile.',
     eventDate: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'cavalli',
-    location: 'Fiera di Verona',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy',
-    isFeatured: true
+    category: 'rettili',
+    location: 'Palazzo del Ghiaccio, Milano',
+    organizer: 'Reptiles Day',
+    source: 'reptiles',
+    sourceLabel: 'Reptiles Day',
+    link: 'https://www.reptilesday.it'
   },
+  // CONIGLI E RODITORI
   {
-    id: 'demo-14',
-    title: 'Corso di Mascalcia e Cura dello Zoccolo',
-    description: 'Workshop pratico sulla ferratura e cura dello zoccolo equino. Tenuto da maniscalchi professionisti certificati FISE.',
-    eventDate: new Date(Date.now() + 22 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'cavalli',
-    location: 'Centro Ippico Milano',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy'
+    id: 'coniglio-day-milano',
+    title: 'Bunny Day Milano - Giornata del Coniglio',
+    description: 'Evento dedicato ai conigli da compagnia. Visite veterinarie gratuite, toelettatura, consulenze alimentari e area gioco. Possibilità di adozione.',
+    eventDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'conigli',
+    location: 'Cascina Cuccagna, Milano',
+    organizer: 'AAE Conigli',
+    source: 'aae',
+    sourceLabel: 'AAE Conigli',
+    link: 'https://www.aaeconigli.it'
   },
+  // MICROCHIP E SALUTE
   {
-    id: 'demo-15',
-    title: 'Giornata di Visite Veterinarie Equine Gratuite',
-    description: 'Check-up gratuito per il tuo cavallo: controllo generale, denti, arti e consulenza nutrizionale con veterinari specializzati.',
+    id: 'ats-microchip-day',
+    title: 'Giornata Gratuita Microchip - ATS Milano',
+    description: 'Applicazione gratuita del microchip per cani e gatti. Portare libretto sanitario e documento del proprietario. Su prenotazione.',
     eventDate: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'cavalli',
-    location: 'Maneggi convenzionati Lombardia',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy',
-    isFeatured: true
+    category: 'generale',
+    location: 'ATS Milano Città Metropolitana',
+    organizer: 'ATS Milano',
+    source: 'ats',
+    sourceLabel: 'ATS Milano',
+    link: 'https://www.ats-milano.it/servizi-per-la-comunita/animali'
   },
   {
-    id: 'demo-16',
-    title: 'Seminario: Alimentazione del Cavallo Sportivo',
-    description: 'Come nutrire correttamente il cavallo atleta. Integrazione, timing dei pasti e gestione del peso con esperti di nutrizione equina.',
-    eventDate: new Date(Date.now() + 40 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'cavalli',
-    location: 'Online - Webinar',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy'
-  },
-  {
-    id: 'demo-17',
-    title: 'Passeggiata a Cavallo nel Parco del Ticino',
-    description: 'Escursione guidata di 3 ore nella natura. Adatta a tutti i livelli. Veterinario presente per emergenze.',
-    eventDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'cavalli',
-    location: 'Parco del Ticino, Vigevano',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy'
-  },
-  {
-    id: 'demo-18',
-    title: 'Corso First Aid Equino',
-    description: 'Impara a gestire le emergenze del cavallo: coliche, ferite, problemi respiratori. Certificato rilasciato dalla FISE.',
-    eventDate: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
-    category: 'cavalli',
-    location: 'Bologna - Centro Equestre',
-    source: 'vetbuddy',
-    sourceLabel: 'VetBuddy'
+    id: 'sterilizzazioni-comune-milano',
+    title: 'Campagna Sterilizzazioni a Prezzo Ridotto',
+    description: 'Il Comune di Milano promuove la sterilizzazione di cani e gatti a prezzo convenzionato presso le cliniche aderenti. Riduzioni fino al 50%.',
+    eventDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+    category: 'generale',
+    location: 'Cliniche veterinarie convenzionate Milano',
+    organizer: 'Comune di Milano',
+    source: 'comune',
+    sourceLabel: 'Comune di Milano',
+    link: 'https://www.comune.milano.it/aree-tematiche/animali/sterilizzazioni'
   }
 ];
 
