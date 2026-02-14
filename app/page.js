@@ -19139,6 +19139,11 @@ export default function App() {
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-coral-50"><div className="text-center"><VetBuddyLogo size={60} /><p className="mt-4 text-coral-700">Caricamento...</p></div></div>;
   
+  // Show verification screen if needed
+  if (verificationState) {
+    return <VerificationScreen state={verificationState} onComplete={() => setVerificationState(null)} />;
+  }
+  
   // Render main content with ChatWidget
   const renderContent = () => {
     if (!user) return <LandingPage onLogin={handleLogin} />;
