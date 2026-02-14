@@ -16010,7 +16010,10 @@ function PetProfile({ petId, onBack, appointments, documents }) {
                             <p className="text-sm text-gray-500">{new Date(doc.createdAt).toLocaleDateString()}</p>
                           </div>
                         </div>
-                        <Button size="sm" variant="outline"><Download className="h-4 w-4 mr-1" />Scarica</Button>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" onClick={() => handleOpenDocument(doc)}><Eye className="h-4 w-4 mr-1" />Apri</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleDownloadDocument(doc)}><Download className="h-4 w-4 mr-1" />Scarica</Button>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
