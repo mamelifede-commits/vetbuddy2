@@ -16232,6 +16232,130 @@ function PetProfile({ petId, onBack, appointments, documents }) {
           </div>
         </DialogContent>
       </Dialog>
+      
+      {/* Dialog Dettagli Appuntamento */}
+      <Dialog open={showAppointmentDetails} onOpenChange={setShowAppointmentDetails}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-blue-500" />
+              Dettagli Appuntamento
+            </DialogTitle>
+          </DialogHeader>
+          {selectedAppointment && (
+            <div className="space-y-4 mt-4">
+              <div className="bg-blue-50 rounded-lg p-4">
+                <p className="font-semibold text-lg text-blue-800">{selectedAppointment.reason || 'Visita'}</p>
+                <p className="text-blue-600 mt-1">
+                  {new Date(selectedAppointment.date).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                </p>
+                <p className="text-blue-600">Ore {selectedAppointment.time}</p>
+              </div>
+              
+              <div className="space-y-2">
+                {selectedAppointment.clinicName && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Clinica:</span>
+                    <span className="font-medium">{selectedAppointment.clinicName}</span>
+                  </div>
+                )}
+                {selectedAppointment.type && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Tipo:</span>
+                    <span className="font-medium">{selectedAppointment.type === 'videoconsulto' ? 'Videoconsulto' : 'In sede'}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Stato:</span>
+                  <Badge className={new Date(selectedAppointment.date) >= new Date() ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}>
+                    {new Date(selectedAppointment.date) >= new Date() ? 'Programmato' : 'Completato'}
+                  </Badge>
+                </div>
+              </div>
+              
+              {selectedAppointment.notes && (
+                <div className="border-t pt-3">
+                  <p className="text-sm text-gray-500 mb-1">Note:</p>
+                  <p className="text-gray-700">{selectedAppointment.notes}</p>
+                </div>
+              )}
+              
+              <div className="flex gap-2 pt-2">
+                <Button variant="outline" className="flex-1" onClick={() => setShowAppointmentDetails(false)}>
+                  Chiudi
+                </Button>
+                {new Date(selectedAppointment.date) >= new Date() && (
+                  <Button variant="destructive" className="flex-1" onClick={() => {
+                    if (confirm('Sei sicuro di voler cancellare questo appuntamento?')) {
+                      // TODO: API call to cancel appointment
+                      alert('Funzionalità di cancellazione in arrivo');
+                    }
+                  }}>
+                    Cancella appuntamento
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+      
+      {/* Dialog Visualizzatore Documento */}
+      <Dialog open={showDocumentViewer} onOpenChange={setShowDocumentViewer}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-blue-500" />
+              {selectedDocument?.name || 'Documento'}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedDocument && (
+            <div className="space-y-4 mt-4">
+              <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Nome:</span>
+                  <span className="font-medium">{selectedDocument.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Data:</span>
+                  <span className="font-medium">{new Date(selectedDocument.createdAt).toLocaleDateString('it-IT')}</span>
+                </div>
+                {selectedDocument.type && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Tipo:</span>
+                    <span className="font-medium">{selectedDocument.type}</span>
+                  </div>
+                )}
+                {selectedDocument.fromClient !== undefined && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Fonte:</span>
+                    <Badge variant="outline" className={selectedDocument.fromClient ? 'text-green-600' : 'text-blue-600'}>
+                      {selectedDocument.fromClient ? 'Caricato da te' : 'Dalla clinica'}
+                    </Badge>
+                  </div>
+                )}
+              </div>
+              
+              {selectedDocument.description && (
+                <div className="border-t pt-3">
+                  <p className="text-sm text-gray-500 mb-1">Descrizione:</p>
+                  <p className="text-gray-700">{selectedDocument.description}</p>
+                </div>
+              )}
+              
+              <div className="flex gap-2 pt-2">
+                <Button variant="outline" className="flex-1" onClick={() => setShowDocumentViewer(false)}>
+                  Chiudi
+                </Button>
+                <Button className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={() => handleDownloadDocument(selectedDocument)}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Scarica
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
