@@ -10064,13 +10064,6 @@ function ClinicEvents({ user }) {
                           </Button>
                         </a>
                       )}
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => openShareModal(event)}
-                      >
-                        <Share2 className="h-4 w-4 mr-1" /> Condividi
-                      </Button>
                     </div>
                   </div>
                 </div>
