@@ -11785,7 +11785,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'pets' && <OwnerPets pets={pets} onRefresh={loadData} onOpenProfile={handleOpenPetProfile} />}
         {activeTab === 'rewards' && <OwnerRewardsSection user={user} />}
         {activeTab === 'reviews' && <OwnerReviews user={user} />}
-        {activeTab === 'events' && <OwnerEvents user={user} />}
+        {activeTab === 'events' && <OwnerEvents user={user} onNavigate={setActiveTab} />}
         {activeTab === 'petProfile' && selectedPetId && <PetProfile petId={selectedPetId} onBack={() => setActiveTab('pets')} appointments={appointments} documents={documents} />}
         {activeTab === 'findClinic' && <FindClinic user={user} />}
         {activeTab === 'inviteClinic' && <InviteClinic user={user} />}
