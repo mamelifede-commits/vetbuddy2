@@ -10,7 +10,7 @@ import time
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://vetbuddy-lab-module.preview.emergentagent.com/api"
+BASE_URL = "https://vetbuddy-debug.preview.emergentagent.com/api"
 
 # Test appointment ID from review request
 TEST_APPOINTMENT_ID = "ec9673c0-9b83-4160-a381-eb9174604700"
@@ -34,7 +34,7 @@ def test_payment_create_checkout():
     try:
         test_data = {
             "appointmentId": TEST_APPOINTMENT_ID,
-            "originUrl": "https://vetbuddy-lab-module.preview.emergentagent.com"
+            "originUrl": "https://vetbuddy-debug.preview.emergentagent.com"
         }
         
         response = requests.post(f"{BASE_URL}/payments/appointment", json=test_data, timeout=30)
@@ -88,7 +88,7 @@ def test_payment_missing_appointment():
     
     try:
         test_data = {
-            "originUrl": "https://vetbuddy-lab-module.preview.emergentagent.com"
+            "originUrl": "https://vetbuddy-debug.preview.emergentagent.com"
         }
         
         response = requests.post(f"{BASE_URL}/payments/appointment", json=test_data, timeout=30)
@@ -120,7 +120,7 @@ def test_payment_non_existent_appointment():
         fake_id = "00000000-0000-0000-0000-000000000000"
         test_data = {
             "appointmentId": fake_id,
-            "originUrl": "https://vetbuddy-lab-module.preview.emergentagent.com"
+            "originUrl": "https://vetbuddy-debug.preview.emergentagent.com"
         }
         
         response = requests.post(f"{BASE_URL}/payments/appointment", json=test_data, timeout=30)
