@@ -340,17 +340,6 @@ export default function EventDetailPage() {
               </div>
               
               <div className="space-y-2">
-                {typeof navigator !== 'undefined' && navigator.share && (
-                  <button
-                    onClick={() => handleShare('native')}
-                    className="w-full text-left px-4 py-3 hover:bg-gray-100 rounded-xl flex items-center gap-3 transition-colors"
-                  >
-                    <div className="bg-gray-100 p-2 rounded-lg">
-                      <Share2 className="h-5 w-5 text-gray-600" />
-                    </div>
-                    <span className="font-medium">Condividi...</span>
-                  </button>
-                )}
                 <button
                   onClick={() => handleShare('whatsapp')}
                   className="w-full text-left px-4 py-3 hover:bg-green-50 rounded-xl flex items-center gap-3 transition-colors"
