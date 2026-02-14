@@ -7,7 +7,7 @@ Tests the specific APIs mentioned in the review request.
 import requests
 import json
 
-BASE_URL = "https://verify-reset-flow.preview.emergentagent.com/api"
+BASE_URL = "https://page-refactor-2.preview.emergentagent.com/api"
 
 def test_api(method, endpoint, data=None, description=""):
     """Test a specific API endpoint"""

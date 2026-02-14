@@ -11,7 +11,7 @@ import random
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://verify-reset-flow.preview.emergentagent.com/api"
+BASE_URL = "https://page-refactor-2.preview.emergentagent.com/api"
 FALLBACK_URL = "http://localhost:3000/api"
 
 # Test configuration
