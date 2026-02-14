@@ -13119,9 +13119,18 @@ function OwnerEvents({ user, onNavigate }) {
     return date.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
-  const filteredEvents = activeCategory === 'all' 
+  const filteredEvents = (activeCategory === 'all' 
     ? events 
-    : events.filter(e => e.category === activeCategory);
+    : events.filter(e => e.category === activeCategory)
+  ).filter(e => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      (e.title && e.title.toLowerCase().includes(query)) ||
+      (e.description && e.description.toLowerCase().includes(query)) ||
+      (e.category && e.category.toLowerCase().includes(query))
+    );
+  });
 
   const personalizedEvents = getPersonalizedEvents();
   const petCategories = getUserPetCategories();
