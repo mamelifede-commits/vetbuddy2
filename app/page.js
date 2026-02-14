@@ -5521,6 +5521,166 @@ Milo,cane,Golden Retriever,10/08/2021,,maschio,28,dorato,si,,Apoquel 16mg,Dermat
           </div>
         </DialogContent>
       </Dialog>
+      
+      {/* Dialog Richiedi Esami Lab */}
+      <Dialog open={showLabDialog} onOpenChange={setShowLabDialog}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <div className="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center">
+                <Beaker className="h-4 w-4 text-purple-600" />
+              </div>
+              Richiedi Esami per {selectedPet?.name}
+            </DialogTitle>
+            <DialogDescription>Seleziona gli esami da richiedere al laboratorio</DialogDescription>
+          </DialogHeader>
+          
+          {labLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <RefreshCw className="h-8 w-8 animate-spin text-purple-500" />
+            </div>
+          ) : (
+            <div className="space-y-6 mt-4">
+              {/* Filtro Categoria */}
+              <div className="flex gap-2 flex-wrap">
+                <Button 
+                  size="sm" 
+                  variant={labCategory === 'all' ? 'default' : 'outline'}
+                  onClick={() => setLabCategory('all')}
+                >
+                  Tutti
+                </Button>
+                {['routine', 'endocrino', 'infettivologia', 'microbiologia', 'citologia', 'istologia', 'cardiologia', 'altro'].map(cat => (
+                  <Button 
+                    key={cat}
+                    size="sm" 
+                    variant={labCategory === cat ? 'default' : 'outline'}
+                    onClick={() => setLabCategory(cat)}
+                    className="capitalize"
+                  >
+                    {cat}
+                  </Button>
+                ))}
+              </div>
+              
+              {/* Lista Esami */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[300px] overflow-y-auto border rounded-lg p-3">
+                {labExams
+                  .filter(exam => labCategory === 'all' || exam.category === labCategory)
+                  .map(exam => (
+                    <div
+                      key={exam.id}
+                      onClick={() => toggleExamSelection(exam)}
+                      className={`p-3 rounded-lg cursor-pointer transition-all border ${
+                        selectedLabExams.find(e => e.id === exam.id)
+                          ? 'border-purple-500 bg-purple-50'
+                          : 'border-gray-200 hover:border-purple-300'
+                      }`}
+                    >
+                      <div className="flex items-start gap-2">
+                        <div className={`w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center ${
+                          selectedLabExams.find(e => e.id === exam.id)
+                            ? 'border-purple-500 bg-purple-500'
+                            : 'border-gray-300'
+                        }`}>
+                          {selectedLabExams.find(e => e.id === exam.id) && (
+                            <Check className="h-3 w-3 text-white" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm">{exam.name}</p>
+                          <p className="text-xs text-gray-500">{exam.description}</p>
+                          <div className="flex gap-3 mt-1 text-xs text-gray-400">
+                            <span>⏱ {exam.turnaroundHours}h</span>
+                            <span>€{exam.price}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+              
+              {/* Esami Selezionati */}
+              {selectedLabExams.length > 0 && (
+                <div className="bg-purple-50 p-4 rounded-lg">
+                  <p className="font-medium text-purple-700 mb-2">Esami selezionati ({selectedLabExams.length})</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedLabExams.map(exam => (
+                      <Badge 
+                        key={exam.id} 
+                        className="bg-purple-100 text-purple-700 cursor-pointer hover:bg-purple-200"
+                        onClick={() => toggleExamSelection(exam)}
+                      >
+                        {exam.name} <X className="h-3 w-3 ml-1" />
+                      </Badge>
+                    ))}
+                  </div>
+                  <p className="text-sm text-purple-600 mt-2">
+                    Totale: €{selectedLabExams.reduce((sum, e) => sum + (e.price || 0), 0)} • 
+                    Tempo max: {Math.max(...selectedLabExams.map(e => e.turnaroundHours || 72))}h
+                  </p>
+                </div>
+              )}
+              
+              {/* Note Cliniche */}
+              <div>
+                <Label>Note cliniche per il laboratorio</Label>
+                <Textarea 
+                  placeholder="Anamnesi, sospetto diagnostico, informazioni rilevanti..."
+                  value={labClinicalNotes}
+                  onChange={(e) => setLabClinicalNotes(e.target.value)}
+                  rows={3}
+                />
+              </div>
+              
+              {/* Storico Richieste */}
+              {labRequests.length > 0 && (
+                <div>
+                  <p className="font-medium mb-2">Storico richieste ({labRequests.length})</p>
+                  <div className="space-y-2 max-h-[150px] overflow-y-auto">
+                    {labRequests.map((req, i) => (
+                      <div key={i} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="font-medium text-sm">{req.practiceCode}</p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(req.createdAt).toLocaleDateString('it-IT')} • 
+                            {req.exams?.length} esami
+                          </p>
+                        </div>
+                        {getLabStatusBadge(req.status)}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Azioni */}
+              <div className="flex gap-3 pt-4 border-t">
+                <Button variant="outline" onClick={() => setShowLabDialog(false)} className="flex-1">
+                  Annulla
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => submitLabRequest(false)} 
+                  disabled={selectedLabExams.length === 0 || labLoading}
+                  className="flex-1"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  Salva Bozza
+                </Button>
+                <Button 
+                  onClick={() => submitLabRequest(true)} 
+                  disabled={selectedLabExams.length === 0 || labLoading}
+                  className="flex-1 bg-purple-500 hover:bg-purple-600"
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  Invia al Lab
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
