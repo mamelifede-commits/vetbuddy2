@@ -240,10 +240,10 @@ export default function EventDetailPage() {
         {/* Back Button */}
         <div className="text-center">
           <button 
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/?tab=events')}
             className="text-coral-600 hover:text-coral-700 font-medium"
           >
-            ← Torna alla Home
+            ← Torna agli Eventi
           </button>
         </div>
       </div>
