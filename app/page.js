@@ -16392,6 +16392,11 @@ function FindClinic({ user }) {
   const [appointmentForm, setAppointmentForm] = useState({ date: '', time: '', service: '', notes: '', petId: '' });
   const [userPets, setUserPets] = useState([]);
   const [submittingAppointment, setSubmittingAppointment] = useState(false);
+  
+  // Dynamic slots state
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [clinicAvailability, setClinicAvailability] = useState(null);
 
   // Load all clinics for autocomplete suggestions
   useEffect(() => {
