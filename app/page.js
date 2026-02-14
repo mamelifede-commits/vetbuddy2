@@ -11938,6 +11938,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'findClinic' && <FindClinic user={user} />}
         {activeTab === 'inviteClinic' && <InviteClinic user={user} />}
         {activeTab === 'tutorial' && <OwnerTutorialInline />}
+        {activeTab === 'profile' && <OwnerProfile user={user} onRefresh={loadData} />}
       </main>
       
       {/* Dialog Cancellazione Appuntamento - Migliorata con dettagli */}
