@@ -19075,6 +19075,35 @@ export default function App() {
       setShowWelcome(true); 
     } 
   };
+
+  // Handle email verification from URL
+  const handleEmailVerification = async (token) => {
+    setVerificationState({ status: 'verifying', message: 'Verifica email in corso...' });
+    try {
+      const result = await api.post('auth/verify-email', { token });
+      if (result.success) {
+        if (result.alreadyVerified) {
+          setVerificationState({ 
+            status: 'already_verified', 
+            message: 'Email già verificata! Puoi accedere al tuo account.'
+          });
+        } else {
+          setVerificationState({ 
+            status: 'email_verified', 
+            message: result.message,
+            requiresPhoneVerification: result.requiresPhoneVerification,
+            userId: result.userId
+          });
+        }
+      }
+    } catch (error) {
+      setVerificationState({ 
+        status: 'error', 
+        message: error.message || 'Errore durante la verifica'
+      });
+    }
+  };
+
   const handleWelcomeContinue = async () => { 
     localStorage.setItem('vetbuddy_welcomed_' + user.id, 'true'); 
     setShowWelcome(false);
