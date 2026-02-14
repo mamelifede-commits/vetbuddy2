@@ -16758,6 +16758,9 @@ function FindClinic({ user }) {
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [clinicAvailability, setClinicAvailability] = useState(null);
+  
+  // File upload state for appointments
+  const [appointmentFiles, setAppointmentFiles] = useState([]);
 
   // Load all clinics for autocomplete suggestions
   useEffect(() => {
