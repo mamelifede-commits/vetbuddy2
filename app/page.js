@@ -15000,9 +15000,15 @@ function OwnerMessages({ messages, clinics = [], pets = [], onRefresh }) {
   const [newMessage, setNewMessage] = useState({ clinicId: '', subject: '', content: '', petId: '' });
   const [replyContent, setReplyContent] = useState('');
   const [sending, setSending] = useState(false);
+  const [localMessages, setLocalMessages] = useState(messages); // Local state for immediate updates
+
+  // Sync local messages with props
+  useEffect(() => {
+    setLocalMessages(messages);
+  }, [messages]);
 
   // Group messages by conversation (clinicId + subject)
-  const conversations = messages.reduce((acc, msg) => {
+  const conversations = localMessages.reduce((acc, msg) => {
     const key = `${msg.clinicId}-${msg.subject}`;
     if (!acc[key]) {
       acc[key] = {
