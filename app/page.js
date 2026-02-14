@@ -9957,10 +9957,22 @@ function ClinicEvents({ user }) {
                         <CalendarDays className="h-4 w-4" />
                         {formatDateRange(event.date, event.endDate)}
                       </span>
-                      <span className="text-sm text-gray-500 flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
-                        {event.location}
-                      </span>
+                      {event.location && !event.location.toLowerCase().includes('online') ? (
+                        <a 
+                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1 hover:underline"
+                        >
+                          <MapPin className="h-4 w-4" />
+                          {event.location}
+                        </a>
+                      ) : (
+                        <span className="text-sm text-gray-500 flex items-center gap-1">
+                          <MapPin className="h-4 w-4" />
+                          {event.location}
+                        </span>
+                      )}
                     </div>
                     
                     <div className="flex flex-wrap gap-2 mt-3">
@@ -9971,7 +9983,7 @@ function ClinicEvents({ user }) {
                       ))}
                     </div>
                     
-                    <div className="flex gap-2 mt-4">
+                    <div className="flex flex-wrap gap-2 mt-4">
                       <Button 
                         size="sm" 
                         variant={event.saved ? "default" : "outline"}
@@ -9993,6 +10005,35 @@ function ClinicEvents({ user }) {
                       </a>
                       <Button size="sm" variant="outline">
                         <CalendarCheck className="h-4 w-4 mr-1" /> Calendario
+                      </Button>
+                      {event.location && !event.location.toLowerCase().includes('online') && (
+                        <a 
+                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button size="sm" variant="outline">
+                            <Navigation className="h-4 w-4 mr-1" /> Mappa
+                          </Button>
+                        </a>
+                      )}
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          if (navigator.share) {
+                            navigator.share({
+                              title: event.title,
+                              text: `${event.title}\n📅 ${formatDateRange(event.date, event.endDate)}\n📍 ${event.location}\n\n${event.description}`,
+                              url: event.url || window.location.href
+                            });
+                          } else {
+                            navigator.clipboard.writeText(`${event.title}\n📅 ${formatDateRange(event.date, event.endDate)}\n📍 ${event.location}\n\n${event.url || window.location.href}`);
+                            alert('Link copiato negli appunti!');
+                          }
+                        }}
+                      >
+                        <Share2 className="h-4 w-4 mr-1" /> Condividi
                       </Button>
                     </div>
                   </div>
