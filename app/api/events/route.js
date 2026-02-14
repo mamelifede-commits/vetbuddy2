@@ -127,7 +127,8 @@ const DEFAULT_EVENTS = [
     category: 'gatti',
     location: 'Fiera Milano',
     source: 'vetbuddy',
-    sourceLabel: 'VetBuddy'
+    sourceLabel: 'VetBuddy',
+    link: 'https://www.fieramilano.it'
   },
   {
     id: 'demo-10',
