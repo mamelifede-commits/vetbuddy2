@@ -9880,22 +9880,25 @@ function ClinicEvents({ user }) {
     const eventTitle = selectedEventForShare.title;
     const eventDate = formatDateRange(selectedEventForShare.date, selectedEventForShare.endDate);
     const eventLocation = selectedEventForShare.location;
-    const eventText = `${eventTitle}\n📅 ${eventDate}\n📍 ${eventLocation}\n\n${eventUrl}`;
-    const encodedText = encodeURIComponent(eventText);
-    const encodedUrl = encodeURIComponent(eventUrl);
+    
+    // Messaggio formattato per WhatsApp con bold
+    const whatsappText = `*${eventTitle}*\n📅 ${eventDate}\n📍 ${eventLocation}\n\n${eventUrl}`;
+    
+    // Messaggio per altri canali
+    const shareText = `${eventTitle}\n📅 ${eventDate}\n📍 ${eventLocation}`;
     
     switch(platform) {
       case 'whatsapp':
-        window.open(`https://wa.me/?text=${encodedText}`, '_blank');
+        window.open(`https://wa.me/?text=${encodeURIComponent(whatsappText)}`, '_blank');
         break;
       case 'telegram':
-        window.open(`https://t.me/share/url?url=${encodedUrl}&text=${encodeURIComponent(`${eventTitle}\n📅 ${eventDate}\n📍 ${eventLocation}`)}`, '_blank');
+        window.open(`https://t.me/share/url?url=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(shareText)}`, '_blank');
         break;
       case 'facebook':
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, '_blank');
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`, '_blank');
         break;
       case 'email':
-        window.open(`mailto:?subject=${encodeURIComponent(eventTitle)}&body=${encodedText}`, '_blank');
+        window.open(`mailto:?subject=${encodeURIComponent(eventTitle)}&body=${encodeURIComponent(shareText + '\n\n' + eventUrl)}`, '_blank');
         break;
       case 'copy':
         navigator.clipboard.writeText(eventUrl).then(() => {
