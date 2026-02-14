@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/db';
 
+// Force dynamic rendering (required for request.headers access)
+export const dynamic = 'force-dynamic';
+
 // GET owner profile
 export async function GET(request) {
   try {
