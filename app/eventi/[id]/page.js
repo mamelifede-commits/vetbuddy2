@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, CalendarDays, MapPin, Clock, ExternalLink, Share2, PawPrint, Building2, Globe, Star, Navigation, Copy, Check, Calendar, MessageCircle } from 'lucide-react';
+import { ArrowLeft, CalendarDays, MapPin, Clock, ExternalLink, Share2, PawPrint, Building2, Globe, Star, Navigation, Copy, Check, Calendar, MessageCircle, Mail } from 'lucide-react';
 
 export default function EventDetailPage() {
   const params = useParams();
