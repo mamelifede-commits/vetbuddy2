@@ -12596,27 +12596,13 @@ function OwnerEvents({ user }) {
         <div className="grid gap-4 md:grid-cols-2">
           {filteredEvents.map(event => {
             const catStyle = getCategoryColor(event.category);
-            const eventLink = event.link || null;
-            
-            const handleCardClick = (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (eventLink) {
-                window.open(eventLink, '_blank', 'noopener,noreferrer');
-              } else {
-                // Show event details modal/alert
-                alert(`📅 ${event.title}\n\n${event.description || 'Nessuna descrizione disponibile.'}\n\n📍 Luogo: ${event.location || 'Non specificato'}\n📆 Data: ${event.eventDate ? new Date(event.eventDate).toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Non specificata'}`);
-              }
-            };
+            const eventLink = event.link || '#';
+            const detailText = `📅 ${event.title}\n\n${event.description || 'Nessuna descrizione disponibile.'}\n\n📍 Luogo: ${event.location || 'Non specificato'}\n📆 Data: ${event.eventDate ? new Date(event.eventDate).toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Non specificata'}`;
             
             return (
               <div 
                 key={event.id} 
-                className="overflow-hidden hover:shadow-lg transition-all duration-200 group cursor-pointer bg-white rounded-lg border border-gray-200"
-                onClick={handleCardClick}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && handleCardClick(e)}
+                className="overflow-hidden hover:shadow-lg transition-all duration-200 group bg-white rounded-lg border border-gray-200"
               >
                 {/* Event Image/Icon Header */}
                 <div className={`${catStyle.bg} p-4 flex items-center justify-between`}>
@@ -12681,13 +12667,26 @@ function OwnerEvents({ user }) {
                       )}
                     </span>
                     
-                    <button 
-                      className="bg-coral-500 hover:bg-coral-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1 transition-colors"
-                      onClick={handleCardClick}
-                    >
-                      {eventLink ? 'Vai al sito' : 'Vedi dettagli'}
-                      <ExternalLink className="h-3 w-3" />
-                    </button>
+                    {event.link ? (
+                      <a 
+                        href={event.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-coral-500 hover:bg-coral-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors no-underline"
+                      >
+                        Vai al sito
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    ) : (
+                      <button 
+                        type="button"
+                        className="bg-coral-500 hover:bg-coral-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors cursor-pointer"
+                        onClick={() => window.alert(detailText)}
+                      >
+                        Vedi dettagli
+                        <ExternalLink className="h-4 w-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
