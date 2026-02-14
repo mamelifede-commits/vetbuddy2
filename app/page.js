@@ -4539,6 +4539,15 @@ function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner,
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editFormData, setEditFormData] = useState({});
   
+  // Lab exam states
+  const [showLabDialog, setShowLabDialog] = useState(false);
+  const [labExams, setLabExams] = useState([]);
+  const [selectedLabExams, setSelectedLabExams] = useState([]);
+  const [labRequests, setLabRequests] = useState([]);
+  const [labClinicalNotes, setLabClinicalNotes] = useState('');
+  const [labLoading, setLabLoading] = useState(false);
+  const [labCategory, setLabCategory] = useState('all');
+  
   // Import states
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [importStep, setImportStep] = useState(1); // 1: choose, 2: upload data, 3: upload docs, 4: results
