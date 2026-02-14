@@ -27,7 +27,7 @@ import {
   Euro, Wallet, Camera, Edit, Trash2, Info, StarHalf, Image as ImageIcon, Scissors,
   BarChart3, Gift, Lock, Sparkles, UserPlus, PlusCircle, Loader2, Image,
   FolderArchive, BookOpen, GraduationCap, Newspaper, Link2, CalendarRange, Droplet, Archive,
-  Smartphone, Navigation, Share2
+  Smartphone, Navigation, Share2, Copy
 } from 'lucide-react';
 
 // Logo Component
