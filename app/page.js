@@ -16817,11 +16817,7 @@ function FindClinic({ user }) {
                 <Button 
                   className="w-full bg-coral-500 hover:bg-coral-600" 
                   size="lg"
-                  onClick={() => {
-                    setSelectedClinic(null);
-                    // Redirect to booking with pre-selected clinic
-                    window.location.href = `${window.location.origin}?tab=booking&clinicId=${selectedClinic.id}`;
-                  }}
+                  onClick={() => setShowAppointmentForm(true)}
                 >
                   <Calendar className="h-5 w-5 mr-2" />Richiedi appuntamento
                 </Button>
