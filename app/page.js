@@ -15418,11 +15418,11 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
             </CardContent>
           </Card>
         ) : pets.map((pet) => (
-          <Card key={pet.id} className="hover:shadow-md transition-shadow group">
+          <Card key={pet.id} className="hover:shadow-md transition-shadow group cursor-pointer" onClick={() => onOpenProfile?.(pet.id)}>
             <CardContent className="p-4">
               <div className="flex items-start gap-4">
-                <PetAvatar pet={pet} size="md" onClick={() => onOpenProfile?.(pet.id)} />
-                <div className="flex-1 min-w-0 cursor-pointer" onClick={() => onOpenProfile?.(pet.id)}>
+                <PetAvatar pet={pet} size="md" />
+                <div className="flex-1 min-w-0">
                   <p className="font-semibold text-lg">{pet.name}</p>
                   <p className="text-sm text-gray-500">{pet.breed || (pet.species === 'dog' ? 'Cane' : pet.species === 'cat' ? 'Gatto' : 'Animale')}</p>
                   {pet.birthDate && <p className="text-xs text-gray-400 mt-1">{calculateAge(pet.birthDate)}</p>}
@@ -15435,7 +15435,7 @@ function OwnerPets({ pets, onRefresh, onOpenProfile }) {
                     {(pet.chronicDiseases || pet.currentConditions) && <Badge variant="outline" className="text-xs text-orange-600 border-orange-300">Patologie</Badge>}
                   </div>
                 </div>
-                <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
                   <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={(e) => handleEdit(pet, e)}><Edit className="h-4 w-4 text-blue-500" /></Button>
                   <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={(e) => handleDelete(pet.id, e)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
                 </div>
