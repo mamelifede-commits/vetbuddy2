@@ -1972,7 +1972,7 @@ function LandingPage({ onLogin }) {
 
       {/* Auth Modal */}
       <Dialog open={showAuth} onOpenChange={setShowAuth}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
           {pendingAction && (
             <div className="bg-coral-50 border border-coral-200 rounded-lg p-3 mb-4">
               <p className="text-coral-700 text-sm font-medium">{getActionMessage()}</p>
