@@ -16887,6 +16887,105 @@ function FindClinic({ user }) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Dialog Richiesta Appuntamento */}
+      <Dialog open={showAppointmentForm} onOpenChange={setShowAppointmentForm}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Richiedi Appuntamento</DialogTitle>
+            <DialogDescription>
+              Richiedi un appuntamento presso {selectedClinic?.clinicName}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <Label>Data preferita *</Label>
+              <Input 
+                type="date" 
+                value={appointmentForm.date}
+                onChange={(e) => setAppointmentForm({...appointmentForm, date: e.target.value})}
+                min={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+            <div>
+              <Label>Fascia oraria preferita</Label>
+              <Select value={appointmentForm.time || 'mattina'} onValueChange={(v) => setAppointmentForm({...appointmentForm, time: v})}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleziona fascia oraria" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mattina">🌅 Mattina (9:00 - 12:00)</SelectItem>
+                  <SelectItem value="pomeriggio">☀️ Pomeriggio (14:00 - 18:00)</SelectItem>
+                  <SelectItem value="qualsiasi">🕐 Qualsiasi orario</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Servizio richiesto *</Label>
+              <Select value={appointmentForm.service} onValueChange={(v) => setAppointmentForm({...appointmentForm, service: v})}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleziona servizio" />
+                </SelectTrigger>
+                <SelectContent className="max-h-60">
+                  {serviceCatalog.map((service) => (
+                    <SelectItem key={service.id} value={service.id}>
+                      {service.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {userPets.length > 0 && (
+              <div>
+                <Label>Per quale animale?</Label>
+                <Select value={appointmentForm.petId || 'none'} onValueChange={(v) => setAppointmentForm({...appointmentForm, petId: v === 'none' ? '' : v})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleziona animale" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Non specificato</SelectItem>
+                    {userPets.map((pet) => (
+                      <SelectItem key={pet.id} value={pet.id}>
+                        {getPetSpeciesInfo(pet.species).emoji} {pet.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            <div>
+              <Label>Note aggiuntive</Label>
+              <textarea
+                className="w-full p-3 border rounded-lg resize-none"
+                rows={3}
+                value={appointmentForm.notes}
+                onChange={(e) => setAppointmentForm({...appointmentForm, notes: e.target.value})}
+                placeholder="Descrivi brevemente il motivo della visita..."
+              />
+            </div>
+            <div className="flex gap-3 pt-2">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setShowAppointmentForm(false)}
+              >
+                Annulla
+              </Button>
+              <Button 
+                className="flex-1 bg-coral-500 hover:bg-coral-600"
+                onClick={handleRequestAppointment}
+                disabled={submittingAppointment}
+              >
+                {submittingAppointment ? (
+                  <><RefreshCw className="h-4 w-4 mr-2 animate-spin" />Invio...</>
+                ) : (
+                  <><Send className="h-4 w-4 mr-2" />Invia Richiesta</>
+                )}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
