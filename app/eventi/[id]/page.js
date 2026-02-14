@@ -427,14 +427,6 @@ export default function EventDetailPage() {
           </button>
         </div>
       </div>
-      
-      {/* Click outside to close share menu */}
-      {showShareMenu && (
-        <div 
-          className="fixed inset-0 z-40" 
-          onClick={() => setShowShareMenu(false)}
-        />
-      )}
     </div>
   );
 }
