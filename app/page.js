@@ -9871,6 +9871,51 @@ function ClinicEvents({ user }) {
     return `${startDate.toLocaleDateString('it-IT', options)} - ${endDate.toLocaleDateString('it-IT', { ...options, year: 'numeric' })}`;
   };
 
+  // Funzione per aprire il modal di condivisione
+  const openShareModal = (event) => {
+    setSelectedEventForShare(event);
+    setShareModalOpen(true);
+    setCopied(false);
+  };
+
+  // Funzione per condividere l'evento
+  const shareEvent = (platform) => {
+    if (!selectedEventForShare) return;
+    
+    const eventUrl = selectedEventForShare.url || window.location.href;
+    const eventTitle = selectedEventForShare.title;
+    const eventDate = formatDateRange(selectedEventForShare.date, selectedEventForShare.endDate);
+    const eventLocation = selectedEventForShare.location;
+    const eventText = `${eventTitle}\n📅 ${eventDate}\n📍 ${eventLocation}\n\n${eventUrl}`;
+    const encodedText = encodeURIComponent(eventText);
+    const encodedUrl = encodeURIComponent(eventUrl);
+    
+    switch(platform) {
+      case 'whatsapp':
+        window.open(`https://wa.me/?text=${encodedText}`, '_blank');
+        break;
+      case 'telegram':
+        window.open(`https://t.me/share/url?url=${encodedUrl}&text=${encodeURIComponent(`${eventTitle}\n📅 ${eventDate}\n📍 ${eventLocation}`)}`, '_blank');
+        break;
+      case 'facebook':
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, '_blank');
+        break;
+      case 'email':
+        window.open(`mailto:?subject=${encodeURIComponent(eventTitle)}&body=${encodedText}`, '_blank');
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(eventUrl).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        });
+        return; // Non chiudere il modal per mostrare feedback
+      default:
+        break;
+    }
+    
+    setShareModalOpen(false);
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       {/* Header */}
