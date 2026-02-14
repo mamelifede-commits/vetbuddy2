@@ -16619,7 +16619,15 @@ function FindClinic({ user }) {
 
               {/* Actions */}
               <div className="flex flex-col gap-3 pt-4">
-                <Button className="w-full bg-coral-500 hover:bg-coral-600" size="lg">
+                <Button 
+                  className="w-full bg-coral-500 hover:bg-coral-600" 
+                  size="lg"
+                  onClick={() => {
+                    setSelectedClinic(null);
+                    // Redirect to booking with pre-selected clinic
+                    window.location.href = `${window.location.origin}?tab=booking&clinicId=${selectedClinic.id}`;
+                  }}
+                >
                   <Calendar className="h-5 w-5 mr-2" />Richiedi appuntamento
                 </Button>
                 <div className="flex gap-3">
