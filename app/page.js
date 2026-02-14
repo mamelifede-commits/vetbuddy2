@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 // Auth components (refactored)
 import { AuthForm, ResetPasswordScreen, VerificationScreen } from '@/app/components/auth';
+// Landing page components (refactored)
+import { EcosystemToggle, FeatureCarousel, HomepageMapSection } from '@/app/components/landing';
 import api from '@/app/lib/api';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
