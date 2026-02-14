@@ -337,7 +337,7 @@ export default function EventDetailPage() {
                 </button>
                 
                 {showShareMenu && (
-                  <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg border p-2 z-50 min-w-[200px]">
+                  <div className="absolute bottom-full left-0 mb-2 bg-white rounded-xl shadow-lg border p-2 z-50 min-w-[200px]">
                     {navigator.share && (
                       <button
                         onClick={() => handleShare('native')}
