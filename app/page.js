@@ -138,12 +138,12 @@ function ComingSoonLanding({ onLogin }) {
 
   // Beautiful cutout animal images (PNG with transparency)
   const animals = [
-    { src: 'https://www.pngall.com/wp-content/uploads/5/Dog-PNG-High-Quality-Image.png', size: '200px', style: { top: '5%', left: '3%', animation: 'float 6s ease-in-out infinite' } },
-    { src: 'https://www.pngall.com/wp-content/uploads/5/Cat-PNG-Image.png', size: '180px', style: { top: '8%', right: '5%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
-    { src: 'https://www.pngall.com/wp-content/uploads/13/Rabbit-PNG-Photo.png', size: '150px', style: { bottom: '15%', left: '5%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
-    { src: 'https://www.pngall.com/wp-content/uploads/5/Golden-Retriever-PNG-Clipart.png', size: '190px', style: { bottom: '8%', right: '3%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
-    { src: 'https://www.pngall.com/wp-content/uploads/5/Puppy-PNG.png', size: '160px', style: { top: '2%', left: '35%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
-    { src: 'https://www.pngall.com/wp-content/uploads/14/Ginger-Cat-Transparent.png', size: '140px', style: { top: '45%', left: '2%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
+    { src: 'https://purepng.com/public/uploads/large/purepng.com-dogdogsdomestloyal-animalmammalpet-631521925073atfji.png', size: '220px', style: { top: '3%', left: '2%', animation: 'float 6s ease-in-out infinite' } },
+    { src: 'https://purepng.com/public/uploads/large/purepng.com-catcatdomestic-catsmall-catfeloinesanimals-1511524082726pguzj.png', size: '180px', style: { top: '5%', right: '3%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
+    { src: 'https://purepng.com/public/uploads/large/purepng.com-white-rabbitrabbitwhitefloopycutebunny-481521671011xqvfs.png', size: '160px', style: { bottom: '12%', left: '4%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
+    { src: 'https://purepng.com/public/uploads/large/purepng.com-golden-retriever-puppy-dogdogsanimalspurebred-dogretriever-dogdomesticated-dogpetfriendly-9215246443527jnsn.png', size: '200px', style: { bottom: '5%', right: '2%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
+    { src: 'https://purepng.com/public/uploads/large/purepng.com-lovely-puppycuteanimalslovelyadorablepuppy-631521932648kylly.png', size: '170px', style: { top: '0%', left: '32%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
+    { src: 'https://purepng.com/public/uploads/large/purepng.com-orange-catcatfelloinesfelistransparent-background-151152447814mhvrl.png', size: '150px', style: { top: '42%', left: '1%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
   ];
 
   // Logo style proposals
