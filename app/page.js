@@ -134,135 +134,29 @@ const PetAvatar = ({ pet, size = 'md', onClick, className = '' }) => {
 function ComingSoonLanding({ onLogin }) {
   const [showTeamLogin, setShowTeamLogin] = useState(false);
   const [authMode, setAuthMode] = useState('login');
-  const [email, setEmail] = useState('');
-  const [userType, setUserType] = useState(''); // 'clinic' or 'owner'
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!email || !userType) {
-      alert('Inserisci email e seleziona se sei una clinica o un proprietario');
-      return;
-    }
-    setSubmitting(true);
-    try {
-      // Save to waitlist
-      await api.post('waitlist', { email, userType });
-      setSubmitted(true);
-    } catch (error) {
-      // Even if API fails, show success (we'll store locally)
-      console.error('Waitlist error:', error);
-      setSubmitted(true);
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-coral-50 via-white to-blue-50 flex flex-col">
-      {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="max-w-2xl w-full text-center">
+      {/* Main Content - Ultra Minimal */}
+      <main className="flex-1 flex items-center justify-center px-4">
+        <div className="text-center">
           {/* Logo */}
           <div className="flex items-center justify-center gap-3 mb-8">
-            <VetBuddyLogo size={56} />
-            <span className="font-bold text-4xl text-gray-900">VetBuddy</span>
+            <VetBuddyLogo size={64} />
+            <span className="font-bold text-5xl text-gray-900">VetBuddy</span>
           </div>
           
-          {/* Headline */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-            La piattaforma per <span className="text-coral-500">cliniche veterinarie</span> e <span className="text-blue-500">proprietari di pet</span> sta arrivando a Milano
+          {/* Coming Soon */}
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-400">
+            Coming Soon
           </h1>
-          
-          <p className="text-lg text-gray-600 mb-10 max-w-xl mx-auto">
-            Stiamo preparando qualcosa di speciale. Gestione appuntamenti, documenti e comunicazione in un'unica piattaforma.
-          </p>
-
-          {/* Benefits */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-            <div className="bg-white/70 backdrop-blur rounded-xl p-4 shadow-sm border border-gray-100">
-              <Calendar className="h-8 w-8 text-coral-500 mx-auto mb-2" />
-              <h3 className="font-semibold text-gray-900 text-sm">Agenda Smart</h3>
-              <p className="text-xs text-gray-500">Prenotazioni online 24/7</p>
-            </div>
-            <div className="bg-white/70 backdrop-blur rounded-xl p-4 shadow-sm border border-gray-100">
-              <FileText className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-              <h3 className="font-semibold text-gray-900 text-sm">Documenti Digitali</h3>
-              <p className="text-xs text-gray-500">Zero carta, tutto online</p>
-            </div>
-            <div className="bg-white/70 backdrop-blur rounded-xl p-4 shadow-sm border border-gray-100">
-              <Bell className="h-8 w-8 text-green-500 mx-auto mb-2" />
-              <h3 className="font-semibold text-gray-900 text-sm">Promemoria Auto</h3>
-              <p className="text-xs text-gray-500">Vaccini, visite, richiami</p>
-            </div>
-            <div className="bg-white/70 backdrop-blur rounded-xl p-4 shadow-sm border border-gray-100">
-              <MessageCircle className="h-8 w-8 text-purple-500 mx-auto mb-2" />
-              <h3 className="font-semibold text-gray-900 text-sm">Chat Integrata</h3>
-              <p className="text-xs text-gray-500">Comunica con la clinica</p>
-            </div>
-          </div>
-
-          {/* Email Form */}
-          {!submitted ? (
-            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 max-w-md mx-auto border border-gray-100">
-              <h2 className="font-bold text-xl text-gray-900 mb-2">🚀 Avvisami al lancio!</h2>
-              <p className="text-sm text-gray-500 mb-6">Lascia la tua email e sarai tra i primi a saperlo</p>
-              
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Input 
-                    type="email" 
-                    placeholder="La tua email..." 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full text-center"
-                    required
-                  />
-                </div>
-                
-                <div className="flex gap-3 justify-center">
-                  <button
-                    type="button"
-                    onClick={() => setUserType('clinic')}
-                    className={`flex-1 py-3 px-4 rounded-lg border-2 transition-all ${userType === 'clinic' ? 'border-coral-500 bg-coral-50 text-coral-700' : 'border-gray-200 hover:border-coral-300'}`}
-                  >
-                    <Building2 className="h-5 w-5 mx-auto mb-1" />
-                    <span className="text-sm font-medium">Sono una Clinica</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setUserType('owner')}
-                    className={`flex-1 py-3 px-4 rounded-lg border-2 transition-all ${userType === 'owner' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 hover:border-blue-300'}`}
-                  >
-                    <PawPrint className="h-5 w-5 mx-auto mb-1" />
-                    <span className="text-sm font-medium">Sono un Proprietario</span>
-                  </button>
-                </div>
-
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-to-r from-coral-500 to-coral-600 hover:from-coral-600 hover:to-coral-700 text-white py-3"
-                  disabled={submitting}
-                >
-                  {submitting ? 'Invio...' : '📩 Avvisami al lancio!'}
-                </Button>
-              </form>
-            </div>
-          ) : (
-            <div className="bg-green-50 rounded-2xl shadow-xl p-8 max-w-md mx-auto border border-green-200">
-              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h2 className="font-bold text-xl text-green-800 mb-2">Grazie! 🎉</h2>
-              <p className="text-green-700">Ti avviseremo appena VetBuddy sarà pronto per il lancio a Milano!</p>
-            </div>
-          )}
         </div>
       </main>
 
       {/* Footer with hidden team access */}
       <footer className="py-6 px-4 border-t border-gray-100 bg-white/50">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-400">© 2025 VetBuddy - La piattaforma veterinaria del futuro</p>
+          <p className="text-sm text-gray-400">© 2025 VetBuddy</p>
           <button 
             onClick={() => setShowTeamLogin(true)}
             className="text-xs text-gray-300 hover:text-gray-500 transition"
