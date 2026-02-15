@@ -284,7 +284,7 @@ function LandingPage({ onLogin }) {
       </Dialog>
     </div>
   );
-
+}
 
 // ==================== CLINIC DASHBOARD - CONTROL ROOM ====================
 function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
