@@ -10,7 +10,7 @@ import { AuthForm, ResetPasswordScreen, VerificationScreen } from '@/app/compone
 // Landing page components (refactored)
 import { EcosystemToggle, FeatureCarousel, HomepageMapSection } from '@/app/components/landing';
 // Common components (refactored)
-import { VetBuddyLogo, AccessDenied, RoleBadge, ChatWidget, WelcomeScreen } from '@/app/components/common';
+import { vetbuddyLogo, AccessDenied, RoleBadge, ChatWidget, WelcomeScreen } from '@/app/components/common';
 import api from '@/app/lib/api';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
@@ -678,7 +678,7 @@ function FullLandingPage({ onLogin }) {
           <div className="text-center mb-12">
             <p className="text-coral-400 font-semibold mb-2">LA NOSTRA VISIONE</p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Il futuro della veterinaria è digitale</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">VetBuddy non è solo un gestionale. È una piattaforma che connette cliniche e proprietari, semplifica la comunicazione e migliora la cura degli animali.</p>
+            <p className="text-gray-400 max-w-2xl mx-auto">vetbuddy non è solo un gestionale. È una piattaforma che connette cliniche e proprietari, semplifica la comunicazione e migliora la cura degli animali.</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -720,7 +720,7 @@ function FullLandingPage({ onLogin }) {
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
               Basta telefonate, promemoria manuali e clienti che dimenticano gli appuntamenti. 
-              <strong> VetBuddy lavora mentre tu curi gli animali.</strong>
+              <strong> vetbuddy lavora mentre tu curi gli animali.</strong>
             </p>
           </div>
 
@@ -859,7 +859,7 @@ function FullLandingPage({ onLogin }) {
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Importa i tuoi Pazienti Esistenti</h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Passa a VetBuddy senza perdere nulla. Importa in pochi click i dati dal tuo gestionale attuale.
+              Passa a vetbuddy senza perdere nulla. Importa in pochi click i dati dal tuo gestionale attuale.
             </p>
           </div>
           
@@ -872,7 +872,7 @@ function FullLandingPage({ onLogin }) {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Import da CSV/Excel</h3>
-                  <p className="text-gray-600 text-sm">Esporta dal tuo gestionale e carica su VetBuddy. Supportiamo tutti i formati comuni.</p>
+                  <p className="text-gray-600 text-sm">Esporta dal tuo gestionale e carica su vetbuddy. Supportiamo tutti i formati comuni.</p>
                 </div>
               </div>
               
@@ -892,7 +892,7 @@ function FullLandingPage({ onLogin }) {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Documenti con Abbinamento Auto</h3>
-                  <p className="text-gray-600 text-sm">Carica referti ed esami. VetBuddy li associa automaticamente ai pazienti giusti.</p>
+                  <p className="text-gray-600 text-sm">Carica referti ed esami. vetbuddy li associa automaticamente ai pazienti giusti.</p>
                 </div>
               </div>
               
@@ -986,7 +986,7 @@ function FullLandingPage({ onLogin }) {
               Fatturazione <span className="text-green-600">Flessibile</span>
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Crea fatture direttamente in VetBuddy ed esportale nel formato che preferisci. 
+              Crea fatture direttamente in vetbuddy ed esportale nel formato che preferisci. 
               <strong> Integra con il tuo software di fatturazione</strong> o usa il nostro sistema.
             </p>
           </div>
@@ -1004,7 +1004,7 @@ function FullLandingPage({ onLogin }) {
                 </div>
               </div>
               <p className="text-gray-600 mb-6">
-                Crea le fatture in VetBuddy ed esportale in CSV, JSON o PDF. 
+                Crea le fatture in vetbuddy ed esportale in CSV, JSON o PDF. 
                 Importale nel tuo software di fatturazione elettronica per l'invio al Sistema di Interscambio (SdI).
               </p>
               <ul className="space-y-3 mb-6">
@@ -1042,12 +1042,12 @@ function FullLandingPage({ onLogin }) {
                   <Receipt className="h-7 w-7 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">Sistema Integrato VetBuddy</h3>
+                  <h3 className="text-xl font-bold text-gray-900">Sistema Integrato vetbuddy</h3>
                   <p className="text-sm text-emerald-600">Tutto in un unico posto</p>
                 </div>
               </div>
               <p className="text-gray-600 mb-6">
-                Gestisci tutto direttamente in VetBuddy: listino prezzi, creazione fatture, 
+                Gestisci tutto direttamente in vetbuddy: listino prezzi, creazione fatture, 
                 tracciamento pagamenti e statistiche finanziarie.
               </p>
               <ul className="space-y-3 mb-6">
@@ -1082,7 +1082,7 @@ function FullLandingPage({ onLogin }) {
           {/* Come funziona il flusso */}
           <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
             <h3 className="text-lg font-bold text-gray-900 mb-6 text-center">
-              📋 Come Funziona: Da VetBuddy al Tuo Software
+              📋 Come Funziona: Da vetbuddy al Tuo Software
             </h3>
             <div className="grid md:grid-cols-4 gap-4">
               <div className="text-center p-4">
@@ -1090,7 +1090,7 @@ function FullLandingPage({ onLogin }) {
                   <span className="text-blue-600 font-bold">1</span>
                 </div>
                 <p className="text-sm font-semibold text-gray-900 mb-1">Crea Fattura</p>
-                <p className="text-xs text-gray-500">Seleziona cliente e prestazioni in VetBuddy</p>
+                <p className="text-xs text-gray-500">Seleziona cliente e prestazioni in vetbuddy</p>
               </div>
               <div className="text-center p-4">
                 <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
@@ -1116,7 +1116,7 @@ function FullLandingPage({ onLogin }) {
             </div>
             <div className="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-200 text-center">
               <p className="text-sm text-amber-800">
-                ⚠️ <strong>Nota importante:</strong> Le fatture VetBuddy sono <strong>pre-fatture/proforma</strong>. 
+                ⚠️ <strong>Nota importante:</strong> Le fatture vetbuddy sono <strong>pre-fatture/proforma</strong>. 
                 Per essere valide fiscalmente devono essere inviate al SdI tramite un software certificato.
               </p>
             </div>
@@ -1262,7 +1262,7 @@ function FullLandingPage({ onLogin }) {
               <Zap className="h-4 w-4" />
               <span className="font-semibold">Beta Test 2025</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Accedi al Pilot VetBuddy</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Accedi al Pilot vetbuddy</h2>
             <p className="text-gray-600 max-w-xl mx-auto">Stiamo testando l'app con cliniche veterinarie selezionate a Milano. <strong>Candidati per 90 giorni gratuiti (estendibili a 6 mesi) e aiutaci a costruire il futuro.</strong></p>
           </div>
 
@@ -1435,10 +1435,10 @@ function FullLandingPage({ onLogin }) {
           <div className="text-center mb-12"><h2 className="text-3xl font-bold text-gray-900 mb-4">Domande frequenti</h2></div>
           <Accordion type="single" collapsible className="space-y-4">
             {[
-              { q: 'Cos\'è il Pilot e come funziona l\'invito?', a: 'VetBuddy è in fase Pilot a Milano. L\'accesso è su invito per garantire qualità e supporto dedicato. Candidati compilando il form e ti contatteremo per l\'attivazione.' },
+              { q: 'Cos\'è il Pilot e come funziona l\'invito?', a: 'vetbuddy è in fase Pilot a Milano. L\'accesso è su invito per garantire qualità e supporto dedicato. Candidati compilando il form e ti contatteremo per l\'attivazione.' },
               { q: 'Quanto dura il Pilot gratuito?', a: '90 giorni iniziali gratuiti per tutte le cliniche selezionate nel Pilot Milano. Estendibile fino a 6 mesi per le cliniche più attive che completano l\'onboarding e forniscono feedback. Al termine, potrai scegliere il piano più adatto alle tue esigenze (a partire da €129/mese + IVA).' },
-              { q: 'Quanto costa per i proprietari?', a: 'VetBuddy è e sarà sempre gratuito per i proprietari di animali. Nessun costo nascosto, mai.' },
-              { q: 'Come funziona la fatturazione?', a: 'Gli abbonamenti vengono fatturati da VetBuddy. Prezzi IVA esclusa. Riceverai report e riconciliazione mensile. Puoi disdire in qualsiasi momento.' },
+              { q: 'Quanto costa per i proprietari?', a: 'vetbuddy è e sarà sempre gratuito per i proprietari di animali. Nessun costo nascosto, mai.' },
+              { q: 'Come funziona la fatturazione?', a: 'Gli abbonamenti vengono fatturati da vetbuddy. Prezzi IVA esclusa. Riceverai report e riconciliazione mensile. Puoi disdire in qualsiasi momento.' },
               { q: 'Cosa include il piano Pro?', a: 'Team inbox con assegnazione ticket, documenti con invio automatico via email, sync Google Calendar, video-consulti, reminder automatici, pagamenti integrati, reportistica completa e supporto prioritario.' },
               { q: 'Come funziona l\'invio documenti?', a: 'Carichi un PDF (referto, prescrizione, fattura), selezioni cliente e animale, e il documento viene inviato automaticamente via email. Il cliente lo ritrova anche nell\'app.' },
               { q: 'I documenti sono sicuri?', a: 'Sì. I documenti sono crittografati, accessibili solo dalla clinica e dal proprietario autorizzato. Rispettiamo GDPR e normative privacy.' },
@@ -1461,7 +1461,7 @@ function FullLandingPage({ onLogin }) {
             <span className="font-medium">Pilot Milano</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Non trovi la tua clinica?</h2>
-          <p className="text-coral-100 mb-8 text-lg">Siamo in fase pilot a Milano. Invita il tuo veterinario a unirsi a VetBuddy!</p>
+          <p className="text-coral-100 mb-8 text-lg">Siamo in fase pilot a Milano. Invita il tuo veterinario a unirsi a vetbuddy!</p>
           <Button size="lg" className="bg-white text-coral-500 hover:bg-coral-50 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
             <Mail className="h-5 w-5 mr-2" />Invita la tua clinica
           </Button>
@@ -1485,7 +1485,7 @@ function FullLandingPage({ onLogin }) {
               <a href="mailto:info@vetbuddy.it" className="hover:text-white">info@vetbuddy.it</a>
             </div>
           </div>
-          <p className="text-center text-gray-500 text-xs mt-4">© 2026 VetBuddy. Tutti i diritti riservati.</p>
+          <p className="text-center text-gray-500 text-xs mt-4">© 2026 vetbuddy. Tutti i diritti riservati.</p>
         </div>
       </footer>
 
@@ -2304,7 +2304,7 @@ function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate
   // Share appointment
   const handleShare = async (appt) => {
     const shareUrl = `${window.location.origin}?appointment=${appt.id}`;
-    const shareText = `📅 Appuntamento VetBuddy\n\n🐾 ${appt.petName}\n📆 ${appt.date} ore ${appt.time}\n🏥 ${appt.type}\n\nDettagli: ${shareUrl}`;
+    const shareText = `📅 Appuntamento vetbuddy\n\n🐾 ${appt.petName}\n📆 ${appt.date} ore ${appt.time}\n🏥 ${appt.type}\n\nDettagli: ${shareUrl}`;
     
     // Use share dialog directly (navigator.share doesn't work in iframes)
     setShareDialog({ appt, url: shareUrl, text: shareText });
@@ -3319,7 +3319,7 @@ function ClinicDocuments({ documents, owners, pets, onRefresh, onNavigate }) {
               const blob = await response.blob();
               const url = window.URL.createObjectURL(blob);
               const a = document.createElement('a'); a.href = url;
-              a.download = `VetBuddy_Documenti_${new Date().toISOString().split('T')[0]}.zip`;
+              a.download = `vetbuddy_Documenti_${new Date().toISOString().split('T')[0]}.zip`;
               document.body.appendChild(a); a.click();
               window.URL.revokeObjectURL(url); a.remove();
             } catch (e) { alert(e.message || 'Errore download'); }
@@ -8012,7 +8012,7 @@ function ClinicReviews({ onNavigate }) {
                           <User className="h-6 w-6 text-coral-600" />
                         </div>
                         <div>
-                          <p className="font-semibold">{review.ownerName || 'Cliente VetBuddy'}</p>
+                          <p className="font-semibold">{review.ownerName || 'Cliente vetbuddy'}</p>
                           <p className="text-sm text-gray-500">{review.petName && `Proprietario di ${review.petName}`}</p>
                         </div>
                       </div>
@@ -8071,7 +8071,7 @@ function FeedbackSection({ user }) {
 
   const feedbackTypes = [
     { id: 'bug', label: '🐛 Segnala un bug', desc: 'Qualcosa non funziona come dovrebbe' },
-    { id: 'suggestion', label: '💡 Suggerimento', desc: 'Hai un\'idea per migliorare VetBuddy' },
+    { id: 'suggestion', label: '💡 Suggerimento', desc: 'Hai un\'idea per migliorare vetbuddy' },
     { id: 'praise', label: '⭐ Complimento', desc: 'Dicci cosa ti piace!' },
     { id: 'other', label: '📝 Altro', desc: 'Qualsiasi altro feedback' }
   ];
@@ -8108,7 +8108,7 @@ function FeedbackSection({ user }) {
           <MessageCircle className="h-5 w-5 text-teal-500" />
           Feedback
         </CardTitle>
-        <CardDescription>Aiutaci a migliorare VetBuddy con il tuo feedback</CardDescription>
+        <CardDescription>Aiutaci a migliorare vetbuddy con il tuo feedback</CardDescription>
       </CardHeader>
       <CardContent>
         {!showForm ? (
@@ -8136,7 +8136,7 @@ function FeedbackSection({ user }) {
               <CheckCircle className="h-8 w-8 text-green-500" />
             </div>
             <h3 className="font-semibold text-lg text-gray-900 mb-2">Grazie per il feedback!</h3>
-            <p className="text-gray-600">Il tuo messaggio è stato inviato al team VetBuddy.</p>
+            <p className="text-gray-600">Il tuo messaggio è stato inviato al team vetbuddy.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -8183,7 +8183,7 @@ function FeedbackSection({ user }) {
                 placeholder={
                   feedbackForm.type === 'bug' ? 'Descrivi il problema che hai riscontrato...' :
                   feedbackForm.type === 'suggestion' ? 'Descrivi la tua idea...' :
-                  feedbackForm.type === 'praise' ? 'Cosa ti piace di VetBuddy?' :
+                  feedbackForm.type === 'praise' ? 'Cosa ti piace di vetbuddy?' :
                   'Scrivi il tuo messaggio...'
                 }
                 rows={5}
@@ -8425,7 +8425,7 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
               const url = window.URL.createObjectURL(blob);
               const a = document.createElement('a');
               a.href = url;
-              a.download = `VetBuddy_Fatture_${new Date().toISOString().split('T')[0]}.zip`;
+              a.download = `vetbuddy_Fatture_${new Date().toISOString().split('T')[0]}.zip`;
               document.body.appendChild(a);
               a.click();
               window.URL.revokeObjectURL(url);
@@ -8674,7 +8674,7 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
                   <AccordionContent>
                     <div className="space-y-3 text-sm text-gray-600 pl-10">
                       <ol className="list-decimal list-inside space-y-2">
-                        <li><strong>Esporta da VetBuddy</strong> — Clicca "Export CSV" qui sopra</li>
+                        <li><strong>Esporta da vetbuddy</strong> — Clicca "Export CSV" qui sopra</li>
                         <li><strong>Accedi a Fatture in Cloud</strong> — Vai su fattureincloud.it</li>
                         <li><strong>Vai su Documenti → Importa</strong> — Seleziona "Importa da file CSV"</li>
                         <li><strong>Carica il file</strong> — Seleziona il CSV scaricato</li>
@@ -8700,7 +8700,7 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
                   <AccordionContent>
                     <div className="space-y-3 text-sm text-gray-600 pl-10">
                       <ol className="list-decimal list-inside space-y-2">
-                        <li><strong>Esporta da VetBuddy</strong> — Scarica il file CSV</li>
+                        <li><strong>Esporta da vetbuddy</strong> — Scarica il file CSV</li>
                         <li><strong>Accedi ad Aruba Fatturazione</strong> — fattura.aruba.it</li>
                         <li><strong>Crea nuova fattura manualmente</strong> — Aruba non supporta import CSV diretto</li>
                         <li><strong>Copia i dati dal CSV</strong> — Usa Excel per visualizzare i dati</li>
@@ -8726,7 +8726,7 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
                   <AccordionContent>
                     <div className="space-y-3 text-sm text-gray-600 pl-10">
                       <ol className="list-decimal list-inside space-y-2">
-                        <li><strong>Esporta da VetBuddy</strong> — Scarica il file CSV o JSON</li>
+                        <li><strong>Esporta da vetbuddy</strong> — Scarica il file CSV o JSON</li>
                         <li><strong>Accedi a TeamSystem</strong> — Usa il modulo Fatturazione Elettronica</li>
                         <li><strong>Vai su Importazioni</strong> — Sezione "Import documenti"</li>
                         <li><strong>Seleziona formato CSV</strong> — Configura il tracciato di import</li>
@@ -8752,7 +8752,7 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
                   <AccordionContent>
                     <div className="space-y-3 text-sm text-gray-600 pl-10">
                       <ol className="list-decimal list-inside space-y-2">
-                        <li><strong>Esporta da VetBuddy</strong> — Scarica il file CSV</li>
+                        <li><strong>Esporta da vetbuddy</strong> — Scarica il file CSV</li>
                         <li><strong>Apri in Excel</strong> — Il CSV è già formattato</li>
                         <li><strong>Invia al commercialista</strong> — Allega il file Excel</li>
                         <li><strong>Il commercialista emette le fatture</strong> — Usando i dati forniti</li>
@@ -8769,16 +8769,16 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
             </CardContent>
           </Card>
 
-          {/* Spiegazione VetBuddy vs Software */}
+          {/* Spiegazione vetbuddy vs Software */}
           <Card>
             <CardContent className="p-6">
               <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
                 <Info className="h-5 w-5 text-blue-500" />
-                VetBuddy e la Fatturazione Elettronica
+                vetbuddy e la Fatturazione Elettronica
               </h3>
               <div className="space-y-4 text-sm text-gray-600">
                 <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <h4 className="font-semibold text-blue-800 mb-2">📋 Cosa fa VetBuddy</h4>
+                  <h4 className="font-semibold text-blue-800 mb-2">📋 Cosa fa vetbuddy</h4>
                   <ul className="list-disc list-inside space-y-1 text-blue-700">
                     <li>Gestisce il <strong>listino prezzi</strong> delle prestazioni</li>
                     <li>Crea <strong>pre-fatture</strong> con dati cliente e prestazioni</li>
@@ -8803,7 +8803,7 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
                   <h4 className="font-semibold text-amber-800 mb-2">⚠️ Perché due sistemi?</h4>
                   <p className="text-amber-700">
                     La fatturazione elettronica in Italia richiede certificazioni specifiche e integrazione con l'Agenzia delle Entrate. 
-                    VetBuddy si occupa della <strong>gestione veterinaria</strong> e prepara i dati; 
+                    vetbuddy si occupa della <strong>gestione veterinaria</strong> e prepara i dati; 
                     il software di fatturazione (Fatture in Cloud, TeamSystem, Aruba, ecc.) si occupa della <strong>parte fiscale</strong>.
                   </p>
                 </div>
@@ -9351,7 +9351,7 @@ function ClinicEvents({ user }) {
   const shareEvent = (platform) => {
     if (!selectedEventForShare) return;
     
-    // Usa il link alla pagina VetBuddy per l'anteprima
+    // Usa il link alla pagina vetbuddy per l'anteprima
     const eventUrl = `${window.location.origin}/eventi-clinica/${selectedEventForShare.id}`;
     const eventTitle = selectedEventForShare.title;
     const eventDate = formatDateRange(selectedEventForShare.date, selectedEventForShare.endDate);
@@ -9632,7 +9632,7 @@ function ClinicEvents({ user }) {
             <div>
               <h4 className="font-medium text-purple-900">Come funziona?</h4>
               <p className="text-sm text-purple-700 mt-1">
-                VetBuddy raccoglie automaticamente eventi e convegni veterinari da fonti come SCIVAC, FNOVI, AIVPA e altre 
+                vetbuddy raccoglie automaticamente eventi e convegni veterinari da fonti come SCIVAC, FNOVI, AIVPA e altre 
                 associazioni veterinarie italiane. Gli eventi vengono aggiornati settimanalmente.
               </p>
               <p className="text-sm text-purple-600 mt-2">
@@ -9662,7 +9662,7 @@ function ClinicFeedbackPage({ user }) {
 
   const feedbackTypes = [
     { id: 'bug', label: '🐛 Segnala un bug', desc: 'Qualcosa non funziona come dovrebbe', color: 'from-red-50 to-red-100 border-red-200 hover:border-red-400' },
-    { id: 'suggestion', label: '💡 Suggerimento', desc: 'Hai un\'idea per migliorare VetBuddy', color: 'from-amber-50 to-amber-100 border-amber-200 hover:border-amber-400' },
+    { id: 'suggestion', label: '💡 Suggerimento', desc: 'Hai un\'idea per migliorare vetbuddy', color: 'from-amber-50 to-amber-100 border-amber-200 hover:border-amber-400' },
     { id: 'praise', label: '⭐ Complimento', desc: 'Dicci cosa ti piace!', color: 'from-green-50 to-green-100 border-green-200 hover:border-green-400' },
     { id: 'other', label: '📝 Altro', desc: 'Qualsiasi altro feedback', color: 'from-blue-50 to-blue-100 border-blue-200 hover:border-blue-400' }
   ];
@@ -9700,7 +9700,7 @@ function ClinicFeedbackPage({ user }) {
           <MessageCircle className="h-7 w-7 text-teal-500" />
           Feedback
         </h1>
-        <p className="text-gray-500 mt-1">Aiutaci a migliorare VetBuddy con il tuo feedback</p>
+        <p className="text-gray-500 mt-1">Aiutaci a migliorare vetbuddy con il tuo feedback</p>
       </div>
 
       {sent ? (
@@ -9710,7 +9710,7 @@ function ClinicFeedbackPage({ user }) {
               <CheckCircle className="h-10 w-10 text-green-500" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Grazie per il feedback! 🎉</h2>
-            <p className="text-gray-600 mb-2">Il tuo messaggio è stato inviato al team VetBuddy.</p>
+            <p className="text-gray-600 mb-2">Il tuo messaggio è stato inviato al team vetbuddy.</p>
             <p className="text-gray-500 text-sm mb-6">Ti abbiamo inviato un'email di conferma.</p>
             <Button onClick={resetForm} className="bg-teal-500 hover:bg-teal-600">
               <Send className="h-4 w-4 mr-2" />
@@ -9758,7 +9758,7 @@ function ClinicFeedbackPage({ user }) {
                   {/* Rating per complimenti */}
                   {feedbackForm.type === 'praise' && (
                     <div>
-                      <Label className="mb-2 block">Quanto sei soddisfatto di VetBuddy?</Label>
+                      <Label className="mb-2 block">Quanto sei soddisfatto di vetbuddy?</Label>
                       <div className="flex gap-2">
                         {[1, 2, 3, 4, 5].map(star => (
                           <button
@@ -9791,8 +9791,8 @@ function ClinicFeedbackPage({ user }) {
                       onChange={(e) => setFeedbackForm(f => ({ ...f, message: e.target.value }))}
                       placeholder={
                         feedbackForm.type === 'bug' ? 'Descrivi il problema che hai riscontrato, includendo i passaggi per riprodurlo se possibile...' :
-                        feedbackForm.type === 'suggestion' ? 'Descrivi la tua idea per migliorare VetBuddy...' :
-                        feedbackForm.type === 'praise' ? 'Cosa ti piace di VetBuddy? Cosa funziona particolarmente bene?' :
+                        feedbackForm.type === 'suggestion' ? 'Descrivi la tua idea per migliorare vetbuddy...' :
+                        feedbackForm.type === 'praise' ? 'Cosa ti piace di vetbuddy? Cosa funziona particolarmente bene?' :
                         'Scrivi il tuo messaggio...'
                       }
                       rows={6}
@@ -9844,7 +9844,7 @@ function ClinicFeedbackPage({ user }) {
                 <div>
                   <h3 className="font-semibold text-gray-900">Il tuo feedback conta!</h3>
                   <p className="text-sm text-gray-600 mt-1">
-                    Ogni segnalazione ci aiuta a migliorare VetBuddy. Leggiamo tutto e rispondiamo sempre. 
+                    Ogni segnalazione ci aiuta a migliorare vetbuddy. Leggiamo tutto e rispondiamo sempre. 
                     Per domande urgenti, scrivi a <a href="mailto:info@vetbuddy.it" className="text-teal-600 hover:underline">info@vetbuddy.it</a>
                   </p>
                 </div>
@@ -10628,11 +10628,11 @@ function ClinicSettings({ user, onNavigate }) {
       </div>
       
       <div className="space-y-6 max-w-2xl">
-        {/* Abbonamento VetBuddy - Pilot */}
+        {/* Abbonamento vetbuddy - Pilot */}
         <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-white">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Star className="h-5 w-5 text-amber-500" />Abbonamento VetBuddy
+              <Star className="h-5 w-5 text-amber-500" />Abbonamento vetbuddy
               <Badge className="bg-amber-500 text-white">Pilot Milano</Badge>
             </CardTitle>
             <CardDescription>Accesso su invito — 90 giorni gratuiti per cliniche selezionate (estendibili a 6 mesi)</CardDescription>
@@ -10795,7 +10795,7 @@ function ClinicSettings({ user, onNavigate }) {
 
                 <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg mt-4">
                   <p className="text-sm text-blue-700">
-                    <strong>Come funziona:</strong> Quando crei un appuntamento su VetBuddy, viene automaticamente aggiunto al tuo Google Calendar con il colore dello staff assegnato.
+                    <strong>Come funziona:</strong> Quando crei un appuntamento su vetbuddy, viene automaticamente aggiunto al tuo Google Calendar con il colore dello staff assegnato.
                   </p>
                 </div>
               </>
@@ -11338,7 +11338,7 @@ function ClinicSettings({ user, onNavigate }) {
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       Inserisci il numero con prefisso internazionale (es. +39 333...).
-                      <a href="#" onClick={(e) => { e.preventDefault(); alert('📱 Come configurare WhatsApp Business:\n\n1. Scarica WhatsApp Business dal Play Store o App Store\n2. Registrati con il numero della clinica\n3. Configura il profilo: nome, descrizione, orari, indirizzo\n4. Inserisci lo stesso numero qui su VetBuddy\n\n✅ I clienti potranno contattarti direttamente dall\'app!\n\n💡 Consiglio: Usa i messaggi automatici per rispondere quando sei occupato.'); }} className="text-blue-500 hover:underline ml-1">
+                      <a href="#" onClick={(e) => { e.preventDefault(); alert('📱 Come configurare WhatsApp Business:\n\n1. Scarica WhatsApp Business dal Play Store o App Store\n2. Registrati con il numero della clinica\n3. Configura il profilo: nome, descrizione, orari, indirizzo\n4. Inserisci lo stesso numero qui su vetbuddy\n\n✅ I clienti potranno contattarti direttamente dall\'app!\n\n💡 Consiglio: Usa i messaggi automatici per rispondere quando sei occupato.'); }} className="text-blue-500 hover:underline ml-1">
                         Come configurare?
                       </a>
                     </p>
@@ -11419,7 +11419,7 @@ function ClinicTutorialInline() {
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url; a.download = 'VetBuddy_Tutorial_Cliniche.pdf';
+      a.href = url; a.download = 'vetbuddy_Tutorial_Cliniche.pdf';
       document.body.appendChild(a); a.click();
       window.URL.revokeObjectURL(url); a.remove();
     } catch (error) {
@@ -11432,7 +11432,7 @@ function ClinicTutorialInline() {
     { icon: Calendar, title: 'Gestione Appuntamenti', color: 'bg-blue-500', content: ['Visualizza il calendario dalla dashboard', 'Vedi appuntamenti in vista giornaliera, settimanale o mensile', 'Gestisci richieste: accetta, rifiuta o riprogramma', 'Imposta promemoria automatici'], tip: 'Usa i codici colore per distinguere tipi di appuntamento.' },
     { icon: FileText, title: 'Documenti e Prescrizioni', color: 'bg-amber-500', content: ['Crea prescrizioni, referti, certificati', 'Carica PDF esistenti o genera da template', 'Invia automaticamente via email al proprietario', 'Il documento sarà disponibile nell\'app del cliente'], tip: 'I documenti inviati digitalmente riducono le telefonate!' },
     { icon: Receipt, title: 'Fatturazione PROFORMA', color: 'bg-indigo-500', content: ['Crea fattura PROFORMA selezionando il cliente', 'Aggiungi servizi prestati con prezzi e quantità', 'Genera PDF ed esporta in CSV per il commercialista'], tip: 'Le fatture PROFORMA sono documenti non fiscali.' },
-    { icon: CreditCard, title: 'Pagamenti Online', color: 'bg-emerald-500', content: ['I proprietari possono pagare online prima della visita', 'Pagamento sicuro tramite Stripe', 'Nessuna commissione VetBuddy sulle transazioni'], tip: 'Il pagamento anticipato riduce i no-show del 60%.' },
+    { icon: CreditCard, title: 'Pagamenti Online', color: 'bg-emerald-500', content: ['I proprietari possono pagare online prima della visita', 'Pagamento sicuro tramite Stripe', 'Nessuna commissione vetbuddy sulle transazioni'], tip: 'Il pagamento anticipato riduce i no-show del 60%.' },
     { icon: MessageCircle, title: 'Notifiche WhatsApp', color: 'bg-green-500', content: ['Configura WhatsApp Business nelle Impostazioni', 'I clienti ricevono promemoria automatici su WhatsApp', 'Notifiche per: appuntamenti, documenti, pagamenti', 'Il cliente può attivare/disattivare dal suo profilo'], tip: 'WhatsApp ha un tasso di apertura del 98%!' },
     { icon: Zap, title: 'Automazioni (Piano Premium)', color: 'bg-orange-500', content: ['Promemoria automatici 24h prima dell\'appuntamento', 'Follow-up post visita con istruzioni', 'Notifiche WhatsApp e Email automatiche'], tip: 'Le automazioni fanno risparmiare 2 ore al giorno!' },
     { icon: BarChart3, title: 'Analytics e Report', color: 'bg-violet-500', content: ['Dashboard con KPI principali in tempo reale', 'Numero visite, fatturato, nuovi clienti', 'Report esportabili in CSV'], tip: 'Usa i dati per ottimizzare l\'offerta.' }
@@ -11443,7 +11443,7 @@ function ClinicTutorialInline() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Tutorial Clinica</h2>
-          <p className="text-gray-500 text-sm">Guida completa per sfruttare al massimo VetBuddy</p>
+          <p className="text-gray-500 text-sm">Guida completa per sfruttare al massimo vetbuddy</p>
         </div>
         <Button onClick={handleDownloadPDF} disabled={downloadingPDF} className="bg-coral-500 hover:bg-coral-600">
           <Download className="h-4 w-4 mr-2" />
@@ -12042,7 +12042,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
             <div className="flex-1">
               <h3 className="font-semibold text-gray-800 mb-1">Benvenuto nel Pilot Milano! 🏙️</h3>
               <p className="text-sm text-gray-600">
-                Stai esplorando VetBuddy in modalità demo. Le cliniche del pilot verranno attivate a breve a Milano. 
+                Stai esplorando vetbuddy in modalità demo. Le cliniche del pilot verranno attivate a breve a Milano. 
                 Nel frattempo, <button onClick={() => setActiveTab('inviteClinic')} className="text-coral-600 font-medium underline">invita la tua clinica</button> per accelerare l'attivazione!
               </p>
             </div>
@@ -13059,7 +13059,7 @@ function OwnerEvents({ user, onNavigate }) {
                       {event.source === 'vetbuddy' ? (
                         <>
                           <PawPrint className="h-3 w-3 text-coral-400" />
-                          VetBuddy
+                          vetbuddy
                         </>
                       ) : event.source === 'rss' ? (
                         <>
@@ -13157,7 +13157,7 @@ function InviteClinic({ user }) {
             <h2 className="text-2xl font-bold text-gray-800 mb-2">Invito inviato! 🎉</h2>
             <p className="text-gray-600 mb-6">
               Abbiamo inviato un invito a <strong>{clinicName}</strong>.
-              <br/>Ti avviseremo quando si registreranno su VetBuddy!
+              <br/>Ti avviseremo quando si registreranno su vetbuddy!
             </p>
             <Button onClick={() => { setSent(false); setEmail(''); setClinicName(''); setMessage(''); }}>
               Invita un'altra clinica
@@ -13177,7 +13177,7 @@ function InviteClinic({ user }) {
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Invita la tua clinica di fiducia</h2>
         <p className="text-gray-600">
-          Non trovi il tuo veterinario su VetBuddy? Invitalo a unirsi al pilot!
+          Non trovi il tuo veterinario su vetbuddy? Invitalo a unirsi al pilot!
           <br/>È completamente gratuito per le cliniche durante la fase beta.
         </p>
       </div>
@@ -14120,7 +14120,7 @@ function OwnerTutorialInline() {
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url; a.download = 'VetBuddy_Tutorial_Proprietari.pdf';
+      a.href = url; a.download = 'vetbuddy_Tutorial_Proprietari.pdf';
       document.body.appendChild(a); a.click();
       window.URL.revokeObjectURL(url); a.remove();
     } catch (error) {
@@ -14136,7 +14136,7 @@ function OwnerTutorialInline() {
     { icon: MessageCircle, title: 'Notifiche WhatsApp', color: 'bg-green-600', content: ['Vai su "Profilo e Notifiche" nel menu', 'Inserisci il tuo numero di telefono con prefisso (+39)', 'Attiva le notifiche WhatsApp', 'Ricevi promemoria appuntamenti e documenti su WhatsApp'], tip: 'Attiva WhatsApp per non perdere mai un appuntamento!' },
     { icon: Bell, title: 'Notifiche e Promemoria', color: 'bg-red-500', content: ['Ricevi notifiche per appuntamenti in arrivo', 'Promemoria per vaccini e controlli periodici', 'Scegli tra Email, WhatsApp o entrambi', 'Personalizza quando ricevere i promemoria'], tip: 'Non dimenticare mai un vaccino!' },
     { icon: Gift, title: 'Programma Fedeltà', color: 'bg-yellow-500', content: ['Accumula punti con ogni prenotazione completata', 'Invita amici e guadagna punti extra', '100 punti = €5 di sconto sulla prossima visita'], tip: 'Ogni visita ti premia!' },
-    { icon: Smartphone, title: 'Installare l\'App', color: 'bg-teal-500', content: ['VetBuddy è una PWA installabile', 'Su iPhone: Safari → Condividi → Aggiungi a Home', 'Su Android: Chrome → Menu → Installa app'], tip: 'L\'app funziona anche offline!' }
+    { icon: Smartphone, title: 'Installare l\'App', color: 'bg-teal-500', content: ['vetbuddy è una PWA installabile', 'Su iPhone: Safari → Condividi → Aggiungi a Home', 'Su Android: Chrome → Menu → Installa app'], tip: 'L\'app funziona anche offline!' }
   ];
 
   return (
@@ -14193,7 +14193,7 @@ function OwnerTutorialInline() {
         <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
           <Heart className="h-6 w-6 text-green-600" />
         </div>
-        <h3 className="font-bold text-gray-800 mb-2">VetBuddy è gratuito per i proprietari!</h3>
+        <h3 className="font-bold text-gray-800 mb-2">vetbuddy è gratuito per i proprietari!</h3>
         <p className="text-sm text-gray-600">Nessun costo nascosto. Prenota visite, ricevi documenti, gestisci la salute dei tuoi animali senza spendere nulla.</p>
       </div>
     </div>
@@ -14260,7 +14260,7 @@ function OwnerDocuments({ documents, pets, onRefresh, user }) {
               const blob = await response.blob();
               const url = window.URL.createObjectURL(blob);
               const a = document.createElement('a'); a.href = url;
-              a.download = `VetBuddy_I_Miei_Documenti_${new Date().toISOString().split('T')[0]}.zip`;
+              a.download = `vetbuddy_I_Miei_Documenti_${new Date().toISOString().split('T')[0]}.zip`;
               document.body.appendChild(a); a.click();
               window.URL.revokeObjectURL(url); a.remove();
             } catch (e) { alert(e.message || 'Errore download'); }
@@ -14550,7 +14550,7 @@ function OwnerInvoices({ invoices = [], pets, onRefresh }) {
       const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = `Fatture_VetBuddy_${new Date().toISOString().split('T')[0]}.csv`;
+      link.download = `Fatture_vetbuddy_${new Date().toISOString().split('T')[0]}.csv`;
       link.click();
     } catch (error) {
       alert('Errore nell\'esportazione');
@@ -16485,7 +16485,7 @@ function FindClinic({ user }) {
         <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 space-y-2">
           <div className="flex items-center gap-2 text-sm">
             <div className="w-4 h-4 rounded-full bg-gradient-to-br from-coral-400 to-coral-600 shadow-sm"></div>
-            <span className="text-gray-700">Cliniche VetBuddy</span>
+            <span className="text-gray-700">Cliniche vetbuddy</span>
           </div>
           {userLocation && (
             <div className="flex items-center gap-2 text-sm">
@@ -16795,7 +16795,7 @@ function FindClinic({ user }) {
             <h3 className="font-bold text-xl text-gray-800 mb-2">Nessuna clinica trovata nella tua zona</h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
               Siamo in fase pilot e stiamo attivando le prime cliniche a Milano e provincia. 
-              <br/>La tua clinica preferita non è ancora su VetBuddy?
+              <br/>La tua clinica preferita non è ancora su vetbuddy?
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button className="bg-coral-500 hover:bg-coral-600" onClick={() => setSearchCity('Milano')}>
@@ -16828,7 +16828,7 @@ function FindClinic({ user }) {
                         <span className="font-bold text-gray-800">{clinic.googleRating.toFixed(1)}</span>
                       </div>
                     )}
-                    {/* VetBuddy Rating */}
+                    {/* vetbuddy Rating */}
                     <div className="flex items-center gap-1 justify-end">
                       {[1,2,3,4,5].map((s) => (
                         <Star key={s} className={`h-4 w-4 ${s <= Math.round(clinic.avgRating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
@@ -16911,7 +16911,7 @@ function FindClinic({ user }) {
                       <Star key={s} className={`h-4 w-4 ${s <= Math.round(selectedClinic.avgRating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
                     ))}
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">{selectedClinic.reviewCount || 0} recensioni VetBuddy</p>
+                  <p className="text-xs text-gray-500 mt-1">{selectedClinic.reviewCount || 0} recensioni vetbuddy</p>
                 </div>
                 {selectedClinic.googleRating && (
                   <div className="text-center border-l pl-4">
@@ -17069,7 +17069,7 @@ function FindClinic({ user }) {
                               <User className="h-4 w-4 text-yellow-600" />
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-gray-800">{review.ownerName || 'Cliente VetBuddy'}</p>
+                              <p className="text-sm font-medium text-gray-800">{review.ownerName || 'Cliente vetbuddy'}</p>
                               <p className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString('it-IT')}</p>
                             </div>
                           </div>
