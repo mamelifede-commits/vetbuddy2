@@ -162,18 +162,23 @@ function ComingSoonLanding({ onLogin }) {
   const [showTeamLogin, setShowTeamLogin] = useState(false);
   const [authMode, setAuthMode] = useState('login');
 
-  // Animal photos in circular frames - balanced composition
+  // Animal photos - Organized symmetrical composition
+  // Left column (3 animals vertically aligned)
+  // Right column (3 animals vertically aligned)
+  // Top center (1 animal)
   const animals = [
-    // Top row
-    { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&h=300&fit=crop', position: 'top-[5%] left-[5%]', size: '140px' },
-    { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300&h=300&fit=crop', position: 'top-[3%] left-[35%]', size: '120px' },
-    { src: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop', position: 'top-[5%] right-[5%]', size: '140px' },
-    // Middle row
-    { src: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=300&h=300&fit=crop', position: 'top-[35%] left-[2%]', size: '110px' },
-    { src: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300&h=300&fit=crop', position: 'top-[40%] right-[3%]', size: '100px' },
-    // Bottom row  
-    { src: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&h=300&fit=crop', position: 'bottom-[15%] left-[5%]', size: '130px' },
-    { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&h=300&fit=crop', position: 'bottom-[10%] right-[5%]', size: '150px' },
+    // Top center - hero position
+    { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300&h=300&fit=crop', position: 'top-[8%] left-1/2 -translate-x-1/2', size: '120px', delay: 0 },
+    
+    // Left column - top to bottom
+    { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&h=300&fit=crop', position: 'top-[12%] left-[8%]', size: '100px', delay: 0.3 },
+    { src: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=300&h=300&fit=crop', position: 'top-[38%] left-[4%]', size: '90px', delay: 0.6 },
+    { src: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&h=300&fit=crop', position: 'bottom-[18%] left-[8%]', size: '100px', delay: 0.9 },
+    
+    // Right column - top to bottom (mirrored)
+    { src: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop', position: 'top-[12%] right-[8%]', size: '100px', delay: 0.3 },
+    { src: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300&h=300&fit=crop', position: 'top-[38%] right-[4%]', size: '90px', delay: 0.6 },
+    { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&h=300&fit=crop', position: 'bottom-[18%] right-[8%]', size: '100px', delay: 0.9 },
   ];
 
   return (
@@ -186,7 +191,7 @@ function ComingSoonLanding({ onLogin }) {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-amber-100/20 via-white/40 to-pink-100/20 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Animal Photos in Circles */}
+      {/* Animal Photos in Circles - Symmetrical Layout */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {animals.map((animal, index) => (
           <div 
@@ -195,11 +200,11 @@ function ComingSoonLanding({ onLogin }) {
             style={{
               width: animal.size,
               height: animal.size,
-              animation: `float ${5 + index}s ease-in-out infinite`,
-              animationDelay: `${index * 0.5}s`
+              animation: `gentleFloat 6s ease-in-out infinite`,
+              animationDelay: `${animal.delay}s`
             }}
           >
-            <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-xl">
+            <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-2xl bg-white">
               <img 
                 src={animal.src} 
                 alt=""
@@ -210,11 +215,11 @@ function ComingSoonLanding({ onLogin }) {
         ))}
       </div>
 
-      {/* CSS Animation */}
+      {/* CSS Animation - Gentler float */}
       <style jsx>{`
-        @keyframes float {
+        @keyframes gentleFloat {
           0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-15px); }
+          50% { transform: translateY(-8px); }
         }
       `}</style>
 
