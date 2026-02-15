@@ -217,20 +217,12 @@ function ComingSoonLanding({ onLogin }) {
         {/* SPAZIO FISSO tra testo e cane */}
         <div className="h-8 md:h-12"></div>
         
-        {/* Animated Golden Retriever - SALE DAL BASSO LENTAMENTE */}
+        {/* Animated Golden Retriever - SCORRE DAL BASSO VERSO L'ALTO */}
         <div className="flex justify-center overflow-hidden h-[300px] md:h-[350px]">
           <img
             src="/animals/golden-retriever-user.png"
             alt="Golden Retriever"
-            className={`h-[280px] md:h-[320px] lg:h-[350px] w-auto object-contain transition-all ${
-              showDog 
-                ? 'translate-y-0 opacity-100' 
-                : 'translate-y-[300px] opacity-0'
-            }`}
-            style={{
-              transitionDuration: '4000ms',
-              transitionTimingFunction: 'ease-out'
-            }}
+            className="h-[280px] md:h-[320px] lg:h-[350px] w-auto object-contain animate-slide-up-dog"
           />
         </div>
       </div>
