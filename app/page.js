@@ -209,7 +209,7 @@ function ComingSoonLanding({ onLogin }) {
         {/* SPAZIO FISSO tra testo e cane */}
         <div className="h-8 md:h-12"></div>
         
-        {/* Animated Golden Retriever - MOLTO PIÙ GRANDE */}
+        {/* Animated Golden Retriever - MOLTO PIÙ GRANDE, SENZA OMBRA */}
         <div className="flex justify-center overflow-hidden">
           <img
             src="/animals/golden-retriever-user.png"
@@ -221,7 +221,6 @@ function ComingSoonLanding({ onLogin }) {
                 : 'translate-y-[200px] opacity-0'
             }`}
             style={{
-              filter: 'drop-shadow(0 20px 50px rgba(0,0,0,0.25))',
               transitionDuration: '4500ms',
               transitionTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
             }}
