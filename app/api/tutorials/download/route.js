@@ -233,7 +233,7 @@ const clinicTutorial = {
         'Pagamento sicuro tramite Stripe',
         'Accetta carte, Apple Pay, Google Pay',
         'Ricevi notifica immediata del pagamento',
-        'NESSUNA commissione VetBuddy sulle transazioni'
+        'NESSUNA commissione vetbuddy sulle transazioni'
       ],
       tip: 'Il pagamento anticipato riduce i no-show del 60%!'
     },
