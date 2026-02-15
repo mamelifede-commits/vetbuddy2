@@ -1603,7 +1603,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         <div className="flex items-center gap-3">
           <NewBrandLogo size="xs" showText={false} />
           <div>
-            <h1 className="font-bold text-coral-500 text-sm">VetBuddy</h1>
+            <h1 className="font-bold text-sm"><span className="text-gray-900">vet</span><span className="text-coral-500">buddy</span></h1>
             <p className="text-xs text-gray-500 truncate max-w-[120px]">{user.clinicName || 'Clinica'}</p>
           </div>
         </div>
@@ -11953,7 +11953,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         <div className="flex items-center gap-3">
           <NewBrandLogo size="xs" showText={false} />
           <div>
-            <h1 className="font-bold text-coral-500 text-sm">VetBuddy</h1>
+            <h1 className="font-bold text-sm"><span className="text-gray-900">vet</span><span className="text-coral-500">buddy</span></h1>
             <p className="text-xs text-gray-500 truncate max-w-[120px]">{user.name}</p>
           </div>
         </div>
