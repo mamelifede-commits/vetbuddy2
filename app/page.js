@@ -18059,7 +18059,7 @@ function AdminDashboard({ user, onLogout }) {
         <div className="flex items-center gap-3 mb-4">
           <NewBrandLogo size="sm" showText={false} />
           <div>
-            <h1 className="font-bold text-purple-600">VetBuddy</h1>
+            <h1 className="font-bold"><span className="text-gray-900">vet</span><span className="text-purple-600">buddy</span></h1>
             <p className="text-xs text-gray-500">Pannello Admin</p>
           </div>
         </div>
