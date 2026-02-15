@@ -136,14 +136,14 @@ function ComingSoonLanding({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
   const [logoStyle, setLogoStyle] = useState(0);
 
-  // Real photo animals with transparent backgrounds
+  // Real photo animals with transparent backgrounds - LARGE
   const animals = [
-    { src: '/animals/dog_real.png', size: '220px', style: { top: '3%', left: '2%', animation: 'float 6s ease-in-out infinite' } },
-    { src: '/animals/cat_real.png', size: '200px', style: { top: '5%', right: '3%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
-    { src: '/animals/rabbit_real.png', size: '180px', style: { bottom: '8%', left: '3%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
-    { src: '/animals/golden_real.png', size: '210px', style: { bottom: '5%', right: '2%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
-    { src: '/animals/bird_real.png', size: '140px', style: { top: '2%', left: '38%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
-    { src: '/animals/hamster_real.png', size: '150px', style: { top: '40%', left: '1%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
+    { src: '/animals/dog_real.png', size: '280px', style: { top: '0%', left: '0%', animation: 'float 6s ease-in-out infinite' } },
+    { src: '/animals/cat_real.png', size: '260px', style: { top: '0%', right: '0%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
+    { src: '/animals/rabbit_real.png', size: '240px', style: { bottom: '5%', left: '0%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
+    { src: '/animals/golden_real.png', size: '270px', style: { bottom: '0%', right: '0%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
+    { src: '/animals/bird_real.png', size: '180px', style: { top: '0%', left: '35%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
+    { src: '/animals/hamster_real.png', size: '200px', style: { top: '35%', left: '0%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
   ];
 
   // Logo style proposals
