@@ -133,8 +133,8 @@ const ownerTutorial = {
   ],
   
   faqs: [
-    { q: 'Quanto costa usare VetBuddy?', a: 'Completamente GRATUITO per i proprietari.' },
-    { q: 'Posso usare VetBuddy con qualsiasi clinica?', a: 'Solo con le cliniche registrate su VetBuddy.' },
+    { q: 'Quanto costa usare vetbuddy?', a: 'Completamente GRATUITO per i proprietari.' },
+    { q: 'Posso usare vetbuddy con qualsiasi clinica?', a: 'Solo con le cliniche registrate su vetbuddy.' },
     { q: 'I miei dati sono al sicuro?', a: 'Si, crittografia avanzata e conformita GDPR.' },
     { q: 'Posso gestire piu animali?', a: 'Si, puoi aggiungere tutti gli animali che desideri.' }
   ],
