@@ -27,7 +27,7 @@ function sanitizeText(text) {
 
 // ==================== OWNER TUTORIAL CONTENT ====================
 const ownerTutorial = {
-  title: 'VetBuddy - Guida per Proprietari',
+  title: 'vetbuddy - Guida per Proprietari',
   subtitle: 'Tutto quello che devi sapere per gestire la salute dei tuoi animali',
   
   quickStart: [
