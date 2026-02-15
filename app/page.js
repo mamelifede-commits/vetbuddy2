@@ -136,14 +136,14 @@ function ComingSoonLanding({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
   const [logoStyle, setLogoStyle] = useState(0); // Per cambiare stile logo
 
-  // Beautiful cutout animal images (PNG with transparency)
+  // Beautiful animal images with soft mask effect
   const animals = [
-    { src: 'https://purepng.com/public/uploads/large/purepng.com-dogdogsdomestloyal-animalmammalpet-631521925073atfji.png', size: '220px', style: { top: '3%', left: '2%', animation: 'float 6s ease-in-out infinite' } },
-    { src: 'https://purepng.com/public/uploads/large/purepng.com-catcatdomestic-catsmall-catfeloinesanimals-1511524082726pguzj.png', size: '180px', style: { top: '5%', right: '3%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
-    { src: 'https://purepng.com/public/uploads/large/purepng.com-white-rabbitrabbitwhitefloopycutebunny-481521671011xqvfs.png', size: '160px', style: { bottom: '12%', left: '4%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
-    { src: 'https://purepng.com/public/uploads/large/purepng.com-golden-retriever-puppy-dogdogsanimalspurebred-dogretriever-dogdomesticated-dogpetfriendly-9215246443527jnsn.png', size: '200px', style: { bottom: '5%', right: '2%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
-    { src: 'https://purepng.com/public/uploads/large/purepng.com-lovely-puppycuteanimalslovelyadorablepuppy-631521932648kylly.png', size: '170px', style: { top: '0%', left: '32%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
-    { src: 'https://purepng.com/public/uploads/large/purepng.com-orange-catcatfelloinesfelistransparent-background-151152447814mhvrl.png', size: '150px', style: { top: '42%', left: '1%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
+    { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop&auto=format', size: '200px', style: { top: '3%', left: '2%', animation: 'float 6s ease-in-out infinite' } },
+    { src: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=400&fit=crop&auto=format', size: '180px', style: { top: '5%', right: '3%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
+    { src: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=350&h=350&fit=crop&auto=format', size: '160px', style: { bottom: '12%', left: '4%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
+    { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=400&fit=crop&auto=format', size: '200px', style: { bottom: '5%', right: '2%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
+    { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=350&h=350&fit=crop&auto=format', size: '170px', style: { top: '0%', left: '32%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
+    { src: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300&h=300&fit=crop&auto=format', size: '150px', style: { top: '42%', left: '1%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
   ];
 
   // Logo style proposals
