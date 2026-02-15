@@ -175,39 +175,29 @@ function ComingSoonLanding({ onLogin }) {
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-0">
         <div 
           style={{
-            animation: 'dogRise 15s ease-in-out infinite',
+            animation: 'dogRise 12s ease-in-out infinite',
           }}
         >
           <img 
             src="/dog-cutout.png"
             alt=""
-            className="w-80 h-auto opacity-30"
+            className="w-96 h-auto"
             style={{
+              opacity: 0.25,
               filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.1))',
             }}
           />
         </div>
       </div>
 
-      {/* CSS Animation */}
+      {/* CSS Animation - Simpler movement */}
       <style jsx>{`
         @keyframes dogRise {
-          0% { 
-            transform: translateY(150px); 
-            opacity: 0; 
-          }
-          15% { 
-            opacity: 1; 
+          0%, 100% { 
+            transform: translateY(50px); 
           }
           50% { 
-            transform: translateY(-80px); 
-          }
-          85% { 
-            opacity: 1; 
-          }
-          100% { 
-            transform: translateY(150px); 
-            opacity: 0; 
+            transform: translateY(-50px); 
           }
         }
       `}</style>
