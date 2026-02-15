@@ -134,97 +134,177 @@ const PetAvatar = ({ pet, size = 'md', onClick, className = '' }) => {
 function ComingSoonLanding({ onLogin }) {
   const [showTeamLogin, setShowTeamLogin] = useState(false);
   const [authMode, setAuthMode] = useState('login');
+  const [logoStyle, setLogoStyle] = useState(0); // Per cambiare stile logo
 
-  // Beautiful animal images
+  // Beautiful cutout animal images (PNG with transparency effect)
   const animals = [
-    { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop', alt: 'Dog', style: { top: '15%', left: '8%', animation: 'float 6s ease-in-out infinite' } },
-    { src: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&h=200&fit=crop', alt: 'Cat', style: { top: '20%', right: '10%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
-    { src: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=150&h=150&fit=crop', alt: 'Rabbit', style: { bottom: '25%', left: '12%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
-    { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=180&h=180&fit=crop', alt: 'Golden', style: { bottom: '20%', right: '8%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
-    { src: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=120&h=120&fit=crop', alt: 'Hamster', style: { top: '55%', left: '5%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
-    { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=140&h=140&fit=crop', alt: 'Puppy', style: { top: '10%', left: '35%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
+    { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop&auto=format', size: '180px', style: { top: '8%', left: '5%', animation: 'float 6s ease-in-out infinite' } },
+    { src: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=400&fit=crop&auto=format', size: '160px', style: { top: '12%', right: '6%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
+    { src: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=350&h=350&fit=crop&auto=format', size: '140px', style: { bottom: '18%', left: '8%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
+    { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=400&fit=crop&auto=format', size: '170px', style: { bottom: '12%', right: '5%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
+    { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=350&h=350&fit=crop&auto=format', size: '150px', style: { top: '5%', left: '38%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
+    { src: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300&h=300&fit=crop&auto=format', size: '120px', style: { top: '50%', left: '3%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
+  ];
+
+  // Logo style proposals
+  const logoStyles = [
+    // Style 0: Classic elegante
+    {
+      name: 'Classic',
+      render: () => (
+        <div className="flex items-center justify-center gap-4">
+          <VetBuddyLogo size={100} />
+          <div className="text-left">
+            <span className="font-bold text-7xl md:text-8xl bg-gradient-to-r from-coral-500 to-coral-600 bg-clip-text text-transparent">Vet</span>
+            <span className="font-bold text-7xl md:text-8xl bg-gradient-to-r from-sky-500 to-sky-600 bg-clip-text text-transparent">Buddy</span>
+          </div>
+        </div>
+      )
+    },
+    // Style 1: Stacked moderno
+    {
+      name: 'Stacked',
+      render: () => (
+        <div className="flex flex-col items-center gap-2">
+          <VetBuddyLogo size={120} />
+          <div className="flex flex-col items-center -space-y-4">
+            <span className="font-black text-6xl md:text-7xl text-gray-800 tracking-tight">VET</span>
+            <span className="font-light text-5xl md:text-6xl bg-gradient-to-r from-coral-400 via-rose-400 to-coral-500 bg-clip-text text-transparent tracking-widest">BUDDY</span>
+          </div>
+        </div>
+      )
+    },
+    // Style 2: Playful con cuore
+    {
+      name: 'Playful',
+      render: () => (
+        <div className="flex items-center justify-center gap-3">
+          <div className="relative">
+            <VetBuddyLogo size={90} />
+            <Heart className="absolute -top-2 -right-2 h-8 w-8 text-rose-500 fill-rose-500 animate-pulse" />
+          </div>
+          <div className="flex flex-col items-start">
+            <span className="font-black text-5xl md:text-6xl text-gray-800">VetBuddy</span>
+            <span className="text-sm md:text-base text-coral-500 font-medium tracking-wide">Il tuo amico veterinario 🐾</span>
+          </div>
+        </div>
+      )
+    },
+    // Style 3: Minimal chic
+    {
+      name: 'Minimal',
+      render: () => (
+        <div className="flex items-center justify-center gap-6">
+          <div className="p-4 bg-gradient-to-br from-coral-500 to-rose-500 rounded-3xl shadow-2xl shadow-coral-500/30">
+            <PawPrint className="h-16 w-16 text-white" />
+          </div>
+          <div>
+            <span className="font-bold text-6xl md:text-7xl text-gray-900">vet</span>
+            <span className="font-light text-6xl md:text-7xl text-coral-500">buddy</span>
+          </div>
+        </div>
+      )
+    },
+    // Style 4: Badge premium
+    {
+      name: 'Premium',
+      render: () => (
+        <div className="flex flex-col items-center">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full blur-xl opacity-30 animate-pulse"></div>
+            <div className="relative bg-gradient-to-br from-coral-500 via-rose-500 to-orange-500 p-6 rounded-full shadow-2xl">
+              <VetBuddyLogo size={80} color="white" />
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-2">
+            <span className="w-8 h-0.5 bg-gradient-to-r from-transparent to-coral-400"></span>
+            <span className="font-bold text-5xl md:text-6xl tracking-wide text-gray-800">VETBUDDY</span>
+            <span className="w-8 h-0.5 bg-gradient-to-l from-transparent to-coral-400"></span>
+          </div>
+          <span className="text-coral-500 text-sm tracking-[0.3em] mt-1">VETERINARY CARE</span>
+        </div>
+      )
+    },
   ];
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
       {/* Beautiful Gradient Background */}
       <div className="absolute inset-0">
-        {/* Main gradient - warm and inviting */}
         <div className="absolute inset-0 bg-gradient-to-br from-rose-100 via-orange-50 to-cyan-100"></div>
-        
-        {/* Animated gradient orbs */}
         <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-gradient-to-br from-coral-400/50 to-rose-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
         <div className="absolute -bottom-32 -right-32 w-[600px] h-[600px] bg-gradient-to-tl from-cyan-400/50 to-sky-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-r from-amber-200/30 via-orange-200/20 to-pink-200/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '12s', animationDelay: '1s' }}></div>
-        
-        {/* Accent orbs */}
         <div className="absolute top-[20%] right-[30%] w-64 h-64 bg-gradient-to-br from-violet-300/40 to-purple-400/20 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '3s' }}></div>
         <div className="absolute bottom-[30%] left-[25%] w-56 h-56 bg-gradient-to-tr from-emerald-300/30 to-teal-400/20 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '7s', animationDelay: '4s' }}></div>
-        
-        {/* Sparkle overlay */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.8),transparent_70%)]"></div>
       </div>
 
-      {/* Floating Animal Images */}
+      {/* Floating Animal Images - Larger and with soft edges */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {animals.map((animal, index) => (
           <div 
             key={index}
-            className="absolute rounded-full overflow-hidden shadow-2xl border-4 border-white/80 backdrop-blur-sm"
+            className="absolute"
             style={{
               ...animal.style,
-              width: animal.src.includes('w=200') ? '120px' : animal.src.includes('w=180') ? '110px' : animal.src.includes('w=150') ? '90px' : animal.src.includes('w=140') ? '85px' : '70px',
-              height: animal.src.includes('w=200') ? '120px' : animal.src.includes('w=180') ? '110px' : animal.src.includes('w=150') ? '90px' : animal.src.includes('w=140') ? '85px' : '70px',
+              width: animal.size,
+              height: animal.size,
             }}
           >
-            <img 
-              src={animal.src} 
-              alt={animal.alt}
-              className="w-full h-full object-cover"
-            />
+            <div className="relative w-full h-full">
+              {/* Soft glow behind image */}
+              <div className="absolute inset-0 bg-white/60 rounded-full blur-xl scale-110"></div>
+              {/* Image with rounded edges and shadow */}
+              <img 
+                src={animal.src} 
+                alt=""
+                className="relative w-full h-full object-cover rounded-[40%] shadow-2xl border-4 border-white/70"
+                style={{ 
+                  filter: 'drop-shadow(0 25px 50px rgba(0,0,0,0.15))',
+                }}
+              />
+            </div>
           </div>
         ))}
         
         {/* Decorative paw prints */}
-        <div className="absolute top-[40%] left-[3%] text-coral-300/40 text-2xl rotate-[-20deg]">🐾</div>
-        <div className="absolute top-[65%] right-[5%] text-sky-300/40 text-2xl rotate-[15deg]">🐾</div>
-        <div className="absolute bottom-[35%] left-[45%] text-rose-300/30 text-xl rotate-[30deg]">🐾</div>
+        <div className="absolute top-[40%] left-[3%] text-coral-300/40 text-3xl rotate-[-20deg]">🐾</div>
+        <div className="absolute top-[65%] right-[5%] text-sky-300/40 text-3xl rotate-[15deg]">🐾</div>
+        <div className="absolute bottom-[35%] left-[48%] text-rose-300/30 text-2xl rotate-[30deg]">🐾</div>
       </div>
 
       {/* CSS Animations */}
       <style jsx>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
-          25% { transform: translateY(-15px) rotate(2deg); }
-          50% { transform: translateY(-5px) rotate(0deg); }
-          75% { transform: translateY(-20px) rotate(-2deg); }
+          25% { transform: translateY(-20px) rotate(3deg); }
+          50% { transform: translateY(-8px) rotate(0deg); }
+          75% { transform: translateY(-25px) rotate(-3deg); }
         }
       `}</style>
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4 relative z-10">
         <div className="text-center">
-          {/* Logo with glow */}
-          <div className="relative mb-8">
+          {/* Logo with glow - Clickable to change style */}
+          <div className="relative mb-8 cursor-pointer" onClick={() => setLogoStyle((logoStyle + 1) % logoStyles.length)}>
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-48 h-48 bg-coral-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
+              <div className="w-56 h-56 bg-coral-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
             </div>
-            <div className="relative flex items-center justify-center gap-4 group">
-              <div className="transform transition-all duration-700 group-hover:scale-110 group-hover:rotate-6 drop-shadow-lg">
-                <VetBuddyLogo size={90} />
+            <div className="relative group">
+              {logoStyles[logoStyle].render()}
+              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-xs text-gray-400 bg-white/80 px-3 py-1 rounded-full">Clicca per cambiare stile ({logoStyle + 1}/{logoStyles.length})</span>
               </div>
-              <span className="font-bold text-6xl md:text-7xl lg:text-8xl bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 bg-clip-text text-transparent drop-shadow-sm">
-                VetBuddy
-              </span>
             </div>
           </div>
           
           {/* Coming Soon */}
-          <div className="relative">
+          <div className="relative mt-12">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-coral-500 via-rose-500 to-cyan-500 bg-clip-text text-transparent pb-2 drop-shadow-sm">
               Coming Soon
             </h1>
-            {/* Elegant underline */}
             <div className="mt-6 flex items-center justify-center gap-3">
               <span className="w-20 h-1.5 bg-gradient-to-r from-transparent via-coral-400 to-coral-500 rounded-full"></span>
               <span className="w-3 h-3 bg-coral-500 rounded-full animate-pulse shadow-lg shadow-coral-500/50"></span>
