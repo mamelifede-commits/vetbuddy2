@@ -208,22 +208,16 @@ function ComingSoonLanding({ onLogin }) {
         {/* SPAZIO FISSO tra testo e cane */}
         <div className="h-8 md:h-12"></div>
         
-        {/* Golden Retriever con filtro gradiente colorato */}
-        <div className="flex justify-center items-center relative">
-          {/* Container del cane con effetto gradiente */}
-          <div className="relative">
-            {/* Cane */}
-            <img
-              src="/animals/golden-retriever-user.png"
-              alt="Golden Retriever"
-              className="h-[200px] md:h-[240px] lg:h-[260px] w-auto object-contain"
-            />
-            {/* Overlay gradiente sopra il cane */}
-            <div 
-              className="absolute inset-0 bg-gradient-to-br from-coral-400/30 via-rose-300/20 to-amber-300/30 mix-blend-overlay rounded-full"
-              style={{ pointerEvents: 'none' }}
-            ></div>
-          </div>
+        {/* Golden Retriever con colori gradiente */}
+        <div className="flex justify-center items-center">
+          <img
+            src="/animals/golden-retriever-user.png"
+            alt="Golden Retriever"
+            className="h-[180px] md:h-[200px] lg:h-[220px] w-auto object-contain"
+            style={{
+              filter: 'sepia(20%) saturate(150%) hue-rotate(-10deg) brightness(1.05)'
+            }}
+          />
         </div>
       </div>
 
