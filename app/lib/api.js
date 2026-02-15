@@ -1,4 +1,4 @@
-// API Client for VetBuddy
+// API Client for vetbuddy
 const API_BASE = '/api';
 
 class ApiClient {
