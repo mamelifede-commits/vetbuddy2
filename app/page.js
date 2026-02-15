@@ -163,7 +163,7 @@ function ComingSoonLanding({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden bg-gray-50">
+    <div className="min-h-screen flex flex-col relative overflow-hidden bg-white">
       {/* Linea colorata in alto */}
       <div className="w-full h-1 bg-gradient-to-r from-coral-400 via-rose-400 to-cyan-400"></div>
 
