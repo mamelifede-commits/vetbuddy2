@@ -212,14 +212,14 @@ function ComingSoonLanding({ onLogin }) {
           src="/animals/golden-retriever-user.png"
           alt="Golden Retriever"
           onLoad={() => setImageLoaded(true)}
-          className={`h-[32vh] md:h-[36vh] w-auto object-contain transition-all ease-out ${
+          className={`h-[26vh] md:h-[30vh] w-auto object-contain transition-all ease-out ${
             imageLoaded 
               ? 'translate-y-0 opacity-100' 
               : 'translate-y-[150%] opacity-0'
           }`}
           style={{
             filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.15))',
-            maxHeight: '40vh',
+            maxHeight: '32vh',
             transitionDuration: '3500ms'
           }}
         />
