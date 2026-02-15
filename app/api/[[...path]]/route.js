@@ -1417,7 +1417,7 @@ export async function POST(request, { params }) {
       try {
         await sendEmail({
           to: user.email,
-          subject: '🎉 Account verificato - Benvenuto in VetBuddy!',
+          subject: '🎉 Account verificato - Benvenuto in vetbuddy!',
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
@@ -1501,7 +1501,7 @@ export async function POST(request, { params }) {
       try {
         await sendEmail({
           to: user.email,
-          subject: '🎉 Account verificato - Benvenuto in VetBuddy!',
+          subject: '🎉 Account verificato - Benvenuto in vetbuddy!',
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
