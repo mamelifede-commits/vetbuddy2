@@ -1,6 +1,6 @@
 {
-  "name": "VetBuddy - Gestionale Veterinario",
-  "short_name": "VetBuddy",
+  "name": "vetbuddy - Gestionale Veterinario",
+  "short_name": "vetbuddy",
   "description": "La piattaforma per cliniche veterinarie e proprietari di pet",
   "start_url": "/",
   "display": "standalone",
