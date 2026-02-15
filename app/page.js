@@ -135,164 +135,111 @@ function ComingSoonLanding({ onLogin }) {
   const [showTeamLogin, setShowTeamLogin] = useState(false);
   const [authMode, setAuthMode] = useState('login');
 
+  // Beautiful animal images
+  const animals = [
+    { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop', alt: 'Dog', style: { top: '15%', left: '8%', animation: 'float 6s ease-in-out infinite' } },
+    { src: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&h=200&fit=crop', alt: 'Cat', style: { top: '20%', right: '10%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
+    { src: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=150&h=150&fit=crop', alt: 'Rabbit', style: { bottom: '25%', left: '12%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
+    { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=180&h=180&fit=crop', alt: 'Golden', style: { bottom: '20%', right: '8%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
+    { src: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=120&h=120&fit=crop', alt: 'Hamster', style: { top: '55%', left: '5%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
+    { src: 'https://images.unsplash.com/photo-1518882605630-8eb7fa33ca53?w=140&h=140&fit=crop', alt: 'Parrot', style: { top: '10%', left: '35%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* Beautiful Animated Background */}
+      {/* Beautiful Gradient Background */}
       <div className="absolute inset-0">
-        {/* Base gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-white to-sky-100"></div>
+        {/* Main gradient - warm and inviting */}
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-100 via-orange-50 to-cyan-100"></div>
         
-        {/* Large floating orbs */}
-        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-gradient-to-br from-coral-300/40 to-orange-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
-        <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-gradient-to-tl from-sky-300/40 to-blue-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-to-br from-green-200/30 to-emerald-300/20 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '7s', animationDelay: '1s' }}></div>
-        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-to-tr from-pink-200/25 to-rose-300/15 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '9s', animationDelay: '3s' }}></div>
+        {/* Animated gradient orbs */}
+        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-gradient-to-br from-coral-400/50 to-rose-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
+        <div className="absolute -bottom-32 -right-32 w-[600px] h-[600px] bg-gradient-to-tl from-cyan-400/50 to-sky-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-r from-amber-200/30 via-orange-200/20 to-pink-200/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '12s', animationDelay: '1s' }}></div>
+        
+        {/* Accent orbs */}
+        <div className="absolute top-[20%] right-[30%] w-64 h-64 bg-gradient-to-br from-violet-300/40 to-purple-400/20 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '3s' }}></div>
+        <div className="absolute bottom-[30%] left-[25%] w-56 h-56 bg-gradient-to-tr from-emerald-300/30 to-teal-400/20 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '7s', animationDelay: '4s' }}></div>
+        
+        {/* Sparkle overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.8),transparent_70%)]"></div>
       </div>
 
-      {/* Animated Animals */}
+      {/* Floating Animal Images */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Dog running left to right */}
-        <div className="absolute top-[20%] animate-bounce" style={{ 
-          animation: 'moveRight 12s linear infinite',
-          left: '-100px'
-        }}>
-          <span className="text-6xl drop-shadow-lg" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))' }}>🐕</span>
-        </div>
+        {animals.map((animal, index) => (
+          <div 
+            key={index}
+            className="absolute rounded-full overflow-hidden shadow-2xl border-4 border-white/80 backdrop-blur-sm"
+            style={{
+              ...animal.style,
+              width: animal.src.includes('w=200') ? '120px' : animal.src.includes('w=180') ? '110px' : animal.src.includes('w=150') ? '90px' : animal.src.includes('w=140') ? '85px' : '70px',
+              height: animal.src.includes('w=200') ? '120px' : animal.src.includes('w=180') ? '110px' : animal.src.includes('w=150') ? '90px' : animal.src.includes('w=140') ? '85px' : '70px',
+            }}
+          >
+            <img 
+              src={animal.src} 
+              alt={animal.alt}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
         
-        {/* Cat walking right to left */}
-        <div className="absolute top-[60%]" style={{ 
-          animation: 'moveLeft 15s linear infinite',
-          right: '-100px'
-        }}>
-          <span className="text-5xl drop-shadow-lg" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))' }}>🐈</span>
-        </div>
-        
-        {/* Bunny hopping */}
-        <div className="absolute bottom-[25%] left-[10%]" style={{ 
-          animation: 'hop 2s ease-in-out infinite'
-        }}>
-          <span className="text-5xl drop-shadow-lg">🐰</span>
-        </div>
-        
-        {/* Bird flying */}
-        <div className="absolute top-[15%]" style={{ 
-          animation: 'fly 8s ease-in-out infinite',
-          left: '20%'
-        }}>
-          <span className="text-4xl drop-shadow-lg">🦜</span>
-        </div>
-        
-        {/* Second bird */}
-        <div className="absolute top-[25%]" style={{ 
-          animation: 'fly 10s ease-in-out infinite',
-          animationDelay: '2s',
-          left: '60%'
-        }}>
-          <span className="text-3xl drop-shadow-lg">🐦</span>
-        </div>
-        
-        {/* Hamster */}
-        <div className="absolute bottom-[35%] right-[15%]" style={{ 
-          animation: 'wiggle 1.5s ease-in-out infinite'
-        }}>
-          <span className="text-4xl drop-shadow-lg">🐹</span>
-        </div>
-        
-        {/* Fish swimming */}
-        <div className="absolute bottom-[15%]" style={{ 
-          animation: 'swim 6s ease-in-out infinite',
-          left: '30%'
-        }}>
-          <span className="text-4xl drop-shadow-lg">🐠</span>
-        </div>
-        
-        {/* Turtle slow moving */}
-        <div className="absolute bottom-[20%]" style={{ 
-          animation: 'moveRight 25s linear infinite',
-          left: '-80px'
-        }}>
-          <span className="text-4xl drop-shadow-lg">🐢</span>
-        </div>
-        
-        {/* Paw prints scattered */}
-        <div className="absolute top-[40%] left-[5%] text-coral-200/50 text-3xl rotate-[-20deg]">🐾</div>
-        <div className="absolute top-[50%] left-[12%] text-coral-200/40 text-2xl rotate-[10deg]">🐾</div>
-        <div className="absolute top-[45%] right-[8%] text-sky-200/50 text-3xl rotate-[25deg]">🐾</div>
-        <div className="absolute bottom-[40%] right-[15%] text-sky-200/40 text-2xl rotate-[-15deg]">🐾</div>
+        {/* Decorative paw prints */}
+        <div className="absolute top-[40%] left-[3%] text-coral-300/40 text-2xl rotate-[-20deg]">🐾</div>
+        <div className="absolute top-[65%] right-[5%] text-sky-300/40 text-2xl rotate-[15deg]">🐾</div>
+        <div className="absolute bottom-[35%] left-[45%] text-rose-300/30 text-xl rotate-[30deg]">🐾</div>
       </div>
 
       {/* CSS Animations */}
       <style jsx>{`
-        @keyframes moveRight {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(calc(100vw + 200px)); }
-        }
-        @keyframes moveLeft {
-          0% { transform: translateX(0) scaleX(-1); }
-          100% { transform: translateX(calc(-100vw - 200px)) scaleX(-1); }
-        }
-        @keyframes hop {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        @keyframes fly {
-          0%, 100% { transform: translate(0, 0) rotate(0deg); }
-          25% { transform: translate(30px, -20px) rotate(-5deg); }
-          50% { transform: translate(60px, 0) rotate(0deg); }
-          75% { transform: translate(30px, 20px) rotate(5deg); }
-        }
-        @keyframes wiggle {
-          0%, 100% { transform: rotate(0deg); }
-          25% { transform: rotate(-10deg); }
-          75% { transform: rotate(10deg); }
-        }
-        @keyframes swim {
-          0%, 100% { transform: translateX(0) translateY(0); }
-          25% { transform: translateX(20px) translateY(-10px); }
-          50% { transform: translateX(40px) translateY(0); }
-          75% { transform: translateX(20px) translateY(10px); }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          25% { transform: translateY(-15px) rotate(2deg); }
+          50% { transform: translateY(-5px) rotate(0deg); }
+          75% { transform: translateY(-20px) rotate(-2deg); }
         }
       `}</style>
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4 relative z-10">
         <div className="text-center">
-          {/* Logo with enhanced glow */}
+          {/* Logo with glow */}
           <div className="relative mb-8">
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-40 h-40 bg-coral-400/25 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
+              <div className="w-48 h-48 bg-coral-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
             </div>
             <div className="relative flex items-center justify-center gap-4 group">
-              <div className="transform transition-all duration-700 group-hover:scale-110 group-hover:rotate-6">
-                <VetBuddyLogo size={80} />
+              <div className="transform transition-all duration-700 group-hover:scale-110 group-hover:rotate-6 drop-shadow-lg">
+                <VetBuddyLogo size={90} />
               </div>
-              <span className="font-bold text-6xl md:text-7xl bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 bg-clip-text text-transparent drop-shadow-sm">
+              <span className="font-bold text-6xl md:text-7xl lg:text-8xl bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 bg-clip-text text-transparent drop-shadow-sm">
                 VetBuddy
               </span>
             </div>
           </div>
           
-          {/* Coming Soon with beautiful gradient */}
+          {/* Coming Soon */}
           <div className="relative">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-coral-400 via-rose-400 to-sky-500 bg-clip-text text-transparent pb-2">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-coral-500 via-rose-500 to-cyan-500 bg-clip-text text-transparent pb-2 drop-shadow-sm">
               Coming Soon
             </h1>
-            {/* Animated underline */}
-            <div className="mt-4 flex items-center justify-center gap-2">
-              <span className="w-16 h-1 bg-gradient-to-r from-transparent via-coral-300 to-coral-400 rounded-full"></span>
-              <span className="w-2.5 h-2.5 bg-coral-400 rounded-full animate-pulse"></span>
-              <span className="w-2.5 h-2.5 bg-rose-400 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }}></span>
-              <span className="w-2.5 h-2.5 bg-sky-400 rounded-full animate-pulse" style={{ animationDelay: '0.6s' }}></span>
-              <span className="w-16 h-1 bg-gradient-to-l from-transparent via-sky-300 to-sky-400 rounded-full"></span>
+            {/* Elegant underline */}
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <span className="w-20 h-1.5 bg-gradient-to-r from-transparent via-coral-400 to-coral-500 rounded-full"></span>
+              <span className="w-3 h-3 bg-coral-500 rounded-full animate-pulse shadow-lg shadow-coral-500/50"></span>
+              <span className="w-3 h-3 bg-rose-500 rounded-full animate-pulse shadow-lg shadow-rose-500/50" style={{ animationDelay: '0.3s' }}></span>
+              <span className="w-3 h-3 bg-cyan-500 rounded-full animate-pulse shadow-lg shadow-cyan-500/50" style={{ animationDelay: '0.6s' }}></span>
+              <span className="w-20 h-1.5 bg-gradient-to-l from-transparent via-cyan-400 to-cyan-500 rounded-full"></span>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Footer with glassmorphism */}
-      <footer className="relative z-10 py-6 px-4 bg-white/40 backdrop-blur-md border-t border-white/60">
+      {/* Footer */}
+      <footer className="relative z-10 py-6 px-4 bg-white/50 backdrop-blur-md border-t border-white/70">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-500">© 2025 VetBuddy</p>
+          <p className="text-sm text-gray-600 font-medium">© 2025 VetBuddy</p>
           <button 
             onClick={() => setShowTeamLogin(true)}
             className="text-xs text-gray-400 hover:text-coral-500 transition-colors duration-300"
