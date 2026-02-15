@@ -42,9 +42,16 @@ async function generateInvoicePDF(invoice) {
   const mediumGray = rgb(0.4, 0.4, 0.4);
   const lightGray = rgb(0.6, 0.6, 0.6);
   
-  // Header - Logo area
-  page.drawText('VetBuddy', {
+  // Header - Logo area - New Brand Style (vet + buddy)
+  page.drawText('vet', {
     x: margin,
+    y: yPosition,
+    size: 24,
+    font: boldFont,
+    color: darkGray
+  });
+  page.drawText('buddy', {
+    x: margin + 35,
     y: yPosition,
     size: 24,
     font: boldFont,
