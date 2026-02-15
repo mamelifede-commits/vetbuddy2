@@ -161,38 +161,6 @@ const PetAvatar = ({ pet, size = 'md', onClick, className = '' }) => {
 function ComingSoonLanding({ onLogin }) {
   const [showTeamLogin, setShowTeamLogin] = useState(false);
   const [authMode, setAuthMode] = useState('login');
-  const [dogPosition, setDogPosition] = useState(400); // Parte da 400px sotto
-
-  // Animazione del cane: sale lentamente dal basso
-  useEffect(() => {
-    let startTime = null;
-    const duration = 4000; // 4 secondi
-    const startPosition = 400;
-    const endPosition = 0;
-
-    const animate = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Easing: ease-out
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      const currentPosition = startPosition - (startPosition - endPosition) * easeOut;
-      
-      setDogPosition(currentPosition);
-      
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
-    };
-
-    // Inizia dopo 300ms
-    const timer = setTimeout(() => {
-      requestAnimationFrame(animate);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
