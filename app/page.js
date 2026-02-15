@@ -240,25 +240,28 @@ function ComingSoonLanding({ onLogin }) {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.8),transparent_70%)]"></div>
       </div>
 
-      {/* Floating Animal SVG Illustrations */}
+      {/* Floating Real Animal Photos */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {animals.map((animal, index) => {
-          const AnimalComponent = animal.Component;
-          return (
-            <div 
-              key={index}
-              className="absolute"
-              style={{
-                ...animal.style,
-                width: animal.size,
-                height: animal.size,
-                filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.15))',
+        {animals.map((animal, index) => (
+          <div 
+            key={index}
+            className="absolute"
+            style={{
+              ...animal.style,
+              width: animal.size,
+              height: animal.size,
+            }}
+          >
+            <img 
+              src={animal.src} 
+              alt=""
+              className="w-full h-full object-contain"
+              style={{ 
+                filter: 'drop-shadow(0 25px 50px rgba(0,0,0,0.2))',
               }}
-            >
-              <AnimalComponent className="w-full h-full" />
-            </div>
-          );
-        })}
+            />
+          </div>
+        ))}
         
         {/* Decorative paw prints */}
         <div className="absolute top-[40%] left-[3%] text-coral-300/50 text-4xl rotate-[-20deg]">🐾</div>
