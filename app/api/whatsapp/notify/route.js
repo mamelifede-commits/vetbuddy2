@@ -145,7 +145,7 @@ Grazie! 🐾
   `.trim(),
 
   welcome: (data) => `
-🎉 *Benvenuto in VetBuddy!*
+🎉 *Benvenuto in vetbuddy!*
 
 Ciao ${data.ownerName}! 👋
 
