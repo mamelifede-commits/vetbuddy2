@@ -198,7 +198,7 @@ export async function GET(request) {
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
-                  <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                  <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
                   <h2 style="color: #333;">⏰ Promemoria Appuntamento</h2>
@@ -236,7 +236,7 @@ export async function GET(request) {
                   </div>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -289,7 +289,7 @@ export async function GET(request) {
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
-                  <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                  <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
                   <h2 style="color: #333;">⚠️ Richiamo Vaccino in Scadenza</h2>
@@ -313,7 +313,7 @@ export async function GET(request) {
                   </div>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -366,7 +366,7 @@ export async function GET(request) {
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <div style="background: linear-gradient(135deg, #4CAF50, #8BC34A); padding: 20px; border-radius: 10px 10px 0 0;">
-                  <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                  <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
                   <h2 style="color: #333;">Come sta ${pet.name}?</h2>
@@ -386,10 +386,10 @@ export async function GET(request) {
                     </a>
                   </div>
                   
-                  <p style="color: #999; font-size: 14px; text-align: center;">Grazie per aver scelto VetBuddy! 🐾</p>
+                  <p style="color: #999; font-size: 14px; text-align: center;">Grazie per aver scelto vetbuddy! 🐾</p>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -463,7 +463,7 @@ export async function GET(request) {
 
         await sendEmail({
           to: clinic.email,
-          subject: `📋 ${appointmentsWithoutDocs.length} documenti da caricare - VetBuddy`,
+          subject: `📋 ${appointmentsWithoutDocs.length} documenti da caricare - vetbuddy`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <div style="background: linear-gradient(135deg, #FF9800, #FFB74D); padding: 20px; border-radius: 10px 10px 0 0;">
@@ -523,7 +523,7 @@ export async function GET(request) {
 
         await sendEmail({
           to: clinic.email,
-          subject: `📊 Report Settimanale - ${clinic.clinicName || 'VetBuddy'}`,
+          subject: `📊 Report Settimanale - ${clinic.clinicName || 'vetbuddy'}`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; border-radius: 10px 10px 0 0;">
@@ -592,7 +592,7 @@ export async function GET(request) {
                   </div>
                   <div style="padding: 30px; background: #f9f9f9; text-align: center;">
                     <h2 style="color: #333;">${pet.name} compie ${age} anni oggi!</h2>
-                    <p style="color: #666; font-size: 16px;">Tanti auguri da tutto il team VetBuddy!</p>
+                    <p style="color: #666; font-size: 16px;">Tanti auguri da tutto il team vetbuddy!</p>
                     <p style="font-size: 48px;">🎁🐾🎈</p>
                     <p style="color: #666; font-size: 14px;">Per festeggiare, perché non prenotare un controllo di salute?</p>
                     
@@ -605,7 +605,7 @@ export async function GET(request) {
                     </div>
                   </div>
                   <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                   </div>
                 </div>
               `
@@ -672,7 +672,7 @@ export async function GET(request) {
                   <p style="color: #999; font-size: 12px; text-align: center;">Grazie per il tuo feedback!</p>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -740,7 +740,7 @@ export async function GET(request) {
                     </div>
                   </div>
                   <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                   </div>
                 </div>
               `
@@ -802,7 +802,7 @@ export async function GET(request) {
                   </div>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -870,7 +870,7 @@ export async function GET(request) {
                   </div>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -962,7 +962,7 @@ export async function GET(request) {
                 </div>
                 
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -1027,7 +1027,7 @@ export async function GET(request) {
                   <p style="color: #999; font-size: 12px; text-align: center;">Per qualsiasi domanda, non esitare a contattarci.</p>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -1117,7 +1117,7 @@ export async function GET(request) {
               html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                   <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
-                    <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                    <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
                   </div>
                   <div style="padding: 30px; background: #f9f9f9;">
                     ${seasonalContent}
@@ -1133,7 +1133,7 @@ export async function GET(request) {
                     <p style="color: #999; margin-top: 30px;">Dalla tua clinica di fiducia: ${clinic.clinicName}</p>
                   </div>
                   <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                   </div>
                 </div>
               `
@@ -1203,7 +1203,7 @@ export async function GET(request) {
                     <p style="color: #999; font-size: 14px; text-align: center;">Parlane con il tuo veterinario alla prossima visita!</p>
                   </div>
                   <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                   </div>
                 </div>
               `
@@ -1277,7 +1277,7 @@ export async function GET(request) {
                         </div>
                       </div>
                       <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                        <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                        <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                       </div>
                     </div>
                   `
@@ -1344,7 +1344,7 @@ export async function GET(request) {
                   </div>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -1385,7 +1385,7 @@ export async function GET(request) {
         try {
           await sendEmail({
             to: client.email,
-            subject: `🎉 Benvenuto in ${clinic?.clinicName || 'VetBuddy'}!`,
+            subject: `🎉 Benvenuto in ${clinic?.clinicName || 'vetbuddy'}!`,
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
@@ -1394,7 +1394,7 @@ export async function GET(request) {
                 <div style="padding: 30px; background: #f9f9f9;">
                   <p style="color: #666; font-size: 16px;">Ciao ${client.name || ''},</p>
                   <p style="color: #666; font-size: 16px;">Siamo felicissimi di averti con noi! 🐾</p>
-                  <h3 style="color: #333;">Cosa puoi fare con VetBuddy:</h3>
+                  <h3 style="color: #333;">Cosa puoi fare con vetbuddy:</h3>
                   <ul style="color: #666;">
                     <li>📅 Prenotare appuntamenti online</li>
                     <li>📄 Ricevere documenti e referti</li>
@@ -1409,14 +1409,14 @@ export async function GET(request) {
                       📅 Prenota Prima Visita
                     </a>
                     <a href="${exploreUrl}" style="display: inline-block; background: #3498DB; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-                      🔍 Esplora VetBuddy
+                      🔍 Esplora vetbuddy
                     </a>
                   </div>
                   
                   <p style="font-size: 24px; text-align: center;">🐕 🐈 🐰</p>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -1482,7 +1482,7 @@ export async function GET(request) {
                     <p style="color: #999; font-size: 12px;">Mostra questa email alla prossima visita!</p>
                   </div>
                   <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                   </div>
                 </div>
               `
@@ -1555,7 +1555,7 @@ export async function GET(request) {
                     <p>Ti auguriamo buone feste! 🎉</p>
                   </div>
                   <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                    <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                   </div>
                 </div>
               `
@@ -1598,7 +1598,7 @@ export async function GET(request) {
                   <p>${pet.name} è stato fortunato/a ad avere un proprietario così amorevole, e i momenti che avete condiviso rimarranno per sempre nel tuo cuore.</p>
                   <p>Ti siamo vicini in questo momento difficile.</p>
                   <p style="font-style: italic; color: #666;">"Non sei più al mio fianco, ma sei per sempre nel mio cuore."</p>
-                  <p>Con affetto,<br>Il team di ${clinic?.clinicName || 'VetBuddy'}</p>
+                  <p>Con affetto,<br>Il team di ${clinic?.clinicName || 'vetbuddy'}</p>
                   <p style="font-size: 24px; text-align: center;">🌈🐾</p>
                 </div>
               </div>
