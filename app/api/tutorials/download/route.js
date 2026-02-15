@@ -351,9 +351,12 @@ async function generateTutorialPDF(tutorial, isClinic = false) {
     color: coralColor
   });
   
-  // Title
-  page.drawText('VetBuddy', {
+  // Title - New Brand Style (vet + buddy)
+  page.drawText('vet', {
     x: margin, y: pageHeight - 70, size: 36, font: boldFont, color: rgb(1, 1, 1)
+  });
+  page.drawText('buddy', {
+    x: margin + 72, y: pageHeight - 70, size: 36, font: boldFont, color: rgb(1, 1, 1)
   });
   
   // Subtitle
