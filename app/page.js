@@ -142,7 +142,7 @@ function ComingSoonLanding({ onLogin }) {
     { src: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=150&h=150&fit=crop', alt: 'Rabbit', style: { bottom: '25%', left: '12%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
     { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=180&h=180&fit=crop', alt: 'Golden', style: { bottom: '20%', right: '8%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
     { src: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=120&h=120&fit=crop', alt: 'Hamster', style: { top: '55%', left: '5%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
-    { src: 'https://images.unsplash.com/photo-1518882605630-8eb7fa33ca53?w=140&h=140&fit=crop', alt: 'Parrot', style: { top: '10%', left: '35%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
+    { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=140&h=140&fit=crop', alt: 'Puppy', style: { top: '10%', left: '35%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
   ];
 
   return (
