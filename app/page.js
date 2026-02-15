@@ -163,16 +163,12 @@ function ComingSoonLanding({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* Sfondo ACCATTIVANTE - gradiente colorato */}
-      <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-cyan-50"></div>
-      
-      {/* Decorazioni sottili ai bordi */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-coral-400 via-rose-400 to-cyan-400"></div>
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-rose-400 to-coral-400"></div>
+    <div className="min-h-screen flex flex-col relative overflow-hidden bg-gray-50">
+      {/* Linea colorata in alto */}
+      <div className="w-full h-1 bg-gradient-to-r from-coral-400 via-rose-400 to-cyan-400"></div>
 
       {/* CONTENUTO PRINCIPALE */}
-      <div className="flex-1 flex flex-col justify-center items-center px-4 relative z-10 py-8">
+      <div className="flex-1 flex flex-col justify-center items-center px-4 py-8">
         {/* Logo + Coming Soon */}
         <div className="text-center">
           {/* Logo */}
@@ -204,20 +200,20 @@ function ComingSoonLanding({ onLogin }) {
         </div>
         
         {/* SPAZIO tra testo e cane */}
-        <div className="h-8 md:h-10"></div>
+        <div className="h-6 md:h-8"></div>
         
-        {/* Golden Retriever - PIÙ GRANDE */}
+        {/* Golden Retriever - GRANDE con ANIMAZIONE */}
         <div className="flex justify-center items-center">
           <img
-            src="/animals/golden-gradient.png?v=4"
+            src="/animals/golden-gradient.png?v=5"
             alt="Golden Retriever"
-            className="h-[260px] md:h-[300px] lg:h-[340px] w-auto object-contain"
-            style={{ 
-              mixBlendMode: 'multiply'
-            }}
+            className="h-[320px] md:h-[380px] lg:h-[420px] w-auto object-contain animate-slide-up-dog"
           />
         </div>
       </div>
+      
+      {/* Linea colorata in basso */}
+      <div className="w-full h-1 bg-gradient-to-r from-cyan-400 via-rose-400 to-coral-400"></div>
 
       {/* Footer */}
       <footer className="relative z-30 py-6 px-4 bg-white/60 backdrop-blur-sm border-t border-white/50">
