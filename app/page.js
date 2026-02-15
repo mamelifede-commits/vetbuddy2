@@ -163,23 +163,17 @@ function ComingSoonLanding({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* Clean Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-coral-50 via-white to-sky-50"></div>
-      
-      {/* Soft decorative glow behind content */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-coral-200/20 rounded-full blur-3xl"></div>
+    <div className="min-h-screen flex flex-col relative overflow-hidden bg-white">
+      {/* Sfondo pulito - gradiente sottile */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-50 to-white"></div>
 
-      {/* CONTENUTO PRINCIPALE - Struttura verticale fissa per evitare sovrapposizioni */}
+      {/* CONTENUTO PRINCIPALE */}
       <div className="flex-1 flex flex-col justify-center items-center px-4 relative z-10 py-8">
-        {/* Logo + Coming Soon - blocco fisso al centro */}
+        {/* Logo + Coming Soon */}
         <div className="text-center">
-          {/* Logo Style 4 */}
-          <div className="relative mb-8">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-48 h-48 bg-coral-400/20 rounded-full blur-3xl"></div>
-            </div>
-            <div className="relative flex items-center justify-center gap-5">
+          {/* Logo SENZA bolla */}
+          <div className="mb-8">
+            <div className="flex items-center justify-center gap-5">
               <div className="p-4 bg-gradient-to-br from-coral-500 to-rose-500 rounded-2xl shadow-xl shadow-coral-500/30">
                 <PawPrint className="h-12 w-12 text-white" />
               </div>
@@ -191,7 +185,7 @@ function ComingSoonLanding({ onLogin }) {
           </div>
           
           {/* Coming Soon */}
-          <div className="relative mt-6">
+          <div className="mt-6">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-coral-500 via-rose-500 to-cyan-500 bg-clip-text text-transparent">
               Coming Soon
             </h1>
@@ -205,15 +199,15 @@ function ComingSoonLanding({ onLogin }) {
           </div>
         </div>
         
-        {/* SPAZIO FISSO tra testo e cane */}
-        <div className="h-8 md:h-12"></div>
+        {/* SPAZIO tra testo e cane */}
+        <div className="h-10 md:h-14"></div>
         
-        {/* Golden Retriever con colori gradiente - IMMAGINE UTENTE */}
+        {/* Golden Retriever - IMMAGINE UTENTE ROSA */}
         <div className="flex justify-center items-center">
           <img
-            src="/animals/golden-gradient.png?v=2"
+            src="/animals/golden-gradient.png?v=3"
             alt="Golden Retriever"
-            className="h-[180px] md:h-[200px] lg:h-[220px] w-auto object-contain"
+            className="h-[160px] md:h-[180px] lg:h-[200px] w-auto object-contain"
           />
         </div>
       </div>
