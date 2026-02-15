@@ -167,40 +167,10 @@ function ComingSoonLanding({ onLogin }) {
       {/* Clean Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-coral-50 via-white to-sky-50"></div>
       
-      {/* Subtle decorative blurs */}
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-coral-200/20 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-56 h-56 bg-sky-200/20 rounded-full blur-3xl"></div>
-
-      {/* Single Cutout Dog PNG - Floating in bottom right */}
-      <div className="absolute bottom-10 right-10 pointer-events-none z-0">
-        <div 
-          style={{
-            animation: 'dogFloat 8s ease-in-out infinite',
-          }}
-        >
-          <img 
-            src="/dog-cutout.png"
-            alt=""
-            className="w-72 h-auto"
-            style={{
-              opacity: 0.35,
-              filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.15))',
-            }}
-          />
-        </div>
-      </div>
-
-      {/* CSS Animation - Gentle floating */}
-      <style jsx>{`
-        @keyframes dogFloat {
-          0%, 100% { 
-            transform: translateY(0px); 
-          }
-          50% { 
-            transform: translateY(-30px); 
-          }
-        }
-      `}</style>
+      {/* Decorative blurred shapes */}
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-coral-200/30 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-56 h-56 bg-sky-200/30 rounded-full blur-3xl"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-100/20 rounded-full blur-3xl"></div>
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4 relative z-10">
