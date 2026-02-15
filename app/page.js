@@ -134,7 +134,7 @@ const PetAvatar = ({ pet, size = 'md', onClick, className = '' }) => {
 function ComingSoonLanding({ onLogin }) {
   const [showTeamLogin, setShowTeamLogin] = useState(false);
   const [authMode, setAuthMode] = useState('login');
-  const [logoStyle, setLogoStyle] = useState(0);
+  const [logoStyle, setLogoStyle] = useState(3);
 
   // Real photo animals with transparent backgrounds - LARGE
   const animals = [
