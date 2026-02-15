@@ -240,7 +240,7 @@ function ComingSoonLanding({ onLogin }) {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.8),transparent_70%)]"></div>
       </div>
 
-      {/* Floating Animal Images - Larger and with soft edges */}
+      {/* Floating Animal Images - True PNG cutouts */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {animals.map((animal, index) => (
           <div 
@@ -252,19 +252,14 @@ function ComingSoonLanding({ onLogin }) {
               height: animal.size,
             }}
           >
-            <div className="relative w-full h-full">
-              {/* Soft glow behind image */}
-              <div className="absolute inset-0 bg-white/60 rounded-full blur-xl scale-110"></div>
-              {/* Image with rounded edges and shadow */}
-              <img 
-                src={animal.src} 
-                alt=""
-                className="relative w-full h-full object-cover rounded-[40%] shadow-2xl border-4 border-white/70"
-                style={{ 
-                  filter: 'drop-shadow(0 25px 50px rgba(0,0,0,0.15))',
-                }}
-              />
-            </div>
+            <img 
+              src={animal.src} 
+              alt=""
+              className="w-full h-full object-contain drop-shadow-2xl"
+              style={{ 
+                filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.2))',
+              }}
+            />
           </div>
         ))}
         
