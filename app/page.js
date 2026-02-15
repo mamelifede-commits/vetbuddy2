@@ -18683,7 +18683,7 @@ export default function App() {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-coral-50"><div className="text-center"><VetBuddyLogo size={60} /><p className="mt-4 text-coral-700">Caricamento...</p></div></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-coral-50"><div className="text-center"><NewBrandLogo size="lg" /><p className="mt-4 text-coral-700">Caricamento...</p></div></div>;
   
   // Show password reset screen if token present
   if (resetPasswordToken) {
