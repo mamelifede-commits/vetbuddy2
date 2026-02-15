@@ -169,6 +169,10 @@ function LandingPage({ onLogin }) {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Banner Under Construction */}
+      <div className="bg-amber-500 text-white text-center py-2.5 px-4 text-sm font-medium">
+        <span>⚠️ <strong>Sito in costruzione</strong> - Ci stiamo preparando al lancio. Se ti registri, ti avviseremo quando saremo pronti!</span>
+      </div>
       {/* Pilot Banner - Milano */}
       <div className="bg-gradient-to-r from-coral-500 to-orange-500 text-white text-center py-2.5 px-4 text-sm">
         <span className="font-semibold">🏙️ Pilot Milano</span> — Accesso su invito per cliniche selezionate. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Candidati →</button>
