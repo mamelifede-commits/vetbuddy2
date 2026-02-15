@@ -283,14 +283,19 @@ function ComingSoonLanding({ onLogin }) {
       <main className="flex-1 flex items-center justify-center px-4 relative z-10">
         <div className="text-center">
           {/* Logo with glow - Clickable to change style */}
-          <div className="relative mb-8 cursor-pointer" onClick={() => setLogoStyle((logoStyle + 1) % logoStyles.length)}>
+          <div className="relative mb-8">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-56 h-56 bg-coral-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
             </div>
-            <div className="relative group">
+            <div 
+              className="relative group cursor-pointer"
+              onClick={() => setLogoStyle((logoStyle + 1) % logoStyles.length)}
+            >
               {logoStyles[logoStyle].render()}
-              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <span className="text-xs text-gray-400 bg-white/80 px-3 py-1 rounded-full">Clicca per cambiare stile ({logoStyle + 1}/{logoStyles.length})</span>
+              {/* Click hint */}
+              <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white/90 backdrop-blur px-4 py-2 rounded-full shadow-lg border border-gray-100">
+                <span className="text-xs text-gray-500">👆 Clicca per cambiare stile</span>
+                <span className="text-xs font-bold text-coral-500">{logoStyle + 1}/{logoStyles.length}</span>
               </div>
             </div>
           </div>
