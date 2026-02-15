@@ -585,8 +585,12 @@ async function generateTutorialPDF(tutorial, isClinic = false) {
       });
     }
     
-    pg.drawText('VetBuddy', {
-      x: margin, y: 5, size: 8, font: font, color: lightGray
+    // Brand name footer with two-color style
+    pg.drawText('vet', {
+      x: margin, y: 5, size: 8, font: font, color: darkGray
+    });
+    pg.drawText('buddy', {
+      x: margin + 14, y: 5, size: 8, font: font, color: coralColor
     });
   }
   
