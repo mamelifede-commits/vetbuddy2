@@ -202,12 +202,12 @@ function ComingSoonLanding({ onLogin }) {
         {/* SPAZIO tra testo e cane */}
         <div className="h-6 md:h-8"></div>
         
-        {/* Golden Retriever - GRANDE con ANIMAZIONE */}
+        {/* Golden Retriever - MOLTO GRANDE con ANIMAZIONE LENTA dal basso */}
         <div className="flex justify-center items-center">
           <img
-            src="/animals/golden-gradient.png?v=5"
+            src="/animals/golden-gradient.png?v=6"
             alt="Golden Retriever"
-            className="h-[320px] md:h-[380px] lg:h-[420px] w-auto object-contain animate-slide-up-dog"
+            className="h-[400px] md:h-[480px] lg:h-[550px] w-auto object-contain animate-slide-up-dog"
           />
         </div>
       </div>
