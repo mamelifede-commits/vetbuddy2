@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Termini e Condizioni - VetBuddy',
-  description: 'Termini e condizioni di utilizzo della piattaforma VetBuddy per cliniche veterinarie e proprietari di animali.',
+  title: 'Termini e Condizioni - vetbuddy',
+  description: 'Termini e condizioni di utilizzo della piattaforma vetbuddy per cliniche veterinarie e proprietari di animali.',
 };
 
 export default function TerminiPage() {
@@ -28,11 +28,11 @@ export default function TerminiPage() {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Accettazione dei Termini</h2>
             <p className="text-gray-600 mb-4">
-              Utilizzando la piattaforma VetBuddy ("Servizio"), accetti di essere vincolato dai presenti 
+              Utilizzando la piattaforma vetbuddy ("Servizio"), accetti di essere vincolato dai presenti 
               Termini e Condizioni. Se non accetti questi termini, ti preghiamo di non utilizzare il Servizio.
             </p>
             <p className="text-gray-600">
-              VetBuddy si riserva il diritto di modificare questi termini in qualsiasi momento. 
+              vetbuddy si riserva il diritto di modificare questi termini in qualsiasi momento. 
               Le modifiche saranno efficaci dalla pubblicazione sul sito.
             </p>
           </section>
@@ -40,7 +40,7 @@ export default function TerminiPage() {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Descrizione del Servizio</h2>
             <p className="text-gray-600 mb-4">
-              VetBuddy è una piattaforma digitale che connette cliniche veterinarie e proprietari di animali, 
+              vetbuddy è una piattaforma digitale che connette cliniche veterinarie e proprietari di animali, 
               offrendo funzionalità di:
             </p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
@@ -57,12 +57,12 @@ export default function TerminiPage() {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">3. Registrazione e Account</h2>
             <h3 className="text-lg font-medium text-gray-800 mb-2">3.1 Requisiti</h3>
             <p className="text-gray-600 mb-4">
-              Per utilizzare VetBuddy devi avere almeno 18 anni e fornire informazioni accurate e complete 
+              Per utilizzare vetbuddy devi avere almeno 18 anni e fornire informazioni accurate e complete 
               durante la registrazione.
             </p>
             <h3 className="text-lg font-medium text-gray-800 mb-2">3.2 Sicurezza dell'Account</h3>
             <p className="text-gray-600 mb-4">
-              Sei responsabile della sicurezza del tuo account e della password. VetBuddy non sarà 
+              Sei responsabile della sicurezza del tuo account e della password. vetbuddy non sarà 
               responsabile per perdite derivanti dall'uso non autorizzato del tuo account.
             </p>
             <h3 className="text-lg font-medium text-gray-800 mb-2">3.3 Account Clinica</h3>
@@ -79,9 +79,9 @@ export default function TerminiPage() {
               nell'area di Milano e provincia.
             </p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
-              <li>L'accesso al Pilot è su invito e a discrezione di VetBuddy</li>
+              <li>L'accesso al Pilot è su invito e a discrezione di vetbuddy</li>
               <li>Il periodo gratuito (90 giorni, estendibile a 6 mesi) è soggetto a partecipazione attiva</li>
-              <li>VetBuddy si riserva il diritto di modificare o terminare il Pilot in qualsiasi momento</li>
+              <li>vetbuddy si riserva il diritto di modificare o terminare il Pilot in qualsiasi momento</li>
               <li>Al termine del Pilot, si applicheranno le tariffe standard pubblicate</li>
             </ul>
           </section>
@@ -108,7 +108,7 @@ export default function TerminiPage() {
 
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Uso Accettabile</h2>
-            <p className="text-gray-600 mb-4">Nell'utilizzare VetBuddy, accetti di NON:</p>
+            <p className="text-gray-600 mb-4">Nell'utilizzare vetbuddy, accetti di NON:</p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
               <li>Violare leggi o regolamenti applicabili</li>
               <li>Caricare contenuti illegali, diffamatori o offensivi</li>
@@ -124,8 +124,8 @@ export default function TerminiPage() {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Contenuti degli Utenti</h2>
             <h3 className="text-lg font-medium text-gray-800 mb-2">7.1 Proprietà</h3>
             <p className="text-gray-600 mb-4">
-              Mantieni la proprietà dei contenuti che carichi su VetBuddy (documenti, immagini, dati). 
-              Concedi a VetBuddy una licenza limitata per ospitare, mostrare e trasmettere tali contenuti 
+              Mantieni la proprietà dei contenuti che carichi su vetbuddy (documenti, immagini, dati). 
+              Concedi a vetbuddy una licenza limitata per ospitare, mostrare e trasmettere tali contenuti 
               ai fini dell'erogazione del servizio.
             </p>
             <h3 className="text-lg font-medium text-gray-800 mb-2">7.2 Responsabilità</h3>
@@ -138,11 +138,11 @@ export default function TerminiPage() {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">8. Proprietà Intellettuale</h2>
             <p className="text-gray-600 mb-4">
-              VetBuddy e tutti i contenuti, funzionalità e design della piattaforma sono di proprietà 
-              esclusiva di VetBuddy e sono protetti dalle leggi sulla proprietà intellettuale.
+              vetbuddy e tutti i contenuti, funzionalità e design della piattaforma sono di proprietà 
+              esclusiva di vetbuddy e sono protetti dalle leggi sulla proprietà intellettuale.
             </p>
             <p className="text-gray-600">
-              Il marchio "VetBuddy", il logo e altri elementi distintivi non possono essere utilizzati 
+              Il marchio "vetbuddy", il logo e altri elementi distintivi non possono essere utilizzati 
               senza autorizzazione scritta.
             </p>
           </section>
@@ -150,11 +150,11 @@ export default function TerminiPage() {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Limitazione di Responsabilità</h2>
             <p className="text-gray-600 mb-4">
-              VetBuddy fornisce il servizio "così com'è" senza garanzie di alcun tipo. 
+              vetbuddy fornisce il servizio "così com'è" senza garanzie di alcun tipo. 
               Non garantiamo che il servizio sia sempre disponibile o privo di errori.
             </p>
             <p className="text-gray-600 mb-4">
-              <strong>VetBuddy non è responsabile per:</strong>
+              <strong>vetbuddy non è responsabile per:</strong>
             </p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
               <li>Decisioni mediche o veterinarie prese sulla base delle informazioni presenti nella piattaforma</li>
@@ -163,7 +163,7 @@ export default function TerminiPage() {
               <li>Interruzioni del servizio dovute a manutenzione o cause di forza maggiore</li>
             </ul>
             <p className="text-gray-600 mt-4">
-              La responsabilità massima di VetBuddy è limitata all'importo pagato dall'utente 
+              La responsabilità massima di vetbuddy è limitata all'importo pagato dall'utente 
               nei 12 mesi precedenti l'evento.
             </p>
           </section>
@@ -171,7 +171,7 @@ export default function TerminiPage() {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">10. Indennizzo</h2>
             <p className="text-gray-600">
-              Accetti di indennizzare e manlevare VetBuddy da qualsiasi reclamo, danno o spesa 
+              Accetti di indennizzare e manlevare vetbuddy da qualsiasi reclamo, danno o spesa 
               derivante dalla tua violazione di questi termini o dall'uso improprio del servizio.
             </p>
           </section>
@@ -179,7 +179,7 @@ export default function TerminiPage() {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">11. Sospensione e Terminazione</h2>
             <p className="text-gray-600 mb-4">
-              VetBuddy può sospendere o terminare il tuo account in caso di:
+              vetbuddy può sospendere o terminare il tuo account in caso di:
             </p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
               <li>Violazione dei presenti termini</li>
@@ -203,7 +203,7 @@ export default function TerminiPage() {
             <h3 className="text-lg font-medium text-gray-800 mb-2">12.2 Intero Accordo</h3>
             <p className="text-gray-600 mb-4">
               Questi termini, insieme alla Privacy Policy, costituiscono l'intero accordo 
-              tra te e VetBuddy.
+              tra te e vetbuddy.
             </p>
             <h3 className="text-lg font-medium text-gray-800 mb-2">12.3 Separabilità</h3>
             <p className="text-gray-600">
@@ -228,7 +228,7 @@ export default function TerminiPage() {
       {/* Footer */}
       <footer className="bg-white border-t py-8">
         <div className="max-w-4xl mx-auto px-4 text-center text-gray-500 text-sm">
-          <p>© 2025 VetBuddy. Tutti i diritti riservati.</p>
+          <p>© 2025 vetbuddy. Tutti i diritti riservati.</p>
           <div className="flex justify-center gap-4 mt-2">
             <Link href="/privacy" className="hover:text-coral-500">Privacy Policy</Link>
             <Link href="/termini" className="hover:text-coral-500">Termini e Condizioni</Link>
