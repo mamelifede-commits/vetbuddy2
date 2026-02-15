@@ -63,7 +63,7 @@ async function seedDatabase() {
     };
     
     await users.insertOne(demoClinic);
-    console.log('✅ Demo clinic created: demo@vetbuddy.it / DemoVet2025!');
+    console.log('✅ Demo clinic created: demo@vetbuddy.it / VetBuddy2025!Secure');
     
     // Create Demo Owner 1 - Mario Rossi
     const owner1Id = uuidv4();
