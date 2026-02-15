@@ -205,7 +205,7 @@ function ComingSoonLanding({ onLogin }) {
         {/* Golden Retriever - MOLTO GRANDE con ANIMAZIONE LENTA dal basso */}
         <div className="flex justify-center items-center">
           <img
-            src="/animals/golden-clean.png?v=1"
+            src="/animals/dog-v2.png"
             alt="Golden Retriever"
             className="h-[400px] md:h-[480px] lg:h-[550px] w-auto object-contain animate-slide-up-dog"
           />
