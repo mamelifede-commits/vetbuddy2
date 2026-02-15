@@ -650,7 +650,9 @@ export default function PresentazionePage() {
         </div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <VetBuddyLogo size={70} white />
+          <div className="flex justify-center">
+            <VetBuddyLogo size={70} white showText={true} />
+          </div>
           <h2 className="text-3xl md:text-5xl font-bold text-white mt-8 mb-6">
             Pronto a rivoluzionare<br/>la tua clinica?
           </h2>
