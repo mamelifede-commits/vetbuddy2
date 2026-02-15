@@ -11,7 +11,7 @@ import random
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://clinic-connect-qa.preview.emergentagent.com/api"
+BASE_URL = "https://vetbuddy-coming-soon.preview.emergentagent.com/api"
 FALLBACK_URL = "http://localhost:3000/api"
 
 # Test configuration
