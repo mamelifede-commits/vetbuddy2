@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Mail, PawPrint, Stethoscope } from 'lucide-react';
-import vetbuddyLogo from '@/app/components/common/vetbuddyLogo';
+import VetBuddyLogo from '@/app/components/common/VetBuddyLogo';
 import api from '@/app/lib/api';
 
 function AuthForm({ mode, setMode, onLogin }) {
@@ -133,7 +133,7 @@ function AuthForm({ mode, setMode, onLogin }) {
     return (
       <div>
         <DialogHeader className="text-center">
-          <div className="flex justify-center mb-4"><vetbuddyLogo size={50} showText={true} /></div>
+          <div className="flex justify-center mb-4"><VetBuddyLogo size={50} showText={true} /></div>
           <DialogTitle className="text-2xl text-gray-700">Password dimenticata?</DialogTitle>
           <DialogDescription>Inserisci la tua email per ricevere un link di reset</DialogDescription>
         </DialogHeader>
@@ -153,7 +153,7 @@ function AuthForm({ mode, setMode, onLogin }) {
   return (
     <div>
       <DialogHeader className="text-center">
-        <div className="flex justify-center mb-4"><vetbuddyLogo size={50} showText={true} /></div>
+        <div className="flex justify-center mb-4"><VetBuddyLogo size={50} showText={true} /></div>
         <DialogDescription>{mode === 'login' ? 'Accedi al tuo account' : 'Crea un nuovo account'}</DialogDescription>
       </DialogHeader>
       <Tabs value={mode} onValueChange={setMode} className="mt-4">

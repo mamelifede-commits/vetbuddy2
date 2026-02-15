@@ -12,7 +12,7 @@ import {
 import Link from 'next/link';
 
 // vetbuddy Logo - New Brand Style 4 (Minimal with coral box)
-const vetbuddyLogo = ({ size = 40, white = false, showText = false }) => {
+const VetBuddyLogo = ({ size = 40, white = false, showText = false }) => {
   const boxSize = size;
   const iconSize = Math.round(size * 0.55);
   const padding = Math.round(size * 0.2);
@@ -154,7 +154,7 @@ export default function PresentazionePage() {
         <header className="relative z-50 py-6 px-6">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <Link href="/" className="flex items-center gap-3">
-              <vetbuddyLogo size={36} white showText={true} />
+              <VetBuddyLogo size={36} white showText={true} />
             </Link>
             <Link 
               href="/" 
@@ -651,7 +651,7 @@ export default function PresentazionePage() {
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="flex justify-center">
-            <vetbuddyLogo size={70} white showText={true} />
+            <VetBuddyLogo size={70} white showText={true} />
           </div>
           <h2 className="text-3xl md:text-5xl font-bold text-white mt-8 mb-6">
             Pronto a rivoluzionare<br/>la tua clinica?
@@ -678,7 +678,7 @@ export default function PresentazionePage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-3">
-              <vetbuddyLogo size={28} white showText={true} />
+              <VetBuddyLogo size={28} white showText={true} />
             </div>
             <div className="flex flex-wrap items-center justify-center gap-6 text-gray-400 text-sm">
               <a href="mailto:info@vetbuddy.it" className="hover:text-white transition">info@vetbuddy.it</a>

@@ -11,7 +11,7 @@ import {
 import Link from 'next/link';
 
 // Logo Component
-const vetbuddyLogo = ({ size = 40 }) => (
+const VetBuddyLogo = ({ size = 40 }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <ellipse cx="50" cy="62" rx="18" ry="16" fill="#FF6B6B"/>
     <ellipse cx="28" cy="38" rx="10" ry="12" fill="#FF6B6B"/>
@@ -59,7 +59,7 @@ Micia,gatto,Persiano,25/09/2022,,femmina,4,bianco,no,Allergia al pesce,,Gatta mo
       <header className="bg-white border-b sticky top-0 z-50 print:hidden">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <vetbuddyLogo size={32} />
+            <VetBuddyLogo size={32} />
             <span className="font-bold text-xl text-gray-900">vetbuddy</span>
           </Link>
           <div className="flex items-center gap-3">

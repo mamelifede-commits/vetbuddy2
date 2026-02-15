@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, AlertCircle, Loader2, Smartphone } from 'lucide-react';
-import vetbuddyLogo from '@/app/components/common/vetbuddyLogo';
+import VetBuddyLogo from '@/app/components/common/VetBuddyLogo';
 import api from '@/app/lib/api';
 
 function VerificationScreen({ state, onComplete }) {
@@ -57,7 +57,7 @@ function VerificationScreen({ state, onComplete }) {
     <div className="min-h-screen bg-gradient-to-b from-coral-50 to-white flex items-center justify-center p-4">
       <Card className="max-w-md w-full">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4"><vetbuddyLogo size={60} showText={true} /></div>
+          <div className="flex justify-center mb-4"><VetBuddyLogo size={60} showText={true} /></div>
           
           {state.status === 'verifying' && (
             <>

@@ -4,7 +4,7 @@ import { PawPrint } from 'lucide-react';
 
 // vetbuddy Logo Component - Style 4 (Minimal with coral box)
 // This is the official brand logo - do not modify
-const vetbuddyLogo = ({ size = 40, showText = false, className = '' }) => {
+const VetBuddyLogo = ({ size = 40, showText = false, className = '' }) => {
   // Calculate proportions based on size
   const boxSize = size;
   const iconSize = Math.round(size * 0.55);
@@ -40,4 +40,4 @@ const vetbuddyLogo = ({ size = 40, showText = false, className = '' }) => {
   );
 };
 
-export default vetbuddyLogo;
+export default VetBuddyLogo;

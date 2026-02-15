@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, SendHorizontal } from 'lucide-react';
-import vetbuddyLogo from './vetbuddyLogo';
+import VetBuddyLogo from './VetBuddyLogo';
 
 function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -111,7 +111,7 @@ function ChatWidget() {
           {/* Header */}
           <div className="bg-gradient-to-r from-coral-500 to-coral-600 px-4 py-3 flex items-center gap-3">
             <div className="h-10 w-10 bg-white/20 rounded-full flex items-center justify-center">
-              <vetbuddyLogo size={28} className="[&>div]:shadow-none [&>div]:bg-transparent" />
+              <VetBuddyLogo size={28} className="[&>div]:shadow-none [&>div]:bg-transparent" />
             </div>
             <div className="flex-1">
               <h3 className="text-white font-semibold text-sm">vetbuddy AI</h3>

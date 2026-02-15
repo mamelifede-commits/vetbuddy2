@@ -10,7 +10,7 @@ import { AuthForm, ResetPasswordScreen, VerificationScreen } from '@/app/compone
 // Landing page components (refactored)
 import { EcosystemToggle, FeatureCarousel, HomepageMapSection } from '@/app/components/landing';
 // Common components (refactored)
-import { vetbuddyLogo, AccessDenied, RoleBadge, ChatWidget, WelcomeScreen } from '@/app/components/common';
+import { VetBuddyLogo, AccessDenied, RoleBadge, ChatWidget, WelcomeScreen } from '@/app/components/common';
 import api from '@/app/lib/api';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';

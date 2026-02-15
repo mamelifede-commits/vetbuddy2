@@ -3,7 +3,7 @@
 import { LayoutDashboard, Inbox, FileText, Video, Calendar, MessageCircle, PawPrint, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import vetbuddyLogo from './vetbuddyLogo';
+import VetBuddyLogo from './VetBuddyLogo';
 
 function WelcomeScreen({ user, onContinue }) {
   const isClinic = user.role === 'clinic';
@@ -11,7 +11,7 @@ function WelcomeScreen({ user, onContinue }) {
     <div className="min-h-screen bg-gradient-to-b from-coral-50 to-white flex items-center justify-center p-4">
       <Card className="max-w-lg w-full">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4"><vetbuddyLogo size={60} showText={true} /></div>
+          <div className="flex justify-center mb-4"><VetBuddyLogo size={60} showText={true} /></div>
           <CardTitle className="text-2xl text-gray-700">Benvenuto in vetbuddy!</CardTitle>
           <CardDescription className="text-base mt-2">{isClinic ? 'Stai entrando nel portale per cliniche veterinarie' : "Stai entrando nell'app per proprietari di animali"}</CardDescription>
         </CardHeader>
