@@ -3,6 +3,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Forza asset prefix unico per invalidare cache
+  assetPrefix: process.env.NODE_ENV === 'production' ? undefined : '',
+  generateBuildId: async () => {
+    return 'build-' + Date.now();
+  },
   experimental: {
     // Remove if not using Server Components
     serverComponentsExternalPackages: ['mongodb'],
@@ -32,6 +37,9 @@ const nextConfig = {
           { key: "Access-Control-Allow-Origin", value: process.env.CORS_ORIGINS || "*" },
           { key: "Access-Control-Allow-Methods", value: "GET, POST, PUT, DELETE, OPTIONS" },
           { key: "Access-Control-Allow-Headers", value: "*" },
+          { key: "Cache-Control", value: "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0" },
+          { key: "Pragma", value: "no-cache" },
+          { key: "Expires", value: "0" },
         ],
       },
     ];
