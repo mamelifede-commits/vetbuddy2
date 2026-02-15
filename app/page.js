@@ -136,120 +136,14 @@ function ComingSoonLanding({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
   const [logoStyle, setLogoStyle] = useState(0);
 
-  // SVG Animal Components - Beautiful illustrations
-  const DogSVG = ({ className }) => (
-    <svg className={className} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="100" cy="140" rx="55" ry="45" fill="#D4A574"/>
-      <ellipse cx="100" cy="90" rx="45" ry="40" fill="#E8C5A0"/>
-      <ellipse cx="55" cy="55" rx="20" ry="30" fill="#D4A574" transform="rotate(-20 55 55)"/>
-      <ellipse cx="145" cy="55" rx="20" ry="30" fill="#D4A574" transform="rotate(20 145 55)"/>
-      <circle cx="80" cy="85" r="8" fill="#3D2314"/>
-      <circle cx="120" cy="85" r="8" fill="#3D2314"/>
-      <circle cx="82" cy="83" r="3" fill="white"/>
-      <circle cx="122" cy="83" r="3" fill="white"/>
-      <ellipse cx="100" cy="105" rx="12" ry="10" fill="#3D2314"/>
-      <path d="M88 115 Q100 125 112 115" stroke="#3D2314" strokeWidth="3" fill="none" strokeLinecap="round"/>
-      <ellipse cx="60" cy="100" rx="8" ry="6" fill="#FFB6C1"/>
-      <ellipse cx="140" cy="100" rx="8" ry="6" fill="#FFB6C1"/>
-    </svg>
-  );
-
-  const CatSVG = ({ className }) => (
-    <svg className={className} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="100" cy="130" rx="50" ry="50" fill="#FF9966"/>
-      <ellipse cx="100" cy="85" rx="42" ry="38" fill="#FFB088"/>
-      <polygon points="55,60 45,15 75,50" fill="#FF9966"/>
-      <polygon points="145,60 155,15 125,50" fill="#FF9966"/>
-      <polygon points="55,55 50,25 70,48" fill="#FFB6C1"/>
-      <polygon points="145,55 150,25 130,48" fill="#FFB6C1"/>
-      <ellipse cx="80" cy="80" rx="10" ry="12" fill="#2ECC71"/>
-      <ellipse cx="120" cy="80" rx="10" ry="12" fill="#2ECC71"/>
-      <ellipse cx="80" cy="80" rx="4" ry="10" fill="#1A1A1A"/>
-      <ellipse cx="120" cy="80" rx="4" ry="10" fill="#1A1A1A"/>
-      <ellipse cx="100" cy="100" rx="8" ry="6" fill="#FFB6C1"/>
-      <path d="M92 108 L100 115 L108 108" stroke="#1A1A1A" strokeWidth="2" fill="none"/>
-      <path d="M60 95 L40 90" stroke="#1A1A1A" strokeWidth="2"/>
-      <path d="M60 100 L40 100" stroke="#1A1A1A" strokeWidth="2"/>
-      <path d="M140 95 L160 90" stroke="#1A1A1A" strokeWidth="2"/>
-      <path d="M140 100 L160 100" stroke="#1A1A1A" strokeWidth="2"/>
-    </svg>
-  );
-
-  const RabbitSVG = ({ className }) => (
-    <svg className={className} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="100" cy="140" rx="45" ry="40" fill="#F5F5F5"/>
-      <ellipse cx="100" cy="100" rx="38" ry="35" fill="white"/>
-      <ellipse cx="70" cy="30" rx="15" ry="45" fill="white"/>
-      <ellipse cx="130" cy="30" rx="15" ry="45" fill="white"/>
-      <ellipse cx="70" cy="30" rx="8" ry="35" fill="#FFB6C1"/>
-      <ellipse cx="130" cy="30" rx="8" ry="35" fill="#FFB6C1"/>
-      <circle cx="85" cy="95" r="6" fill="#3D2314"/>
-      <circle cx="115" cy="95" r="6" fill="#3D2314"/>
-      <circle cx="86" cy="93" r="2" fill="white"/>
-      <circle cx="116" cy="93" r="2" fill="white"/>
-      <ellipse cx="100" cy="110" rx="8" ry="6" fill="#FFB6C1"/>
-      <ellipse cx="85" cy="115" rx="12" ry="8" fill="#F8F8F8"/>
-      <ellipse cx="115" cy="115" rx="12" ry="8" fill="#F8F8F8"/>
-    </svg>
-  );
-
-  const BirdSVG = ({ className }) => (
-    <svg className={className} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="100" cy="110" rx="40" ry="35" fill="#3498DB"/>
-      <ellipse cx="100" cy="75" rx="30" ry="28" fill="#5DADE2"/>
-      <polygon points="100,90 130,95 100,100" fill="#F39C12"/>
-      <circle cx="88" cy="70" r="6" fill="#1A1A1A"/>
-      <circle cx="89" cy="69" r="2" fill="white"/>
-      <path d="M55 100 Q30 80 40 120 Q50 110 55 100" fill="#2980B9"/>
-      <path d="M145 100 Q170 80 160 120 Q150 110 145 100" fill="#2980B9"/>
-      <ellipse cx="100" cy="150" rx="8" ry="15" fill="#F39C12"/>
-      <path d="M85 75 Q75 55 90 65" stroke="#5DADE2" strokeWidth="4" fill="none"/>
-      <path d="M115 75 Q125 55 110 65" stroke="#5DADE2" strokeWidth="4" fill="none"/>
-    </svg>
-  );
-
-  const HamsterSVG = ({ className }) => (
-    <svg className={className} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="100" cy="120" rx="50" ry="45" fill="#E8B87D"/>
-      <ellipse cx="100" cy="90" rx="42" ry="38" fill="#F5D5A8"/>
-      <ellipse cx="55" cy="70" rx="18" ry="20" fill="#E8B87D"/>
-      <ellipse cx="145" cy="70" rx="18" ry="20" fill="#E8B87D"/>
-      <ellipse cx="55" cy="70" rx="10" ry="12" fill="#FFB6C1"/>
-      <ellipse cx="145" cy="70" rx="10" ry="12" fill="#FFB6C1"/>
-      <circle cx="82" cy="85" r="7" fill="#1A1A1A"/>
-      <circle cx="118" cy="85" r="7" fill="#1A1A1A"/>
-      <circle cx="83" cy="83" r="2" fill="white"/>
-      <circle cx="119" cy="83" r="2" fill="white"/>
-      <ellipse cx="100" cy="100" rx="8" ry="6" fill="#FFB6C1"/>
-      <ellipse cx="75" cy="105" rx="15" ry="12" fill="#F5E6D3"/>
-      <ellipse cx="125" cy="105" rx="15" ry="12" fill="#F5E6D3"/>
-    </svg>
-  );
-
-  const PuppySVG = ({ className }) => (
-    <svg className={className} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="100" cy="135" rx="50" ry="45" fill="#8B5A2B"/>
-      <ellipse cx="100" cy="90" rx="45" ry="42" fill="#A0522D"/>
-      <ellipse cx="50" cy="60" rx="22" ry="32" fill="#8B5A2B" transform="rotate(-15 50 60)"/>
-      <ellipse cx="150" cy="60" rx="22" ry="32" fill="#8B5A2B" transform="rotate(15 150 60)"/>
-      <ellipse cx="100" cy="95" rx="20" ry="18" fill="#DEB887"/>
-      <circle cx="82" cy="82" r="10" fill="#1A1A1A"/>
-      <circle cx="118" cy="82" r="10" fill="#1A1A1A"/>
-      <circle cx="84" cy="79" r="4" fill="white"/>
-      <circle cx="120" cy="79" r="4" fill="white"/>
-      <ellipse cx="100" cy="102" rx="10" ry="8" fill="#1A1A1A"/>
-      <path d="M85 115 Q100 130 115 115" stroke="#1A1A1A" strokeWidth="3" fill="none" strokeLinecap="round"/>
-      <ellipse cx="100" cy="120" rx="8" ry="5" fill="#FF6B6B"/>
-    </svg>
-  );
-
+  // Real photo animals with transparent backgrounds
   const animals = [
-    { Component: DogSVG, size: '180px', style: { top: '5%', left: '3%', animation: 'float 6s ease-in-out infinite' } },
-    { Component: CatSVG, size: '160px', style: { top: '8%', right: '5%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
-    { Component: RabbitSVG, size: '140px', style: { bottom: '15%', left: '5%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
-    { Component: PuppySVG, size: '170px', style: { bottom: '10%', right: '3%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
-    { Component: BirdSVG, size: '120px', style: { top: '3%', left: '35%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
-    { Component: HamsterSVG, size: '130px', style: { top: '45%', left: '2%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
+    { src: '/animals/dog_real.png', size: '220px', style: { top: '3%', left: '2%', animation: 'float 6s ease-in-out infinite' } },
+    { src: '/animals/cat_real.png', size: '200px', style: { top: '5%', right: '3%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
+    { src: '/animals/rabbit_real.png', size: '180px', style: { bottom: '8%', left: '3%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
+    { src: '/animals/golden_real.png', size: '210px', style: { bottom: '5%', right: '2%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
+    { src: '/animals/bird_real.png', size: '140px', style: { top: '2%', left: '38%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
+    { src: '/animals/hamster_real.png', size: '150px', style: { top: '40%', left: '1%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
   ];
 
   // Logo style proposals
