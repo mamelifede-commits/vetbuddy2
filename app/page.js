@@ -1786,7 +1786,7 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, re
           <div className="flex-1">
             <h3 className="font-semibold text-gray-800 mb-1">📚 Tutorial per Cliniche</h3>
             <p className="text-sm text-gray-600 mb-2">
-              Scopri tutte le funzionalità di VetBuddy per gestire al meglio la tua clinica.
+              Scopri tutte le funzionalità di vetbuddy per gestire al meglio la tua clinica.
             </p>
             <button onClick={() => onNavigate('tutorial')} className="inline-flex items-center gap-1 text-purple-600 font-medium text-sm hover:underline">
               <PlayCircle className="h-4 w-4" /> Guarda il tutorial
