@@ -351,12 +351,12 @@ async function generateTutorialPDF(tutorial, isClinic = false) {
     color: coralColor
   });
   
-  // Title - New Brand Style (vet + buddy)
+  // Title - New Brand Style (vetbuddy senza spazio)
   page.drawText('vet', {
     x: margin, y: pageHeight - 70, size: 36, font: boldFont, color: rgb(1, 1, 1)
   });
   page.drawText('buddy', {
-    x: margin + 72, y: pageHeight - 70, size: 36, font: boldFont, color: rgb(1, 1, 1)
+    x: margin + 55, y: pageHeight - 70, size: 36, font: font, color: rgb(1, 1, 1)
   });
   
   // Subtitle
