@@ -11,8 +11,8 @@ function WelcomeScreen({ user, onContinue }) {
     <div className="min-h-screen bg-gradient-to-b from-coral-50 to-white flex items-center justify-center p-4">
       <Card className="max-w-lg w-full">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4"><VetBuddyLogo size={60} /></div>
-          <CardTitle className="text-2xl">Benvenuto in VetBuddy!</CardTitle>
+          <div className="flex justify-center mb-4"><VetBuddyLogo size={60} showText={true} /></div>
+          <CardTitle className="text-2xl text-gray-700">Benvenuto in VetBuddy!</CardTitle>
           <CardDescription className="text-base mt-2">{isClinic ? 'Stai entrando nel portale per cliniche veterinarie' : "Stai entrando nell'app per proprietari di animali"}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
