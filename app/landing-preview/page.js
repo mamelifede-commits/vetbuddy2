@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AuthForm } from '@/app/components/auth';
 import { EcosystemToggle, FeatureCarousel, HomepageMapSection } from '@/app/components/landing';
-import { VetBuddyLogo } from '@/app/components/common';
+import { vetbuddyLogo } from '@/app/components/common';
 import api from '@/app/lib/api';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
@@ -396,7 +396,7 @@ export default function FullLandingPage() {
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
               Basta telefonate, promemoria manuali e clienti che dimenticano gli appuntamenti. 
-              <strong> VetBuddy lavora mentre tu curi gli animali.</strong>
+              <strong> vetbuddy lavora mentre tu curi gli animali.</strong>
             </p>
           </div>
 
