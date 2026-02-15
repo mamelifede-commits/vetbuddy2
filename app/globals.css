@@ -241,3 +241,22 @@ code {
 .animate-on-scroll.animated {
   opacity: 1;
 }
+
+/* Animazione CANE che SCORRE dal basso verso l'alto */
+@keyframes slideUpDog {
+  0% {
+    transform: translateY(350px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up-dog {
+  animation: slideUpDog 4s ease-out forwards;
+}
