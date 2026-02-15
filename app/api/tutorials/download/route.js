@@ -604,7 +604,7 @@ export async function GET(request) {
     
     const isClinic = type === 'clinic';
     const tutorial = isClinic ? clinicTutorial : ownerTutorial;
-    const filename = isClinic ? 'VetBuddy_Tutorial_Cliniche.pdf' : 'VetBuddy_Tutorial_Proprietari.pdf';
+    const filename = isClinic ? 'vetbuddy_Tutorial_Cliniche.pdf' : 'vetbuddy_Tutorial_Proprietari.pdf';
     
     const pdfBytes = await generateTutorialPDF(tutorial, isClinic);
     
