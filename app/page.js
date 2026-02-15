@@ -163,104 +163,62 @@ function ComingSoonLanding({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* SYNTHWAVE BACKGROUND */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-purple-950 to-black"></div>
-      
-      {/* Sole al tramonto synthwave */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px]">
-        <div className="absolute bottom-0 w-full h-full bg-gradient-to-t from-fuchsia-600 via-orange-500 to-yellow-400 rounded-t-full opacity-80 blur-sm"></div>
-        <div className="absolute bottom-0 w-full h-full overflow-hidden rounded-t-full">
-          {/* Linee orizzontali sul sole */}
-          <div className="absolute w-full h-2 bg-gray-900/80 top-[20%]"></div>
-          <div className="absolute w-full h-3 bg-gray-900/80 top-[35%]"></div>
-          <div className="absolute w-full h-4 bg-gray-900/80 top-[50%]"></div>
-          <div className="absolute w-full h-6 bg-gray-900/80 top-[65%]"></div>
-          <div className="absolute w-full h-10 bg-gray-900/80 top-[80%]"></div>
-        </div>
-      </div>
-      
-      {/* Griglia prospettica neon */}
-      <div className="absolute bottom-0 left-0 right-0 h-[40%] overflow-hidden" style={{perspective: '500px'}}>
-        <div 
-          className="absolute inset-0 border-t-2 border-fuchsia-500/60"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(236,72,153,0.3) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(236,72,153,0.3) 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 40px',
-            transform: 'rotateX(60deg)',
-            transformOrigin: 'center top'
-          }}
-        ></div>
-      </div>
-      
-      {/* Glow neon in alto */}
+    <div className="min-h-screen flex flex-col relative overflow-hidden bg-gradient-to-br from-coral-100 via-rose-50 to-cyan-100">
+      {/* Zampine decorative sparse */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-40 bg-cyan-500/30 rounded-full blur-[80px]"></div>
-        <div className="absolute top-10 right-1/4 w-80 h-32 bg-fuchsia-500/30 rounded-full blur-[70px]"></div>
+        <PawPrint className="absolute top-[10%] left-[5%] h-16 w-16 text-coral-300/50 rotate-[-15deg]" />
+        <PawPrint className="absolute top-[20%] right-[10%] h-12 w-12 text-cyan-300/50 rotate-[25deg]" />
+        <PawPrint className="absolute top-[45%] left-[8%] h-10 w-10 text-rose-300/50 rotate-[10deg]" />
+        <PawPrint className="absolute top-[60%] right-[5%] h-14 w-14 text-coral-300/50 rotate-[-20deg]" />
+        <PawPrint className="absolute top-[75%] left-[15%] h-8 w-8 text-cyan-300/50 rotate-[35deg]" />
+        <PawPrint className="absolute bottom-[15%] right-[12%] h-12 w-12 text-rose-300/50 rotate-[-10deg]" />
+        <PawPrint className="absolute top-[30%] left-[25%] h-6 w-6 text-coral-200/40 rotate-[45deg]" />
+        <PawPrint className="absolute bottom-[30%] right-[25%] h-8 w-8 text-cyan-200/40 rotate-[-30deg]" />
       </div>
-      
-      {/* Stelle */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[5%] left-[10%] w-1 h-1 bg-white rounded-full"></div>
-        <div className="absolute top-[8%] left-[25%] w-1.5 h-1.5 bg-white rounded-full"></div>
-        <div className="absolute top-[3%] left-[40%] w-1 h-1 bg-white rounded-full"></div>
-        <div className="absolute top-[12%] left-[55%] w-1 h-1 bg-white rounded-full"></div>
-        <div className="absolute top-[6%] left-[70%] w-1.5 h-1.5 bg-white rounded-full"></div>
-        <div className="absolute top-[10%] left-[85%] w-1 h-1 bg-white rounded-full"></div>
-        <div className="absolute top-[15%] left-[15%] w-1 h-1 bg-white rounded-full"></div>
-        <div className="absolute top-[18%] left-[60%] w-1 h-1 bg-white rounded-full"></div>
-        <div className="absolute top-[4%] left-[90%] w-1 h-1 bg-white rounded-full"></div>
-      </div>
-      
-      {/* Zampine neon */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <PawPrint className="absolute top-[15%] left-[8%] h-14 w-14 text-cyan-400/40 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)] rotate-[-15deg]" />
-        <PawPrint className="absolute top-[20%] right-[10%] h-12 w-12 text-fuchsia-400/40 drop-shadow-[0_0_10px_rgba(232,121,249,0.5)] rotate-[25deg]" />
-        <PawPrint className="absolute top-[35%] left-[5%] h-10 w-10 text-pink-400/30 drop-shadow-[0_0_8px_rgba(244,114,182,0.4)] rotate-[10deg]" />
-        <PawPrint className="absolute top-[30%] right-[6%] h-12 w-12 text-cyan-400/30 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)] rotate-[-20deg]" />
-      </div>
+
+      {/* Linea colorata in alto */}
+      <div className="w-full h-1.5 bg-gradient-to-r from-coral-400 via-rose-400 to-cyan-400"></div>
 
       {/* CONTENUTO PRINCIPALE */}
       <div className="flex-1 flex flex-col justify-center items-center px-4 py-12 relative z-10">
-        {/* Logo con stile neon */}
-        <div className="mb-10 bg-black/60 backdrop-blur-sm rounded-2xl p-8 border border-fuchsia-500/30 shadow-[0_0_30px_rgba(232,121,249,0.2)]">
+        {/* Logo */}
+        <div className="mb-10">
           <div className="flex items-center justify-center gap-4">
-            <div className="p-5 bg-gradient-to-br from-fuchsia-500 to-cyan-500 rounded-2xl shadow-[0_0_20px_rgba(232,121,249,0.5)]">
-              <PawPrint className="h-14 w-14 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
+            <div className="p-5 bg-gradient-to-br from-coral-500 to-rose-500 rounded-3xl shadow-2xl shadow-coral-500/30">
+              <PawPrint className="h-14 w-14 text-white" />
             </div>
             <div>
-              <span className="font-black text-5xl md:text-7xl text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">vet</span>
-              <span className="font-black text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 via-pink-400 to-cyan-400 drop-shadow-[0_0_20px_rgba(232,121,249,0.5)]">buddy</span>
+              <span className="font-bold text-5xl md:text-7xl text-gray-900">vet</span>
+              <span className="font-bold text-5xl md:text-7xl text-coral-500">buddy</span>
             </div>
           </div>
         </div>
         
-        {/* Coming Soon neon */}
+        {/* Coming Soon */}
         <div className="text-center">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-pink-400 drop-shadow-[0_0_30px_rgba(232,121,249,0.6)]"
-              style={{textShadow: '0 0 40px rgba(232,121,249,0.4), 0 0 80px rgba(34,211,238,0.3)'}}>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-coral-500 via-rose-500 to-cyan-500 bg-clip-text text-transparent">
             Coming Soon
           </h1>
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
-            <PawPrint className="h-5 w-5 text-fuchsia-400 drop-shadow-[0_0_8px_rgba(232,121,249,0.8)]" />
-            <PawPrint className="h-6 w-6 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-            <PawPrint className="h-5 w-5 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)]" />
-            <div className="w-20 h-0.5 bg-gradient-to-l from-transparent via-pink-400 to-pink-400 shadow-[0_0_10px_rgba(244,114,182,0.8)]"></div>
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <span className="w-20 h-1 bg-gradient-to-r from-transparent via-coral-400 to-coral-500 rounded-full"></span>
+            <PawPrint className="h-5 w-5 text-coral-500" />
+            <PawPrint className="h-5 w-5 text-rose-500" />
+            <PawPrint className="h-5 w-5 text-cyan-500" />
+            <span className="w-20 h-1 bg-gradient-to-l from-transparent via-cyan-400 to-cyan-500 rounded-full"></span>
           </div>
         </div>
       </div>
+      
+      {/* Linea colorata in basso */}
+      <div className="w-full h-1.5 bg-gradient-to-r from-cyan-400 via-rose-400 to-coral-400"></div>
 
       {/* Footer */}
       <footer className="relative z-30 py-6 px-4">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-fuchsia-300/50 font-medium">© 2025 vetbuddy</p>
+          <p className="text-sm text-gray-400">© 2025 vetbuddy</p>
           <button 
             onClick={() => setShowTeamLogin(true)}
-            className="text-xs text-cyan-300/50 hover:text-cyan-300 transition-colors font-medium"
+            className="text-xs text-gray-400 hover:text-coral-500 transition-colors"
           >
             Accesso Team
           </button>
