@@ -925,6 +925,33 @@ export async function POST(request, { params }) {
   try {
     const body = await request.json().catch(() => ({}));
 
+    // Waitlist - Coming Soon signup
+    if (path === 'waitlist') {
+      const { email, userType } = body;
+      if (!email) {
+        return NextResponse.json({ error: 'Email richiesta' }, { status: 400, headers: corsHeaders });
+      }
+      
+      const waitlist = await getCollection('waitlist');
+      
+      // Check if already exists
+      const existing = await waitlist.findOne({ email: email.toLowerCase() });
+      if (existing) {
+        return NextResponse.json({ success: true, message: 'Email già registrata' }, { headers: corsHeaders });
+      }
+      
+      // Save to waitlist
+      await waitlist.insertOne({
+        id: uuidv4(),
+        email: email.toLowerCase(),
+        userType: userType || 'unknown', // 'clinic' or 'owner'
+        createdAt: new Date().toISOString(),
+        source: 'coming_soon_page'
+      });
+      
+      return NextResponse.json({ success: true, message: 'Aggiunto alla lista di attesa' }, { headers: corsHeaders });
+    }
+
     // Disconnect Google Calendar
     if (path === 'google-calendar/disconnect') {
       const user = getUserFromRequest(request);
