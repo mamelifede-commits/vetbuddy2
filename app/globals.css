@@ -136,7 +136,11 @@ code {
     @apply border-border;
     }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: white !important;
+    }
+  html {
+    background-color: white !important;
     }
 }
 
