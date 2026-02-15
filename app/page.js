@@ -167,40 +167,25 @@ function ComingSoonLanding({ onLogin }) {
       {/* Clean Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-coral-50 via-white to-sky-50"></div>
       
-      {/* Subtle decorative elements */}
-      <div className="absolute top-20 left-20 w-32 h-32 bg-coral-200/20 rounded-full blur-2xl"></div>
-      <div className="absolute bottom-40 right-20 w-40 h-40 bg-sky-200/20 rounded-full blur-2xl"></div>
+      {/* Subtle decorative blurs */}
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-coral-200/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-56 h-56 bg-sky-200/20 rounded-full blur-3xl"></div>
 
-      {/* Single Transparent Dog PNG - Rising Animation */}
+      {/* Single Cutout Dog PNG - Rising Animation */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-0">
         <div 
           style={{
-            animation: 'dogRise 12s ease-in-out infinite',
+            animation: 'dogRise 15s ease-in-out infinite',
           }}
         >
-          {/* Dog silhouette using SVG for guaranteed transparency */}
-          <svg 
-            viewBox="0 0 200 200" 
-            className="w-64 h-64 opacity-15"
-            fill="currentColor"
-            style={{ color: '#FF6B6B' }}
-          >
-            {/* Simplified dog silhouette */}
-            <ellipse cx="100" cy="130" rx="50" ry="40" />
-            <ellipse cx="100" cy="80" rx="35" ry="30" />
-            {/* Ears */}
-            <ellipse cx="70" cy="55" rx="15" ry="25" />
-            <ellipse cx="130" cy="55" rx="15" ry="25" />
-            {/* Snout */}
-            <ellipse cx="100" cy="100" rx="18" ry="12" />
-            {/* Tail */}
-            <ellipse cx="160" cy="120" rx="20" ry="8" transform="rotate(-30 160 120)" />
-            {/* Legs */}
-            <rect x="60" y="155" width="15" height="35" rx="7" />
-            <rect x="85" y="155" width="15" height="35" rx="7" />
-            <rect x="110" y="155" width="15" height="35" rx="7" />
-            <rect x="135" y="155" width="15" height="35" rx="7" />
-          </svg>
+          <img 
+            src="/dog-cutout.png"
+            alt=""
+            className="w-80 h-auto opacity-30"
+            style={{
+              filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.1))',
+            }}
+          />
         </div>
       </div>
 
@@ -208,20 +193,20 @@ function ComingSoonLanding({ onLogin }) {
       <style jsx>{`
         @keyframes dogRise {
           0% { 
-            transform: translateY(80px); 
+            transform: translateY(150px); 
             opacity: 0; 
           }
-          20% { 
+          15% { 
             opacity: 1; 
           }
           50% { 
-            transform: translateY(-30px); 
+            transform: translateY(-80px); 
           }
-          80% { 
+          85% { 
             opacity: 1; 
           }
           100% { 
-            transform: translateY(80px); 
+            transform: translateY(150px); 
             opacity: 0; 
           }
         }
