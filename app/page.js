@@ -346,40 +346,31 @@ function ComingSoonLanding({ onLogin }) {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.8),transparent_70%)]"></div>
       </div>
 
-      {/* Floating Animal Images - With organic blob shape */}
+      {/* Floating Animal SVG Illustrations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {animals.map((animal, index) => (
-          <div 
-            key={index}
-            className="absolute"
-            style={{
-              ...animal.style,
-              width: animal.size,
-              height: animal.size,
-            }}
-          >
-            {/* Organic blob shape with image */}
-            <div className="relative w-full h-full">
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/80 to-white/40 rounded-[60%_40%_50%_50%/50%_50%_40%_60%] blur-lg scale-105"></div>
-              {/* Image with blob mask */}
-              <img 
-                src={animal.src} 
-                alt=""
-                className="w-full h-full object-cover"
-                style={{ 
-                  borderRadius: '60% 40% 50% 50% / 50% 50% 40% 60%',
-                  filter: 'drop-shadow(0 15px 35px rgba(0,0,0,0.2))',
-                }}
-              />
+        {animals.map((animal, index) => {
+          const AnimalComponent = animal.Component;
+          return (
+            <div 
+              key={index}
+              className="absolute"
+              style={{
+                ...animal.style,
+                width: animal.size,
+                height: animal.size,
+                filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.15))',
+              }}
+            >
+              <AnimalComponent className="w-full h-full" />
             </div>
-          </div>
-        ))}
+          );
+        })}
         
         {/* Decorative paw prints */}
-        <div className="absolute top-[40%] left-[3%] text-coral-300/40 text-3xl rotate-[-20deg]">🐾</div>
-        <div className="absolute top-[65%] right-[5%] text-sky-300/40 text-3xl rotate-[15deg]">🐾</div>
-        <div className="absolute bottom-[35%] left-[48%] text-rose-300/30 text-2xl rotate-[30deg]">🐾</div>
+        <div className="absolute top-[40%] left-[3%] text-coral-300/50 text-4xl rotate-[-20deg]">🐾</div>
+        <div className="absolute top-[65%] right-[5%] text-sky-300/50 text-4xl rotate-[15deg]">🐾</div>
+        <div className="absolute bottom-[35%] left-[48%] text-rose-300/40 text-3xl rotate-[30deg]">🐾</div>
+        <div className="absolute top-[25%] right-[25%] text-amber-300/40 text-3xl rotate-[-10deg]">🐾</div>
       </div>
 
       {/* CSS Animations */}
