@@ -147,7 +147,7 @@ const ownerTutorial = {
 
 // ==================== CLINIC TUTORIAL CONTENT ====================
 const clinicTutorial = {
-  title: 'VetBuddy - Guida per Cliniche',
+  title: 'vetbuddy - Guida per Cliniche',
   subtitle: 'Il gestionale veterinario che semplifica il lavoro quotidiano',
   
   quickStart: [
