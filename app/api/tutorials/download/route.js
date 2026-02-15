@@ -276,10 +276,10 @@ const clinicTutorial = {
   ],
   
   faqs: [
-    { q: 'Quanto costa VetBuddy?', a: 'Starter: GRATUITO. Premium: EUR 49/mese.' },
+    { q: 'Quanto costa vetbuddy?', a: 'Starter: GRATUITO. Premium: EUR 49/mese.' },
     { q: 'Posso importare dati dal gestionale attuale?', a: 'Si! Supportiamo import da CSV.' },
-    { q: 'VetBuddy sostituisce il software di fatturazione?', a: 'No, genera solo PROFORMA.' },
-    { q: 'Come funziona il pagamento dei clienti?', a: 'Via Stripe. Nessuna commissione VetBuddy.' }
+    { q: 'vetbuddy sostituisce il software di fatturazione?', a: 'No, genera solo PROFORMA.' },
+    { q: 'Come funziona il pagamento dei clienti?', a: 'Via Stripe. Nessuna commissione vetbuddy.' }
   ],
   
   contacts: {
