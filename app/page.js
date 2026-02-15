@@ -17514,7 +17514,7 @@ function StaffDashboard({ user, onLogout }) {
         <div className="flex items-center gap-3 mb-2">
           <NewBrandLogo size="sm" showText={false} />
           <div>
-            <h1 className="font-bold text-coral-500">VetBuddy</h1>
+            <h1 className="font-bold"><span className="text-gray-900">vet</span><span className="text-coral-500">buddy</span></h1>
             <p className="text-xs text-gray-500 truncate max-w-[140px]">{user.clinicName}</p>
           </div>
         </div>
