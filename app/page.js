@@ -171,8 +171,9 @@ function ComingSoonLanding({ onLogin }) {
       {/* Soft decorative glow behind content */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-coral-200/20 rounded-full blur-3xl"></div>
 
-      {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-4 relative z-10">
+      {/* CONTENUTO PRINCIPALE - Struttura verticale fissa per evitare sovrapposizioni */}
+      <div className="flex-1 flex flex-col justify-center items-center px-4 relative z-10 py-8">
+        {/* Logo + Coming Soon - blocco fisso al centro */}
         <div className="text-center">
           {/* Logo Style 4 */}
           <div className="relative mb-8">
@@ -204,24 +205,27 @@ function ComingSoonLanding({ onLogin }) {
             </div>
           </div>
         </div>
-      </main>
-
-      {/* Animated Golden Retriever - SEMPRE SOTTO ai tre pallini, con spazio */}
-      <div className="relative z-0 flex justify-center items-end pb-8 mt-8">
-        <img
-          src="/animals/golden-retriever-user.png"
-          alt="Golden Retriever"
-          onLoad={() => setImageLoaded(true)}
-          className={`h-[100px] md:h-[130px] w-auto object-contain transition-all ease-out ${
-            imageLoaded 
-              ? 'translate-y-0 opacity-100' 
-              : 'translate-y-[80px] opacity-0'
-          }`}
-          style={{
-            filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.15))',
-            transitionDuration: '3500ms'
-          }}
-        />
+        
+        {/* SPAZIO FISSO tra testo e cane */}
+        <div className="h-16 md:h-20"></div>
+        
+        {/* Animated Golden Retriever - SEMPRE SOTTO con spazio garantito */}
+        <div className="flex justify-center">
+          <img
+            src="/animals/golden-retriever-user.png"
+            alt="Golden Retriever"
+            onLoad={() => setImageLoaded(true)}
+            className={`h-[90px] md:h-[110px] w-auto object-contain transition-all ease-out ${
+              imageLoaded 
+                ? 'translate-y-0 opacity-100' 
+                : 'translate-y-[60px] opacity-0'
+            }`}
+            style={{
+              filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.15))',
+              transitionDuration: '3500ms'
+            }}
+          />
+        </div>
       </div>
 
       {/* Footer */}
