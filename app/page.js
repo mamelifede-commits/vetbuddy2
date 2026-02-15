@@ -1487,7 +1487,12 @@ function LandingPage({ onLogin }) {
   if (isComingSoon) {
     return <ComingSoonLanding onLogin={onLogin} />;
   }
-  return <FullLandingPage onLogin={onLogin} />;
+  return (
+    <>
+      <FullLandingPage onLogin={onLogin} />
+      <ChatWidget />
+    </>
+  );
 }
 
 function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
