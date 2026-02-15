@@ -74,7 +74,7 @@ export async function POST(request) {
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333; margin-top: 0;">Ciao ${clinic.clinicName || clinic.name}!</h2>
-            <p style="color: #666;">Ecco il riepilogo della tua settimana su VetBuddy:</p>
+            <p style="color: #666;">Ecco il riepilogo della tua settimana su vetbuddy:</p>
             
             <h3 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px;">📅 Appuntamenti</h3>
             <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
@@ -125,7 +125,7 @@ export async function POST(request) {
             </div>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - Report automatico settimanale</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - Report automatico settimanale</p>
           </div>
         </div>
       `

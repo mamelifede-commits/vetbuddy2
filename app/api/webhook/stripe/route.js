@@ -220,7 +220,7 @@ export async function POST(request) {
                   html: `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                       <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E); padding: 25px; border-radius: 12px 12px 0 0; text-align: center;">
-                        <h1 style="color: white; margin: 0; font-size: 24px;">🐾 VetBuddy</h1>
+                        <h1 style="color: white; margin: 0; font-size: 24px;">🐾 vetbuddy</h1>
                       </div>
                       
                       <div style="padding: 30px; background: #ffffff;">
@@ -236,7 +236,7 @@ export async function POST(request) {
                         </div>
                         
                         <p style="color: #666;">📎 <strong>La fattura PDF è allegata a questa email.</strong></p>
-                        <p style="color: #666;">Puoi anche trovarla nella sezione <strong>Documenti</strong> della tua dashboard VetBuddy.</p>
+                        <p style="color: #666;">Puoi anche trovarla nella sezione <strong>Documenti</strong> della tua dashboard vetbuddy.</p>
                         
                         <div style="text-align: center; margin-top: 30px;">
                           <a href="${baseUrl}" style="display: inline-block; background: linear-gradient(135deg, #FF6B6B, #FF8E8E); color: white; padding: 14px 35px; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 16px;">
@@ -247,7 +247,7 @@ export async function POST(request) {
                       
                       <div style="padding: 20px; background: #f5f5f5; border-radius: 0 0 12px 12px; text-align: center;">
                         <p style="color: #888; font-size: 12px; margin: 0;">
-                          Questa è una email automatica generata da VetBuddy.<br>
+                          Questa è una email automatica generata da vetbuddy.<br>
                           Per assistenza, contatta la tua clinica veterinaria.
                         </p>
                       </div>

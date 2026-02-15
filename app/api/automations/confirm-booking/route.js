@@ -36,7 +36,7 @@ export async function POST(request) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+            <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #4CAF50;">✅ Prenotazione Confermata!</h2>
@@ -59,7 +59,7 @@ export async function POST(request) {
             </div>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
           </div>
         </div>
       `

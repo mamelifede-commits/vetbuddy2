@@ -117,7 +117,7 @@ export async function POST(request) {
               </p>
             </div>
             <div style="padding: 15px; background: #333; border-radius: 0 0 10px 10px; text-align: center;">
-              <p style="color: #999; margin: 0; font-size: 12px;">VetBuddy Feedback System</p>
+              <p style="color: #999; margin: 0; font-size: 12px;">vetbuddy Feedback System</p>
             </div>
           </div>
         `
@@ -130,7 +130,7 @@ export async function POST(request) {
     try {
       await sendEmail({
         to: userEmail,
-        subject: `Grazie per il tuo feedback! 💚 - VetBuddy`,
+        subject: `Grazie per il tuo feedback! 💚 - vetbuddy`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <div style="background: linear-gradient(135deg, #10B981, #059669); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
@@ -141,7 +141,7 @@ export async function POST(request) {
               <p style="font-size: 16px; color: #333;">Ciao ${userName},</p>
               
               <p style="color: #666;">Grazie per aver dedicato del tempo a inviarci il tuo ${typeLabels[type]?.toLowerCase() || 'feedback'}. 
-              Il tuo contributo è fondamentale per migliorare VetBuddy!</p>
+              Il tuo contributo è fondamentale per migliorare vetbuddy!</p>
               
               <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid ${typeColors[type] || '#10B981'};">
                 <p style="color: #999; font-size: 12px; margin: 0 0 8px 0;">IL TUO MESSAGGIO:</p>
@@ -162,12 +162,12 @@ export async function POST(request) {
               
               <p style="color: #333; margin-top: 20px;">
                 A presto 🐾<br/>
-                <strong>Il team VetBuddy</strong>
+                <strong>Il team vetbuddy</strong>
               </p>
             </div>
             <div style="padding: 20px; background: #333; border-radius: 0 0 10px 10px; text-align: center;">
               <p style="color: #999; margin: 0; font-size: 12px;">
-                VetBuddy - La piattaforma veterinaria<br/>
+                vetbuddy - La piattaforma veterinaria<br/>
                 <a href="mailto:info@vetbuddy.it" style="color: #10B981;">info@vetbuddy.it</a>
               </p>
             </div>

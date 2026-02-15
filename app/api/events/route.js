@@ -224,7 +224,7 @@ async function fetchRSSFeed(feedUrl) {
   try {
     const response = await fetch(feedUrl, { 
       next: { revalidate: 3600 }, // Cache for 1 hour
-      headers: { 'User-Agent': 'VetBuddy/1.0' }
+      headers: { 'User-Agent': 'vetbuddy/1.0' }
     });
     
     if (!response.ok) return [];
@@ -282,7 +282,7 @@ export async function GET(request) {
     const formattedManualEvents = manualEvents.map(e => ({
       ...e,
       source: 'vetbuddy',
-      sourceLabel: 'VetBuddy'
+      sourceLabel: 'vetbuddy'
     }));
     
     // If only manual events requested
@@ -442,7 +442,7 @@ export async function POST(request) {
       category: category || 'generale',
       link: link || '',
       imageUrl: imageUrl || '',
-      organizer: organizer || 'VetBuddy',
+      organizer: organizer || 'vetbuddy',
       isFeatured: isFeatured || false,
       isActive: true,
       source: 'manual',

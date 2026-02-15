@@ -4,12 +4,12 @@ import { NextResponse } from 'next/server';
 const EMERGENT_API_URL = 'https://integrations.emergentagent.com/llm/chat/completions';
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
-// Sistema prompt per l'assistente VetBuddy
-const SYSTEM_PROMPT = `Sei VetBuddy AI, l'assistente virtuale di VetBuddy - la piattaforma gestionale per cliniche veterinarie.
+// Sistema prompt per l'assistente vetbuddy
+const SYSTEM_PROMPT = `Sei vetbuddy AI, l'assistente virtuale di vetbuddy - la piattaforma gestionale per cliniche veterinarie.
 
 Il tuo ruolo è aiutare sia i veterinari/cliniche che i proprietari di animali domestici con:
 
-1. **Informazioni su VetBuddy**:
+1. **Informazioni su vetbuddy**:
    - Gestionale per cliniche veterinarie con dashboard clinica e owner
    - Gestione appuntamenti, pazienti, documenti medici
    - Sistema di fatturazione con export CSV/JSON/PDF
@@ -142,9 +142,9 @@ function generateSessionId() {
 export async function GET() {
   return NextResponse.json({
     status: 'ok',
-    service: 'VetBuddy Chat API',
+    service: 'vetbuddy Chat API',
     features: [
-      'Assistente virtuale VetBuddy',
+      'Assistente virtuale vetbuddy',
       'Informazioni sulla piattaforma',
       'Guida alla navigazione',
       'Consigli generali sulla cura animali'

@@ -61,7 +61,7 @@ export async function POST(request) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `VetBuddy ${plan.name}`,
+              name: `vetbuddy ${plan.name}`,
               description: plan.description,
             },
             unit_amount: Math.round(plan.price * 100), // Stripe usa centesimi

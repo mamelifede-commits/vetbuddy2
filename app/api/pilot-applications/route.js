@@ -129,7 +129,7 @@ export async function POST(request) {
               </div>
             </div>
             <div style="padding: 15px; background: #333; border-radius: 0 0 10px 10px; text-align: center;">
-              <p style="color: #999; margin: 0; font-size: 12px;">VetBuddy Pilot Milano</p>
+              <p style="color: #999; margin: 0; font-size: 12px;">vetbuddy Pilot Milano</p>
             </div>
           </div>
         `
@@ -143,7 +143,7 @@ export async function POST(request) {
     try {
       await sendEmail({
         to: email,
-        subject: `✅ Candidatura Ricevuta - VetBuddy Pilot`,
+        subject: `✅ Candidatura Ricevuta - vetbuddy Pilot`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; border-radius: 10px 10px 0 0;">
@@ -151,7 +151,7 @@ export async function POST(request) {
             </div>
             <div style="padding: 30px; background: #f9f9f9;">
               <p>Ciao ${name},</p>
-              <p>Grazie per aver inviato la candidatura di <strong>${clinicName}</strong> al Pilot VetBuddy!</p>
+              <p>Grazie per aver inviato la candidatura di <strong>${clinicName}</strong> al Pilot vetbuddy!</p>
               
               <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
                 <h3 style="margin-top: 0;">📋 Prossimi passi:</h3>
@@ -166,7 +166,7 @@ export async function POST(request) {
               <p style="color: #666;">Nel frattempo, se hai domande puoi rispondere a questa email o scriverci a <a href="mailto:info@vetbuddy.it">info@vetbuddy.it</a>.</p>
               
               <p>A presto! 🐾</p>
-              <p><strong>Il team VetBuddy</strong></p>
+              <p><strong>Il team vetbuddy</strong></p>
             </div>
           </div>
         `
@@ -324,7 +324,7 @@ export async function PUT(request) {
       // Send approval email with credentials
       await sendEmail({
         to: application.email,
-        subject: `🎉 Benvenuto nel Pilot VetBuddy - Piano ${plan.charAt(0).toUpperCase() + plan.slice(1)}!`,
+        subject: `🎉 Benvenuto nel Pilot vetbuddy - Piano ${plan.charAt(0).toUpperCase() + plan.slice(1)}!`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <div style="background: linear-gradient(135deg, #27AE60, #2ECC71); padding: 20px; border-radius: 10px 10px 0 0;">
@@ -332,7 +332,7 @@ export async function PUT(request) {
             </div>
             <div style="padding: 30px; background: #f9f9f9;">
               <p>Ciao ${application.name},</p>
-              <p>Siamo felici di comunicarti che <strong>${application.clinicName}</strong> è stata approvata per il Pilot VetBuddy!</p>
+              <p>Siamo felici di comunicarti che <strong>${application.clinicName}</strong> è stata approvata per il Pilot vetbuddy!</p>
               
               <div style="background: ${plan === 'custom' ? '#9333ea' : plan === 'pilot' ? '#FF6B6B' : '#6B7280'}; color: white; padding: 15px; border-radius: 10px; margin: 20px 0; text-align: center;">
                 <p style="margin: 0; font-size: 14px;">Il tuo piano:</p>
@@ -348,7 +348,7 @@ export async function PUT(request) {
               </div>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="https://vetbuddy.it" style="background: #FF6B6B; color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; display: inline-block;">Accedi a VetBuddy →</a>
+                <a href="https://vetbuddy.it" style="background: #FF6B6B; color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; display: inline-block;">Accedi a vetbuddy →</a>
               </div>
               
               <p style="color: #666;">Ti contatteremo per l'onboarding personalizzato nei prossimi giorni.</p>
@@ -363,7 +363,7 @@ export async function PUT(request) {
     if (status === 'rejected') {
       await sendEmail({
         to: application.email,
-        subject: `Aggiornamento sulla tua candidatura VetBuddy`,
+        subject: `Aggiornamento sulla tua candidatura vetbuddy`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <div style="background: #667eea; padding: 20px; border-radius: 10px 10px 0 0;">
@@ -371,7 +371,7 @@ export async function PUT(request) {
             </div>
             <div style="padding: 30px; background: #f9f9f9;">
               <p>Ciao ${application.name},</p>
-              <p>Grazie per il tuo interesse nel Pilot VetBuddy per <strong>${application.clinicName}</strong>.</p>
+              <p>Grazie per il tuo interesse nel Pilot vetbuddy per <strong>${application.clinicName}</strong>.</p>
               <p>Al momento non siamo in grado di procedere con l'attivazione, ma ti terremo in considerazione per future aperture.</p>
               ${notes ? `<p><strong>Note:</strong> ${notes}</p>` : ''}
               <p>Per qualsiasi domanda, scrivici a <a href="mailto:info@vetbuddy.it">info@vetbuddy.it</a>.</p>

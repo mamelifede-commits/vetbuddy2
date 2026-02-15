@@ -19,7 +19,7 @@ async function sendEmail({ to, subject, html }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'VetBuddy <noreply@vetbuddy.it>',
+        from: 'vetbuddy <noreply@vetbuddy.it>',
         to: [to],
         subject,
         html,
@@ -119,7 +119,7 @@ function generateReminderEmail(appointment, clinic, timeUntil) {
       
       <div style="background: #f8fafc; padding: 24px; text-align: center; border-top: 1px solid #e2e8f0;">
         <p style="color: #94a3b8; font-size: 12px; margin: 0;">
-          Email inviata automaticamente da VetBuddy<br/>
+          Email inviata automaticamente da vetbuddy<br/>
           <a href="https://vetbuddy.it" style="color: #FF6B6B;">vetbuddy.it</a>
         </p>
       </div>

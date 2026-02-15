@@ -55,7 +55,7 @@ export async function POST(request) {
 
       await sendEmail({
         to: clinic.email,
-        subject: `📋 ${reminders.length} documenti da caricare - VetBuddy`,
+        subject: `📋 ${reminders.length} documenti da caricare - vetbuddy`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <div style="background: linear-gradient(135deg, #FF9800, #FFB74D); padding: 20px; border-radius: 10px 10px 0 0;">
@@ -73,7 +73,7 @@ export async function POST(request) {
               </div>
             </div>
             <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-              <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - Automazione documenti</p>
+              <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - Automazione documenti</p>
             </div>
           </div>
         `

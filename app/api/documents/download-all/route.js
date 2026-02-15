@@ -104,7 +104,7 @@ async function generatePDFFromText(content, documentName) {
   // Footer with date
   const pages = pdfDoc.getPages();
   for (let i = 0; i < pages.length; i++) {
-    pages[i].drawText(`VetBuddy - Pagina ${i + 1} di ${pages.length}`, {
+    pages[i].drawText(`vetbuddy - Pagina ${i + 1} di ${pages.length}`, {
       x: margin,
       y: 30,
       size: 9,
@@ -252,8 +252,8 @@ export async function GET(request) {
     // Generate filename with date
     const dateStr = new Date().toISOString().split('T')[0];
     const zipFilename = role === 'clinic' 
-      ? `VetBuddy_Documenti_Clinica_${dateStr}.zip`
-      : `VetBuddy_I_Miei_Documenti_${dateStr}.zip`;
+      ? `vetbuddy_Documenti_Clinica_${dateStr}.zip`
+      : `vetbuddy_I_Miei_Documenti_${dateStr}.zip`;
     
     return new NextResponse(zipContent, {
       status: 200,

@@ -12,7 +12,7 @@ function errorPage(message, details = '') {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Errore - VetBuddy</title>
+      <title>Errore - vetbuddy</title>
       <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -125,7 +125,7 @@ async function generatePDFFromText(text, title, metadata = {}) {
   let page = pdfDoc.addPage([pageWidth, pageHeight]);
   let yPosition = pageHeight - margin;
   
-  // VetBuddy Header - New Brand Style (vet + buddy)
+  // vetbuddy Header - New Brand Style (vet + buddy)
   page.drawText('vet', {
     x: margin,
     y: yPosition,
@@ -259,7 +259,7 @@ async function generatePDFFromText(text, title, metadata = {}) {
   const pages = pdfDoc.getPages();
   for (let i = 0; i < pages.length; i++) {
     const pg = pages[i];
-    pg.drawText(`Generato da VetBuddy - www.vetbuddy.it`, {
+    pg.drawText(`Generato da vetbuddy - www.vetbuddy.it`, {
       x: margin,
       y: 30,
       size: 8,

@@ -39,7 +39,7 @@ export async function POST(request) {
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <div style="background: linear-gradient(135deg, #4CAF50, #8BC34A); padding: 20px; border-radius: 10px 10px 0 0;">
-                <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
               </div>
               <div style="padding: 30px; background: #f9f9f9;">
                 <h2 style="color: #4CAF50;">🎉 Si è liberato uno slot!</h2>
@@ -56,7 +56,7 @@ export async function POST(request) {
                 </div>
               </div>
               <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+                <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
               </div>
             </div>
           `

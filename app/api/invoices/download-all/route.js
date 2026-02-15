@@ -357,7 +357,7 @@ async function generateInvoicePDF(invoice) {
     color: lightGray
   });
   
-  page.drawText('Generato da VetBuddy - www.vetbuddy.it', {
+  page.drawText('Generato da vetbuddy - www.vetbuddy.it', {
     x: pageWidth - margin - 150,
     y: 15,
     size: 8,
@@ -452,7 +452,7 @@ export async function GET(request) {
     
     // Generate filename with date
     const dateStr = new Date().toISOString().split('T')[0];
-    const zipFilename = `VetBuddy_Fatture_${dateStr}.zip`;
+    const zipFilename = `vetbuddy_Fatture_${dateStr}.zip`;
     
     return new NextResponse(zipContent, {
       status: 200,

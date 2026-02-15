@@ -105,7 +105,7 @@ function generateEmailTemplate(type, data) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+            <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333;">⏰ Promemoria Appuntamento</h2>
@@ -129,7 +129,7 @@ function generateEmailTemplate(type, data) {
             </div>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
           </div>
         </div>
       `
@@ -140,7 +140,7 @@ function generateEmailTemplate(type, data) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #10B981, #059669); padding: 20px; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+            <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333;">✅ Appuntamento Confermato!</h2>
@@ -161,23 +161,23 @@ function generateEmailTemplate(type, data) {
             <p style="color: #666; font-size: 14px; text-align: center;">Riceverai un promemoria 24h prima.</p>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
           </div>
         </div>
       `
     },
     
     welcomeNewPet: {
-      subject: `🎉 Benvenuto ${petName} nella famiglia VetBuddy!`,
+      subject: `🎉 Benvenuto ${petName} nella famiglia vetbuddy!`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #8B5CF6, #EC4899); padding: 20px; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+            <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333;">🎉 Benvenuto ${petName}!</h2>
             <p style="color: #666; font-size: 16px;">Ciao ${ownerName},</p>
-            <p style="color: #666; font-size: 16px;">Siamo felici di dare il benvenuto a <strong>${petName}</strong> nella famiglia VetBuddy!</p>
+            <p style="color: #666; font-size: 16px;">Siamo felici di dare il benvenuto a <strong>${petName}</strong> nella famiglia vetbuddy!</p>
             <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #8B5CF6;">
               <p style="margin: 5px 0;"><strong>🐾 Nome:</strong> ${petName}</p>
               <p style="margin: 5px 0;"><strong>🏥 Clinica di riferimento:</strong> ${clinicName}</p>
@@ -197,7 +197,7 @@ function generateEmailTemplate(type, data) {
             </div>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
           </div>
         </div>
       `
@@ -208,7 +208,7 @@ function generateEmailTemplate(type, data) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #F59E0B, #EF4444); padding: 20px; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+            <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333; text-align: center;">🎂 Buon Compleanno ${petName}! 🎉</h2>
@@ -224,7 +224,7 @@ function generateEmailTemplate(type, data) {
             <p style="color: #666; font-size: 14px; text-align: center;">Passa in clinica per ritirare un piccolo regalo! 🎁</p>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
           </div>
         </div>
       `
@@ -235,7 +235,7 @@ function generateEmailTemplate(type, data) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #3B82F6, #1D4ED8); padding: 20px; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+            <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333;">⚠️ Richiamo Vaccino in Scadenza</h2>
@@ -253,7 +253,7 @@ function generateEmailTemplate(type, data) {
             </div>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
           </div>
         </div>
       `
@@ -264,7 +264,7 @@ function generateEmailTemplate(type, data) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #4CAF50, #8BC34A); padding: 20px; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+            <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333;">Come sta ${petName}?</h2>
@@ -281,7 +281,7 @@ function generateEmailTemplate(type, data) {
             </div>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
           </div>
         </div>
       `
@@ -292,7 +292,7 @@ function generateEmailTemplate(type, data) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #FFD700, #FFA500); padding: 20px; border-radius: 10px 10px 0 0;">
-            <h1 style="color: #333; margin: 0;">🐾 VetBuddy</h1>
+            <h1 style="color: #333; margin: 0;">🐾 vetbuddy</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333; text-align: center;">⭐ La tua opinione conta!</h2>
@@ -306,7 +306,7 @@ function generateEmailTemplate(type, data) {
             <p style="color: #999; font-size: 14px; text-align: center;">Bastano 2 minuti! Grazie mille 🙏</p>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
           </div>
         </div>
       `
@@ -317,7 +317,7 @@ function generateEmailTemplate(type, data) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #EF4444, #DC2626); padding: 20px; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+            <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333;">💳 Promemoria Pagamento</h2>
@@ -335,7 +335,7 @@ function generateEmailTemplate(type, data) {
             <p style="color: #666; font-size: 14px;">Per qualsiasi domanda, non esitare a contattarci.</p>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
           </div>
         </div>
       `
@@ -346,7 +346,7 @@ function generateEmailTemplate(type, data) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #8B5CF6, #A855F7); padding: 20px; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+            <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333; text-align: center;">🎁 Hai un nuovo Premio!</h2>
@@ -369,10 +369,10 @@ function generateEmailTemplate(type, data) {
               ${getRewardsButton(baseUrl, reward?.id, 'use')}
               ${getBookServiceButton(baseUrl, clinic, 'checkup', 'Prenota e Usa il Premio')}
             </div>
-            <p style="color: #666; font-size: 14px; text-align: center;">Grazie per essere parte della famiglia VetBuddy! 💜</p>
+            <p style="color: #666; font-size: 14px; text-align: center;">Grazie per essere parte della famiglia vetbuddy! 💜</p>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
           </div>
         </div>
       `
@@ -383,7 +383,7 @@ function generateEmailTemplate(type, data) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #06B6D4, #0891B2); padding: 20px; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+            <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
           </div>
           <div style="padding: 30px; background: #f9f9f9;">
             <h2 style="color: #333;">📋 Documento Disponibile</h2>
@@ -400,7 +400,7 @@ function generateEmailTemplate(type, data) {
             </div>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
           </div>
         </div>
       `
@@ -414,7 +414,7 @@ function generateEmailTemplate(type, data) {
 export async function GET(request) {
   return NextResponse.json({
     success: true,
-    message: 'Endpoint per testare le email automatiche di VetBuddy',
+    message: 'Endpoint per testare le email automatiche di vetbuddy',
     availableTypes: AUTOMATION_TYPES,
     usage: 'POST con { "type": "nomeAutomazione", "to": "email@destinatario.com" }',
     sendAll: 'POST con { "sendAll": true, "to": "email@destinatario.com" }'
@@ -436,7 +436,7 @@ export async function POST(request) {
     // Get sample data for test
     const usersCollection = await getCollection('users');
     const sampleClinic = await usersCollection.findOne({ role: 'clinic' }) || {
-      id: 'test-clinic', clinicName: 'Clinica Demo VetBuddy', whatsappNumber: '+393331234567',
+      id: 'test-clinic', clinicName: 'Clinica Demo vetbuddy', whatsappNumber: '+393331234567',
       cancellationPolicyText: 'Cancellazione gratuita entro 24h'
     };
     

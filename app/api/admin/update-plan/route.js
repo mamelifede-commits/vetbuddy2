@@ -96,7 +96,7 @@ export async function PUT(request) {
     const actionType = isUpgrade ? 'UPGRADE' : isDowngrade ? 'DOWNGRADE' : 'CAMBIO';
     await sendEmail({
       to: clinic.email,
-      subject: `${actionType} Piano VetBuddy: ${PLAN_NAMES[newPlan]}`,
+      subject: `${actionType} Piano vetbuddy: ${PLAN_NAMES[newPlan]}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
@@ -105,7 +105,7 @@ export async function PUT(request) {
           <div style="padding: 30px; background: #f9f9f9;">
             <p>Ciao ${clinic.name || clinic.clinicName},</p>
             
-            <p>Il tuo piano VetBuddy è stato ${isUpgrade ? 'aggiornato' : isDowngrade ? 'modificato' : 'cambiato'}:</p>
+            <p>Il tuo piano vetbuddy è stato ${isUpgrade ? 'aggiornato' : isDowngrade ? 'modificato' : 'cambiato'}:</p>
             
             <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
               <p style="margin: 0; font-size: 14px; color: #666;">Piano precedente:</p>
@@ -126,7 +126,7 @@ export async function PUT(request) {
             
             <p>Per qualsiasi domanda, contattaci a <a href="mailto:info@vetbuddy.it">info@vetbuddy.it</a>.</p>
             
-            <p>Il team VetBuddy 🐾</p>
+            <p>Il team vetbuddy 🐾</p>
           </div>
         </div>
       `

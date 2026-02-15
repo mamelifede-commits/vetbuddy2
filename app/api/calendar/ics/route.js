@@ -39,7 +39,7 @@ export async function GET(request) {
     
     const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//VetBuddy//Appointment//IT
+PRODID:-//vetbuddy//Appointment//IT
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
@@ -48,7 +48,7 @@ DTSTAMP:${now}
 DTSTART:${formatICSDate(startDate)}
 DTEND:${formatICSDate(endDate)}
 SUMMARY:Visita veterinaria - ${appointment.petName || 'Pet'}
-DESCRIPTION:Appuntamento presso ${appointment.clinicName || 'Clinica VetBuddy'}\\nPaziente: ${appointment.petName || ''}\\nServizio: ${appointment.serviceType || 'Visita'}\\n\\nGestito con VetBuddy
+DESCRIPTION:Appuntamento presso ${appointment.clinicName || 'Clinica vetbuddy'}\\nPaziente: ${appointment.petName || ''}\\nServizio: ${appointment.serviceType || 'Visita'}\\n\\nGestito con vetbuddy
 LOCATION:${appointment.clinicAddress || ''}
 STATUS:CONFIRMED
 SEQUENCE:0

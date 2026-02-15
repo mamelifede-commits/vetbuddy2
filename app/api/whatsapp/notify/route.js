@@ -15,7 +15,7 @@ if (accountSid && authToken) {
 // WhatsApp notification templates
 const TEMPLATES = {
   appointment_reminder: (data) => `
-🐾 *Promemoria Appuntamento VetBuddy*
+🐾 *Promemoria Appuntamento vetbuddy*
 
 Ciao ${data.ownerName}! 👋
 
@@ -26,13 +26,13 @@ Ti ricordiamo che hai un appuntamento:
 🐕 *Paziente:* ${data.petName}
 📋 *Tipo:* ${data.serviceType}
 
-Per qualsiasi modifica, accedi all'app VetBuddy.
+Per qualsiasi modifica, accedi all'app vetbuddy.
 
 A presto! 🐾
   `.trim(),
 
   appointment_confirmation: (data) => `
-✅ *Appuntamento Confermato - VetBuddy*
+✅ *Appuntamento Confermato - vetbuddy*
 
 Ciao ${data.ownerName}! 👋
 
@@ -45,14 +45,14 @@ La tua visita per ${data.petName} è confermata:
 
 ${data.calendarLink ? `📅 Aggiungi al calendario: ${data.calendarLink}` : ''}
 
-Devi modificare? Accedi all'app VetBuddy.
+Devi modificare? Accedi all'app vetbuddy.
 
 A presto! 🐾
   `.trim(),
   
   // NUOVO: Reminder pagamento non completato (2h dopo prenotazione)
   payment_reminder: (data) => `
-💳 *Completa la prenotazione - VetBuddy*
+💳 *Completa la prenotazione - vetbuddy*
 
 Ciao ${data.ownerName}! 👋
 
@@ -72,7 +72,7 @@ Problemi? Scrivi in chat alla clinica.
   
   // NUOVO: Esami richiesti al laboratorio
   lab_request_sent: (data) => `
-🔬 *Esami richiesti per ${data.petName} - VetBuddy*
+🔬 *Esami richiesti per ${data.petName} - vetbuddy*
 
 Ciao ${data.ownerName}! 👋
 
@@ -88,7 +88,7 @@ Domande? Scrivi in chat alla clinica.
   
   // NUOVO: Referti pronti
   lab_results_ready: (data) => `
-📊 *Referti pronti per ${data.petName}! - VetBuddy*
+📊 *Referti pronti per ${data.petName}! - vetbuddy*
 
 Ciao ${data.ownerName}! 👋
 
@@ -96,7 +96,7 @@ I risultati degli esami di ${data.petName} sono pronti.
 
 ${data.vetComment ? `💬 *Commento del veterinario:*\n"${data.vetComment}"` : ''}
 
-📄 Visualizza i referti nell'app VetBuddy nella sezione Documenti.
+📄 Visualizza i referti nell'app vetbuddy nella sezione Documenti.
 
 ${data.followUpSuggested ? `📅 Il veterinario suggerisce un controllo. Prenota dall'app!` : ''}
 
@@ -104,19 +104,19 @@ ${data.followUpSuggested ? `📅 Il veterinario suggerisce un controllo. Prenota
   `.trim(),
 
   appointment_cancelled: (data) => `
-❌ *Appuntamento Cancellato - VetBuddy*
+❌ *Appuntamento Cancellato - vetbuddy*
 
 Ciao ${data.ownerName},
 
 L'appuntamento del ${data.date} alle ${data.time} per ${data.petName} è stato cancellato.
 
-Per prenotare un nuovo appuntamento, accedi all'app VetBuddy.
+Per prenotare un nuovo appuntamento, accedi all'app vetbuddy.
 
 A presto! 🐾
   `.trim(),
 
   document_ready: (data) => `
-📄 *Nuovo Documento Disponibile - VetBuddy*
+📄 *Nuovo Documento Disponibile - vetbuddy*
 
 Ciao ${data.ownerName}! 👋
 
@@ -124,13 +124,13 @@ Un nuovo documento è disponibile per ${data.petName}:
 📋 *Tipo:* ${data.documentType}
 📅 *Data:* ${data.date}
 
-Accedi all'app VetBuddy per visualizzarlo e scaricarlo.
+Accedi all'app vetbuddy per visualizzarlo e scaricarlo.
 
-🐾 Il team VetBuddy
+🐾 Il team vetbuddy
   `.trim(),
 
   payment_received: (data) => `
-💳 *Pagamento Ricevuto - VetBuddy*
+💳 *Pagamento Ricevuto - vetbuddy*
 
 Ciao ${data.ownerName}! 👋
 

@@ -46,7 +46,7 @@ export async function POST(request) {
       <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; background: #fff;">
         <!-- Header -->
         <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-          <h1 style="color: white; margin: 0; font-size: 28px;">🐾 VetBuddy</h1>
+          <h1 style="color: white; margin: 0; font-size: 28px;">🐾 vetbuddy</h1>
           <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0;">Fattura N° ${invoice.invoiceNumber}</p>
         </div>
         
@@ -56,7 +56,7 @@ export async function POST(request) {
             <div style="flex: 1;">
               <h3 style="color: #333; margin: 0 0 10px;">Da:</h3>
               <p style="margin: 0; color: #666;">
-                <strong>${invoice.clinicName || 'Clinica Veterinaria VetBuddy'}</strong><br>
+                <strong>${invoice.clinicName || 'Clinica Veterinaria vetbuddy'}</strong><br>
                 ${invoice.clinicAddress || ''}<br>
                 ${invoice.clinicPhone || ''}<br>
                 ${invoice.clinicEmail || ''}
@@ -118,10 +118,10 @@ export async function POST(request) {
         <!-- CTA -->
         <div style="padding: 30px; text-align: center; background: #f9f9f9; border-radius: 0 0 8px 8px;">
           <a href="${baseUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 15px 40px; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 16px;">
-            Accedi a VetBuddy
+            Accedi a vetbuddy
           </a>
           <p style="color: #888; font-size: 11px; margin: 20px 0 0;">
-            Questa fattura è stata generata automaticamente da VetBuddy.<br>
+            Questa fattura è stata generata automaticamente da vetbuddy.<br>
             Per qualsiasi domanda, contatta la tua clinica veterinaria.
           </p>
         </div>
@@ -145,7 +145,7 @@ export async function POST(request) {
     // Prepara l'email
     const emailConfig = {
       to: toEmail,
-      subject: `📋 Fattura ${invoice.invoiceNumber} - ${invoice.clinicName || 'VetBuddy'}`,
+      subject: `📋 Fattura ${invoice.invoiceNumber} - ${invoice.clinicName || 'vetbuddy'}`,
       html: emailHtml
     };
     

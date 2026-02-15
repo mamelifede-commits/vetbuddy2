@@ -157,7 +157,7 @@ function generateInvoiceHTML(invoice, clinic) {
 <body>
   <div class="header">
     <div>
-      <h1 style="color: #FF6B6B; margin: 0;">🐾 VetBuddy</h1>
+      <h1 style="color: #FF6B6B; margin: 0;">🐾 vetbuddy</h1>
       <p style="margin: 5px 0; color: #666;">Gestionale Veterinario</p>
     </div>
     <div class="clinic-info">
@@ -251,7 +251,7 @@ function generateInvoiceHTML(invoice, clinic) {
       </p>
     </div>
     <p><strong>Modalità di pagamento:</strong> Bonifico bancario / Contanti / POS</p>
-    <p>Documento generato da VetBuddy - www.vetbuddy.it</p>
+    <p>Documento generato da vetbuddy - www.vetbuddy.it</p>
   </div>
 </body>
 </html>

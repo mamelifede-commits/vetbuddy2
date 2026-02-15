@@ -17,7 +17,7 @@ function generateGoogleCalendarLink(appointment) {
     action: 'TEMPLATE',
     text: `Visita veterinaria - ${appointment.petName || 'Pet'}`,
     dates: `${formatDate(startDate)}/${formatDate(endDate)}`,
-    details: `Appuntamento presso ${appointment.clinicName || 'Clinica VetBuddy'}\nPaziente: ${appointment.petName || ''}\nServizio: ${appointment.serviceType || 'Visita'}`,
+    details: `Appuntamento presso ${appointment.clinicName || 'Clinica vetbuddy'}\nPaziente: ${appointment.petName || ''}\nServizio: ${appointment.serviceType || 'Visita'}`,
     location: appointment.clinicAddress || '',
   });
   

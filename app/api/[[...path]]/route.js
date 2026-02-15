@@ -166,7 +166,7 @@ export async function GET(request, { params }) {
   try {
     // Health check
     if (path === 'health') {
-      return NextResponse.json({ status: 'ok', app: 'VetBuddy API' }, { headers: corsHeaders });
+      return NextResponse.json({ status: 'ok', app: 'vetbuddy API' }, { headers: corsHeaders });
     }
 
     // Get veterinary services catalog
@@ -1027,7 +1027,7 @@ export async function POST(request, { params }) {
       // Create event in Google Calendar
       const event = {
         summary: `🐾 ${appointment.petName || 'Visita'} - ${appointment.ownerName || 'Cliente'}`,
-        description: `Tipo: ${appointment.type || 'Visita'}\nNote: ${appointment.notes || 'Nessuna nota'}\n\nCreato da VetBuddy`,
+        description: `Tipo: ${appointment.type || 'Visita'}\nNote: ${appointment.notes || 'Nessuna nota'}\n\nCreato da vetbuddy`,
         start: {
           dateTime: appointment.date,
           timeZone: 'Europe/Rome'
@@ -1180,17 +1180,17 @@ export async function POST(request, { params }) {
       try {
         await sendEmail({
           to: clinicEmail,
-          subject: `${inviterName || 'Un proprietario'} ti ha invitato su VetBuddy!`,
+          subject: `${inviterName || 'Un proprietario'} ti ha invitato su vetbuddy!`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <div style="background: linear-gradient(135deg, #f97066 0%, #fb923c 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
-                <h1 style="color: white; margin: 0; font-size: 28px;">🐾 VetBuddy</h1>
+                <h1 style="color: white; margin: 0; font-size: 28px;">🐾 vetbuddy</h1>
                 <p style="color: rgba(255,255,255,0.9); margin-top: 10px;">La piattaforma veterinaria digitale</p>
               </div>
               <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
                 <h2 style="color: #1f2937; margin-top: 0;">Ciao ${clinicName}! 👋</h2>
                 <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">
-                  <strong>${inviterName || 'Un proprietario di animali'}</strong> ti ha invitato a unirti a VetBuddy, 
+                  <strong>${inviterName || 'Un proprietario di animali'}</strong> ti ha invitato a unirti a vetbuddy, 
                   la piattaforma che digitalizza la gestione della tua clinica veterinaria.
                 </p>
                 ${message ? `
@@ -1199,7 +1199,7 @@ export async function POST(request, { params }) {
                   <p style="color: #9ca3af; font-size: 14px; margin: 10px 0 0 0;">— ${inviterName || 'Il tuo cliente'}</p>
                 </div>
                 ` : ''}
-                <h3 style="color: #1f2937;">Perché unirsi a VetBuddy?</h3>
+                <h3 style="color: #1f2937;">Perché unirsi a vetbuddy?</h3>
                 <ul style="color: #4b5563; line-height: 1.8;">
                   <li>📅 Prenotazioni online 24/7</li>
                   <li>📋 Cartelle cliniche digitali</li>
@@ -1213,7 +1213,7 @@ export async function POST(request, { params }) {
                   </a>
                 </div>
                 <p style="color: #9ca3af; font-size: 12px; text-align: center; margin-top: 30px;">
-                  VetBuddy — Pilot Milano 2025<br/>
+                  vetbuddy — Pilot Milano 2025<br/>
                   <a href="${process.env.NEXT_PUBLIC_BASE_URL}" style="color: #f97066;">www.vetbuddy.it</a>
                 </p>
               </div>
@@ -1285,15 +1285,15 @@ export async function POST(request, { params }) {
           // Email di VERIFICA per proprietari
           await sendEmail({
             to: email,
-            subject: '📧 Verifica la tua email - VetBuddy',
+            subject: '📧 Verifica la tua email - vetbuddy',
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
-                  <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                  <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
                   <h2 style="color: #333;">Ciao ${name}! 👋</h2>
-                  <p style="color: #666; font-size: 16px;">Grazie per esserti iscritto a VetBuddy! Per completare la registrazione, verifica la tua email cliccando il pulsante qui sotto:</p>
+                  <p style="color: #666; font-size: 16px;">Grazie per esserti iscritto a vetbuddy! Per completare la registrazione, verifica la tua email cliccando il pulsante qui sotto:</p>
                   
                   <div style="text-align: center; margin: 30px 0;">
                     <a href="${verifyEmailUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 16px 32px; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 18px;">
@@ -1310,7 +1310,7 @@ export async function POST(request, { params }) {
                   <p style="color: #999; font-size: 12px; text-align: center;">Se non hai creato tu questo account, ignora questa email.</p>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -1319,16 +1319,16 @@ export async function POST(request, { params }) {
           // Email di VERIFICA per cliniche nel Pilot
           await sendEmail({
             to: email,
-            subject: '📧 Verifica la tua email - VetBuddy Pilot',
+            subject: '📧 Verifica la tua email - vetbuddy Pilot',
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <div style="background: linear-gradient(135deg, #4CAF50, #8BC34A); padding: 20px; border-radius: 10px 10px 0 0;">
-                  <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                  <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
                   <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0;">Pilot Milano</p>
                 </div>
                 <div style="padding: 30px; background: #f9f9f9;">
                   <h2 style="color: #333;">Ciao ${clinicName || name}! 👋</h2>
-                  <p style="color: #666; font-size: 16px;">Grazie per esserti candidato al Pilot VetBuddy! Per completare la registrazione, verifica la tua email:</p>
+                  <p style="color: #666; font-size: 16px;">Grazie per esserti candidato al Pilot vetbuddy! Per completare la registrazione, verifica la tua email:</p>
                   
                   <div style="text-align: center; margin: 30px 0;">
                     <a href="${verifyEmailUrl}" style="display: inline-block; background: #4CAF50; color: white; padding: 16px 32px; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 18px;">
@@ -1345,7 +1345,7 @@ export async function POST(request, { params }) {
                   <p style="color: #999; font-size: 12px; text-align: center;">Se non hai creato tu questo account, ignora questa email.</p>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
                 </div>
               </div>
             `
@@ -1421,7 +1421,7 @@ export async function POST(request, { params }) {
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
-                <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
               </div>
               <div style="padding: 30px; background: #f9f9f9;">
                 <h2 style="color: #333;">Account verificato! 🎉</h2>
@@ -1436,12 +1436,12 @@ export async function POST(request, { params }) {
                 
                 <div style="text-align: center; margin: 30px 0;">
                   <a href="${baseUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold;">
-                    🚀 Inizia a usare VetBuddy
+                    🚀 Inizia a usare vetbuddy
                   </a>
                 </div>
               </div>
               <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+                <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
               </div>
             </div>
           `
@@ -1505,7 +1505,7 @@ export async function POST(request, { params }) {
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 20px; border-radius: 10px 10px 0 0;">
-                <h1 style="color: white; margin: 0;">🐾 VetBuddy</h1>
+                <h1 style="color: white; margin: 0;">🐾 vetbuddy</h1>
               </div>
               <div style="padding: 30px; background: #f9f9f9;">
                 <h2 style="color: #333;">Account verificato! 🎉</h2>
@@ -1520,12 +1520,12 @@ export async function POST(request, { params }) {
                 
                 <div style="text-align: center; margin: 30px 0;">
                   <a href="${baseUrl}" style="display: inline-block; background: #FF6B6B; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold;">
-                    🚀 Inizia a usare VetBuddy
+                    🚀 Inizia a usare vetbuddy
                   </a>
                 </div>
               </div>
               <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+                <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
               </div>
             </div>
           `
@@ -1581,7 +1581,7 @@ export async function POST(request, { params }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             to: user.phone,
-            message: `VetBuddy - Il tuo nuovo codice OTP è: ${phoneOTP}. Scade tra 10 minuti.`
+            message: `vetbuddy - Il tuo nuovo codice OTP è: ${phoneOTP}. Scade tra 10 minuti.`
           })
         });
       } catch (smsError) {
@@ -1621,10 +1621,10 @@ export async function POST(request, { params }) {
       try {
         const emailResult = await sendEmail({
           to: email,
-          subject: 'VetBuddy - Reimposta la tua password',
+          subject: 'vetbuddy - Reimposta la tua password',
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2 style="color: #FF6B6B;">🐾 VetBuddy</h2>
+              <h2 style="color: #FF6B6B;">🐾 vetbuddy</h2>
               <p>Hai richiesto di reimpostare la tua password.</p>
               <p>Clicca il link qui sotto per creare una nuova password:</p>
               <a href="${resetLink}" style="display: inline-block; background: #FF6B6B; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 20px 0;">Reimposta Password</a>
@@ -1832,7 +1832,7 @@ export async function POST(request, { params }) {
       }
       
       // Special admin reset - remove this after setup!
-      if (email === 'info@vetbuddy.it' && password === 'VetBuddy2025!') {
+      if (email === 'info@vetbuddy.it' && password === 'vetbuddy2025!') {
         const users = await getCollection('users');
         const admin = await users.findOne({ email: 'info@vetbuddy.it' });
         if (!admin) {
@@ -1840,8 +1840,8 @@ export async function POST(request, { params }) {
           const newAdmin = {
             id: uuidv4(),
             email: 'info@vetbuddy.it',
-            password: hashPassword('VetBuddy2025!'),
-            name: 'Admin VetBuddy',
+            password: hashPassword('vetbuddy2025!'),
+            name: 'Admin vetbuddy',
             role: 'admin',
             createdAt: new Date().toISOString()
           };
@@ -1850,7 +1850,7 @@ export async function POST(request, { params }) {
           return NextResponse.json({ user: { ...newAdmin, password: undefined }, token }, { headers: corsHeaders });
         } else {
           // Update password
-          await users.updateOne({ email: 'info@vetbuddy.it' }, { $set: { password: hashPassword('VetBuddy2025!'), role: 'admin' } });
+          await users.updateOne({ email: 'info@vetbuddy.it' }, { $set: { password: hashPassword('vetbuddy2025!'), role: 'admin' } });
           const token = generateToken({ id: admin.id, email: admin.email, role: 'admin' });
           return NextResponse.json({ user: { ...admin, password: undefined }, token }, { headers: corsHeaders });
         }
@@ -1934,7 +1934,7 @@ export async function POST(request, { params }) {
                   <li><strong>Servizio:</strong> ${service}</li>
                   ${notes ? `<li><strong>Note:</strong> ${notes}</li>` : ''}
                 </ul>
-                <p>Accedi alla dashboard di VetBuddy per confermare o proporre un orario alternativo.</p>
+                <p>Accedi alla dashboard di vetbuddy per confermare o proporre un orario alternativo.</p>
               </div>
             `
           });
@@ -2081,7 +2081,7 @@ export async function POST(request, { params }) {
                 
                 <div style="background: #f8fafc; padding: 24px; text-align: center; border-top: 1px solid #e2e8f0;">
                   <p style="color: #94a3b8; font-size: 12px; margin: 0;">
-                    Email inviata automaticamente da VetBuddy<br/>
+                    Email inviata automaticamente da vetbuddy<br/>
                     <a href="https://vetbuddy.it" style="color: #FF6B6B;">vetbuddy.it</a>
                   </p>
                 </div>
@@ -2237,7 +2237,7 @@ export async function POST(request, { params }) {
             </div>
             
             <div style="background: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
-              <p style="color: #94a3b8; font-size: 12px; margin: 0;">Inviato tramite <strong>VetBuddy</strong> - La piattaforma veterinaria</p>
+              <p style="color: #94a3b8; font-size: 12px; margin: 0;">Inviato tramite <strong>vetbuddy</strong> - La piattaforma veterinaria</p>
             </div>
           </div>
         `
@@ -2337,7 +2337,7 @@ export async function POST(request, { params }) {
                   ${notes ? `<div style="background: #fef3c7; padding: 12px; border-radius: 8px; margin-top: 16px;"><small><strong>Note:</strong> ${notes}</small></div>` : ''}
                 </div>
                 <div style="background: #f9fafb; padding: 16px; text-align: center; font-size: 12px; color: #666;">
-                  Inviato tramite <strong>VetBuddy</strong>
+                  Inviato tramite <strong>vetbuddy</strong>
                 </div>
               </div>
             `,
@@ -2597,7 +2597,7 @@ export async function POST(request, { params }) {
               ` : ''}
             </div>
             <div style="background: #f9fafb; padding: 24px; text-align: center; border-top: 1px solid #e5e7eb;">
-              <p style="color: #6b7280; font-size: 12px; margin: 0;">Documento inviato tramite <strong>VetBuddy</strong></p>
+              <p style="color: #6b7280; font-size: 12px; margin: 0;">Documento inviato tramite <strong>vetbuddy</strong></p>
               <p style="color: #9ca3af; font-size: 11px; margin: 8px 0 0;">La piattaforma per cliniche veterinarie e proprietari di animali</p>
             </div>
           </div>
@@ -2673,7 +2673,7 @@ export async function POST(request, { params }) {
             price_data: {
               currency: 'eur',
               product_data: {
-                name: `VetBuddy ${plan.name}`,
+                name: `vetbuddy ${plan.name}`,
                 description: `Abbonamento mensile ${plan.name}`,
               },
               unit_amount: Math.round(plan.price * 100), // Convert to cents
@@ -3109,7 +3109,7 @@ export async function POST(request, { params }) {
                 </p>
               </div>
               <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy - La piattaforma per la salute dei tuoi animali</p>
+                <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
               </div>
             </div>
           `
@@ -3194,7 +3194,7 @@ export async function POST(request, { params }) {
                   </div>
                 </div>
                 <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 VetBuddy</p>
+                  <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
                 </div>
               </div>
             `
