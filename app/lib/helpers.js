@@ -1,4 +1,4 @@
-// Helper utilities for VetBuddy
+// Helper utilities for vetbuddy
 import { Dog, Cat, PawPrint } from 'lucide-react';
 
 // Helper function for pet species info
