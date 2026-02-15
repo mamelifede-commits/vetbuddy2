@@ -207,19 +207,19 @@ function ComingSoonLanding({ onLogin }) {
       </main>
 
       {/* Animated Golden Retriever - Rising slowly from bottom */}
-      <div className="absolute bottom-[80px] left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+      <div className="absolute bottom-[70px] left-1/2 -translate-x-1/2 z-20 pointer-events-none">
         <img
           src="/animals/golden-retriever-user.png"
           alt="Golden Retriever"
           onLoad={() => setImageLoaded(true)}
-          className={`h-[38vh] md:h-[42vh] w-auto object-contain transition-all ease-out ${
+          className={`h-[32vh] md:h-[36vh] w-auto object-contain transition-all ease-out ${
             imageLoaded 
               ? 'translate-y-0 opacity-100' 
-              : 'translate-y-[120%] opacity-0'
+              : 'translate-y-[150%] opacity-0'
           }`}
           style={{
             filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.15))',
-            maxHeight: '45vh',
+            maxHeight: '40vh',
             transitionDuration: '3500ms'
           }}
         />
