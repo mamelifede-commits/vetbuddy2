@@ -162,62 +162,43 @@ function ComingSoonLanding({ onLogin }) {
   const [showTeamLogin, setShowTeamLogin] = useState(false);
   const [authMode, setAuthMode] = useState('login');
 
-  // Animal photos - Organized symmetrical composition
-  // Perfect symmetry: 3 left, 1 top center, 3 right
-  const animals = [
-    // Top center - hero position (largest)
-    { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300&h=300&fit=crop', position: 'top-[6%] left-1/2 -translate-x-1/2', size: '130px', delay: 0 },
-    
-    // Left column - evenly spaced vertically
-    { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&h=300&fit=crop', position: 'top-[15%] left-[6%]', size: '95px', delay: 0.2 },
-    { src: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=300&h=300&fit=crop', position: 'top-[42%] left-[3%]', size: '85px', delay: 0.4 },
-    { src: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&h=300&fit=crop', position: 'bottom-[15%] left-[6%]', size: '95px', delay: 0.6 },
-    
-    // Right column - mirror of left
-    { src: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop', position: 'top-[15%] right-[6%]', size: '95px', delay: 0.2 },
-    { src: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300&h=300&fit=crop', position: 'top-[42%] right-[3%]', size: '85px', delay: 0.4 },
-    { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&h=300&fit=crop', position: 'bottom-[15%] right-[6%]', size: '95px', delay: 0.6 },
-  ];
-
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
       {/* Gradient Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-100 via-orange-50 to-cyan-100"></div>
-        <div className="absolute -top-32 -left-32 w-[400px] h-[400px] bg-gradient-to-br from-coral-300/40 to-rose-300/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-gradient-to-tl from-cyan-300/40 to-sky-300/20 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-amber-100/20 via-white/40 to-pink-100/20 rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-rose-50 via-white to-cyan-50"></div>
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-coral-200/30 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-cyan-200/30 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Animal Photos in Circles - Symmetrical Layout */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {animals.map((animal, index) => (
-          <div 
-            key={index}
-            className={`absolute ${animal.position}`}
+      {/* Single Animated Dog - Rising from bottom */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-0">
+        <div 
+          className="relative"
+          style={{
+            animation: 'riseUp 20s ease-in-out infinite',
+          }}
+        >
+          <img 
+            src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500&h=600&fit=crop&crop=top"
+            alt="Happy Dog"
+            className="w-[280px] h-auto opacity-20"
             style={{
-              width: animal.size,
-              height: animal.size,
-              animation: `gentleFloat 6s ease-in-out infinite`,
-              animationDelay: `${animal.delay}s`
+              maskImage: 'linear-gradient(to top, transparent 0%, black 30%, black 70%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to top, transparent 0%, black 30%, black 70%, transparent 100%)',
             }}
-          >
-            <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-2xl bg-white">
-              <img 
-                src={animal.src} 
-                alt=""
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        ))}
+          />
+        </div>
       </div>
 
-      {/* CSS Animation - Gentler float */}
+      {/* CSS Animation */}
       <style jsx>{`
-        @keyframes gentleFloat {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
+        @keyframes riseUp {
+          0% { transform: translateY(100px); opacity: 0; }
+          10% { opacity: 0.2; }
+          50% { transform: translateY(-50px); opacity: 0.25; }
+          90% { opacity: 0.2; }
+          100% { transform: translateY(100px); opacity: 0; }
         }
       `}</style>
 
