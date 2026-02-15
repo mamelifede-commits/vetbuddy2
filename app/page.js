@@ -136,30 +136,85 @@ function ComingSoonLanding({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-coral-50 via-white to-blue-50 flex flex-col">
-      {/* Main Content - Ultra Minimal */}
-      <main className="flex-1 flex items-center justify-center px-4">
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-coral-100 via-white to-blue-100">
+        {/* Floating shapes */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-coral-200/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-coral-100/20 to-blue-100/20 rounded-full blur-3xl"></div>
+        
+        {/* Decorative paw prints */}
+        <div className="absolute top-[15%] left-[10%] text-coral-200/40 text-6xl transform -rotate-12">🐾</div>
+        <div className="absolute top-[25%] right-[15%] text-blue-200/40 text-5xl transform rotate-12">🐾</div>
+        <div className="absolute bottom-[30%] left-[20%] text-coral-200/30 text-4xl transform rotate-45">🐾</div>
+        <div className="absolute bottom-[20%] right-[25%] text-blue-200/30 text-7xl transform -rotate-30">🐾</div>
+        <div className="absolute top-[60%] left-[5%] text-coral-200/20 text-5xl transform rotate-20">🐾</div>
+        <div className="absolute top-[10%] right-[30%] text-blue-200/20 text-4xl transform -rotate-45">🐾</div>
+      </div>
+
+      {/* Main Content */}
+      <main className="flex-1 flex items-center justify-center px-4 relative z-10">
         <div className="text-center">
-          {/* Logo */}
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <VetBuddyLogo size={64} />
-            <span className="font-bold text-5xl text-gray-900">VetBuddy</span>
+          {/* Logo with glow effect */}
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-32 h-32 bg-coral-400/20 rounded-full blur-2xl animate-pulse"></div>
+            </div>
+            <div className="relative flex items-center justify-center gap-4 group">
+              <div className="transform transition-transform duration-500 group-hover:scale-110">
+                <VetBuddyLogo size={80} />
+              </div>
+              <span className="font-bold text-6xl md:text-7xl bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 bg-clip-text text-transparent">
+                VetBuddy
+              </span>
+            </div>
           </div>
           
-          {/* Coming Soon */}
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-400">
-            Coming Soon
-          </h1>
+          {/* Coming Soon with animated gradient */}
+          <div className="relative">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-coral-400 via-coral-500 to-blue-500 bg-clip-text text-transparent animate-pulse" style={{ animationDuration: '3s' }}>
+              Coming Soon
+            </h1>
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <span className="w-12 h-1 bg-gradient-to-r from-transparent to-coral-400 rounded-full"></span>
+              <span className="w-3 h-3 bg-coral-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></span>
+              <span className="w-3 h-3 bg-coral-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+              <span className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+              <span className="w-12 h-1 bg-gradient-to-l from-transparent to-blue-400 rounded-full"></span>
+            </div>
+          </div>
+
+          {/* Subtitle */}
+          <p className="mt-8 text-lg md:text-xl text-gray-500 font-light max-w-md mx-auto">
+            La piattaforma veterinaria del futuro sta arrivando
+          </p>
+
+          {/* Decorative icons */}
+          <div className="mt-10 flex items-center justify-center gap-8">
+            <div className="w-14 h-14 bg-white/80 backdrop-blur rounded-2xl shadow-lg flex items-center justify-center transform hover:scale-110 transition-transform duration-300 hover:shadow-coral-200">
+              <span className="text-2xl">🐕</span>
+            </div>
+            <div className="w-14 h-14 bg-white/80 backdrop-blur rounded-2xl shadow-lg flex items-center justify-center transform hover:scale-110 transition-transform duration-300 hover:shadow-blue-200">
+              <span className="text-2xl">🐱</span>
+            </div>
+            <div className="w-14 h-14 bg-white/80 backdrop-blur rounded-2xl shadow-lg flex items-center justify-center transform hover:scale-110 transition-transform duration-300 hover:shadow-coral-200">
+              <span className="text-2xl">🐰</span>
+            </div>
+            <div className="w-14 h-14 bg-white/80 backdrop-blur rounded-2xl shadow-lg flex items-center justify-center transform hover:scale-110 transition-transform duration-300 hover:shadow-blue-200">
+              <span className="text-2xl">🦜</span>
+            </div>
+          </div>
         </div>
       </main>
 
-      {/* Footer with hidden team access */}
-      <footer className="py-6 px-4 border-t border-gray-100 bg-white/50">
+      {/* Footer with glassmorphism */}
+      <footer className="relative z-10 py-6 px-4 bg-white/30 backdrop-blur-sm border-t border-white/50">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-400">© 2025 VetBuddy</p>
+          <p className="text-sm text-gray-500">© 2025 VetBuddy</p>
           <button 
             onClick={() => setShowTeamLogin(true)}
-            className="text-xs text-gray-300 hover:text-gray-500 transition"
+            className="text-xs text-gray-400 hover:text-coral-500 transition-colors duration-300"
           >
             Accesso Team
           </button>
