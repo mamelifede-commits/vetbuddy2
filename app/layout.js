@@ -3,7 +3,7 @@ import CookieBanner from '@/components/CookieBanner'
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 
 export const metadata = {
-  title: 'VetBuddy - Gestionale Veterinario | Pilot Milano',
+  title: 'vetbuddy - Gestionale Veterinario | Pilot Milano',
   description: 'La piattaforma per cliniche veterinarie e proprietari di animali. Gestisci appuntamenti, documenti e comunicazione in un\'unica piattaforma. Pilot Milano 2025.',
   keywords: ['veterinario', 'clinica veterinaria', 'gestionale', 'animali', 'Milano', 'prenotazioni', 'pet'],
   authors: [{ name: 'VetBuddy' }],
