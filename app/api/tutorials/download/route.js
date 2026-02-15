@@ -351,9 +351,9 @@ async function generateTutorialPDF(tutorial, isClinic = false) {
     color: coralColor
   });
   
-  // Title - New Brand Style (vetbuddy senza spazio)
+  // Title - New Brand Style: "vet" in NERO (darkGray), "buddy" in BIANCO
   page.drawText('vet', {
-    x: margin, y: pageHeight - 70, size: 36, font: boldFont, color: rgb(1, 1, 1)
+    x: margin, y: pageHeight - 70, size: 36, font: boldFont, color: darkGray
   });
   page.drawText('buddy', {
     x: margin + 55, y: pageHeight - 70, size: 36, font: font, color: rgb(1, 1, 1)
