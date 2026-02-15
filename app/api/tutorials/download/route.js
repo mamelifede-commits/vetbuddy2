@@ -58,7 +58,7 @@ const ownerTutorial = {
         'Aggiungi peso attuale, numero microchip e foto',
         'Indica eventuali allergie o condizioni particolari'
       ],
-      tip: 'VetBuddy supporta: cani, gatti, conigli, uccelli, rettili, pesci, cavalli e altri!'
+      tip: 'vetbuddy supporta: cani, gatti, conigli, uccelli, rettili, pesci, cavalli e altri!'
     },
     {
       title: 'TROVARE UNA CLINICA VETERINARIA',
