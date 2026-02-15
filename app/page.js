@@ -208,15 +208,12 @@ function ComingSoonLanding({ onLogin }) {
         {/* SPAZIO FISSO tra testo e cane */}
         <div className="h-8 md:h-12"></div>
         
-        {/* Golden Retriever con colori gradiente */}
+        {/* Golden Retriever con colori gradiente - IMMAGINE UTENTE */}
         <div className="flex justify-center items-center">
           <img
-            src="/animals/golden-retriever-user.png"
+            src="/animals/golden-gradient.png"
             alt="Golden Retriever"
             className="h-[180px] md:h-[200px] lg:h-[220px] w-auto object-contain"
-            style={{
-              filter: 'sepia(20%) saturate(150%) hue-rotate(-10deg) brightness(1.05)'
-            }}
           />
         </div>
       </div>
