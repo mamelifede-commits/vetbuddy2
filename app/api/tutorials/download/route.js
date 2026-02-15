@@ -563,7 +563,7 @@ async function generateTutorialPDF(tutorial, isClinic = false) {
   
   y -= 40;
   
-  page.drawText('Assistente virtuale disponibile 24/7 nella dashboard VetBuddy.', {
+  page.drawText('Assistente virtuale disponibile 24/7 nella dashboard vetbuddy.', {
     x: margin, y, size: 10, font: font, color: mediumGray
   });
   
