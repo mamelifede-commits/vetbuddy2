@@ -11,7 +11,7 @@ import random
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://dog-bottom-up.preview.emergentagent.com/api"
+BASE_URL = "https://paw-prints-landing.preview.emergentagent.com/api"
 FALLBACK_URL = "http://localhost:3000/api"
 
 # Test configuration
