@@ -80,7 +80,7 @@ export default function TutorialProprietari() {
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Accesso Riservato</h1>
           <p className="text-gray-600 mb-6">
-            Questo tutorial è riservato ai <strong>proprietari di animali</strong> registrati su VetBuddy.
+            Questo tutorial è riservato ai <strong>proprietari di animali</strong> registrati su vetbuddy.
           </p>
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
             <div className="flex items-start gap-3">
@@ -200,7 +200,7 @@ export default function TutorialProprietari() {
       color: 'bg-indigo-500',
       content: [
         '1. Clicca sull\'icona chat in basso a destra',
-        '2. Chiedi informazioni sui servizi VetBuddy',
+        '2. Chiedi informazioni sui servizi vetbuddy',
         '3. Ottieni risposte su come usare l\'app',
         '4. L\'assistente può aiutarti a prenotare',
         '5. Disponibile 24/7 per le tue domande'
@@ -225,7 +225,7 @@ export default function TutorialProprietari() {
       title: 'Installare l\'App',
       color: 'bg-teal-500',
       content: [
-        '1. VetBuddy funziona come app installabile (PWA)',
+        '1. vetbuddy funziona come app installabile (PWA)',
         '2. Su iPhone: Safari → Condividi → Aggiungi a Home',
         '3. Su Android: Chrome → Menu → Installa app',
         '4. L\'app funziona anche offline per consultare documenti',
@@ -236,8 +236,8 @@ export default function TutorialProprietari() {
   ];
 
   const faqs = [
-    { q: 'Quanto costa usare VetBuddy?', a: 'VetBuddy è completamente gratuito per i proprietari di animali. Nessun costo nascosto!' },
-    { q: 'Posso usare VetBuddy con qualsiasi clinica?', a: 'Puoi prenotare solo presso le cliniche registrate su VetBuddy. Invita la tua clinica di fiducia!' },
+    { q: 'Quanto costa usare vetbuddy?', a: 'vetbuddy è completamente gratuito per i proprietari di animali. Nessun costo nascosto!' },
+    { q: 'Posso usare vetbuddy con qualsiasi clinica?', a: 'Puoi prenotare solo presso le cliniche registrate su vetbuddy. Invita la tua clinica di fiducia!' },
     { q: 'I miei dati sono al sicuro?', a: 'Assolutamente sì! Utilizziamo crittografia avanzata e rispettiamo il GDPR.' },
     { q: 'Posso gestire più animali?', a: 'Sì, puoi aggiungere tutti gli animali che desideri al tuo profilo.' },
     { q: 'Come annullo un appuntamento?', a: 'Dalla dashboard, vai su "I Miei Appuntamenti", seleziona l\'appuntamento e clicca "Annulla".' }
@@ -271,7 +271,7 @@ export default function TutorialProprietari() {
             <span className="font-semibold">Guida per Proprietari</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Tutorial <span className="text-blue-500">VetBuddy</span>
+            Tutorial <span className="text-blue-500">vetbuddy</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Tutto quello che devi sapere per gestire la salute dei tuoi amici a 4 zampe (e non solo!) in modo semplice e organizzato.
@@ -384,7 +384,7 @@ export default function TutorialProprietari() {
 
       {/* Footer */}
       <footer className="py-6 px-4 text-center text-gray-500 text-sm">
-        <p>© 2026 VetBuddy - Gestionale Veterinario | Tutti i diritti riservati</p>
+        <p>© 2026 vetbuddy - Gestionale Veterinario | Tutti i diritti riservati</p>
       </footer>
     </div>
   );
