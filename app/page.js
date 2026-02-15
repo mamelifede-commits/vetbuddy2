@@ -163,22 +163,20 @@ function ComingSoonLanding({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
 
   // Animal photos - Organized symmetrical composition
-  // Left column (3 animals vertically aligned)
-  // Right column (3 animals vertically aligned)
-  // Top center (1 animal)
+  // Perfect symmetry: 3 left, 1 top center, 3 right
   const animals = [
-    // Top center - hero position
-    { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300&h=300&fit=crop', position: 'top-[8%] left-1/2 -translate-x-1/2', size: '120px', delay: 0 },
+    // Top center - hero position (largest)
+    { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300&h=300&fit=crop', position: 'top-[6%] left-1/2 -translate-x-1/2', size: '130px', delay: 0 },
     
-    // Left column - top to bottom
-    { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&h=300&fit=crop', position: 'top-[12%] left-[8%]', size: '100px', delay: 0.3 },
-    { src: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=300&h=300&fit=crop', position: 'top-[38%] left-[4%]', size: '90px', delay: 0.6 },
-    { src: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&h=300&fit=crop', position: 'bottom-[18%] left-[8%]', size: '100px', delay: 0.9 },
+    // Left column - evenly spaced vertically
+    { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&h=300&fit=crop', position: 'top-[15%] left-[6%]', size: '95px', delay: 0.2 },
+    { src: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=300&h=300&fit=crop', position: 'top-[42%] left-[3%]', size: '85px', delay: 0.4 },
+    { src: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&h=300&fit=crop', position: 'bottom-[15%] left-[6%]', size: '95px', delay: 0.6 },
     
-    // Right column - top to bottom (mirrored)
-    { src: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop', position: 'top-[12%] right-[8%]', size: '100px', delay: 0.3 },
-    { src: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300&h=300&fit=crop', position: 'top-[38%] right-[4%]', size: '90px', delay: 0.6 },
-    { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&h=300&fit=crop', position: 'bottom-[18%] right-[8%]', size: '100px', delay: 0.9 },
+    // Right column - mirror of left
+    { src: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop', position: 'top-[15%] right-[6%]', size: '95px', delay: 0.2 },
+    { src: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300&h=300&fit=crop', position: 'top-[42%] right-[3%]', size: '85px', delay: 0.4 },
+    { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&h=300&fit=crop', position: 'bottom-[15%] right-[6%]', size: '95px', delay: 0.6 },
   ];
 
   return (
