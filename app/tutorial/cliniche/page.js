@@ -45,7 +45,7 @@ export default function TutorialCliniche() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'VetBuddy_Tutorial_Cliniche.pdf';
+      a.download = 'vetbuddy_Tutorial_Cliniche.pdf';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
