@@ -18558,7 +18558,7 @@ export default function App() {
   return (
     <>
       {renderContent()}
-      <ChatWidget />
+      {user && <ChatWidget />}
     </>
   );
 }
