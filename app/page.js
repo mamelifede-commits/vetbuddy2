@@ -140,29 +140,119 @@ function ComingSoonLanding({ onLogin }) {
       {/* Beautiful Animated Background */}
       <div className="absolute inset-0">
         {/* Base gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-coral-50 via-white to-sky-50"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-white to-sky-100"></div>
         
         {/* Large floating orbs */}
-        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-gradient-to-br from-coral-300/40 to-coral-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
+        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-gradient-to-br from-coral-300/40 to-orange-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
         <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-gradient-to-tl from-sky-300/40 to-blue-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>
-        
-        {/* Medium accent orbs */}
-        <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-gradient-to-br from-rose-200/30 to-pink-300/20 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }}></div>
-        <div className="absolute bottom-1/3 left-1/4 w-64 h-64 bg-gradient-to-tr from-violet-200/25 to-indigo-300/15 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '7s', animationDelay: '3s' }}></div>
-        
-        {/* Small floating particles */}
-        <div className="absolute top-[20%] left-[15%] w-32 h-32 bg-coral-200/40 rounded-full blur-xl animate-bounce" style={{ animationDuration: '5s' }}></div>
-        <div className="absolute top-[60%] right-[20%] w-24 h-24 bg-sky-200/40 rounded-full blur-xl animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}></div>
-        <div className="absolute bottom-[25%] left-[10%] w-20 h-20 bg-rose-200/30 rounded-full blur-lg animate-bounce" style={{ animationDuration: '6s', animationDelay: '2s' }}></div>
-        <div className="absolute top-[15%] right-[10%] w-28 h-28 bg-indigo-200/30 rounded-full blur-xl animate-bounce" style={{ animationDuration: '5s', animationDelay: '0.5s' }}></div>
-        
-        {/* Mesh gradient overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-coral-100/20 via-transparent to-transparent"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-sky-100/30 via-transparent to-transparent"></div>
-        
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-to-br from-green-200/30 to-emerald-300/20 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '7s', animationDelay: '1s' }}></div>
+        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-to-tr from-pink-200/25 to-rose-300/15 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '9s', animationDelay: '3s' }}></div>
       </div>
+
+      {/* Animated Animals */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Dog running left to right */}
+        <div className="absolute top-[20%] animate-bounce" style={{ 
+          animation: 'moveRight 12s linear infinite',
+          left: '-100px'
+        }}>
+          <span className="text-6xl drop-shadow-lg" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))' }}>🐕</span>
+        </div>
+        
+        {/* Cat walking right to left */}
+        <div className="absolute top-[60%]" style={{ 
+          animation: 'moveLeft 15s linear infinite',
+          right: '-100px'
+        }}>
+          <span className="text-5xl drop-shadow-lg" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))' }}>🐈</span>
+        </div>
+        
+        {/* Bunny hopping */}
+        <div className="absolute bottom-[25%] left-[10%]" style={{ 
+          animation: 'hop 2s ease-in-out infinite'
+        }}>
+          <span className="text-5xl drop-shadow-lg">🐰</span>
+        </div>
+        
+        {/* Bird flying */}
+        <div className="absolute top-[15%]" style={{ 
+          animation: 'fly 8s ease-in-out infinite',
+          left: '20%'
+        }}>
+          <span className="text-4xl drop-shadow-lg">🦜</span>
+        </div>
+        
+        {/* Second bird */}
+        <div className="absolute top-[25%]" style={{ 
+          animation: 'fly 10s ease-in-out infinite',
+          animationDelay: '2s',
+          left: '60%'
+        }}>
+          <span className="text-3xl drop-shadow-lg">🐦</span>
+        </div>
+        
+        {/* Hamster */}
+        <div className="absolute bottom-[35%] right-[15%]" style={{ 
+          animation: 'wiggle 1.5s ease-in-out infinite'
+        }}>
+          <span className="text-4xl drop-shadow-lg">🐹</span>
+        </div>
+        
+        {/* Fish swimming */}
+        <div className="absolute bottom-[15%]" style={{ 
+          animation: 'swim 6s ease-in-out infinite',
+          left: '30%'
+        }}>
+          <span className="text-4xl drop-shadow-lg">🐠</span>
+        </div>
+        
+        {/* Turtle slow moving */}
+        <div className="absolute bottom-[20%]" style={{ 
+          animation: 'moveRight 25s linear infinite',
+          left: '-80px'
+        }}>
+          <span className="text-4xl drop-shadow-lg">🐢</span>
+        </div>
+        
+        {/* Paw prints scattered */}
+        <div className="absolute top-[40%] left-[5%] text-coral-200/50 text-3xl rotate-[-20deg]">🐾</div>
+        <div className="absolute top-[50%] left-[12%] text-coral-200/40 text-2xl rotate-[10deg]">🐾</div>
+        <div className="absolute top-[45%] right-[8%] text-sky-200/50 text-3xl rotate-[25deg]">🐾</div>
+        <div className="absolute bottom-[40%] right-[15%] text-sky-200/40 text-2xl rotate-[-15deg]">🐾</div>
+      </div>
+
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes moveRight {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(calc(100vw + 200px)); }
+        }
+        @keyframes moveLeft {
+          0% { transform: translateX(0) scaleX(-1); }
+          100% { transform: translateX(calc(-100vw - 200px)) scaleX(-1); }
+        }
+        @keyframes hop {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        @keyframes fly {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(30px, -20px) rotate(-5deg); }
+          50% { transform: translate(60px, 0) rotate(0deg); }
+          75% { transform: translate(30px, 20px) rotate(5deg); }
+        }
+        @keyframes wiggle {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(-10deg); }
+          75% { transform: rotate(10deg); }
+        }
+        @keyframes swim {
+          0%, 100% { transform: translateX(0) translateY(0); }
+          25% { transform: translateX(20px) translateY(-10px); }
+          50% { transform: translateX(40px) translateY(0); }
+          75% { transform: translateX(20px) translateY(10px); }
+        }
+      `}</style>
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4 relative z-10">
