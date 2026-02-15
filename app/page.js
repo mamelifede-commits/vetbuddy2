@@ -143,7 +143,7 @@ function ComingSoonLanding({ onLogin }) {
     { src: '/animals/rabbit_real.png', size: '240px', style: { bottom: '5%', left: '0%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
     { src: '/animals/golden_real.png', size: '270px', style: { bottom: '0%', right: '0%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
     { src: '/animals/bird_real.png', size: '180px', style: { top: '0%', left: '35%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
-    { src: '/animals/hamster_real.png', size: '200px', style: { top: '35%', left: '0%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
+    { src: '/animals/fish_real.png', size: '200px', style: { top: '35%', left: '0%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
   ];
 
   // Logo style proposals
