@@ -240,7 +240,7 @@ function ComingSoonLanding({ onLogin }) {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.8),transparent_70%)]"></div>
       </div>
 
-      {/* Floating Animal Images - True PNG cutouts */}
+      {/* Floating Animal Images - With organic blob shape */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {animals.map((animal, index) => (
           <div 
@@ -252,14 +252,21 @@ function ComingSoonLanding({ onLogin }) {
               height: animal.size,
             }}
           >
-            <img 
-              src={animal.src} 
-              alt=""
-              className="w-full h-full object-contain drop-shadow-2xl"
-              style={{ 
-                filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.2))',
-              }}
-            />
+            {/* Organic blob shape with image */}
+            <div className="relative w-full h-full">
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/80 to-white/40 rounded-[60%_40%_50%_50%/50%_50%_40%_60%] blur-lg scale-105"></div>
+              {/* Image with blob mask */}
+              <img 
+                src={animal.src} 
+                alt=""
+                className="w-full h-full object-cover"
+                style={{ 
+                  borderRadius: '60% 40% 50% 50% / 50% 50% 40% 60%',
+                  filter: 'drop-shadow(0 15px 35px rgba(0,0,0,0.2))',
+                }}
+              />
+            </div>
           </div>
         ))}
         
