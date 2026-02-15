@@ -48,7 +48,7 @@ function ResetPasswordScreen({ token, onComplete }) {
     <div className="min-h-screen bg-gradient-to-b from-coral-50 to-white flex items-center justify-center p-4">
       <Card className="max-w-md w-full">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4"><VetBuddyLogo size={60} /></div>
+          <div className="flex justify-center mb-4"><VetBuddyLogo size={60} showText={true} /></div>
           
           {success ? (
             <>
