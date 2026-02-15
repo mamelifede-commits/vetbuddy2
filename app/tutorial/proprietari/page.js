@@ -45,7 +45,7 @@ export default function TutorialProprietari() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'VetBuddy_Tutorial_Proprietari.pdf';
+      a.download = 'vetbuddy_Tutorial_Proprietari.pdf';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
