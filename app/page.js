@@ -425,7 +425,7 @@ function FullLandingPage({ onLogin }) {
       <header className="sticky top-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2"><VetBuddyLogo size={32} /><span className="font-bold text-xl text-gray-900">VetBuddy</span></div>
+                        <NewBrandLogo size="sm" />
             <nav className="hidden md:flex items-center gap-8">
               <button onClick={() => scrollToSection('funzionalita')} className="text-gray-600 hover:text-coral-500 transition">Funzionalità</button>
               <button onClick={() => scrollToSection('automazioni')} className="text-gray-600 hover:text-coral-500 transition">Automazioni</button>
