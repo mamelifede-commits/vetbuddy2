@@ -11,7 +11,7 @@ export const metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'VetBuddy',
+    title: 'vetbuddy',
   },
   icons: {
     icon: [
@@ -25,16 +25,16 @@ export const metadata = {
     ],
   },
   openGraph: {
-    title: 'VetBuddy - Gestionale Veterinario',
+    title: 'vetbuddy - Gestionale Veterinario',
     description: 'La piattaforma per cliniche veterinarie e proprietari di animali. Zero carta, zero caos.',
     url: 'https://vetbuddy.it',
-    siteName: 'VetBuddy',
+    siteName: 'vetbuddy',
     locale: 'it_IT',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'VetBuddy - Gestionale Veterinario',
+    title: 'vetbuddy - Gestionale Veterinario',
     description: 'La piattaforma per cliniche veterinarie e proprietari di animali.',
   },
   robots: {
@@ -45,7 +45,7 @@ export const metadata = {
     'mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-status-bar-style': 'default',
-    'apple-mobile-web-app-title': 'VetBuddy',
+    'apple-mobile-web-app-title': 'vetbuddy',
   },
 }
 
@@ -65,7 +65,7 @@ export default function RootLayout({ children }) {
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="VetBuddy" />
+        <meta name="apple-mobile-web-app-title" content="vetbuddy" />
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body>
