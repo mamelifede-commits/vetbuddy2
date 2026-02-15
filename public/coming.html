@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VetBuddy - Coming Soon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            coral: { 50: '#fff5f5', 100: '#ffe0e0', 200: '#ffc1c1', 400: '#ff8585', 500: '#ff6b6b' },
+            rose: { 200: '#fecdd3', 400: '#fb7185', 500: '#f43f5e' },
+            cyan: { 50: '#ecfeff', 200: '#a5f3fc', 400: '#22d3ee', 500: '#06b6d4' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(var(--rotate)); }
+      50% { transform: translateY(-10px) rotate(var(--rotate)); }
+    }
+    .paw { animation: float 3s ease-in-out infinite; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-coral-50 via-white to-cyan-50">
+  <!-- Zampine decorative -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <svg class="paw absolute top-[10%] left-[5%] h-16 w-16 text-coral-200 opacity-40" style="--rotate: -15deg" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="11" cy="4" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="4" cy="8" r="2.5"/><circle cx="20" cy="16" r="2.5"/>
+      <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>
+    </svg>
+    <svg class="paw absolute top-[20%] right-[10%] h-12 w-12 text-cyan-200 opacity-40" style="--rotate: 25deg; animation-delay: 0.5s" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="11" cy="4" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="4" cy="8" r="2.5"/><circle cx="20" cy="16" r="2.5"/>
+      <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>
+    </svg>
+    <svg class="paw absolute top-[45%] left-[8%] h-10 w-10 text-rose-200 opacity-40" style="--rotate: 10deg; animation-delay: 1s" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="11" cy="4" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="4" cy="8" r="2.5"/><circle cx="20" cy="16" r="2.5"/>
+      <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>
+    </svg>
+    <svg class="paw absolute top-[60%] right-[5%] h-14 w-14 text-coral-200 opacity-40" style="--rotate: -20deg; animation-delay: 1.5s" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="11" cy="4" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="4" cy="8" r="2.5"/><circle cx="20" cy="16" r="2.5"/>
+      <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>
+    </svg>
+    <svg class="paw absolute top-[75%] left-[15%] h-8 w-8 text-cyan-200 opacity-40" style="--rotate: 35deg; animation-delay: 2s" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="11" cy="4" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="4" cy="8" r="2.5"/><circle cx="20" cy="16" r="2.5"/>
+      <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>
+    </svg>
+    <svg class="paw absolute bottom-[20%] right-[12%] h-12 w-12 text-rose-200 opacity-40" style="--rotate: -10deg; animation-delay: 2.5s" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="11" cy="4" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="4" cy="8" r="2.5"/><circle cx="20" cy="16" r="2.5"/>
+      <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>
+    </svg>
+  </div>
+
+  <!-- Linea colorata in alto -->
+  <div class="w-full h-1.5 bg-gradient-to-r from-coral-400 via-rose-400 to-cyan-400"></div>
+
+  <!-- Contenuto principale -->
+  <div class="min-h-screen flex flex-col justify-center items-center px-4 py-12 relative z-10">
+    <!-- Logo -->
+    <div class="mb-10">
+      <div class="flex items-center justify-center gap-4">
+        <div class="p-5 bg-gradient-to-br from-coral-500 to-rose-500 rounded-3xl shadow-2xl" style="box-shadow: 0 25px 50px -12px rgba(255, 107, 107, 0.3)">
+          <svg class="h-14 w-14 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="11" cy="4" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="4" cy="8" r="2.5"/><circle cx="20" cy="16" r="2.5"/>
+            <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="font-bold text-5xl md:text-7xl text-gray-900">vet</span>
+          <span class="font-light text-5xl md:text-7xl text-coral-500">buddy</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Coming Soon -->
+    <div class="text-center">
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-coral-500 via-rose-500 to-cyan-500 bg-clip-text text-transparent">
+        Coming Soon
+      </h1>
+      <div class="mt-6 flex items-center justify-center gap-3">
+        <span class="w-20 h-1 bg-gradient-to-r from-transparent via-coral-400 to-coral-500 rounded-full"></span>
+        <svg class="h-5 w-5 text-coral-500" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="4" cy="8" r="2"/><circle cx="20" cy="16" r="2"/>
+          <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>
+        </svg>
+        <svg class="h-5 w-5 text-rose-500" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="4" cy="8" r="2"/><circle cx="20" cy="16" r="2"/>
+          <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>
+        </svg>
+        <svg class="h-5 w-5 text-cyan-500" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="4" cy="8" r="2"/><circle cx="20" cy="16" r="2"/>
+          <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>
+        </svg>
+        <span class="w-20 h-1 bg-gradient-to-l from-transparent via-cyan-400 to-cyan-500 rounded-full"></span>
+      </div>
+      <p class="mt-8 text-lg text-gray-500 max-w-md mx-auto">
+        La piattaforma per cliniche veterinarie e proprietari di pet sta arrivando
+      </p>
+    </div>
+  </div>
+  
+  <!-- Linea colorata in basso -->
+  <div class="fixed bottom-0 left-0 right-0">
+    <div class="w-full h-1.5 bg-gradient-to-r from-cyan-400 via-rose-400 to-coral-400"></div>
+    <footer class="py-4 px-4 bg-white/80 backdrop-blur-sm">
+      <p class="text-sm text-gray-400 text-center">© 2025 vetbuddy</p>
+    </footer>
+  </div>
+</body>
+</html>
