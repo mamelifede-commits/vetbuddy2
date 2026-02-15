@@ -11,8 +11,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-// VetBuddy Logo - New Brand Style 4 (Minimal with coral box)
-const VetBuddyLogo = ({ size = 40, white = false, showText = false }) => {
+// vetbuddy Logo - New Brand Style 4 (Minimal with coral box)
+const vetbuddyLogo = ({ size = 40, white = false, showText = false }) => {
   const boxSize = size;
   const iconSize = Math.round(size * 0.55);
   const padding = Math.round(size * 0.2);
@@ -154,7 +154,7 @@ export default function PresentazionePage() {
         <header className="relative z-50 py-6 px-6">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <Link href="/" className="flex items-center gap-3">
-              <VetBuddyLogo size={36} white showText={true} />
+              <vetbuddyLogo size={36} white showText={true} />
             </Link>
             <Link 
               href="/" 
@@ -178,7 +178,7 @@ export default function PresentazionePage() {
           </h1>
           
           <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mb-12 leading-relaxed">
-            VetBuddy elimina la burocrazia quotidiana con <strong>44+ automazioni intelligenti</strong>. 
+            vetbuddy elimina la burocrazia quotidiana con <strong>44+ automazioni intelligenti</strong>. 
             Agenda, documenti, comunicazioni e pagamenti in un'unica piattaforma.
           </p>
 
@@ -227,7 +227,7 @@ export default function PresentazionePage() {
             Meno burocrazia, più tempo per <span className="text-coral-500">curare</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            VetBuddy nasce per risolvere un problema reale: i veterinari passano troppo tempo 
+            vetbuddy nasce per risolvere un problema reale: i veterinari passano troppo tempo 
             in attività amministrative. La nostra piattaforma automatizza tutto ciò che può essere 
             automatizzato, permettendoti di concentrarti su ciò che ami fare: <strong>curare gli animali</strong>.
           </p>
@@ -366,7 +366,7 @@ export default function PresentazionePage() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300">44+ Automazioni</span> che lavorano per te
             </h2>
             <p className="text-purple-200 text-lg max-w-2xl mx-auto">
-              Mentre ti occupi dei pazienti, VetBuddy gestisce automaticamente comunicazioni, promemoria e follow-up
+              Mentre ti occupi dei pazienti, vetbuddy gestisce automaticamente comunicazioni, promemoria e follow-up
             </p>
           </div>
 
@@ -445,7 +445,7 @@ export default function PresentazionePage() {
               Due mondi, <span className="text-coral-500">una piattaforma</span>
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              VetBuddy connette cliniche veterinarie e proprietari di animali in un'unica esperienza fluida
+              vetbuddy connette cliniche veterinarie e proprietari di animali in un'unica esperienza fluida
             </p>
           </div>
 
@@ -526,7 +526,7 @@ export default function PresentazionePage() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Per <span className="text-coral-500">tutti</span> gli animali
             </h2>
-            <p className="text-gray-600">VetBuddy supporta qualsiasi tipo di paziente</p>
+            <p className="text-gray-600">vetbuddy supporta qualsiasi tipo di paziente</p>
           </div>
 
           <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
@@ -651,13 +651,13 @@ export default function PresentazionePage() {
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="flex justify-center">
-            <VetBuddyLogo size={70} white showText={true} />
+            <vetbuddyLogo size={70} white showText={true} />
           </div>
           <h2 className="text-3xl md:text-5xl font-bold text-white mt-8 mb-6">
             Pronto a rivoluzionare<br/>la tua clinica?
           </h2>
           <p className="text-white/90 text-xl mb-10 max-w-2xl mx-auto">
-            Unisciti alle cliniche che hanno già scelto VetBuddy. 
+            Unisciti alle cliniche che hanno già scelto vetbuddy. 
             Inizia il tuo percorso verso una gestione più efficiente oggi stesso.
           </p>
           <Link 
@@ -678,7 +678,7 @@ export default function PresentazionePage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-3">
-              <VetBuddyLogo size={28} white showText={true} />
+              <vetbuddyLogo size={28} white showText={true} />
             </div>
             <div className="flex flex-wrap items-center justify-center gap-6 text-gray-400 text-sm">
               <a href="mailto:info@vetbuddy.it" className="hover:text-white transition">info@vetbuddy.it</a>
@@ -686,7 +686,7 @@ export default function PresentazionePage() {
               <Link href="/termini" className="hover:text-white transition">Termini</Link>
             </div>
             <p className="text-gray-500 text-sm">
-              © 2025 VetBuddy. Tutti i diritti riservati.
+              © 2025 vetbuddy. Tutti i diritti riservati.
             </p>
           </div>
         </div>

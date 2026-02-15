@@ -275,9 +275,9 @@ export default function EventDetailPage() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm text-gray-500 font-medium mb-1">🏢 Organizzatore</p>
-                  <p className="font-semibold text-gray-900">{event.organizer || event.sourceLabel || 'VetBuddy'}</p>
+                  <p className="font-semibold text-gray-900">{event.organizer || event.sourceLabel || 'vetbuddy'}</p>
                   <p className="text-sm text-gray-500 mt-1">
-                    Fonte: {event.sourceLabel || 'VetBuddy'}
+                    Fonte: {event.sourceLabel || 'vetbuddy'}
                   </p>
                 </div>
               </div>

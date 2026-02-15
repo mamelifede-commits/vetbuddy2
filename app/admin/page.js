@@ -247,7 +247,7 @@ export default function AdminPage() {
             <div className="mx-auto w-16 h-16 bg-coral-100 rounded-full flex items-center justify-center mb-4">
               <Lock className="h-8 w-8 text-coral-500" />
             </div>
-            <CardTitle className="text-2xl">🏥 Admin VetBuddy</CardTitle>
+            <CardTitle className="text-2xl">🏥 Admin vetbuddy</CardTitle>
             <CardDescription>Accesso riservato agli amministratori</CardDescription>
           </CardHeader>
           <CardContent>

@@ -11,7 +11,7 @@ import {
 import Link from 'next/link';
 
 // Logo Component
-const VetBuddyLogo = ({ size = 40 }) => (
+const vetbuddyLogo = ({ size = 40 }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <ellipse cx="50" cy="62" rx="18" ry="16" fill="#FF6B6B"/>
     <ellipse cx="28" cy="38" rx="10" ry="12" fill="#FF6B6B"/>
@@ -59,8 +59,8 @@ Micia,gatto,Persiano,25/09/2022,,femmina,4,bianco,no,Allergia al pesce,,Gatta mo
       <header className="bg-white border-b sticky top-0 z-50 print:hidden">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <VetBuddyLogo size={32} />
-            <span className="font-bold text-xl text-gray-900">VetBuddy</span>
+            <vetbuddyLogo size={32} />
+            <span className="font-bold text-xl text-gray-900">vetbuddy</span>
           </Link>
           <div className="flex items-center gap-3">
             <Button variant="outline" onClick={handlePrint} className="hidden md:flex">
@@ -89,11 +89,11 @@ Micia,gatto,Persiano,25/09/2022,,femmina,4,bianco,no,Allergia al pesce,,Gatta mo
             <span className="font-semibold">Guida Import Pazienti</span>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Come Importare i Tuoi Pazienti su VetBuddy
+            Come Importare i Tuoi Pazienti su vetbuddy
           </h1>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
             Guida completa passo-passo per migrare i dati dal tuo gestionale attuale. 
-            In pochi minuti avrai tutti i tuoi pazienti su VetBuddy!
+            In pochi minuti avrai tutti i tuoi pazienti su vetbuddy!
           </p>
         </div>
 
@@ -364,7 +364,7 @@ Micia,gatto,Persiano,25/09/2022,,femmina,4,bianco,no,Allergia al pesce,,Gatta mo
                 </div>
                 <div>
                   <h4 className="font-bold text-gray-900">Seleziona formato CSV o Excel</h4>
-                  <p className="text-gray-600">Scegli il formato CSV (.csv) o Excel (.xlsx). Entrambi funzionano con VetBuddy.</p>
+                  <p className="text-gray-600">Scegli il formato CSV (.csv) o Excel (.xlsx). Entrambi funzionano con vetbuddy.</p>
                 </div>
               </div>
               <div className="flex gap-4 items-start">
@@ -391,7 +391,7 @@ Micia,gatto,Persiano,25/09/2022,,femmina,4,bianco,no,Allergia al pesce,,Gatta mo
                 </div>
                 <div>
                   <h4 className="font-bold text-gray-900">Salva e carica</h4>
-                  <p className="text-gray-600">Salva il file come CSV (File → Salva con nome → CSV) e caricalo su VetBuddy!</p>
+                  <p className="text-gray-600">Salva il file come CSV (File → Salva con nome → CSV) e caricalo su vetbuddy!</p>
                 </div>
               </div>
             </div>
@@ -410,15 +410,15 @@ Micia,gatto,Persiano,25/09/2022,,femmina,4,bianco,no,Allergia al pesce,,Gatta mo
             <div className="grid md:grid-cols-2 gap-4">
               <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <h4 className="font-bold text-blue-800 mb-2">🐾 Più animali stesso proprietario?</h4>
-                <p className="text-blue-700 text-sm">Aggiungi una riga per ogni animale usando la stessa email del proprietario. VetBuddy collegherà automaticamente tutti gli animali allo stesso proprietario.</p>
+                <p className="text-blue-700 text-sm">Aggiungi una riga per ogni animale usando la stessa email del proprietario. vetbuddy collegherà automaticamente tutti gli animali allo stesso proprietario.</p>
               </div>
               <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                 <h4 className="font-bold text-green-800 mb-2">📋 Microchip duplicato?</h4>
-                <p className="text-green-700 text-sm">Se un animale con lo stesso microchip esiste già, VetBuddy lo riconosce e aggiunge solo la tua clinica ai suoi dati. Nessun duplicato!</p>
+                <p className="text-green-700 text-sm">Se un animale con lo stesso microchip esiste già, vetbuddy lo riconosce e aggiunge solo la tua clinica ai suoi dati. Nessun duplicato!</p>
               </div>
               <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
                 <h4 className="font-bold text-purple-800 mb-2">📄 Documenti con nome file</h4>
-                <p className="text-purple-700 text-sm">Nomina i file dei documenti con il nome dell'animale (es. "Luna_referto.pdf"). VetBuddy li abbinerà automaticamente!</p>
+                <p className="text-purple-700 text-sm">Nomina i file dei documenti con il nome dell'animale (es. "Luna_referto.pdf"). vetbuddy li abbinerà automaticamente!</p>
               </div>
               <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
                 <h4 className="font-bold text-amber-800 mb-2">⚡ Colonne mancanti?</h4>
@@ -444,11 +444,11 @@ Micia,gatto,Persiano,25/09/2022,,femmina,4,bianco,no,Allergia al pesce,,Gatta mo
               </div>
               <div className="p-4 bg-gray-50 rounded-lg">
                 <h4 className="font-bold text-gray-900 mb-2">I proprietari devono registrarsi manualmente?</h4>
-                <p className="text-gray-600">No! VetBuddy crea automaticamente gli account dei proprietari. Riceveranno un'email per impostare la password al primo accesso.</p>
+                <p className="text-gray-600">No! vetbuddy crea automaticamente gli account dei proprietari. Riceveranno un'email per impostare la password al primo accesso.</p>
               </div>
               <div className="p-4 bg-gray-50 rounded-lg">
                 <h4 className="font-bold text-gray-900 mb-2">Posso importare più volte?</h4>
-                <p className="text-gray-600">Sì! VetBuddy riconosce i duplicati tramite microchip ed email. Puoi importare nuovi pazienti in qualsiasi momento.</p>
+                <p className="text-gray-600">Sì! vetbuddy riconosce i duplicati tramite microchip ed email. Puoi importare nuovi pazienti in qualsiasi momento.</p>
               </div>
               <div className="p-4 bg-gray-50 rounded-lg">
                 <h4 className="font-bold text-gray-900 mb-2">I dati sono sicuri?</h4>
@@ -456,7 +456,7 @@ Micia,gatto,Persiano,25/09/2022,,femmina,4,bianco,no,Allergia al pesce,,Gatta mo
               </div>
               <div className="p-4 bg-gray-50 rounded-lg">
                 <h4 className="font-bold text-gray-900 mb-2">Cosa succede se faccio un errore nel file?</h4>
-                <p className="text-gray-600">VetBuddy ti mostrerà un report con eventuali errori o avvisi. Puoi correggere il file e reimportare. Nessun dato viene perso!</p>
+                <p className="text-gray-600">vetbuddy ti mostrerà un report con eventuali errori o avvisi. Puoi correggere il file e reimportare. Nessun dato viene perso!</p>
               </div>
             </div>
           </CardContent>
@@ -502,7 +502,7 @@ Micia,gatto,Persiano,25/09/2022,,femmina,4,bianco,no,Allergia al pesce,,Gatta mo
 
         {/* Footer for print */}
         <div className="hidden print:block text-center py-8 border-t mt-8">
-          <p className="text-gray-500">VetBuddy - Guida Import Pazienti</p>
+          <p className="text-gray-500">vetbuddy - Guida Import Pazienti</p>
           <p className="text-gray-400 text-sm">www.vetbuddy.it</p>
         </div>
       </div>

@@ -41,7 +41,7 @@ export default function CookiePolicyPage() {
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Come utilizziamo i cookie</h2>
             <p className="text-gray-600 leading-relaxed mb-4">
-              VetBuddy utilizza i cookie per diversi scopi:
+              vetbuddy utilizza i cookie per diversi scopi:
             </p>
             <div className="space-y-4">
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">

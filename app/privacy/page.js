@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Privacy Policy - VetBuddy',
-  description: 'Informativa sulla privacy di VetBuddy. Come raccogliamo, utilizziamo e proteggiamo i tuoi dati personali.',
+  title: 'Privacy Policy - vetbuddy',
+  description: 'Informativa sulla privacy di vetbuddy. Come raccogliamo, utilizziamo e proteggiamo i tuoi dati personali.',
 };
 
 export default function PrivacyPage() {
@@ -28,7 +28,7 @@ export default function PrivacyPage() {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Titolare del Trattamento</h2>
             <p className="text-gray-600 mb-4">
-              Il Titolare del trattamento dei dati personali è VetBuddy (di seguito "Titolare"), 
+              Il Titolare del trattamento dei dati personali è vetbuddy (di seguito "Titolare"), 
               con sede in Italia. Per qualsiasi informazione relativa al trattamento dei dati personali, 
               è possibile contattarci all'indirizzo email: <a href="mailto:privacy@vetbuddy.it" className="text-coral-500">privacy@vetbuddy.it</a>
             </p>
@@ -36,7 +36,7 @@ export default function PrivacyPage() {
 
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Dati Raccolti</h2>
-            <p className="text-gray-600 mb-4">VetBuddy raccoglie le seguenti categorie di dati personali:</p>
+            <p className="text-gray-600 mb-4">vetbuddy raccoglie le seguenti categorie di dati personali:</p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
               <li><strong>Dati di registrazione:</strong> nome, cognome, indirizzo email, numero di telefono, indirizzo della clinica (per utenti clinica)</li>
               <li><strong>Dati degli animali:</strong> nome, specie, razza, data di nascita, informazioni mediche</li>
@@ -50,7 +50,7 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">3. Finalità del Trattamento</h2>
             <p className="text-gray-600 mb-4">I dati personali sono trattati per le seguenti finalità:</p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
-              <li>Erogazione dei servizi della piattaforma VetBuddy</li>
+              <li>Erogazione dei servizi della piattaforma vetbuddy</li>
               <li>Gestione degli appuntamenti tra cliniche e proprietari</li>
               <li>Invio di comunicazioni relative al servizio (conferme, promemoria)</li>
               <li>Gestione dei pagamenti e fatturazione</li>
@@ -127,7 +127,7 @@ export default function PrivacyPage() {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Cookie</h2>
             <p className="text-gray-600 mb-4">
-              VetBuddy utilizza cookie tecnici necessari per il funzionamento della piattaforma. 
+              vetbuddy utilizza cookie tecnici necessari per il funzionamento della piattaforma. 
               Non utilizziamo cookie di profilazione o di terze parti per finalità pubblicitarie.
             </p>
           </section>
@@ -160,7 +160,7 @@ export default function PrivacyPage() {
       {/* Footer */}
       <footer className="bg-white border-t py-8">
         <div className="max-w-4xl mx-auto px-4 text-center text-gray-500 text-sm">
-          <p>© 2025 VetBuddy. Tutti i diritti riservati.</p>
+          <p>© 2025 vetbuddy. Tutti i diritti riservati.</p>
           <div className="flex justify-center gap-4 mt-2">
             <Link href="/privacy" className="hover:text-coral-500">Privacy Policy</Link>
             <Link href="/termini" className="hover:text-coral-500">Termini e Condizioni</Link>
