@@ -154,8 +154,7 @@ export default function PresentazionePage() {
         <header className="relative z-50 py-6 px-6">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <Link href="/" className="flex items-center gap-3">
-              <VetBuddyLogo size={36} white />
-              <span className="font-bold text-2xl text-white">VetBuddy</span>
+              <VetBuddyLogo size={36} white showText={true} />
             </Link>
             <Link 
               href="/" 
