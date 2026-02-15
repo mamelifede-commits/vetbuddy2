@@ -18137,7 +18137,7 @@ function AdminDashboard({ user, onLogout }) {
       {/* Mobile Header */}
       <div className="md:hidden bg-white border-b p-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <VetBuddyLogo size={32} />
+          <NewBrandLogo size="xs" showText={false} />
           <div>
             <h1 className="font-bold text-purple-600 text-sm">VetBuddy Admin</h1>
             <p className="text-xs text-gray-500">Pannello di controllo</p>
