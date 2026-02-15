@@ -1778,7 +1778,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
       <aside className="hidden md:flex w-64 bg-white border-r p-4 flex-col flex-shrink-0">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
-            <VetBuddyLogo size={36} />
+            <NewBrandLogo size="sm" showText={false} />
             <div>
               <h1 className="font-bold text-coral-500">VetBuddy</h1>
               <p className="text-xs text-gray-500 truncate max-w-[100px]">{user.clinicName || 'Clinica'}</p>
