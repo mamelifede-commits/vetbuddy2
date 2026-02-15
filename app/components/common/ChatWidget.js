@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, SendHorizontal } from 'lucide-react';
-import VetBuddyLogo from './VetBuddyLogo';
+import vetbuddyLogo from './vetbuddyLogo';
 
 function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +27,7 @@ function ChatWidget() {
     if (isOpen && messages.length === 0) {
       setMessages([{
         role: 'assistant',
-        content: 'Ciao! 👋 Sono VetBuddy AI, il tuo assistente virtuale. Posso aiutarti con informazioni su VetBuddy, guidarti nella piattaforma o rispondere a domande generali sulla cura dei tuoi animali. Come posso aiutarti oggi?'
+        content: 'Ciao! 👋 Sono vetbuddy AI, il tuo assistente virtuale. Posso aiutarti con informazioni su vetbuddy, guidarti nella piattaforma o rispondere a domande generali sulla cura dei tuoi animali. Come posso aiutarti oggi?'
       }]);
     }
   }, [isOpen, messages.length]);
@@ -111,10 +111,10 @@ function ChatWidget() {
           {/* Header */}
           <div className="bg-gradient-to-r from-coral-500 to-coral-600 px-4 py-3 flex items-center gap-3">
             <div className="h-10 w-10 bg-white/20 rounded-full flex items-center justify-center">
-              <VetBuddyLogo size={28} className="[&>div]:shadow-none [&>div]:bg-transparent" />
+              <vetbuddyLogo size={28} className="[&>div]:shadow-none [&>div]:bg-transparent" />
             </div>
             <div className="flex-1">
-              <h3 className="text-white font-semibold text-sm">VetBuddy AI</h3>
+              <h3 className="text-white font-semibold text-sm">vetbuddy AI</h3>
               <p className="text-white/80 text-xs">Assistente virtuale</p>
             </div>
             <div className="flex items-center gap-1">

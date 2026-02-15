@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Mail, PawPrint, Stethoscope } from 'lucide-react';
-import VetBuddyLogo from '@/app/components/common/VetBuddyLogo';
+import vetbuddyLogo from '@/app/components/common/vetbuddyLogo';
 import api from '@/app/lib/api';
 
 function AuthForm({ mode, setMode, onLogin }) {
@@ -89,7 +89,7 @@ function AuthForm({ mode, setMode, onLogin }) {
           <CheckCircle className="h-8 w-8 text-green-500" />
         </div>
         <h3 className="text-xl font-bold text-gray-900 mb-2">Candidatura inviata! 🎉</h3>
-        <p className="text-gray-600 mb-4">Grazie per il tuo interesse in VetBuddy!</p>
+        <p className="text-gray-600 mb-4">Grazie per il tuo interesse in vetbuddy!</p>
         <div className="p-4 bg-green-50 border border-green-200 rounded-lg mb-4 text-left">
           <p className="text-sm text-green-700 mb-2"><strong>📧 Ti abbiamo inviato una email di conferma.</strong></p>
           <p className="text-sm text-green-700"><strong>⏱️ Prossimi passi:</strong></p>
@@ -133,7 +133,7 @@ function AuthForm({ mode, setMode, onLogin }) {
     return (
       <div>
         <DialogHeader className="text-center">
-          <div className="flex justify-center mb-4"><VetBuddyLogo size={50} showText={true} /></div>
+          <div className="flex justify-center mb-4"><vetbuddyLogo size={50} showText={true} /></div>
           <DialogTitle className="text-2xl text-gray-700">Password dimenticata?</DialogTitle>
           <DialogDescription>Inserisci la tua email per ricevere un link di reset</DialogDescription>
         </DialogHeader>
@@ -153,7 +153,7 @@ function AuthForm({ mode, setMode, onLogin }) {
   return (
     <div>
       <DialogHeader className="text-center">
-        <div className="flex justify-center mb-4"><VetBuddyLogo size={50} showText={true} /></div>
+        <div className="flex justify-center mb-4"><vetbuddyLogo size={50} showText={true} /></div>
         <DialogDescription>{mode === 'login' ? 'Accedi al tuo account' : 'Crea un nuovo account'}</DialogDescription>
       </DialogHeader>
       <Tabs value={mode} onValueChange={setMode} className="mt-4">
@@ -178,14 +178,14 @@ function AuthForm({ mode, setMode, onLogin }) {
               {formData.role === 'clinic' && (
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
                   <p className="text-xs text-amber-700 mb-2"><strong>🏥 Per Cliniche e Liberi Professionisti:</strong></p>
-                  <p className="text-xs text-amber-700">VetBuddy è perfetto sia per le cliniche veterinarie che per i <strong>veterinari liberi professionisti</strong>.</p>
+                  <p className="text-xs text-amber-700">vetbuddy è perfetto sia per le cliniche veterinarie che per i <strong>veterinari liberi professionisti</strong>.</p>
                   <p className="text-xs text-amber-600 mt-1">Compila il form e ti contatteremo per l'attivazione (Accesso Pilot).</p>
                 </div>
               )}
               
               {formData.role === 'owner' && (
                 <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-xs text-blue-700"><strong>Nota:</strong> VetBuddy è in fase Pilot. Alcune cliniche potrebbero non essere ancora affiliate.</p>
+                  <p className="text-xs text-blue-700"><strong>Nota:</strong> vetbuddy è in fase Pilot. Alcune cliniche potrebbero non essere ancora affiliate.</p>
                 </div>
               )}
               

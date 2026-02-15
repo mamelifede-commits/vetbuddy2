@@ -3,7 +3,7 @@
 import { LayoutDashboard, Inbox, FileText, Video, Calendar, MessageCircle, PawPrint, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import VetBuddyLogo from './VetBuddyLogo';
+import vetbuddyLogo from './vetbuddyLogo';
 
 function WelcomeScreen({ user, onContinue }) {
   const isClinic = user.role === 'clinic';
@@ -11,7 +11,7 @@ function WelcomeScreen({ user, onContinue }) {
     <div className="min-h-screen bg-gradient-to-b from-coral-50 to-white flex items-center justify-center p-4">
       <Card className="max-w-lg w-full">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4"><VetBuddyLogo size={60} showText={true} /></div>
+          <div className="flex justify-center mb-4"><vetbuddyLogo size={60} showText={true} /></div>
           <CardTitle className="text-2xl text-gray-700">Benvenuto in vetbuddy!</CardTitle>
           <CardDescription className="text-base mt-2">{isClinic ? 'Stai entrando nel portale per cliniche veterinarie' : "Stai entrando nell'app per proprietari di animali"}</CardDescription>
         </CardHeader>
@@ -37,7 +37,7 @@ function WelcomeScreen({ user, onContinue }) {
               <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
               <div>
                 <h4 className="font-medium text-amber-800">Versione Pilot / Demo</h4>
-                <p className="text-sm text-amber-700 mt-1">{isClinic ? 'VetBuddy è in fase Pilot su invito. Alcune sezioni sono demo.' : 'VetBuddy è in fase Pilot: le cliniche visibili sono esempi/demo.'}</p>
+                <p className="text-sm text-amber-700 mt-1">{isClinic ? 'vetbuddy è in fase Pilot su invito. Alcune sezioni sono demo.' : 'vetbuddy è in fase Pilot: le cliniche visibili sono esempi/demo.'}</p>
               </div>
             </div>
           </div>

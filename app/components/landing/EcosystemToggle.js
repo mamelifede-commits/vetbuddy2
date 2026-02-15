@@ -33,7 +33,7 @@ function EcosystemToggle() {
         'Cartella clinica digitale per ogni animale',
         'Storico spese veterinarie annuali',
         '🎁 Premi Fedeltà dalla tua clinica',
-        'Invita la tua clinica su VetBuddy'
+        'Invita la tua clinica su vetbuddy'
       ]
     }
   };
