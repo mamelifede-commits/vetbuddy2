@@ -125,13 +125,20 @@ async function generatePDFFromText(text, title, metadata = {}) {
   let page = pdfDoc.addPage([pageWidth, pageHeight]);
   let yPosition = pageHeight - margin;
   
-  // VetBuddy Header
-  page.drawText('VetBuddy', {
+  // VetBuddy Header - New Brand Style (vet + buddy)
+  page.drawText('vet', {
     x: margin,
     y: yPosition,
     size: 24,
     font: boldFont,
-    color: rgb(0.96, 0.42, 0.42), // Coral color
+    color: rgb(0.2, 0.2, 0.2), // Dark gray for "vet"
+  });
+  page.drawText('buddy', {
+    x: margin + 35, // positioned after "vet"
+    y: yPosition,
+    size: 24,
+    font: boldFont,
+    color: rgb(0.96, 0.42, 0.42), // Coral color for "buddy"
   });
   yPosition -= 15;
   
