@@ -133,8 +133,8 @@ function AuthForm({ mode, setMode, onLogin }) {
     return (
       <div>
         <DialogHeader className="text-center">
-          <div className="flex justify-center mb-4"><VetBuddyLogo size={50} /></div>
-          <DialogTitle className="text-2xl text-coral-500">Password dimenticata?</DialogTitle>
+          <div className="flex justify-center mb-4"><VetBuddyLogo size={50} showText={true} /></div>
+          <DialogTitle className="text-2xl text-gray-700">Password dimenticata?</DialogTitle>
           <DialogDescription>Inserisci la tua email per ricevere un link di reset</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleForgotPassword} className="mt-6 space-y-4">
@@ -153,8 +153,7 @@ function AuthForm({ mode, setMode, onLogin }) {
   return (
     <div>
       <DialogHeader className="text-center">
-        <div className="flex justify-center mb-4"><VetBuddyLogo size={50} /></div>
-        <DialogTitle className="text-2xl text-coral-500">VetBuddy</DialogTitle>
+        <div className="flex justify-center mb-4"><VetBuddyLogo size={50} showText={true} /></div>
         <DialogDescription>{mode === 'login' ? 'Accedi al tuo account' : 'Crea un nuovo account'}</DialogDescription>
       </DialogHeader>
       <Tabs value={mode} onValueChange={setMode} className="mt-4">
