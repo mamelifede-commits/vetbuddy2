@@ -161,7 +161,15 @@ const PetAvatar = ({ pet, size = 'md', onClick, className = '' }) => {
 function ComingSoonLanding({ onLogin }) {
   const [showTeamLogin, setShowTeamLogin] = useState(false);
   const [authMode, setAuthMode] = useState('login');
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [showDog, setShowDog] = useState(false);
+
+  // Animazione del cane: parte dopo 500ms dal caricamento della pagina
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowDog(true);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
