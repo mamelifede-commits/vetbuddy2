@@ -130,7 +130,8 @@ const PetAvatar = ({ pet, size = 'md', onClick, className = '' }) => {
 };
 
 // ==================== LANDING PAGE ====================
-function LandingPage({ onLogin }) {
+// ==================== COMING SOON LANDING ====================
+function ComingSoonLanding({ onLogin }) {
   const [showTeamLogin, setShowTeamLogin] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [email, setEmail] = useState('');
@@ -158,7 +159,6 @@ function LandingPage({ onLogin }) {
     }
   };
 
-  // Coming Soon Landing Page
   return (
     <div className="min-h-screen bg-gradient-to-br from-coral-50 via-white to-blue-50 flex flex-col">
       {/* Main Content */}
@@ -286,7 +286,7 @@ function LandingPage({ onLogin }) {
   );
 }
 
-// ==================== CLINIC DASHBOARD - CONTROL ROOM ====================
+// ==================== FULL LANDING PAGE ====================
 function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [appointments, setAppointments] = useState([]);
