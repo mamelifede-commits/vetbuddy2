@@ -11,15 +11,39 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-// VetBuddy Logo
-const VetBuddyLogo = ({ size = 40, white = false }) => (
-  <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="50" cy="62" rx="18" ry="16" fill={white ? "#ffffff" : "#FF6B6B"}/>
-    <ellipse cx="28" cy="38" rx="10" ry="12" fill={white ? "#ffffff" : "#FF6B6B"}/>
-    <ellipse cx="50" cy="28" rx="10" ry="12" fill={white ? "#ffffff" : "#FF6B6B"}/>
-    <ellipse cx="72" cy="38" rx="10" ry="12" fill={white ? "#ffffff" : "#FF6B6B"}/>
-  </svg>
-);
+// VetBuddy Logo - New Brand Style 4 (Minimal with coral box)
+const VetBuddyLogo = ({ size = 40, white = false, showText = false }) => {
+  const boxSize = size;
+  const iconSize = Math.round(size * 0.55);
+  const padding = Math.round(size * 0.2);
+  const borderRadius = Math.round(size * 0.35);
+  const textSize = size >= 50 ? 'text-2xl' : size >= 35 ? 'text-xl' : 'text-lg';
+  
+  return (
+    <div className={`flex items-center gap-2`}>
+      <div 
+        className={`${white ? 'bg-white/20' : 'bg-gradient-to-br from-coral-500 to-rose-500'} flex items-center justify-center shadow-lg ${!white ? 'shadow-coral-500/30' : ''}`}
+        style={{
+          width: boxSize,
+          height: boxSize,
+          padding: padding,
+          borderRadius: borderRadius
+        }}
+      >
+        <PawPrint 
+          className={white ? 'text-white' : 'text-white'} 
+          style={{ width: iconSize, height: iconSize }}
+        />
+      </div>
+      {showText && (
+        <div className={`font-bold ${textSize}`}>
+          <span className={white ? 'text-white' : 'text-gray-900'}>vet</span>
+          <span className={white ? 'text-white/80' : 'text-coral-500'}>buddy</span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Animated Counter Component
 const AnimatedCounter = ({ value, suffix = '', prefix = '' }) => {
