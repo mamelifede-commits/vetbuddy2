@@ -136,14 +136,14 @@ function ComingSoonLanding({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
   const [logoStyle, setLogoStyle] = useState(0); // Per cambiare stile logo
 
-  // Beautiful cutout animal images (PNG with transparency effect)
+  // Beautiful cutout animal images (PNG with transparency)
   const animals = [
-    { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop&auto=format', size: '180px', style: { top: '8%', left: '5%', animation: 'float 6s ease-in-out infinite' } },
-    { src: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=400&fit=crop&auto=format', size: '160px', style: { top: '12%', right: '6%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
-    { src: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=350&h=350&fit=crop&auto=format', size: '140px', style: { bottom: '18%', left: '8%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
-    { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=400&fit=crop&auto=format', size: '170px', style: { bottom: '12%', right: '5%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
-    { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=350&h=350&fit=crop&auto=format', size: '150px', style: { top: '5%', left: '38%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
-    { src: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300&h=300&fit=crop&auto=format', size: '120px', style: { top: '50%', left: '3%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
+    { src: 'https://www.pngall.com/wp-content/uploads/5/Dog-PNG-High-Quality-Image.png', size: '200px', style: { top: '5%', left: '3%', animation: 'float 6s ease-in-out infinite' } },
+    { src: 'https://www.pngall.com/wp-content/uploads/5/Cat-PNG-Image.png', size: '180px', style: { top: '8%', right: '5%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' } },
+    { src: 'https://www.pngall.com/wp-content/uploads/13/Rabbit-PNG-Photo.png', size: '150px', style: { bottom: '15%', left: '5%', animation: 'float 5s ease-in-out infinite', animationDelay: '2s' } },
+    { src: 'https://www.pngall.com/wp-content/uploads/5/Golden-Retriever-PNG-Clipart.png', size: '190px', style: { bottom: '8%', right: '3%', animation: 'float 8s ease-in-out infinite', animationDelay: '0.5s' } },
+    { src: 'https://www.pngall.com/wp-content/uploads/5/Puppy-PNG.png', size: '160px', style: { top: '2%', left: '35%', animation: 'float 6s ease-in-out infinite', animationDelay: '1.5s' } },
+    { src: 'https://www.pngall.com/wp-content/uploads/14/Ginger-Cat-Transparent.png', size: '140px', style: { top: '45%', left: '2%', animation: 'float 4s ease-in-out infinite', animationDelay: '3s' } },
   ];
 
   // Logo style proposals
