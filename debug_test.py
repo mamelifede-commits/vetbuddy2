@@ -3,7 +3,7 @@
 import requests
 import json
 
-BASE_URL = "https://vetbuddy-coming-soon.preview.emergentagent.com/api"
+BASE_URL = "https://coming-soon-animal.preview.emergentagent.com/api"
 
 def make_request(method, endpoint, json_data=None):
     """Debug version of make request"""
