@@ -18176,7 +18176,7 @@ function AdminDashboard({ user, onLogout }) {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 bg-white border-r p-4 flex-col flex-shrink-0">
         <div className="flex items-center gap-3 mb-4">
-          <VetBuddyLogo size={36} />
+          <NewBrandLogo size="sm" showText={false} />
           <div>
             <h1 className="font-bold text-purple-600">VetBuddy</h1>
             <p className="text-xs text-gray-500">Pannello Admin</p>
