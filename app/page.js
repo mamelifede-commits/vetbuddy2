@@ -240,15 +240,14 @@ function ComingSoonLanding({ onLogin }) {
         {/* SPAZIO FISSO tra testo e cane */}
         <div className="h-8 md:h-12"></div>
         
-        {/* Animated Golden Retriever - SCORRE DAL BASSO con JavaScript */}
-        <div className="flex justify-center h-[350px] relative">
+        {/* Animated Golden Retriever - SCORRE DAL BASSO */}
+        <div className="flex justify-center items-end h-[350px]">
           <img
             src="/animals/golden-retriever-user.png"
             alt="Golden Retriever"
-            className="h-[280px] md:h-[320px] lg:h-[350px] w-auto object-contain absolute"
+            className="h-[280px] md:h-[320px] lg:h-[350px] w-auto object-contain"
             style={{
-              transform: `translateY(${dogPosition}px)`,
-              opacity: dogPosition > 350 ? 0 : 1
+              transform: `translateY(${dogPosition}px)`
             }}
           />
         </div>
