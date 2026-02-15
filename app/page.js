@@ -161,21 +161,20 @@ const PetAvatar = ({ pet, size = 'md', onClick, className = '' }) => {
 function ComingSoonLanding({ onLogin }) {
   const [showTeamLogin, setShowTeamLogin] = useState(false);
   const [authMode, setAuthMode] = useState('login');
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
       {/* Clean Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-coral-50 via-white to-sky-50"></div>
       
-      {/* Decorative blurred shapes */}
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-coral-200/30 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-56 h-56 bg-sky-200/30 rounded-full blur-3xl"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-100/20 rounded-full blur-3xl"></div>
+      {/* Soft decorative glow behind content */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-coral-200/20 rounded-full blur-3xl"></div>
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4 relative z-10">
         <div className="text-center">
-          {/* Logo Style 4 - Fixed */}
+          {/* Logo Style 4 */}
           <div className="relative mb-8">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-48 h-48 bg-coral-400/20 rounded-full blur-3xl"></div>
@@ -207,10 +206,28 @@ function ComingSoonLanding({ onLogin }) {
         </div>
       </main>
 
+      {/* Animated Golden Retriever - Rising from bottom */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+        <img
+          src="/animals/golden-retriever-user.png"
+          alt="Golden Retriever"
+          onLoad={() => setImageLoaded(true)}
+          className={`h-[45vh] md:h-[50vh] w-auto object-contain transition-all duration-[2000ms] ease-out ${
+            imageLoaded 
+              ? 'translate-y-0 opacity-100' 
+              : 'translate-y-full opacity-0'
+          }`}
+          style={{
+            filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.15))',
+            maxHeight: '55vh'
+          }}
+        />
+      </div>
+
       {/* Footer */}
-      <footer className="relative z-10 py-6 px-4 bg-white/40 backdrop-blur-sm border-t border-white/50">
+      <footer className="relative z-30 py-6 px-4 bg-white/60 backdrop-blur-sm border-t border-white/50">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-500">© 2025 VetBuddy</p>
+          <p className="text-sm text-gray-500">© 2025 vetbuddy</p>
           <button 
             onClick={() => setShowTeamLogin(true)}
             className="text-xs text-gray-400 hover:text-coral-500 transition-colors"
