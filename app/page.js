@@ -164,41 +164,48 @@ function ComingSoonLanding({ onLogin }) {
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* Gradient Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-rose-50 via-white to-cyan-50"></div>
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-coral-200/30 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-cyan-200/30 rounded-full blur-3xl"></div>
-      </div>
+      {/* Clean Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-coral-50 via-white to-sky-50"></div>
+      
+      {/* Subtle decorative circles */}
+      <div className="absolute top-20 left-20 w-32 h-32 bg-coral-200/20 rounded-full blur-2xl"></div>
+      <div className="absolute bottom-40 right-20 w-40 h-40 bg-sky-200/20 rounded-full blur-2xl"></div>
 
-      {/* Single Animated Dog - Rising from bottom */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-0">
-        <div 
-          className="relative"
-          style={{
-            animation: 'riseUp 20s ease-in-out infinite',
-          }}
-        >
-          <img 
-            src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500&h=600&fit=crop&crop=top"
-            alt="Happy Dog"
-            className="w-[280px] h-auto opacity-20"
+      {/* Animated Paw Prints rising from bottom */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute text-coral-200/40"
             style={{
-              maskImage: 'linear-gradient(to top, transparent 0%, black 30%, black 70%, transparent 100%)',
-              WebkitMaskImage: 'linear-gradient(to top, transparent 0%, black 30%, black 70%, transparent 100%)',
+              left: `${15 + i * 18}%`,
+              bottom: '-50px',
+              animation: `risePaw ${8 + i * 2}s ease-in-out infinite`,
+              animationDelay: `${i * 1.5}s`,
             }}
-          />
-        </div>
+          >
+            <PawPrint className="w-12 h-12" />
+          </div>
+        ))}
       </div>
 
-      {/* CSS Animation */}
+      {/* CSS Animation for paw prints */}
       <style jsx>{`
-        @keyframes riseUp {
-          0% { transform: translateY(100px); opacity: 0; }
-          10% { opacity: 0.2; }
-          50% { transform: translateY(-50px); opacity: 0.25; }
-          90% { opacity: 0.2; }
-          100% { transform: translateY(100px); opacity: 0; }
+        @keyframes risePaw {
+          0% { 
+            transform: translateY(0) rotate(0deg); 
+            opacity: 0; 
+          }
+          10% { opacity: 0.4; }
+          50% { 
+            transform: translateY(-400px) rotate(15deg); 
+            opacity: 0.3; 
+          }
+          90% { opacity: 0.1; }
+          100% { 
+            transform: translateY(-800px) rotate(30deg); 
+            opacity: 0; 
+          }
         }
       `}</style>
 
