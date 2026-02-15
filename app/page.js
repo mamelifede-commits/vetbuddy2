@@ -211,7 +211,7 @@ function ComingSoonLanding({ onLogin }) {
         {/* Golden Retriever con colori gradiente - IMMAGINE UTENTE */}
         <div className="flex justify-center items-center">
           <img
-            src="/animals/golden-gradient.png"
+            src="/animals/golden-gradient.png?v=2"
             alt="Golden Retriever"
             className="h-[180px] md:h-[200px] lg:h-[220px] w-auto object-contain"
           />
