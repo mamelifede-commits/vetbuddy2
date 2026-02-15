@@ -164,55 +164,55 @@ function ComingSoonLanding({ onLogin }) {
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* SFONDO ACCATTIVANTE - Gradiente vibrante con forme */}
-      <div className="absolute inset-0 bg-gradient-to-br from-coral-400 via-rose-500 to-purple-600"></div>
+      {/* SFONDO SCURO ELEGANTE */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-950 to-black"></div>
       
-      {/* Cerchi decorativi sfumati */}
+      {/* Luci/Glow decorativi */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-yellow-300/30 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/4 -right-32 w-80 h-80 bg-cyan-400/30 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-32 left-1/4 w-96 h-96 bg-pink-300/30 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-orange-400/20 rounded-full blur-2xl"></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-coral-500/20 rounded-full blur-[100px]"></div>
+        <div className="absolute top-1/2 left-0 w-64 h-64 bg-cyan-500/15 rounded-full blur-[80px]"></div>
+        <div className="absolute top-1/3 right-0 w-72 h-72 bg-pink-500/15 rounded-full blur-[90px]"></div>
       </div>
       
-      {/* Zampine decorative - più visibili */}
+      {/* Zampine decorative con glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <PawPrint className="absolute top-[8%] left-[5%] h-20 w-20 text-white/20 rotate-[-15deg]" />
-        <PawPrint className="absolute top-[15%] right-[8%] h-16 w-16 text-white/15 rotate-[25deg]" />
-        <PawPrint className="absolute top-[40%] left-[3%] h-14 w-14 text-white/20 rotate-[10deg]" />
-        <PawPrint className="absolute top-[55%] right-[4%] h-18 w-18 text-white/15 rotate-[-20deg]" />
-        <PawPrint className="absolute top-[70%] left-[10%] h-12 w-12 text-white/20 rotate-[35deg]" />
-        <PawPrint className="absolute bottom-[20%] right-[10%] h-16 w-16 text-white/15 rotate-[-10deg]" />
-        <PawPrint className="absolute top-[25%] left-[20%] h-10 w-10 text-white/10 rotate-[45deg]" />
-        <PawPrint className="absolute bottom-[35%] right-[20%] h-12 w-12 text-white/10 rotate-[-30deg]" />
-        <PawPrint className="absolute top-[5%] left-[45%] h-8 w-8 text-white/15 rotate-[20deg]" />
-        <PawPrint className="absolute bottom-[10%] left-[40%] h-10 w-10 text-white/15 rotate-[-25deg]" />
+        <PawPrint className="absolute top-[8%] left-[5%] h-20 w-20 text-purple-400/20 rotate-[-15deg]" />
+        <PawPrint className="absolute top-[15%] right-[8%] h-16 w-16 text-coral-400/15 rotate-[25deg]" />
+        <PawPrint className="absolute top-[40%] left-[3%] h-14 w-14 text-cyan-400/20 rotate-[10deg]" />
+        <PawPrint className="absolute top-[55%] right-[4%] h-18 w-18 text-purple-400/15 rotate-[-20deg]" />
+        <PawPrint className="absolute top-[70%] left-[10%] h-12 w-12 text-coral-400/20 rotate-[35deg]" />
+        <PawPrint className="absolute bottom-[20%] right-[10%] h-16 w-16 text-pink-400/15 rotate-[-10deg]" />
+        <PawPrint className="absolute top-[25%] left-[20%] h-10 w-10 text-cyan-400/10 rotate-[45deg]" />
+        <PawPrint className="absolute bottom-[35%] right-[20%] h-12 w-12 text-purple-400/10 rotate-[-30deg]" />
+        <PawPrint className="absolute top-[5%] left-[45%] h-8 w-8 text-coral-400/15 rotate-[20deg]" />
+        <PawPrint className="absolute bottom-[10%] left-[40%] h-10 w-10 text-pink-400/15 rotate-[-25deg]" />
       </div>
 
       {/* CONTENUTO PRINCIPALE */}
       <div className="flex-1 flex flex-col justify-center items-center px-4 py-12 relative z-10">
-        {/* Logo con sfondo bianco/vetro */}
-        <div className="mb-10 bg-white/20 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
+        {/* Logo con box bianco per "vet" nero */}
+        <div className="mb-10 bg-white rounded-3xl p-8 shadow-2xl shadow-purple-500/20">
           <div className="flex items-center justify-center gap-4">
-            <div className="p-5 bg-white rounded-3xl shadow-xl">
-              <PawPrint className="h-14 w-14 text-coral-500" />
+            <div className="p-5 bg-gradient-to-br from-coral-500 to-rose-500 rounded-3xl shadow-lg shadow-coral-500/30">
+              <PawPrint className="h-14 w-14 text-white" />
             </div>
             <div>
-              <span className="font-bold text-5xl md:text-7xl text-white">vet</span>
-              <span className="font-light text-5xl md:text-7xl text-white/80">buddy</span>
+              <span className="font-bold text-5xl md:text-7xl text-black">vet</span>
+              <span className="font-bold text-5xl md:text-7xl text-coral-500">buddy</span>
             </div>
           </div>
         </div>
         
-        {/* Coming Soon */}
+        {/* Coming Soon con glow */}
         <div className="text-center">
-          <h1 className="text-5xl md:text-6xl lg:text-8xl font-black text-white drop-shadow-lg">
+          <h1 className="text-5xl md:text-6xl lg:text-8xl font-black text-white drop-shadow-[0_0_30px_rgba(168,85,247,0.5)]">
             Coming Soon
           </h1>
           <div className="mt-8 flex items-center justify-center gap-4">
-            <PawPrint className="h-6 w-6 text-white/70" />
-            <PawPrint className="h-8 w-8 text-white/90" />
-            <PawPrint className="h-6 w-6 text-white/70" />
+            <PawPrint className="h-6 w-6 text-purple-400/70" />
+            <PawPrint className="h-8 w-8 text-coral-400" />
+            <PawPrint className="h-6 w-6 text-cyan-400/70" />
           </div>
         </div>
       </div>
@@ -220,10 +220,10 @@ function ComingSoonLanding({ onLogin }) {
       {/* Footer */}
       <footer className="relative z-30 py-6 px-4">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-white/60">© 2025 vetbuddy</p>
+          <p className="text-sm text-white/40">© 2025 vetbuddy</p>
           <button 
             onClick={() => setShowTeamLogin(true)}
-            className="text-xs text-white/50 hover:text-white transition-colors"
+            className="text-xs text-white/30 hover:text-white transition-colors"
           >
             Accesso Team
           </button>
