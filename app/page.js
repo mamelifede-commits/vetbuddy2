@@ -208,18 +208,22 @@ function ComingSoonLanding({ onLogin }) {
         {/* SPAZIO FISSO tra testo e cane */}
         <div className="h-8 md:h-12"></div>
         
-        {/* Golden Retriever con effetto gradiente */}
+        {/* Golden Retriever con filtro gradiente colorato */}
         <div className="flex justify-center items-center relative">
-          {/* Cerchio gradiente dietro al cane */}
-          <div className="absolute w-[320px] h-[320px] md:w-[380px] md:h-[380px] rounded-full bg-gradient-to-br from-coral-300/40 via-rose-200/30 to-amber-200/40 blur-2xl"></div>
-          <div className="absolute w-[250px] h-[250px] md:w-[300px] md:h-[300px] rounded-full bg-gradient-to-tr from-orange-200/50 via-yellow-100/40 to-coral-200/50 blur-xl"></div>
-          
-          {/* Cane */}
-          <img
-            src="/animals/golden-retriever-user.png"
-            alt="Golden Retriever"
-            className="h-[280px] md:h-[320px] lg:h-[350px] w-auto object-contain relative z-10"
-          />
+          {/* Container del cane con effetto gradiente */}
+          <div className="relative">
+            {/* Cane */}
+            <img
+              src="/animals/golden-retriever-user.png"
+              alt="Golden Retriever"
+              className="h-[200px] md:h-[240px] lg:h-[260px] w-auto object-contain"
+            />
+            {/* Overlay gradiente sopra il cane */}
+            <div 
+              className="absolute inset-0 bg-gradient-to-br from-coral-400/30 via-rose-300/20 to-amber-300/30 mix-blend-overlay rounded-full"
+              style={{ pointerEvents: 'none' }}
+            ></div>
+          </div>
         </div>
       </div>
 
