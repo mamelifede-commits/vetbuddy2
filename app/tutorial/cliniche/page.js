@@ -80,7 +80,7 @@ export default function TutorialCliniche() {
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Accesso Riservato</h1>
           <p className="text-gray-600 mb-6">
-            Questo tutorial è riservato alle <strong>cliniche veterinarie</strong> registrate su VetBuddy.
+            Questo tutorial è riservato alle <strong>cliniche veterinarie</strong> registrate su vetbuddy.
           </p>
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
             <div className="flex items-start gap-3">
@@ -208,7 +208,7 @@ export default function TutorialCliniche() {
         '3. Ricevi notifica immediata del pagamento',
         '4. Lo stato "pagato" è visibile nella scheda appuntamento',
         '5. Report mensile dei pagamenti ricevuti',
-        '6. Nessuna commissione VetBuddy sulle transazioni'
+        '6. Nessuna commissione vetbuddy sulle transazioni'
       ],
       tip: 'Il pagamento anticipato riduce i no-show del 60% e migliora il cash flow.'
     },
@@ -266,14 +266,14 @@ export default function TutorialCliniche() {
         '5. Possibilità di esportare/cancellare dati su richiesta',
         '6. Autenticazione sicura con opzione 2FA'
       ],
-      tip: 'VetBuddy non condivide mai i dati dei tuoi clienti con terze parti.'
+      tip: 'vetbuddy non condivide mai i dati dei tuoi clienti con terze parti.'
     },
     {
       icon: Smartphone,
       title: 'App Mobile',
       color: 'bg-teal-500',
       content: [
-        '1. VetBuddy è una PWA (Progressive Web App)',
+        '1. vetbuddy è una PWA (Progressive Web App)',
         '2. Installabile su qualsiasi dispositivo',
         '3. Funziona anche con connessione limitata',
         '4. Notifiche push come app nativa',
@@ -285,10 +285,10 @@ export default function TutorialCliniche() {
   ];
 
   const faqs = [
-    { q: 'Quanto costa VetBuddy per le cliniche?', a: 'Piano Starter: gratuito per sempre. Piano Premium: €49/mese con tutte le automazioni. Pilot Milano: 90 giorni gratis Premium.' },
+    { q: 'Quanto costa vetbuddy per le cliniche?', a: 'Piano Starter: gratuito per sempre. Piano Premium: €49/mese con tutte le automazioni. Pilot Milano: 90 giorni gratis Premium.' },
     { q: 'Posso importare i dati dal mio gestionale attuale?', a: 'Sì! Supportiamo import da CSV. Contattaci per assistenza nella migrazione.' },
-    { q: 'VetBuddy sostituisce il mio software di fatturazione?', a: 'No, VetBuddy genera PROFORMA. Per la fatturazione elettronica usa il tuo gestionale fiscale.' },
-    { q: 'Come funziona il pagamento dei clienti?', a: 'I clienti pagano via Stripe. I fondi vanno direttamente sul tuo conto. Nessuna commissione VetBuddy.' },
+    { q: 'vetbuddy sostituisce il mio software di fatturazione?', a: 'No, vetbuddy genera PROFORMA. Per la fatturazione elettronica usa il tuo gestionale fiscale.' },
+    { q: 'Come funziona il pagamento dei clienti?', a: 'I clienti pagano via Stripe. I fondi vanno direttamente sul tuo conto. Nessuna commissione vetbuddy.' },
     { q: 'Posso avere più utenti per la clinica?', a: 'Sì, nel Piano Premium puoi aggiungere collaboratori con ruoli diversi.' },
     { q: 'I dati dei miei pazienti sono al sicuro?', a: 'Assolutamente. Crittografia, backup automatici e conformità GDPR garantiti.' }
   ];
@@ -321,10 +321,10 @@ export default function TutorialCliniche() {
             <span className="font-semibold">Guida per Cliniche</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Tutorial <span className="text-coral-500">VetBuddy</span>
+            Tutorial <span className="text-coral-500">vetbuddy</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            La guida completa per sfruttare al massimo il gestionale VetBuddy nella tua clinica veterinaria.
+            La guida completa per sfruttare al massimo il gestionale vetbuddy nella tua clinica veterinaria.
           </p>
         </div>
       </section>
@@ -434,7 +434,7 @@ export default function TutorialCliniche() {
 
       {/* Footer */}
       <footer className="py-6 px-4 text-center text-gray-500 text-sm">
-        <p>© 2026 VetBuddy - Gestionale Veterinario | Tutti i diritti riservati</p>
+        <p>© 2026 vetbuddy - Gestionale Veterinario | Tutti i diritti riservati</p>
       </footer>
     </div>
   );
