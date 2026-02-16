@@ -194,8 +194,8 @@ function ComingSoonLanding({ onLogin }) {
               <PawPrint className="h-14 w-14 text-coral-500" />
             </div>
             <div>
-              <span className="font-bold text-5xl md:text-7xl text-white">vet</span>
-              <span className="font-bold text-5xl md:text-7xl text-white/90">buddy</span>
+              <span className="font-bold text-5xl md:text-7xl text-gray-900">vet</span>
+              <span className="font-bold text-5xl md:text-7xl text-white">buddy</span>
             </div>
           </div>
         </div>
