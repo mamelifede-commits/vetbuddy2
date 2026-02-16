@@ -163,60 +163,17 @@ function ComingSoonLanding({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden bg-gradient-to-br from-coral-100 via-rose-50 to-cyan-100">
-      {/* BOLLE ANIMATE COLORATE */}
+    <div className="min-h-screen flex flex-col relative overflow-hidden bg-gradient-to-br from-coral-50 via-white to-cyan-50">
+      {/* Zampine decorative sparse - colori soft */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Bolla 1 - Grande rosa */}
-        <div className="absolute w-32 h-32 bg-gradient-to-br from-coral-400/40 to-rose-400/40 rounded-full blur-sm animate-bounce"
-             style={{top: '10%', left: '5%', animationDuration: '4s', animationDelay: '0s'}}></div>
-        
-        {/* Bolla 2 - Media cyan */}
-        <div className="absolute w-24 h-24 bg-gradient-to-br from-cyan-400/40 to-teal-400/40 rounded-full blur-sm animate-bounce"
-             style={{top: '20%', right: '10%', animationDuration: '5s', animationDelay: '1s'}}></div>
-        
-        {/* Bolla 3 - Piccola viola */}
-        <div className="absolute w-16 h-16 bg-gradient-to-br from-purple-400/40 to-pink-400/40 rounded-full blur-sm animate-bounce"
-             style={{top: '50%', left: '3%', animationDuration: '3.5s', animationDelay: '0.5s'}}></div>
-        
-        {/* Bolla 4 - Grande azzurra */}
-        <div className="absolute w-28 h-28 bg-gradient-to-br from-sky-400/40 to-cyan-400/40 rounded-full blur-sm animate-bounce"
-             style={{top: '60%', right: '8%', animationDuration: '4.5s', animationDelay: '2s'}}></div>
-        
-        {/* Bolla 5 - Media arancione */}
-        <div className="absolute w-20 h-20 bg-gradient-to-br from-orange-400/40 to-amber-400/40 rounded-full blur-sm animate-bounce"
-             style={{top: '75%', left: '15%', animationDuration: '3s', animationDelay: '1.5s'}}></div>
-        
-        {/* Bolla 6 - Piccola rosa */}
-        <div className="absolute w-14 h-14 bg-gradient-to-br from-pink-400/40 to-rose-400/40 rounded-full blur-sm animate-bounce"
-             style={{top: '30%', left: '20%', animationDuration: '4s', animationDelay: '0.8s'}}></div>
-        
-        {/* Bolla 7 - Media verde acqua */}
-        <div className="absolute w-24 h-24 bg-gradient-to-br from-teal-400/40 to-emerald-400/40 rounded-full blur-sm animate-bounce"
-             style={{top: '40%', right: '20%', animationDuration: '5.5s', animationDelay: '2.5s'}}></div>
-        
-        {/* Bolla 8 - Grande coral */}
-        <div className="absolute w-36 h-36 bg-gradient-to-br from-coral-300/30 to-orange-300/30 rounded-full blur-md animate-bounce"
-             style={{bottom: '20%', right: '25%', animationDuration: '6s', animationDelay: '1s'}}></div>
-        
-        {/* Bolla 9 - Piccola blu */}
-        <div className="absolute w-12 h-12 bg-gradient-to-br from-blue-400/40 to-indigo-400/40 rounded-full blur-sm animate-bounce"
-             style={{top: '15%', left: '40%', animationDuration: '3.8s', animationDelay: '0.3s'}}></div>
-        
-        {/* Bolla 10 - Media magenta */}
-        <div className="absolute w-20 h-20 bg-gradient-to-br from-fuchsia-400/40 to-pink-400/40 rounded-full blur-sm animate-bounce"
-             style={{bottom: '30%', left: '30%', animationDuration: '4.2s', animationDelay: '1.8s'}}></div>
-      </div>
-
-      {/* Zampine decorative sparse */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <PawPrint className="absolute top-[10%] left-[5%] h-16 w-16 text-coral-300/50 rotate-[-15deg]" />
-        <PawPrint className="absolute top-[20%] right-[10%] h-12 w-12 text-cyan-300/50 rotate-[25deg]" />
-        <PawPrint className="absolute top-[45%] left-[8%] h-10 w-10 text-rose-300/50 rotate-[10deg]" />
-        <PawPrint className="absolute top-[60%] right-[5%] h-14 w-14 text-coral-300/50 rotate-[-20deg]" />
-        <PawPrint className="absolute top-[75%] left-[15%] h-8 w-8 text-cyan-300/50 rotate-[35deg]" />
-        <PawPrint className="absolute bottom-[15%] right-[12%] h-12 w-12 text-rose-300/50 rotate-[-10deg]" />
-        <PawPrint className="absolute top-[30%] left-[25%] h-6 w-6 text-coral-200/40 rotate-[45deg]" />
-        <PawPrint className="absolute bottom-[30%] right-[25%] h-8 w-8 text-cyan-200/40 rotate-[-30deg]" />
+        <PawPrint className="absolute top-[10%] left-[5%] h-16 w-16 text-coral-200 opacity-40 rotate-[-15deg]" />
+        <PawPrint className="absolute top-[20%] right-[10%] h-12 w-12 text-cyan-200 opacity-40 rotate-[25deg]" />
+        <PawPrint className="absolute top-[45%] left-[8%] h-10 w-10 text-rose-200 opacity-40 rotate-[10deg]" />
+        <PawPrint className="absolute top-[60%] right-[5%] h-14 w-14 text-coral-200 opacity-40 rotate-[-20deg]" />
+        <PawPrint className="absolute top-[75%] left-[15%] h-8 w-8 text-cyan-200 opacity-40 rotate-[35deg]" />
+        <PawPrint className="absolute bottom-[15%] right-[12%] h-12 w-12 text-rose-200 opacity-40 rotate-[-10deg]" />
+        <PawPrint className="absolute top-[30%] left-[25%] h-6 w-6 text-coral-100 opacity-30 rotate-[45deg]" />
+        <PawPrint className="absolute bottom-[30%] right-[25%] h-8 w-8 text-cyan-100 opacity-30 rotate-[-30deg]" />
       </div>
 
       {/* Linea colorata in alto */}
