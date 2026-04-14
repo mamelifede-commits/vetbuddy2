@@ -15745,6 +15745,8 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [saving, setSaving] = useState(false);
+  const [labReports, setLabReports] = useState([]);
+  const [loadingReports, setLoadingReports] = useState(false);
   
   // Handler per aprire documento
   const handleOpenDocument = (doc) => {
@@ -15799,6 +15801,35 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
   useEffect(() => {
     loadPetData();
   }, [petId]);
+
+  // Load lab reports when tab changes to labReports
+  useEffect(() => {
+    if (activeTab === 'labReports' && petId) {
+      loadLabReports();
+    }
+  }, [activeTab, petId]);
+
+  const loadLabReports = async () => {
+    setLoadingReports(true);
+    try {
+      const reports = await api.get(`pets/${petId}/lab-reports`);
+      setLabReports(reports || []);
+    } catch (error) {
+      console.error('Error loading lab reports:', error);
+      setLabReports([]);
+    } finally {
+      setLoadingReports(false);
+    }
+  };
+
+  const downloadLabReport = (report) => {
+    if (report.fileContent) {
+      const link = document.createElement('a');
+      link.href = `data:application/pdf;base64,${report.fileContent}`;
+      link.download = report.fileName || 'referto.pdf';
+      link.click();
+    }
+  };
 
   const loadPetData = async () => {
     try {
@@ -15919,6 +15950,7 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
           <TabsTrigger value="overview">Panoramica</TabsTrigger>
           <TabsTrigger value="visits">Visite</TabsTrigger>
           <TabsTrigger value="documents">Documenti</TabsTrigger>
+          <TabsTrigger value="labReports">🧪 Referti</TabsTrigger>
           <TabsTrigger value="vaccines">Vaccini & Terapie</TabsTrigger>
           <TabsTrigger value="data">Dati & Spese</TabsTrigger>
         </TabsList>
@@ -16137,6 +16169,82 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        {/* Referti Lab */}
+        <TabsContent value="labReports">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FlaskConical className="h-5 w-5 text-indigo-500" />
+                Referti Analisi di Laboratorio
+              </CardTitle>
+              <p className="text-sm text-gray-500">Risultati delle analisi di laboratorio per {pet?.name}</p>
+            </CardHeader>
+            <CardContent>
+              {loadingReports ? (
+                <div className="py-8 text-center">
+                  <Loader2 className="h-8 w-8 animate-spin mx-auto text-indigo-500" />
+                  <p className="text-sm text-gray-500 mt-2">Caricamento referti...</p>
+                </div>
+              ) : labReports.length === 0 ? (
+                <div className="py-12 text-center">
+                  <FlaskConical className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-700">Nessun referto disponibile</h3>
+                  <p className="text-sm text-gray-500 mt-2">I referti delle analisi di laboratorio appariranno qui quando saranno disponibili.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {labReports.map(report => (
+                    <div key={report.id} className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <FileCheck className="h-5 w-5 text-indigo-600" />
+                            <h4 className="font-semibold text-gray-900">{report.examName || report.examType || 'Referto'}</h4>
+                          </div>
+                          <p className="text-sm text-gray-600">{report.fileName}</p>
+                          <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                            <span>📅 {new Date(report.uploadedAt).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                            <span>🏥 {report.uploadedByName || 'Laboratorio'}</span>
+                          </div>
+                          {report.reportNotes && (
+                            <div className="mt-3 p-3 bg-white rounded-lg border border-indigo-100">
+                              <p className="text-xs font-medium text-indigo-700 mb-1">Note dal laboratorio:</p>
+                              <p className="text-sm text-gray-700">{report.reportNotes}</p>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-2 ml-4">
+                          <Button 
+                            size="sm" 
+                            className="bg-indigo-500 hover:bg-indigo-600"
+                            onClick={() => downloadLabReport(report)}
+                          >
+                            <Download className="h-4 w-4 mr-1" />
+                            Scarica PDF
+                          </Button>
+                          {report.fileContent && (
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => {
+                                const pdfWindow = window.open('');
+                                pdfWindow.document.write(`<iframe width='100%' height='100%' src='data:application/pdf;base64,${report.fileContent}'></iframe>`);
+                              }}
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              Visualizza
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Dati & Spese */}
