@@ -1932,34 +1932,6 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const [labReportsReady, setLabReportsReady] = useState(0); // Notifica referti pronti
   const [setupProgress, setSetupProgress] = useState({ payments: false, video: false, team: false, automations: false });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Auto-refresh lab notifications every 30 seconds
-  useEffect(() => {
-    const refreshLabNotifications = async () => {
-      const token = localStorage.getItem('vetbuddy_token');
-      if (!token) return;
-      
-      try {
-        const response = await fetch('/api/lab-requests', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        if (response.ok) {
-          const labRequestsList = await response.json();
-          const reportsReady = (labRequestsList || []).filter(r => r.status === 'report_ready').length;
-          setLabReportsReady(reportsReady);
-        }
-      } catch (e) { console.error('Lab refresh error:', e); }
-    };
-    
-    // Load immediately on mount
-    refreshLabNotifications();
-    
-    const interval = setInterval(refreshLabNotifications, 15000); // ogni 15 secondi
-    return () => clearInterval(interval);
-  }, [user]);
   
   // Stati per aprire pet/owner da altre sezioni
   const [selectedPetFromOwner, setSelectedPetFromOwner] = useState(null);
@@ -1994,18 +1966,24 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
 
   const loadData = async () => {
     try {
-      const [appts, docs, msgs, staffList, petsList, ownersList, rewardsList, labRequestsList] = await Promise.all([
+      const [appts, docs, msgs, staffList, petsList, ownersList, rewardsList] = await Promise.all([
         api.get('appointments'), api.get('documents'), api.get('messages'),
         api.get('staff'), api.get('pets'), api.get('owners'),
-        api.get('rewards/assigned').catch(() => []),
-        api.get('lab-requests').catch(() => [])
+        api.get('rewards/assigned').catch(() => [])
       ]);
       setAppointments(appts); setDocuments(docs); setMessages(msgs);
       setStaff(staffList); setPets(petsList); setOwners(ownersList);
       setRewards(rewardsList || []);
-      // Count lab reports ready
-      const reportsReady = (labRequestsList || []).filter(r => r.status === 'report_ready').length;
-      setLabReportsReady(reportsReady);
+      
+      // Load lab reports count separately
+      try {
+        const labReqs = await api.get('lab-requests');
+        const reportsReady = (labReqs || []).filter(r => r.status === 'report_ready').length;
+        setLabReportsReady(reportsReady);
+      } catch (labErr) {
+        console.log('Lab requests not available');
+      }
+      
       // Calculate setup progress
       setSetupProgress({
         payments: false, // Stripe not connected
