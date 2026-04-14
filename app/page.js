@@ -1936,10 +1936,13 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   // Auto-refresh lab notifications every 30 seconds
   useEffect(() => {
     const refreshLabNotifications = async () => {
+      const token = localStorage.getItem('vetbuddy_token');
+      if (!token) return;
+      
       try {
         const response = await fetch('/api/lab-requests', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('vetbuddy_token')}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
@@ -1952,11 +1955,11 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     };
     
     // Load immediately on mount
-    setTimeout(refreshLabNotifications, 1000); // wait 1s for auth to be ready
+    refreshLabNotifications();
     
-    const interval = setInterval(refreshLabNotifications, 30000); // ogni 30 secondi
+    const interval = setInterval(refreshLabNotifications, 15000); // ogni 15 secondi
     return () => clearInterval(interval);
-  }, []);
+  }, [user]);
   
   // Stati per aprire pet/owner da altre sezioni
   const [selectedPetFromOwner, setSelectedPetFromOwner] = useState(null);
@@ -2017,7 +2020,9 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     <button onClick={() => { setActiveTab(value); setMobileMenuOpen(false); }} 
       className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${activeTab === value ? 'bg-coral-100 text-coral-700 font-medium' : 'text-gray-600 hover:bg-gray-100'}`}>
       <div className="flex items-center gap-3"><Icon className="h-5 w-5" />{label}</div>
-      {badge > 0 && <Badge className="bg-coral-500 text-white text-xs">{badge}</Badge>}
+      {badge !== undefined && badge !== null && badge > 0 && (
+        <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">{badge}</span>
+      )}
     </button>
   );
 
