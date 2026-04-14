@@ -50,6 +50,7 @@ const ClinicEvents = dynamic(() => import('@/app/components/clinic/ClinicEvents'
 const ClinicFeedbackPage = dynamic(() => import('@/app/components/clinic/ClinicFeedbackPage'), { ssr: false });
 const ClinicInvoicing = dynamic(() => import('@/app/components/clinic/ClinicInvoicing'), { ssr: false });
 const ClinicLabAnalysis = dynamic(() => import('@/app/components/clinic/ClinicLabAnalysis'), { ssr: false });
+const ClinicLabMarketplace = dynamic(() => import('@/app/components/clinic/ClinicLabMarketplace'), { ssr: false });
 const ClinicTutorialInline = dynamic(() => import('@/app/components/clinic/ClinicTutorialInline'), { ssr: false });
 const ClinicPatients = dynamic(() => import('@/app/components/clinic/ClinicPatients'), { ssr: false });
 const ClinicReports = dynamic(() => import('@/app/components/clinic/ClinicReports'), { ssr: false });
@@ -1685,6 +1686,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
               <NavItem icon={Stethoscope} label="Servizi" value="services" />
               <NavItem icon={PawPrint} label="Pazienti" value="patients" />
               <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" badge={labReportsReady} />
+              <NavItem icon={Globe} label="Marketplace Lab" value="labmarketplace" />
               <NavItem icon={User} label="Proprietari" value="owners" />
               <NavItem icon={Users} label="Staff" value="staff" />
               <NavItem icon={Receipt} label="Fatturazione" value="invoicing" />
@@ -1730,6 +1732,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           <NavItem icon={Video} label="Video Consulto" value="videoconsult" />
           <NavItem icon={PawPrint} label="Pazienti" value="patients" />
           <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" badge={labReportsReady} />
+          <NavItem icon={Globe} label="Marketplace Lab" value="labmarketplace" />
           <NavItem icon={User} label="Proprietari" value="owners" />
           <NavItem icon={Users} label="Staff" value="staff" />
           <NavItem icon={Receipt} label="Fatturazione" value="invoicing" />
@@ -1760,6 +1763,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'reviews' && <ClinicReviews onNavigate={setActiveTab} />}
         {activeTab === 'rewards' && <ClinicRewardsManagement user={user} owners={owners} />}
         {activeTab === 'labanalysis' && <ClinicLabAnalysis user={user} pets={pets} owners={owners} />}
+        {activeTab === 'labmarketplace' && <ClinicLabMarketplace user={user} />}
         {activeTab === 'invoicing' && <ClinicInvoicing user={user} owners={owners} pets={pets} />}
         {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} onNavigate={setActiveTab} />}
         {activeTab === 'automations' && <ClinicAutomations user={user} onNavigate={setActiveTab} />}

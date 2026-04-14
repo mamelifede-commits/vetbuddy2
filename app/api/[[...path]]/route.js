@@ -897,7 +897,165 @@ export async function GET(request, { params }) {
       const labs = await users.find({ role: 'lab', isApproved: true }, { projection: { password: 0 } }).toArray();
       return NextResponse.json(labs, { headers: corsHeaders });
     }
-    
+
+    // ===== LAB MARKETPLACE (for clinics) =====
+    if (path === 'labs/marketplace') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const users = await getCollection('users');
+      const labs = await users.find({ role: 'lab', isApproved: true, status: 'active' }, { projection: { password: 0 } }).toArray();
+      
+      // Get price lists and connections for each lab
+      const labPriceList = await getCollection('lab_price_list');
+      const connections = await getCollection('clinic_lab_connections');
+      
+      const enrichedLabs = await Promise.all(labs.map(async (lab) => {
+        const prices = await labPriceList.find({ labId: lab.id }).toArray();
+        let connectionStatus = null;
+        if (user.role === 'clinic') {
+          const conn = await connections.findOne({ clinicId: user.id, labId: lab.id, status: { $in: ['active', 'pending'] } });
+          connectionStatus = conn ? conn.status : null;
+        }
+        return {
+          id: lab.id,
+          labName: lab.labName || lab.name,
+          email: lab.email,
+          phone: lab.phone || '',
+          address: lab.address || '',
+          city: lab.city || '',
+          province: lab.province || '',
+          description: lab.description || '',
+          specializations: lab.specializations || [],
+          pickupAvailable: lab.pickupAvailable || false,
+          pickupDays: lab.pickupDays || '',
+          pickupHours: lab.pickupHours || '',
+          averageReportTime: lab.averageReportTime || '',
+          latitude: lab.latitude || null,
+          longitude: lab.longitude || null,
+          logoUrl: lab.logoUrl || '',
+          contactPerson: lab.contactPerson || '',
+          priceList: prices.map(p => ({
+            examType: p.examType,
+            title: p.title || p.examType,
+            description: p.description || '',
+            priceFrom: p.priceFrom || 0,
+            priceTo: p.priceTo || null,
+            priceOnRequest: p.priceOnRequest || false,
+            averageDeliveryTime: p.averageDeliveryTime || ''
+          })),
+          connectionStatus
+        };
+      }));
+
+      return NextResponse.json(enrichedLabs, { headers: corsHeaders });
+    }
+
+    // ===== CLINIC CONNECTED LABS =====
+    if (path === 'clinic/connected-labs') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const connections = await getCollection('clinic_lab_connections');
+      const conns = await connections.find({ clinicId: user.id }).sort({ createdAt: -1 }).toArray();
+      
+      const users = await getCollection('users');
+      const enrichedConns = await Promise.all(conns.map(async (conn) => {
+        const lab = await users.findOne({ id: conn.labId }, { projection: { password: 0 } });
+        return {
+          ...conn,
+          lab: lab ? {
+            id: lab.id, labName: lab.labName || lab.name, email: lab.email,
+            phone: lab.phone || '', city: lab.city || '', address: lab.address || '',
+            specializations: lab.specializations || [],
+            pickupAvailable: lab.pickupAvailable || false,
+            averageReportTime: lab.averageReportTime || ''
+          } : null
+        };
+      }));
+
+      return NextResponse.json(enrichedConns, { headers: corsHeaders });
+    }
+
+    // ===== CLINIC LAB INVITATIONS SENT =====
+    if (path === 'clinic/lab-invitations') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const labInvitations = await getCollection('lab_invitations');
+      const invitations = await labInvitations.find({ clinicId: user.id }).sort({ createdAt: -1 }).toArray();
+      return NextResponse.json(invitations, { headers: corsHeaders });
+    }
+
+    // ===== LAB CONNECTIONS (for lab dashboard) =====
+    if (path === 'lab/connections') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'lab') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const connections = await getCollection('clinic_lab_connections');
+      const conns = await connections.find({ labId: user.id }).sort({ createdAt: -1 }).toArray();
+      
+      const users = await getCollection('users');
+      const enrichedConns = await Promise.all(conns.map(async (conn) => {
+        const clinic = await users.findOne({ id: conn.clinicId }, { projection: { password: 0 } });
+        return {
+          ...conn,
+          clinic: clinic ? {
+            id: clinic.id, clinicName: clinic.clinicName || clinic.name, email: clinic.email,
+            phone: clinic.phone || '', city: clinic.city || '', address: clinic.address || ''
+          } : null
+        };
+      }));
+
+      return NextResponse.json(enrichedConns, { headers: corsHeaders });
+    }
+
+    // ===== LAB PRICE LIST (GET - for any user viewing a lab) =====
+    if (path.match(/^labs\/[^/]+\/price-list$/)) {
+      const labId = path.split('/')[1];
+      const labPriceList = await getCollection('lab_price_list');
+      const prices = await labPriceList.find({ labId }).toArray();
+      return NextResponse.json(prices, { headers: corsHeaders });
+    }
+
+    // ===== PUBLIC LAB PROFILE =====
+    if (path.match(/^labs\/[^/]+\/profile$/)) {
+      const labId = path.split('/')[1];
+      const users = await getCollection('users');
+      const lab = await users.findOne({ id: labId, role: 'lab', isApproved: true }, { projection: { password: 0 } });
+      if (!lab) {
+        return NextResponse.json({ error: 'Laboratorio non trovato' }, { status: 404, headers: corsHeaders });
+      }
+      const labPriceList = await getCollection('lab_price_list');
+      const prices = await labPriceList.find({ labId }).toArray();
+      
+      return NextResponse.json({
+        id: lab.id, labName: lab.labName || lab.name, email: lab.email, phone: lab.phone || '',
+        address: lab.address || '', city: lab.city || '', province: lab.province || '',
+        description: lab.description || '', specializations: lab.specializations || [],
+        pickupAvailable: lab.pickupAvailable || false, pickupDays: lab.pickupDays || '',
+        pickupHours: lab.pickupHours || '', averageReportTime: lab.averageReportTime || '',
+        latitude: lab.latitude || null, longitude: lab.longitude || null,
+        logoUrl: lab.logoUrl || '', contactPerson: lab.contactPerson || '',
+        priceList: prices
+      }, { headers: corsHeaders });
+    }
+
+    // ===== LAB OWN PRICE LIST (GET) =====
+    if (path === 'lab/my-price-list') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'lab') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const labPriceList = await getCollection('lab_price_list');
+      const prices = await labPriceList.find({ labId: user.id }).sort({ examType: 1 }).toArray();
+      return NextResponse.json(prices, { headers: corsHeaders });
+    }
+
     // Get lab requests (for clinic or lab)
     if (path === 'lab-requests') {
       const user = getUserFromRequest(request);

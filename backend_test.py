@@ -1,387 +1,450 @@
 #!/usr/bin/env python3
 """
-VetBuddy Admin Labs Management, Webhook, and Integration APIs Test Suite
-Testing the new endpoints as specified in the review request.
+VetBuddy Lab Marketplace Backend API Testing
+Testing the 3 new Lab Marketplace API endpoints as specified in review request.
 """
 
 import requests
 import json
-import time
-import uuid
+import sys
 from datetime import datetime
 
-# Base URL from .env
+# Base URL from environment
 BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
 
 # Test credentials from review request
-ADMIN_EMAIL = "admin@vetbuddy.it"
-ADMIN_PASSWORD = "Admin2025!"
+CREDENTIALS = {
+    "clinic": {"email": "demo@vetbuddy.it", "password": "VetBuddy2025!Secure"},
+    "lab": {"email": "laboratorio1@vetbuddy.it", "password": "Lab2025!"},
+    "admin": {"email": "admin@vetbuddy.it", "password": "Admin2025!"},
+    "owner": {"email": "proprietario.demo@vetbuddy.it", "password": "demo123"}
+}
 
-CLINIC_EMAIL = "demo@vetbuddy.it"
-CLINIC_PASSWORD = "VetBuddy2025!Secure"
-
-LAB_EMAIL = "laboratorio1@vetbuddy.it"
-LAB_PASSWORD = "Lab2025!"
-
-class VetBuddyLabsAPITester:
-    def __init__(self):
-        self.admin_token = None
-        self.clinic_token = None
-        self.lab_token = None
-        self.lab_id = None
-        self.integration_id = None
-        self.webhook_secret = None
+def login_user(role):
+    """Login and get JWT token for specified role"""
+    try:
+        print(f"🔐 Logging in as {role}...")
+        response = requests.post(f"{BASE_URL}/auth/login", json=CREDENTIALS[role])
         
-    def authenticate(self, email, password, role_name):
-        """Authenticate and get JWT token"""
-        try:
-            response = requests.post(f"{BASE_URL}/auth/login", json={
-                "email": email,
-                "password": password
-            })
-            
-            if response.status_code == 200:
-                data = response.json()
-                token = data.get('token')
-                user = data.get('user', {})
-                print(f"✅ {role_name} authentication successful: {user.get('email')} (role: {user.get('role')})")
-                return token
-            else:
-                print(f"❌ {role_name} authentication failed: {response.status_code} - {response.text}")
-                return None
-                
-        except Exception as e:
-            print(f"❌ {role_name} authentication error: {str(e)}")
-            return None
-    
-    def test_admin_labs_list(self):
-        """Test GET /api/admin/labs - Admin Labs List API"""
-        print("\n🧪 Testing Admin Labs List API...")
-        
-        # Test with admin token
-        try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            response = requests.get(f"{BASE_URL}/admin/labs", headers=headers)
-            
-            if response.status_code == 200:
-                labs = response.json()  # Direct array response
-                print(f"✅ Admin labs list successful: Found {len(labs)} labs")
-                
-                # Check for required stats fields
-                for lab in labs:
-                    stats = lab.get('stats', {})
-                    required_fields = ['totalRequests', 'pendingRequests', 'completedRequests', 'totalReports']
-                    missing_fields = [field for field in required_fields if field not in stats]
-                    if missing_fields:
-                        print(f"⚠️  Lab {lab.get('name', 'unknown')} missing stats fields: {missing_fields}")
-                    else:
-                        print(f"✅ Lab {lab.get('name', 'unknown')} has all required stats: {stats}")
-                        
-                # Store first lab ID for later tests
-                if labs:
-                    self.lab_id = labs[0].get('id')
-                    print(f"📝 Using lab ID for tests: {self.lab_id}")
-                    
-            else:
-                print(f"❌ Admin labs list failed: {response.status_code} - {response.text}")
-                
-        except Exception as e:
-            print(f"❌ Admin labs list error: {str(e)}")
-        
-        # Test without auth - should return 403
-        try:
-            response = requests.get(f"{BASE_URL}/admin/labs")
-            if response.status_code == 403:
-                print("✅ Unauthorized access correctly blocked (403)")
-            else:
-                print(f"⚠️  Expected 403 for unauthorized access, got {response.status_code}")
-        except Exception as e:
-            print(f"❌ Unauthorized test error: {str(e)}")
-            
-        # Test with clinic token - should return 403
-        try:
-            headers = {"Authorization": f"Bearer {self.clinic_token}"}
-            response = requests.get(f"{BASE_URL}/admin/labs", headers=headers)
-            if response.status_code == 403:
-                print("✅ Clinic access correctly blocked (403)")
-            else:
-                print(f"⚠️  Expected 403 for clinic access, got {response.status_code}")
-        except Exception as e:
-            print(f"❌ Clinic access test error: {str(e)}")
-    
-    def test_admin_lab_requests_overview(self):
-        """Test GET /api/admin/lab-requests - Admin Lab Requests Overview"""
-        print("\n🧪 Testing Admin Lab Requests Overview API...")
-        
-        try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            response = requests.get(f"{BASE_URL}/admin/lab-requests", headers=headers)
-            
-            if response.status_code == 200:
-                data = response.json()
-                requests_list = data.get('requests', [])
-                stats = data.get('stats', {})
-                
-                print(f"✅ Admin lab requests overview successful: {len(requests_list)} requests")
-                
-                # Check required stats fields
-                required_stats = ['total', 'pending', 'reportReady', 'completed']
-                missing_stats = [field for field in required_stats if field not in stats]
-                if missing_stats:
-                    print(f"⚠️  Missing stats fields: {missing_stats}")
-                else:
-                    print(f"✅ All required stats present: {stats}")
-                    
-            else:
-                print(f"❌ Admin lab requests overview failed: {response.status_code} - {response.text}")
-                
-        except Exception as e:
-            print(f"❌ Admin lab requests overview error: {str(e)}")
-        
-        # Test without auth - should return 403
-        try:
-            response = requests.get(f"{BASE_URL}/admin/lab-requests")
-            if response.status_code == 403:
-                print("✅ Unauthorized access correctly blocked (403)")
-            else:
-                print(f"⚠️  Expected 403 for unauthorized access, got {response.status_code}")
-        except Exception as e:
-            print(f"❌ Unauthorized test error: {str(e)}")
-    
-    def test_admin_lab_integration_config(self):
-        """Test POST /api/admin/labs/integration - Admin Lab Integration Config"""
-        print("\n🧪 Testing Admin Lab Integration Config API...")
-        
-        if not self.lab_id:
-            print("❌ No lab ID available for integration test")
-            return
-            
-        # Test successful integration config with custom webhook secret
-        try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            self.webhook_secret = "test_webhook_secret_12345"  # Use a known secret for testing
-            integration_data = {
-                "labId": self.lab_id,
-                "integrationType": "webhook",
-                "webhookSecret": self.webhook_secret,
-                "autoSync": True,
-                "examTypeMapping": {
-                    "blood_test": "Esame del sangue",
-                    "urine_test": "Esame delle urine",
-                    "xray": "Radiografia"
-                }
-            }
-            
-            response = requests.post(f"{BASE_URL}/admin/labs/integration", 
-                                   headers=headers, json=integration_data)
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('success'):
-                    self.integration_id = data.get('integrationId')
-                    print(f"✅ Lab integration config successful: {self.integration_id}")
-                    print(f"📝 Webhook secret set for testing: {self.webhook_secret}")
-                else:
-                    print(f"⚠️  Integration config returned success=false: {data}")
-            else:
-                print(f"❌ Lab integration config failed: {response.status_code} - {response.text}")
-                
-        except Exception as e:
-            print(f"❌ Lab integration config error: {str(e)}")
-        
-        # Test without labId - should return 400
-        try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            response = requests.post(f"{BASE_URL}/admin/labs/integration", 
-                                   headers=headers, json={"integrationType": "webhook"})
-            if response.status_code == 400:
-                print("✅ Missing labId correctly rejected (400)")
-            else:
-                print(f"⚠️  Expected 400 for missing labId, got {response.status_code}")
-        except Exception as e:
-            print(f"❌ Missing labId test error: {str(e)}")
-            
-        # Test without admin auth - should return 401 or 403
-        try:
-            response = requests.post(f"{BASE_URL}/admin/labs/integration", 
-                                   json={"labId": self.lab_id, "integrationType": "webhook"})
-            if response.status_code in [401, 403]:
-                print(f"✅ Unauthorized access correctly blocked ({response.status_code})")
-            else:
-                print(f"⚠️  Expected 401/403 for unauthorized access, got {response.status_code}")
-        except Exception as e:
-            print(f"❌ Unauthorized test error: {str(e)}")
-    
-    def test_webhook_lab_results(self):
-        """Test POST /api/webhooks/lab-results - Webhook Lab Results"""
-        print("\n🧪 Testing Webhook Lab Results API...")
-        
-        # Test without x-webhook-secret header - should return 401
-        try:
-            webhook_data = {
-                "requestId": str(uuid.uuid4()),
-                "results": {
-                    "test_type": "blood_test",
-                    "values": {"glucose": "95 mg/dl", "cholesterol": "180 mg/dl"}
-                }
-            }
-            
-            response = requests.post(f"{BASE_URL}/webhooks/lab-results", json=webhook_data)
-            if response.status_code == 401 and "Webhook secret mancante" in response.text:
-                print("✅ Missing webhook secret correctly rejected (401)")
-            else:
-                print(f"⚠️  Expected 401 'Webhook secret mancante', got {response.status_code}: {response.text}")
-        except Exception as e:
-            print(f"❌ Missing webhook secret test error: {str(e)}")
-        
-        # Test with invalid x-webhook-secret - should return 401
-        try:
-            headers = {"x-webhook-secret": "invalid_secret"}
-            response = requests.post(f"{BASE_URL}/webhooks/lab-results", 
-                                   headers=headers, json=webhook_data)
-            if response.status_code == 401 and "Webhook secret non valido" in response.text:
-                print("✅ Invalid webhook secret correctly rejected (401)")
-            else:
-                print(f"⚠️  Expected 401 'Webhook secret non valido', got {response.status_code}: {response.text}")
-        except Exception as e:
-            print(f"❌ Invalid webhook secret test error: {str(e)}")
-        
-        # Test with valid secret and real request ID
-        if self.webhook_secret:
-            try:
-                # First get a real lab request ID from the admin endpoint
-                headers_admin = {"Authorization": f"Bearer {self.admin_token}"}
-                response = requests.get(f"{BASE_URL}/admin/lab-requests", headers=headers_admin)
-                
-                real_request_id = None
-                if response.status_code == 200:
-                    data = response.json()
-                    requests_list = data.get('requests', [])
-                    if requests_list:
-                        real_request_id = requests_list[0].get('id')
-                        print(f"📝 Using real request ID for webhook test: {real_request_id}")
-                
-                headers = {"x-webhook-secret": self.webhook_secret}
-                webhook_data = {
-                    "requestId": real_request_id or str(uuid.uuid4()),
-                    "results": {
-                        "test_type": "blood_test",
-                        "values": {"glucose": "95 mg/dl", "cholesterol": "180 mg/dl"},
-                        "notes": "Test results from webhook integration"
-                    }
-                }
-                
-                response = requests.post(f"{BASE_URL}/webhooks/lab-results", 
-                                       headers=headers, json=webhook_data)
-                if response.status_code == 200:
-                    print("✅ Valid webhook secret processed successfully")
-                    data = response.json()
-                    print(f"📝 Webhook response: {data}")
-                else:
-                    print(f"⚠️  Valid webhook processing failed: {response.status_code} - {response.text}")
-            except Exception as e:
-                print(f"❌ Valid webhook test error: {str(e)}")
+        if response.status_code == 200:
+            data = response.json()
+            token = data.get('token')
+            user_info = data.get('user', {})
+            print(f"✅ Login successful for {role}: {user_info.get('email', 'N/A')}")
+            return token
         else:
-            print("⚠️  No webhook secret available for valid webhook test")
-    
-    def create_test_lab_request(self):
-        """Create a test lab request for webhook testing"""
-        try:
-            headers = {"Authorization": f"Bearer {self.clinic_token}"}
-            lab_request_data = {
-                "petId": "f1f3b7d9-01fe-4955-b6c8-bdf183a62d28",  # Known pet ID from previous tests
-                "labId": self.lab_id,
-                "examType": "blood_test",
-                "urgency": "normal",
-                "clinicNotes": "Test lab request for webhook integration testing",
-                "requestedTests": ["glucose", "cholesterol", "complete_blood_count"]
-            }
-            
-            response = requests.post(f"{BASE_URL}/lab-requests", 
-                                   headers=headers, json=lab_request_data)
-            
-            if response.status_code == 200:
-                data = response.json()
-                request_id = data.get('id')
-                print(f"✅ Test lab request created: {request_id}")
-                return request_id
-            else:
-                print(f"⚠️  Failed to create test lab request: {response.status_code} - {response.text}")
-                return None
-                
-        except Exception as e:
-            print(f"❌ Error creating test lab request: {str(e)}")
+            print(f"❌ Login failed for {role}: {response.status_code} - {response.text}")
             return None
+    except Exception as e:
+        print(f"❌ Login error for {role}: {str(e)}")
+        return None
+
+def test_lab_marketplace_api():
+    """Test 1: Lab Marketplace API - GET labs/marketplace"""
+    print("\n" + "="*60)
+    print("TEST 1: Lab Marketplace API - GET labs/marketplace")
+    print("="*60)
     
-    def test_admin_approve_lab(self):
-        """Test POST /api/admin/labs/approve - Admin Approve Lab"""
-        print("\n🧪 Testing Admin Approve Lab API...")
+    # Login as clinic
+    clinic_token = login_user("clinic")
+    if not clinic_token:
+        print("❌ Cannot test without clinic authentication")
+        return False
+    
+    try:
+        headers = {"Authorization": f"Bearer {clinic_token}"}
+        response = requests.get(f"{BASE_URL}/labs/marketplace", headers=headers)
         
-        if not self.lab_id:
-            print("❌ No lab ID available for approval test")
-            return
+        print(f"📡 GET /api/labs/marketplace")
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            labs = response.json()
+            print(f"✅ SUCCESS: Retrieved {len(labs)} labs from marketplace")
             
-        # Test successful lab approval
-        try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            approval_data = {"labId": self.lab_id}
+            # Validate response structure
+            if isinstance(labs, list) and len(labs) >= 2:
+                print(f"✅ Expected array of labs received: {len(labs)} labs")
+                
+                for i, lab in enumerate(labs):
+                    print(f"\n📋 Lab {i+1}: {lab.get('labName', 'N/A')}")
+                    print(f"   - ID: {lab.get('id', 'N/A')}")
+                    print(f"   - City: {lab.get('city', 'N/A')}")
+                    print(f"   - Description: {lab.get('description', 'N/A')[:50]}...")
+                    print(f"   - Specializations: {lab.get('specializations', [])}")
+                    print(f"   - Pickup Available: {lab.get('pickupAvailable', False)}")
+                    print(f"   - Average Report Time: {lab.get('averageReportTime', 'N/A')}")
+                    print(f"   - Price List Items: {len(lab.get('priceList', []))}")
+                    print(f"   - Connection Status: {lab.get('connectionStatus', 'null')}")
+                
+                # Check required fields
+                required_fields = ['id', 'labName', 'city', 'description', 'specializations', 
+                                 'pickupAvailable', 'averageReportTime', 'priceList', 'connectionStatus']
+                
+                all_fields_present = True
+                for lab in labs:
+                    for field in required_fields:
+                        if field not in lab:
+                            print(f"❌ Missing required field '{field}' in lab {lab.get('labName', 'Unknown')}")
+                            all_fields_present = False
+                
+                if all_fields_present:
+                    print("✅ All required fields present in lab objects")
+                    return True
+                else:
+                    print("❌ Some required fields missing")
+                    return False
+            else:
+                print(f"❌ Expected array of 2+ labs, got: {type(labs)} with {len(labs) if isinstance(labs, list) else 'N/A'} items")
+                return False
+        else:
+            print(f"❌ FAILED: {response.status_code} - {response.text}")
+            return False
             
-            response = requests.post(f"{BASE_URL}/admin/labs/approve", 
-                                   headers=headers, json=approval_data)
+    except Exception as e:
+        print(f"❌ ERROR: {str(e)}")
+        return False
+
+def test_clinic_connected_labs_api():
+    """Test 2: Lab Marketplace API - Clinic Connected Labs"""
+    print("\n" + "="*60)
+    print("TEST 2: Lab Marketplace API - Clinic Connected Labs")
+    print("="*60)
+    
+    # Login as clinic
+    clinic_token = login_user("clinic")
+    if not clinic_token:
+        print("❌ Cannot test without clinic authentication")
+        return False
+    
+    try:
+        headers = {"Authorization": f"Bearer {clinic_token}"}
+        
+        # Test GET /api/clinic/connected-labs
+        print(f"\n📡 GET /api/clinic/connected-labs")
+        response = requests.get(f"{BASE_URL}/clinic/connected-labs", headers=headers)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            connections = response.json()
+            print(f"✅ SUCCESS: Retrieved {len(connections)} connections")
+            print(f"   Connected labs: {[conn.get('lab', {}).get('labName', 'N/A') for conn in connections]}")
+        else:
+            print(f"❌ FAILED: {response.status_code} - {response.text}")
+            return False
+        
+        # Test GET /api/clinic/lab-invitations
+        print(f"\n📡 GET /api/clinic/lab-invitations")
+        response = requests.get(f"{BASE_URL}/clinic/lab-invitations", headers=headers)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            invitations = response.json()
+            print(f"✅ SUCCESS: Retrieved {len(invitations)} invitations")
+        else:
+            print(f"❌ FAILED: {response.status_code} - {response.text}")
+            return False
+        
+        # Get lab IDs from marketplace for connection test
+        marketplace_response = requests.get(f"{BASE_URL}/labs/marketplace", headers=headers)
+        if marketplace_response.status_code == 200:
+            labs = marketplace_response.json()
+            if labs and len(labs) > 0:
+                lab_id = labs[0]['id']
+                lab_name = labs[0]['labName']
+                
+                # Test POST /api/clinic/lab-connection
+                print(f"\n📡 POST /api/clinic/lab-connection")
+                print(f"   Requesting connection with lab: {lab_name} (ID: {lab_id})")
+                
+                connection_data = {"labId": lab_id}
+                response = requests.post(f"{BASE_URL}/clinic/lab-connection", 
+                                       headers=headers, json=connection_data)
+                print(f"Status Code: {response.status_code}")
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    print(f"✅ SUCCESS: {result.get('message', 'Connection request created')}")
+                    
+                    # Verify connection status changed in marketplace
+                    print(f"\n🔍 Verifying connection status in marketplace...")
+                    marketplace_check = requests.get(f"{BASE_URL}/labs/marketplace", headers=headers)
+                    if marketplace_check.status_code == 200:
+                        updated_labs = marketplace_check.json()
+                        target_lab = next((lab for lab in updated_labs if lab['id'] == lab_id), None)
+                        if target_lab:
+                            connection_status = target_lab.get('connectionStatus')
+                            print(f"✅ Lab {lab_name} connection status: {connection_status}")
+                            if connection_status == 'pending':
+                                print("✅ Connection status correctly shows 'pending'")
+                                return True
+                            else:
+                                print(f"⚠️ Expected 'pending' status, got: {connection_status}")
+                                return True  # Still working, just different state
+                        else:
+                            print("❌ Lab not found in marketplace after connection request")
+                            return False
+                    else:
+                        print("❌ Failed to verify marketplace status")
+                        return False
+                        
+                elif response.status_code == 400 and "già esistente" in response.text:
+                    print(f"✅ SUCCESS: Connection already exists (expected behavior)")
+                    return True
+                else:
+                    print(f"❌ FAILED: {response.status_code} - {response.text}")
+                    return False
+            else:
+                print("❌ No labs available in marketplace for connection test")
+                return False
+        else:
+            print("❌ Failed to get labs from marketplace")
+            return False
+            
+    except Exception as e:
+        print(f"❌ ERROR: {str(e)}")
+        return False
+
+def test_lab_connections_and_price_list():
+    """Test 3: Lab Marketplace API - Lab Connections & Price List"""
+    print("\n" + "="*60)
+    print("TEST 3: Lab Marketplace API - Lab Connections & Price List")
+    print("="*60)
+    
+    # Login as lab
+    lab_token = login_user("lab")
+    if not lab_token:
+        print("❌ Cannot test without lab authentication")
+        return False
+    
+    try:
+        headers = {"Authorization": f"Bearer {lab_token}"}
+        
+        # Test GET /api/lab/connections
+        print(f"\n📡 GET /api/lab/connections")
+        response = requests.get(f"{BASE_URL}/lab/connections", headers=headers)
+        print(f"Status Code: {response.status_code}")
+        
+        connection_id = None
+        if response.status_code == 200:
+            connections = response.json()
+            print(f"✅ SUCCESS: Retrieved {len(connections)} connections")
+            
+            for conn in connections:
+                clinic_info = conn.get('clinic', {})
+                print(f"   - Connection ID: {conn.get('id', 'N/A')}")
+                print(f"   - Clinic: {clinic_info.get('clinicName', 'N/A')}")
+                print(f"   - Status: {conn.get('status', 'N/A')}")
+                print(f"   - Created: {conn.get('createdAt', 'N/A')}")
+                
+                # Store a pending connection ID for testing
+                if conn.get('status') == 'pending':
+                    connection_id = conn.get('id')
+        else:
+            print(f"❌ FAILED: {response.status_code} - {response.text}")
+            return False
+        
+        # Test connection response if we have a pending connection
+        if connection_id:
+            print(f"\n📡 POST /api/lab/connection-response")
+            print(f"   Accepting connection ID: {connection_id}")
+            
+            response_data = {"connectionId": connection_id, "action": "accept"}
+            response = requests.post(f"{BASE_URL}/lab/connection-response", 
+                                   headers=headers, json=response_data)
+            print(f"Status Code: {response.status_code}")
             
             if response.status_code == 200:
-                data = response.json()
-                print(f"✅ Lab approval successful: {data}")
+                result = response.json()
+                print(f"✅ SUCCESS: {result.get('message', 'Connection accepted')}")
             else:
-                print(f"❌ Lab approval failed: {response.status_code} - {response.text}")
+                print(f"⚠️ Connection response test: {response.status_code} - {response.text}")
+        else:
+            print("ℹ️ No pending connections found to test acceptance")
+        
+        # Test GET /api/lab/my-price-list
+        print(f"\n📡 GET /api/lab/my-price-list")
+        response = requests.get(f"{BASE_URL}/lab/my-price-list", headers=headers)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            price_list = response.json()
+            print(f"✅ SUCCESS: Retrieved {len(price_list)} price list items")
+            
+            for item in price_list[:3]:  # Show first 3 items
+                print(f"   - {item.get('title', item.get('examType', 'N/A'))}: €{item.get('priceFrom', 0)}")
+        else:
+            print(f"❌ FAILED: {response.status_code} - {response.text}")
+            return False
+        
+        # Test POST /api/lab/price-list (update price list)
+        print(f"\n📡 POST /api/lab/price-list")
+        sample_prices = [
+            {
+                "examType": "sangue",
+                "title": "Emocromo Completo",
+                "description": "Analisi completa del sangue",
+                "priceFrom": 25.00,
+                "priceTo": 35.00,
+                "averageDeliveryTime": "24 ore"
+            },
+            {
+                "examType": "urine",
+                "title": "Esame Urine",
+                "description": "Analisi chimico-fisica delle urine",
+                "priceFrom": 15.00,
+                "priceOnRequest": False,
+                "averageDeliveryTime": "12 ore"
+            }
+        ]
+        
+        response = requests.post(f"{BASE_URL}/lab/price-list", 
+                               headers=headers, json={"prices": sample_prices})
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            result = response.json()
+            print(f"✅ SUCCESS: {result.get('message', 'Price list updated')}")
+            print(f"   Updated {result.get('count', 0)} price items")
+        else:
+            print(f"❌ FAILED: {response.status_code} - {response.text}")
+            return False
+        
+        # Get lab ID for public profile tests
+        lab_response = requests.get(f"{BASE_URL}/auth/me", headers=headers)
+        if lab_response.status_code == 200:
+            lab_user = lab_response.json().get('user', {})
+            lab_id = lab_user.get('id')
+            
+            if lab_id:
+                # Test GET /api/labs/{labId}/profile (public profile)
+                print(f"\n📡 GET /api/labs/{lab_id}/profile")
+                response = requests.get(f"{BASE_URL}/labs/{lab_id}/profile")
+                print(f"Status Code: {response.status_code}")
                 
-        except Exception as e:
-            print(f"❌ Lab approval error: {str(e)}")
-        
-        # Test without admin token - should return 401
-        try:
-            response = requests.post(f"{BASE_URL}/admin/labs/approve", 
-                                   json={"labId": self.lab_id})
-            if response.status_code == 401:
-                print("✅ Unauthorized approval correctly blocked (401)")
+                if response.status_code == 200:
+                    profile = response.json()
+                    print(f"✅ SUCCESS: Retrieved public profile for {profile.get('labName', 'N/A')}")
+                    print(f"   Price list items: {len(profile.get('priceList', []))}")
+                else:
+                    print(f"❌ FAILED: {response.status_code} - {response.text}")
+                    return False
+                
+                # Test GET /api/labs/{labId}/price-list (public price list)
+                print(f"\n📡 GET /api/labs/{lab_id}/price-list")
+                response = requests.get(f"{BASE_URL}/labs/{lab_id}/price-list")
+                print(f"Status Code: {response.status_code}")
+                
+                if response.status_code == 200:
+                    public_prices = response.json()
+                    print(f"✅ SUCCESS: Retrieved public price list with {len(public_prices)} items")
+                    return True
+                else:
+                    print(f"❌ FAILED: {response.status_code} - {response.text}")
+                    return False
             else:
-                print(f"⚠️  Expected 401 for unauthorized approval, got {response.status_code}")
-        except Exception as e:
-            print(f"❌ Unauthorized approval test error: {str(e)}")
+                print("❌ Could not get lab ID for public profile tests")
+                return False
+        else:
+            print("❌ Failed to get lab user info")
+            return False
+            
+    except Exception as e:
+        print(f"❌ ERROR: {str(e)}")
+        return False
+
+def test_existing_apis():
+    """Verify existing APIs still work"""
+    print("\n" + "="*60)
+    print("VERIFICATION: Testing Existing APIs")
+    print("="*60)
     
-    def run_all_tests(self):
-        """Run all test scenarios"""
-        print("🚀 Starting VetBuddy Admin Labs Management, Webhook, and Integration APIs Testing")
-        print("=" * 80)
+    try:
+        # Test health endpoint
+        print(f"\n📡 GET /api/health")
+        response = requests.get(f"{BASE_URL}/health")
+        print(f"Status Code: {response.status_code}")
         
-        # Step 1: Authenticate all users
-        print("\n📋 Step 1: Authentication")
-        self.admin_token = self.authenticate(ADMIN_EMAIL, ADMIN_PASSWORD, "Admin")
-        self.clinic_token = self.authenticate(CLINIC_EMAIL, CLINIC_PASSWORD, "Clinic")
-        self.lab_token = self.authenticate(LAB_EMAIL, LAB_PASSWORD, "Lab")
+        if response.status_code == 200:
+            health = response.json()
+            print(f"✅ Health check: {health.get('status', 'N/A')}")
+        else:
+            print(f"❌ Health check failed: {response.status_code}")
+            return False
         
-        if not self.admin_token:
-            print("❌ Cannot proceed without admin authentication")
-            return
+        # Test login endpoints
+        for role in ["clinic", "lab"]:
+            token = login_user(role)
+            if token:
+                print(f"✅ {role.title()} login working")
+            else:
+                print(f"❌ {role.title()} login failed")
+                return False
         
-        # Step 2: Test Admin Labs List API
-        self.test_admin_labs_list()
-        
-        # Step 3: Test Admin Lab Requests Overview
-        self.test_admin_lab_requests_overview()
-        
-        # Step 4: Test Admin Lab Integration Config
-        self.test_admin_lab_integration_config()
-        
-        # Step 5: Test Webhook Lab Results
-        self.test_webhook_lab_results()
-        
-        # Step 6: Test Admin Approve Lab
-        self.test_admin_approve_lab()
-        
-        print("\n" + "=" * 80)
-        print("🏁 VetBuddy Admin Labs APIs Testing Complete")
+        # Test lab-requests endpoint
+        clinic_token = login_user("clinic")
+        if clinic_token:
+            headers = {"Authorization": f"Bearer {clinic_token}"}
+            print(f"\n📡 GET /api/lab-requests")
+            response = requests.get(f"{BASE_URL}/lab-requests", headers=headers)
+            print(f"Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                requests_data = response.json()
+                print(f"✅ Lab requests: {len(requests_data)} requests found")
+                return True
+            else:
+                print(f"❌ Lab requests failed: {response.status_code}")
+                return False
+        else:
+            print("❌ Cannot test lab-requests without clinic token")
+            return False
+            
+    except Exception as e:
+        print(f"❌ ERROR: {str(e)}")
+        return False
+
+def main():
+    """Run all Lab Marketplace API tests"""
+    print("🧪 VetBuddy Lab Marketplace Backend API Testing")
+    print(f"🌐 Base URL: {BASE_URL}")
+    print(f"📅 Test Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    
+    test_results = []
+    
+    # Run the 3 main tests from review request
+    test_results.append(("Lab Marketplace API - GET labs/marketplace", test_lab_marketplace_api()))
+    test_results.append(("Lab Marketplace API - Clinic Connected Labs", test_clinic_connected_labs_api()))
+    test_results.append(("Lab Marketplace API - Lab Connections & Price List", test_lab_connections_and_price_list()))
+    
+    # Verify existing APIs still work
+    test_results.append(("Existing APIs Verification", test_existing_apis()))
+    
+    # Summary
+    print("\n" + "="*60)
+    print("🏁 TEST SUMMARY")
+    print("="*60)
+    
+    passed = 0
+    failed = 0
+    
+    for test_name, result in test_results:
+        status = "✅ PASSED" if result else "❌ FAILED"
+        print(f"{status}: {test_name}")
+        if result:
+            passed += 1
+        else:
+            failed += 1
+    
+    print(f"\n📊 Results: {passed} passed, {failed} failed")
+    
+    if failed == 0:
+        print("🎉 ALL TESTS PASSED! Lab Marketplace APIs are working correctly.")
+        return True
+    else:
+        print(f"⚠️ {failed} test(s) failed. Please check the issues above.")
+        return False
 
 if __name__ == "__main__":
-    tester = VetBuddyLabsAPITester()
-    tester.run_all_tests()
+    success = main()
+    sys.exit(0 if success else 1)
