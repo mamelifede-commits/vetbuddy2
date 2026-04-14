@@ -135,6 +135,71 @@ const VETERINARY_SERVICES = {
   }
 };
 
+// ==================== LAB EXAM TYPES ====================
+const LAB_EXAM_TYPES = {
+  istologia: {
+    id: 'istologia',
+    name: 'Esami Istologici e Citologici',
+    icon: 'Microscope',
+    exams: [
+      { id: 'biopsia', name: 'Esame Istologico (Biopsia)', description: 'Analisi di frammenti di tessuto per diagnosi di neoplasie' },
+      { id: 'citologia_avanzata', name: 'Citologia Avanzata', description: 'Analisi cellulari da masse o versamenti' }
+    ]
+  },
+  infettive: {
+    id: 'infettive',
+    name: 'Malattie Infettive e Sierologia',
+    icon: 'Bug',
+    exams: [
+      { id: 'pcr', name: 'PCR (Test Molecolare)', description: 'Rilevamento DNA/RNA patogeni (Leishmania, Ehrlichia, Parvovirus)' },
+      { id: 'titolazione_anticorpale', name: 'Titolazione Anticorpale', description: 'Misurazione livelli anticorpi (IFAT/ELISA)' },
+      { id: 'screening_infettive', name: 'Screening Malattie Infettive', description: 'FIV/FeLV, Toxoplasma e altre' }
+    ]
+  },
+  endocrinologia: {
+    id: 'endocrinologia',
+    name: 'Endocrinologia ed Esami Ormonali',
+    icon: 'Activity',
+    exams: [
+      { id: 'tiroide', name: 'Profilo Tiroideo', description: 'T4 totale, T4 libero, TSH' },
+      { id: 'surrene', name: 'Profilo Surrenalico', description: 'Cortisolo, test ACTH, soppressione desametasone' },
+      { id: 'progesterone', name: 'Dosaggio Progesterone', description: 'Per gestione riproduzione' }
+    ]
+  },
+  microbiologia: {
+    id: 'microbiologia',
+    name: 'Microbiologia e Parassitologia',
+    icon: 'Beaker',
+    exams: [
+      { id: 'batteriologico', name: 'Esame Batteriologico + Antibiogramma', description: 'Coltura e sensibilità antibiotici' },
+      { id: 'micologico', name: 'Esame Micologico', description: 'Ricerca funghi e dermatofiti' },
+      { id: 'parassitologico', name: 'Esami Parassitologici', description: 'Ricerca parassiti specifici' }
+    ]
+  },
+  ematologia: {
+    id: 'ematologia',
+    name: 'Profili Biochimici ed Ematologici Avanzati',
+    icon: 'Droplet',
+    exams: [
+      { id: 'elettroforesi', name: 'Elettroforesi Sierica', description: 'Valutazione frazioni proteiche' },
+      { id: 'profilo_geriatrico', name: 'Profilo Geriatrico/Patologico', description: 'Biochimica completa 20-25 parametri' },
+      { id: 'coagulazione', name: 'Pannello Coagulazione', description: 'PT, PTT, fibrinogeno' }
+    ]
+  }
+};
+
+// Lab request statuses
+const LAB_REQUEST_STATUSES = [
+  { id: 'pending', name: 'Richiesta Inviata', color: 'yellow', icon: 'Clock' },
+  { id: 'received', name: 'Richiesta Ricevuta', color: 'blue', icon: 'CheckCircle' },
+  { id: 'sample_waiting', name: 'Campione in Attesa', color: 'orange', icon: 'Package' },
+  { id: 'sample_received', name: 'Campione Ricevuto', color: 'indigo', icon: 'PackageCheck' },
+  { id: 'in_progress', name: 'Analisi in Corso', color: 'purple', icon: 'Loader' },
+  { id: 'report_ready', name: 'Referto Pronto', color: 'green', icon: 'FileCheck' },
+  { id: 'completed', name: 'Completata', color: 'emerald', icon: 'CheckCircle2' },
+  { id: 'cancelled', name: 'Annullata', color: 'red', icon: 'XCircle' }
+];
+
 // Haversine formula to calculate distance between two coordinates in km
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371; // Earth's radius in km
@@ -763,6 +828,149 @@ export async function GET(request, { params }) {
       const list = await reviews.find({ clinicId: user.id }).sort({ createdAt: -1 }).toArray();
       return NextResponse.json({ reviews: list }, { headers: corsHeaders });
     }
+
+    // ==================== LAB API - GET ====================
+    
+    // Get lab exam types catalog
+    if (path === 'lab/exam-types') {
+      return NextResponse.json(LAB_EXAM_TYPES, { headers: corsHeaders });
+    }
+    
+    // Get lab request statuses
+    if (path === 'lab/statuses') {
+      return NextResponse.json(LAB_REQUEST_STATUSES, { headers: corsHeaders });
+    }
+    
+    // Get all labs (for clinic to select)
+    if (path === 'labs') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const users = await getCollection('users');
+      const labs = await users.find({ role: 'lab', isApproved: true }, { projection: { password: 0 } }).toArray();
+      return NextResponse.json(labs, { headers: corsHeaders });
+    }
+    
+    // Get lab requests (for clinic or lab)
+    if (path === 'lab-requests') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const labRequests = await getCollection('lab_requests');
+      const users = await getCollection('users');
+      const pets = await getCollection('pets');
+      
+      let query = {};
+      if (user.role === 'clinic') {
+        query = { clinicId: user.id };
+      } else if (user.role === 'lab') {
+        query = { labId: user.id };
+      } else if (user.role === 'admin') {
+        // Admin can see all
+      } else {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const requests = await labRequests.find(query).sort({ createdAt: -1 }).toArray();
+      
+      // Enrich with pet, clinic, lab info
+      const enrichedRequests = await Promise.all(requests.map(async (req) => {
+        const pet = await pets.findOne({ id: req.petId });
+        const clinic = await users.findOne({ id: req.clinicId });
+        const lab = await users.findOne({ id: req.labId });
+        return {
+          ...req,
+          petName: pet?.name || 'Sconosciuto',
+          petSpecies: pet?.species || '',
+          clinicName: clinic?.clinicName || clinic?.name || 'Clinica',
+          labName: lab?.labName || lab?.name || 'Laboratorio'
+        };
+      }));
+      
+      return NextResponse.json(enrichedRequests, { headers: corsHeaders });
+    }
+    
+    // Get single lab request
+    if (path.startsWith('lab-requests/') && !path.includes('/reports')) {
+      const requestId = path.split('/')[1];
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const labRequests = await getCollection('lab_requests');
+      const labReq = await labRequests.findOne({ id: requestId });
+      
+      if (!labReq) {
+        return NextResponse.json({ error: 'Richiesta non trovata' }, { status: 404, headers: corsHeaders });
+      }
+      
+      // Check permission
+      if (user.role === 'clinic' && labReq.clinicId !== user.id) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      if (user.role === 'lab' && labReq.labId !== user.id) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      // Get related data
+      const users = await getCollection('users');
+      const pets = await getCollection('pets');
+      const labReports = await getCollection('lab_reports');
+      
+      const pet = await pets.findOne({ id: labReq.petId });
+      const clinic = await users.findOne({ id: labReq.clinicId });
+      const lab = await users.findOne({ id: labReq.labId });
+      const owner = pet ? await users.findOne({ id: pet.ownerId }) : null;
+      const reports = await labReports.find({ labRequestId: requestId }).sort({ uploadedAt: -1 }).toArray();
+      
+      return NextResponse.json({
+        ...labReq,
+        pet,
+        clinic: { id: clinic?.id, name: clinic?.clinicName || clinic?.name, email: clinic?.email },
+        lab: { id: lab?.id, name: lab?.labName || lab?.name, email: lab?.email },
+        owner: owner ? { id: owner.id, name: owner.name, email: owner.email } : null,
+        reports
+      }, { headers: corsHeaders });
+    }
+    
+    // Get lab reports for a pet (for owner view)
+    if (path.startsWith('pets/') && path.endsWith('/lab-reports')) {
+      const petId = path.split('/')[1];
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const pets = await getCollection('pets');
+      const pet = await pets.findOne({ id: petId });
+      
+      if (!pet) {
+        return NextResponse.json({ error: 'Pet non trovato' }, { status: 404, headers: corsHeaders });
+      }
+      
+      // Check permission
+      if (user.role === 'owner' && pet.ownerId !== user.id) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const labReports = await getCollection('lab_reports');
+      let query = { petId };
+      
+      // Owner can only see reports marked as visible
+      if (user.role === 'owner') {
+        query.visibleToOwner = true;
+      }
+      
+      const reports = await labReports.find(query).sort({ uploadedAt: -1 }).toArray();
+      
+      return NextResponse.json(reports, { headers: corsHeaders });
+    }
+    
+    // ==================== END LAB API - GET ====================
 
     // Get my reviews (owner)
     if (path === 'reviews/my-reviews') {
@@ -3242,6 +3450,389 @@ export async function POST(request, { params }) {
 
       return NextResponse.json({ success: true, message: 'Premio segnato come utilizzato' }, { headers: corsHeaders });
     }
+
+    // ==================== LAB API - POST ====================
+    
+    // Register lab (admin only for now, or self-registration pending approval)
+    if (path === 'labs/register') {
+      const { email, password, labName, address, city, phone, services, description } = body;
+      
+      if (!email || !password || !labName) {
+        return NextResponse.json({ error: 'Email, password e nome laboratorio sono obbligatori' }, { status: 400, headers: corsHeaders });
+      }
+
+      const users = await getCollection('users');
+      const existing = await users.findOne({ email: email.toLowerCase() });
+      
+      if (existing) {
+        return NextResponse.json({ error: 'Email già registrata' }, { status: 400, headers: corsHeaders });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const lab = {
+        id: uuidv4(),
+        email: email.toLowerCase(),
+        password: hashedPassword,
+        role: 'lab',
+        labName,
+        name: labName,
+        address: address || '',
+        city: city || '',
+        phone: phone || '',
+        services: services || [], // Lab services/exam types
+        description: description || '',
+        isApproved: false, // Needs admin approval
+        createdAt: new Date().toISOString()
+      };
+
+      await users.insertOne(lab);
+      const { password: _, ...labWithoutPassword } = lab;
+      return NextResponse.json(labWithoutPassword, { headers: corsHeaders });
+    }
+    
+    // Create lab request (clinic creates request)
+    if (path === 'lab-requests') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Solo le cliniche possono creare richieste di analisi' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { petId, labId, examCategory, examType, examName, title, clinicalNotes, internalNotes, priority, attachments } = body;
+      
+      if (!petId || !labId || !examType) {
+        return NextResponse.json({ error: 'Pet, laboratorio e tipo esame sono obbligatori' }, { status: 400, headers: corsHeaders });
+      }
+
+      // Get pet and owner info
+      const pets = await getCollection('pets');
+      const pet = await pets.findOne({ id: petId });
+      if (!pet) {
+        return NextResponse.json({ error: 'Pet non trovato' }, { status: 404, headers: corsHeaders });
+      }
+
+      // Get lab info
+      const users = await getCollection('users');
+      const lab = await users.findOne({ id: labId, role: 'lab' });
+      if (!lab) {
+        return NextResponse.json({ error: 'Laboratorio non trovato' }, { status: 404, headers: corsHeaders });
+      }
+
+      const labRequests = await getCollection('lab_requests');
+      
+      const labRequest = {
+        id: uuidv4(),
+        petId,
+        petName: pet.name,
+        petSpecies: pet.species,
+        ownerId: pet.ownerId,
+        clinicId: user.id,
+        labId,
+        veterinarianId: user.id, // For now, same as clinic
+        examCategory: examCategory || '',
+        examType,
+        examName: examName || examType,
+        title: title || `Analisi ${examName || examType}`,
+        clinicalNotes: clinicalNotes || '',
+        internalNotes: internalNotes || '', // Notes between clinic and lab only
+        priority: priority || 'normal', // 'urgent', 'normal', 'low'
+        status: 'pending',
+        sampleCode: `SC-${Date.now().toString(36).toUpperCase()}`,
+        attachments: attachments || [], // Array of { name, url, type }
+        statusHistory: [{
+          status: 'pending',
+          note: 'Richiesta creata',
+          updatedBy: user.id,
+          updatedByName: user.clinicName || user.name,
+          updatedAt: new Date().toISOString()
+        }],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      await labRequests.insertOne(labRequest);
+
+      // Notify lab via email
+      try {
+        if (lab.email) {
+          const clinic = await users.findOne({ id: user.id });
+          await sendEmail({
+            to: lab.email,
+            subject: `🧪 Nuova richiesta analisi da ${clinic?.clinicName || 'Clinica'}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 25px; border-radius: 10px 10px 0 0; text-align: center;">
+                  <h1 style="color: white; margin: 0; font-size: 24px;">🧪 Nuova Richiesta Analisi</h1>
+                </div>
+                <div style="padding: 30px; background: #f9fafb;">
+                  <p style="color: #374151; font-size: 16px;">Hai ricevuto una nuova richiesta di analisi.</p>
+                  
+                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #6366f1;">
+                    <p style="margin: 5px 0;"><strong>Clinica:</strong> ${clinic?.clinicName || 'N/A'}</p>
+                    <p style="margin: 5px 0;"><strong>Paziente:</strong> ${pet.name} (${pet.species})</p>
+                    <p style="margin: 5px 0;"><strong>Esame:</strong> ${examName || examType}</p>
+                    <p style="margin: 5px 0;"><strong>Priorità:</strong> ${priority === 'urgent' ? '🔴 URGENTE' : priority === 'low' ? '🟢 Bassa' : '🟡 Normale'}</p>
+                    <p style="margin: 5px 0;"><strong>Codice campione:</strong> <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">${labRequest.sampleCode}</code></p>
+                  </div>
+                  
+                  ${clinicalNotes ? `<p style="color: #374151;"><strong>Note cliniche:</strong><br/>${clinicalNotes}</p>` : ''}
+                  
+                  <p style="color: #6b7280; font-size: 14px; margin-top: 20px;">Accedi alla tua dashboard per gestire la richiesta.</p>
+                </div>
+                <div style="background: #1f2937; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="color: #9ca3af; margin: 0; font-size: 12px;">© 2025 vetbuddy - Sistema Analisi Laboratorio</p>
+                </div>
+              </div>
+            `
+          });
+        }
+      } catch (emailErr) {
+        console.error('Error sending lab request notification:', emailErr);
+      }
+
+      return NextResponse.json(labRequest, { headers: corsHeaders });
+    }
+    
+    // Update lab request status (lab updates)
+    if (path === 'lab-requests/update-status') {
+      const user = getUserFromRequest(request);
+      if (!user || (user.role !== 'lab' && user.role !== 'admin')) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { requestId, status, note, sampleCode } = body;
+      
+      if (!requestId || !status) {
+        return NextResponse.json({ error: 'ID richiesta e stato sono obbligatori' }, { status: 400, headers: corsHeaders });
+      }
+
+      const labRequests = await getCollection('lab_requests');
+      const labRequest = await labRequests.findOne({ id: requestId });
+      
+      if (!labRequest) {
+        return NextResponse.json({ error: 'Richiesta non trovata' }, { status: 404, headers: corsHeaders });
+      }
+
+      if (user.role === 'lab' && labRequest.labId !== user.id) {
+        return NextResponse.json({ error: 'Non autorizzato per questa richiesta' }, { status: 401, headers: corsHeaders });
+      }
+
+      const statusEntry = {
+        status,
+        note: note || '',
+        updatedBy: user.id,
+        updatedByName: user.labName || user.name,
+        updatedAt: new Date().toISOString()
+      };
+
+      const updateData = {
+        status,
+        updatedAt: new Date().toISOString()
+      };
+      
+      if (sampleCode) {
+        updateData.sampleCode = sampleCode;
+      }
+
+      await labRequests.updateOne(
+        { id: requestId },
+        { 
+          $set: updateData,
+          $push: { statusHistory: statusEntry }
+        }
+      );
+
+      // Notify clinic about status change
+      try {
+        const users = await getCollection('users');
+        const clinic = await users.findOne({ id: labRequest.clinicId });
+        const lab = await users.findOne({ id: labRequest.labId });
+        
+        if (clinic?.email) {
+          const statusLabel = LAB_REQUEST_STATUSES.find(s => s.id === status)?.name || status;
+          await sendEmail({
+            to: clinic.email,
+            subject: `🧪 Aggiornamento analisi: ${statusLabel}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 25px; text-align: center;">
+                  <h1 style="color: white; margin: 0;">🧪 Aggiornamento Analisi</h1>
+                </div>
+                <div style="padding: 30px; background: #f9fafb;">
+                  <p style="color: #374151;">Il laboratorio <strong>${lab?.labName || 'Laboratorio'}</strong> ha aggiornato lo stato della richiesta.</p>
+                  
+                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+                    <p style="font-size: 18px; color: #6366f1; margin: 0;"><strong>${statusLabel}</strong></p>
+                    ${note ? `<p style="color: #6b7280; margin-top: 10px;">${note}</p>` : ''}
+                  </div>
+                  
+                  <p style="color: #6b7280; font-size: 14px;"><strong>Paziente:</strong> ${labRequest.petName}</p>
+                  <p style="color: #6b7280; font-size: 14px;"><strong>Esame:</strong> ${labRequest.examName}</p>
+                </div>
+              </div>
+            `
+          });
+        }
+      } catch (emailErr) {
+        console.error('Error sending status update notification:', emailErr);
+      }
+
+      const updated = await labRequests.findOne({ id: requestId });
+      return NextResponse.json(updated, { headers: corsHeaders });
+    }
+    
+    // Upload lab report (lab uploads PDF)
+    if (path === 'lab-reports') {
+      const user = getUserFromRequest(request);
+      if (!user || (user.role !== 'lab' && user.role !== 'admin')) {
+        return NextResponse.json({ error: 'Solo i laboratori possono caricare referti' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { labRequestId, fileName, fileContent, reportNotes, visibleToOwner, notifyOwner } = body;
+      
+      if (!labRequestId || !fileContent) {
+        return NextResponse.json({ error: 'Richiesta e file sono obbligatori' }, { status: 400, headers: corsHeaders });
+      }
+
+      const labRequests = await getCollection('lab_requests');
+      const labRequest = await labRequests.findOne({ id: labRequestId });
+      
+      if (!labRequest) {
+        return NextResponse.json({ error: 'Richiesta non trovata' }, { status: 404, headers: corsHeaders });
+      }
+
+      if (user.role === 'lab' && labRequest.labId !== user.id) {
+        return NextResponse.json({ error: 'Non autorizzato per questa richiesta' }, { status: 401, headers: corsHeaders });
+      }
+
+      const labReports = await getCollection('lab_reports');
+      
+      const report = {
+        id: uuidv4(),
+        labRequestId,
+        petId: labRequest.petId,
+        ownerId: labRequest.ownerId,
+        clinicId: labRequest.clinicId,
+        labId: labRequest.labId,
+        examType: labRequest.examType,
+        examName: labRequest.examName,
+        fileName: fileName || `Referto_${labRequest.sampleCode}.pdf`,
+        fileContent, // Base64 PDF content
+        reportNotes: reportNotes || '',
+        visibleToOwner: visibleToOwner === true,
+        uploadedBy: user.id,
+        uploadedByName: user.labName || user.name,
+        uploadedAt: new Date().toISOString()
+      };
+
+      await labReports.insertOne(report);
+
+      // Update lab request status to report_ready
+      await labRequests.updateOne(
+        { id: labRequestId },
+        { 
+          $set: { 
+            status: 'report_ready', 
+            updatedAt: new Date().toISOString() 
+          },
+          $push: { 
+            statusHistory: {
+              status: 'report_ready',
+              note: 'Referto caricato',
+              updatedBy: user.id,
+              updatedByName: user.labName || user.name,
+              updatedAt: new Date().toISOString()
+            }
+          }
+        }
+      );
+
+      // Notify clinic
+      try {
+        const users = await getCollection('users');
+        const clinic = await users.findOne({ id: labRequest.clinicId });
+        const lab = await users.findOne({ id: labRequest.labId });
+        
+        if (clinic?.email) {
+          await sendEmail({
+            to: clinic.email,
+            subject: `🧪 Referto pronto: ${labRequest.examName}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 25px; text-align: center;">
+                  <h1 style="color: white; margin: 0;">✅ Referto Disponibile</h1>
+                </div>
+                <div style="padding: 30px; background: #f9fafb;">
+                  <p style="color: #374151;">Il referto è stato caricato ed è disponibile nella dashboard.</p>
+                  
+                  <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #10b981;">
+                    <p style="margin: 5px 0;"><strong>Laboratorio:</strong> ${lab?.labName || 'Laboratorio'}</p>
+                    <p style="margin: 5px 0;"><strong>Paziente:</strong> ${labRequest.petName}</p>
+                    <p style="margin: 5px 0;"><strong>Esame:</strong> ${labRequest.examName}</p>
+                  </div>
+                  
+                  ${reportNotes ? `<p style="color: #374151;"><strong>Note:</strong><br/>${reportNotes}</p>` : ''}
+                </div>
+              </div>
+            `
+          });
+        }
+
+        // Notify owner if requested and allowed
+        if (notifyOwner && visibleToOwner) {
+          const owner = await users.findOne({ id: labRequest.ownerId });
+          if (owner?.email) {
+            await sendEmail({
+              to: owner.email,
+              subject: `🐾 Nuovo referto disponibile per ${labRequest.petName}`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <div style="background: linear-gradient(135deg, #FF6B6B, #f97316); padding: 25px; text-align: center;">
+                    <h1 style="color: white; margin: 0;">🐾 Nuovo Referto</h1>
+                  </div>
+                  <div style="padding: 30px; background: #f9fafb;">
+                    <p style="color: #374151;">Un nuovo referto per <strong>${labRequest.petName}</strong> è disponibile.</p>
+                    
+                    <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                      <p style="margin: 5px 0;"><strong>Esame:</strong> ${labRequest.examName}</p>
+                      <p style="margin: 5px 0;"><strong>Data:</strong> ${new Date().toLocaleDateString('it-IT')}</p>
+                    </div>
+                    
+                    <p style="color: #6b7280; font-size: 14px;">Accedi alla tua area personale per visualizzare il referto completo.</p>
+                  </div>
+                </div>
+              `
+            });
+          }
+        }
+      } catch (emailErr) {
+        console.error('Error sending report notifications:', emailErr);
+      }
+
+      return NextResponse.json(report, { headers: corsHeaders });
+    }
+    
+    // Admin: Approve lab
+    if (path === 'admin/labs/approve') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'admin') {
+        return NextResponse.json({ error: 'Solo admin possono approvare laboratori' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { labId } = body;
+      if (!labId) {
+        return NextResponse.json({ error: 'ID laboratorio obbligatorio' }, { status: 400, headers: corsHeaders });
+      }
+
+      const users = await getCollection('users');
+      await users.updateOne(
+        { id: labId, role: 'lab' },
+        { $set: { isApproved: true, approvedAt: new Date().toISOString(), approvedBy: user.id } }
+      );
+
+      return NextResponse.json({ success: true, message: 'Laboratorio approvato' }, { headers: corsHeaders });
+    }
+    
+    // ==================== END LAB API - POST ====================
 
     return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
   } catch (error) {
