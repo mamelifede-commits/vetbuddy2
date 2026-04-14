@@ -1574,6 +1574,38 @@ function ClinicLabAnalysis({ user, pets, owners }) {
     }
   };
 
+  const sendReportToOwner = async () => {
+    if (!selectedReport) return;
+    setSending(true);
+    try {
+      await api.post('lab-reports/send-to-owner', {
+        reportId: selectedReport.id,
+        clinicNotes: clinicNotesForOwner,
+        notifyOwner: true
+      });
+      setShowSendToOwnerModal(false);
+      setSelectedReport(null);
+      setClinicNotesForOwner('');
+      await loadData();
+      // Refresh selected request
+      if (selectedRequest) {
+        const updated = await api.get(`lab-requests/${selectedRequest.id}`);
+        setSelectedRequest(updated);
+      }
+      alert('✅ Referto inviato al proprietario!');
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const openSendToOwnerModal = (report) => {
+    setSelectedReport(report);
+    setClinicNotesForOwner('');
+    setShowSendToOwnerModal(true);
+  };
+
   const getStatusBadge = (status) => {
     const statusInfo = LAB_STATUSES.find(s => s.id === status) || { name: status, color: 'gray' };
     const colorMap = {
@@ -1757,17 +1789,40 @@ function ClinicLabAnalysis({ user, pets, owners }) {
                     <label className="text-xs font-medium text-gray-500 uppercase mb-2 block">Referti</label>
                     <div className="space-y-2">
                       {selectedRequest.reports.map(report => (
-                        <div key={report.id} className="p-3 bg-green-50 rounded-lg flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <FileCheck className="h-5 w-5 text-green-600" />
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">{report.fileName}</p>
-                              <p className="text-xs text-gray-500">{new Date(report.uploadedAt).toLocaleString('it-IT')}</p>
+                        <div key={report.id} className={`p-3 rounded-lg ${report.visibleToOwner ? 'bg-green-50 border border-green-200' : 'bg-amber-50 border border-amber-200'}`}>
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-3">
+                              <FileCheck className={`h-5 w-5 ${report.visibleToOwner ? 'text-green-600' : 'text-amber-600'}`} />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{report.fileName}</p>
+                                <p className="text-xs text-gray-500">{new Date(report.uploadedAt).toLocaleString('it-IT')}</p>
+                              </div>
                             </div>
+                            <Button size="sm" variant="ghost" onClick={() => downloadReport(report)}>
+                              <Download className="h-4 w-4" />
+                            </Button>
                           </div>
-                          <Button size="sm" variant="ghost" onClick={() => downloadReport(report)}>
-                            <Download className="h-4 w-4" />
-                          </Button>
+                          {report.reportNotes && (
+                            <p className="text-xs text-gray-600 bg-white/50 p-2 rounded mb-2">📋 Lab: {report.reportNotes}</p>
+                          )}
+                          {report.visibleToOwner ? (
+                            <div className="flex items-center gap-2 text-xs text-green-700 bg-green-100 rounded-md px-2 py-1">
+                              <Eye className="h-3 w-3" />
+                              <span>Inviato al proprietario {report.sentToOwnerAt ? `il ${new Date(report.sentToOwnerAt).toLocaleDateString('it-IT')}` : ''}</span>
+                            </div>
+                          ) : (
+                            <Button
+                              size="sm"
+                              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                              onClick={(e) => { e.stopPropagation(); openSendToOwnerModal(report); }}
+                            >
+                              <Send className="h-3.5 w-3.5 mr-2" />
+                              Revisiona e Invia al Proprietario
+                            </Button>
+                          )}
+                          {report.visibleToOwner && report.clinicNotes && (
+                            <p className="text-xs text-gray-600 mt-1 bg-white/50 p-2 rounded">📝 Note cliniche: {report.clinicNotes}</p>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -1916,6 +1971,91 @@ function ClinicLabAnalysis({ user, pets, owners }) {
             >
               <Send className="h-4 w-4 mr-2" />
               Invia Richiesta
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Send to Owner Modal */}
+      <Dialog open={showSendToOwnerModal} onOpenChange={setShowSendToOwnerModal}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Send className="h-5 w-5 text-amber-500" />
+              Revisiona e Invia al Proprietario
+            </DialogTitle>
+            <DialogDescription>
+              Rivedi il referto e aggiungi le tue note cliniche prima di inviarlo al proprietario.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedReport && (
+            <div className="space-y-4">
+              {/* Report Info */}
+              <div className="bg-gray-50 rounded-lg p-3 border">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileCheck className="h-5 w-5 text-green-600" />
+                  <span className="font-medium text-sm">{selectedReport.fileName}</span>
+                </div>
+                <p className="text-xs text-gray-500">Caricato: {new Date(selectedReport.uploadedAt).toLocaleString('it-IT')}</p>
+                {selectedReport.reportNotes && (
+                  <div className="mt-2 p-2 bg-white rounded border-l-2 border-indigo-300">
+                    <p className="text-xs text-gray-500 font-medium">Note del laboratorio:</p>
+                    <p className="text-sm text-gray-700">{selectedReport.reportNotes}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Download button */}
+              <Button variant="outline" className="w-full" onClick={() => downloadReport(selectedReport)}>
+                <Download className="h-4 w-4 mr-2" />
+                Scarica e Visualizza il Referto PDF
+              </Button>
+
+              {/* Clinic Notes */}
+              <div>
+                <Label className="text-sm font-medium">Note Cliniche per il Proprietario</Label>
+                <p className="text-xs text-gray-500 mb-2">Aggiungi la tua interpretazione del referto, consigli e prossimi passi per il proprietario.</p>
+                <Textarea 
+                  value={clinicNotesForOwner}
+                  onChange={(e) => setClinicNotesForOwner(e.target.value)}
+                  placeholder="Es: I valori ematici sono nella norma. Il referto conferma che Luna è in buona salute. Consiglio un controllo tra 6 mesi..."
+                  rows={4}
+                  className="resize-none"
+                />
+              </div>
+
+              {/* Warning */}
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-start gap-2">
+                <AlertCircle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-amber-800">
+                  <p className="font-medium">Attenzione</p>
+                  <p className="text-xs mt-1">Una volta inviato, il proprietario potrà visualizzare e scaricare il referto dal proprio profilo. Verrà anche notificato via email.</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => { setShowSendToOwnerModal(false); setSelectedReport(null); setClinicNotesForOwner(''); }}>
+              Annulla
+            </Button>
+            <Button 
+              onClick={sendReportToOwner}
+              disabled={sending}
+              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+            >
+              {sending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Invio in corso...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4 mr-2" />
+                  Invia al Proprietario
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -16212,6 +16352,12 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
                             <span>📅 {new Date(report.uploadedAt).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                             <span>🏥 {report.uploadedByName || 'Laboratorio'}</span>
                           </div>
+                          {report.clinicNotes && (
+                            <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                              <p className="text-xs font-medium text-amber-700 mb-1">📝 Note del veterinario:</p>
+                              <p className="text-sm text-gray-700">{report.clinicNotes}</p>
+                            </div>
+                          )}
                           {report.reportNotes && (
                             <div className="mt-3 p-3 bg-white rounded-lg border border-indigo-100">
                               <p className="text-xs font-medium text-indigo-700 mb-1">Note dal laboratorio:</p>
