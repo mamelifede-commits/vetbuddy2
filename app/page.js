@@ -344,6 +344,7 @@ function FullLandingPage({ onLogin }) {
               <button onClick={() => scrollToSection('fatturazione')} className="text-gray-600 hover:text-coral-500 transition">Fatturazione</button>
               <button onClick={() => scrollToSection('premi')} className="text-gray-600 hover:text-coral-500 transition">Premi</button>
               <button onClick={() => scrollToSection('pilot')} className="text-gray-600 hover:text-coral-500 transition">Prezzi</button>
+              <button onClick={() => scrollToSection('lab-marketplace')} className="text-purple-600 hover:text-purple-700 font-medium transition">🧪 Lab</button>
               <a href="/presentazione" className="text-gray-600 hover:text-coral-500 transition">Brochure</a>
             </nav>
             <div className="hidden md:flex items-center gap-4">
@@ -361,6 +362,7 @@ function FullLandingPage({ onLogin }) {
               <button onClick={() => { scrollToSection('fatturazione'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Fatturazione</button>
               <button onClick={() => { scrollToSection('premi'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Premi</button>
               <button onClick={() => { scrollToSection('pilot'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Prezzi</button>
+              <button onClick={() => { scrollToSection('lab-marketplace'); setMobileMenuOpen(false); }} className="text-purple-600 text-left py-2 hover:text-purple-700 font-medium transition">🧪 Laboratori</button>
               <a href="/presentazione" className="text-gray-600 text-left py-2 hover:text-coral-500 transition block">Brochure</a>
               <hr className="my-2" />
               <Button variant="ghost" className="justify-start" onClick={() => { setAuthMode('login'); setShowAuth(true); setMobileMenuOpen(false); }}>Accedi</Button>
@@ -599,6 +601,124 @@ function FullLandingPage({ onLogin }) {
             
             {/* Google Maps Interattiva */}
             <HomepageMapSection />
+          </div>
+        </div>
+      </section>
+
+      {/* MARKETPLACE LABORATORI - NEW */}
+      <section className="py-16 px-4 bg-gradient-to-br from-purple-50 via-white to-indigo-50/30 overflow-hidden" id="lab-marketplace">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full mb-4">
+              <FlaskConical className="h-4 w-4" />
+              <span className="font-medium">Novità</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Marketplace <span className="text-purple-500">Laboratori di Analisi</span>
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Connetti la tua clinica con i migliori laboratori di analisi veterinarie. Confronta prezzi, tempi di refertazione e servizi offerti.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Illustrazione Marketplace */}
+            <div className="relative">
+              <div className="bg-gradient-to-br from-purple-100 via-indigo-50 to-blue-50 rounded-2xl shadow-lg border border-purple-200 p-8 relative overflow-hidden">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white rounded-xl p-4 shadow-sm border border-purple-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="h-8 w-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                        <FlaskConical className="h-4 w-4 text-white" />
+                      </div>
+                      <span className="font-semibold text-sm">VetLab Milano</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mb-2">Ematologia • Biochimica</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-green-600 font-medium">da €25</span>
+                      <span className="text-xs text-blue-600">24-48h</span>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-xl p-4 shadow-sm border border-indigo-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="h-8 w-8 bg-indigo-500 rounded-lg flex items-center justify-center">
+                        <FlaskConical className="h-4 w-4 text-white" />
+                      </div>
+                      <span className="font-semibold text-sm">BioVet Roma</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mb-2">Citologia • Istologia</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-green-600 font-medium">da €45</span>
+                      <span className="text-xs text-blue-600">48-72h</span>
+                    </div>
+                  </div>
+                  <div className="col-span-2 bg-white/80 rounded-xl p-4 border border-purple-100">
+                    <div className="flex items-center gap-3">
+                      <div className="flex -space-x-2">
+                        <div className="h-8 w-8 bg-purple-400 rounded-full border-2 border-white flex items-center justify-center"><FlaskConical className="h-3 w-3 text-white" /></div>
+                        <div className="h-8 w-8 bg-indigo-400 rounded-full border-2 border-white flex items-center justify-center"><FlaskConical className="h-3 w-3 text-white" /></div>
+                        <div className="h-8 w-8 bg-violet-400 rounded-full border-2 border-white flex items-center justify-center"><FlaskConical className="h-3 w-3 text-white" /></div>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">Lab partner in crescita</p>
+                        <p className="text-xs text-gray-500">Trova il laboratorio ideale per la tua clinica</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Info */}
+            <div>
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start gap-4">
+                  <div className="h-10 w-10 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Search className="h-5 w-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">Cerca e Confronta</h4>
+                    <p className="text-sm text-gray-600">Filtra per tipo di esame, città, tempi di refertazione, servizio di ritiro campioni e prezzi indicativi.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="h-10 w-10 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Link2 className="h-5 w-5 text-indigo-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">Collegamento Diretto</h4>
+                    <p className="text-sm text-gray-600">Richiedi un collegamento al laboratorio. Una volta accettato, invia richieste di analisi direttamente dalla dashboard.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="h-10 w-10 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <FileCheck className="h-5 w-5 text-green-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">Referti Digitali con Revisione</h4>
+                    <p className="text-sm text-gray-600">I referti arrivano in piattaforma. Li revisioni, aggiungi note cliniche e li invii al proprietario con un click.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="h-10 w-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Euro className="h-5 w-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">Prezzi Trasparenti</h4>
+                    <p className="text-sm text-gray-600">Ogni laboratorio pubblica il suo listino prezzi indicativo. Confronta e scegli il partner ideale per la tua clinica.</p>
+                  </div>
+                </li>
+              </ul>
+
+              <div className="flex gap-3">
+                <Button className="bg-purple-500 hover:bg-purple-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
+                  Esplora il Marketplace →
+                </Button>
+                <Button variant="outline" className="border-purple-200 text-purple-600 hover:bg-purple-50" onClick={() => { setAuthMode('register-lab'); setShowAuth(true); }}>
+                  Registra il tuo Lab
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1322,95 +1442,115 @@ function FullLandingPage({ onLogin }) {
             </div>
           </div>
 
-          {/* Pricing Cards - Pilot Coherence */}
+          {/* Pricing Cards - Updated with Lab Partner */}
           <p className="text-center text-sm text-gray-600 mb-10">Piani disponibili solo tramite Pilot (su invito). Prezzi IVA esclusa.</p>
           
-          <div className="grid md:grid-cols-3 gap-6 mb-4">
-            {/* Starter - Piano base con automazioni essenziali */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-4">
+            {/* Starter Clinica */}
             <Card className="border-2 border-green-200 hover:border-green-300 transition-colors relative flex flex-col">
-              {/* Badge Freelance */}
-              <div className="absolute -top-3 left-4 bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">👨‍⚕️ IDEALE PER FREELANCE</div>
-              <CardHeader className="pt-6 pb-4">
-                <CardTitle className="flex items-center gap-2">Starter <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">GRATUITO</span></CardTitle>
-                <CardDescription>Per iniziare con le automazioni essenziali</CardDescription>
-                <div className="mt-4">
-                  <span className="text-3xl font-bold text-green-600">Gratis</span>
-                  <p className="text-xs text-gray-500 mt-1">per sempre – su invito Pilot Milano</p>
+              <CardHeader className="pt-6 pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">Starter Clinica <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">GRATIS</span></CardTitle>
+                <CardDescription className="text-xs">Per iniziare con le basi</CardDescription>
+                <div className="mt-3">
+                  <span className="text-2xl font-bold text-green-600">Gratis</span>
+                  <p className="text-xs text-gray-500 mt-1">per sempre – su invito</p>
                 </div>
               </CardHeader>
               <CardContent className="flex flex-col flex-1 pt-0">
-                <p className="text-xs font-medium text-gray-700 mb-3">Include:</p>
-                <ul className="space-y-2 text-sm mb-6">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>1 sede, 1 utente</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span className="underline decoration-purple-300 decoration-2">Fino a 50 pazienti</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Agenda base</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Posizione su mappa</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span><strong>5 Automazioni base</strong></span></li>
-                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300 flex-shrink-0" /> <span>Team Inbox</span></li>
-                  <li className="flex items-center gap-2 text-gray-400"><X className="h-4 w-4 text-gray-300 flex-shrink-0" /> <span>Report avanzati</span></li>
+                <ul className="space-y-1.5 text-xs mb-4">
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>1 sede, 1 utente</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Fino a 50 pazienti</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Agenda base</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>5 Automazioni base</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Posizione su mappa</span></li>
+                  <li className="flex items-center gap-2 text-gray-400"><X className="h-3.5 w-3.5 text-gray-300 flex-shrink-0" /> <span>Team Inbox</span></li>
+                  <li className="flex items-center gap-2 text-gray-400"><X className="h-3.5 w-3.5 text-gray-300 flex-shrink-0" /> <span>Marketplace Lab</span></li>
                 </ul>
-                <div className="mt-auto pt-4 border-t">
-                  <Button className="w-full bg-green-500 hover:bg-green-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi Invito →</Button>
-                  <p className="text-xs text-gray-500 mt-3 text-center">Nessuna carta richiesta</p>
+                <div className="mt-auto pt-3 border-t">
+                  <Button className="w-full bg-green-500 hover:bg-green-600 text-sm" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi Invito →</Button>
                 </div>
               </CardContent>
             </Card>
             
-            {/* Pilot - Piano principale (Pro) */}
-            <Card className="border-2 border-coral-500 relative shadow-lg scale-105 flex flex-col">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">⭐ PILOT MILANO</div>
-              <CardHeader className="pt-6 pb-4">
-                <CardTitle className="text-coral-500">Pro</CardTitle>
-                <CardDescription>Per cliniche che vogliono crescere</CardDescription>
-                <div className="mt-4">
-                  <span className="text-3xl font-bold text-coral-500">€0</span>
-                  <span className="text-lg text-gray-400 line-through ml-2">€129/mese</span>
+            {/* Pro Clinica */}
+            <Card className="border-2 border-coral-500 relative shadow-lg flex flex-col">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">⭐ PIÙ POPOLARE</div>
+              <CardHeader className="pt-6 pb-3">
+                <CardTitle className="text-base text-coral-500">Pro Clinica</CardTitle>
+                <CardDescription className="text-xs">Per cliniche che vogliono crescere</CardDescription>
+                <div className="mt-3">
+                  <span className="text-2xl font-bold text-coral-500">€49</span><span className="text-sm text-gray-500">/mese</span>
+                  <p className="text-xs text-coral-600 mt-1 font-medium">🎁 90 giorni gratis nel Pilot</p>
                 </div>
               </CardHeader>
               <CardContent className="flex flex-col flex-1 pt-0">
-                <p className="text-xs font-medium text-gray-700 mb-3">Include tutto di Starter più:</p>
-                <ul className="space-y-2 text-sm mb-6">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Fino a 5 utenti staff</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Pazienti illimitati</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span><strong>20 Automazioni</strong></span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Team Inbox + ticket</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Documenti + invio email</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Google Calendar sync</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /> <span>Report settimanali</span></li>
+                <ul className="space-y-1.5 text-xs mb-4">
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Fino a 5 utenti staff</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Pazienti illimitati</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>20 Automazioni</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Team Inbox + ticket</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span><strong>Marketplace Lab</strong></span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Report settimanali</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Documenti + email</span></li>
                 </ul>
-                <div className="mt-auto pt-4 border-t">
-                  <Button className="w-full bg-coral-500 hover:bg-coral-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-                    Richiedi Invito →
-                  </Button>
-                  <p className="text-xs text-gray-500 mt-3 text-center">Dopo il Pilot: €129/mese + IVA</p>
+                <div className="mt-auto pt-3 border-t">
+                  <Button className="w-full bg-coral-500 hover:bg-coral-600 text-sm" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi Invito →</Button>
+                  <p className="text-xs text-gray-500 mt-2 text-center">Dopo il Pilot: €49/mese + IVA</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Laboratorio Partner */}
+            <Card className="border-2 border-purple-300 hover:border-purple-400 transition-colors relative flex flex-col bg-gradient-to-b from-white to-purple-50/50">
+              <div className="absolute -top-3 left-4 bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">🧪 PER LABORATORI</div>
+              <CardHeader className="pt-6 pb-3">
+                <CardTitle className="flex items-center gap-2 text-base text-purple-700">Lab Partner</CardTitle>
+                <CardDescription className="text-xs">Per laboratori di analisi veterinarie</CardDescription>
+                <div className="mt-3">
+                  <span className="text-2xl font-bold text-purple-600">€29</span><span className="text-sm text-gray-500">/mese</span>
+                  <p className="text-xs text-purple-600 mt-1 font-medium">🎁 6 mesi gratis (o 50 richieste)</p>
+                </div>
+              </CardHeader>
+              <CardContent className="flex flex-col flex-1 pt-0">
+                <ul className="space-y-1.5 text-xs mb-4">
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-purple-500 flex-shrink-0" /> <span>Profilo nel marketplace</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-purple-500 flex-shrink-0" /> <span>Listino prezzi pubblico</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-purple-500 flex-shrink-0" /> <span>Connessioni con cliniche</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-purple-500 flex-shrink-0" /> <span>Dashboard richieste</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-purple-500 flex-shrink-0" /> <span>Upload referti PDF</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-purple-500 flex-shrink-0" /> <span>Notifiche automatiche</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-purple-500 flex-shrink-0" /> <span>Statistiche richieste</span></li>
+                </ul>
+                <div className="mt-auto pt-3 border-t">
+                  <Button className="w-full bg-purple-600 hover:bg-purple-700 text-sm" onClick={() => { setAuthMode('register-lab'); setShowAuth(true); }}>Registra il tuo Lab →</Button>
+                  <p className="text-xs text-gray-500 mt-2 text-center">Dopo i 6 mesi: €29/mese + IVA</p>
                 </div>
               </CardContent>
             </Card>
             
-            {/* Custom - Piano enterprise */}
-            <Card className="border-2 border-purple-300 bg-gradient-to-br from-white to-purple-50 flex flex-col">
-              <CardHeader className="pt-6 pb-4">
-                <CardTitle className="text-purple-700">Custom</CardTitle>
-                <CardDescription>Per cliniche che vogliono il massimo</CardDescription>
-                <div className="mt-4">
-                  <span className="text-3xl font-bold text-purple-600">Su misura</span>
-                  <p className="text-xs text-purple-500 mt-1">Contattaci per un preventivo</p>
+            {/* Enterprise */}
+            <Card className="border-2 border-gray-300 flex flex-col">
+              <CardHeader className="pt-6 pb-3">
+                <CardTitle className="text-base text-gray-700">Enterprise</CardTitle>
+                <CardDescription className="text-xs">Per grandi cliniche e catene</CardDescription>
+                <div className="mt-3">
+                  <span className="text-2xl font-bold text-gray-600">Custom</span>
+                  <p className="text-xs text-gray-500 mt-1">Contattaci per un preventivo</p>
                 </div>
               </CardHeader>
               <CardContent className="flex flex-col flex-1 pt-0">
-                <p className="text-xs font-medium text-gray-700 mb-3">Include tutto di Pro più:</p>
-                <ul className="space-y-2 text-sm mb-6">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>Utenti illimitati</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>Multi-sede</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span><strong>44+ Automazioni complete</strong></span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>WhatsApp Business</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>API dedicata</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>SLA garantito 99.9%</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500 flex-shrink-0" /> <span>Onboarding dedicato</span></li>
+                <ul className="space-y-1.5 text-xs mb-4">
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>Utenti illimitati</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>Multi-sede</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>44+ Automazioni</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>WhatsApp Business</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>API dedicata</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>SLA garantito 99.9%</span></li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>Onboarding dedicato</span></li>
                 </ul>
-                <div className="mt-auto pt-4 border-t">
-                  <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => scrollToSection('contatti')}>Richiedi Invito →</Button>
-                  <p className="text-xs text-gray-500 mt-3 text-center">Prezzi IVA esclusa</p>
+                <div className="mt-auto pt-3 border-t">
+                  <Button className="w-full bg-gray-700 hover:bg-gray-800 text-sm" onClick={() => scrollToSection('contatti')}>Contattaci →</Button>
+                  <p className="text-xs text-gray-500 mt-2 text-center">Prezzi IVA esclusa</p>
                 </div>
               </CardContent>
             </Card>

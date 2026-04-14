@@ -42,13 +42,21 @@ function ClinicLabAnalysis({ user, pets, owners }) {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [requests, labsList, types] = await Promise.all([
+      const [requests, connectedData, labsList, types] = await Promise.all([
         api.get('lab-requests'),
+        api.get('clinic/connected-labs').catch(() => []),
         api.get('labs'),
         api.get('lab/exam-types')
       ]);
       setLabRequests(requests || []);
-      setLabs(labsList || []);
+      // Prioritize connected labs, then show all
+      const connectedLabIds = (connectedData || []).filter(c => c.status === 'active').map(c => c.labId);
+      const allLabs = labsList || [];
+      const sorted = [
+        ...allLabs.filter(l => connectedLabIds.includes(l.id)),
+        ...allLabs.filter(l => !connectedLabIds.includes(l.id))
+      ];
+      setLabs(sorted);
       setExamTypes(types || {});
     } catch (error) {
       console.error('Error loading lab data:', error);

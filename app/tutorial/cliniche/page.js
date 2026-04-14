@@ -387,6 +387,45 @@ export default function TutorialCliniche() {
         </div>
       </section>
 
+      {/* LAB MARKETPLACE SECTION */}
+      <section className="py-12 px-4 bg-gradient-to-b from-purple-50 to-white">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-3 flex items-center justify-center gap-2">
+            🧪 Marketplace Laboratori
+          </h2>
+          <p className="text-center text-gray-600 mb-8">Trova e connetti laboratori di analisi veterinarie direttamente dalla tua dashboard.</p>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-xl p-6 border border-purple-200 shadow-sm">
+              <h3 className="font-bold text-purple-700 mb-3">Come trovare un laboratorio:</h3>
+              <ol className="space-y-2 text-sm text-gray-700 list-decimal pl-4">
+                <li>Vai su <strong>"Marketplace Lab"</strong> nella sidebar</li>
+                <li>Usa i filtri: città, tipo esame, ritiro campioni</li>
+                <li>Clicca su un laboratorio per vederne il profilo completo</li>
+                <li>Consulta il <strong>listino prezzi indicativo</strong></li>
+                <li>Clicca <strong>"Richiedi Collegamento"</strong></li>
+              </ol>
+            </div>
+            <div className="bg-white rounded-xl p-6 border border-purple-200 shadow-sm">
+              <h3 className="font-bold text-purple-700 mb-3">Come inviare una richiesta di analisi:</h3>
+              <ol className="space-y-2 text-sm text-gray-700 list-decimal pl-4">
+                <li>Vai su <strong>"Analisi Lab"</strong> nella sidebar</li>
+                <li>Clicca <strong>"+ Nuova Richiesta"</strong></li>
+                <li>Seleziona un laboratorio collegato, paziente e tipo esame</li>
+                <li>Il lab riceve la richiesta e aggiorna lo stato</li>
+                <li>Quando il referto è pronto, lo revisioni e lo invii al proprietario</li>
+              </ol>
+            </div>
+          </div>
+          
+          <div className="mt-6 bg-purple-50 rounded-lg p-4 border border-purple-200 text-center">
+            <p className="text-sm text-purple-700">
+              💡 <strong>Puoi anche invitare un laboratorio non ancora registrato</strong> tramite il pulsante "Invita Lab" nel marketplace. Il lab riceverà un'email con le istruzioni.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="py-12 px-4 bg-white">
         <div className="max-w-4xl mx-auto">

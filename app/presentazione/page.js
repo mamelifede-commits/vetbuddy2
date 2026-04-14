@@ -344,6 +344,34 @@ export default function PresentazionePage() {
               items={['KPI dashboard', 'Report no-show', 'Trend']}
             />
           </div>
+
+          {/* Lab Marketplace Feature */}
+          <div className="mt-10 bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-shrink-0">
+                <div className="h-20 w-20 bg-purple-500/30 rounded-2xl flex items-center justify-center">
+                  <svg className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                </div>
+              </div>
+              <div className="text-white flex-1">
+                <div className="inline-flex items-center gap-2 bg-purple-400/30 px-3 py-1 rounded-full text-xs font-semibold mb-3">
+                  🧪 NOVITÀ
+                </div>
+                <h3 className="text-2xl font-bold mb-2">Marketplace Laboratori di Analisi</h3>
+                <p className="text-white/80 mb-4">
+                  Connetti la tua clinica con laboratori di analisi partner. Cerca per specializzazione, confronta prezzi indicativi, 
+                  verifica tempi di refertazione e ritiro campioni. Invia richieste direttamente dalla dashboard e ricevi i referti digitali.
+                </p>
+                <div className="flex flex-wrap gap-3 text-sm">
+                  <span className="bg-white/20 rounded-full px-3 py-1">🔍 Cerca e filtra</span>
+                  <span className="bg-white/20 rounded-full px-3 py-1">💰 Listino prezzi</span>
+                  <span className="bg-white/20 rounded-full px-3 py-1">📄 Referti digitali</span>
+                  <span className="bg-white/20 rounded-full px-3 py-1">🚚 Ritiro campioni</span>
+                  <span className="bg-white/20 rounded-full px-3 py-1">🔗 Collegamento diretto</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -563,74 +591,100 @@ export default function PresentazionePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Starter */}
-            <div className="bg-gray-50 rounded-3xl p-8 border-2 border-gray-100 hover:border-coral-200 transition-all hover:shadow-xl">
-              <div className="text-gray-500 text-sm font-semibold mb-2 uppercase tracking-wider">Starter</div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {/* Starter Clinica */}
+            <div className="bg-gray-50 rounded-3xl p-6 border-2 border-gray-100 hover:border-coral-200 transition-all hover:shadow-xl">
+              <div className="text-gray-500 text-sm font-semibold mb-2 uppercase tracking-wider">Starter Clinica</div>
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-5xl font-black text-gray-900">€0</span>
+                <span className="text-4xl font-black text-gray-900">€0</span>
                 <span className="text-gray-400">/mese</span>
               </div>
-              <p className="text-gray-500 mb-8">Perfetto per iniziare</p>
-              <div className="space-y-4 mb-8">
-                {['Fino a 50 pazienti', 'Agenda base', 'Posizione su mappa', '5 Automazioni', 'Supporto email'].map((f, i) => (
-                  <div key={i} className="flex items-center gap-3 text-gray-700">
-                    <div className="h-5 w-5 bg-green-100 rounded-full flex items-center justify-center">
+              <p className="text-gray-500 text-sm mb-6">Perfetto per iniziare</p>
+              <div className="space-y-3 mb-6">
+                {['1 sede, 1 utente', 'Fino a 50 pazienti', 'Agenda base', '5 Automazioni', 'Posizione su mappa'].map((f, i) => (
+                  <div key={i} className="flex items-center gap-3 text-gray-700 text-sm">
+                    <div className="h-5 w-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
                       <Check className="h-3 w-3 text-green-600" />
                     </div>
                     {f}
                   </div>
                 ))}
               </div>
-              <Link href="/" className="block text-center py-4 px-6 border-2 border-gray-200 rounded-xl text-gray-700 font-semibold hover:bg-gray-100 transition">
+              <Link href="/" className="block text-center py-3 px-4 border-2 border-gray-200 rounded-xl text-gray-700 font-semibold text-sm hover:bg-gray-100 transition">
                 Inizia gratis
               </Link>
             </div>
 
-            {/* Professional */}
-            <div className="bg-gradient-to-br from-coral-500 to-orange-500 rounded-3xl p-8 text-white relative scale-105 shadow-2xl">
-              <div className="absolute -top-4 right-6 bg-white text-coral-600 text-xs px-4 py-1.5 rounded-full font-bold shadow-lg">
-                🔥 Consigliato
+            {/* Pro Clinica */}
+            <div className="bg-gradient-to-br from-coral-500 to-orange-500 rounded-3xl p-6 text-white relative shadow-2xl">
+              <div className="absolute -top-3 right-4 bg-white text-coral-600 text-xs px-3 py-1 rounded-full font-bold shadow-lg">
+                ⭐ Più popolare
               </div>
-              <div className="text-white/80 text-sm font-semibold mb-2 uppercase tracking-wider">Professional</div>
+              <div className="text-white/80 text-sm font-semibold mb-2 uppercase tracking-wider">Pro Clinica</div>
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-5xl font-black">€129</span>
-                <span className="text-white/70">/mese + IVA</span>
+                <span className="text-4xl font-black">€49</span>
+                <span className="text-white/70">/mese</span>
               </div>
-              <p className="text-white/80 mb-8">Per cliniche in crescita</p>
-              <div className="space-y-4 mb-8">
-                {['Pazienti illimitati', '20 Automazioni', 'Team Inbox + ticket', 'Documenti + invio email', 'Google Calendar sync', 'Video Consulto', 'Report settimanali'].map((f, i) => (
-                  <div key={i} className="flex items-center gap-3 text-white/95">
-                    <div className="h-5 w-5 bg-white/20 rounded-full flex items-center justify-center">
+              <p className="text-white/80 text-sm mb-6">🎁 90 gg gratis nel Pilot</p>
+              <div className="space-y-3 mb-6">
+                {['Fino a 5 utenti staff', 'Pazienti illimitati', '20 Automazioni', 'Team Inbox + ticket', 'Marketplace Lab', 'Documenti + email', 'Report settimanali'].map((f, i) => (
+                  <div key={i} className="flex items-center gap-3 text-white/95 text-sm">
+                    <div className="h-5 w-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
                       <Check className="h-3 w-3" />
                     </div>
                     {f}
                   </div>
                 ))}
               </div>
-              <Link href="/" className="block text-center py-4 px-6 bg-white text-coral-600 rounded-xl font-bold hover:bg-white/90 transition shadow-lg">
+              <Link href="/" className="block text-center py-3 px-4 bg-white text-coral-600 rounded-xl font-bold text-sm hover:bg-white/90 transition shadow-lg">
                 Richiedi invito
               </Link>
             </div>
 
+            {/* Lab Partner */}
+            <div className="bg-gradient-to-br from-purple-600 to-indigo-600 rounded-3xl p-6 text-white relative shadow-xl">
+              <div className="absolute -top-3 right-4 bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full font-bold shadow-lg">
+                🧪 Per Laboratori
+              </div>
+              <div className="text-white/80 text-sm font-semibold mb-2 uppercase tracking-wider">Lab Partner</div>
+              <div className="flex items-baseline gap-1 mb-2">
+                <span className="text-4xl font-black">€29</span>
+                <span className="text-white/70">/mese</span>
+              </div>
+              <p className="text-white/80 text-sm mb-6">🎁 6 mesi gratis</p>
+              <div className="space-y-3 mb-6">
+                {['Profilo nel marketplace', 'Listino prezzi pubblico', 'Connessioni cliniche', 'Dashboard richieste', 'Upload referti PDF', 'Notifiche automatiche', 'Statistiche'].map((f, i) => (
+                  <div key={i} className="flex items-center gap-3 text-white/95 text-sm">
+                    <div className="h-5 w-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3" />
+                    </div>
+                    {f}
+                  </div>
+                ))}
+              </div>
+              <Link href="/" className="block text-center py-3 px-4 bg-white text-purple-600 rounded-xl font-bold text-sm hover:bg-white/90 transition shadow-lg">
+                Registra il tuo Lab
+              </Link>
+            </div>
+
             {/* Enterprise */}
-            <div className="bg-gray-50 rounded-3xl p-8 border-2 border-gray-100 hover:border-coral-200 transition-all hover:shadow-xl">
+            <div className="bg-gray-50 rounded-3xl p-6 border-2 border-gray-100 hover:border-coral-200 transition-all hover:shadow-xl">
               <div className="text-gray-500 text-sm font-semibold mb-2 uppercase tracking-wider">Enterprise</div>
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-5xl font-black text-gray-900">Custom</span>
+                <span className="text-4xl font-black text-gray-900">Custom</span>
               </div>
-              <p className="text-gray-500 mb-8">Per grandi strutture</p>
-              <div className="space-y-4 mb-8">
+              <p className="text-gray-500 text-sm mb-6">Per grandi strutture</p>
+              <div className="space-y-3 mb-6">
                 {['Multi-sede', '44+ Automazioni', 'WhatsApp Business', 'API dedicata', 'SLA 99.9%', 'Account manager'].map((f, i) => (
-                  <div key={i} className="flex items-center gap-3 text-gray-700">
-                    <div className="h-5 w-5 bg-green-100 rounded-full flex items-center justify-center">
+                  <div key={i} className="flex items-center gap-3 text-gray-700 text-sm">
+                    <div className="h-5 w-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
                       <Check className="h-3 w-3 text-green-600" />
                     </div>
                     {f}
                   </div>
                 ))}
               </div>
-              <a href="mailto:info@vetbuddy.it" className="block text-center py-4 px-6 border-2 border-gray-200 rounded-xl text-gray-700 font-semibold hover:bg-gray-100 transition">
+              <a href="mailto:info@vetbuddy.it" className="block text-center py-3 px-4 border-2 border-gray-200 rounded-xl text-gray-700 font-semibold text-sm hover:bg-gray-100 transition">
                 Contattaci
               </a>
             </div>

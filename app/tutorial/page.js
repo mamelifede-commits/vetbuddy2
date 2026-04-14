@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { PawPrint, Building2, ArrowRight, Lock, AlertCircle } from 'lucide-react';
+import { PawPrint, Building2, FlaskConical, ArrowRight, Lock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 // Pagina di smistamento tutorial - verifica ruolo e reindirizza
@@ -26,6 +26,9 @@ export default function TutorialRedirect() {
             return;
           } else if (userData.role === 'clinic') {
             router.push('/tutorial/cliniche');
+            return;
+          } else if (userData.role === 'lab') {
+            router.push('/tutorial/laboratorio');
             return;
           }
         }
@@ -92,6 +95,10 @@ export default function TutorialRedirect() {
             <li className="flex items-center gap-2">
               <Building2 className="h-4 w-4" />
               Tutorial Cliniche (per veterinari)
+            </li>
+            <li className="flex items-center gap-2">
+              <FlaskConical className="h-4 w-4" />
+              Tutorial Laboratorio (per lab di analisi)
             </li>
           </ul>
         </div>

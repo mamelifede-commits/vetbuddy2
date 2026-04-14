@@ -232,6 +232,19 @@ export default function TutorialProprietari() {
         '5. Ricevi notifiche push come un\'app nativa'
       ],
       tip: 'L\'app non occupa spazio come le app tradizionali ed è sempre aggiornata!'
+    },
+    {
+      icon: FileText,
+      title: 'Referti Analisi di Laboratorio',
+      color: 'bg-purple-500',
+      content: [
+        '1. Vai nel profilo del tuo animale',
+        '2. Clicca sulla tab "Referti"',
+        '3. Troverai tutti i referti di analisi pubblicati dal veterinario',
+        '4. Puoi leggere le note cliniche aggiunte dal veterinario',
+        '5. Scarica il PDF del referto per conservarlo'
+      ],
+      tip: 'I referti vengono pubblicati dal veterinario dopo una revisione clinica. Se un esame è stato fatto ma non vedi il referto, contatta la clinica!'
     }
   ];
 
