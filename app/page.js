@@ -1937,11 +1937,22 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   useEffect(() => {
     const refreshLabNotifications = async () => {
       try {
-        const labRequestsList = await api.get('lab-requests').catch(() => []);
-        const reportsReady = (labRequestsList || []).filter(r => r.status === 'report_ready').length;
-        setLabReportsReady(reportsReady);
+        const response = await fetch('/api/lab-requests', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('vetbuddy_token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (response.ok) {
+          const labRequestsList = await response.json();
+          const reportsReady = (labRequestsList || []).filter(r => r.status === 'report_ready').length;
+          setLabReportsReady(reportsReady);
+        }
       } catch (e) { console.error('Lab refresh error:', e); }
     };
+    
+    // Load immediately on mount
+    setTimeout(refreshLabNotifications, 1000); // wait 1s for auth to be ready
     
     const interval = setInterval(refreshLabNotifications, 30000); // ogni 30 secondi
     return () => clearInterval(interval);
