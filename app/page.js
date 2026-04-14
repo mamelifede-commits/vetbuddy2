@@ -1997,6 +1997,8 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   );
 
   const unreadMessages = messages.filter(m => !m.read).length;
+  const pendingAppointments = appointments.filter(a => a.status === 'pending' || a.status === 'requested').length;
+  const newReviews = 0; // TODO: track read status for reviews
   const completedSteps = Object.values(setupProgress).filter(Boolean).length;
   const totalSteps = 4;
 
@@ -2035,7 +2037,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
             <Badge variant="outline" className="mb-4 justify-center text-amber-600 border-amber-300 bg-amber-50 w-full"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
             <nav className="space-y-1">
               <NavItem icon={LayoutDashboard} label="Dashboard" value="dashboard" />
-              <NavItem icon={Calendar} label="Agenda" value="agenda" />
+              <NavItem icon={Calendar} label="Agenda" value="agenda" badge={pendingAppointments} />
               <NavItem icon={Inbox} label="Team Inbox" value="inbox" badge={unreadMessages} />
               <NavItem icon={FileText} label="Documenti" value="documents" />
               <NavItem icon={FolderArchive} label="Archivio Clinica" value="archive" />
@@ -2079,7 +2081,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         
         <nav className="space-y-1 flex-1 overflow-y-auto">
           <NavItem icon={LayoutDashboard} label="Dashboard" value="dashboard" />
-          <NavItem icon={Calendar} label="Agenda" value="agenda" />
+          <NavItem icon={Calendar} label="Agenda" value="agenda" badge={pendingAppointments} />
           <NavItem icon={Inbox} label="Team Inbox" value="inbox" badge={unreadMessages} />
           <NavItem icon={FileText} label="Documenti" value="documents" />
           <NavItem icon={FolderArchive} label="Archivio Clinica" value="archive" />
@@ -12348,6 +12350,10 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
 
   const NavItem = ({ icon: Icon, label, value, badge }) => <button onClick={() => { setActiveTab(value); setSelectedPetId(null); setMobileMenuOpen(false); }} className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${activeTab === value ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-100'}`}><div className="flex items-center gap-3"><Icon className="h-5 w-5" />{label}</div>{badge > 0 && <Badge className="bg-blue-500 text-white text-xs">{badge}</Badge>}</button>;
 
+  // Calculate notifications
+  const upcomingAppointments = appointments.filter(a => a.status === 'confirmed' && new Date(a.date) > new Date()).length;
+  const unreadMessages = messages.filter(m => !m.read && m.senderId !== user.id).length;
+
   const handleOpenPetProfile = (petId) => {
     setSelectedPetId(petId);
     setActiveTab('petProfile');
@@ -12387,10 +12393,10 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
             <div className="mb-4"><RoleBadge role="owner" /></div>
             <Badge variant="outline" className="mb-6 justify-center text-amber-600 border-amber-300 bg-amber-50 w-full"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
             <nav className="space-y-1">
-              <NavItem icon={Calendar} label="Appuntamenti" value="appointments" />
+              <NavItem icon={Calendar} label="Appuntamenti" value="appointments" badge={upcomingAppointments} />
               <NavItem icon={FileText} label="Documenti" value="documents" badge={documents.filter(d => d.type !== 'invoice' && d.category !== 'fattura').length || null} />
               <NavItem icon={Receipt} label="Le mie Fatture" value="invoices" badge={documents.filter(d => d.type === 'invoice' || d.category === 'fattura').length || null} />
-              <NavItem icon={MessageCircle} label="Messaggi" value="messages" />
+              <NavItem icon={MessageCircle} label="Messaggi" value="messages" badge={unreadMessages} />
               <NavItem icon={PawPrint} label="I miei animali" value="pets" />
               <NavItem icon={Gift} label="I miei premi" value="rewards" badge={rewards.filter(r => r.status === 'available').length} />
               <NavItem icon={Star} label="Le mie recensioni" value="reviews" />
@@ -12422,10 +12428,10 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         <div className="mb-2"><RoleBadge role="owner" /></div>
         <Badge variant="outline" className="mb-6 justify-center text-amber-600 border-amber-300 bg-amber-50"><AlertCircle className="h-3 w-3 mr-1" /> Modalità Pilot</Badge>
         <nav className="space-y-1 flex-1 overflow-y-auto">
-          <NavItem icon={Calendar} label="Appuntamenti" value="appointments" />
+          <NavItem icon={Calendar} label="Appuntamenti" value="appointments" badge={upcomingAppointments} />
           <NavItem icon={FileText} label="Documenti" value="documents" badge={documents.filter(d => d.type !== 'invoice' && d.category !== 'fattura').length || null} />
           <NavItem icon={Receipt} label="Le mie Fatture" value="invoices" badge={documents.filter(d => d.type === 'invoice' || d.category === 'fattura').length || null} />
-          <NavItem icon={MessageCircle} label="Messaggi" value="messages" />
+          <NavItem icon={MessageCircle} label="Messaggi" value="messages" badge={unreadMessages} />
           <NavItem icon={PawPrint} label="I miei animali" value="pets" />
           <NavItem icon={Gift} label="I miei premi" value="rewards" badge={rewards.filter(r => r.status === 'available').length} />
           <NavItem icon={Star} label="Le mie recensioni" value="reviews" />
