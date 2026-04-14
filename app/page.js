@@ -1510,6 +1510,416 @@ function LandingPage({ onLogin }) {
   );
 }
 
+// ==================== CLINIC LAB ANALYSIS ====================
+function ClinicLabAnalysis({ user, pets, owners }) {
+  const [labRequests, setLabRequests] = useState([]);
+  const [labs, setLabs] = useState([]);
+  const [examTypes, setExamTypes] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [showNewRequest, setShowNewRequest] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [newRequest, setNewRequest] = useState({
+    petId: '', labId: '', examCategory: '', examType: '', examName: '',
+    clinicalNotes: '', internalNotes: '', priority: 'normal'
+  });
+
+  const LAB_STATUSES = [
+    { id: 'pending', name: 'In Attesa', color: 'yellow' },
+    { id: 'received', name: 'Ricevuta', color: 'blue' },
+    { id: 'sample_waiting', name: 'Campione in Attesa', color: 'orange' },
+    { id: 'sample_received', name: 'Campione Ricevuto', color: 'indigo' },
+    { id: 'in_progress', name: 'In Analisi', color: 'purple' },
+    { id: 'report_ready', name: 'Referto Pronto', color: 'green' },
+    { id: 'completed', name: 'Completata', color: 'emerald' },
+    { id: 'cancelled', name: 'Annullata', color: 'red' }
+  ];
+
+  useEffect(() => { loadData(); }, []);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const [requests, labsList, types] = await Promise.all([
+        api.get('lab-requests'),
+        api.get('labs'),
+        api.get('lab/exam-types')
+      ]);
+      setLabRequests(requests || []);
+      setLabs(labsList || []);
+      setExamTypes(types || {});
+    } catch (error) {
+      console.error('Error loading lab data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createRequest = async () => {
+    if (!newRequest.petId || !newRequest.labId || !newRequest.examType) {
+      alert('Seleziona pet, laboratorio e tipo esame');
+      return;
+    }
+    try {
+      await api.post('lab-requests', newRequest);
+      setShowNewRequest(false);
+      setNewRequest({ petId: '', labId: '', examCategory: '', examType: '', examName: '', clinicalNotes: '', internalNotes: '', priority: 'normal' });
+      await loadData();
+      alert('Richiesta analisi inviata!');
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    const statusInfo = LAB_STATUSES.find(s => s.id === status) || { name: status, color: 'gray' };
+    const colorMap = {
+      yellow: 'bg-yellow-100 text-yellow-800',
+      blue: 'bg-blue-100 text-blue-800',
+      orange: 'bg-orange-100 text-orange-800',
+      indigo: 'bg-indigo-100 text-indigo-800',
+      purple: 'bg-purple-100 text-purple-800',
+      green: 'bg-green-100 text-green-800',
+      emerald: 'bg-emerald-100 text-emerald-800',
+      red: 'bg-red-100 text-red-800',
+      gray: 'bg-gray-100 text-gray-800'
+    };
+    return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorMap[statusInfo.color]}`}>{statusInfo.name}</span>;
+  };
+
+  const viewRequestDetail = async (requestId) => {
+    try {
+      const detail = await api.get(`lab-requests/${requestId}`);
+      setSelectedRequest(detail);
+    } catch (error) {
+      console.error('Error loading request detail:', error);
+    }
+  };
+
+  const downloadReport = (report) => {
+    if (report.fileContent) {
+      const link = document.createElement('a');
+      link.href = `data:application/pdf;base64,${report.fileContent}`;
+      link.download = report.fileName || 'referto.pdf';
+      link.click();
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <FlaskConical className="h-7 w-7 text-indigo-500" />
+            Analisi di Laboratorio
+          </h1>
+          <p className="text-gray-500 mt-1">Gestisci le richieste di analisi ai laboratori partner</p>
+        </div>
+        <Button onClick={() => setShowNewRequest(true)} className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600">
+          <Plus className="h-4 w-4 mr-2" />
+          Nuova Richiesta
+        </Button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-yellow-100">
+          <p className="text-2xl font-bold text-gray-900">{labRequests.filter(r => r.status === 'pending').length}</p>
+          <p className="text-sm text-gray-500">In Attesa</p>
+        </div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-purple-100">
+          <p className="text-2xl font-bold text-gray-900">{labRequests.filter(r => ['in_progress', 'sample_received'].includes(r.status)).length}</p>
+          <p className="text-sm text-gray-500">In Corso</p>
+        </div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-green-100">
+          <p className="text-2xl font-bold text-gray-900">{labRequests.filter(r => r.status === 'report_ready').length}</p>
+          <p className="text-sm text-gray-500">Referti Pronti</p>
+        </div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          <p className="text-2xl font-bold text-gray-900">{labRequests.length}</p>
+          <p className="text-sm text-gray-500">Totale</p>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Requests List */}
+        <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border overflow-hidden">
+          <div className="p-4 border-b flex items-center justify-between">
+            <h2 className="font-semibold text-gray-900">Richieste Analisi</h2>
+            <Button variant="ghost" size="sm" onClick={loadData}><RefreshCw className="h-4 w-4" /></Button>
+          </div>
+          
+          {loading ? (
+            <div className="p-8 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto text-indigo-500" /></div>
+          ) : labRequests.length === 0 ? (
+            <div className="p-8 text-center text-gray-500">
+              <FlaskConical className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+              <p>Nessuna richiesta di analisi</p>
+              <p className="text-sm mt-2">Clicca "Nuova Richiesta" per iniziare</p>
+            </div>
+          ) : (
+            <div className="divide-y max-h-[500px] overflow-y-auto">
+              {labRequests.map(req => (
+                <div 
+                  key={req.id}
+                  onClick={() => viewRequestDetail(req.id)}
+                  className={`p-4 hover:bg-indigo-50/50 cursor-pointer transition-colors ${selectedRequest?.id === req.id ? 'bg-indigo-50' : ''}`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium text-gray-900">{req.examName || req.examType}</span>
+                        {req.priority === 'urgent' && <span className="px-1.5 py-0.5 bg-red-100 text-red-700 rounded text-xs">URGENTE</span>}
+                      </div>
+                      <p className="text-sm text-gray-500 flex items-center gap-2">
+                        <PawPrint className="h-3.5 w-3.5" />
+                        {req.petName} • {req.labName}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {new Date(req.createdAt).toLocaleDateString('it-IT')}
+                      </p>
+                    </div>
+                    {getStatusBadge(req.status)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Request Detail */}
+        <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
+          {selectedRequest ? (
+            <div className="h-full flex flex-col">
+              <div className="p-4 border-b bg-gradient-to-r from-indigo-50 to-purple-50">
+                <h3 className="font-semibold text-gray-900">{selectedRequest.examName || selectedRequest.examType}</h3>
+                <p className="text-sm text-gray-600">{selectedRequest.pet?.name} ({selectedRequest.pet?.species})</p>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div>
+                  <label className="text-xs font-medium text-gray-500 uppercase">Stato</label>
+                  <div className="mt-1">{getStatusBadge(selectedRequest.status)}</div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <label className="text-xs text-gray-500">Laboratorio</label>
+                    <p className="font-medium">{selectedRequest.lab?.name}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500">Codice Campione</label>
+                    <p className="font-mono font-medium">{selectedRequest.sampleCode}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500">Proprietario</label>
+                    <p className="font-medium">{selectedRequest.owner?.name || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500">Data</label>
+                    <p className="font-medium">{new Date(selectedRequest.createdAt).toLocaleDateString('it-IT')}</p>
+                  </div>
+                </div>
+                
+                {selectedRequest.clinicalNotes && (
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 uppercase">Note Cliniche</label>
+                    <p className="mt-1 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">{selectedRequest.clinicalNotes}</p>
+                  </div>
+                )}
+
+                {/* Status History */}
+                {selectedRequest.statusHistory && selectedRequest.statusHistory.length > 0 && (
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 uppercase mb-2 block">Cronologia</label>
+                    <div className="space-y-2">
+                      {selectedRequest.statusHistory.slice().reverse().map((entry, idx) => (
+                        <div key={idx} className="flex items-start gap-2 text-xs">
+                          <div className="w-2 h-2 rounded-full bg-indigo-400 mt-1.5"></div>
+                          <div>
+                            <p className="font-medium">{LAB_STATUSES.find(s => s.id === entry.status)?.name || entry.status}</p>
+                            <p className="text-gray-400">{new Date(entry.updatedAt).toLocaleString('it-IT')}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Reports */}
+                {selectedRequest.reports && selectedRequest.reports.length > 0 && (
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 uppercase mb-2 block">Referti</label>
+                    <div className="space-y-2">
+                      {selectedRequest.reports.map(report => (
+                        <div key={report.id} className="p-3 bg-green-50 rounded-lg flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <FileCheck className="h-5 w-5 text-green-600" />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{report.fileName}</p>
+                              <p className="text-xs text-gray-500">{new Date(report.uploadedAt).toLocaleString('it-IT')}</p>
+                            </div>
+                          </div>
+                          <Button size="sm" variant="ghost" onClick={() => downloadReport(report)}>
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="h-full flex items-center justify-center p-8 text-center text-gray-500">
+              <div>
+                <MousePointerClick className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+                <p>Seleziona una richiesta per vedere i dettagli</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* New Request Dialog */}
+      <Dialog open={showNewRequest} onOpenChange={setShowNewRequest}>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FlaskConical className="h-5 w-5 text-indigo-500" />
+              Nuova Richiesta Analisi
+            </DialogTitle>
+            <DialogDescription>
+              Invia una richiesta di analisi a un laboratorio partner
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {/* Pet Selection */}
+            <div>
+              <Label>Paziente *</Label>
+              <Select value={newRequest.petId} onValueChange={(v) => setNewRequest({...newRequest, petId: v})}>
+                <SelectTrigger><SelectValue placeholder="Seleziona paziente" /></SelectTrigger>
+                <SelectContent>
+                  {pets.map(pet => (
+                    <SelectItem key={pet.id} value={pet.id}>
+                      <span className="flex items-center gap-2">
+                        <PawPrint className="h-4 w-4" />
+                        {pet.name} ({pet.species})
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Lab Selection */}
+            <div>
+              <Label>Laboratorio *</Label>
+              <Select value={newRequest.labId} onValueChange={(v) => setNewRequest({...newRequest, labId: v})}>
+                <SelectTrigger><SelectValue placeholder="Seleziona laboratorio" /></SelectTrigger>
+                <SelectContent>
+                  {labs.map(lab => (
+                    <SelectItem key={lab.id} value={lab.id}>
+                      <span className="flex items-center gap-2">
+                        <FlaskConical className="h-4 w-4" />
+                        {lab.labName || lab.name} - {lab.city}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Exam Category */}
+            <div>
+              <Label>Categoria Esame *</Label>
+              <Select value={newRequest.examCategory} onValueChange={(v) => setNewRequest({...newRequest, examCategory: v, examType: '', examName: ''})}>
+                <SelectTrigger><SelectValue placeholder="Seleziona categoria" /></SelectTrigger>
+                <SelectContent>
+                  {Object.values(examTypes).map(cat => (
+                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Exam Type */}
+            {newRequest.examCategory && examTypes[newRequest.examCategory] && (
+              <div>
+                <Label>Tipo Esame *</Label>
+                <Select value={newRequest.examType} onValueChange={(v) => {
+                  const exam = examTypes[newRequest.examCategory].exams.find(e => e.id === v);
+                  setNewRequest({...newRequest, examType: v, examName: exam?.name || v});
+                }}>
+                  <SelectTrigger><SelectValue placeholder="Seleziona esame" /></SelectTrigger>
+                  <SelectContent>
+                    {examTypes[newRequest.examCategory].exams.map(exam => (
+                      <SelectItem key={exam.id} value={exam.id}>
+                        <div>
+                          <p className="font-medium">{exam.name}</p>
+                          <p className="text-xs text-gray-500">{exam.description}</p>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Priority */}
+            <div>
+              <Label>Priorità</Label>
+              <Select value={newRequest.priority} onValueChange={(v) => setNewRequest({...newRequest, priority: v})}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">🟢 Bassa</SelectItem>
+                  <SelectItem value="normal">🟡 Normale</SelectItem>
+                  <SelectItem value="urgent">🔴 Urgente</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Clinical Notes */}
+            <div>
+              <Label>Note Cliniche</Label>
+              <Textarea 
+                value={newRequest.clinicalNotes}
+                onChange={(e) => setNewRequest({...newRequest, clinicalNotes: e.target.value})}
+                placeholder="Sintomi, sospetti diagnostici, storia clinica..."
+                rows={3}
+              />
+            </div>
+
+            {/* Internal Notes */}
+            <div>
+              <Label>Note Interne (visibili solo al laboratorio)</Label>
+              <Textarea 
+                value={newRequest.internalNotes}
+                onChange={(e) => setNewRequest({...newRequest, internalNotes: e.target.value})}
+                placeholder="Note riservate per il laboratorio..."
+                rows={2}
+              />
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowNewRequest(false)}>Annulla</Button>
+            <Button 
+              onClick={createRequest}
+              className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
+            >
+              <Send className="h-4 w-4 mr-2" />
+              Invia Richiesta
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
 function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [appointments, setAppointments] = useState([]);
@@ -1633,6 +2043,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
               <NavItem icon={TrendingUp} label="Report" value="reports" />
               <NavItem icon={Star} label="Recensioni" value="reviews" />
               <NavItem icon={Gift} label="Premi Fedeltà" value="rewards" />
+              <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" />
               <NavItem icon={ClipboardList} label="Template" value="templates" />
               <NavItem icon={Zap} label="Automazioni" value="automations" />
               <div className="border-t my-2"></div>
@@ -1677,6 +2088,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           <NavItem icon={TrendingUp} label="Report" value="reports" />
           <NavItem icon={Star} label="Recensioni" value="reviews" />
           <NavItem icon={Gift} label="Premi Fedeltà" value="rewards" />
+          <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" />
           <NavItem icon={ClipboardList} label="Template" value="templates" />
           <NavItem icon={Zap} label="Automazioni" value="automations" />
           <div className="border-t my-2"></div>
@@ -1700,6 +2112,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'reports' && <ClinicReports appointments={appointments} documents={documents} messages={messages} owners={owners} pets={pets} onNavigate={setActiveTab} onOpenOwner={handleOpenOwnerFromPet} onOpenPet={handleOpenPetFromOwner} />}
         {activeTab === 'reviews' && <ClinicReviews onNavigate={setActiveTab} />}
         {activeTab === 'rewards' && <ClinicRewardsManagement user={user} owners={owners} />}
+        {activeTab === 'labanalysis' && <ClinicLabAnalysis user={user} pets={pets} owners={owners} />}
         {activeTab === 'invoicing' && <ClinicInvoicing user={user} owners={owners} pets={pets} />}
         {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} onNavigate={setActiveTab} />}
         {activeTab === 'automations' && <ClinicAutomations user={user} onNavigate={setActiveTab} />}
