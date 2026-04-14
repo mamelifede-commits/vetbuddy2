@@ -1932,6 +1932,20 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const [labReportsReady, setLabReportsReady] = useState(0); // Notifica referti pronti
   const [setupProgress, setSetupProgress] = useState({ payments: false, video: false, team: false, automations: false });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Auto-refresh lab notifications every 30 seconds
+  useEffect(() => {
+    const refreshLabNotifications = async () => {
+      try {
+        const labRequestsList = await api.get('lab-requests').catch(() => []);
+        const reportsReady = (labRequestsList || []).filter(r => r.status === 'report_ready').length;
+        setLabReportsReady(reportsReady);
+      } catch (e) { console.error('Lab refresh error:', e); }
+    };
+    
+    const interval = setInterval(refreshLabNotifications, 30000); // ogni 30 secondi
+    return () => clearInterval(interval);
+  }, []);
   
   // Stati per aprire pet/owner da altre sezioni
   const [selectedPetFromOwner, setSelectedPetFromOwner] = useState(null);
