@@ -2037,13 +2037,13 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
               <NavItem icon={CalendarDays} label="Eventi" value="events" />
               <NavItem icon={Stethoscope} label="Servizi" value="services" />
               <NavItem icon={PawPrint} label="Pazienti" value="patients" />
+              <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" />
               <NavItem icon={User} label="Proprietari" value="owners" />
               <NavItem icon={Users} label="Staff" value="staff" />
               <NavItem icon={Receipt} label="Fatturazione" value="invoicing" />
               <NavItem icon={TrendingUp} label="Report" value="reports" />
               <NavItem icon={Star} label="Recensioni" value="reviews" />
               <NavItem icon={Gift} label="Premi Fedeltà" value="rewards" />
-              <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" />
               <NavItem icon={ClipboardList} label="Template" value="templates" />
               <NavItem icon={Zap} label="Automazioni" value="automations" />
               <div className="border-t my-2"></div>
@@ -2082,13 +2082,13 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           <NavItem icon={Stethoscope} label="Servizi" value="services" />
           <NavItem icon={Video} label="Video Consulto" value="videoconsult" />
           <NavItem icon={PawPrint} label="Pazienti" value="patients" />
+          <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" />
           <NavItem icon={User} label="Proprietari" value="owners" />
           <NavItem icon={Users} label="Staff" value="staff" />
           <NavItem icon={Receipt} label="Fatturazione" value="invoicing" />
           <NavItem icon={TrendingUp} label="Report" value="reports" />
           <NavItem icon={Star} label="Recensioni" value="reviews" />
           <NavItem icon={Gift} label="Premi Fedeltà" value="rewards" />
-          <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" />
           <NavItem icon={ClipboardList} label="Template" value="templates" />
           <NavItem icon={Zap} label="Automazioni" value="automations" />
           <div className="border-t my-2"></div>
