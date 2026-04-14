@@ -2004,11 +2004,6 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     </button>
   );
 
-  // Debug: log labReportsReady value
-  useEffect(() => {
-    console.log('labReportsReady state:', labReportsReady);
-  }, [labReportsReady]);
-
   const unreadMessages = messages.filter(m => !m.read).length;
   const pendingAppointments = appointments.filter(a => a.status === 'pending' || a.status === 'requested').length;
   const newReviews = 0; // TODO: track read status for reviews
