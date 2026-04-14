@@ -38,43 +38,45 @@ import {
   FlaskConical, Package, XCircle, CheckCircle2, MousePointerClick
 } from 'lucide-react';
 
-// === Extracted Components ===
-import AdminDashboard from '@/app/components/admin/AdminDashboard';
-import ClinicAgenda from '@/app/components/clinic/ClinicAgenda';
-import ClinicArchive from '@/app/components/clinic/ClinicArchive';
-import ClinicAutomations from '@/app/components/clinic/ClinicAutomations';
-import ClinicDocuments from '@/app/components/clinic/ClinicDocuments';
-import ClinicEvents from '@/app/components/clinic/ClinicEvents';
-import ClinicFeedbackPage from '@/app/components/clinic/ClinicFeedbackPage';
-import ClinicInvoicing from '@/app/components/clinic/ClinicInvoicing';
-import ClinicLabAnalysis from '@/app/components/clinic/ClinicLabAnalysis';
-import ClinicTutorialInline from '@/app/components/clinic/ClinicTutorialInline';
-import ClinicPatients from '@/app/components/clinic/ClinicPatients';
-import ClinicReports from '@/app/components/clinic/ClinicReports';
-import ClinicReviews from '@/app/components/clinic/ClinicReviews';
-import ClinicRewardsManagement from '@/app/components/clinic/ClinicRewardsManagement';
-import ClinicServices from '@/app/components/clinic/ClinicServices';
-import ClinicSettings from '@/app/components/clinic/ClinicSettings';
-import ClinicTemplates from '@/app/components/clinic/ClinicTemplates';
-import ClinicVideoConsult from '@/app/components/clinic/ClinicVideoConsult';
-import DocumentUploadForm from '@/app/components/clinic/DocumentUploadForm';
-import FindClinic from '@/app/components/owner/FindClinic';
-import InviteClinic from '@/app/components/owner/InviteClinic';
-import InvoiceUploadForm from '@/app/components/shared/InvoiceUploadForm';
-import OwnerTutorialInline from '@/app/components/owner/OwnerTutorialInline';
-import LabDashboard from '@/app/components/lab/LabDashboard';
-import OwnerAppointments from '@/app/components/owner/OwnerAppointments';
-import OwnerDocuments from '@/app/components/owner/OwnerDocuments';
-import OwnerEvents from '@/app/components/owner/OwnerEvents';
-import OwnerInvoices from '@/app/components/owner/OwnerInvoices';
-import OwnerMessages from '@/app/components/owner/OwnerMessages';
-import OwnerPets from '@/app/components/owner/OwnerPets';
-import OwnerProfile from '@/app/components/owner/OwnerProfile';
-import OwnerReviews from '@/app/components/owner/OwnerReviews';
-import OwnerRewardsSection from '@/app/components/owner/OwnerRewardsSection';
-import PetProfile from '@/app/components/owner/PetProfile';
-import StaffDashboard from '@/app/components/staff/StaffDashboard';
-import SubscriptionPlans from '@/app/components/shared/SubscriptionPlans';
+// === Extracted Components (Dynamic Imports for Memory Optimization) ===
+import dynamic from 'next/dynamic';
+
+const AdminDashboard = dynamic(() => import('@/app/components/admin/AdminDashboard'), { ssr: false, loading: () => <div className="flex items-center justify-center h-64"><div className="animate-spin h-8 w-8 border-4 border-coral-500 border-t-transparent rounded-full" /></div> });
+const ClinicAgenda = dynamic(() => import('@/app/components/clinic/ClinicAgenda'), { ssr: false });
+const ClinicArchive = dynamic(() => import('@/app/components/clinic/ClinicArchive'), { ssr: false });
+const ClinicAutomations = dynamic(() => import('@/app/components/clinic/ClinicAutomations'), { ssr: false });
+const ClinicDocuments = dynamic(() => import('@/app/components/clinic/ClinicDocuments'), { ssr: false });
+const ClinicEvents = dynamic(() => import('@/app/components/clinic/ClinicEvents'), { ssr: false });
+const ClinicFeedbackPage = dynamic(() => import('@/app/components/clinic/ClinicFeedbackPage'), { ssr: false });
+const ClinicInvoicing = dynamic(() => import('@/app/components/clinic/ClinicInvoicing'), { ssr: false });
+const ClinicLabAnalysis = dynamic(() => import('@/app/components/clinic/ClinicLabAnalysis'), { ssr: false });
+const ClinicTutorialInline = dynamic(() => import('@/app/components/clinic/ClinicTutorialInline'), { ssr: false });
+const ClinicPatients = dynamic(() => import('@/app/components/clinic/ClinicPatients'), { ssr: false });
+const ClinicReports = dynamic(() => import('@/app/components/clinic/ClinicReports'), { ssr: false });
+const ClinicReviews = dynamic(() => import('@/app/components/clinic/ClinicReviews'), { ssr: false });
+const ClinicRewardsManagement = dynamic(() => import('@/app/components/clinic/ClinicRewardsManagement'), { ssr: false });
+const ClinicServices = dynamic(() => import('@/app/components/clinic/ClinicServices'), { ssr: false });
+const ClinicSettings = dynamic(() => import('@/app/components/clinic/ClinicSettings'), { ssr: false });
+const ClinicTemplates = dynamic(() => import('@/app/components/clinic/ClinicTemplates'), { ssr: false });
+const ClinicVideoConsult = dynamic(() => import('@/app/components/clinic/ClinicVideoConsult'), { ssr: false });
+const DocumentUploadForm = dynamic(() => import('@/app/components/clinic/DocumentUploadForm'), { ssr: false });
+const FindClinic = dynamic(() => import('@/app/components/owner/FindClinic'), { ssr: false });
+const InviteClinic = dynamic(() => import('@/app/components/owner/InviteClinic'), { ssr: false });
+const InvoiceUploadForm = dynamic(() => import('@/app/components/shared/InvoiceUploadForm'), { ssr: false });
+const OwnerTutorialInline = dynamic(() => import('@/app/components/owner/OwnerTutorialInline'), { ssr: false });
+const LabDashboard = dynamic(() => import('@/app/components/lab/LabDashboard'), { ssr: false, loading: () => <div className="flex items-center justify-center h-64"><div className="animate-spin h-8 w-8 border-4 border-coral-500 border-t-transparent rounded-full" /></div> });
+const OwnerAppointments = dynamic(() => import('@/app/components/owner/OwnerAppointments'), { ssr: false });
+const OwnerDocuments = dynamic(() => import('@/app/components/owner/OwnerDocuments'), { ssr: false });
+const OwnerEvents = dynamic(() => import('@/app/components/owner/OwnerEvents'), { ssr: false });
+const OwnerInvoices = dynamic(() => import('@/app/components/owner/OwnerInvoices'), { ssr: false });
+const OwnerMessages = dynamic(() => import('@/app/components/owner/OwnerMessages'), { ssr: false });
+const OwnerPets = dynamic(() => import('@/app/components/owner/OwnerPets'), { ssr: false });
+const OwnerProfile = dynamic(() => import('@/app/components/owner/OwnerProfile'), { ssr: false });
+const OwnerReviews = dynamic(() => import('@/app/components/owner/OwnerReviews'), { ssr: false });
+const OwnerRewardsSection = dynamic(() => import('@/app/components/owner/OwnerRewardsSection'), { ssr: false });
+const PetProfile = dynamic(() => import('@/app/components/owner/PetProfile'), { ssr: false });
+const StaffDashboard = dynamic(() => import('@/app/components/staff/StaffDashboard'), { ssr: false, loading: () => <div className="flex items-center justify-center h-64"><div className="animate-spin h-8 w-8 border-4 border-coral-500 border-t-transparent rounded-full" /></div> });
+const SubscriptionPlans = dynamic(() => import('@/app/components/shared/SubscriptionPlans'), { ssr: false });
 
 
 // Helper function for pet species info
