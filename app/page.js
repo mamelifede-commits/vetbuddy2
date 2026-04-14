@@ -1975,34 +1975,39 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
       setStaff(staffList); setPets(petsList); setOwners(ownersList);
       setRewards(rewardsList || []);
       
-      // Load lab reports count separately
-      try {
-        const labReqs = await api.get('lab-requests');
-        const reportsReady = (labReqs || []).filter(r => r.status === 'report_ready').length;
-        setLabReportsReady(reportsReady);
-      } catch (labErr) {
-        console.log('Lab requests not available');
-      }
+      // Load lab reports count separately - MUST succeed for badge
+      const labReqs = await api.get('lab-requests').catch(err => {
+        console.error('Failed to load lab requests:', err);
+        return [];
+      });
+      const reportsReady = Array.isArray(labReqs) ? labReqs.filter(r => r.status === 'report_ready').length : 0;
+      console.log('Lab reports ready count:', reportsReady, 'from', labReqs?.length || 0, 'requests');
+      setLabReportsReady(reportsReady);
       
       // Calculate setup progress
       setSetupProgress({
-        payments: false, // Stripe not connected
+        payments: false,
         video: appts.some(a => a.type === 'videoconsulto'),
         team: staffList.length > 0,
         automations: false
       });
-    } catch (error) { console.error('Error:', error); }
+    } catch (error) { console.error('LoadData Error:', error); }
   };
 
   const NavItem = ({ icon: Icon, label, value, badge }) => (
     <button onClick={() => { setActiveTab(value); setMobileMenuOpen(false); }} 
       className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${activeTab === value ? 'bg-coral-100 text-coral-700 font-medium' : 'text-gray-600 hover:bg-gray-100'}`}>
       <div className="flex items-center gap-3"><Icon className="h-5 w-5" />{label}</div>
-      {badge !== undefined && badge !== null && badge > 0 && (
+      {badge > 0 && (
         <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">{badge}</span>
       )}
     </button>
   );
+
+  // Debug: log labReportsReady value
+  useEffect(() => {
+    console.log('labReportsReady state:', labReportsReady);
+  }, [labReportsReady]);
 
   const unreadMessages = messages.filter(m => !m.read).length;
   const pendingAppointments = appointments.filter(a => a.status === 'pending' || a.status === 'requested').length;
