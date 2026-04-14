@@ -35,13 +35,35 @@ class ApiClient {
     if (this.token) {
       headers['Authorization'] = `Bearer ${this.token}`;
     }
-    const response = await fetch(`${API_BASE}/${endpoint}`, {
-      ...options,
-      headers,
-    });
+    
+    let response;
+    try {
+      response = await fetch(`${API_BASE}/${endpoint}`, {
+        ...options,
+        headers,
+      });
+    } catch (fetchError) {
+      throw new Error('Errore di connessione al server. Riprova tra qualche secondo.');
+    }
+    
+    // Check if response is JSON
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      if (!response.ok) {
+        throw new Error(`Errore del server (${response.status}). Riprova tra qualche secondo.`);
+      }
+      // Try to parse as JSON anyway (some responses don't set content-type properly)
+      try {
+        const data = await response.json();
+        return data;
+      } catch {
+        throw new Error('Risposta non valida dal server. Riprova tra qualche secondo.');
+      }
+    }
+    
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error || 'Request failed');
+      throw new Error(data.error || 'Richiesta fallita');
     }
     return data;
   }
