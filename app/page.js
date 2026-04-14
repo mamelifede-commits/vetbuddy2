@@ -1929,6 +1929,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const [pets, setPets] = useState([]);
   const [owners, setOwners] = useState([]);
   const [rewards, setRewards] = useState([]); // Premi assegnati
+  const [labReportsReady, setLabReportsReady] = useState(0); // Notifica referti pronti
   const [setupProgress, setSetupProgress] = useState({ payments: false, video: false, team: false, automations: false });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
@@ -1965,14 +1966,18 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
 
   const loadData = async () => {
     try {
-      const [appts, docs, msgs, staffList, petsList, ownersList, rewardsList] = await Promise.all([
+      const [appts, docs, msgs, staffList, petsList, ownersList, rewardsList, labRequestsList] = await Promise.all([
         api.get('appointments'), api.get('documents'), api.get('messages'),
         api.get('staff'), api.get('pets'), api.get('owners'),
-        api.get('rewards/assigned').catch(() => [])
+        api.get('rewards/assigned').catch(() => []),
+        api.get('lab-requests').catch(() => [])
       ]);
       setAppointments(appts); setDocuments(docs); setMessages(msgs);
       setStaff(staffList); setPets(petsList); setOwners(ownersList);
       setRewards(rewardsList || []);
+      // Count lab reports ready
+      const reportsReady = (labRequestsList || []).filter(r => r.status === 'report_ready').length;
+      setLabReportsReady(reportsReady);
       // Calculate setup progress
       setSetupProgress({
         payments: false, // Stripe not connected
@@ -2037,7 +2042,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
               <NavItem icon={CalendarDays} label="Eventi" value="events" />
               <NavItem icon={Stethoscope} label="Servizi" value="services" />
               <NavItem icon={PawPrint} label="Pazienti" value="patients" />
-              <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" />
+              <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" badge={labReportsReady} />
               <NavItem icon={User} label="Proprietari" value="owners" />
               <NavItem icon={Users} label="Staff" value="staff" />
               <NavItem icon={Receipt} label="Fatturazione" value="invoicing" />
@@ -2082,7 +2087,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           <NavItem icon={Stethoscope} label="Servizi" value="services" />
           <NavItem icon={Video} label="Video Consulto" value="videoconsult" />
           <NavItem icon={PawPrint} label="Pazienti" value="patients" />
-          <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" />
+          <NavItem icon={FlaskConical} label="Analisi Lab" value="labanalysis" badge={labReportsReady} />
           <NavItem icon={User} label="Proprietari" value="owners" />
           <NavItem icon={Users} label="Staff" value="staff" />
           <NavItem icon={Receipt} label="Fatturazione" value="invoicing" />
@@ -18486,8 +18491,13 @@ function LabDashboard({ user, onLogout }) {
               <Menu className="h-6 w-6 text-indigo-600" />
             </button>
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl">
+              <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl relative">
                 <FlaskConical className="h-6 w-6 text-white" />
+                {stats.pending > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                    {stats.pending}
+                  </span>
+                )}
               </div>
               <div>
                 <h1 className="text-lg font-bold text-gray-900">{user.labName || 'Laboratorio'}</h1>
