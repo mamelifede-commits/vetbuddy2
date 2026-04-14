@@ -3497,11 +3497,15 @@ export async function POST(request, { params }) {
       return NextResponse.json({ success: true, message: 'Premio segnato come utilizzato' }, { headers: corsHeaders });
     }
 
-    // ==================== LAB API - POST ====================
+    // ==================== LAB MODULE API - POST ====================
     
-    // Register lab (admin only for now, or self-registration pending approval)
+    // ===== LAB REGISTRATION (Public - Self Registration) =====
     if (path === 'labs/register') {
-      const { email, password, labName, address, city, phone, services, description } = body;
+      const { 
+        email, password, labName, vatNumber, phone, address, city, province,
+        contactPerson, description, specializations, pickupAvailable, pickupDays, pickupHours,
+        averageReportTime, latitude, longitude, invitationToken
+      } = body;
       
       if (!email || !password || !labName) {
         return NextResponse.json({ error: 'Email, password e nome laboratorio sono obbligatori' }, { status: 400, headers: corsHeaders });
@@ -3509,31 +3513,342 @@ export async function POST(request, { params }) {
 
       const users = await getCollection('users');
       const existing = await users.findOne({ email: email.toLowerCase() });
-      
       if (existing) {
         return NextResponse.json({ error: 'Email già registrata' }, { status: 400, headers: corsHeaders });
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await hashPassword(password);
+      const labId = uuidv4();
       const lab = {
-        id: uuidv4(),
+        id: labId,
         email: email.toLowerCase(),
         password: hashedPassword,
         role: 'lab',
-        labName,
-        name: labName,
-        address: address || '',
-        city: city || '',
-        phone: phone || '',
-        services: services || [], // Lab services/exam types
+        labName, name: labName,
+        vatNumber: vatNumber || '',
+        phone: phone || '', address: address || '', city: city || '', province: province || '',
+        contactPerson: contactPerson || '',
         description: description || '',
-        isApproved: false, // Needs admin approval
-        createdAt: new Date().toISOString()
+        specializations: specializations || [],
+        pickupAvailable: pickupAvailable || false,
+        pickupDays: pickupDays || '',
+        pickupHours: pickupHours || '',
+        averageReportTime: averageReportTime || '',
+        latitude: latitude || null, longitude: longitude || null,
+        logoUrl: '',
+        status: 'pending_approval', // pending_approval, active, suspended, rejected
+        isApproved: false,
+        plan: 'partner_free',
+        freeUntil: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(), // 6 months free
+        requestsCount: 0,
+        maxFreeRequests: 50,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       await users.insertOne(lab);
-      const { password: _, ...labWithoutPassword } = lab;
-      return NextResponse.json(labWithoutPassword, { headers: corsHeaders });
+
+      // If invitation token provided, auto-connect with clinic
+      if (invitationToken) {
+        const labInvitations = await getCollection('lab_invitations');
+        const invitation = await labInvitations.findOne({ token: invitationToken, status: 'pending' });
+        if (invitation && invitation.email.toLowerCase() === email.toLowerCase()) {
+          // Accept invitation
+          await labInvitations.updateOne({ token: invitationToken }, { $set: { status: 'accepted', acceptedAt: new Date().toISOString(), labId } });
+          
+          // Create connection
+          const connections = await getCollection('clinic_lab_connections');
+          await connections.insertOne({
+            id: uuidv4(), clinicId: invitation.clinicId, labId, status: 'active',
+            invitedByClinicId: invitation.clinicId, invitationEmail: email,
+            createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+          });
+
+          // Auto-approve if invited
+          await users.updateOne({ id: labId }, { $set: { status: 'active', isApproved: true } });
+          lab.status = 'active';
+          lab.isApproved = true;
+        }
+      }
+
+      // Notify admin
+      try {
+        await sendEmail({
+          to: 'admin@vetbuddy.it',
+          subject: '🧪 Nuovo laboratorio registrato - VetBuddy',
+          html: `<p>Un nuovo laboratorio si è registrato:</p><p><strong>${labName}</strong> - ${city || 'N/D'}</p><p>Email: ${email}</p><p>Stato: ${lab.status === 'active' ? 'Attivo (invitato)' : 'In attesa di approvazione'}</p>`
+        });
+      } catch (e) { console.error('Admin notification error:', e); }
+
+      const { password: _, ...labSafe } = lab;
+      const token = generateToken(lab);
+      return NextResponse.json({ ...labSafe, token }, { headers: corsHeaders });
+    }
+
+    // ===== CLINIC INVITES LAB =====
+    if (path === 'clinic/invite-lab') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Solo le cliniche possono invitare laboratori' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { email, message } = body;
+      if (!email) {
+        return NextResponse.json({ error: 'Email laboratorio obbligatoria' }, { status: 400, headers: corsHeaders });
+      }
+
+      const labInvitations = await getCollection('lab_invitations');
+      
+      // Check if already invited
+      const existingInvitation = await labInvitations.findOne({ clinicId: user.id, email: email.toLowerCase(), status: 'pending' });
+      if (existingInvitation) {
+        return NextResponse.json({ error: 'Invito già inviato a questo laboratorio' }, { status: 400, headers: corsHeaders });
+      }
+
+      // Check if lab already registered
+      const users = await getCollection('users');
+      const existingLab = await users.findOne({ email: email.toLowerCase(), role: 'lab' });
+      
+      if (existingLab) {
+        // Lab already exists - create connection directly
+        const connections = await getCollection('clinic_lab_connections');
+        const existingConn = await connections.findOne({ clinicId: user.id, labId: existingLab.id, status: { $in: ['active', 'pending'] } });
+        if (existingConn) {
+          return NextResponse.json({ error: 'Già collegato a questo laboratorio' }, { status: 400, headers: corsHeaders });
+        }
+        await connections.insertOne({
+          id: uuidv4(), clinicId: user.id, labId: existingLab.id, status: 'pending',
+          invitedByClinicId: user.id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+        });
+        return NextResponse.json({ success: true, message: 'Richiesta di collegamento inviata al laboratorio', alreadyRegistered: true }, { headers: corsHeaders });
+      }
+
+      // Create invitation token
+      const token = uuidv4();
+      const invitation = {
+        id: uuidv4(), clinicId: user.id, clinicName: user.clinicName || user.name,
+        email: email.toLowerCase(), token, status: 'pending',
+        message: message || '',
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+        createdAt: new Date().toISOString()
+      };
+      await labInvitations.insertOne(invitation);
+
+      // Send invitation email
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+      try {
+        await sendEmail({
+          to: email,
+          subject: `🧪 Invito a VetBuddy da ${user.clinicName || user.name}`,
+          html: `
+            <div style="font-family: Arial; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <h2 style="color: #7C3AED;">🧪 Sei stato invitato su VetBuddy!</h2>
+              <p>La clinica veterinaria <strong>${user.clinicName || user.name}</strong> ti invita a registrarti come laboratorio partner su VetBuddy.</p>
+              ${message ? `<p style="background: #F3F4F6; padding: 12px; border-radius: 8px;"><em>"${message}"</em></p>` : ''}
+              <p>VetBuddy è la piattaforma che connette cliniche veterinarie e laboratori di analisi.</p>
+              <ul>
+                <li>Registrazione gratuita</li>
+                <li>6 mesi gratis o 50 richieste gestite</li>
+                <li>Dashboard per gestire richieste e referti</li>
+                <li>Profilo nel marketplace laboratori</li>
+              </ul>
+              <a href="${baseUrl}?invite=${token}" style="display: inline-block; background: linear-gradient(135deg, #7C3AED, #9333EA); color: white; padding: 12px 32px; border-radius: 12px; text-decoration: none; font-weight: bold; margin: 16px 0;">Accetta Invito e Registrati</a>
+              <p style="color: #6B7280; font-size: 12px;">L'invito scade tra 30 giorni.</p>
+            </div>`
+        });
+      } catch (e) { console.error('Invitation email error:', e); }
+
+      return NextResponse.json({ success: true, message: 'Invito inviato con successo', invitationId: invitation.id }, { headers: corsHeaders });
+    }
+
+    // ===== LAB ACCEPTS/REJECTS CONNECTION =====
+    if (path === 'lab/connection-response') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'lab') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { connectionId, action } = body; // action: 'accept' or 'reject'
+      if (!connectionId || !action) {
+        return NextResponse.json({ error: 'Dati mancanti' }, { status: 400, headers: corsHeaders });
+      }
+
+      const connections = await getCollection('clinic_lab_connections');
+      const conn = await connections.findOne({ id: connectionId, labId: user.id });
+      if (!conn) {
+        return NextResponse.json({ error: 'Collegamento non trovato' }, { status: 404, headers: corsHeaders });
+      }
+
+      const newStatus = action === 'accept' ? 'active' : 'rejected';
+      await connections.updateOne({ id: connectionId }, { $set: { status: newStatus, updatedAt: new Date().toISOString() } });
+
+      return NextResponse.json({ success: true, message: action === 'accept' ? 'Collegamento accettato' : 'Collegamento rifiutato' }, { headers: corsHeaders });
+    }
+
+    // ===== LAB PROFILE UPDATE =====
+    if (path === 'lab/profile') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'lab') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { labName, vatNumber, phone, address, city, province, contactPerson, description,
+        specializations, pickupAvailable, pickupDays, pickupHours, averageReportTime, latitude, longitude, logoUrl } = body;
+
+      const updateData = {};
+      if (labName !== undefined) { updateData.labName = labName; updateData.name = labName; }
+      if (vatNumber !== undefined) updateData.vatNumber = vatNumber;
+      if (phone !== undefined) updateData.phone = phone;
+      if (address !== undefined) updateData.address = address;
+      if (city !== undefined) updateData.city = city;
+      if (province !== undefined) updateData.province = province;
+      if (contactPerson !== undefined) updateData.contactPerson = contactPerson;
+      if (description !== undefined) updateData.description = description;
+      if (specializations !== undefined) updateData.specializations = specializations;
+      if (pickupAvailable !== undefined) updateData.pickupAvailable = pickupAvailable;
+      if (pickupDays !== undefined) updateData.pickupDays = pickupDays;
+      if (pickupHours !== undefined) updateData.pickupHours = pickupHours;
+      if (averageReportTime !== undefined) updateData.averageReportTime = averageReportTime;
+      if (latitude !== undefined) updateData.latitude = latitude;
+      if (longitude !== undefined) updateData.longitude = longitude;
+      if (logoUrl !== undefined) updateData.logoUrl = logoUrl;
+      updateData.updatedAt = new Date().toISOString();
+
+      const users = await getCollection('users');
+      await users.updateOne({ id: user.id }, { $set: updateData });
+
+      return NextResponse.json({ success: true, message: 'Profilo aggiornato' }, { headers: corsHeaders });
+    }
+
+    // ===== LAB PRICE LIST MANAGEMENT =====
+    if (path === 'lab/price-list') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'lab') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { prices } = body; // Array of price items
+      if (!prices || !Array.isArray(prices)) {
+        return NextResponse.json({ error: 'Lista prezzi non valida' }, { status: 400, headers: corsHeaders });
+      }
+
+      const labPriceList = await getCollection('lab_price_list');
+      
+      // Delete existing prices for this lab
+      await labPriceList.deleteMany({ labId: user.id });
+      
+      // Insert new prices
+      const priceItems = prices.map(p => ({
+        id: uuidv4(),
+        labId: user.id,
+        examType: p.examType, // sangue, urine, feci, biopsia, citologia, istologia, genetico, allergologia, microbiologia, parassitologia, altro
+        title: p.title || '',
+        description: p.description || '',
+        priceFrom: p.priceFrom || 0,
+        priceTo: p.priceTo || null,
+        priceOnRequest: p.priceOnRequest || false,
+        averageDeliveryTime: p.averageDeliveryTime || '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }));
+
+      if (priceItems.length > 0) {
+        await labPriceList.insertMany(priceItems);
+      }
+
+      return NextResponse.json({ success: true, message: 'Listino aggiornato', count: priceItems.length }, { headers: corsHeaders });
+    }
+
+    // ===== CLINIC REQUEST CONNECTION WITH LAB =====
+    if (path === 'clinic/lab-connection') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { labId } = body;
+      if (!labId) {
+        return NextResponse.json({ error: 'ID laboratorio obbligatorio' }, { status: 400, headers: corsHeaders });
+      }
+
+      const connections = await getCollection('clinic_lab_connections');
+      const existing = await connections.findOne({ clinicId: user.id, labId, status: { $in: ['active', 'pending'] } });
+      if (existing) {
+        return NextResponse.json({ error: 'Collegamento già esistente o in attesa' }, { status: 400, headers: corsHeaders });
+      }
+
+      await connections.insertOne({
+        id: uuidv4(), clinicId: user.id, labId, status: 'pending',
+        invitedByClinicId: user.id,
+        createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+      });
+
+      // Notify lab
+      const users = await getCollection('users');
+      const lab = await users.findOne({ id: labId });
+      if (lab?.email) {
+        try {
+          await sendEmail({
+            to: lab.email,
+            subject: `🔗 Nuova richiesta di collegamento - ${user.clinicName || user.name}`,
+            html: `<p>La clinica <strong>${user.clinicName || user.name}</strong> vuole collegarsi con il tuo laboratorio su VetBuddy.</p><p>Accedi alla tua dashboard per accettare o rifiutare.</p>`
+          });
+        } catch (e) { console.error('Connection notification error:', e); }
+      }
+
+      return NextResponse.json({ success: true, message: 'Richiesta di collegamento inviata' }, { headers: corsHeaders });
+    }
+
+    // ===== ADMIN: Update Lab Status =====
+    if (path.match(/^admin\/labs\/[^/]+\/status$/)) {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'admin') {
+        return NextResponse.json({ error: 'Solo admin' }, { status: 403, headers: corsHeaders });
+      }
+
+      const labId = path.split('/')[2];
+      const { status: newStatus, reason } = body; // active, suspended, rejected
+
+      const validStatuses = ['active', 'suspended', 'rejected', 'pending_approval'];
+      if (!validStatuses.includes(newStatus)) {
+        return NextResponse.json({ error: 'Stato non valido' }, { status: 400, headers: corsHeaders });
+      }
+
+      const users = await getCollection('users');
+      const lab = await users.findOne({ id: labId, role: 'lab' });
+      if (!lab) {
+        return NextResponse.json({ error: 'Laboratorio non trovato' }, { status: 404, headers: corsHeaders });
+      }
+
+      await users.updateOne({ id: labId }, { $set: { 
+        status: newStatus, 
+        isApproved: newStatus === 'active',
+        approvedAt: newStatus === 'active' ? new Date().toISOString() : lab.approvedAt,
+        approvedBy: newStatus === 'active' ? user.id : lab.approvedBy,
+        rejectionReason: reason || '',
+        updatedAt: new Date().toISOString()
+      }});
+
+      // Notify lab
+      if (lab.email) {
+        const statusMessages = {
+          'active': { emoji: '✅', text: 'approvato', detail: 'Puoi ora accedere alla tua dashboard e iniziare a ricevere richieste dalle cliniche.' },
+          'suspended': { emoji: '⚠️', text: 'sospeso', detail: reason ? `Motivo: ${reason}` : 'Contatta il supporto per maggiori informazioni.' },
+          'rejected': { emoji: '❌', text: 'rifiutato', detail: reason ? `Motivo: ${reason}` : 'Contatta il supporto per maggiori informazioni.' }
+        };
+        const msg = statusMessages[newStatus];
+        if (msg) {
+          try {
+            await sendEmail({
+              to: lab.email,
+              subject: `${msg.emoji} Il tuo laboratorio è stato ${msg.text} - VetBuddy`,
+              html: `<p>Il laboratorio <strong>${lab.labName}</strong> è stato <strong>${msg.text}</strong> su VetBuddy.</p><p>${msg.detail}</p>`
+            });
+          } catch (e) { console.error('Lab status email error:', e); }
+        }
+      }
+
+      return NextResponse.json({ success: true, message: `Laboratorio ${newStatus}` }, { headers: corsHeaders });
     }
     
     // Create lab request (clinic creates request)
