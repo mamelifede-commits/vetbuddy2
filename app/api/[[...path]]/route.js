@@ -3687,7 +3687,7 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Solo i laboratori possono caricare referti' }, { status: 401, headers: corsHeaders });
       }
 
-      const { labRequestId, fileName, fileContent, reportNotes, visibleToOwner, notifyOwner } = body;
+      const { labRequestId, fileName, fileContent, reportNotes } = body;
       
       if (!labRequestId || !fileContent) {
         return NextResponse.json({ error: 'Richiesta e file sono obbligatori' }, { status: 400, headers: corsHeaders });
@@ -3717,8 +3717,11 @@ export async function POST(request, { params }) {
         examName: labRequest.examName,
         fileName: fileName || `Referto_${labRequest.sampleCode}.pdf`,
         fileContent, // Base64 PDF content
-        reportNotes: reportNotes || '',
-        visibleToOwner: visibleToOwner === true,
+        reportNotes: reportNotes || '', // Notes from lab
+        clinicNotes: '', // Notes from clinic for owner (added when sending)
+        visibleToOwner: false, // DEFAULT FALSE - clinic must review and send
+        sentToOwnerAt: null, // When clinic sends to owner
+        sentToOwnerBy: null, // Who sent it
         uploadedBy: user.id,
         uploadedByName: user.labName || user.name,
         uploadedAt: new Date().toISOString()
@@ -3737,7 +3740,7 @@ export async function POST(request, { params }) {
           $push: { 
             statusHistory: {
               status: 'report_ready',
-              note: 'Referto caricato',
+              note: 'Referto caricato dal laboratorio - In attesa di revisione clinica',
               updatedBy: user.id,
               updatedByName: user.labName || user.name,
               updatedAt: new Date().toISOString()
@@ -3746,7 +3749,7 @@ export async function POST(request, { params }) {
         }
       );
 
-      // Notify clinic
+      // Notify clinic that report is ready for review
       try {
         const users = await getCollection('users');
         const clinic = await users.findOne({ id: labRequest.clinicId });
@@ -3755,60 +3758,138 @@ export async function POST(request, { params }) {
         if (clinic?.email) {
           await sendEmail({
             to: clinic.email,
-            subject: `🧪 Referto pronto: ${labRequest.examName}`,
+            subject: `🧪 Referto da revisionare: ${labRequest.examName}`,
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 25px; text-align: center;">
-                  <h1 style="color: white; margin: 0;">✅ Referto Disponibile</h1>
+                  <h1 style="color: white; margin: 0;">🧪 Nuovo Referto da Revisionare</h1>
                 </div>
                 <div style="padding: 30px; background: #f9fafb;">
-                  <p style="color: #374151;">Il referto è stato caricato ed è disponibile nella dashboard.</p>
+                  <p style="color: #374151;">Il laboratorio <strong>${lab?.labName || 'Laboratorio'}</strong> ha caricato un referto.</p>
+                  <p style="color: #374151;"><strong>⚠️ Il referto deve essere revisionato prima di essere inviato al proprietario.</strong></p>
                   
                   <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #10b981;">
-                    <p style="margin: 5px 0;"><strong>Laboratorio:</strong> ${lab?.labName || 'Laboratorio'}</p>
                     <p style="margin: 5px 0;"><strong>Paziente:</strong> ${labRequest.petName}</p>
                     <p style="margin: 5px 0;"><strong>Esame:</strong> ${labRequest.examName}</p>
                   </div>
                   
-                  ${reportNotes ? `<p style="color: #374151;"><strong>Note:</strong><br/>${reportNotes}</p>` : ''}
+                  <p style="color: #6b7280; font-size: 14px;">Accedi alla dashboard per revisionare il referto e inviarlo al proprietario con le tue note cliniche.</p>
                 </div>
               </div>
             `
           });
         }
+      } catch (emailErr) {
+        console.error('Error sending report notification:', emailErr);
+      }
 
-        // Notify owner if requested and allowed
-        if (notifyOwner && visibleToOwner) {
-          const owner = await users.findOne({ id: labRequest.ownerId });
+      return NextResponse.json(report, { headers: corsHeaders });
+    }
+    
+    // Clinic sends report to owner (after review)
+    if (path === 'lab-reports/send-to-owner') {
+      const user = getUserFromRequest(request);
+      if (!user || (user.role !== 'clinic' && user.role !== 'admin')) {
+        return NextResponse.json({ error: 'Solo le cliniche possono inviare referti ai proprietari' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { reportId, clinicNotes, notifyOwner } = body;
+      
+      if (!reportId) {
+        return NextResponse.json({ error: 'ID referto obbligatorio' }, { status: 400, headers: corsHeaders });
+      }
+
+      const labReports = await getCollection('lab_reports');
+      const report = await labReports.findOne({ id: reportId });
+      
+      if (!report) {
+        return NextResponse.json({ error: 'Referto non trovato' }, { status: 404, headers: corsHeaders });
+      }
+
+      if (user.role === 'clinic' && report.clinicId !== user.id) {
+        return NextResponse.json({ error: 'Non autorizzato per questo referto' }, { status: 401, headers: corsHeaders });
+      }
+
+      // Update report to be visible to owner
+      await labReports.updateOne(
+        { id: reportId },
+        { 
+          $set: { 
+            visibleToOwner: true,
+            clinicNotes: clinicNotes || '',
+            sentToOwnerAt: new Date().toISOString(),
+            sentToOwnerBy: user.id
+          }
+        }
+      );
+
+      // Update lab request status to completed
+      const labRequests = await getCollection('lab_requests');
+      await labRequests.updateOne(
+        { id: report.labRequestId },
+        { 
+          $set: { 
+            status: 'completed', 
+            updatedAt: new Date().toISOString() 
+          },
+          $push: { 
+            statusHistory: {
+              status: 'completed',
+              note: 'Referto revisionato e inviato al proprietario',
+              updatedBy: user.id,
+              updatedByName: user.clinicName || user.name,
+              updatedAt: new Date().toISOString()
+            }
+          }
+        }
+      );
+
+      // Notify owner if requested
+      if (notifyOwner !== false) {
+        try {
+          const users = await getCollection('users');
+          const pets = await getCollection('pets');
+          const owner = await users.findOne({ id: report.ownerId });
+          const pet = await pets.findOne({ id: report.petId });
+          const clinic = await users.findOne({ id: report.clinicId });
+          
           if (owner?.email) {
             await sendEmail({
               to: owner.email,
-              subject: `🐾 Nuovo referto disponibile per ${labRequest.petName}`,
+              subject: `🐾 Nuovo referto disponibile per ${pet?.name || 'il tuo animale'}`,
               html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                   <div style="background: linear-gradient(135deg, #FF6B6B, #f97316); padding: 25px; text-align: center;">
-                    <h1 style="color: white; margin: 0;">🐾 Nuovo Referto</h1>
+                    <h1 style="color: white; margin: 0;">🐾 Nuovo Referto Disponibile</h1>
                   </div>
                   <div style="padding: 30px; background: #f9fafb;">
-                    <p style="color: #374151;">Un nuovo referto per <strong>${labRequest.petName}</strong> è disponibile.</p>
+                    <p style="color: #374151;">Ciao <strong>${owner.name || 'Proprietario'}</strong>,</p>
+                    <p style="color: #374151;">La clinica <strong>${clinic?.clinicName || 'La tua clinica'}</strong> ha condiviso un nuovo referto per <strong>${pet?.name || 'il tuo animale'}</strong>.</p>
                     
-                    <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                      <p style="margin: 5px 0;"><strong>Esame:</strong> ${labRequest.examName}</p>
+                    <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #FF6B6B;">
+                      <p style="margin: 5px 0;"><strong>Esame:</strong> ${report.examName}</p>
                       <p style="margin: 5px 0;"><strong>Data:</strong> ${new Date().toLocaleDateString('it-IT')}</p>
                     </div>
                     
-                    <p style="color: #6b7280; font-size: 14px;">Accedi alla tua area personale per visualizzare il referto completo.</p>
+                    ${clinicNotes ? `
+                    <div style="background: #fef3c7; padding: 15px; border-radius: 10px; margin: 20px 0;">
+                      <p style="margin: 0; color: #92400e;"><strong>📝 Note dalla clinica:</strong></p>
+                      <p style="margin: 10px 0 0 0; color: #78350f;">${clinicNotes}</p>
+                    </div>
+                    ` : ''}
+                    
+                    <p style="color: #6b7280; font-size: 14px;">Accedi alla tua area personale per visualizzare e scaricare il referto completo.</p>
                   </div>
                 </div>
               `
             });
           }
+        } catch (emailErr) {
+          console.error('Error sending owner notification:', emailErr);
         }
-      } catch (emailErr) {
-        console.error('Error sending report notifications:', emailErr);
       }
 
-      return NextResponse.json(report, { headers: corsHeaders });
+      return NextResponse.json({ success: true, message: 'Referto inviato al proprietario' }, { headers: corsHeaders });
     }
     
     // Admin: Approve lab

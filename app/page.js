@@ -1518,6 +1518,10 @@ function ClinicLabAnalysis({ user, pets, owners }) {
   const [loading, setLoading] = useState(true);
   const [showNewRequest, setShowNewRequest] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [showSendToOwnerModal, setShowSendToOwnerModal] = useState(false);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [clinicNotesForOwner, setClinicNotesForOwner] = useState('');
+  const [sending, setSending] = useState(false);
   const [newRequest, setNewRequest] = useState({
     petId: '', labId: '', examCategory: '', examType: '', examName: '',
     clinicalNotes: '', internalNotes: '', priority: 'normal'
@@ -1529,8 +1533,8 @@ function ClinicLabAnalysis({ user, pets, owners }) {
     { id: 'sample_waiting', name: 'Campione in Attesa', color: 'orange' },
     { id: 'sample_received', name: 'Campione Ricevuto', color: 'indigo' },
     { id: 'in_progress', name: 'In Analisi', color: 'purple' },
-    { id: 'report_ready', name: 'Referto Pronto', color: 'green' },
-    { id: 'completed', name: 'Completata', color: 'emerald' },
+    { id: 'report_ready', name: 'Da Revisionare', color: 'amber' },
+    { id: 'completed', name: 'Inviato al Proprietario', color: 'emerald' },
     { id: 'cancelled', name: 'Annullata', color: 'red' }
   ];
 
