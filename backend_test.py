@@ -1,450 +1,379 @@
 #!/usr/bin/env python3
 """
-VetBuddy Lab Marketplace Backend API Testing
-Testing the 3 new Lab Marketplace API endpoints as specified in review request.
+VetBuddy Lab Self-Registration and Billing APIs Test Suite
+Testing after refactoring - comprehensive backend API testing
 """
 
 import requests
 import json
-import sys
+import uuid
+import time
 from datetime import datetime
 
-# Base URL from environment
+# Configuration
 BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
+FALLBACK_URL = "http://localhost:3000/api"
 
 # Test credentials from review request
-CREDENTIALS = {
-    "clinic": {"email": "demo@vetbuddy.it", "password": "VetBuddy2025!Secure"},
-    "lab": {"email": "laboratorio1@vetbuddy.it", "password": "Lab2025!"},
-    "admin": {"email": "admin@vetbuddy.it", "password": "Admin2025!"},
-    "owner": {"email": "proprietario.demo@vetbuddy.it", "password": "demo123"}
+CLINIC_CREDENTIALS = {
+    "email": "demo@vetbuddy.it",
+    "password": "VetBuddy2025!Secure"
 }
 
-def login_user(role):
-    """Login and get JWT token for specified role"""
-    try:
-        print(f"🔐 Logging in as {role}...")
-        response = requests.post(f"{BASE_URL}/auth/login", json=CREDENTIALS[role])
-        
-        if response.status_code == 200:
-            data = response.json()
-            token = data.get('token')
-            user_info = data.get('user', {})
-            print(f"✅ Login successful for {role}: {user_info.get('email', 'N/A')}")
-            return token
-        else:
-            print(f"❌ Login failed for {role}: {response.status_code} - {response.text}")
-            return None
-    except Exception as e:
-        print(f"❌ Login error for {role}: {str(e)}")
-        return None
+LAB_CREDENTIALS = {
+    "email": "laboratorio1@vetbuddy.it", 
+    "password": "Lab2025!"
+}
 
-def test_lab_marketplace_api():
-    """Test 1: Lab Marketplace API - GET labs/marketplace"""
-    print("\n" + "="*60)
-    print("TEST 1: Lab Marketplace API - GET labs/marketplace")
-    print("="*60)
-    
-    # Login as clinic
-    clinic_token = login_user("clinic")
-    if not clinic_token:
-        print("❌ Cannot test without clinic authentication")
-        return False
-    
-    try:
-        headers = {"Authorization": f"Bearer {clinic_token}"}
-        response = requests.get(f"{BASE_URL}/labs/marketplace", headers=headers)
+ADMIN_CREDENTIALS = {
+    "email": "admin@vetbuddy.it",
+    "password": "Admin2025!"
+}
+
+class VetBuddyAPITester:
+    def __init__(self):
+        self.base_url = BASE_URL
+        self.session = requests.Session()
+        self.clinic_token = None
+        self.lab_token = None
+        self.admin_token = None
+        self.test_results = []
         
-        print(f"📡 GET /api/labs/marketplace")
-        print(f"Status Code: {response.status_code}")
+    def log_test(self, test_name, success, details=""):
+        """Log test result"""
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status} {test_name}")
+        if details:
+            print(f"   {details}")
+        self.test_results.append({
+            "test": test_name,
+            "success": success,
+            "details": details
+        })
         
-        if response.status_code == 200:
-            labs = response.json()
-            print(f"✅ SUCCESS: Retrieved {len(labs)} labs from marketplace")
-            
-            # Validate response structure
-            if isinstance(labs, list) and len(labs) >= 2:
-                print(f"✅ Expected array of labs received: {len(labs)} labs")
-                
-                for i, lab in enumerate(labs):
-                    print(f"\n📋 Lab {i+1}: {lab.get('labName', 'N/A')}")
-                    print(f"   - ID: {lab.get('id', 'N/A')}")
-                    print(f"   - City: {lab.get('city', 'N/A')}")
-                    print(f"   - Description: {lab.get('description', 'N/A')[:50]}...")
-                    print(f"   - Specializations: {lab.get('specializations', [])}")
-                    print(f"   - Pickup Available: {lab.get('pickupAvailable', False)}")
-                    print(f"   - Average Report Time: {lab.get('averageReportTime', 'N/A')}")
-                    print(f"   - Price List Items: {len(lab.get('priceList', []))}")
-                    print(f"   - Connection Status: {lab.get('connectionStatus', 'null')}")
-                
-                # Check required fields
-                required_fields = ['id', 'labName', 'city', 'description', 'specializations', 
-                                 'pickupAvailable', 'averageReportTime', 'priceList', 'connectionStatus']
-                
-                all_fields_present = True
-                for lab in labs:
-                    for field in required_fields:
-                        if field not in lab:
-                            print(f"❌ Missing required field '{field}' in lab {lab.get('labName', 'Unknown')}")
-                            all_fields_present = False
-                
-                if all_fields_present:
-                    print("✅ All required fields present in lab objects")
-                    return True
-                else:
-                    print("❌ Some required fields missing")
-                    return False
+    def try_request(self, method, endpoint, **kwargs):
+        """Try request with fallback URL"""
+        try:
+            url = f"{self.base_url}{endpoint}"
+            response = self.session.request(method, url, timeout=10, **kwargs)
+            return response
+        except Exception as e:
+            print(f"   Primary URL failed ({e}), trying fallback...")
+            try:
+                self.base_url = FALLBACK_URL
+                url = f"{self.base_url}{endpoint}"
+                response = self.session.request(method, url, timeout=10, **kwargs)
+                return response
+            except Exception as e2:
+                print(f"   Fallback URL also failed: {e2}")
+                return None
+
+    def login_user(self, credentials, user_type):
+        """Login and get JWT token"""
+        try:
+            response = self.try_request('POST', '/auth/login', json=credentials)
+            if response and response.status_code == 200:
+                data = response.json()
+                token = data.get('token')
+                user = data.get('user', {})
+                self.log_test(f"{user_type} Login", True, f"Token: {token[:20]}...")
+                return token, user
             else:
-                print(f"❌ Expected array of 2+ labs, got: {type(labs)} with {len(labs) if isinstance(labs, list) else 'N/A'} items")
-                return False
-        else:
-            print(f"❌ FAILED: {response.status_code} - {response.text}")
-            return False
-            
-    except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
-        return False
+                error_msg = response.json().get('error', 'Unknown error') if response else 'No response'
+                self.log_test(f"{user_type} Login", False, f"Status: {response.status_code if response else 'None'}, Error: {error_msg}")
+                return None, None
+        except Exception as e:
+            self.log_test(f"{user_type} Login", False, f"Exception: {str(e)}")
+            return None, None
 
-def test_clinic_connected_labs_api():
-    """Test 2: Lab Marketplace API - Clinic Connected Labs"""
-    print("\n" + "="*60)
-    print("TEST 2: Lab Marketplace API - Clinic Connected Labs")
-    print("="*60)
-    
-    # Login as clinic
-    clinic_token = login_user("clinic")
-    if not clinic_token:
-        print("❌ Cannot test without clinic authentication")
-        return False
-    
-    try:
-        headers = {"Authorization": f"Bearer {clinic_token}"}
+    def test_health_api(self):
+        """Test 1: Health Check API"""
+        try:
+            response = self.try_request('GET', '/health')
+            if response and response.status_code == 200:
+                data = response.json()
+                if data.get('status') == 'ok' and 'vetbuddy' in data.get('app', '').lower():
+                    self.log_test("Health Check API", True, f"Response: {data}")
+                else:
+                    self.log_test("Health Check API", False, f"Unexpected response: {data}")
+            else:
+                self.log_test("Health Check API", False, f"Status: {response.status_code if response else 'None'}")
+        except Exception as e:
+            self.log_test("Health Check API", False, f"Exception: {str(e)}")
+
+    def test_services_api(self):
+        """Test 2: Services Catalog API"""
+        try:
+            response = self.try_request('GET', '/services')
+            if response and response.status_code == 200:
+                data = response.json()
+                if isinstance(data, dict) and len(data) > 0:
+                    categories = list(data.keys())
+                    self.log_test("Services Catalog API", True, f"Found {len(categories)} categories: {categories[:3]}...")
+                else:
+                    self.log_test("Services Catalog API", False, f"Empty or invalid response: {data}")
+            else:
+                self.log_test("Services Catalog API", False, f"Status: {response.status_code if response else 'None'}")
+        except Exception as e:
+            self.log_test("Services Catalog API", False, f"Exception: {str(e)}")
+
+    def test_lab_marketplace_api(self):
+        """Test 3: Lab Marketplace API (requires clinic login)"""
+        if not self.clinic_token:
+            self.log_test("Lab Marketplace API", False, "No clinic token available")
+            return
+            
+        try:
+            headers = {'Authorization': f'Bearer {self.clinic_token}'}
+            response = self.try_request('GET', '/labs/marketplace', headers=headers)
+            if response and response.status_code == 200:
+                data = response.json()
+                if isinstance(data, list):
+                    self.log_test("Lab Marketplace API", True, f"Found {len(data)} labs")
+                    for lab in data[:2]:  # Show first 2 labs
+                        print(f"   Lab: {lab.get('labName', 'Unknown')} - {lab.get('city', 'Unknown city')}")
+                else:
+                    self.log_test("Lab Marketplace API", False, f"Expected array, got: {type(data)}")
+            else:
+                error_msg = response.json().get('error', 'Unknown error') if response else 'No response'
+                self.log_test("Lab Marketplace API", False, f"Status: {response.status_code if response else 'None'}, Error: {error_msg}")
+        except Exception as e:
+            self.log_test("Lab Marketplace API", False, f"Exception: {str(e)}")
+
+    def test_lab_connections_api(self):
+        """Test 4: Lab Connections API (requires lab login)"""
+        if not self.lab_token:
+            self.log_test("Lab Connections API", False, "No lab token available")
+            return
+            
+        try:
+            headers = {'Authorization': f'Bearer {self.lab_token}'}
+            response = self.try_request('GET', '/lab/connections', headers=headers)
+            if response and response.status_code == 200:
+                data = response.json()
+                if isinstance(data, list):
+                    self.log_test("Lab Connections API", True, f"Found {len(data)} connections")
+                    for conn in data[:2]:  # Show first 2 connections
+                        clinic_name = conn.get('clinic', {}).get('clinicName', 'Unknown')
+                        status = conn.get('status', 'Unknown')
+                        print(f"   Connection: {clinic_name} - Status: {status}")
+                else:
+                    self.log_test("Lab Connections API", False, f"Expected array, got: {type(data)}")
+            else:
+                error_msg = response.json().get('error', 'Unknown error') if response else 'No response'
+                self.log_test("Lab Connections API", False, f"Status: {response.status_code if response else 'None'}, Error: {error_msg}")
+        except Exception as e:
+            self.log_test("Lab Connections API", False, f"Exception: {str(e)}")
+
+    def test_lab_self_registration(self):
+        """Test 5: Lab Self-Registration API"""
+        # Generate unique email for testing
+        unique_id = str(uuid.uuid4())[:8]
+        test_lab_data = {
+            "email": f"test-lab-{unique_id}@test.it",
+            "password": "TestLab2025!",
+            "labName": "Test Lab Registrazione",
+            "vatNumber": "IT99999999999",
+            "phone": "02-9999999",
+            "city": "Firenze",
+            "province": "FI",
+            "contactPerson": "Dr. Test",
+            "description": "Lab test registration",
+            "specializations": ["Ematologia", "Biochimica"],
+            "pickupAvailable": True,
+            "pickupDays": "Lun-Ven",
+            "pickupHours": "09:00-12:00",
+            "averageReportTime": "24-48h"
+        }
         
-        # Test GET /api/clinic/connected-labs
-        print(f"\n📡 GET /api/clinic/connected-labs")
-        response = requests.get(f"{BASE_URL}/clinic/connected-labs", headers=headers)
-        print(f"Status Code: {response.status_code}")
-        
-        if response.status_code == 200:
-            connections = response.json()
-            print(f"✅ SUCCESS: Retrieved {len(connections)} connections")
-            print(f"   Connected labs: {[conn.get('lab', {}).get('labName', 'N/A') for conn in connections]}")
-        else:
-            print(f"❌ FAILED: {response.status_code} - {response.text}")
-            return False
-        
-        # Test GET /api/clinic/lab-invitations
-        print(f"\n📡 GET /api/clinic/lab-invitations")
-        response = requests.get(f"{BASE_URL}/clinic/lab-invitations", headers=headers)
-        print(f"Status Code: {response.status_code}")
-        
-        if response.status_code == 200:
-            invitations = response.json()
-            print(f"✅ SUCCESS: Retrieved {len(invitations)} invitations")
-        else:
-            print(f"❌ FAILED: {response.status_code} - {response.text}")
-            return False
-        
-        # Get lab IDs from marketplace for connection test
-        marketplace_response = requests.get(f"{BASE_URL}/labs/marketplace", headers=headers)
-        if marketplace_response.status_code == 200:
-            labs = marketplace_response.json()
-            if labs and len(labs) > 0:
-                lab_id = labs[0]['id']
-                lab_name = labs[0]['labName']
+        try:
+            # Test successful registration
+            response = self.try_request('POST', '/labs/register', json=test_lab_data)
+            if response and response.status_code == 200:
+                data = response.json()
+                if data.get('status') == 'pending_approval' and data.get('labName') == test_lab_data['labName']:
+                    self.log_test("Lab Self-Registration (Success)", True, f"Lab registered: {data.get('labName')} - Status: {data.get('status')}")
+                else:
+                    self.log_test("Lab Self-Registration (Success)", False, f"Unexpected response: {data}")
+            else:
+                error_msg = response.json().get('error', 'Unknown error') if response else 'No response'
+                self.log_test("Lab Self-Registration (Success)", False, f"Status: {response.status_code if response else 'None'}, Error: {error_msg}")
+            
+            # Test duplicate email (should fail)
+            time.sleep(1)  # Brief pause
+            response2 = self.try_request('POST', '/labs/register', json=test_lab_data)
+            if response2 and response2.status_code == 400:
+                error_data = response2.json()
+                if 'già registrata' in error_data.get('error', '').lower():
+                    self.log_test("Lab Self-Registration (Duplicate Email)", True, f"Correctly rejected duplicate: {error_data.get('error')}")
+                else:
+                    self.log_test("Lab Self-Registration (Duplicate Email)", False, f"Wrong error message: {error_data.get('error')}")
+            else:
+                self.log_test("Lab Self-Registration (Duplicate Email)", False, f"Expected 400 error, got: {response2.status_code if response2 else 'None'}")
                 
-                # Test POST /api/clinic/lab-connection
-                print(f"\n📡 POST /api/clinic/lab-connection")
-                print(f"   Requesting connection with lab: {lab_name} (ID: {lab_id})")
+        except Exception as e:
+            self.log_test("Lab Self-Registration", False, f"Exception: {str(e)}")
+
+    def test_lab_billing_api(self):
+        """Test 6: Lab Billing API"""
+        if not self.lab_token:
+            self.log_test("Lab Billing API", False, "No lab token available")
+            return
+            
+        try:
+            headers = {'Authorization': f'Bearer {self.lab_token}'}
+            response = self.try_request('GET', '/lab/billing', headers=headers)
+            if response and response.status_code == 200:
+                data = response.json()
+                required_fields = ['plan', 'freeUntil', 'requestsCount', 'maxFreeRequests', 
+                                 'trialExpired', 'requestsExhausted', 'billingActive', 
+                                 'daysRemaining', 'requestsRemaining']
                 
-                connection_data = {"labId": lab_id}
-                response = requests.post(f"{BASE_URL}/clinic/lab-connection", 
-                                       headers=headers, json=connection_data)
-                print(f"Status Code: {response.status_code}")
+                missing_fields = [field for field in required_fields if field not in data]
+                if not missing_fields:
+                    self.log_test("Lab Billing API", True, f"All required fields present. Plan: {data.get('plan')}, Requests: {data.get('requestsCount')}/{data.get('maxFreeRequests')}")
+                    print(f"   Billing Status: Active={data.get('billingActive')}, Trial Expired={data.get('trialExpired')}, Days Remaining={data.get('daysRemaining')}")
+                else:
+                    self.log_test("Lab Billing API", False, f"Missing fields: {missing_fields}")
+            else:
+                error_msg = response.json().get('error', 'Unknown error') if response else 'No response'
+                self.log_test("Lab Billing API", False, f"Status: {response.status_code if response else 'None'}, Error: {error_msg}")
+        except Exception as e:
+            self.log_test("Lab Billing API", False, f"Exception: {str(e)}")
+
+    def test_billing_in_login_response(self):
+        """Test 7: Billing info in lab login response"""
+        try:
+            response = self.try_request('POST', '/auth/login', json=LAB_CREDENTIALS)
+            if response and response.status_code == 200:
+                data = response.json()
+                user = data.get('user', {})
                 
-                if response.status_code == 200:
-                    result = response.json()
-                    print(f"✅ SUCCESS: {result.get('message', 'Connection request created')}")
-                    
-                    # Verify connection status changed in marketplace
-                    print(f"\n🔍 Verifying connection status in marketplace...")
-                    marketplace_check = requests.get(f"{BASE_URL}/labs/marketplace", headers=headers)
-                    if marketplace_check.status_code == 200:
-                        updated_labs = marketplace_check.json()
-                        target_lab = next((lab for lab in updated_labs if lab['id'] == lab_id), None)
-                        if target_lab:
-                            connection_status = target_lab.get('connectionStatus')
-                            print(f"✅ Lab {lab_name} connection status: {connection_status}")
-                            if connection_status == 'pending':
-                                print("✅ Connection status correctly shows 'pending'")
-                                return True
-                            else:
-                                print(f"⚠️ Expected 'pending' status, got: {connection_status}")
-                                return True  # Still working, just different state
-                        else:
-                            print("❌ Lab not found in marketplace after connection request")
-                            return False
+                # Check if billing info is included in user object
+                billing_fields = ['plan', 'freeUntil', 'requestsCount', 'maxFreeRequests']
+                billing_present = any(field in user for field in billing_fields)
+                
+                if billing_present:
+                    self.log_test("Billing in Login Response", True, f"Billing fields found in user object: {[f for f in billing_fields if f in user]}")
+                else:
+                    # Check if there's a separate billing field
+                    if 'billing' in user:
+                        self.log_test("Billing in Login Response", True, f"Billing object found in user: {list(user['billing'].keys())}")
                     else:
-                        print("❌ Failed to verify marketplace status")
-                        return False
-                        
-                elif response.status_code == 400 and "già esistente" in response.text:
-                    print(f"✅ SUCCESS: Connection already exists (expected behavior)")
-                    return True
-                else:
-                    print(f"❌ FAILED: {response.status_code} - {response.text}")
-                    return False
+                        self.log_test("Billing in Login Response", False, "No billing information found in login response")
             else:
-                print("❌ No labs available in marketplace for connection test")
-                return False
-        else:
-            print("❌ Failed to get labs from marketplace")
-            return False
-            
-    except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
-        return False
+                self.log_test("Billing in Login Response", False, f"Login failed: {response.status_code if response else 'None'}")
+        except Exception as e:
+            self.log_test("Billing in Login Response", False, f"Exception: {str(e)}")
 
-def test_lab_connections_and_price_list():
-    """Test 3: Lab Marketplace API - Lab Connections & Price List"""
-    print("\n" + "="*60)
-    print("TEST 3: Lab Marketplace API - Lab Connections & Price List")
-    print("="*60)
-    
-    # Login as lab
-    lab_token = login_user("lab")
-    if not lab_token:
-        print("❌ Cannot test without lab authentication")
-        return False
-    
-    try:
-        headers = {"Authorization": f"Bearer {lab_token}"}
-        
-        # Test GET /api/lab/connections
-        print(f"\n📡 GET /api/lab/connections")
-        response = requests.get(f"{BASE_URL}/lab/connections", headers=headers)
-        print(f"Status Code: {response.status_code}")
-        
-        connection_id = None
-        if response.status_code == 200:
-            connections = response.json()
-            print(f"✅ SUCCESS: Retrieved {len(connections)} connections")
+    def test_clinic_connected_labs(self):
+        """Test 8: Clinic Connected Labs API"""
+        if not self.clinic_token:
+            self.log_test("Clinic Connected Labs API", False, "No clinic token available")
+            return
             
-            for conn in connections:
-                clinic_info = conn.get('clinic', {})
-                print(f"   - Connection ID: {conn.get('id', 'N/A')}")
-                print(f"   - Clinic: {clinic_info.get('clinicName', 'N/A')}")
-                print(f"   - Status: {conn.get('status', 'N/A')}")
-                print(f"   - Created: {conn.get('createdAt', 'N/A')}")
-                
-                # Store a pending connection ID for testing
-                if conn.get('status') == 'pending':
-                    connection_id = conn.get('id')
-        else:
-            print(f"❌ FAILED: {response.status_code} - {response.text}")
-            return False
-        
-        # Test connection response if we have a pending connection
-        if connection_id:
-            print(f"\n📡 POST /api/lab/connection-response")
-            print(f"   Accepting connection ID: {connection_id}")
-            
-            response_data = {"connectionId": connection_id, "action": "accept"}
-            response = requests.post(f"{BASE_URL}/lab/connection-response", 
-                                   headers=headers, json=response_data)
-            print(f"Status Code: {response.status_code}")
-            
-            if response.status_code == 200:
-                result = response.json()
-                print(f"✅ SUCCESS: {result.get('message', 'Connection accepted')}")
-            else:
-                print(f"⚠️ Connection response test: {response.status_code} - {response.text}")
-        else:
-            print("ℹ️ No pending connections found to test acceptance")
-        
-        # Test GET /api/lab/my-price-list
-        print(f"\n📡 GET /api/lab/my-price-list")
-        response = requests.get(f"{BASE_URL}/lab/my-price-list", headers=headers)
-        print(f"Status Code: {response.status_code}")
-        
-        if response.status_code == 200:
-            price_list = response.json()
-            print(f"✅ SUCCESS: Retrieved {len(price_list)} price list items")
-            
-            for item in price_list[:3]:  # Show first 3 items
-                print(f"   - {item.get('title', item.get('examType', 'N/A'))}: €{item.get('priceFrom', 0)}")
-        else:
-            print(f"❌ FAILED: {response.status_code} - {response.text}")
-            return False
-        
-        # Test POST /api/lab/price-list (update price list)
-        print(f"\n📡 POST /api/lab/price-list")
-        sample_prices = [
-            {
-                "examType": "sangue",
-                "title": "Emocromo Completo",
-                "description": "Analisi completa del sangue",
-                "priceFrom": 25.00,
-                "priceTo": 35.00,
-                "averageDeliveryTime": "24 ore"
-            },
-            {
-                "examType": "urine",
-                "title": "Esame Urine",
-                "description": "Analisi chimico-fisica delle urine",
-                "priceFrom": 15.00,
-                "priceOnRequest": False,
-                "averageDeliveryTime": "12 ore"
-            }
-        ]
-        
-        response = requests.post(f"{BASE_URL}/lab/price-list", 
-                               headers=headers, json={"prices": sample_prices})
-        print(f"Status Code: {response.status_code}")
-        
-        if response.status_code == 200:
-            result = response.json()
-            print(f"✅ SUCCESS: {result.get('message', 'Price list updated')}")
-            print(f"   Updated {result.get('count', 0)} price items")
-        else:
-            print(f"❌ FAILED: {response.status_code} - {response.text}")
-            return False
-        
-        # Get lab ID for public profile tests
-        lab_response = requests.get(f"{BASE_URL}/auth/me", headers=headers)
-        if lab_response.status_code == 200:
-            lab_user = lab_response.json().get('user', {})
-            lab_id = lab_user.get('id')
-            
-            if lab_id:
-                # Test GET /api/labs/{labId}/profile (public profile)
-                print(f"\n📡 GET /api/labs/{lab_id}/profile")
-                response = requests.get(f"{BASE_URL}/labs/{lab_id}/profile")
-                print(f"Status Code: {response.status_code}")
-                
-                if response.status_code == 200:
-                    profile = response.json()
-                    print(f"✅ SUCCESS: Retrieved public profile for {profile.get('labName', 'N/A')}")
-                    print(f"   Price list items: {len(profile.get('priceList', []))}")
+        try:
+            headers = {'Authorization': f'Bearer {self.clinic_token}'}
+            response = self.try_request('GET', '/clinic/connected-labs', headers=headers)
+            if response and response.status_code == 200:
+                data = response.json()
+                if isinstance(data, list):
+                    self.log_test("Clinic Connected Labs API", True, f"Found {len(data)} connected labs")
                 else:
-                    print(f"❌ FAILED: {response.status_code} - {response.text}")
-                    return False
-                
-                # Test GET /api/labs/{labId}/price-list (public price list)
-                print(f"\n📡 GET /api/labs/{lab_id}/price-list")
-                response = requests.get(f"{BASE_URL}/labs/{lab_id}/price-list")
-                print(f"Status Code: {response.status_code}")
-                
-                if response.status_code == 200:
-                    public_prices = response.json()
-                    print(f"✅ SUCCESS: Retrieved public price list with {len(public_prices)} items")
-                    return True
+                    self.log_test("Clinic Connected Labs API", False, f"Expected array, got: {type(data)}")
+            else:
+                error_msg = response.json().get('error', 'Unknown error') if response else 'No response'
+                self.log_test("Clinic Connected Labs API", False, f"Status: {response.status_code if response else 'None'}, Error: {error_msg}")
+        except Exception as e:
+            self.log_test("Clinic Connected Labs API", False, f"Exception: {str(e)}")
+
+    def test_lab_price_list(self):
+        """Test 9: Lab Price List API"""
+        if not self.lab_token:
+            self.log_test("Lab Price List API", False, "No lab token available")
+            return
+            
+        try:
+            headers = {'Authorization': f'Bearer {self.lab_token}'}
+            response = self.try_request('GET', '/lab/my-price-list', headers=headers)
+            if response and response.status_code == 200:
+                data = response.json()
+                if isinstance(data, list):
+                    self.log_test("Lab Price List API", True, f"Found {len(data)} price list items")
+                    for item in data[:2]:  # Show first 2 items
+                        print(f"   Item: {item.get('examType', 'Unknown')} - €{item.get('priceFrom', 0)}")
                 else:
-                    print(f"❌ FAILED: {response.status_code} - {response.text}")
-                    return False
+                    self.log_test("Lab Price List API", False, f"Expected array, got: {type(data)}")
             else:
-                print("❌ Could not get lab ID for public profile tests")
-                return False
-        else:
-            print("❌ Failed to get lab user info")
-            return False
-            
-    except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
-        return False
+                error_msg = response.json().get('error', 'Unknown error') if response else 'No response'
+                self.log_test("Lab Price List API", False, f"Status: {response.status_code if response else 'None'}, Error: {error_msg}")
+        except Exception as e:
+            self.log_test("Lab Price List API", False, f"Exception: {str(e)}")
 
-def test_existing_apis():
-    """Verify existing APIs still work"""
-    print("\n" + "="*60)
-    print("VERIFICATION: Testing Existing APIs")
-    print("="*60)
-    
-    try:
-        # Test health endpoint
-        print(f"\n📡 GET /api/health")
-        response = requests.get(f"{BASE_URL}/health")
-        print(f"Status Code: {response.status_code}")
+    def run_all_tests(self):
+        """Run comprehensive test suite"""
+        print("🧪 VetBuddy Lab Self-Registration and Billing APIs Test Suite")
+        print("=" * 70)
+        print(f"Base URL: {self.base_url}")
+        print(f"Test Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print()
         
-        if response.status_code == 200:
-            health = response.json()
-            print(f"✅ Health check: {health.get('status', 'N/A')}")
-        else:
-            print(f"❌ Health check failed: {response.status_code}")
-            return False
+        # Step 1: Test basic APIs (no auth required)
+        print("📋 STEP 1: Basic API Tests (No Authentication)")
+        print("-" * 50)
+        self.test_health_api()
+        self.test_services_api()
+        print()
         
-        # Test login endpoints
-        for role in ["clinic", "lab"]:
-            token = login_user(role)
-            if token:
-                print(f"✅ {role.title()} login working")
-            else:
-                print(f"❌ {role.title()} login failed")
-                return False
+        # Step 2: Login users
+        print("🔐 STEP 2: Authentication Tests")
+        print("-" * 50)
+        self.clinic_token, clinic_user = self.login_user(CLINIC_CREDENTIALS, "Clinic")
+        self.lab_token, lab_user = self.login_user(LAB_CREDENTIALS, "Lab")
+        print()
         
-        # Test lab-requests endpoint
-        clinic_token = login_user("clinic")
-        if clinic_token:
-            headers = {"Authorization": f"Bearer {clinic_token}"}
-            print(f"\n📡 GET /api/lab-requests")
-            response = requests.get(f"{BASE_URL}/lab-requests", headers=headers)
-            print(f"Status Code: {response.status_code}")
-            
-            if response.status_code == 200:
-                requests_data = response.json()
-                print(f"✅ Lab requests: {len(requests_data)} requests found")
-                return True
-            else:
-                print(f"❌ Lab requests failed: {response.status_code}")
-                return False
-        else:
-            print("❌ Cannot test lab-requests without clinic token")
-            return False
-            
-    except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
-        return False
-
-def main():
-    """Run all Lab Marketplace API tests"""
-    print("🧪 VetBuddy Lab Marketplace Backend API Testing")
-    print(f"🌐 Base URL: {BASE_URL}")
-    print(f"📅 Test Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    
-    test_results = []
-    
-    # Run the 3 main tests from review request
-    test_results.append(("Lab Marketplace API - GET labs/marketplace", test_lab_marketplace_api()))
-    test_results.append(("Lab Marketplace API - Clinic Connected Labs", test_clinic_connected_labs_api()))
-    test_results.append(("Lab Marketplace API - Lab Connections & Price List", test_lab_connections_and_price_list()))
-    
-    # Verify existing APIs still work
-    test_results.append(("Existing APIs Verification", test_existing_apis()))
-    
-    # Summary
-    print("\n" + "="*60)
-    print("🏁 TEST SUMMARY")
-    print("="*60)
-    
-    passed = 0
-    failed = 0
-    
-    for test_name, result in test_results:
-        status = "✅ PASSED" if result else "❌ FAILED"
-        print(f"{status}: {test_name}")
-        if result:
-            passed += 1
-        else:
-            failed += 1
-    
-    print(f"\n📊 Results: {passed} passed, {failed} failed")
-    
-    if failed == 0:
-        print("🎉 ALL TESTS PASSED! Lab Marketplace APIs are working correctly.")
-        return True
-    else:
-        print(f"⚠️ {failed} test(s) failed. Please check the issues above.")
-        return False
+        # Step 3: Test authenticated APIs
+        print("🏥 STEP 3: Authenticated API Tests")
+        print("-" * 50)
+        self.test_lab_marketplace_api()
+        self.test_lab_connections_api()
+        self.test_clinic_connected_labs()
+        self.test_lab_price_list()
+        print()
+        
+        # Step 4: Test Lab Self-Registration
+        print("📝 STEP 4: Lab Self-Registration Tests")
+        print("-" * 50)
+        self.test_lab_self_registration()
+        print()
+        
+        # Step 5: Test Lab Billing
+        print("💰 STEP 5: Lab Billing Tests")
+        print("-" * 50)
+        self.test_lab_billing_api()
+        self.test_billing_in_login_response()
+        print()
+        
+        # Summary
+        print("📊 TEST SUMMARY")
+        print("=" * 70)
+        passed = sum(1 for result in self.test_results if result['success'])
+        total = len(self.test_results)
+        print(f"Total Tests: {total}")
+        print(f"Passed: {passed}")
+        print(f"Failed: {total - passed}")
+        print(f"Success Rate: {(passed/total*100):.1f}%")
+        
+        if total - passed > 0:
+            print("\n❌ FAILED TESTS:")
+            for result in self.test_results:
+                if not result['success']:
+                    print(f"   • {result['test']}: {result['details']}")
+        
+        print(f"\n🎯 Lab Self-Registration and Billing APIs Testing Complete!")
+        return passed == total
 
 if __name__ == "__main__":
-    success = main()
-    sys.exit(0 if success else 1)
+    tester = VetBuddyAPITester()
+    success = tester.run_all_tests()
+    exit(0 if success else 1)

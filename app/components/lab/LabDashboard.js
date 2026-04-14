@@ -49,6 +49,8 @@ function LabDashboard({ user, onLogout }) {
   const [loadingPrices, setLoadingPrices] = useState(false);
   const [savingPrices, setSavingPrices] = useState(false);
   const [newPriceItem, setNewPriceItem] = useState({ examType: '', title: '', priceFrom: '', priceTo: '', priceOnRequest: false, averageDeliveryTime: '' });
+  // Billing
+  const [billing, setBilling] = useState(null);
 
   const LAB_STATUSES = [
     { id: 'pending', name: 'In Attesa', color: 'yellow', icon: Clock },
@@ -61,7 +63,7 @@ function LabDashboard({ user, onLogout }) {
     { id: 'cancelled', name: 'Annullata', color: 'red', icon: XCircle }
   ];
 
-  useEffect(() => { loadRequests(); }, []);
+  useEffect(() => { loadRequests(); loadBilling(); }, []);
 
   useEffect(() => {
     if (activeTab === 'connections') loadConnections();
@@ -105,6 +107,15 @@ function LabDashboard({ user, onLogout }) {
       console.error('Error loading price list:', error);
     } finally {
       setLoadingPrices(false);
+    }
+  };
+
+  const loadBilling = async () => {
+    try {
+      const data = await api.get('lab/billing');
+      setBilling(data);
+    } catch (error) {
+      console.error('Error loading billing:', error);
     }
   };
 
@@ -302,6 +313,49 @@ function LabDashboard({ user, onLogout }) {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Billing Banner */}
+        {billing && (
+          <div className={`mb-6 rounded-xl p-4 border ${
+            billing.billingActive 
+              ? 'bg-red-50 border-red-200' 
+              : billing.daysRemaining <= 30 || billing.requestsRemaining <= 10
+                ? 'bg-amber-50 border-amber-200'
+                : 'bg-green-50 border-green-200'
+          }`}>
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${
+                  billing.billingActive ? 'bg-red-100' : billing.daysRemaining <= 30 || billing.requestsRemaining <= 10 ? 'bg-amber-100' : 'bg-green-100'
+                }`}>
+                  <Euro className={`h-5 w-5 ${
+                    billing.billingActive ? 'text-red-600' : billing.daysRemaining <= 30 || billing.requestsRemaining <= 10 ? 'text-amber-600' : 'text-green-600'
+                  }`} />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">
+                    Piano {billing.plan === 'partner_free' ? 'Lab Partner (Trial)' : 'Lab Partner'}
+                  </p>
+                  {billing.billingActive ? (
+                    <p className="text-xs text-red-700">
+                      ⚠️ Periodo di prova terminato. {billing.trialExpired ? 'I 6 mesi gratuiti sono scaduti.' : ''} {billing.requestsExhausted ? `Hai raggiunto le ${billing.maxFreeRequests} richieste gratuite.` : ''}
+                    </p>
+                  ) : (
+                    <p className="text-xs text-gray-600">
+                      📅 {billing.daysRemaining} giorni rimanenti • 📊 {billing.requestsRemaining}/{billing.maxFreeRequests} richieste disponibili
+                    </p>
+                  )}
+                </div>
+              </div>
+              {billing.billingActive ? (
+                <Button size="sm" className="bg-red-500 hover:bg-red-600 text-xs">
+                  Passa a Lab Partner €29/mese →
+                </Button>
+              ) : (billing.daysRemaining <= 30 || billing.requestsRemaining <= 10) ? (
+                <Badge className="bg-amber-200 text-amber-800 text-xs">Trial in scadenza</Badge>
+              ) : null}
+            </div>
+          </div>
+        )}
         {/* REQUESTS TAB */}
         {activeTab === 'requests' && (
           <>
@@ -634,6 +688,17 @@ function LabDashboard({ user, onLogout }) {
                   <div className="bg-gray-50 rounded-lg p-3"><p className="text-xs text-gray-500">Stato</p><p className="font-medium">{user.status === 'active' ? '✅ Attivo' : '⏳ In attesa'}</p></div>
                   <div className="bg-gray-50 rounded-lg p-3"><p className="text-xs text-gray-500">Piano</p><p className="font-medium">Lab Partner</p></div>
                 </div>
+                {billing && (
+                  <div className={`rounded-lg p-4 border ${billing.billingActive ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`}>
+                    <h4 className="font-semibold text-sm mb-2">{billing.billingActive ? '⚠️ Trial scaduto' : '✅ Trial attivo'}</h4>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div><p className="text-xs text-gray-500">Giorni rimanenti</p><p className="font-bold text-lg">{billing.daysRemaining}</p></div>
+                      <div><p className="text-xs text-gray-500">Richieste</p><p className="font-bold text-lg">{billing.requestsCount}/{billing.maxFreeRequests}</p></div>
+                      <div><p className="text-xs text-gray-500">Scadenza trial</p><p className="font-medium">{billing.freeUntil ? new Date(billing.freeUntil).toLocaleDateString('it-IT') : '-'}</p></div>
+                      <div><p className="text-xs text-gray-500">Dopo il trial</p><p className="font-medium">€29/mese</p></div>
+                    </div>
+                  </div>
+                )}
                 {user.city && <div className="bg-gray-50 rounded-lg p-3"><p className="text-xs text-gray-500">Città</p><p className="font-medium">{user.city}</p></div>}
                 {user.phone && <div className="bg-gray-50 rounded-lg p-3"><p className="text-xs text-gray-500">Telefono</p><p className="font-medium">{user.phone}</p></div>}
                 <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-100">
