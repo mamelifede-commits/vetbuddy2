@@ -13,5 +13,5 @@
 - Password: demo123
 
 ## Admin Account
-- Email: info@vetbuddy.it
-- Password: admin2024!
+- Email: admin@vetbuddy.it
+- Password: Admin2025!
