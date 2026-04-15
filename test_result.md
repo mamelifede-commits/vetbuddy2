@@ -779,6 +779,66 @@ test_plan:
         agent: "testing"
         comment: "COMPREHENSIVE ADMIN LAB MANAGEMENT API TESTING COMPLETED - 13/14 TESTS PASSED ✅: Successfully tested all 4 new VetBuddy Admin Lab Management endpoints as specified in review request. ✅ **GET /api/admin/lab-stats**: Returns comprehensive lab ecosystem statistics with all required fields (labs: {total, active, pending, suspended, rejected, recentRegistrations}, billing: {inTrial, trialExpiringSoon, requestsNearLimit}, requests: {total, pending, completed, reportReady, cancelled}, connections: {active, pending}, reports: {total, visibleToOwner, pendingReview}, topLabs array, requestsByExamType array, pendingLabs array). Stats retrieved: 6 labs, 5 requests, 5 reports. ✅ **GET /api/admin/labs/{labId}/details**: Returns detailed lab information for VetLab Milano (ID: b17e3d85-e9fe-4edb-94ec-a2f6f03df16f) with all required fields (lab profile, connections with clinic names, priceList, stats: {totalRequests, pendingRequests, completedRequests, totalReports}, recentRequests with pet/clinic names, integration settings, billing info). Lab has 1 connection, 2 price list items, 2 total requests. ✅ **POST /api/admin/labs/{labId}/billing**: Successfully updates billing settings with extendTrialDays: 30, maxFreeRequests: 100, resetRequestsCount: false. Verification confirmed maxFreeRequests updated to 100, days remaining: 213. ✅ **DELETE /api/admin/users/{userId}**: Successfully deletes users (tested with created test lab). Admin users cannot delete themselves (proper protection). ✅ **Authorization Control**: Non-admin users correctly get 403 errors. Clinic and lab tokens properly denied access to admin endpoints. ✅ **Regression Testing**: Existing endpoints still work - GET /api/admin/labs returns 7 labs with enriched stats and billing, GET /api/admin/lab-requests returns requests with stats (Total: 5, Pending: 0). ✅ **Error Handling**: Invalid lab IDs return 404, empty billing data handled correctly. ✅ **POST /api/admin/labs/{labId}/status**: Lab approval endpoint working (tested separately). Minor: User deletion test had logic issue expecting 201 instead of 200 status code, but functionality works correctly. All admin lab management requirements from review request satisfied - APIs fully functional and ready for production use."
 
+  - task: "Clinic Booking Link API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE CLINIC BOOKING LINK API TESTING COMPLETED - ALL TESTS PASSED ✅: Successfully tested all clinic booking link endpoints as specified in review request. ✅ **GET /api/clinic/booking-link**: Returns all required fields (slug, bookingUrl, clinicName, profileComplete). Auto-generates slug if not present. Correctly rejects unauthorized requests (403). ✅ **POST /api/clinic/booking-link**: Successfully updates booking URL slug. Correctly rejects duplicates and slugs < 3 characters (400). Slug update verified through re-fetch. ✅ **Authentication**: All endpoints require clinic authentication and work correctly with demo@vetbuddy.it credentials. ✅ **Slug Generation**: Auto-generates unique slugs from clinic names with proper sanitization. All booking link management functionality operational and ready for production use."
+
+  - task: "Public Clinic Profile and Booking API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE PUBLIC CLINIC PROFILE AND BOOKING API TESTING COMPLETED - ALL TESTS PASSED ✅: Successfully tested public clinic endpoints as specified in review request. ✅ **GET /api/clinica/{slug}**: Returns clinic profile with all required fields (clinicName, services, workingHours, address, phone). Correctly excludes sensitive data (password, stripeSecretKey). No authentication required as expected for public endpoint. ✅ **POST /api/clinica/{slug}/book**: Successfully creates appointment with status 'pending' and source 'booking_link'. Validates required fields (ownerName, ownerPhone, petName, date) and correctly rejects requests with missing fields (400). Returns appointmentId and success message. ✅ **Analytics Integration**: Profile views automatically tracked when accessing public clinic profile. All public booking functionality operational and ready for production use."
+
+  - task: "Clinic Metrics Dashboard API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE CLINIC METRICS DASHBOARD API TESTING COMPLETED - ALL TESTS PASSED ✅: Successfully tested clinic metrics endpoint as specified in review request. ✅ **GET /api/clinic/metrics**: Returns all required sections (thisMonth, lastMonth, totals, comparison, weeklyData, monthlyRevenue, recentBookings). ✅ **Fatturato Field**: Confirmed fatturato field is present in thisMonth, lastMonth, and totals sections as required. ✅ **Metrics Data**: Returns comprehensive analytics including appointments, newPatients, profileViews, bookingCompleted, labRequests with proper calculations and comparisons. ✅ **Authentication**: Requires clinic authentication and correctly rejects unauthorized requests (403). ✅ **Data Structure**: Weekly data (4 weeks), monthly revenue (6 months), and recent bookings (10 items) all properly structured. All metrics dashboard functionality operational and ready for production use."
+
+  - task: "Analytics Tracking API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE ANALYTICS TRACKING API TESTING COMPLETED - ALL TESTS PASSED ✅: Successfully tested analytics tracking endpoint as specified in review request. ✅ **POST /api/analytics/track**: No authentication required as expected. Successfully tracks events with clinicId, eventType, and source. Returns success and eventId. ✅ **Event Validation**: Correctly validates eventTypes and rejects invalid types (400). Successfully tracks all valid eventTypes: profile_view, booking_started, booking_completed, booking_abandoned. ✅ **Data Storage**: Events properly stored in clinic_analytics_events collection with proper metadata. ✅ **Integration**: Analytics events integrate with metrics dashboard for comprehensive reporting. All analytics tracking functionality operational and ready for production use."
+
+  - task: "QR Code Generation API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE QR CODE GENERATION API TESTING COMPLETED - ALL TESTS PASSED ✅: Successfully tested QR code generation endpoint as specified in review request. ✅ **POST /api/clinic/qr-code**: Requires clinic authentication and correctly rejects unauthorized requests (403). Successfully generates QR code as base64 data URL with proper format validation. Returns qrCodeDataUrl and bookingUrl. ✅ **Slug Dependency**: Correctly fails when no slug is configured (400) as expected behavior. ✅ **QR Code Quality**: Generated QR codes are valid data URLs with proper image format and reasonable size. All QR code generation functionality operational and ready for production use."
+
 agent_communication:
   - agent: "testing"
     message: "STARTING COMPREHENSIVE FRONTEND TESTING FOR VETBUDDY RECENT CHANGES: Updated test_result.md with 6 new frontend testing tasks from review request: 1) Landing Page Fatturazione Section navigation and content, 2) Favicon display verification, 3) Clinic Dashboard Logout Button repositioning to top sidebar, 4) Owner Dashboard Logout Button repositioning to top sidebar, 5) Animal Species Horse addition to dropdown, 6) Invoicing Tab with Settings in Clinic Dashboard. Will test using target URL: https://vetbuddy-1-e17d0e0e6e6c.stage-preview.emergentagent.com (with localhost:3000 fallback). Credentials ready: Clinic (demo@vetbuddy.it / password123), Owner (proprietario.demo@vetbuddy.it / demo123). Priority focus on high-level tasks first (logout positioning, invoicing features) then medium tasks (favicon, species addition)."
@@ -930,3 +990,113 @@ agent_communication:
     message: "ADMIN DASHBOARD AVANZATA PER GESTIONE LAB - 15-APR-2026: Implementato completamente il nuovo backend e frontend per la gestione avanzata dei laboratori partner. BACKEND: ✅ admin.js completamente riscritto con 3 nuovi endpoint (admin/lab-stats, admin/labs/:id/details, admin/labs/:id/billing), fix del handleAdminDelete (era erroneamente in handleAdminPost), verifyAdmin helper. FRONTEND: ✅ AdminDashboard.js riscritto completamente con: Dashboard principale con alert lab pendenti, Tab Laboratori con 4 sub-tab (Panoramica, In Attesa, Tutti i Lab, Richieste), Vista dettaglio lab full-page con profilo/billing/connessioni/listino/richieste, Modal approvazione/rifiuto/sospensione con motivo, Modal gestione billing (estendi trial, limite richieste, reset). DA TESTARE: Admin lab-stats API, Admin labs details API, Admin labs billing API, Admin delete users API. Credenziali: Admin admin@vetbuddy.it / Admin2025!, Lab laboratorio1@vetbuddy.it / Lab2025!"
   - agent: "testing"
     message: "VETBUDDY LAB EXTERNAL API INTEGRATION (WEBHOOK SYSTEM) TESTING COMPLETED SUCCESSFULLY ✅: Comprehensive testing of the newly implemented webhook system completed with 14/14 tests passing (100% success rate). All Lab Self-Service API Key Management endpoints working (generate API key, integration settings, webhook logs, toggle integration). All Public Webhook Endpoints working (pending requests, update status, upload report). All error cases properly handled (401 for invalid API key, 400 for missing fields/invalid status, 403 for non-lab access, 404 for non-existent requests). Integration toggle workflow fully functional (off → webhook fails → on → webhook works). Authentication working for both lab and clinic users. API key generation and webhook secret management operational. System ready for external lab integrations via webhook API."
+
+  - task: "Clinic Booking Link GET API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "GET /api/clinic/booking-link - Returns clinic booking link info including slug, bookingUrl, profileComplete status. Auto-generates slug if missing. Requires clinic auth."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED SUCCESSFULLY: GET /api/clinic/booking-link returns all required fields (slug, bookingUrl, clinicName, profileComplete). Auto-generates slug if not present. Correctly rejects unauthorized requests (403). Authentication working with demo@vetbuddy.it credentials."
+
+  - task: "Clinic Booking Link POST API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/clinic/booking-link - Updates clinic slug/URL. Validates uniqueness and min 3 chars. Requires clinic auth."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED SUCCESSFULLY: POST /api/clinic/booking-link successfully updates booking URL slug. Correctly rejects duplicates (409) and slugs < 3 characters (400). Slug update verified through re-fetch. All validation working correctly."
+
+  - task: "Public Clinic Profile GET API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "GET /api/clinica/{slug} - Returns public clinic profile by slug. Includes services, working hours, completed appointments count. Also tracks profile_view analytics event. No auth required."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED SUCCESSFULLY: GET /api/clinica/{slug} returns clinic profile with all required fields (clinicName, services, workingHours, address, phone). Correctly excludes sensitive data (password, stripeSecretKey). No authentication required as expected for public endpoint. Profile views automatically tracked."
+
+  - task: "Public Booking POST API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/clinica/{slug}/book - Creates appointment request from public booking form. Requires ownerName, ownerPhone, petName, date. Creates appointment with status 'pending', source 'booking_link' and tracks booking_completed analytics event. No auth required."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED SUCCESSFULLY: POST /api/clinica/{slug}/book successfully creates appointment with status 'pending' and source 'booking_link'. Validates required fields (ownerName, ownerPhone, petName, date) and correctly rejects requests with missing fields (400). Returns appointmentId and success message."
+
+  - task: "Clinic Metrics GET API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "GET /api/clinic/metrics - Returns comprehensive analytics dashboard data: thisMonth stats (profileViews, bookings, appointments, fatturato, newPatients, labRequests), lastMonth comparison, totals, comparison deltas, bookingsBySource, weeklyData array, monthlyRevenue array (6 months), recentBookings array. Requires clinic auth."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED SUCCESSFULLY: GET /api/clinic/metrics returns all required sections (thisMonth, lastMonth, totals, comparison, weeklyData, monthlyRevenue, recentBookings). Confirmed fatturato field is present in thisMonth, lastMonth, and totals sections as required. Returns comprehensive analytics including appointments, newPatients, profileViews, bookingCompleted, labRequests with proper calculations and comparisons. Requires clinic authentication and correctly rejects unauthorized requests (403)."
+
+  - task: "Analytics Track POST API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/analytics/track - Tracks analytics events (profile_view, booking_started, booking_completed, etc). Updates booking_sessions collection for funnel tracking. No auth required (public endpoint)."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED SUCCESSFULLY: POST /api/analytics/track successfully tracks events with clinicId, eventType, and source. Returns success and eventId. Correctly validates eventTypes and rejects invalid types (400). Successfully tracks all valid eventTypes: profile_view, booking_started, booking_completed, booking_abandoned. No authentication required as expected. Events properly stored in clinic_analytics_events collection."
+
+  - task: "Clinic QR Code POST API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/clinic/qr-code - Generates QR code data URL for the clinic booking link. Uses qrcode library. Requires clinic auth and slug to be configured."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED SUCCESSFULLY: POST /api/clinic/qr-code successfully generates QR code as base64 data URL with proper format validation. Returns qrCodeDataUrl and bookingUrl. Requires clinic authentication and correctly rejects unauthorized requests (403). Correctly fails when no slug is configured (400) as expected behavior. Generated QR codes are valid data URLs with proper image format."
+
+  - agent: "main"
+    message: "DIRECT BOOKING LINK + METRICS DASHBOARD IMPLEMENTATION - 15-APR-2026: Implemented both missing features from the original project plan. BACKEND: modules/clinic.js fully implemented with 7 new endpoints wired into route.js. Endpoints: GET/POST clinic/booking-link, GET clinica/{slug}, POST clinica/{slug}/book, GET clinic/metrics (with fatturato!), POST analytics/track, POST clinic/qr-code. FRONTEND: ClinicBookingLink.js (shareable URL, copy, QR code, customize slug, usage tips), ClinicMetrics.js (KPI cards with fatturato/appointments/patients/views/conversions, AreaChart revenue 6mo, PieChart appointment status, BarChart weekly bookings, Funnel prenotazioni, totals, recent bookings). PUBLIC PAGE: /clinica/[slug] with clinic profile, services, hours, no-login booking form. Nav items added to clinic sidebar. Credentials: Clinic demo@vetbuddy.it / VetBuddy2025!Secure"
+  - agent: "testing"
+    message: "🧪 COMPREHENSIVE CLINIC BOOKING LINK AND METRICS DASHBOARD API TESTING COMPLETED - ALL 20/20 TESTS PASSED ✅: Successfully tested all newly implemented VetBuddy Clinic Booking Link and Metrics Dashboard API endpoints as specified in review request. ✅ **Authentication**: Both clinic (demo@vetbuddy.it / VetBuddy2025!Secure) and lab (laboratorio1@vetbuddy.it / Lab2025!) authentication working correctly. ✅ **Booking Link Management**: GET /api/clinic/booking-link returns all required fields (slug, bookingUrl, clinicName, profileComplete), POST /api/clinic/booking-link successfully updates slugs with proper validation (rejects duplicates 409, short slugs 400). ✅ **Public Clinic Profile**: GET /api/clinica/{slug} returns clinic profile without sensitive data, POST /api/clinica/{slug}/book creates appointments with proper validation. ✅ **Metrics Dashboard**: GET /api/clinic/metrics returns all required sections with fatturato field present in thisMonth/lastMonth/totals. ✅ **Analytics Tracking**: POST /api/analytics/track successfully tracks all valid eventTypes (profile_view, booking_started, booking_completed, booking_abandoned), rejects invalid types. ✅ **QR Code Generation**: POST /api/clinic/qr-code generates valid base64 data URLs for booking links. ✅ **Security**: All authenticated endpoints properly reject unauthorized requests (401/403). All booking link and metrics functionality operational and ready for production use. Base URL: https://clinic-report-review.preview.emergentagent.com/api working correctly."

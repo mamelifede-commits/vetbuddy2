@@ -187,6 +187,98 @@ export async function handleClinicGet(path, request) {
     const recentBookings = await appointments.find({ clinicId: user.id })
       .sort({ createdAt: -1 }).limit(10).toArray();
 
+    // ===== REVENUE (Fatturato) =====
+    const documents = await getCollection('documents');
+    // Revenue from invoices/fatture this month
+    const thisMonthInvoices = await documents.find({
+      clinicId: user.id,
+      $or: [{ type: 'fattura' }, { type: 'invoice' }, { category: 'fattura' }],
+      createdAt: { $gte: thisMonthStart }
+    }).toArray();
+    const thisMonthRevenue = thisMonthInvoices.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
+
+    // Revenue from completed appointments this month (fallback if no invoices)
+    const completedAppts = await appointments.find({
+      clinicId: user.id,
+      status: 'completato',
+      createdAt: { $gte: thisMonthStart }
+    }).toArray();
+    const thisMonthApptRevenue = completedAppts.reduce((sum, a) => sum + (parseFloat(a.price) || 0), 0);
+
+    // Last month revenue
+    const lastMonthInvoices = await documents.find({
+      clinicId: user.id,
+      $or: [{ type: 'fattura' }, { type: 'invoice' }, { category: 'fattura' }],
+      createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd }
+    }).toArray();
+    const lastMonthRevenue = lastMonthInvoices.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
+
+    const lastMonthCompletedAppts = await appointments.find({
+      clinicId: user.id,
+      status: 'completato',
+      createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd }
+    }).toArray();
+    const lastMonthApptRevenue = lastMonthCompletedAppts.reduce((sum, a) => sum + (parseFloat(a.price) || 0), 0);
+
+    // Total revenue (all time)
+    const allInvoices = await documents.find({
+      clinicId: user.id,
+      $or: [{ type: 'fattura' }, { type: 'invoice' }, { category: 'fattura' }]
+    }).toArray();
+    const totalInvoiceRevenue = allInvoices.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
+    const allCompletedAppts = await appointments.find({ clinicId: user.id, status: 'completato' }).toArray();
+    const totalApptRevenue = allCompletedAppts.reduce((sum, a) => sum + (parseFloat(a.price) || 0), 0);
+
+    // Use the higher of the two sources as the revenue figure
+    const thisMonthFatturato = Math.max(thisMonthRevenue, thisMonthApptRevenue);
+    const lastMonthFatturato = Math.max(lastMonthRevenue, lastMonthApptRevenue);
+    const totalFatturato = Math.max(totalInvoiceRevenue, totalApptRevenue);
+
+    // Monthly revenue trend (last 6 months)
+    const monthlyRevenue = [];
+    for (let i = 5; i >= 0; i--) {
+      const mStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const mEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
+      const mInvoices = await documents.find({
+        clinicId: user.id,
+        $or: [{ type: 'fattura' }, { type: 'invoice' }, { category: 'fattura' }],
+        createdAt: { $gte: mStart.toISOString(), $lte: mEnd.toISOString() }
+      }).toArray();
+      const mAppts = await appointments.find({
+        clinicId: user.id,
+        status: 'completato',
+        createdAt: { $gte: mStart.toISOString(), $lte: mEnd.toISOString() }
+      }).toArray();
+      const invRev = mInvoices.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
+      const apptRev = mAppts.reduce((sum, a) => sum + (parseFloat(a.price) || 0), 0);
+      monthlyRevenue.push({
+        month: mStart.toLocaleDateString('it-IT', { month: 'short' }),
+        year: mStart.getFullYear(),
+        revenue: Math.max(invRev, apptRev),
+        invoices: mInvoices.length,
+        appointments: mAppts.length
+      });
+    }
+
+    // New patients this month
+    const users2 = await getCollection('users');
+    const newPatientsThisMonth = await users2.countDocuments({
+      role: 'owner',
+      clinicId: user.id,
+      createdAt: { $gte: thisMonthStart }
+    });
+    const newPatientsLastMonth = await users2.countDocuments({
+      role: 'owner',
+      clinicId: user.id,
+      createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd }
+    });
+    const totalPatients = await users2.countDocuments({ role: 'owner', clinicId: user.id });
+
+    // Lab requests this month
+    const labRequests = await getCollection('lab_requests');
+    const thisMonthLabRequests = await labRequests.countDocuments({ clinicId: user.id, createdAt: { $gte: thisMonthStart } });
+    const lastMonthLabRequests = await labRequests.countDocuments({ clinicId: user.id, createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd } });
+
     return NextResponse.json({
       thisMonth: {
         profileViews: thisMonthProfileViews,
@@ -198,25 +290,37 @@ export async function handleClinicGet(path, request) {
         cancelledAppointments: cancelledAppointments,
         noShowAppointments: noShowAppointments,
         conversionRate,
-        phoneCallsSaved
+        phoneCallsSaved,
+        fatturato: thisMonthFatturato,
+        newPatients: newPatientsThisMonth,
+        labRequests: thisMonthLabRequests
       },
       lastMonth: {
         profileViews: lastMonthProfileViews,
-        bookingCompleted: lastMonthBookingCompleted
+        bookingCompleted: lastMonthBookingCompleted,
+        fatturato: lastMonthFatturato,
+        newPatients: newPatientsLastMonth,
+        labRequests: lastMonthLabRequests
       },
       totals: {
         profileViews: totalProfileViews,
         bookingsCompleted: totalBookingsCompleted,
-        appointments: totalAppointments
+        appointments: totalAppointments,
+        fatturato: totalFatturato,
+        patients: totalPatients
       },
       comparison: {
         profileViewsDelta: thisMonthProfileViews - lastMonthProfileViews,
-        bookingsDelta: thisMonthBookingCompleted - lastMonthBookingCompleted
+        bookingsDelta: thisMonthBookingCompleted - lastMonthBookingCompleted,
+        fatturatoDelta: thisMonthFatturato - lastMonthFatturato,
+        patientsDelta: newPatientsThisMonth - newPatientsLastMonth,
+        labRequestsDelta: thisMonthLabRequests - lastMonthLabRequests
       },
       bookingsBySource: bookingsBySource.map(s => ({ source: s._id || 'direct', count: s.count })),
       weeklyData,
+      monthlyRevenue,
       recentBookings: recentBookings.map(a => ({
-        id: a.id, petName: a.petName, service: a.service, date: a.date, time: a.time, status: a.status, createdAt: a.createdAt
+        id: a.id, petName: a.petName, service: a.service || a.reason, date: a.date, time: a.time, status: a.status, ownerName: a.ownerName, price: a.price, createdAt: a.createdAt
       })),
       message: thisMonthBookingCompleted > 0 
         ? `Questo mese VetBuddy ti ha portato ${thisMonthBookingCompleted} prenotazion${thisMonthBookingCompleted === 1 ? 'e' : 'i'} e ti ha evitato ${phoneCallsSaved} telefonat${phoneCallsSaved === 1 ? 'a' : 'e'}.`
@@ -353,6 +457,67 @@ export async function handleClinicPost(path, request, body) {
     } catch (error) {
       return NextResponse.json({ error: 'Errore generazione QR code' }, { status: 500, headers: corsHeaders });
     }
+  }
+
+  // Public booking - create appointment request from public link (no auth required)
+  if (path.match(/^clinica\/[^/]+\/book$/)) {
+    const slug = path.split('/')[1];
+
+    const users = await getCollection('users');
+    const clinic = await users.findOne({ slug, role: 'clinic' });
+
+    if (!clinic) {
+      return NextResponse.json({ error: 'Clinica non trovata' }, { status: 404, headers: corsHeaders });
+    }
+
+    const { ownerName, ownerEmail, ownerPhone, petName, petSpecies, service, date, time, notes } = body;
+
+    if (!ownerName || !ownerPhone || !petName || !date) {
+      return NextResponse.json({ error: 'Campi obbligatori: nome, telefono, nome animale, data' }, { status: 400, headers: corsHeaders });
+    }
+
+    const appointments = await getCollection('appointments');
+    const appointmentId = uuidv4();
+
+    const appointment = {
+      id: appointmentId,
+      clinicId: clinic.id,
+      clinicName: clinic.clinicName || clinic.name,
+      ownerName,
+      ownerEmail: ownerEmail || '',
+      ownerPhone,
+      petName,
+      petSpecies: petSpecies || '',
+      date,
+      time: time || 'mattina',
+      reason: service || 'Visita generica',
+      serviceId: service || 'Visita generica',
+      notes: notes || '',
+      status: 'pending',
+      type: 'richiesta',
+      source: 'booking_link',
+      createdAt: new Date().toISOString()
+    };
+
+    await appointments.insertOne(appointment);
+
+    // Track analytics event
+    const events = await getCollection('clinic_analytics_events');
+    await events.insertOne({
+      id: uuidv4(),
+      clinicId: clinic.id,
+      eventType: 'booking_completed',
+      source: 'booking_link',
+      sessionId: body.sessionId || uuidv4(),
+      metadata: { slug, petName, service, ownerName },
+      createdAt: new Date().toISOString()
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Richiesta di appuntamento inviata con successo! La clinica ti contatterà per confermare.',
+      appointmentId
+    }, { headers: corsHeaders });
   }
 
   return null;

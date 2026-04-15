@@ -60,6 +60,8 @@ const ClinicServices = dynamic(() => import('@/app/components/clinic/ClinicServi
 const ClinicSettings = dynamic(() => import('@/app/components/clinic/ClinicSettings'), { ssr: false });
 const ClinicTemplates = dynamic(() => import('@/app/components/clinic/ClinicTemplates'), { ssr: false });
 const ClinicVideoConsult = dynamic(() => import('@/app/components/clinic/ClinicVideoConsult'), { ssr: false });
+const ClinicBookingLink = dynamic(() => import('@/app/components/clinic/ClinicBookingLink'), { ssr: false });
+const ClinicMetrics = dynamic(() => import('@/app/components/clinic/ClinicMetrics'), { ssr: false });
 const DocumentUploadForm = dynamic(() => import('@/app/components/clinic/DocumentUploadForm'), { ssr: false });
 const FindClinic = dynamic(() => import('@/app/components/owner/FindClinic'), { ssr: false });
 const InviteClinic = dynamic(() => import('@/app/components/owner/InviteClinic'), { ssr: false });
@@ -1842,6 +1844,8 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
               <NavItem icon={Users} label="Staff" value="staff" />
               <NavItem icon={Receipt} label="Fatturazione" value="invoicing" />
               <NavItem icon={TrendingUp} label="Report" value="reports" />
+              <NavItem icon={BarChart3} label="Metriche" value="metrics" />
+              <NavItem icon={Link2} label="Link Prenotazione" value="bookinglink" />
               <NavItem icon={Star} label="Recensioni" value="reviews" />
               <NavItem icon={Gift} label="Premi Fedeltà" value="rewards" />
               <NavItem icon={ClipboardList} label="Template" value="templates" />
@@ -1888,6 +1892,8 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           <NavItem icon={Users} label="Staff" value="staff" />
           <NavItem icon={Receipt} label="Fatturazione" value="invoicing" />
           <NavItem icon={TrendingUp} label="Report" value="reports" />
+          <NavItem icon={BarChart3} label="Metriche" value="metrics" />
+          <NavItem icon={Link2} label="Link Prenotazione" value="bookinglink" />
           <NavItem icon={Star} label="Recensioni" value="reviews" />
           <NavItem icon={Gift} label="Premi Fedeltà" value="rewards" />
           <NavItem icon={ClipboardList} label="Template" value="templates" />
@@ -1916,6 +1922,8 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'labanalysis' && <ClinicLabAnalysis user={user} pets={pets} owners={owners} />}
         {activeTab === 'labmarketplace' && <ClinicLabMarketplace user={user} />}
         {activeTab === 'invoicing' && <ClinicInvoicing user={user} owners={owners} pets={pets} />}
+        {activeTab === 'metrics' && <ClinicMetrics user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'bookinglink' && <ClinicBookingLink user={user} onNavigate={setActiveTab} />}
         {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} onNavigate={setActiveTab} />}
         {activeTab === 'automations' && <ClinicAutomations user={user} onNavigate={setActiveTab} />}
         {activeTab === 'archive' && <ClinicArchive user={user} />}

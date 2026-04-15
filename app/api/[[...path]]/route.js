@@ -14,6 +14,7 @@ import {
 import { handleLabGet, handleLabPost } from './modules/lab';
 import { handleAuthGet, handleAuthPost } from './modules/auth';
 import { handleAdminGet, handleAdminPost, handleAdminDelete } from './modules/admin';
+import { handleClinicGet, handleClinicPost } from './modules/clinic';
 
 // Force dynamic rendering to prevent static generation errors
 export const dynamic = 'force-dynamic';
@@ -346,6 +347,11 @@ export async function GET(request, { params }) {
       const list = await reviews.find({ clinicId: user.id }).sort({ createdAt: -1 }).toArray();
       return NextResponse.json({ reviews: list }, { headers: corsHeaders });
     }
+
+    // ==================== CLINIC MODULE - GET (delegated to modules/clinic.js) ====================
+    const clinicModuleGetResult = await handleClinicGet(path, request);
+    if (clinicModuleGetResult) return clinicModuleGetResult;
+    // ==================== END CLINIC MODULE - GET ====================
 
     // ==================== LAB API - GET (delegated to modules/lab.js) ====================
     const labGetResult = await handleLabGet(path, request);
@@ -2196,6 +2202,11 @@ export async function POST(request, { params }) {
 
       return NextResponse.json({ success: true, message: 'Premio segnato come utilizzato' }, { headers: corsHeaders });
     }
+
+    // ==================== CLINIC MODULE - POST (delegated to modules/clinic.js) ====================
+    const clinicModulePostResult = await handleClinicPost(path, request, body);
+    if (clinicModulePostResult) return clinicModulePostResult;
+    // ==================== END CLINIC MODULE - POST ====================
 
     // ==================== LAB API - POST (delegated to modules/lab.js) ====================
     const labPostResult = await handleLabPost(path, request, body);
