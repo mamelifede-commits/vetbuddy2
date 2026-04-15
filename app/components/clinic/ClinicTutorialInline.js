@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, Building2, Calendar, FileText, Receipt, CreditCard, MessageCircle, Zap, BarChart3, ChevronRight } from 'lucide-react';
+import { Download, Building2, Calendar, FileText, Receipt, CreditCard, MessageCircle, Zap, BarChart3, ChevronRight, Link, FlaskConical } from 'lucide-react';
 
 function ClinicTutorialInline() {
   const [downloadingPDF, setDownloadingPDF] = useState(false);
@@ -25,14 +25,14 @@ function ClinicTutorialInline() {
   };
   
   const sections = [
-    { icon: Building2, title: 'Configurazione Iniziale', color: 'bg-coral-500', content: ['Registrati come clinica su vetbuddy.it', 'Completa il profilo: nome clinica, indirizzo, P.IVA, orari', 'Aggiungi logo e foto della struttura', 'Configura i servizi offerti e i relativi prezzi'], tip: 'Il Piano Starter è perfetto per veterinari freelance.' },
-    { icon: Calendar, title: 'Gestione Appuntamenti', color: 'bg-blue-500', content: ['Visualizza il calendario dalla dashboard', 'Vedi appuntamenti in vista giornaliera, settimanale o mensile', 'Gestisci richieste: accetta, rifiuta o riprogramma', 'Imposta promemoria automatici'], tip: 'Usa i codici colore per distinguere tipi di appuntamento.' },
-    { icon: FileText, title: 'Documenti e Prescrizioni', color: 'bg-amber-500', content: ['Crea prescrizioni, referti, certificati', 'Carica PDF esistenti o genera da template', 'Invia automaticamente via email al proprietario', 'Il documento sarà disponibile nell\'app del cliente'], tip: 'I documenti inviati digitalmente riducono le telefonate!' },
-    { icon: Receipt, title: 'Fatturazione PROFORMA', color: 'bg-indigo-500', content: ['Crea fattura PROFORMA selezionando il cliente', 'Aggiungi servizi prestati con prezzi e quantità', 'Genera PDF ed esporta in CSV per il commercialista'], tip: 'Le fatture PROFORMA sono documenti non fiscali.' },
-    { icon: CreditCard, title: 'Pagamenti Online', color: 'bg-emerald-500', content: ['I proprietari possono pagare online prima della visita', 'Pagamento sicuro tramite Stripe', 'Nessuna commissione vetbuddy sulle transazioni'], tip: 'Il pagamento anticipato riduce i no-show del 60%.' },
-    { icon: MessageCircle, title: 'Notifiche WhatsApp', color: 'bg-green-500', content: ['Configura WhatsApp Business nelle Impostazioni', 'I clienti ricevono promemoria automatici su WhatsApp', 'Notifiche per: appuntamenti, documenti, pagamenti', 'Il cliente può attivare/disattivare dal suo profilo'], tip: 'WhatsApp ha un tasso di apertura del 98%!' },
-    { icon: Zap, title: 'Automazioni (Piano Premium)', color: 'bg-orange-500', content: ['Promemoria automatici 24h prima dell\'appuntamento', 'Follow-up post visita con istruzioni', 'Notifiche WhatsApp e Email automatiche'], tip: 'Le automazioni fanno risparmiare 2 ore al giorno!' },
-    { icon: BarChart3, title: 'Analytics e Report', color: 'bg-violet-500', content: ['Dashboard con KPI principali in tempo reale', 'Numero visite, fatturato, nuovi clienti', 'Report esportabili in CSV'], tip: 'Usa i dati per ottimizzare l\'offerta.' }
+    { icon: Building2, title: 'Configurazione Iniziale', color: 'bg-violet-500', content: ['Registrati come clinica su vetbuddy.it', 'Completa il profilo: nome clinica, indirizzo, P.IVA, orari', 'Aggiungi logo e foto della struttura', 'Configura i servizi offerti e i relativi prezzi', 'Scegli il piano: Starter €29/mese o Pro €59/mese'], tip: '30 giorni di prova gratuita su tutti i piani!' },
+    { icon: Link, title: 'Link di Prenotazione', color: 'bg-coral-500', content: ['Vai su "Link Prenotazione" nel menu', 'Copia e condividi il tuo link personalizzato', 'Genera un QR Code da stampare in reception', 'I clienti prenotano SENZA registrarsi!', 'Le prenotazioni arrivano nella tua agenda'], tip: 'Condividi su WhatsApp ai clienti per fidelizzarli!' },
+    { icon: Calendar, title: 'Gestione Appuntamenti', color: 'bg-blue-500', content: ['Visualizza il calendario dalla dashboard', 'Vedi appuntamenti in vista giornaliera, settimanale o mensile', 'Gestisci richieste: accetta, rifiuta o riprogramma', 'Le prenotazioni dal link diretto hanno fonte "booking_link"'], tip: 'Usa i codici colore per distinguere tipi di appuntamento.' },
+    { icon: FlaskConical, title: 'Lab Marketplace', color: 'bg-purple-500', content: ['Sfoglia i laboratori partner disponibili', 'Crea richieste di analisi per i tuoi pazienti', 'Segui lo stato in tempo reale', 'Rivedi i referti e invia al proprietario'], tip: 'I referti sono nascosti al proprietario fino alla tua approvazione.' },
+    { icon: BarChart3, title: 'Dashboard Metriche', color: 'bg-emerald-500', content: ['KPI: fatturato, appuntamenti, pazienti, visite al profilo', 'Grafico andamento fatturato 6 mesi', 'Funnel conversione prenotazioni', 'Analisi lab richieste e completate'], tip: 'Usa le metriche per capire quali canali portano più prenotazioni!' },
+    { icon: FileText, title: 'Documenti e Fatturazione', color: 'bg-amber-500', content: ['Crea prescrizioni, referti, certificati', 'Fatturazione proforma con IVA e marca da bollo', 'Genera PDF ed esporta in CSV per il commercialista'], tip: 'I documenti digitali riducono le telefonate!' },
+    { icon: CreditCard, title: 'Abbonamento e Pagamenti', color: 'bg-indigo-500', content: ['Starter: €29/mese - Pro: €59/mese (IVA esclusa)', '30 giorni di prova gratuita', 'Pagamento sicuro con Stripe', 'I pagamenti clienti vanno direttamente a te'], tip: 'Annulla in qualsiasi momento senza vincoli.' },
+    { icon: Zap, title: 'Automazioni (Piano Pro)', color: 'bg-orange-500', content: ['Promemoria automatici 24h prima dell\'appuntamento', 'Follow-up post visita con istruzioni', 'Metriche avanzate e lab marketplace', 'Video-consulti e supporto prioritario'], tip: 'Le automazioni fanno risparmiare 2 ore al giorno!' }
   ];
 
   return (
@@ -51,7 +51,7 @@ function ClinicTutorialInline() {
       <div className="bg-gradient-to-r from-coral-500 to-orange-600 rounded-2xl p-6 text-white">
         <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><Zap className="h-5 w-5" /> Quick Start - Operativi in 15 minuti</h3>
         <div className="grid md:grid-cols-4 gap-4">
-          {['1. Registrati come clinica', '2. Configura servizi e orari', '3. Importa i pazienti', '4. Inizia a ricevere prenotazioni'].map((item, i) => (
+          {['1. Registrati come clinica', '2. Configura servizi e orari', '3. Attiva il link prenotazione', '4. Inizia a ricevere prenotazioni'].map((item, i) => (
             <div key={i} className="flex items-center gap-3 bg-white/20 rounded-xl p-3 text-sm">
               <div className="h-8 w-8 rounded-full bg-white text-coral-600 flex items-center justify-center font-bold">{i+1}</div>
               <span>{item.substring(3)}</span>

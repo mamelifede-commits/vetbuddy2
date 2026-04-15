@@ -17,6 +17,8 @@ import {
 
 } from 'lucide-react';
 import api from '@/app/lib/api';
+import dynamic from 'next/dynamic';
+const SubscriptionPlans = dynamic(() => import('@/app/components/shared/SubscriptionPlans'), { ssr: false });
 
 const EXAM_TYPES_LIST = [
   { id: 'sangue', label: '🩸 Sangue' },
@@ -921,6 +923,17 @@ function LabDashboard({ user, onLogout }) {
         {activeTab === 'settings' && (
           <div className="max-w-2xl space-y-6">
             <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><Settings className="h-6 w-6 text-indigo-500" />Profilo Laboratorio</h2>
+            
+            {/* Abbonamento */}
+            <Card className="border-indigo-200 bg-gradient-to-r from-indigo-50 to-white">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Euro className="h-5 w-5 text-indigo-500" />Abbonamento VetBuddy
+                </h3>
+                <SubscriptionPlans user={user} />
+              </CardContent>
+            </Card>
+
             <Card>
               <CardContent className="p-6 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -936,7 +949,7 @@ function LabDashboard({ user, onLogout }) {
                       <div><p className="text-xs text-gray-500">Giorni rimanenti</p><p className="font-bold text-lg">{billing.daysRemaining}</p></div>
                       <div><p className="text-xs text-gray-500">Richieste</p><p className="font-bold text-lg">{billing.requestsCount}/{billing.maxFreeRequests}</p></div>
                       <div><p className="text-xs text-gray-500">Scadenza trial</p><p className="font-medium">{billing.freeUntil ? new Date(billing.freeUntil).toLocaleDateString('it-IT') : '-'}</p></div>
-                      <div><p className="text-xs text-gray-500">Dopo il trial</p><p className="font-medium">€29/mese</p></div>
+                      <div><p className="text-xs text-gray-500">Dopo il trial</p><p className="font-medium">€39/mese</p></div>
                     </div>
                   </div>
                 )}

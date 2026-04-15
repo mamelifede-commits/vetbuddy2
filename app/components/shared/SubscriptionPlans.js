@@ -1,37 +1,58 @@
 'use client';
+// SubscriptionPlans - Piani abbonamento VetBuddy
 
 import { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Inbox, CheckCircle, RefreshCw } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { CheckCircle, RefreshCw, Crown, Sparkles, FlaskConical, Building2, Check, X } from 'lucide-react';
 import api from '@/app/lib/api';
 
 function SubscriptionPlans({ user }) {
   const [loading, setLoading] = useState(false);
-  const [currentPlan, setCurrentPlan] = useState(user?.subscriptionPlan || 'pilot');
+  const [loadingPlan, setLoadingPlan] = useState(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [plans, setPlans] = useState(null);
 
-  // Controlla se c'è un session_id nell'URL (ritorno da Stripe)
   useEffect(() => {
+    loadSubscriptionStatus();
+    loadPlans();
+    // Check for return from Stripe
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
-    const paymentStatus = urlParams.get('payment');
-    
-    if (sessionId && paymentStatus === 'success') {
+    const subStatus = urlParams.get('subscription');
+    if (sessionId && subStatus === 'success') {
       pollPaymentStatus(sessionId);
     }
   }, []);
 
-  const pollPaymentStatus = async (sessionId, attempts = 0) => {
-    const maxAttempts = 5;
-    if (attempts >= maxAttempts) return;
-
+  const loadSubscriptionStatus = async () => {
     try {
-      const res = await api.get(`payments/status/${sessionId}`);
-      if (res.paymentStatus === 'paid') {
+      const status = await api.get('stripe/subscription-status');
+      setSubscriptionStatus(status);
+    } catch (error) {
+      console.error('Error loading subscription:', error);
+    }
+  };
+
+  const loadPlans = async () => {
+    try {
+      const p = await api.get('stripe/plans');
+      setPlans(p);
+    } catch (error) {
+      console.error('Error loading plans:', error);
+    }
+  };
+
+  const pollPaymentStatus = async (sessionId, attempts = 0) => {
+    const maxAttempts = 8;
+    if (attempts >= maxAttempts) return;
+    try {
+      const res = await api.get(`stripe/checkout/status/${sessionId}`);
+      if (res.paymentStatus === 'paid' || res.status === 'complete') {
         setPaymentSuccess(true);
-        setCurrentPlan(res.metadata?.planId || 'pro');
-        // Rimuovi i parametri dall'URL
+        loadSubscriptionStatus();
         window.history.replaceState({}, '', window.location.pathname);
       } else if (res.status !== 'expired') {
         setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), 2000);
@@ -42,154 +63,224 @@ function SubscriptionPlans({ user }) {
   };
 
   const handleSubscribe = async (planId) => {
-    if (planId === 'starter' || planId === 'pilot') return; // Piani gratuiti
-    
-    setLoading(true);
+    setLoadingPlan(planId);
     try {
       const originUrl = window.location.origin;
-      const res = await api.post('payments/checkout', {
+      const res = await api.post('stripe/checkout/subscription', {
         planId,
-        clinicId: user?.id,
         originUrl
       });
-      
       if (res.url) {
-        window.location.href = res.url; // Redirect a Stripe Checkout
+        window.location.href = res.url;
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Errore durante la creazione del pagamento');
+      alert(error.message || 'Errore durante la creazione del pagamento');
     } finally {
-      setLoading(false);
+      setLoadingPlan(null);
     }
   };
 
-  const isPilotActive = currentPlan === 'pilot' || currentPlan === 'pro';
+  const currentPlan = subscriptionStatus?.plan || user?.subscriptionPlan;
+  const isActive = subscriptionStatus?.hasSubscription || false;
+  const isLab = user?.role === 'lab';
+  const isClinic = user?.role === 'clinic';
+
+  const planConfigs = [
+    {
+      id: 'starter',
+      name: 'Clinica Starter',
+      price: 29,
+      icon: Sparkles,
+      color: 'violet',
+      borderColor: 'border-violet-300',
+      bgColor: 'bg-violet-50',
+      buttonColor: 'bg-violet-600 hover:bg-violet-700',
+      popular: false,
+      forRole: 'clinic',
+      features: [
+        { text: 'Fino a 2 veterinari', included: true },
+        { text: 'Agenda appuntamenti', included: true },
+        { text: 'Schede pazienti', included: true },
+        { text: 'Link prenotazione', included: true },
+        { text: 'Messaggistica', included: true },
+        { text: 'Supporto email', included: true },
+        { text: 'Metriche avanzate', included: false },
+        { text: 'Automazioni', included: false },
+        { text: 'Video-consulti', included: false },
+      ]
+    },
+    {
+      id: 'pro',
+      name: 'Clinica Pro',
+      price: 59,
+      icon: Crown,
+      color: 'amber',
+      borderColor: 'border-amber-400',
+      bgColor: 'bg-amber-50',
+      buttonColor: 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600',
+      popular: true,
+      forRole: 'clinic',
+      features: [
+        { text: 'Veterinari illimitati', included: true },
+        { text: 'Tutto di Starter', included: true },
+        { text: 'Metriche avanzate', included: true },
+        { text: 'Automazioni (21+)', included: true },
+        { text: 'Lab Marketplace', included: true },
+        { text: 'Video-consulti', included: true },
+        { text: 'Report avanzati', included: true },
+        { text: 'Google Calendar sync', included: true },
+        { text: 'Supporto prioritario', included: true },
+      ]
+    },
+    {
+      id: 'lab_partner',
+      name: 'Laboratorio Partner',
+      price: 39,
+      icon: FlaskConical,
+      color: 'blue',
+      borderColor: 'border-blue-300',
+      bgColor: 'bg-blue-50',
+      buttonColor: 'bg-blue-600 hover:bg-blue-700',
+      popular: false,
+      forRole: 'lab',
+      features: [
+        { text: 'Dashboard richieste', included: true },
+        { text: 'Caricamento referti PDF', included: true },
+        { text: 'Listino prezzi', included: true },
+        { text: 'Connessione cliniche', included: true },
+        { text: 'API esterne (webhook)', included: true },
+        { text: 'Notifiche automatiche', included: true },
+        { text: 'Supporto dedicato', included: true },
+      ]
+    }
+  ];
+
+  // Filter plans based on role
+  const visiblePlans = planConfigs.filter(p => {
+    if (isLab) return p.forRole === 'lab';
+    if (isClinic) return p.forRole === 'clinic';
+    return true;
+  });
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-gray-600 text-center mb-6">Piani disponibili solo tramite Pilot (su invito). Prezzi IVA esclusa.</p>
-      
       {paymentSuccess && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
-          <CheckCircle className="h-5 w-5 text-green-500" />
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
+          <CheckCircle className="h-6 w-6 text-green-500" />
           <div>
-            <p className="font-medium text-green-800">Pagamento completato!</p>
-            <p className="text-sm text-green-600">Il tuo abbonamento è ora attivo.</p>
+            <p className="font-semibold text-green-800">Abbonamento attivato! 🎉</p>
+            <p className="text-sm text-green-600">Hai 30 giorni di prova gratuita. Benvenuto/a in VetBuddy!</p>
           </div>
         </div>
       )}
 
-      <div className="grid md:grid-cols-3 gap-4">
-        {/* Starter */}
-        <div className="border rounded-lg p-4 bg-white relative">
-          <div className="absolute -top-2.5 left-3 bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">👨‍⚕️ Per Freelance</div>
-          <h3 className="font-semibold mt-2">Starter</h3>
-          <p className="text-xs text-gray-500 mb-2">Per veterinari freelance e cliniche in fase di valutazione</p>
-          <div className="mb-2">
-            <span className="text-2xl font-bold text-gray-400">Gratis</span>
-            <p className="text-xs text-gray-500">solo su invito – Pilot Milano</p>
+      {isActive && !paymentSuccess && (
+        <div className="bg-violet-50 border border-violet-200 rounded-xl p-4 flex items-center gap-3">
+          <Crown className="h-5 w-5 text-violet-600" />
+          <div>
+            <p className="font-semibold text-violet-800">
+              Piano attivo: {plans?.[currentPlan]?.name || currentPlan}
+            </p>
+            <p className="text-sm text-violet-600">
+              {subscriptionStatus?.status === 'trialing' ? '🎁 Periodo di prova gratuita attivo' : '✓ Abbonamento attivo'}
+              {subscriptionStatus?.trialEnd && ` — scade il ${new Date(subscriptionStatus.trialEnd).toLocaleDateString('it-IT')}`}
+            </p>
           </div>
-          <p className="text-xs text-gray-400 mb-3">Prezzi IVA esclusa</p>
-          <p className="text-xs font-medium text-gray-700 mb-2">Include:</p>
-          <ul className="text-sm text-gray-600 space-y-1 mb-3">
-            <li>• 1 sede, 1 utente</li>
-            <li>• Fino a 30 richieste/mese</li>
-            <li>• Posizione su mappa</li>
-          </ul>
-          <Button 
-            variant="outline" 
-            className="w-full mb-2" 
-            disabled={currentPlan === 'starter'}
-          >
-            {currentPlan === 'starter' ? 'Piano attuale' : 'Richiedi invito'}
-          </Button>
-          <p className="text-xs text-gray-500 text-center">Accesso disponibile solo per cliniche ammesse al Pilot Milano.</p>
         </div>
-        
-        {/* Pro - Pilot */}
-        <div className={`border-2 rounded-lg p-4 bg-white relative ${isPilotActive ? 'border-amber-500' : 'border-coral-500'}`}>
-          <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 bg-amber-500 whitespace-nowrap">PILOT MILANO (su invito)</Badge>
-          <h3 className="font-semibold mt-2">Pro</h3>
-          <p className="text-xs text-gray-500 mb-2">Tutto incluso per la tua clinica</p>
-          <div className="mb-1">
-            {isPilotActive ? (
-              <>
-                <span className="text-2xl font-bold text-coral-500">€0</span>
-                <span className="text-sm text-gray-500 ml-1">(Pilot)</span>
-                <span className="text-lg text-gray-400 line-through ml-2">€129/mese</span>
-                <span className="text-xs text-gray-400 ml-1">+IVA</span>
-              </>
-            ) : (
-              <>
-                <span className="text-2xl font-bold text-coral-500">€129/mese</span>
-                <span className="text-xs text-gray-400 ml-1">+IVA</span>
-              </>
-            )}
-          </div>
-          {isPilotActive && (
-            <>
-              <p className="text-xs text-amber-600 font-semibold">90 giorni gratuiti per cliniche selezionate nel Pilot</p>
-              <p className="text-xs text-gray-500 italic mb-2">(Estendibile fino a 6 mesi per cliniche attive che completano onboarding e feedback.)</p>
-            </>
-          )}
-          <p className="text-xs text-gray-400 mb-3">Prezzi IVA esclusa</p>
-          <p className="text-xs font-medium text-gray-700 mb-2">Include:</p>
-          <ul className="text-sm text-gray-600 space-y-1 mb-3">
-            <li>• Fino a 10 staff</li>
-            <li>• Team Inbox + ticket</li>
-            <li>• Documenti + invio email automatico (PDF allegato)</li>
-            <li>• Google Calendar sync</li>
-            <li>• Report e analytics</li>
-          </ul>
-          {isPilotActive ? (
-            <Button className="w-full bg-amber-500 hover:bg-amber-600" disabled>
-              ✓ Attivo nel Pilot
-            </Button>
-          ) : (
-            <Button 
-              className="w-full bg-coral-500 hover:bg-coral-600" 
-              onClick={() => handleSubscribe('pro')}
-              disabled={loading}
+      )}
+
+      <div className={`grid gap-4 ${visiblePlans.length >= 3 ? 'md:grid-cols-3' : visiblePlans.length === 2 ? 'md:grid-cols-2' : 'max-w-md mx-auto'}`}>
+        {visiblePlans.map((plan) => {
+          const isCurrent = currentPlan === plan.id;
+          const Icon = plan.icon;
+          
+          return (
+            <div 
+              key={plan.id} 
+              className={`border-2 ${plan.popular ? plan.borderColor : 'border-gray-200'} rounded-xl p-5 bg-white relative flex flex-col`}
             >
-              {loading ? <><RefreshCw className="h-4 w-4 mr-2 animate-spin" />Caricamento...</> : <>Candidati al Pilot →</>}
-            </Button>
-          )}
-        </div>
-        
-        {/* Enterprise */}
-        <div className="border rounded-lg p-4 bg-white">
-          <h3 className="font-semibold">Enterprise</h3>
-          <p className="text-xs text-gray-500 mb-2">Per gruppi e catene veterinarie</p>
-          <div className="mb-2">
-            <span className="text-2xl font-bold text-coral-500">Custom</span>
-            <span className="text-xs text-gray-400 ml-1">+IVA</span>
+              {plan.popular && (
+                <Badge className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-orange-500 text-white whitespace-nowrap shadow-sm">
+                  ⭐ PIÙ POPOLARE
+                </Badge>
+              )}
+              
+              <div className={`inline-flex items-center gap-2 ${plan.bgColor} rounded-lg px-3 py-1.5 w-fit mb-3 ${plan.popular ? 'mt-2' : ''}`}>
+                <Icon className={`h-4 w-4 text-${plan.color}-600`} />
+                <span className={`text-sm font-semibold text-${plan.color}-700`}>{plan.name}</span>
+              </div>
+              
+              <div className="mb-3">
+                <span className="text-3xl font-bold text-gray-900">€{plan.price}</span>
+                <span className="text-gray-500 text-sm">/mese</span>
+                <p className="text-xs text-gray-400 mt-0.5">IVA esclusa (22%)</p>
+              </div>
+
+              <div className="bg-green-50 border border-green-200 rounded-lg px-3 py-2 mb-4">
+                <p className="text-xs font-semibold text-green-700">🎁 30 giorni di prova GRATUITA</p>
+                <p className="text-xs text-green-600">Nessun addebito fino alla fine del periodo di prova</p>
+              </div>
+              
+              <div className="flex-1 space-y-2 mb-4">
+                {plan.features.map((feature, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-sm">
+                    {feature.included ? (
+                      <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                    ) : (
+                      <X className="h-4 w-4 text-gray-300 flex-shrink-0" />
+                    )}
+                    <span className={feature.included ? 'text-gray-700' : 'text-gray-400'}>{feature.text}</span>
+                  </div>
+                ))}
+              </div>
+              
+              {isCurrent ? (
+                <Button className="w-full bg-green-500 hover:bg-green-600" disabled>
+                  <CheckCircle className="h-4 w-4 mr-2" /> Piano Attivo
+                </Button>
+              ) : (
+                <Button 
+                  className={`w-full text-white ${plan.buttonColor}`}
+                  onClick={() => handleSubscribe(plan.id)}
+                  disabled={!!loadingPlan}
+                >
+                  {loadingPlan === plan.id ? (
+                    <><RefreshCw className="h-4 w-4 mr-2 animate-spin" /> Caricamento...</>
+                  ) : (
+                    <>Inizia la prova gratuita →</>
+                  )}
+                </Button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Enterprise */}
+      {isClinic && (
+        <div className="border rounded-xl p-4 bg-gray-50 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Building2 className="h-6 w-6 text-gray-600" />
+            <div>
+              <p className="font-semibold text-gray-800">Enterprise — Soluzioni personalizzate</p>
+              <p className="text-sm text-gray-500">Multi-sede, API dedicata, SLA garantito, onboarding dedicato</p>
+            </div>
           </div>
-          <p className="text-xs text-gray-400 mb-3">Prezzi IVA esclusa</p>
-          <p className="text-xs font-medium text-gray-700 mb-2">Include:</p>
-          <ul className="text-sm text-gray-600 space-y-1 mb-3">
-            <li>• Multi-sede illimitate</li>
-            <li>• API dedicata</li>
-            <li>• SLA garantito</li>
-            <li>• Onboarding dedicato</li>
-          </ul>
           <Button 
-            className="w-full bg-gray-800 hover:bg-gray-900 mb-2" 
-            onClick={() => window.location.href = 'mailto:info@vetbuddy.it?subject=Richiesta%20Enterprise'}
+            variant="outline"
+            onClick={() => window.location.href = 'mailto:info@vetbuddy.it?subject=Richiesta%20Piano%20Enterprise'}
           >
             Contattaci
           </Button>
-          <Badge variant="outline" className="w-full justify-center text-amber-700 border-amber-300 bg-amber-50">Solo con Pilot (su invito)</Badge>
         </div>
-      </div>
+      )}
 
-      <p className="text-xs text-gray-500 text-center">
-        Non è una prova libera: stiamo selezionando un numero limitato di cliniche.
+      <p className="text-xs text-gray-400 text-center">
+        I pagamenti sono gestiti in sicurezza da Stripe. Puoi annullare in qualsiasi momento.
       </p>
     </div>
   );
 }
-
-// ==================== CLINIC REVIEWS SECTION ====================
 
 export default SubscriptionPlans;

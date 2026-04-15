@@ -33,7 +33,7 @@ const ownerTutorial = {
   quickStart: [
     'Registrati gratis su vetbuddy.it',
     'Aggiungi i tuoi animali al profilo',
-    'Trova una clinica veterinaria',
+    'Trova una clinica veterinaria o usa il link di prenotazione',
     'Prenota la tua prima visita'
   ],
   
@@ -44,10 +44,10 @@ const ownerTutorial = {
         'Vai su vetbuddy.it e clicca "Registrati"',
         'Seleziona "Proprietario di Animali"',
         'Inserisci la tua email e crea una password sicura',
-        'Conferma l\'email cliccando sul link ricevuto',
-        'Completa il profilo con nome, telefono e codice fiscale'
+        'Completa il profilo con nome, telefono e codice fiscale',
+        'Puoi anche registrarti con il tuo account Google'
       ],
-      tip: 'Puoi anche registrarti rapidamente con il tuo account Google!'
+      tip: 'La registrazione e completamente gratuita per i proprietari!'
     },
     {
       title: 'AGGIUNGERE I TUOI ANIMALI',
@@ -55,70 +55,67 @@ const ownerTutorial = {
         'Dalla dashboard, clicca su "I Miei Animali"',
         'Premi il pulsante "+" per aggiungere un nuovo animale',
         'Inserisci: nome, specie, razza, data di nascita',
-        'Aggiungi peso attuale, numero microchip e foto',
+        'Aggiungi peso, numero microchip e foto',
         'Indica eventuali allergie o condizioni particolari'
       ],
       tip: 'vetbuddy supporta: cani, gatti, conigli, uccelli, rettili, pesci, cavalli e altri!'
     },
     {
-      title: 'TROVARE UNA CLINICA VETERINARIA',
+      title: 'PRENOTARE CON IL LINK DIRETTO',
       content: [
-        'Vai alla sezione "Trova Clinica"',
-        'Usa la mappa interattiva per vedere le cliniche vicine',
-        'Filtra per citta o servizi offerti',
-        'Clicca su una clinica per vedere dettagli e recensioni',
-        'Salva le cliniche preferite per accesso rapido'
+        'Hai ricevuto un link dalla tua clinica? Aprilo nel browser',
+        'Vedrai il profilo della clinica con servizi e orari',
+        'Clicca "Prenota Appuntamento" e compila il modulo',
+        'Inserisci: nome, telefono, nome animale, data preferita',
+        'La clinica ti contattera per confermare data e orario',
+        'NON serve registrarsi per prenotare tramite link!'
       ],
-      tip: 'La mappa mostra tutte le cliniche partner in Italia!'
+      tip: 'Il link di prenotazione funziona anche senza account vetbuddy!'
     },
     {
-      title: 'PRENOTARE UN APPUNTAMENTO',
+      title: 'GESTIRE GLI APPUNTAMENTI',
       content: [
-        'Clicca su "Prenota Visita" dalla dashboard',
-        'Seleziona la clinica desiderata',
-        'Scegli il tipo di servizio',
-        'Seleziona l\'animale per cui stai prenotando',
-        'Scegli data e orario tra quelli disponibili',
-        'Aggiungi note per il veterinario',
-        'Conferma la prenotazione'
+        'Clicca su "Agenda" nella dashboard',
+        'Vedi tutti i tuoi appuntamenti in arrivo',
+        'Puoi cancellare o modificare gli appuntamenti',
+        'Ricevi promemoria automatici prima della visita',
+        'Lo stato si aggiorna in tempo reale'
       ],
       tip: 'Puoi gestire, modificare o cancellare i tuoi appuntamenti dalla dashboard.'
     },
     {
-      title: 'GESTIRE I TUOI DOCUMENTI',
+      title: 'DOCUMENTI E PRESCRIZIONI',
       content: [
         'Accedi a "I Miei Documenti" dalla dashboard',
-        'Visualizza prescrizioni, referti e fatture ricevute',
+        'Visualizza prescrizioni, referti e certificati',
         'Scarica singoli documenti in formato PDF',
         'Scarica TUTTI i documenti in un file ZIP',
         'I documenti della clinica arrivano automaticamente'
       ],
-      tip: 'Tutti i tuoi documenti sono sempre disponibili, anche offline!'
+      tip: 'Tutti i tuoi documenti sono sempre disponibili!'
     },
     {
-      title: 'NOTIFICHE E PROMEMORIA',
+      title: 'REFERTI LABORATORIO',
       content: [
-        'Ricevi notifiche per appuntamenti in arrivo',
-        'Promemoria automatici per vaccini e controlli',
-        'Avvisi quando ricevi nuovi documenti',
-        'Notifiche via email, app e WhatsApp',
-        'Personalizza le preferenze nelle Impostazioni'
+        'Apri il profilo del tuo animale',
+        'Vai alla tab "Referti"',
+        'Visualizza i referti delle analisi di laboratorio',
+        'Il veterinario aggiunge note cliniche prima di inviarti il referto',
+        'Scarica il referto PDF per i tuoi archivi',
+        'Ricevi una notifica quando un nuovo referto e disponibile'
       ],
-      tip: 'Attiva le notifiche WhatsApp per non perdere mai un promemoria!'
+      tip: 'I referti lab sono visibili solo dopo la revisione del veterinario.'
     },
     {
-      title: 'CONFIGURARE WHATSAPP',
+      title: 'FATTURE E PAGAMENTI',
       content: [
-        'Vai su "Profilo e Notifiche" nel menu laterale',
-        'Inserisci il tuo numero di telefono con prefisso (+39)',
-        'Attiva l\'opzione "Notifiche WhatsApp"',
-        'Clicca "Invia messaggio di test" per verificare',
-        'Riceverai automaticamente:',
-        '  - Promemoria appuntamenti',
-        '  - Notifiche documenti disponibili',
-        '  - Conferme di pagamento'
+        'Vai su "Fatture" nella dashboard',
+        'Visualizza tutte le fatture proforma ricevute',
+        'Scarica le fatture in PDF',
+        'I pagamenti avvengono direttamente con la clinica',
+        'La clinica gestisce i propri metodi di pagamento'
       ],
-      tip: 'WhatsApp ha un tasso di apertura del 98%!'
+      tip: 'Le fatture proforma sono documenti non fiscali.'
     },
     {
       title: 'PROGRAMMA FEDELTA',
@@ -129,14 +126,26 @@ const ownerTutorial = {
         'Visualizza il tuo saldo punti nella dashboard'
       ],
       tip: 'Ogni 100 punti = 5 EUR di sconto sulla prossima visita!'
+    },
+    {
+      title: 'MESSAGGISTICA',
+      content: [
+        'Vai su "Messaggi" per comunicare con la clinica',
+        'Scrivi messaggi diretti al veterinario',
+        'Ricevi risposte e aggiornamenti',
+        'Allega foto o documenti ai messaggi',
+        'Ricevi notifiche per nuovi messaggi'
+      ],
+      tip: 'Usa la messaggistica per domande rapide senza dover chiamare!'
     }
   ],
   
   faqs: [
-    { q: 'Quanto costa usare vetbuddy?', a: 'Completamente GRATUITO per i proprietari.' },
+    { q: 'Quanto costa usare vetbuddy?', a: 'Completamente GRATUITO per i proprietari di animali.' },
     { q: 'Posso usare vetbuddy con qualsiasi clinica?', a: 'Solo con le cliniche registrate su vetbuddy.' },
-    { q: 'I miei dati sono al sicuro?', a: 'Si, crittografia avanzata e conformita GDPR.' },
-    { q: 'Posso gestire piu animali?', a: 'Si, puoi aggiungere tutti gli animali che desideri.' }
+    { q: 'Come posso prenotare senza account?', a: 'Usa il link di prenotazione della tua clinica, non serve registrarsi!' },
+    { q: 'Come vedo i referti del laboratorio?', a: 'Apri il profilo del tuo animale e vai alla tab Referti.' },
+    { q: 'I miei dati sono al sicuro?', a: 'Si, crittografia avanzata e conformita GDPR.' }
   ],
   
   contacts: {
@@ -153,8 +162,8 @@ const clinicTutorial = {
   quickStart: [
     'Registrati come clinica',
     'Configura servizi e orari',
-    'Importa i pazienti esistenti',
-    'Inizia a ricevere prenotazioni'
+    'Attiva il link di prenotazione',
+    'Inizia a ricevere prenotazioni online'
   ],
   
   sections: [
@@ -165,21 +174,23 @@ const clinicTutorial = {
         'Completa il profilo: nome clinica, indirizzo, P.IVA, orari',
         'Aggiungi logo e foto della struttura',
         'Configura i servizi offerti con prezzi e durata',
-        'Imposta la posizione sulla mappa',
-        'Scegli il piano: Starter (gratuito) o Premium'
+        'Scegli il piano: Starter (EUR 29/mese) o Pro (EUR 59/mese)',
+        '30 giorni di prova gratuita su tutti i piani'
       ],
-      tip: 'Il Piano Starter e perfetto per veterinari freelance.'
+      tip: 'Il Piano Starter e perfetto per veterinari freelance e piccole cliniche.'
     },
     {
-      title: 'GESTIONE SERVIZI E LISTINO',
+      title: 'LINK DI PRENOTAZIONE DIRETTO',
       content: [
-        'Vai a "Impostazioni" -> "Servizi"',
-        'Aggiungi servizi: nome, descrizione, prezzo, durata',
-        'Categorizza (visite, vaccini, chirurgia, diagnostica...)',
-        'Imposta prezzi differenti per specie se necessario',
-        'Attiva/disattiva servizi in base alla stagione'
+        'Vai su "Link Prenotazione" nel menu laterale',
+        'Troverai il tuo link personalizzato (es. vetbuddy.it/clinica/nome-clinica)',
+        'Copia il link e condividilo su WhatsApp, social, email',
+        'Genera un QR Code da stampare in reception',
+        'Personalizza lo slug del link (es. /clinica/studio-rossi)',
+        'I clienti prenotano SENZA registrarsi - solo nome, telefono e data',
+        'Le prenotazioni arrivano come richieste nella tua agenda'
       ],
-      tip: 'Servizi ben descritti aumentano le prenotazioni del 40%!'
+      tip: 'Condividi il link su WhatsApp ai clienti dopo ogni visita per fidelizzarli!'
     },
     {
       title: 'GESTIONE APPUNTAMENTI',
@@ -188,7 +199,8 @@ const clinicTutorial = {
         'Vedi appuntamenti: giornalieri, settimanali o mensili',
         'Clicca su uno slot per creare un appuntamento',
         'Gestisci richieste: accetta, rifiuta o riprogramma',
-        'Aggiungi note interne per ogni appuntamento'
+        'Aggiungi note interne per ogni appuntamento',
+        'Le prenotazioni dal link diretto hanno fonte "booking_link"'
       ],
       tip: 'Usa i codici colore per distinguere i tipi di appuntamento.'
     },
@@ -198,10 +210,23 @@ const clinicTutorial = {
         'Accedi a "Pazienti" per vedere tutti i clienti',
         'Visualizza la scheda completa di ogni animale',
         'Consulta lo storico visite e trattamenti',
-        'IMPORTA clienti esistenti da file CSV',
+        'Importa clienti esistenti da file CSV',
         'Esporta i dati per backup o analisi'
       ],
       tip: 'La funzione import CSV permette di migrare da altri gestionali in pochi minuti.'
+    },
+    {
+      title: 'LAB MARKETPLACE - ANALISI DI LABORATORIO',
+      content: [
+        'Vai su "Analisi Lab" nel menu laterale',
+        'Sfoglia i laboratori partner disponibili',
+        'Crea una richiesta di analisi per un paziente',
+        'Seleziona il tipo di esame e il laboratorio',
+        'Segui lo stato della richiesta in tempo reale',
+        'Ricevi il referto quando il laboratorio lo carica',
+        'Rivedi il referto, aggiungi note cliniche e invialo al proprietario'
+      ],
+      tip: 'I referti lab sono nascosti al proprietario fino a quando non li rivedi e approvi.'
     },
     {
       title: 'DOCUMENTI E PRESCRIZIONI',
@@ -210,76 +235,67 @@ const clinicTutorial = {
         'Crea: prescrizioni, referti, certificati, vaccinazioni',
         'Carica PDF esistenti o genera da template',
         'Associa il documento al paziente e proprietario',
-        'Il documento viene inviato automaticamente via email'
+        'Il documento viene inviato automaticamente al proprietario'
       ],
-      tip: 'I documenti digitali riducono le chiamate "ho perso la prescrizione" del 90%!'
+      tip: 'I documenti digitali riducono le chiamate del 90%!'
     },
     {
       title: 'FATTURAZIONE PROFORMA',
       content: [
         'Vai a "Fatturazione" nella dashboard',
-        'Crea nuova fattura PROFORMA selezionando il cliente',
+        'Crea nuova fattura proforma selezionando il cliente',
         'Aggiungi servizi prestati con prezzi e quantita',
         'Applica IVA 22% e marca da bollo se necessario',
         'Genera PDF professionale con tutti i dati',
         'Esporta in CSV, JSON o PDF per il commercialista'
       ],
-      tip: 'Le fatture PROFORMA sono documenti non fiscali.'
+      tip: 'Le fatture proforma sono documenti non fiscali.'
     },
     {
-      title: 'PAGAMENTI ONLINE',
+      title: 'DASHBOARD METRICHE E ANALYTICS',
       content: [
-        'I proprietari possono pagare online prima della visita',
-        'Pagamento sicuro tramite Stripe',
-        'Accetta carte, Apple Pay, Google Pay',
-        'Ricevi notifica immediata del pagamento',
-        'NESSUNA commissione vetbuddy sulle transazioni'
+        'Vai su "Metriche" nel menu laterale',
+        'Visualizza i KPI principali: fatturato, appuntamenti, pazienti',
+        'Grafico andamento fatturato ultimi 6 mesi',
+        'Stato appuntamenti del mese (completati, cancellati, no-show)',
+        'Prenotazioni settimanali e funnel conversione',
+        'Visite al profilo, tasso di conversione, telefonate risparmiate',
+        'Analisi lab richieste e completate'
       ],
-      tip: 'Il pagamento anticipato riduce i no-show del 60%!'
+      tip: 'Usa le metriche per capire quali canali portano piu prenotazioni!'
     },
     {
-      title: 'AUTOMAZIONI (PIANO PREMIUM)',
+      title: 'ABBONAMENTO E PAGAMENTI',
+      content: [
+        'Vai su "Impostazioni" -> "Abbonamento"',
+        'Clinica Starter: EUR 29/mese (fino a 2 veterinari)',
+        'Clinica Pro: EUR 59/mese (tutto illimitato + metriche + lab)',
+        '30 giorni di prova gratuita su tutti i piani',
+        'Pagamento sicuro con carta tramite Stripe',
+        'Annulla in qualsiasi momento senza vincoli',
+        'I pagamenti dei clienti vanno direttamente a te (non passano da vetbuddy)'
+      ],
+      tip: 'Tutti i prezzi sono IVA esclusa (22%).'
+    },
+    {
+      title: 'AUTOMAZIONI (PIANO PRO)',
       content: [
         'Promemoria automatici 24h prima dell\'appuntamento',
         'Follow-up post visita con istruzioni personalizzate',
         'Reminder per vaccini e controlli periodici',
-        'Notifiche WhatsApp Business',
-        'Report settimanale automatico'
+        'Report settimanale automatico',
+        'Notifiche per nuove richieste lab'
       ],
       tip: 'Le automazioni fanno risparmiare in media 2 ore al giorno!'
-    },
-    {
-      title: 'NOTIFICHE WHATSAPP',
-      content: [
-        'Vai su Impostazioni -> WhatsApp Business',
-        'Configura il numero WhatsApp della clinica',
-        'I clienti riceveranno automaticamente:',
-        '  - Promemoria appuntamenti',
-        '  - Notifiche documenti disponibili',
-        '  - Conferme di pagamento',
-        'Il cliente puo attivare/disattivare dal suo profilo',
-        'WhatsApp ha un tasso di apertura del 98%!'
-      ],
-      tip: 'Assicurati che i clienti abbiano il numero di telefono nel profilo.'
-    },
-    {
-      title: 'ANALYTICS E REPORT',
-      content: [
-        'Dashboard con KPI principali in tempo reale',
-        'Visualizza: visite, fatturato, nuovi clienti',
-        'Confronta con periodi precedenti',
-        'Report esportabili in CSV',
-        'Analisi per tipo di servizio e specie animale'
-      ],
-      tip: 'Usa i dati per identificare i servizi piu richiesti.'
     }
   ],
   
   faqs: [
-    { q: 'Quanto costa vetbuddy?', a: 'Starter: GRATUITO. Premium: EUR 49/mese.' },
-    { q: 'Posso importare dati dal gestionale attuale?', a: 'Si! Supportiamo import da CSV.' },
-    { q: 'vetbuddy sostituisce il software di fatturazione?', a: 'No, genera solo PROFORMA.' },
-    { q: 'Come funziona il pagamento dei clienti?', a: 'Via Stripe. Nessuna commissione vetbuddy.' }
+    { q: 'Quanto costa vetbuddy?', a: 'Starter EUR 29/mese, Pro EUR 59/mese. 30 giorni di prova gratuita. IVA esclusa.' },
+    { q: 'Come funziona il link di prenotazione?', a: 'E un link condivisibile che permette ai clienti di prenotare senza registrarsi.' },
+    { q: 'Come funziona il Lab Marketplace?', a: 'Scegli un laboratorio partner, invia la richiesta, ricevi il referto e invialo al proprietario.' },
+    { q: 'I pagamenti dei clienti passano da vetbuddy?', a: 'No! I pagamenti vanno direttamente alla clinica. vetbuddy incassa solo l\'abbonamento.' },
+    { q: 'Posso importare dati dal gestionale attuale?', a: 'Si! Supportiamo import da CSV.' }
   ],
   
   contacts: {

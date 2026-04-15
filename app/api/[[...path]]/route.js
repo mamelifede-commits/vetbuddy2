@@ -146,6 +146,31 @@ export async function GET(request, { params }) {
       return NextResponse.json(SUBSCRIPTION_PLANS, { headers: corsHeaders });
     }
 
+    // Get user subscription status
+    if (path === 'stripe/subscription-status') {
+      const user = getUserFromRequest(request);
+      if (!user) {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const transactions = await getCollection('payment_transactions');
+      const latestSub = await transactions.findOne(
+        { userId: user.id, type: 'subscription', paymentStatus: { $in: ['paid', 'trialing'] } },
+        { sort: { createdAt: -1 } }
+      );
+      
+      const users = await getCollection('users');
+      const userData = await users.findOne({ id: user.id });
+      
+      return NextResponse.json({
+        hasSubscription: !!latestSub || !!userData?.subscriptionPlan,
+        plan: userData?.subscriptionPlan || latestSub?.planId || null,
+        status: userData?.subscriptionStatus || latestSub?.paymentStatus || 'none',
+        trialEnd: userData?.trialEnd || null,
+        currentPeriodEnd: userData?.subscriptionPeriodEnd || null
+      }, { headers: corsHeaders });
+    }
+
     // Get checkout session status
     if (path.startsWith('stripe/checkout/status/')) {
       const sessionId = path.split('/')[3];
@@ -1612,8 +1637,8 @@ export async function POST(request, { params }) {
     // Create Stripe checkout session for subscription
     if (path === 'stripe/checkout/subscription') {
       const user = getUserFromRequest(request);
-      if (!user || user.role !== 'clinic') {
-        return NextResponse.json({ error: 'Solo le cliniche possono sottoscrivere abbonamenti' }, { status: 401, headers: corsHeaders });
+      if (!user || (user.role !== 'clinic' && user.role !== 'lab')) {
+        return NextResponse.json({ error: 'Solo cliniche e laboratori possono sottoscrivere abbonamenti' }, { status: 401, headers: corsHeaders });
       }
 
       const { planId, originUrl } = body;
@@ -1623,9 +1648,19 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Piano non valido o gratuito' }, { status: 400, headers: corsHeaders });
       }
 
+      // Validate plan matches user role
+      if (user.role === 'lab' && planId !== 'lab_partner') {
+        return NextResponse.json({ error: 'Piano non valido per laboratori' }, { status: 400, headers: corsHeaders });
+      }
+      if (user.role === 'clinic' && planId === 'lab_partner') {
+        return NextResponse.json({ error: 'Piano non valido per cliniche' }, { status: 400, headers: corsHeaders });
+      }
+
       try {
-        const successUrl = `${originUrl}/clinic/dashboard?subscription=success&session_id={CHECKOUT_SESSION_ID}`;
-        const cancelUrl = `${originUrl}/clinic/dashboard?subscription=cancelled`;
+        const baseUrl = originUrl || process.env.NEXT_PUBLIC_BASE_URL;
+        const dashboardPath = user.role === 'lab' ? '' : '';
+        const successUrl = `${baseUrl}?subscription=success&session_id={CHECKOUT_SESSION_ID}`;
+        const cancelUrl = `${baseUrl}?subscription=cancelled`;
 
         const session = await stripe.checkout.sessions.create({
           payment_method_types: ['card'],
@@ -1633,20 +1668,24 @@ export async function POST(request, { params }) {
             price_data: {
               currency: 'eur',
               product_data: {
-                name: `vetbuddy ${plan.name}`,
-                description: `Abbonamento mensile ${plan.name}`,
+                name: `VetBuddy ${plan.name}`,
+                description: `Abbonamento mensile — ${plan.description}`,
               },
-              unit_amount: Math.round(plan.price * 100), // Convert to cents
+              unit_amount: Math.round(plan.price * 100),
               recurring: { interval: 'month' },
             },
             quantity: 1,
           }],
           mode: 'subscription',
+          subscription_data: {
+            trial_period_days: 30,
+          },
           success_url: successUrl,
           cancel_url: cancelUrl,
           customer_email: user.email,
           metadata: {
             userId: user.id,
+            userRole: user.role,
             planId: planId,
             type: 'subscription'
           }
@@ -1659,12 +1698,14 @@ export async function POST(request, { params }) {
           sessionId: session.id,
           userId: user.id,
           email: user.email,
+          userRole: user.role,
           type: 'subscription',
           planId: planId,
           amount: plan.price,
           currency: 'eur',
           status: 'pending',
           paymentStatus: 'unpaid',
+          trialDays: 30,
           createdAt: new Date().toISOString()
         });
 
@@ -1792,6 +1833,80 @@ export async function POST(request, { params }) {
         return NextResponse.json({ url: session.url, sessionId: session.id }, { headers: corsHeaders });
       } catch (error) {
         return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
+      }
+    }
+
+    // Stripe Webhook handler
+    if (path === 'webhook/stripe') {
+      try {
+        const rawBody = await request.text();
+        const event = JSON.parse(rawBody);
+        
+        const transactions = await getCollection('payment_transactions');
+        const users = await getCollection('users');
+        
+        switch (event.type) {
+          case 'checkout.session.completed': {
+            const session = event.data.object;
+            // Update transaction
+            await transactions.updateOne(
+              { sessionId: session.id },
+              { $set: { status: 'complete', paymentStatus: session.payment_status, updatedAt: new Date().toISOString() } }
+            );
+            
+            // If subscription, update user
+            if (session.metadata?.type === 'subscription') {
+              await users.updateOne(
+                { id: session.metadata.userId },
+                { $set: { 
+                  subscriptionPlan: session.metadata.planId,
+                  subscriptionStatus: 'active',
+                  stripeCustomerId: session.customer,
+                  stripeSubscriptionId: session.subscription,
+                  subscriptionUpdatedAt: new Date().toISOString()
+                }}
+              );
+            }
+            break;
+          }
+          case 'customer.subscription.updated': {
+            const subscription = event.data.object;
+            const customerId = subscription.customer;
+            const user = await users.findOne({ stripeCustomerId: customerId });
+            if (user) {
+              await users.updateOne(
+                { id: user.id },
+                { $set: { 
+                  subscriptionStatus: subscription.status,
+                  subscriptionPeriodEnd: new Date(subscription.current_period_end * 1000).toISOString(),
+                  trialEnd: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null,
+                  subscriptionUpdatedAt: new Date().toISOString()
+                }}
+              );
+            }
+            break;
+          }
+          case 'customer.subscription.deleted': {
+            const subscription = event.data.object;
+            const customerId = subscription.customer;
+            const user = await users.findOne({ stripeCustomerId: customerId });
+            if (user) {
+              await users.updateOne(
+                { id: user.id },
+                { $set: { 
+                  subscriptionStatus: 'cancelled',
+                  subscriptionPlan: null,
+                  subscriptionUpdatedAt: new Date().toISOString()
+                }}
+              );
+            }
+            break;
+          }
+        }
+        
+        return NextResponse.json({ received: true }, { headers: corsHeaders });
+      } catch (error) {
+        return NextResponse.json({ error: error.message }, { status: 400, headers: corsHeaders });
       }
     }
 

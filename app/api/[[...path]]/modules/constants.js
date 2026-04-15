@@ -25,10 +25,10 @@ export const STAFF_COLORS = [
 ];
 
 export const SUBSCRIPTION_PLANS = {
-  starter: { name: 'Starter Clinica', price: 0.00, description: 'Per iniziare' },
-  pro: { name: 'Pro Clinica', price: 49.00, description: 'Per cliniche che vogliono crescere' },
-  lab_partner: { name: 'Lab Partner', price: 29.00, description: 'Per laboratori di analisi' },
-  enterprise: { name: 'Enterprise', price: 0, description: 'Contattaci per un preventivo' }
+  starter: { name: 'Clinica Starter', price: 29.00, description: 'Per cliniche che iniziano — fino a 2 veterinari', features: ['Agenda appuntamenti', 'Schede pazienti', 'Link prenotazione', 'Messaggistica', 'Supporto email'] },
+  pro: { name: 'Clinica Pro', price: 59.00, description: 'Per cliniche che vogliono crescere — tutto illimitato', features: ['Tutto di Starter', 'Metriche avanzate', 'Automazioni', 'Lab Marketplace', 'Video-consulti', 'Report avanzati', 'Supporto prioritario'] },
+  lab_partner: { name: 'Laboratorio Partner', price: 39.00, description: 'Per laboratori di analisi veterinarie', features: ['Dashboard richieste', 'Caricamento referti', 'Listino prezzi', 'Connessione cliniche', 'API esterne', 'Supporto dedicato'] },
+  enterprise: { name: 'Enterprise', price: 0, description: 'Soluzioni personalizzate — contattaci', features: ['Piano personalizzato', 'Integrazioni custom', 'Account manager dedicato', 'SLA garantito'] }
 };
 
 export const STARTER_AUTOMATIONS = [
