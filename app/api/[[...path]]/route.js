@@ -13,7 +13,7 @@ import {
 } from './modules/constants';
 import { handleLabGet, handleLabPost } from './modules/lab';
 import { handleAuthGet, handleAuthPost } from './modules/auth';
-import { handleAdminGet, handleAdminPost } from './modules/admin';
+import { handleAdminGet, handleAdminPost, handleAdminDelete } from './modules/admin';
 
 // Force dynamic rendering to prevent static generation errors
 export const dynamic = 'force-dynamic';
@@ -2202,6 +2202,11 @@ export async function POST(request, { params }) {
     if (labPostResult) return labPostResult;
     // ==================== END LAB API - POST ====================
 
+    // ==================== ADMIN API - POST (delegated to modules/admin.js) ====================
+    const adminPostResult = await handleAdminPost(path, request, body);
+    if (adminPostResult) return adminPostResult;
+    // ==================== END ADMIN API - POST ====================
+
 
     return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
   } catch (error) {
@@ -2331,9 +2336,9 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
     }
 
-    // ==================== ADMIN POST (delegated to modules/admin.js) ====================
-    const adminPostResult = await handleAdminPost(path, request, body);
-    if (adminPostResult) return adminPostResult;
+    // ==================== ADMIN DELETE (delegated to modules/admin.js) ====================
+    const adminDeleteResult = await handleAdminDelete(path, request);
+    if (adminDeleteResult) return adminDeleteResult;
 
 
     // Delete appointment

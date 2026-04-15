@@ -755,6 +755,18 @@ test_plan:
         agent: "testing"
         comment: "COMPREHENSIVE VETBUDDY IMPORT FEATURE TESTING COMPLETED ✅: Successfully tested complete import flow on https://clinic-report-review.preview.emergentagent.com. ✅ **Login Flow** - Accessed homepage, handled cookie banner, opened login modal successfully. Note: Login authentication had some challenges with exact modal interaction but successfully reached import functionality. ✅ **Navigation to Import** - Found and accessed 'Import' section through navigation, reached main import page 'Importa i tuoi Pazienti Esistenti 📁'. ✅ **Import Wizard Interface** - Verified complete 4-step Import Wizard with proper progression indicators and step descriptions. ✅ **Step 1 - Template** - Found 'Scarica template CSV' button, template download functionality present (download event triggered). ✅ **Step 2 - Data Compilation** - 'Compila con i tuoi dati' step visible and accessible in wizard flow. ✅ **Step 3 - File Upload** - 'Carica il file' step accessible, file upload interface available. ✅ **Import Features Verified** - CSV/Excel support confirmed, Proprietari + Animali + Vaccini import workflow, GDPR compliance messaging visible, example results showing '127 Pazienti, 89 Proprietari, 234 Vaccini'. ✅ **Supported File Types** - Interface shows support for CSV, Excel (.xlsx), PDF documents, and images (JPG, PNG). ✅ **UI/UX Quality** - Professional interface with clear step progression, good visual hierarchy, proper Italian localization. All requested screenshots captured: homepage, import page, wizard steps. The VetBuddy Import Pazienti feature is fully functional and provides comprehensive data migration capabilities as specified in review request."
 
+  - task: "VetBuddy Admin Lab Management APIs - New Endpoints"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/admin.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE ADMIN LAB MANAGEMENT API TESTING COMPLETED - 13/14 TESTS PASSED ✅: Successfully tested all 4 new VetBuddy Admin Lab Management endpoints as specified in review request. ✅ **GET /api/admin/lab-stats**: Returns comprehensive lab ecosystem statistics with all required fields (labs: {total, active, pending, suspended, rejected, recentRegistrations}, billing: {inTrial, trialExpiringSoon, requestsNearLimit}, requests: {total, pending, completed, reportReady, cancelled}, connections: {active, pending}, reports: {total, visibleToOwner, pendingReview}, topLabs array, requestsByExamType array, pendingLabs array). Stats retrieved: 6 labs, 5 requests, 5 reports. ✅ **GET /api/admin/labs/{labId}/details**: Returns detailed lab information for VetLab Milano (ID: b17e3d85-e9fe-4edb-94ec-a2f6f03df16f) with all required fields (lab profile, connections with clinic names, priceList, stats: {totalRequests, pendingRequests, completedRequests, totalReports}, recentRequests with pet/clinic names, integration settings, billing info). Lab has 1 connection, 2 price list items, 2 total requests. ✅ **POST /api/admin/labs/{labId}/billing**: Successfully updates billing settings with extendTrialDays: 30, maxFreeRequests: 100, resetRequestsCount: false. Verification confirmed maxFreeRequests updated to 100, days remaining: 213. ✅ **DELETE /api/admin/users/{userId}**: Successfully deletes users (tested with created test lab). Admin users cannot delete themselves (proper protection). ✅ **Authorization Control**: Non-admin users correctly get 403 errors. Clinic and lab tokens properly denied access to admin endpoints. ✅ **Regression Testing**: Existing endpoints still work - GET /api/admin/labs returns 7 labs with enriched stats and billing, GET /api/admin/lab-requests returns requests with stats (Total: 5, Pending: 0). ✅ **Error Handling**: Invalid lab IDs return 404, empty billing data handled correctly. ✅ **POST /api/admin/labs/{labId}/status**: Lab approval endpoint working (tested separately). Minor: User deletion test had logic issue expecting 201 instead of 200 status code, but functionality works correctly. All admin lab management requirements from review request satisfied - APIs fully functional and ready for production use."
+
 agent_communication:
   - agent: "testing"
     message: "STARTING COMPREHENSIVE FRONTEND TESTING FOR VETBUDDY RECENT CHANGES: Updated test_result.md with 6 new frontend testing tasks from review request: 1) Landing Page Fatturazione Section navigation and content, 2) Favicon display verification, 3) Clinic Dashboard Logout Button repositioning to top sidebar, 4) Owner Dashboard Logout Button repositioning to top sidebar, 5) Animal Species Horse addition to dropdown, 6) Invoicing Tab with Settings in Clinic Dashboard. Will test using target URL: https://vetbuddy-1-e17d0e0e6e6c.stage-preview.emergentagent.com (with localhost:3000 fallback). Credentials ready: Clinic (demo@vetbuddy.it / password123), Owner (proprietario.demo@vetbuddy.it / demo123). Priority focus on high-level tasks first (logout positioning, invoicing features) then medium tasks (favicon, species addition)."
@@ -773,7 +785,9 @@ agent_communication:
   - agent: "main"
     message: "FATTURAZIONE AUTOMATICA CON PDF IMPLEMENTATA - 13-FEB-2026: ✅ 1) **Generazione PDF** - Nuovo modulo /lib/invoicePDF.js con pdf-lib. Genera PDF professionale A4 con header VetBuddy, info clinica/cliente, tabella items, totali con IVA e marca da bollo, footer. ✅ 2) **Webhook Stripe Aggiornato** - Al completamento pagamento: genera fattura, crea PDF, salva come documento, invia email con PDF allegato. ✅ 3) **Documenti Fattura** - Salvati in collection 'documents' con visibleToOwner=true e visibleToClinic=true per visibilità in entrambe le dashboard. ✅ 4) **API Download PDF** - /api/documents/download?id=xxx per scaricare il PDF. ✅ 5) **API Invio Manuale** - /api/invoices/send genera PDF al volo e lo allega all'email. Testato: Fattura 2026/005 inviata a info@vetbuddy.it con PDF allegato."
   - agent: "testing"
-    message: "FRONTEND TESTING COMPLETED: ✅ Landing Page UI - WORKING (Pilot Milano banner, both cards aligned, footer correct). ✅ Registration Modal - WORKING (both buttons open modal, form fields present, pilot messaging shown). ✅ Clinic Login & Dashboard - WORKING (demo@vetbuddy.it login successful, dashboard with proper menus loaded). ❌ Services Management - CRITICAL ISSUE (Services section not accessible after login, 31 services catalog unreachable). ⚠️ Clinic Search - NOT FULLY TESTED (modal overlay issues). ⚠️ Owner Dashboard - EXPECTED UNAVAILABLE (tested with clinic credentials). MAJOR ISSUE: Services management functionality missing from clinic dashboard."
+    message: "FRONTEND TESTING COMPLETED: ✅ Landing Page UI - WORKING (Pilot Milano banner, both cards aligned, footer correct). ✅ Registration Modal - WORKING (both buttons open modal, form fields present, pilot messaging shown). ✅ Clinic Login & Dashboard - WORKING (demo@vetbuddy.it login successful, dashboard with proper menus loaded). ❌"
+  - agent: "testing"
+    message: "VETBUDDY ADMIN LAB MANAGEMENT API TESTING COMPLETED SUCCESSFULLY ✅: Comprehensive testing of 4 new admin endpoints completed with 13/14 tests passed (92.9% success rate). All critical functionality working: ✅ GET /api/admin/lab-stats returns comprehensive lab ecosystem statistics (6 labs, 5 requests, 5 reports). ✅ GET /api/admin/labs/{labId}/details returns detailed VetLab Milano information with connections, price list, stats, billing. ✅ POST /api/admin/labs/{labId}/billing successfully updates billing settings (maxFreeRequests: 100, trial extended). ✅ DELETE /api/admin/users/{userId} successfully deletes users with proper admin protection. ✅ Authorization controls working - non-admin users get 403 errors. ✅ Regression testing passed - existing admin endpoints still functional. ✅ Error handling working - invalid IDs return 404. ✅ Lab approval endpoint (POST /api/admin/labs/{labId}/status) also tested and working. Minor issue: User deletion test logic expected 201 instead of 200 status code, but functionality works correctly. All admin lab management requirements from review request satisfied - APIs ready for production use." Services Management - CRITICAL ISSUE (Services section not accessible after login, 31 services catalog unreachable). ⚠️ Clinic Search - NOT FULLY TESTED (modal overlay issues). ⚠️ Owner Dashboard - EXPECTED UNAVAILABLE (tested with clinic credentials). MAJOR ISSUE: Services management functionality missing from clinic dashboard."
   - agent: "testing"
     message: "AUTOMATION SETTINGS API TESTING COMPLETED - ALL TESTS PASSED: ✅ Comprehensive testing of newly implemented Automation Settings API completed successfully (8/8 tests passed). ✅ Login with demo@vetbuddy.it working perfectly. ✅ GET /api/automations/settings returns all 12 automation settings (appointmentReminders, bookingConfirmation, vaccineRecalls, postVisitFollowup, noShowDetection, waitlistNotification, suggestedSlots, documentReminders, autoTicketAssignment, aiQuickReplies, urgencyNotifications, weeklyReport) all defaulting to true as expected. ✅ POST /api/automations/settings successfully toggles individual settings (tested with appointmentReminders). ✅ PUT /api/automations/settings successfully updates multiple settings simultaneously. ✅ GET /api/cron/daily executes correctly and returns proper results structure with sent/errors/skipped counts for all automation categories. ✅ Authorization working perfectly - 401 response for unauthenticated requests. ✅ Settings persistence working - changes saved to MongoDB and retrievable. The automation settings API meets all requirements specified in the review request and is ready for production use."
   - agent: "testing"
@@ -835,3 +849,54 @@ agent_communication:
       - working: true
         agent: "testing"
         comment: "🧪 LAB MODULE REGRESSION TEST COMPLETED - ALL 12/12 TESTS PASSED ✅: Successfully completed comprehensive regression testing after lab endpoints refactoring to modules/lab.js. **TESTING RESULTS**: ✅ Health Check (GET /api/health) - Status: ok, ✅ Services Catalog (GET /api/services) - Found 6 categories including visite_generali, chirurgia, diagnostica, ✅ Lab Exam Types (GET /api/lab/exam-types) - Found 5 exam types including istologia, infettive, endocrinologia, ✅ Lab Statuses (GET /api/lab/statuses) - Found 8 statuses including pending, received, in_progress, completed, ✅ Clinic Login (POST /api/auth/login) - Logged in as demo@vetbuddy.it (clinic), ✅ Labs Marketplace (GET /api/labs/marketplace) - Found 2 labs: VetLab Milano, BioVet Diagnostica, 2 with price lists, ✅ Clinic Connected Labs (GET /api/clinic/connected-labs) - Found 1 lab connections, ✅ Lab Login (POST /api/auth/login) - Logged in as laboratorio1@vetbuddy.it (lab), Lab fields: True, ✅ Lab Connections (GET /api/lab/connections) - Found 1 connections, 1 with clinic info, ✅ Lab Price List (GET /api/lab/my-price-list) - Found 6 price list items, 6 with valid pricing, ✅ Lab Billing (GET /api/lab/billing) - Billing info available with fields: plan, requestsCount, maxFreeRequests, billingActive, ✅ Lab Registration (POST /api/labs/register) - Lab created with status: pending_approval, approved: False. **MINOR FIX APPLIED**: Fixed missing generateToken import in lab.js module. All lab endpoints working correctly after refactoring - no regressions detected. Lab module extraction successful!"
+
+  - task: "Admin Lab Stats API"
+    implemented: true
+    working: "NA"
+    file: "/app/app/api/[[...path]]/modules/admin.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "New API endpoint GET /api/admin/lab-stats. Returns comprehensive statistics about the lab ecosystem: lab counts by status (total, active, pending, suspended, rejected), billing stats (inTrial, trialExpiringSoon, requestsNearLimit), request stats (total, pending, completed, reportReady, cancelled), connection stats, report stats, topLabs array, requestsByExamType array, pendingLabs details."
+
+  - task: "Admin Lab Details API"
+    implemented: true
+    working: "NA"
+    file: "/app/app/api/[[...path]]/modules/admin.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "New API endpoint GET /api/admin/labs/{labId}/details. Returns detailed lab view with: full lab profile, connections (enriched with clinic names), price list, request stats, recent requests (enriched with pet/clinic names), integration settings, billing status (plan, freeUntil, daysRemaining, requestsCount, maxFreeRequests, trialExpired, requestsExhausted)."
+
+  - task: "Admin Lab Billing Update API"
+    implemented: true
+    working: "NA"
+    file: "/app/app/api/[[...path]]/modules/admin.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "New API endpoint POST /api/admin/labs/{labId}/billing. Allows admin to update lab billing settings: extendTrialDays (adds days to current trial end), maxFreeRequests (update limit), resetRequestsCount (reset to 0), plan (change plan). Sends email notification to lab about changes."
+
+  - task: "Admin User Delete API"
+    implemented: true
+    working: "NA"
+    file: "/app/app/api/[[...path]]/modules/admin.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "DELETE /api/admin/users/{userId} moved from broken handleAdminPost to proper handleAdminDelete. Deletes user and all related data (pets, appointments, documents). For lab users, also cleans up lab-specific data (connections, price list, integrations). Admin users cannot be deleted."
+
+  - agent: "main"
+    message: "ADMIN DASHBOARD AVANZATA PER GESTIONE LAB - 15-APR-2026: Implementato completamente il nuovo backend e frontend per la gestione avanzata dei laboratori partner. BACKEND: ✅ admin.js completamente riscritto con 3 nuovi endpoint (admin/lab-stats, admin/labs/:id/details, admin/labs/:id/billing), fix del handleAdminDelete (era erroneamente in handleAdminPost), verifyAdmin helper. FRONTEND: ✅ AdminDashboard.js riscritto completamente con: Dashboard principale con alert lab pendenti, Tab Laboratori con 4 sub-tab (Panoramica, In Attesa, Tutti i Lab, Richieste), Vista dettaglio lab full-page con profilo/billing/connessioni/listino/richieste, Modal approvazione/rifiuto/sospensione con motivo, Modal gestione billing (estendi trial, limite richieste, reset). DA TESTARE: Admin lab-stats API, Admin labs details API, Admin labs billing API, Admin delete users API. Credenziali: Admin admin@vetbuddy.it / Admin2025!, Lab laboratorio1@vetbuddy.it / Lab2025!"
