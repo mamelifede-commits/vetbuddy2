@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { CheckCircle, XCircle, Clock, Building2, Mail, Phone, MapPin, FileText, RefreshCw, Eye, ChevronLeft, Lock, LogIn } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Building2, Mail, Phone, MapPin, FileText, RefreshCw, Eye, ChevronLeft, Lock, LogIn, FlaskConical, Users, PawPrint, Calendar, CreditCard, TrendingUp, BarChart3, AlertTriangle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 
 // Admin email - solo questo può accedere
@@ -157,12 +158,63 @@ export default function AdminPage() {
   const [showApproveDialog, setShowApproveDialog] = useState(false);
   const [appToApprove, setAppToApprove] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState('pro');
+  
+  // Admin tabs & new sections state
+  const [activeAdminTab, setActiveAdminTab] = useState('candidature');
+  const [platformStats, setPlatformStats] = useState(null);
+  const [labStats, setLabStats] = useState(null);
+  const [labs, setLabs] = useState([]);
+  const [stripeTransactions, setStripeTransactions] = useState([]);
+  const [statsLoading, setStatsLoading] = useState(false);
 
   const openApproveDialog = (app) => {
     setAppToApprove(app);
     setSelectedPlan('pro'); // Default
     setShowApproveDialog(true);
   };
+
+  // Load platform stats
+  const loadPlatformStats = async () => {
+    setStatsLoading(true);
+    try {
+      const data = await api.get('admin/stats');
+      setPlatformStats(data);
+    } catch (e) { console.error('Stats error:', e); }
+    setStatsLoading(false);
+  };
+
+  // Load lab stats & list
+  const loadLabData = async () => {
+    setStatsLoading(true);
+    try {
+      const [labList, stats] = await Promise.all([
+        api.get('admin/labs'),
+        api.get('admin/lab-stats')
+      ]);
+      setLabs(labList || []);
+      setLabStats(stats);
+    } catch (e) { console.error('Lab data error:', e); }
+    setStatsLoading(false);
+  };
+
+  // Load Stripe/payment data
+  const loadStripeData = async () => {
+    setStatsLoading(true);
+    try {
+      const users = await api.get('admin/users');
+      const subsUsers = (users || []).filter(u => u.subscriptionPlan || u.stripeCustomerId);
+      setStripeTransactions(subsUsers);
+    } catch (e) { console.error('Stripe error:', e); }
+    setStatsLoading(false);
+  };
+
+  // Load data when tab changes
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    if (activeAdminTab === 'piattaforma') loadPlatformStats();
+    if (activeAdminTab === 'laboratori') loadLabData();
+    if (activeAdminTab === 'stripe') loadStripeData();
+  }, [activeAdminTab, isAuthenticated]);
 
   const handleApprove = async () => {
     if (!appToApprove) return;
@@ -305,7 +357,7 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/" className="flex items-center gap-2 text-gray-500 hover:text-gray-700">
@@ -313,15 +365,11 @@ export default function AdminPage() {
                 Home
               </Link>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">🏥 Admin - Candidature Pilot</h1>
-                <p className="text-sm text-gray-500">Gestisci le richieste di adesione al Pilot</p>
+                <h1 className="text-2xl font-bold text-gray-900">Admin VetBuddy</h1>
+                <p className="text-sm text-gray-500">Pannello di gestione piattaforma</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button onClick={() => loadApplications(filter)} variant="outline" size="sm">
-                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                Aggiorna
-              </Button>
               <Button onClick={handleLogout} variant="ghost" size="sm" className="text-gray-500">
                 Esci
               </Button>
@@ -330,7 +378,17 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <Tabs value={activeAdminTab} onValueChange={setActiveAdminTab}>
+          <TabsList className="grid grid-cols-4 w-full max-w-xl mb-6">
+            <TabsTrigger value="candidature" className="flex items-center gap-1.5"><Building2 className="h-4 w-4" />Candidature</TabsTrigger>
+            <TabsTrigger value="laboratori" className="flex items-center gap-1.5"><FlaskConical className="h-4 w-4" />Laboratori</TabsTrigger>
+            <TabsTrigger value="piattaforma" className="flex items-center gap-1.5"><BarChart3 className="h-4 w-4" />Piattaforma</TabsTrigger>
+            <TabsTrigger value="stripe" className="flex items-center gap-1.5"><CreditCard className="h-4 w-4" />Stripe</TabsTrigger>
+          </TabsList>
+
+          {/* ========== TAB: CANDIDATURE (existing) ========== */}
+          <TabsContent value="candidature">
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4 mb-6">
           <Card className={`cursor-pointer ${filter === 'all' ? 'ring-2 ring-coral-500' : ''}`} onClick={() => setFilter('all')}>
