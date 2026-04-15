@@ -1189,7 +1189,7 @@ function FullLandingPage({ onLogin }) {
             </Card>
             
             {/* 2. Pro Clinica — EVIDENZIATO */}
-            <Card className="border-2 border-coral-500 relative shadow-2xl flex flex-col ring-2 ring-coral-200 lg:scale-105 lg:-my-2 bg-gradient-to-b from-white to-coral-50/30">
+            <Card className="border-2 border-coral-500 relative shadow-2xl flex flex-col ring-2 ring-coral-200 lg:scale-105 bg-gradient-to-b from-white to-coral-50/30">
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-coral-500 to-orange-500 text-white text-xs px-4 py-1.5 rounded-full font-bold whitespace-nowrap shadow-lg">Consigliato</div>
               <CardHeader className="pt-7 pb-3">
                 <p className="text-xs font-semibold text-coral-500 uppercase tracking-wider mb-1">Pro Clinica</p>

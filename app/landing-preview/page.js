@@ -632,7 +632,7 @@ export default function FullLandingPage() {
             </div>
 
             {/* Pro Clinica */}
-            <div className="bg-gradient-to-br from-coral-500 to-orange-500 rounded-2xl p-6 shadow-2xl text-white relative ring-2 ring-coral-300 lg:scale-105 lg:-my-2">
+            <div className="bg-gradient-to-br from-coral-500 to-orange-500 rounded-2xl p-6 shadow-2xl text-white relative ring-2 ring-coral-300 lg:scale-105">
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white text-coral-600 text-xs px-4 py-1.5 rounded-full font-bold shadow-lg whitespace-nowrap">Consigliato</div>
               <div className="text-center mb-6 mt-2">
                 <p className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Pro Clinica</p>
