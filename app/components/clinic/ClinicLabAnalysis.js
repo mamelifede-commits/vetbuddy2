@@ -307,6 +307,24 @@ function ClinicLabAnalysis({ user, pets, owners }) {
                   </div>
                 </div>
                 
+                {/* Preventivo dal laboratorio */}
+                {selectedRequest.quotedPrice && (
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <label className="text-xs font-medium text-amber-700 uppercase">Preventivo Laboratorio</label>
+                        <p className="text-2xl font-bold text-amber-700">€{selectedRequest.quotedPrice?.toFixed(2)}</p>
+                      </div>
+                      {selectedRequest.estimatedDelivery && (
+                        <div className="text-right">
+                          <label className="text-xs text-gray-500">Consegna stimata</label>
+                          <p className="text-sm font-medium">{selectedRequest.estimatedDelivery}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {selectedRequest.clinicalNotes && (
                   <div>
                     <label className="text-xs font-medium text-gray-500 uppercase">Note Cliniche</label>

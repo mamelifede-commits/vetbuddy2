@@ -38,6 +38,8 @@ function LabDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('requests');
   const [labRequests, setLabRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [showQuoteDialog, setShowQuoteDialog] = useState(false);
+  const [quoteForm, setQuoteForm] = useState({ price: '', delivery: '', note: '' });
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ pending: 0, inProgress: 0, completed: 0, total: 0 });
   const [filterStatus, setFilterStatus] = useState('all');
@@ -219,14 +221,18 @@ function LabDashboard({ user, onLogout }) {
     }
   };
 
-  const updateStatus = async (requestId, newStatus, note = '') => {
+  const updateStatus = async (requestId, newStatus, note = '', quotedPrice = null, estimatedDelivery = null) => {
     try {
-      await api.post('lab-requests/update-status', { requestId, status: newStatus, note });
+      const payload = { requestId, status: newStatus, note };
+      if (quotedPrice !== null && quotedPrice !== '') payload.quotedPrice = quotedPrice;
+      if (estimatedDelivery) payload.estimatedDelivery = estimatedDelivery;
+      await api.post('lab-requests/update-status', payload);
       await loadRequests();
       if (selectedRequest?.id === requestId) {
         const updated = await api.get(`lab-requests/${requestId}`);
         setSelectedRequest(updated);
       }
+      setShowQuoteDialog(false);
     } catch (error) {
       alert('Errore: ' + error.message);
     }
@@ -529,6 +535,34 @@ function LabDashboard({ user, onLogout }) {
                           </div>
                         </div>
                       )}
+                      {/* Price quotation display */}
+                      {selectedRequest.quotedPrice && (
+                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <label className="text-xs font-medium text-green-700 uppercase">Preventivo Confermato</label>
+                              <p className="text-2xl font-bold text-green-700">€{selectedRequest.quotedPrice?.toFixed(2)}</p>
+                            </div>
+                            {selectedRequest.estimatedDelivery && (
+                              <div className="text-right">
+                                <label className="text-xs text-gray-500">Consegna stimata</label>
+                                <p className="text-sm font-medium">{selectedRequest.estimatedDelivery}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Quote button (if no price yet) */}
+                      {!selectedRequest.quotedPrice && selectedRequest.status !== 'cancelled' && (
+                        <button 
+                          onClick={() => { setQuoteForm({ price: '', delivery: '', note: '' }); setShowQuoteDialog(true); }}
+                          className="w-full py-2.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white rounded-xl font-medium hover:from-amber-500 hover:to-orange-600 transition-all flex items-center justify-center gap-2"
+                        >
+                          <Euro className="h-4 w-4" />Invia Preventivo alla Clinica
+                        </button>
+                      )}
+
                       <div className="border-t pt-4">
                         <label className="text-xs font-medium text-gray-500 uppercase mb-2 block">Aggiorna Stato</label>
                         <div className="grid grid-cols-2 gap-2">
@@ -966,6 +1000,71 @@ function LabDashboard({ user, onLogout }) {
             <Button variant="outline" onClick={() => setShowUploadModal(false)}>Annulla</Button>
             <Button onClick={submitReport} disabled={!uploadFile} className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600">
               <Upload className="h-4 w-4 mr-2" />Carica
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Quote Dialog */}
+      <Dialog open={showQuoteDialog} onOpenChange={setShowQuoteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Euro className="h-5 w-5 text-amber-500" />
+              Invia Preventivo
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">
+              Conferma il prezzo per l'esame <strong>{selectedRequest?.examName || selectedRequest?.examType}</strong>
+            </p>
+            <div>
+              <Label className="text-sm font-medium">Prezzo (€) *</Label>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={quoteForm.price}
+                onChange={(e) => setQuoteForm(f => ({...f, price: e.target.value}))}
+                placeholder="es. 35.00"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium">Tempi di consegna stimati</Label>
+              <Input
+                value={quoteForm.delivery}
+                onChange={(e) => setQuoteForm(f => ({...f, delivery: e.target.value}))}
+                placeholder="es. 24-48 ore"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium">Note (opzionale)</Label>
+              <Textarea
+                value={quoteForm.note}
+                onChange={(e) => setQuoteForm(f => ({...f, note: e.target.value}))}
+                placeholder="Note aggiuntive sul preventivo..."
+                rows={2}
+                className="mt-1"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowQuoteDialog(false)}>Annulla</Button>
+            <Button 
+              className="bg-amber-500 hover:bg-amber-600 text-white"
+              disabled={!quoteForm.price}
+              onClick={() => updateStatus(
+                selectedRequest?.id, 
+                selectedRequest?.status === 'pending' ? 'received' : selectedRequest?.status, 
+                quoteForm.note || `Preventivo: €${quoteForm.price}`,
+                quoteForm.price,
+                quoteForm.delivery
+              )}
+            >
+              <Euro className="h-4 w-4 mr-2" />
+              Invia Preventivo €{quoteForm.price || '0'}
             </Button>
           </DialogFooter>
         </DialogContent>

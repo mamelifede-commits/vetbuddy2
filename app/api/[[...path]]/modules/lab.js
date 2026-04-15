@@ -895,6 +895,19 @@ export async function handleLabPost(path, request, body) {
         updateData.sampleCode = sampleCode;
       }
 
+      // Support price quotation
+      if (body.quotedPrice !== undefined) {
+        updateData.quotedPrice = parseFloat(body.quotedPrice);
+        updateData.priceConfirmed = true;
+        updateData.priceConfirmedAt = new Date().toISOString();
+        statusEntry.quotedPrice = parseFloat(body.quotedPrice);
+      }
+
+      // Support estimated delivery
+      if (body.estimatedDelivery) {
+        updateData.estimatedDelivery = body.estimatedDelivery;
+      }
+
       await labRequests.updateOne(
         { id: requestId },
         { 
