@@ -120,6 +120,28 @@ export async function handlePaymentsPost(path, request, body) {
     return NextResponse.json({ success: true }, { headers: corsHeaders });
   }
 
+  // Stripe Customer Portal (manage subscription, billing, cancel)
+  if (path === 'stripe/portal') {
+    const user = getUserFromRequest(request);
+    if (!user) return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const users = await getCollection('users');
+    const userData = await users.findOne({ id: user.id });
+    if (!userData?.stripeCustomerId) {
+      return NextResponse.json({ error: 'Nessun abbonamento Stripe trovato. Sottoscrivi un piano prima.' }, { status: 400, headers: corsHeaders });
+    }
+    try {
+      const { originUrl } = body;
+      const baseUrl = originUrl || process.env.NEXT_PUBLIC_BASE_URL;
+      const portalSession = await stripe.billingPortal.sessions.create({
+        customer: userData.stripeCustomerId,
+        return_url: baseUrl,
+      });
+      return NextResponse.json({ url: portalSession.url }, { headers: corsHeaders });
+    } catch (error) {
+      return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
+    }
+  }
+
   // Stripe Webhook
   if (path === 'webhook/stripe') {
     try {
