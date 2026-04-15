@@ -29,37 +29,58 @@ export default function BrochurePage() {
         </Link>
       </div>
 
-      {/* =====================================================
-          PAGINA 1 — COPERTINA
-      ===================================================== */}
-      <div className="brochure-page flex flex-col items-center justify-center bg-white px-12 py-16 text-center">
-        {/* Logo grande */}
-        <div className="mb-8">
-          <div className="w-24 h-24 bg-gradient-to-br from-coral-500 to-rose-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl mb-6">
-            <PawPrint className="w-14 h-14 text-white" />
+      {/* ====== PAGINA 1 — COPERTINA ====== */}
+      <div className="brochure-page flex flex-col items-center justify-center px-12 py-16 text-center text-white relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #f97316 50%, #FF6B6B 100%)' }}>
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 30%, white 1px, transparent 1px), radial-gradient(circle at 80% 70%, white 1px, transparent 1px), radial-gradient(circle at 50% 10%, white 2px, transparent 2px), radial-gradient(circle at 10% 80%, white 1.5px, transparent 1.5px), radial-gradient(circle at 90% 20%, white 1px, transparent 1px)', backgroundSize: '100% 100%' }}></div>
+        <div className="absolute top-10 right-10 w-64 h-64 rounded-full opacity-10" style={{ background: 'white' }}></div>
+        <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full opacity-10" style={{ background: 'white' }}></div>
+
+        {/* Logo */}
+        <div className="relative mb-10">
+          <div className="w-28 h-28 rounded-3xl flex items-center justify-center mx-auto shadow-2xl mb-6 border-4 border-white/30" style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)' }}>
+            <PawPrint className="w-16 h-16 text-white" />
           </div>
-          <h1 className="text-6xl font-black text-gray-900 tracking-tight">
-            vet<span className="text-coral-500">buddy</span>
+          <h1 className="text-7xl font-black tracking-tight">
+            vet<span style={{ color: '#fff' }}>buddy</span>
           </h1>
+          <div className="w-20 h-1 mx-auto mt-4 rounded-full" style={{ background: 'rgba(255,255,255,0.5)' }}></div>
         </div>
 
-        <div className="max-w-lg mx-auto mb-12">
-          <p className="text-2xl text-gray-600 leading-relaxed mb-6">
+        {/* Tagline */}
+        <div className="max-w-xl mx-auto mb-10 relative">
+          <p className="text-2xl leading-relaxed font-medium" style={{ color: 'rgba(255,255,255,0.95)' }}>
             La piattaforma digitale che connette<br/>
-            <strong className="text-gray-900">cliniche veterinarie</strong>,{' '}
-            <strong className="text-coral-500">proprietari di animali</strong><br/>
-            e <strong className="text-blue-600">laboratori di analisi</strong>.
+            <strong className="font-black">cliniche veterinarie</strong>,{' '}
+            <strong className="font-black">proprietari</strong><br/>
+            e <strong className="font-black">laboratori di analisi</strong>.
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-2 bg-coral-50 text-coral-700 px-6 py-3 rounded-full border border-coral-200 mb-8">
-          <span className="text-lg font-bold">Pilot Milano 2025</span>
+        {/* Pilot Badge */}
+        <div className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl mb-6 border-2 border-white/30" style={{ background: 'rgba(255,255,255,0.15)' }}>
+          <div className="w-3 h-3 rounded-full animate-pulse" style={{ background: '#4ade80' }}></div>
+          <span className="text-xl font-bold">Pilot Milano 2025</span>
         </div>
 
-        <p className="text-gray-400 text-sm">Accesso su invito per cliniche selezionate</p>
+        <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.7)' }}>Accesso su invito per cliniche selezionate</p>
+
+        {/* 3 key numbers */}
+        <div className="flex gap-8 mt-8 relative">
+          {[
+            { n: '44+', l: 'Automazioni' },
+            { n: '100%', l: 'Gratis per proprietari' },
+            { n: '€0', l: 'Per 90 giorni' },
+          ].map((s, i) => (
+            <div key={i} className="text-center">
+              <div className="text-3xl font-black mb-1">{s.n}</div>
+              <div className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>{s.l}</div>
+            </div>
+          ))}
+        </div>
 
         <div className="absolute bottom-8 left-0 right-0 text-center">
-          <p className="text-xs text-gray-300">vetbuddy.it &bull; info@vetbuddy.it</p>
+          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>vetbuddy.it &bull; info@vetbuddy.it</p>
         </div>
       </div>
 
@@ -80,7 +101,7 @@ export default function BrochurePage() {
 
         <h3 className="text-2xl font-bold text-gray-900 mb-6">Due ecosistemi, una piattaforma</h3>
         <div className="grid grid-cols-2 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-coral-500 to-orange-500 text-white rounded-2xl p-6">
+          <div className="rounded-2xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #FF6B6B, #f97316)' }}>
             <h4 className="text-xl font-bold mb-3">Per le Cliniche Veterinarie</h4>
             <p className="text-white/80 text-sm mb-4">Tutto ciò che serve per gestire la tua clinica in modo digitale.</p>
             <ul className="space-y-1.5 text-sm text-white/90">
@@ -93,7 +114,7 @@ export default function BrochurePage() {
               <p className="text-white/70 text-xs">Poi €79/mese + IVA</p>
             </div>
           </div>
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl p-6">
+          <div className="rounded-2xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #2563EB, #4F46E5)' }}>
             <h4 className="text-xl font-bold mb-3">Per i Proprietari di Animali</h4>
             <p className="text-white/80 text-sm mb-4">La salute dei tuoi animali in un'unica app.</p>
             <ul className="space-y-1.5 text-sm text-white/90">
@@ -164,7 +185,7 @@ export default function BrochurePage() {
       {/* =====================================================
           PAGINA 4 — 44+ AUTOMAZIONI (lista completa)
       ===================================================== */}
-      <div className="brochure-page bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 text-white px-12 py-14">
+      <div className="brochure-page text-white px-12 py-14" style={{ background: 'linear-gradient(135deg, #312E81, #581C87, #312E81)' }}>
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
             <PawPrint className="w-5 h-5 text-white" />
@@ -442,7 +463,7 @@ export default function BrochurePage() {
       {/* =====================================================
           PAGINA 8 — CONTATTI + CTA FINALE
       ===================================================== */}
-      <div className="brochure-page bg-gradient-to-br from-coral-500 to-orange-500 text-white px-12 py-14 flex flex-col">
+      <div className="brochure-page text-white px-12 py-14 flex flex-col" style={{ background: 'linear-gradient(135deg, #FF6B6B, #f97316)' }}>
         <div className="flex items-center gap-3 mb-auto">
           <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
             <PawPrint className="w-5 h-5 text-white" />
@@ -500,7 +521,7 @@ export default function BrochurePage() {
 function PageHeader() {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-8 h-8 bg-gradient-to-br from-coral-500 to-rose-500 rounded-xl flex items-center justify-center shadow-sm">
+      <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-sm" style={{ background: '#FF6B6B' }}>
         <PawPrint className="w-4 h-4 text-white" />
       </div>
       <span className="font-bold text-gray-400 text-sm">vet<span className="text-coral-400">buddy</span></span>
