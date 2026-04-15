@@ -120,13 +120,23 @@ export async function POST(request) {
 
     let event;
 
-    // In produzione, verificare la firma del webhook
-    // Per ora, processiamo direttamente l'evento
-    try {
-      event = JSON.parse(body);
-    } catch (err) {
-      console.error('Webhook parsing error:', err);
-      return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
+    // Verifica firma webhook Stripe (produzione)
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (webhookSecret && signature) {
+      try {
+        event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      } catch (err) {
+        console.error('⚠️ Webhook signature verification failed:', err.message);
+        return NextResponse.json({ error: 'Webhook signature verification failed' }, { status: 400 });
+      }
+    } else {
+      // Fallback per test senza firma
+      try {
+        event = JSON.parse(body);
+      } catch (err) {
+        console.error('Webhook parsing error:', err);
+        return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
+      }
     }
 
     const client = await clientPromise;

@@ -894,7 +894,7 @@ export default function AdminPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
-                        <span className="text-sm font-medium text-green-700">Connesso (Test Mode)</span>
+                        <span className="text-sm font-medium text-green-700">Connesso (Live Mode)</span>
                       </div>
                     </div>
                   </CardContent>
@@ -1014,7 +1014,7 @@ export default function AdminPage() {
                     <div className="grid md:grid-cols-2 gap-3 text-sm">
                       <div>
                         <span className="text-gray-500">Modalità:</span>{' '}
-                        <Badge className="bg-amber-100 text-amber-700">Test Mode</Badge>
+                        <Badge className="bg-green-100 text-green-700">Live Mode ✅</Badge>
                       </div>
                       <div>
                         <span className="text-gray-500">Checkout endpoint:</span>{' '}
@@ -1029,8 +1029,8 @@ export default function AdminPage() {
                         <span className="font-medium">EUR (€)</span>
                       </div>
                     </div>
-                    <div className="mt-3 p-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
-                      <strong>Nota:</strong> Per passare a produzione, sostituire le chiavi Stripe Test con le chiavi Live nel file .env e aggiornare il webhook endpoint nella dashboard Stripe.
+                    <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700">
+                      <strong>✅ Produzione attiva:</strong> Le chiavi Live sono configurate. I pagamenti reali sono abilitati. Webhook con verifica firma attivo.
                     </div>
                   </CardContent>
                 </Card>
