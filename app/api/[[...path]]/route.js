@@ -211,6 +211,131 @@ export async function GET(request, { params }) {
       }, { headers: corsHeaders });
     }
 
+
+    // ==================== AUTOMATIONS SETTINGS - GET ====================
+    if (path === 'automations/settings') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: user.id });
+      
+      // Default automation settings
+      const defaultSettings = {
+        appointmentReminder24h: true,
+        appointmentReminderSms: false,
+        appointmentConfirmation: true,
+        postVisitFollowUp: true,
+        vaccineReminder: true,
+        birthdayGreeting: false,
+        noShowFollowUp: true,
+        reviewRequest: true,
+        documentReadyNotification: true,
+        paymentReminder: false,
+        weeklyReport: true,
+        monthlyReport: false,
+        newPatientWelcome: true,
+        labResultReady: true,
+        prescriptionExpiry: true,
+        appointmentWaitlist: false,
+        cancellationFollowUp: true,
+        seasonalReminder: false,
+        referralThankYou: false,
+        inactivePatientReminder: false,
+        emergencyAlert: true
+      };
+      
+      const settings = clinic?.automationSettings || defaultSettings;
+      return NextResponse.json(settings, { headers: corsHeaders });
+    }
+
+    // ==================== CLINIC AVAILABILITY SLOTS - GET ====================
+    if (path.match(/^clinics\/[^/]+\/slots$/)) {
+      const clinicId = path.split('/')[1];
+      const url = new URL(request.url);
+      const date = url.searchParams.get('date');
+      const serviceId = url.searchParams.get('serviceId');
+      
+      if (!date) {
+        return NextResponse.json({ error: 'Data richiesta' }, { status: 400, headers: corsHeaders });
+      }
+      
+      const users = await getCollection('users');
+      const clinic = await users.findOne({ id: clinicId, role: 'clinic' });
+      
+      if (!clinic) {
+        return NextResponse.json({ error: 'Clinica non trovata' }, { status: 404, headers: corsHeaders });
+      }
+      
+      // Get working hours for the day of week
+      const dayOfWeek = new Date(date).getDay();
+      const dayNames = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
+      const dayKey = dayNames[dayOfWeek];
+      
+      const workingHours = clinic.workingHours || {};
+      const dayHours = workingHours[dayKey];
+      
+      // If clinic is closed on this day
+      if (!dayHours || dayHours === 'Chiuso' || dayHours === '') {
+        return NextResponse.json({ slots: [], message: 'La clinica è chiusa in questo giorno' }, { headers: corsHeaders });
+      }
+      
+      // Generate time slots based on working hours
+      const slots = [];
+      const slotDuration = 30; // 30 minute slots
+      
+      // Parse hours like "9:00-12:00, 14:00-18:00" or "09:00-13:00"
+      const timeRanges = dayHours.split(',').map(r => r.trim());
+      
+      for (const range of timeRanges) {
+        const match = range.match(/(\d{1,2}):?(\d{2})?\s*-\s*(\d{1,2}):?(\d{2})?/);
+        if (match) {
+          let startHour = parseInt(match[1]);
+          let startMin = parseInt(match[2] || '0');
+          let endHour = parseInt(match[3]);
+          let endMin = parseInt(match[4] || '0');
+          
+          let currentMin = startHour * 60 + startMin;
+          const endTotalMin = endHour * 60 + endMin;
+          
+          while (currentMin + slotDuration <= endTotalMin) {
+            const h = Math.floor(currentMin / 60);
+            const m = currentMin % 60;
+            const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+            slots.push({
+              time: timeStr,
+              available: true
+            });
+            currentMin += slotDuration;
+          }
+        }
+      }
+      
+      // Check existing appointments to mark busy slots
+      const appointments = await getCollection('appointments');
+      const dayAppointments = await appointments.find({
+        clinicId: clinicId,
+        date: date,
+        status: { $nin: ['cancellato', 'annullato'] }
+      }).toArray();
+      
+      const busyTimes = dayAppointments.map(a => a.time);
+      
+      const finalSlots = slots.map(slot => ({
+        ...slot,
+        available: !busyTimes.includes(slot.time)
+      }));
+      
+      return NextResponse.json({ 
+        slots: finalSlots,
+        totalSlots: finalSlots.length,
+        availableCount: finalSlots.filter(s => s.available).length,
+        date,
+        clinicName: clinic.clinicName || clinic.name
+      }, { headers: corsHeaders });
+    }
+
     // Get Video Consult settings
     if (path === 'clinic/video-consult-settings') {
       const user = getUserFromRequest(request);
@@ -1731,6 +1856,28 @@ export async function POST(request, { params }) {
       );
 
       return NextResponse.json({ success: true }, { headers: corsHeaders });
+    }
+
+    // ==================== AUTOMATIONS SETTINGS - POST ====================
+    if (path === 'automations/settings') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'clinic') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+      }
+      
+      const { key, enabled } = body;
+      if (!key) {
+        return NextResponse.json({ error: 'Chiave automazione mancante' }, { status: 400, headers: corsHeaders });
+      }
+      
+      const users = await getCollection('users');
+      const updateKey = `automationSettings.${key}`;
+      await users.updateOne(
+        { id: user.id },
+        { $set: { [updateKey]: enabled } }
+      );
+      
+      return NextResponse.json({ success: true, key, enabled }, { headers: corsHeaders });
     }
 
     // Save Video Consult settings
