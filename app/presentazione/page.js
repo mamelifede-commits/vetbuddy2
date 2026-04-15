@@ -101,7 +101,7 @@ export default function BrochurePage() {
             <h4 className="text-xl font-bold mb-3">Per le Cliniche Veterinarie</h4>
             <p className="text-white/80 text-sm mb-4">Tutto ciò che serve per gestire la tua clinica in modo digitale.</p>
             <ul className="space-y-1.5 text-sm text-white/90">
-              {['Agenda digitale e prenotazioni online', 'Gestione pazienti e cartelle cliniche', 'Documenti PDF con invio automatico via email', 'Team inbox e messaggistica clienti', '44+ automazioni attive 24/7', 'Metriche e report'].map((f, i) => (
+              {['Agenda digitale e prenotazioni online', 'Gestione pazienti e cartelle cliniche', 'Fatturazione, ricevute e listino servizi', 'Documenti PDF con invio automatico via email', 'Team inbox e messaggistica clienti', '44+ automazioni attive 24/7', 'Metriche, report e dashboard fatturato'].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
@@ -134,7 +134,7 @@ export default function BrochurePage() {
         <h2 className="text-3xl font-black text-gray-900 mb-1 mt-6">Funzionalità per la Clinica</h2>
         <p className="text-gray-500 mb-8">Tutto ciò che serve per digitalizzare la gestione della tua clinica veterinaria.</p>
 
-        <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-4">
           <FeatureBlock
             title="Agenda Digitale"
             desc="Calendario condiviso tra tutto lo staff. Visualizzazione per giorno, settimana e mese. Gestione delle disponibilità per veterinario e servizio."
@@ -152,12 +152,16 @@ export default function BrochurePage() {
             desc="Carica referti, prescrizioni, fatture in PDF. Invia automaticamente via email al proprietario. Il cliente li ritrova anche nell'app."
           />
           <FeatureBlock
+            title="Fatturazione e Pagamenti"
+            desc="Crea fatture e ricevute direttamente dalla piattaforma. Listino servizi con prezzi preimpostati. Export CSV e PDF. Statistiche fatturato mensile, pagato e in sospeso."
+          />
+          <FeatureBlock
             title="Team Inbox"
             desc="Messaggistica centralizzata con assegnazione ticket allo staff. Chat diretta con i clienti per comunicazioni rapide."
           />
           <FeatureBlock
             title="Metriche e Report"
-            desc="Dashboard con prenotazioni generate, telefonate evitate, tassi di conversione, analisi servizi più richiesti e trend mensili."
+            desc="Dashboard con prenotazioni generate, telefonate evitate, fatturato, tassi di conversione, analisi servizi più richiesti e trend mensili."
           />
           <FeatureBlock
             title="Google Calendar Sync"
@@ -174,6 +178,10 @@ export default function BrochurePage() {
           <FeatureBlock
             title="Profilo Pubblico"
             desc="Pagina pubblica della clinica con servizi, orari, mappa, recensioni. Visibile su Google e condivisibile con un link."
+          />
+          <FeatureBlock
+            title="Programma Fedeltà"
+            desc="Sistema a punti per fidelizzare i clienti. I proprietari accumulano punti ad ogni visita (100 punti = €5 di sconto). Configurabile dalla clinica."
           />
         </div>
       </div>
