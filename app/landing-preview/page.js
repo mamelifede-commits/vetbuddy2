@@ -207,7 +207,7 @@ export default function FullLandingPage() {
               </div>
               <div className="text-left flex-1">
                 <p className="font-semibold text-gray-900 text-sm">Sei un veterinario freelance?</p>
-                <p className="text-xs text-gray-600">Registrati come clinica e inizia con il <span className="font-bold text-purple-600">Piano Starter gratuito</span>. Ideale per gestire i tuoi clienti in autonomia!</p>
+                <p className="text-xs text-gray-600">Registrati come clinica e inizia con il <span className="font-bold text-purple-600">Piano Starter €0/mese</span>. Ideale per gestire i tuoi clienti in autonomia!</p>
               </div>
               <Button size="sm" className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white flex-shrink-0">
                 Richiedi Invito →
@@ -606,105 +606,85 @@ export default function FullLandingPage() {
               <span className="font-medium">Pilot Milano</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Prezzi <span className="text-coral-500">trasparenti</span>
+              Abbonamento <span className="text-coral-500">VetBuddy</span>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Nessun costo nascosto. Piano Starter gratuito per sempre. Premium con 90 giorni gratis durante il pilot.
+              Accesso su invito per cliniche selezionate e onboarding gratuito per i primi laboratori partner.
             </p>
+            <p className="text-xs text-gray-400 mt-2">Prezzi IVA esclusa.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {/* Starter */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto items-start">
+            {/* Starter Clinica */}
             <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-gray-200">
               <div className="text-center mb-6">
-                <h3 className="font-bold text-xl text-gray-900 mb-2">Starter</h3>
-                <div className="text-4xl font-bold text-gray-900 mb-1">€0</div>
-                <p className="text-sm text-gray-500">Gratis per sempre</p>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Starter Clinica</p>
+                <div className="text-4xl font-bold text-gray-900 mb-1">€0<span className="text-lg font-normal text-gray-400">/mese</span></div>
+                <p className="text-sm text-gray-500">Per veterinari freelance e micro-cliniche.</p>
               </div>
               <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>Dashboard base</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>Agenda appuntamenti</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>Messaggistica clienti</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm text-gray-400">
-                  <X className="h-4 w-4" />
-                  <span>Automazioni avanzate</span>
-                </li>
+                {['1 sede', '1 utente', 'Fino a 30 richieste/mese', 'Profilo pubblico', 'Link prenotazione', 'Agenda base'].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm"><Check className="h-4 w-4 text-green-500" /><span>{f}</span></li>
+                ))}
               </ul>
-              <Button variant="outline" className="w-full">Inizia Gratis</Button>
+              <Button variant="outline" className="w-full">Richiedi invito</Button>
+              <p className="text-xs text-gray-400 mt-2 text-center">Solo per cliniche ammesse al Pilot Milano.</p>
             </div>
 
-            {/* Premium */}
-            <div className="bg-gradient-to-br from-coral-500 to-orange-500 rounded-2xl p-6 shadow-xl text-white relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-gray-900 text-xs px-3 py-1 rounded-full font-bold">
-                🎁 90 GIORNI GRATIS
-              </div>
+            {/* Pro Clinica */}
+            <div className="bg-gradient-to-br from-coral-500 to-orange-500 rounded-2xl p-6 shadow-2xl text-white relative ring-2 ring-coral-300 lg:scale-105 lg:-my-2">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white text-coral-600 text-xs px-4 py-1.5 rounded-full font-bold shadow-lg whitespace-nowrap">Consigliato</div>
               <div className="text-center mb-6 mt-2">
-                <h3 className="font-bold text-xl mb-2">Premium</h3>
-                <div className="text-4xl font-bold mb-1">€49<span className="text-lg font-normal">/mese</span></div>
-                <p className="text-sm text-coral-100">Poi €49/mese • Disdici quando vuoi</p>
+                <p className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Pro Clinica</p>
+                <div className="text-4xl font-bold mb-1">€0<span className="text-lg font-normal text-white/70 ml-1">per 90 giorni</span></div>
+                <p className="text-sm text-coral-100">Poi €79/mese + IVA</p>
+                <div className="bg-white/15 backdrop-blur-sm rounded-lg px-3 py-2 mt-3 border border-white/20">
+                  <p className="text-xs font-semibold">Early adopter: €49/mese + IVA</p>
+                </div>
               </div>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4" />
-                  <span>Tutto di Starter</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4" />
-                  <span>44+ automazioni</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4" />
-                  <span>Video consulti</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4" />
-                  <span>Report avanzati</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4" />
-                  <span>Supporto prioritario</span>
-                </li>
+              <ul className="space-y-2.5 mb-6">
+                {['Fino a 10 staff', 'Prenotazioni online', 'Agenda digitale', 'Reminder email', 'Documenti e PDF', 'Google Calendar sync', 'Report e analytics', 'Lab Marketplace', 'Dashboard valore'].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm"><Check className="h-4 w-4" /><span>{f}</span></li>
+                ))}
               </ul>
-              <Button className="w-full bg-white text-coral-600 hover:bg-coral-50">Richiedi Invito →</Button>
+              <Button className="w-full bg-white text-coral-600 hover:bg-coral-50 font-bold">Richiedi accesso Pilot</Button>
+              <p className="text-xs text-white/60 mt-2 text-center">90 giorni gratuiti. Estendibile fino a 6 mesi.</p>
+            </div>
+
+            {/* Laboratorio Partner */}
+            <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl p-6 shadow-xl text-white relative">
+              <div className="absolute -top-3 left-4 bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-bold shadow-lg">Per Laboratori</div>
+              <div className="text-center mb-6 mt-2">
+                <p className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Laboratorio Partner</p>
+                <div className="text-4xl font-bold mb-1">€0<span className="text-lg font-normal text-white/70 ml-1">per 6 mesi</span></div>
+                <p className="text-sm text-blue-100">Poi €29/mese + IVA</p>
+              </div>
+              <ul className="space-y-2.5 mb-6">
+                {['Dashboard laboratorio', 'Profilo marketplace', 'Listino prezzi', 'Ricezione richieste', 'Upload referti PDF', 'Notifiche email', 'Supporto dedicato'].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm"><Check className="h-4 w-4" /><span>{f}</span></li>
+                ))}
+              </ul>
+              <Button className="w-full bg-white text-blue-600 hover:bg-blue-50 font-bold">Registrati gratis</Button>
+              <p className="text-xs text-white/60 mt-2 text-center">Gratis 6 mesi o 50 richieste. Poi €29/mese + IVA.</p>
             </div>
 
             {/* Enterprise */}
             <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-gray-200">
               <div className="text-center mb-6">
-                <h3 className="font-bold text-xl text-gray-900 mb-2">Enterprise</h3>
-                <div className="text-4xl font-bold text-gray-900 mb-1">Custom</div>
-                <p className="text-sm text-gray-500">Per gruppi e catene</p>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Enterprise</p>
+                <div className="text-4xl font-bold text-gray-900 mb-1">Custom<span className="text-lg font-normal text-gray-400 ml-1">+ IVA</span></div>
+                <p className="text-sm text-gray-500">Per gruppi veterinari e network.</p>
               </div>
               <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>Multi-sede</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>API personalizzate</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>Account manager dedicato</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>Formazione team</span>
-                </li>
+                {['Multi-sede illimitate', 'Laboratori multipli', 'API dedicata', 'SLA garantito', 'Onboarding dedicato', 'Reportistica avanzata', 'Gestione centralizzata', 'Integrazioni personalizzate'].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm"><Check className="h-4 w-4 text-green-500" /><span>{f}</span></li>
+                ))}
               </ul>
               <Button variant="outline" className="w-full">Contattaci</Button>
+              <p className="text-xs text-gray-400 mt-2 text-center">Soluzione su misura per gruppi e network.</p>
             </div>
           </div>
+          <p className="text-center text-sm text-gray-500 mt-8 max-w-xl mx-auto">Non è una prova libera: stiamo selezionando cliniche e laboratori partner per validare VetBuddy nel Pilot Milano.</p>
         </div>
       </section>
 

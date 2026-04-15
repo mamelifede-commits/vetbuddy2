@@ -8,19 +8,26 @@ const stripe = new Stripe(process.env.STRIPE_API_KEY || process.env.STRIPE_SECRE
 // Piani tariffari fissi (sicurezza: non accettare prezzi dal frontend)
 const PLANS = {
   starter: {
-    name: 'Starter',
+    name: 'Starter Clinica',
     price: 0,
-    description: 'Piano gratuito per il Pilot'
+    description: 'Per veterinari freelance e micro-cliniche'
   },
   pro: {
-    name: 'Pro',
-    price: 129.00, // €129/mese
-    description: 'Tutte le funzionalità per la tua clinica'
+    name: 'Pro Clinica',
+    price: 79.00, // €79/mese + IVA (early adopter €49/mese + IVA)
+    trialDays: 90,
+    description: 'Il piano principale per cliniche veterinarie'
+  },
+  lab_partner: {
+    name: 'Laboratorio Partner',
+    price: 29.00, // €29/mese + IVA
+    trialDays: 180,
+    description: 'Per laboratori di analisi veterinaria'
   },
   enterprise: {
     name: 'Enterprise', 
     price: 0, // Custom - contattaci
-    description: 'Multi-sede e supporto dedicato'
+    description: 'Per gruppi veterinari e network di laboratori'
   }
 };
 
@@ -53,6 +60,7 @@ export async function POST(request) {
     const cancelUrl = `${originUrl}/dashboard?payment=cancelled`;
 
     // Crea sessione Stripe Checkout
+    const trialDays = plan.trialDays || 0;
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'subscription',
@@ -72,6 +80,7 @@ export async function POST(request) {
           quantity: 1,
         },
       ],
+      ...(trialDays > 0 ? { subscription_data: { trial_period_days: trialDays } } : {}),
       success_url: successUrl,
       cancel_url: cancelUrl,
       metadata: {

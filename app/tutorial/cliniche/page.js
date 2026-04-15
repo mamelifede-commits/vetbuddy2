@@ -123,9 +123,9 @@ export default function TutorialCliniche() {
         '3. Aggiungi logo e foto della struttura',
         '4. Configura i servizi offerti e i relativi prezzi',
         '5. Imposta la posizione sulla mappa (indirizzo o coordinate)',
-        '6. Attiva il piano desiderato (Starter gratuito o Premium)'
+        '6. Attiva il piano desiderato (Starter €0/mese o Pro Clinica)'
       ],
-      tip: 'Il Piano Starter è perfetto per veterinari freelance. Il Premium sblocca tutte le automazioni.'
+      tip: 'Il Piano Starter è perfetto per veterinari freelance. Il Pro Clinica sblocca tutte le funzionalità avanzate, gratis per 90 giorni nel Pilot Milano.'
     },
     {
       icon: Package,
@@ -214,7 +214,7 @@ export default function TutorialCliniche() {
     },
     {
       icon: Zap,
-      title: 'Automazioni (Piano Premium)',
+      title: 'Automazioni (Piano Pro)',
       color: 'bg-orange-500',
       content: [
         '1. Promemoria automatici 24h prima dell\'appuntamento',
@@ -285,11 +285,11 @@ export default function TutorialCliniche() {
   ];
 
   const faqs = [
-    { q: 'Quanto costa vetbuddy per le cliniche?', a: 'Piano Starter: gratuito per sempre. Piano Premium: €49/mese con tutte le automazioni. Pilot Milano: 90 giorni gratis Premium.' },
+    { q: 'Quanto costa vetbuddy per le cliniche?', a: 'Piano Starter Clinica: €0/mese (1 sede, 1 utente). Piano Pro Clinica: €0 per 90 giorni, poi €79/mese + IVA (early adopter €49/mese + IVA). Pilot Milano: accesso su invito.' },
     { q: 'Posso importare i dati dal mio gestionale attuale?', a: 'Sì! Supportiamo import da CSV. Contattaci per assistenza nella migrazione.' },
     { q: 'vetbuddy sostituisce il mio software di fatturazione?', a: 'No, vetbuddy genera PROFORMA. Per la fatturazione elettronica usa il tuo gestionale fiscale.' },
     { q: 'Come funziona il pagamento dei clienti?', a: 'I clienti pagano via Stripe. I fondi vanno direttamente sul tuo conto. Nessuna commissione vetbuddy.' },
-    { q: 'Posso avere più utenti per la clinica?', a: 'Sì, nel Piano Premium puoi aggiungere collaboratori con ruoli diversi.' },
+    { q: 'Posso avere più utenti per la clinica?', a: 'Sì, nel Piano Pro Clinica puoi aggiungere fino a 10 collaboratori con ruoli diversi.' },
     { q: 'I dati dei miei pazienti sono al sicuro?', a: 'Assolutamente. Crittografia, backup automatici e conformità GDPR garantiti.' }
   ];
 

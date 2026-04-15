@@ -34,9 +34,9 @@ const PLAN_LIMITS = {
 };
 
 const PLAN_NAMES = {
-  starter: 'Starter',
-  pro: 'Pro (Pilot Milano)',
-  custom: 'Custom Enterprise'
+  starter: 'Starter Clinica',
+  pro: 'Pro Clinica (Pilot Milano)',
+  custom: 'Enterprise'
 };
 
 // PUT - Update clinic plan (admin only)

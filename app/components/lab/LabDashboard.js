@@ -398,7 +398,7 @@ function LabDashboard({ user, onLogout }) {
               </div>
               {billing.billingActive ? (
                 <Button size="sm" className="bg-red-500 hover:bg-red-600 text-xs">
-                  Passa a Lab Partner €29/mese →
+                  Passa a Lab Partner €29/mese + IVA →
                 </Button>
               ) : (billing.daysRemaining <= 30 || billing.requestsRemaining <= 10) ? (
                 <Badge className="bg-amber-200 text-amber-800 text-xs">Trial in scadenza</Badge>
@@ -949,7 +949,7 @@ function LabDashboard({ user, onLogout }) {
                       <div><p className="text-xs text-gray-500">Giorni rimanenti</p><p className="font-bold text-lg">{billing.daysRemaining}</p></div>
                       <div><p className="text-xs text-gray-500">Richieste</p><p className="font-bold text-lg">{billing.requestsCount}/{billing.maxFreeRequests}</p></div>
                       <div><p className="text-xs text-gray-500">Scadenza trial</p><p className="font-medium">{billing.freeUntil ? new Date(billing.freeUntil).toLocaleDateString('it-IT') : '-'}</p></div>
-                      <div><p className="text-xs text-gray-500">Dopo il trial</p><p className="font-medium">€39/mese</p></div>
+                      <div><p className="text-xs text-gray-500">Dopo il trial</p><p className="font-medium">€29/mese + IVA</p></div>
                     </div>
                   </div>
                 )}

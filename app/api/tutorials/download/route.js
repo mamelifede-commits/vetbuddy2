@@ -174,8 +174,8 @@ const clinicTutorial = {
         'Completa il profilo: nome clinica, indirizzo, P.IVA, orari',
         'Aggiungi logo e foto della struttura',
         'Configura i servizi offerti con prezzi e durata',
-        'Scegli il piano: Starter (EUR 29/mese) o Pro (EUR 59/mese)',
-        '30 giorni di prova gratuita su tutti i piani'
+        'Scegli il piano: Starter Clinica (EUR 0/mese) o Pro Clinica (EUR 79/mese + IVA)',
+        'Pilot Milano: Pro Clinica gratis per 90 giorni, early adopter EUR 49/mese'
       ],
       tip: 'Il Piano Starter e perfetto per veterinari freelance e piccole cliniche.'
     },
@@ -268,14 +268,14 @@ const clinicTutorial = {
       title: 'ABBONAMENTO E PAGAMENTI',
       content: [
         'Vai su "Impostazioni" -> "Abbonamento"',
-        'Clinica Starter: EUR 29/mese (fino a 2 veterinari)',
-        'Clinica Pro: EUR 59/mese (tutto illimitato + metriche + lab)',
-        '30 giorni di prova gratuita su tutti i piani',
+        'Starter Clinica: EUR 0/mese (1 sede, 1 utente)',
+        'Pro Clinica: EUR 79/mese + IVA (early adopter EUR 49/mese)',
+        'Pro Clinica gratis per 90 giorni nel Pilot Milano',
         'Pagamento sicuro con carta tramite Stripe',
         'Annulla in qualsiasi momento senza vincoli',
         'I pagamenti dei clienti vanno direttamente a te (non passano da vetbuddy)'
       ],
-      tip: 'Tutti i prezzi sono IVA esclusa (22%).'
+      tip: 'Tutti i prezzi sono IVA esclusa.'
     },
     {
       title: 'AUTOMAZIONI (PIANO PRO)',
@@ -291,7 +291,7 @@ const clinicTutorial = {
   ],
   
   faqs: [
-    { q: 'Quanto costa vetbuddy?', a: 'Starter EUR 29/mese, Pro EUR 59/mese. 30 giorni di prova gratuita. IVA esclusa.' },
+    { q: 'Quanto costa vetbuddy?', a: 'Starter Clinica EUR 0/mese. Pro Clinica EUR 79/mese + IVA (EUR 49/mese early adopter). Laboratorio Partner EUR 29/mese + IVA. Prezzi IVA esclusa.' },
     { q: 'Come funziona il link di prenotazione?', a: 'E un link condivisibile che permette ai clienti di prenotare senza registrarsi.' },
     { q: 'Come funziona il Lab Marketplace?', a: 'Scegli un laboratorio partner, invia la richiesta, ricevi il referto e invialo al proprietario.' },
     { q: 'I pagamenti dei clienti passano da vetbuddy?', a: 'No! I pagamenti vanno direttamente alla clinica. vetbuddy incassa solo l\'abbonamento.' },

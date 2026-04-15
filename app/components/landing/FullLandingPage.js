@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -12,11 +14,11 @@ import { EcosystemToggle, FeatureCarousel, HomepageMapSection } from '@/app/comp
 import NewBrandLogo from '@/app/components/shared/NewBrandLogo';
 import api from '@/app/lib/api';
 import {
-  Calendar, FileText, Users, Send, Building2, Phone, PawPrint, Zap, Shield, Heart, MessageCircle, Bell,
-  CheckCircle, ChevronRight, Menu, X, ClipboardList, Settings,
+  Calendar, CalendarCheck, CalendarDays, FileText, FileCheck, Users, Send, Building2, Phone, PawPrint, Zap, Shield, Heart, MessageCircle, Bell,
+  CheckCircle, ChevronRight, Menu, X, ClipboardList, Settings, Inbox, Search, TrendingUp, Upload, Download,
   Star, Check, AlertCircle, Video, Euro, Receipt, Syringe, Activity,
   MapPin, Globe, Stethoscope, Mail, Clock, User, Gift, Link2, Info,
-  Loader2, Ticket, MousePointerClick
+  Loader2, Ticket, MousePointerClick, FlaskConical
 } from 'lucide-react';
 
 function FullLandingPage({ onLogin }) {
@@ -136,7 +138,7 @@ function FullLandingPage({ onLogin }) {
               </div>
               <h3 className="font-bold text-lg text-gray-900 mb-2">Per Cliniche Veterinarie</h3>
               <p className="text-sm text-gray-600 mb-3 flex-1">Dashboard completa, inbox team, documenti, reportistica.</p>
-              <p className="text-xs text-amber-600 font-semibold mb-3">🎫 Pilot: 90 giorni gratuiti su invito</p>
+              <p className="text-xs text-amber-600 font-semibold mb-3">🎫 Pro Clinica: €0 per 90 giorni — poi €79/mese + IVA</p>
               <Button className="w-full bg-gradient-to-r from-coral-500 to-coral-600 hover:from-coral-600 hover:to-coral-700 text-white shadow-lg mt-auto">
                 Richiedi Invito →
               </Button>
@@ -147,7 +149,7 @@ function FullLandingPage({ onLogin }) {
               </div>
               <h3 className="font-bold text-lg text-gray-900 mb-2">Per Laboratori di Analisi</h3>
               <p className="text-sm text-gray-600 mb-3 flex-1">Ricevi richieste, gestisci referti, connettiti con le cliniche.</p>
-              <p className="text-xs text-violet-600 font-semibold mb-3">🧪 6 mesi gratis + 50 richieste incluse</p>
+              <p className="text-xs text-violet-600 font-semibold mb-3">🧪 Gratis per 6 mesi — poi €29/mese + IVA</p>
               <Button className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-lg mt-auto">
                 Registra il tuo Lab →
               </Button>
@@ -173,7 +175,7 @@ function FullLandingPage({ onLogin }) {
               </div>
               <div className="text-left flex-1">
                 <p className="font-semibold text-gray-900 text-sm">Sei un veterinario freelance?</p>
-                <p className="text-xs text-gray-600">Registrati come clinica e inizia con il <span className="font-bold text-purple-600">Piano Starter gratuito</span>. Ideale per gestire i tuoi clienti in autonomia!</p>
+                <p className="text-xs text-gray-600">Registrati come clinica e inizia con il <span className="font-bold text-purple-600">Piano Starter €0/mese</span>. Ideale per gestire i tuoi clienti in autonomia!</p>
               </div>
               <Button size="sm" className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white flex-shrink-0">
                 Richiedi Invito →
@@ -1150,158 +1152,119 @@ function FullLandingPage({ onLogin }) {
         </div>
       </section>
 
-      {/* Beta Test Section */}
-      <section id="pilot" className="py-12 px-4 bg-gray-50">
-        <div className="max-w-5xl mx-auto">
+      {/* Abbonamento VetBuddy */}
+      <section id="pilot" className="py-16 px-4 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-4">
-              <Zap className="h-4 w-4" />
-              <span className="font-semibold">Beta Test 2025</span>
+            <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-4 font-semibold text-sm">
+              <MapPin className="h-4 w-4" />
+              Pilot Milano
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Accedi al Pilot vetbuddy</h2>
-            <p className="text-gray-600 max-w-xl mx-auto">Stiamo testando l'app con cliniche veterinarie selezionate a Milano. <strong>Candidati per 90 giorni gratuiti (estendibili a 6 mesi) e aiutaci a costruire il futuro.</strong></p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Abbonamento VetBuddy</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Accesso su invito per cliniche selezionate e onboarding gratuito per i primi laboratori partner.</p>
+            <p className="text-xs text-gray-400 mt-3">Prezzi IVA esclusa.</p>
           </div>
-
-          {/* Beta Benefits */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-white rounded-xl p-6 border-2 border-coral-200 text-center">
-              <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Star className="h-6 w-6 text-coral-500" />
-              </div>
-              <h3 className="font-bold mb-2">Accesso gratuito</h3>
-              <p className="text-gray-600 text-sm">Tutte le funzionalità Pro gratis durante la fase beta</p>
-            </div>
-            <div className="bg-white rounded-xl p-6 border-2 border-coral-200 text-center">
-              <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="h-6 w-6 text-coral-500" />
-              </div>
-              <h3 className="font-bold mb-2">Supporto diretto</h3>
-              <p className="text-gray-600 text-sm">Canale dedicato per assistenza e suggerimenti</p>
-            </div>
-            <div className="bg-white rounded-xl p-6 border-2 border-coral-200 text-center">
-              <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Zap className="h-6 w-6 text-coral-500" />
-              </div>
-              <h3 className="font-bold mb-2">Costruisci con noi</h3>
-              <p className="text-gray-600 text-sm">Il tuo feedback diventa nuove funzionalità</p>
-            </div>
-          </div>
-
-          {/* Pricing Cards */}
-          <p className="text-center text-sm text-gray-600 mb-10">Piani disponibili solo tramite Pilot (su invito). Prezzi IVA esclusa.</p>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-4">
-            {/* Starter Clinica */}
-            <Card className="border-2 border-violet-200 hover:border-violet-300 transition-colors relative flex flex-col">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6 items-start">
+            {/* 1. Starter Clinica */}
+            <Card className="border-2 border-gray-200 hover:border-gray-300 transition-all hover:shadow-md relative flex flex-col">
               <CardHeader className="pt-6 pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">Clinica Starter</CardTitle>
-                <CardDescription className="text-xs">Per cliniche che iniziano</CardDescription>
-                <div className="mt-3">
-                  <span className="text-2xl font-bold text-violet-600">€29</span><span className="text-sm text-gray-500">/mese</span>
-                  <p className="text-xs text-coral-600 mt-1 font-medium">🎁 Gratis nel Pilot</p>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Starter Clinica</p>
+                <div className="mt-1">
+                  <span className="text-3xl font-black text-gray-800">€0</span><span className="text-sm text-gray-400">/mese</span>
                 </div>
+                <p className="text-xs text-gray-500 mt-2">Per veterinari freelance e micro-cliniche in fase di valutazione.</p>
               </CardHeader>
               <CardContent className="flex flex-col flex-1 pt-0">
-                <ul className="space-y-1.5 text-xs mb-4">
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Fino a 2 veterinari</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Agenda appuntamenti</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Schede pazienti</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Link prenotazione</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Messaggistica</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Supporto email</span></li>
-                  <li className="flex items-center gap-2 text-gray-400"><X className="h-3.5 w-3.5 text-gray-300 flex-shrink-0" /> <span>Metriche avanzate</span></li>
-                  <li className="flex items-center gap-2 text-gray-400"><X className="h-3.5 w-3.5 text-gray-300 flex-shrink-0" /> <span>Automazioni</span></li>
+                <ul className="space-y-2 text-xs mb-5">
+                  {['1 sede', '1 utente', 'Fino a 30 richieste/mese', 'Profilo pubblico', 'Link diretto di prenotazione', 'Agenda base'].map((f, i) => (
+                    <li key={i} className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span className="text-gray-700">{f}</span></li>
+                  ))}
                 </ul>
                 <div className="mt-auto pt-3 border-t">
-                  <Button className="w-full bg-violet-600 hover:bg-violet-700 text-sm" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi Invito →</Button>
+                  <Button className="w-full bg-gray-700 hover:bg-gray-800 text-sm" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi invito</Button>
+                  <p className="text-xs text-gray-400 mt-2 text-center">Disponibile solo per cliniche ammesse al Pilot Milano.</p>
                 </div>
               </CardContent>
             </Card>
             
-            {/* Pro Clinica */}
-            <Card className="border-2 border-coral-500 relative shadow-lg flex flex-col">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">⭐ PIÙ POPOLARE</div>
-              <CardHeader className="pt-6 pb-3">
-                <CardTitle className="text-base text-coral-500">Clinica Pro</CardTitle>
-                <CardDescription className="text-xs">Tutto illimitato per la tua clinica</CardDescription>
-                <div className="mt-3">
-                  <span className="text-2xl font-bold text-coral-500">€59</span><span className="text-sm text-gray-500">/mese</span>
-                  <p className="text-xs text-coral-600 mt-1 font-medium">🎁 90 giorni gratis nel Pilot</p>
+            {/* 2. Pro Clinica — EVIDENZIATO */}
+            <Card className="border-2 border-coral-500 relative shadow-2xl flex flex-col ring-2 ring-coral-200 lg:scale-105 lg:-my-2 bg-gradient-to-b from-white to-coral-50/30">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-coral-500 to-orange-500 text-white text-xs px-4 py-1.5 rounded-full font-bold whitespace-nowrap shadow-lg">Consigliato</div>
+              <CardHeader className="pt-7 pb-3">
+                <p className="text-xs font-semibold text-coral-500 uppercase tracking-wider mb-1">Pro Clinica</p>
+                <div className="mt-1">
+                  <span className="text-3xl font-black text-gray-900">€0</span><span className="text-sm text-gray-500 ml-1">per 90 giorni</span>
                 </div>
+                <p className="text-sm text-gray-500 mt-1">Poi <span className="font-bold text-gray-800">€79/mese</span> + IVA</p>
+                <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-3">
+                  <p className="text-xs font-semibold text-amber-700">Early adopter Pilot Milano: <span className="text-amber-900">€49/mese + IVA</span> per le prime cliniche selezionate.</p>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">Il piano principale per cliniche veterinarie che vogliono digitalizzare prenotazioni, agenda, documenti e rapporto con i clienti.</p>
               </CardHeader>
               <CardContent className="flex flex-col flex-1 pt-0">
-                <ul className="space-y-1.5 text-xs mb-4">
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Veterinari illimitati</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Tutto di Starter</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Metriche e analytics</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>21+ Automazioni</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span><strong>Lab Marketplace</strong></span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Video-consulti</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Report avanzati</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span>Supporto prioritario</span></li>
+                <ul className="space-y-2 text-xs mb-4">
+                  {['Fino a 10 staff', 'Prenotazioni online', 'Agenda digitale', 'Reminder email automatici', 'Documenti e PDF via email', 'Google Calendar sync', 'Report e analytics', 'Link prenotazione + QR code', 'Dashboard valore generato', 'Modulo richieste lab analisi', 'Accesso marketplace laboratori', 'Confronto lab per distanza e prezzi'].map((f, i) => (
+                    <li key={i} className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-coral-500 flex-shrink-0" /> <span className="text-gray-700">{f}</span></li>
+                  ))}
                 </ul>
+                <div className="bg-coral-50 border border-coral-200 rounded-lg px-3 py-2.5 mb-4">
+                  <p className="text-xs text-coral-700 font-medium leading-relaxed">Questo mese VetBuddy ti mostra quante prenotazioni ha generato e quante telefonate ti ha evitato.</p>
+                </div>
                 <div className="mt-auto pt-3 border-t">
-                  <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-sm" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi Invito →</Button>
-                  <p className="text-xs text-gray-500 mt-2 text-center">Dopo il Pilot: €59/mese + IVA</p>
+                  <Button className="w-full bg-gradient-to-r from-coral-500 to-orange-500 hover:from-coral-600 hover:to-orange-600 text-sm font-bold shadow-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi accesso Pilot</Button>
+                  <p className="text-xs text-gray-400 mt-2 text-center leading-relaxed">90 giorni gratuiti per cliniche selezionate. Estendibile fino a 6 mesi per cliniche attive.</p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Laboratorio Partner */}
-            <Card className="border-2 border-blue-300 hover:border-blue-400 transition-colors relative flex flex-col bg-gradient-to-b from-white to-blue-50/50">
-              <div className="absolute -top-3 left-4 bg-blue-600 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">🧪 PER LABORATORI</div>
+            {/* 3. Laboratorio Partner */}
+            <Card className="border-2 border-blue-200 hover:border-blue-300 transition-all hover:shadow-md relative flex flex-col bg-gradient-to-b from-white to-blue-50/30">
+              <div className="absolute -top-3 left-4 bg-blue-600 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">Per Laboratori</div>
               <CardHeader className="pt-6 pb-3">
-                <CardTitle className="flex items-center gap-2 text-base text-blue-700">Laboratorio Partner</CardTitle>
-                <CardDescription className="text-xs">Per laboratori di analisi veterinarie</CardDescription>
-                <div className="mt-3">
-                  <span className="text-2xl font-bold text-blue-600">€39</span><span className="text-sm text-gray-500">/mese</span>
-                  <p className="text-xs text-blue-600 mt-1 font-medium">🎁 6 mesi gratis (o 50 richieste)</p>
+                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Laboratorio Partner</p>
+                <div className="mt-1">
+                  <span className="text-3xl font-black text-gray-800">€0</span><span className="text-sm text-gray-500 ml-1">per 6 mesi</span>
                 </div>
+                <p className="text-sm text-gray-500 mt-1">Poi <span className="font-bold text-gray-800">€29/mese</span> + IVA</p>
+                <p className="text-xs text-gray-500 mt-2">Per laboratori di analisi veterinaria che vogliono ricevere richieste dalle cliniche e caricare referti su VetBuddy.</p>
               </CardHeader>
               <CardContent className="flex flex-col flex-1 pt-0">
-                <ul className="space-y-1.5 text-xs mb-4">
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" /> <span>Dashboard richieste</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" /> <span>Caricamento referti PDF</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" /> <span>Listino prezzi</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" /> <span>Connessione cliniche</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" /> <span>API esterne (webhook)</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" /> <span>Notifiche automatiche</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" /> <span>Supporto dedicato</span></li>
+                <ul className="space-y-2 text-xs mb-4">
+                  {['Dashboard laboratorio', 'Profilo nel marketplace', 'Listino prezzi indicativo', 'Tempi medi di refertazione', 'Servizio ritiro campioni', 'Ricezione richieste da cliniche', 'Gestione stati richiesta', 'Upload referti PDF', 'Storico richieste e referti', 'Notifiche email'].map((f, i) => (
+                    <li key={i} className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" /> <span className="text-gray-700">{f}</span></li>
+                  ))}
                 </ul>
-                <div className="mt-auto pt-3 border-t">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-sm" onClick={() => { setAuthMode('register-lab'); setShowAuth(true); }}>Registra il tuo Lab →</Button>
+                <div className="mt-auto pt-3 border-t space-y-2">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-sm" onClick={() => { setAuthMode('register-lab'); setShowAuth(true); }}>Registrati gratis</Button>
+                  <p className="text-xs text-gray-400 text-center leading-relaxed">Gratis per 6 mesi o fino a 50 richieste gestite. Poi €29/mese + IVA.</p>
                 </div>
               </CardContent>
             </Card>
             
-            {/* Enterprise */}
-            <Card className="border-2 border-gray-300 flex flex-col">
+            {/* 4. Enterprise */}
+            <Card className="border-2 border-gray-200 hover:border-gray-300 transition-all hover:shadow-md flex flex-col">
               <CardHeader className="pt-6 pb-3">
-                <CardTitle className="text-base text-gray-700">Enterprise</CardTitle>
-                <CardDescription className="text-xs">Per grandi cliniche e catene</CardDescription>
-                <div className="mt-3">
-                  <span className="text-2xl font-bold text-gray-600">Custom</span>
-                  <p className="text-xs text-gray-500 mt-1">Contattaci per un preventivo</p>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Enterprise</p>
+                <div className="mt-1">
+                  <span className="text-3xl font-black text-gray-800">Custom</span><span className="text-sm text-gray-400 ml-1">+ IVA</span>
                 </div>
+                <p className="text-xs text-gray-500 mt-2">Per gruppi veterinari, cliniche multi-sede e network di laboratori.</p>
               </CardHeader>
               <CardContent className="flex flex-col flex-1 pt-0">
-                <ul className="space-y-1.5 text-xs mb-4">
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>Utenti illimitati</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>Multi-sede</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>44+ Automazioni</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>WhatsApp Business</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>API dedicata</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>SLA garantito 99.9%</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span>Onboarding dedicato</span></li>
+                <ul className="space-y-2 text-xs mb-5">
+                  {['Multi-sede illimitate', 'Laboratori multipli', 'API dedicata', 'SLA garantito', 'Onboarding dedicato', 'Reportistica avanzata', 'Gestione centralizzata', 'Integrazioni personalizzate'].map((f, i) => (
+                    <li key={i} className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span className="text-gray-700">{f}</span></li>
+                  ))}
                 </ul>
                 <div className="mt-auto pt-3 border-t">
-                  <Button className="w-full bg-gray-700 hover:bg-gray-800 text-sm" onClick={() => scrollToSection('contatti')}>Contattaci →</Button>
-                  <p className="text-xs text-gray-500 mt-2 text-center">Prezzi IVA esclusa</p>
+                  <Button className="w-full bg-gray-700 hover:bg-gray-800 text-sm" onClick={() => scrollToSection('contatti')}>Contattaci</Button>
+                  <p className="text-xs text-gray-400 mt-2 text-center">Soluzione su misura per gruppi e network veterinari.</p>
                 </div>
               </CardContent>
             </Card>
           </div>
-          <p className="text-center text-xs text-gray-500 mt-8 mb-4">Non è una prova libera: stiamo selezionando un numero limitato di cliniche.</p>
+          <p className="text-center text-sm text-gray-500 mt-8 max-w-xl mx-auto">Non è una prova libera: stiamo selezionando cliniche e laboratori partner per validare VetBuddy nel Pilot Milano.</p>
         </div>
       </section>
 
@@ -1352,13 +1315,13 @@ function FullLandingPage({ onLogin }) {
           <div className="text-center mb-12"><h2 className="text-3xl font-bold text-gray-900 mb-4">Domande frequenti</h2></div>
           <Accordion type="single" collapsible className="space-y-4">
             {[
+              { q: 'Il piano Pro Clinica è davvero gratis per 90 giorni?', a: 'Sì, per le cliniche selezionate nel Pilot Milano.' },
+              { q: 'Cosa succede dopo i 90 giorni?', a: 'Il piano passa a €79/mese + IVA, con tariffa early adopter di €49/mese + IVA per le prime cliniche selezionate.' },
+              { q: 'I laboratori possono iscriversi anche senza invito?', a: 'Sì, possono registrarsi gratuitamente come Laboratorio Partner e attendere approvazione.' },
+              { q: 'I prezzi includono IVA?', a: 'No, tutti i prezzi indicati sono IVA esclusa.' },
               { q: 'Cos\'è il Pilot e come funziona l\'invito?', a: 'vetbuddy è in fase Pilot a Milano. L\'accesso è su invito per garantire qualità e supporto dedicato. Candidati compilando il form e ti contatteremo per l\'attivazione.' },
-              { q: 'Quanto dura il Pilot gratuito?', a: '90 giorni iniziali gratuiti per tutte le cliniche selezionate nel Pilot Milano. Estendibile fino a 6 mesi per le cliniche più attive. Al termine, potrai scegliere il piano più adatto: Clinica Starter €29/mese o Clinica Pro €59/mese + IVA.' },
               { q: 'Quanto costa per i proprietari?', a: 'vetbuddy è e sarà sempre gratuito per i proprietari di animali. Nessun costo nascosto, mai.' },
-              { q: 'Come funziona la fatturazione?', a: 'Gli abbonamenti vengono fatturati da vetbuddy. Prezzi IVA esclusa. Riceverai report e riconciliazione mensile. Puoi disdire in qualsiasi momento.' },
-              { q: 'Cosa include il piano Pro?', a: 'Team inbox con assegnazione ticket, documenti con invio automatico via email, sync Google Calendar, video-consulti, reminder automatici, pagamenti integrati, reportistica completa e supporto prioritario.' },
               { q: 'Come funziona l\'invio documenti?', a: 'Carichi un PDF (referto, prescrizione, fattura), selezioni cliente e animale, e il documento viene inviato automaticamente via email. Il cliente lo ritrova anche nell\'app.' },
-              { q: 'I documenti sono sicuri?', a: 'Sì. I documenti sono crittografati, accessibili solo dalla clinica e dal proprietario autorizzato. Rispettiamo GDPR e normative privacy.' },
               { q: 'Posso esplorare l\'app prima di candidarmi?', a: 'Sì! Registrati come proprietario per esplorare la demo. Vedrai le funzionalità ma nota: le cliniche nell\'app demo non sono ancora affiliate realmente.' },
             ].map((item, i) => (
               <AccordionItem key={i} value={`item-${i}`} className="bg-white rounded-lg px-6 border">

@@ -179,7 +179,7 @@ function AuthForm({ mode, setMode, onLogin }) {
           </ul>
         </div>
         <div className="p-3 bg-green-50 border border-green-200 rounded-lg mb-4">
-          <p className="text-sm text-green-700">🎁 <strong>Piano Lab Partner:</strong> 6 mesi gratis (o 50 richieste). Dopo: €29/mese.</p>
+          <p className="text-sm text-green-700">🎁 <strong>Piano Laboratorio Partner:</strong> gratis per 6 mesi (o 50 richieste gestite). Poi €29/mese + IVA.</p>
         </div>
         <Button onClick={() => { setLabRegistrationComplete(false); setMode('login'); }} variant="outline" className="w-full">Torna al Login</Button>
       </div>
@@ -276,7 +276,7 @@ function AuthForm({ mode, setMode, onLogin }) {
                 <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
                   <p className="text-xs text-purple-700 mb-1"><strong>🧪 Laboratorio di Analisi Veterinarie</strong></p>
                   <p className="text-xs text-purple-600">Registrati gratuitamente. Il tuo profilo sarà visibile nel marketplace dopo l'approvazione.</p>
-                  <p className="text-xs text-purple-600 mt-1">🎁 <strong>6 mesi gratis</strong> (o 50 richieste) con il Piano Lab Partner.</p>
+                  <p className="text-xs text-purple-600 mt-1">🎁 <strong>6 mesi gratis</strong> (o 50 richieste) con il Piano Laboratorio Partner.</p>
                 </div>
               )}
               

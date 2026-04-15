@@ -64,15 +64,16 @@ export async function handlePaymentsPost(path, request, body) {
       const baseUrl = originUrl || process.env.NEXT_PUBLIC_BASE_URL;
       const successUrl = `${baseUrl}?subscription=success&session_id={CHECKOUT_SESSION_ID}`;
       const cancelUrl = `${baseUrl}?subscription=cancelled`;
+      const trialDays = plan.trialDays || (planId === 'pro' ? 90 : planId === 'lab_partner' ? 180 : 0);
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: [{ price_data: { currency: 'eur', product_data: { name: `VetBuddy ${plan.name}`, description: `Abbonamento mensile — ${plan.description}` }, unit_amount: Math.round(plan.price * 100), recurring: { interval: 'month' } }, quantity: 1 }],
-        mode: 'subscription', subscription_data: { trial_period_days: 30 },
+        mode: 'subscription', ...(trialDays > 0 ? { subscription_data: { trial_period_days: trialDays } } : {}),
         success_url: successUrl, cancel_url: cancelUrl, customer_email: user.email,
         metadata: { userId: user.id, userRole: user.role, planId, type: 'subscription' }
       });
       const transactions = await getCollection('payment_transactions');
-      await transactions.insertOne({ id: uuidv4(), sessionId: session.id, userId: user.id, email: user.email, userRole: user.role, type: 'subscription', planId, amount: plan.price, currency: 'eur', status: 'pending', paymentStatus: 'unpaid', trialDays: 30, createdAt: new Date().toISOString() });
+      await transactions.insertOne({ id: uuidv4(), sessionId: session.id, userId: user.id, email: user.email, userRole: user.role, type: 'subscription', planId, amount: plan.price, currency: 'eur', status: 'pending', paymentStatus: 'unpaid', trialDays, createdAt: new Date().toISOString() });
       return NextResponse.json({ url: session.url, sessionId: session.id }, { headers: corsHeaders });
     } catch (error) {
       return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });

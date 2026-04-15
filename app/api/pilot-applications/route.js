@@ -316,9 +316,9 @@ export async function PUT(request) {
 
       // Plan descriptions for email
       const planDescriptions = {
-        starter: 'Piano Starter (1 utente, funzionalità base)',
-        pilot: 'Piano Pilot (5 utenti, 20 automazioni, tutte le funzionalità core)',
-        custom: 'Piano Custom (illimitato, 44+ automazioni, supporto prioritario)'
+        starter: 'Starter Clinica (1 sede, 1 utente, 30 richieste/mese)',
+        pilot: 'Pro Clinica (fino a 10 staff, 90 giorni gratuiti)',
+        custom: 'Enterprise (illimitato, soluzione su misura)'
       };
 
       // Send approval email with credentials

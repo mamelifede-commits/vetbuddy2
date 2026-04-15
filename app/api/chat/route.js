@@ -35,10 +35,12 @@ Il tuo ruolo è aiutare sia i veterinari/cliniche che i proprietari di animali d
 - Se non sai qualcosa, ammettilo onestamente
 
 Informazioni sul Pilot Milano:
-- 90 giorni gratuiti (estendibili a 6 mesi)
-- Piano Starter: Gratuito fino a 50 pazienti
-- Piano Pro: €39/mese con tutte le funzionalità
-- Piano Custom: Prezzi personalizzati per grandi strutture`;
+- Starter Clinica: €0/mese (1 sede, 1 utente, 30 richieste/mese)
+- Pro Clinica: €0 per 90 giorni, poi €79/mese + IVA (early adopter €49/mese + IVA)
+- Laboratorio Partner: €0 per 6 mesi, poi €29/mese + IVA
+- Enterprise: Prezzo personalizzato per gruppi e network
+- Prezzi IVA esclusa
+- Accesso su invito per cliniche selezionate`;
 
 export async function POST(request) {
   try {

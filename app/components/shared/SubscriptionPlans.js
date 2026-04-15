@@ -89,22 +89,22 @@ function SubscriptionPlans({ user }) {
   const planConfigs = [
     {
       id: 'starter',
-      name: 'Clinica Starter',
-      price: 29,
+      name: 'Starter Clinica',
+      price: 0,
       icon: Sparkles,
       color: 'violet',
-      borderColor: 'border-violet-300',
-      bgColor: 'bg-violet-50',
-      buttonColor: 'bg-violet-600 hover:bg-violet-700',
+      borderColor: 'border-gray-300',
+      bgColor: 'bg-gray-50',
+      buttonColor: 'bg-gray-700 hover:bg-gray-800',
       popular: false,
       forRole: 'clinic',
       features: [
-        { text: 'Fino a 2 veterinari', included: true },
-        { text: 'Agenda appuntamenti', included: true },
-        { text: 'Schede pazienti', included: true },
-        { text: 'Link prenotazione', included: true },
-        { text: 'Messaggistica', included: true },
-        { text: 'Supporto email', included: true },
+        { text: '1 sede', included: true },
+        { text: '1 utente', included: true },
+        { text: 'Fino a 30 richieste/mese', included: true },
+        { text: 'Profilo pubblico', included: true },
+        { text: 'Link diretto di prenotazione', included: true },
+        { text: 'Agenda base', included: true },
         { text: 'Metriche avanzate', included: false },
         { text: 'Automazioni', included: false },
         { text: 'Video-consulti', included: false },
@@ -112,31 +112,32 @@ function SubscriptionPlans({ user }) {
     },
     {
       id: 'pro',
-      name: 'Clinica Pro',
-      price: 59,
+      name: 'Pro Clinica',
+      price: 79,
+      earlyAdopterPrice: 49,
       icon: Crown,
       color: 'amber',
-      borderColor: 'border-amber-400',
-      bgColor: 'bg-amber-50',
-      buttonColor: 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600',
+      borderColor: 'border-coral-400',
+      bgColor: 'bg-coral-50',
+      buttonColor: 'bg-gradient-to-r from-coral-500 to-orange-500 hover:from-coral-600 hover:to-orange-600',
       popular: true,
       forRole: 'clinic',
       features: [
-        { text: 'Veterinari illimitati', included: true },
-        { text: 'Tutto di Starter', included: true },
-        { text: 'Metriche avanzate', included: true },
-        { text: 'Automazioni (21+)', included: true },
-        { text: 'Lab Marketplace', included: true },
-        { text: 'Video-consulti', included: true },
-        { text: 'Report avanzati', included: true },
+        { text: 'Fino a 10 staff', included: true },
+        { text: 'Prenotazioni online', included: true },
+        { text: 'Agenda digitale', included: true },
+        { text: 'Reminder email automatici', included: true },
+        { text: 'Documenti e PDF via email', included: true },
         { text: 'Google Calendar sync', included: true },
+        { text: 'Report e analytics', included: true },
+        { text: 'Lab Marketplace', included: true },
         { text: 'Supporto prioritario', included: true },
       ]
     },
     {
       id: 'lab_partner',
       name: 'Laboratorio Partner',
-      price: 39,
+      price: 29,
       icon: FlaskConical,
       color: 'blue',
       borderColor: 'border-blue-300',
@@ -145,12 +146,12 @@ function SubscriptionPlans({ user }) {
       popular: false,
       forRole: 'lab',
       features: [
-        { text: 'Dashboard richieste', included: true },
-        { text: 'Caricamento referti PDF', included: true },
-        { text: 'Listino prezzi', included: true },
-        { text: 'Connessione cliniche', included: true },
-        { text: 'API esterne (webhook)', included: true },
-        { text: 'Notifiche automatiche', included: true },
+        { text: 'Dashboard laboratorio', included: true },
+        { text: 'Profilo nel marketplace', included: true },
+        { text: 'Listino prezzi indicativo', included: true },
+        { text: 'Ricezione richieste da cliniche', included: true },
+        { text: 'Upload referti PDF', included: true },
+        { text: 'Notifiche email', included: true },
         { text: 'Supporto dedicato', included: true },
       ]
     }
@@ -170,7 +171,7 @@ function SubscriptionPlans({ user }) {
           <CheckCircle className="h-6 w-6 text-green-500" />
           <div>
             <p className="font-semibold text-green-800">Abbonamento attivato! 🎉</p>
-            <p className="text-sm text-green-600">Hai 30 giorni di prova gratuita. Benvenuto/a in VetBuddy!</p>
+            <p className="text-sm text-green-600">Il tuo piano è stato attivato con successo. Benvenuto/a in VetBuddy!</p>
           </div>
         </div>
       )}
@@ -202,7 +203,7 @@ function SubscriptionPlans({ user }) {
             >
               {plan.popular && (
                 <Badge className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-orange-500 text-white whitespace-nowrap shadow-sm">
-                  ⭐ PIÙ POPOLARE
+                  Consigliato
                 </Badge>
               )}
               
@@ -212,15 +213,37 @@ function SubscriptionPlans({ user }) {
               </div>
               
               <div className="mb-3">
-                <span className="text-3xl font-bold text-gray-900">€{plan.price}</span>
-                <span className="text-gray-500 text-sm">/mese</span>
-                <p className="text-xs text-gray-400 mt-0.5">IVA esclusa (22%)</p>
+                {plan.price === 0 ? (
+                  <>
+                    <span className="text-3xl font-bold text-gray-900">€0</span>
+                    <span className="text-gray-500 text-sm">/mese</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-3xl font-bold text-gray-900">€{plan.price}</span>
+                    <span className="text-gray-500 text-sm">/mese</span>
+                  </>
+                )}
+                <p className="text-xs text-gray-400 mt-0.5">IVA esclusa</p>
               </div>
 
-              <div className="bg-green-50 border border-green-200 rounded-lg px-3 py-2 mb-4">
-                <p className="text-xs font-semibold text-green-700">🎁 30 giorni di prova GRATUITA</p>
-                <p className="text-xs text-green-600">Nessun addebito fino alla fine del periodo di prova</p>
-              </div>
+              {plan.id === 'pro' && (
+                <div className="bg-coral-50 border border-coral-200 rounded-lg px-3 py-2 mb-4">
+                  <p className="text-xs font-semibold text-coral-700">🎁 €0 per 90 giorni nel Pilot Milano</p>
+                  <p className="text-xs text-coral-600">Early adopter: €49/mese + IVA</p>
+                </div>
+              )}
+              {plan.id === 'lab_partner' && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 mb-4">
+                  <p className="text-xs font-semibold text-blue-700">🎁 €0 per 6 mesi (o 50 richieste)</p>
+                  <p className="text-xs text-blue-600">Poi €29/mese + IVA</p>
+                </div>
+              )}
+              {plan.id === 'starter' && (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-4">
+                  <p className="text-xs font-semibold text-gray-600">Disponibile solo nel Pilot Milano</p>
+                </div>
+              )}
               
               <div className="flex-1 space-y-2 mb-4">
                 {plan.features.map((feature, idx) => (

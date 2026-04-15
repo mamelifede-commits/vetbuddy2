@@ -25,10 +25,10 @@ export const STAFF_COLORS = [
 ];
 
 export const SUBSCRIPTION_PLANS = {
-  starter: { name: 'Clinica Starter', price: 29.00, description: 'Per cliniche che iniziano — fino a 2 veterinari', features: ['Agenda appuntamenti', 'Schede pazienti', 'Link prenotazione', 'Messaggistica', 'Supporto email'] },
-  pro: { name: 'Clinica Pro', price: 59.00, description: 'Per cliniche che vogliono crescere — tutto illimitato', features: ['Tutto di Starter', 'Metriche avanzate', 'Automazioni', 'Lab Marketplace', 'Video-consulti', 'Report avanzati', 'Supporto prioritario'] },
-  lab_partner: { name: 'Laboratorio Partner', price: 39.00, description: 'Per laboratori di analisi veterinarie', features: ['Dashboard richieste', 'Caricamento referti', 'Listino prezzi', 'Connessione cliniche', 'API esterne', 'Supporto dedicato'] },
-  enterprise: { name: 'Enterprise', price: 0, description: 'Soluzioni personalizzate — contattaci', features: ['Piano personalizzato', 'Integrazioni custom', 'Account manager dedicato', 'SLA garantito'] }
+  starter: { name: 'Starter Clinica', price: 0, description: 'Per veterinari freelance e micro-cliniche in fase di valutazione', features: ['1 sede', '1 utente', 'Fino a 30 richieste/mese', 'Profilo pubblico', 'Link diretto di prenotazione', 'Agenda base'] },
+  pro: { name: 'Pro Clinica', price: 79.00, earlyAdopterPrice: 49.00, trialDays: 90, description: 'Il piano principale per cliniche veterinarie — fino a 10 staff', features: ['Prenotazioni online', 'Agenda digitale', 'Reminder email automatici', 'Documenti e PDF via email', 'Google Calendar sync', 'Report e analytics', 'Lab Marketplace', 'Dashboard valore generato', 'Supporto prioritario'] },
+  lab_partner: { name: 'Laboratorio Partner', price: 29.00, trialDays: 180, description: 'Per laboratori di analisi veterinaria', features: ['Dashboard laboratorio', 'Profilo nel marketplace', 'Listino prezzi indicativo', 'Ricezione richieste da cliniche', 'Upload referti PDF', 'Notifiche email', 'Supporto dedicato'] },
+  enterprise: { name: 'Enterprise', price: 0, description: 'Per gruppi veterinari, cliniche multi-sede e network di laboratori', features: ['Multi-sede illimitate', 'Laboratori multipli', 'API dedicata', 'SLA garantito', 'Onboarding dedicato', 'Reportistica avanzata', 'Gestione centralizzata', 'Integrazioni personalizzate'] }
 };
 
 export const STARTER_AUTOMATIONS = [
