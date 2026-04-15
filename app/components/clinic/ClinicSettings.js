@@ -420,13 +420,14 @@ function ClinicSettings({ user, onNavigate }) {
       </div>
       
       <div className="space-y-6 max-w-2xl">
-        {/* Abbonamento vetbuddy */}
-        <Card className="border-violet-200 bg-gradient-to-r from-violet-50 to-white">
+        {/* Abbonamento vetbuddy - Pilot */}
+        <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-white">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Star className="h-5 w-5 text-violet-500" />Abbonamento VetBuddy
+              <Star className="h-5 w-5 text-amber-500" />Abbonamento vetbuddy
+              <Badge className="bg-amber-500 text-white">Pilot Milano</Badge>
             </CardTitle>
-            <CardDescription>Scegli il piano più adatto alla tua clinica — 30 giorni di prova gratuita</CardDescription>
+            <CardDescription>Accesso su invito — 90 giorni gratuiti per cliniche selezionate (estendibili a 6 mesi)</CardDescription>
           </CardHeader>
           <CardContent>
             <SubscriptionPlans user={user} />

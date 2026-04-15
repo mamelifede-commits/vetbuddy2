@@ -505,8 +505,8 @@ export default function PresentazionePage() {
                   ))}
                 </ul>
                 <div className="mt-8 pt-6 border-t border-white/20">
-                  <p className="font-bold text-lg">30 giorni gratis</p>
-                  <p className="text-white/80 text-sm">Prova gratuita su tutti i piani</p>
+                  <p className="font-bold text-lg">Pilot Milano 2025</p>
+                  <p className="text-white/80 text-sm">90 giorni gratuiti per cliniche selezionate</p>
                 </div>
               </div>
             </div>
@@ -625,7 +625,7 @@ export default function PresentazionePage() {
                 <span className="text-4xl font-black">€59</span>
                 <span className="text-white/70">/mese</span>
               </div>
-              <p className="text-white/80 text-sm mb-6">🎁 30 giorni gratis</p>
+              <p className="text-white/80 text-sm mb-6">🎁 90 gg gratis nel Pilot</p>
               <div className="space-y-3 mb-6">
                 {['Veterinari illimitati', 'Pazienti illimitati', '21+ Automazioni', 'Metriche avanzate', 'Marketplace Lab', 'Link prenotazione', 'Report avanzati'].map((f, i) => (
                   <div key={i} className="flex items-center gap-3 text-white/95 text-sm">
@@ -637,7 +637,7 @@ export default function PresentazionePage() {
                 ))}
               </div>
               <Link href="/" className="block text-center py-3 px-4 bg-white text-coral-600 rounded-xl font-bold text-sm hover:bg-white/90 transition shadow-lg">
-                Inizia gratis →
+                Richiedi invito
               </Link>
             </div>
 
@@ -651,7 +651,7 @@ export default function PresentazionePage() {
                 <span className="text-4xl font-black">€39</span>
                 <span className="text-white/70">/mese</span>
               </div>
-              <p className="text-white/80 text-sm mb-6">🎁 30 giorni gratis</p>
+              <p className="text-white/80 text-sm mb-6">🎁 6 mesi gratis</p>
               <div className="space-y-3 mb-6">
                 {['Profilo nel marketplace', 'Listino prezzi (IVA 22%)', 'Connessioni cliniche', 'Dashboard richieste', 'Upload referti PDF', 'API esterne (webhook)', 'Supporto dedicato'].map((f, i) => (
                   <div key={i} className="flex items-center gap-3 text-white/95 text-sm">
@@ -691,7 +691,7 @@ export default function PresentazionePage() {
           </div>
 
           <p className="text-center text-gray-400 text-sm mt-10">
-            Tutti i prezzi sono IVA esclusa (22%). Pagamenti sicuri con Stripe. Annulla in qualsiasi momento.
+            Piano Pilot disponibile su invito per cliniche selezionate a Milano
           </p>
         </div>
       </section>
