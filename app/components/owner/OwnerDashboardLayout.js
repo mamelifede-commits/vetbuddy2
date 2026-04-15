@@ -10,9 +10,13 @@ import { RoleBadge } from '@/app/components/common';
 import NewBrandLogo from '@/app/components/shared/NewBrandLogo';
 import api from '@/app/lib/api';
 import {
-  Calendar, FileText, PawPrint, Gift, Star, MessageCircle, Newspaper, GraduationCap,
-  MapPin, UserPlus, Menu, X, Receipt, Settings, CreditCard, LogOut, Bell, Inbox
+  Calendar, CalendarDays, FileText, PawPrint, Gift, Star, MessageCircle, Newspaper, GraduationCap,
+  MapPin, UserPlus, Menu, X, Receipt, Settings, CreditCard, LogOut, Bell, Inbox,
+  AlertCircle, AlertTriangle, BookOpen, Search, Stethoscope, Mail
 } from 'lucide-react';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 // Dynamic imports for owner sub-components
 const OwnerAppointments = dynamic(() => import('@/app/components/owner/OwnerAppointments'), { ssr: false });

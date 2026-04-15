@@ -5,10 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
-  Calendar, FileText, Users, Inbox, PawPrint, CreditCard, Video, Zap, Gift,
+  Calendar, FileText, FileCheck, Users, Inbox, PawPrint, CreditCard, Video, Zap, Gift,
   Stethoscope, ChevronRight, Check, User, AlertTriangle, TrendingUp, 
-  FlaskConical, Clock, CheckCircle
+  FlaskConical, Clock, CheckCircle, PlayCircle, Bell, MessageCircle,
+  ArrowRight, ListTodo, Mail, Phone, SendHorizontal
 } from 'lucide-react';
 
 // Helper: Setup Step
