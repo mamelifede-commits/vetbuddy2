@@ -73,7 +73,8 @@ export async function handlePaymentsPost(path, request, body) {
         metadata: { userId: user.id, userRole: user.role, planId, type: 'subscription' }
       });
       const transactions = await getCollection('payment_transactions');
-      await transactions.insertOne({ id: uuidv4(), sessionId: session.id, userId: user.id, email: user.email, userRole: user.role, type: 'subscription', planId, amount: plan.price, currency: 'eur', status: 'pending', paymentStatus: 'unpaid', trialDays, createdAt: new Date().toISOString() });
+      const txDoc = { id: uuidv4(), sessionId: session.id, userId: user.id, email: user.email, userRole: user.role, type: 'subscription', planId, amount: plan.price, currency: 'eur', status: 'pending', paymentStatus: 'unpaid', trialDays, createdAt: new Date().toISOString() };
+      await transactions.insertOne(txDoc);
       return NextResponse.json({ url: session.url, sessionId: session.id }, { headers: corsHeaders });
     } catch (error) {
       return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
