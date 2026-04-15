@@ -47,6 +47,37 @@ export async function handlePaymentsGet(path, request) {
     return NextResponse.json({ stripePublishableKey: clinic?.stripePublishableKey || '', stripeSecretKey: clinic?.stripeSecretKey ? '••••••••' + clinic.stripeSecretKey.slice(-4) : '', stripeConfigured: !!clinic?.stripeSecretKey }, { headers: corsHeaders });
   }
 
+  // Lab Stripe settings (GET)
+  if (path === 'lab/stripe-settings') {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== 'lab') return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const users = await getCollection('users');
+    const lab = await users.findOne({ id: user.id });
+    return NextResponse.json({ 
+      stripePublishableKey: lab?.stripePublishableKey || '', 
+      stripeSecretKey: lab?.stripeSecretKey ? '••••••••' + lab.stripeSecretKey.slice(-4) : '', 
+      stripeConfigured: !!lab?.stripeSecretKey 
+    }, { headers: corsHeaders });
+  }
+
+  // Lab proforma invoices
+  if (path === 'lab/invoices') {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== 'lab') return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const labInvoices = await getCollection('lab_invoices');
+    const invoices = await labInvoices.find({ labId: user.id }).sort({ createdAt: -1 }).toArray();
+    return NextResponse.json(invoices, { headers: corsHeaders });
+  }
+
+  // Clinic lab invoices (received)
+  if (path === 'clinic/lab-invoices') {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== 'clinic') return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const labInvoices = await getCollection('lab_invoices');
+    const invoices = await labInvoices.find({ clinicId: user.id }).sort({ createdAt: -1 }).toArray();
+    return NextResponse.json(invoices, { headers: corsHeaders });
+  }
+
   return null;
 }
 
@@ -119,6 +150,99 @@ export async function handlePaymentsPost(path, request, body) {
     const users = await getCollection('users');
     await users.updateOne({ id: user.id }, { $set: { stripePublishableKey, stripeSecretKey, updatedAt: new Date().toISOString() } });
     return NextResponse.json({ success: true }, { headers: corsHeaders });
+  }
+
+  // Save lab Stripe settings
+  if (path === 'lab/stripe-settings') {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== 'lab') return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const { stripePublishableKey, stripeSecretKey } = body;
+    const users = await getCollection('users');
+    await users.updateOne({ id: user.id }, { $set: { stripePublishableKey, stripeSecretKey, updatedAt: new Date().toISOString() } });
+    return NextResponse.json({ success: true }, { headers: corsHeaders });
+  }
+
+  // Lab quote payment checkout (clinic pays lab for a preventivo)
+  if (path === 'stripe/checkout/lab-quote') {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== 'clinic') return NextResponse.json({ error: 'Solo le cliniche possono pagare i preventivi' }, { status: 401, headers: corsHeaders });
+    const { labRequestId, originUrl } = body;
+    if (!labRequestId) return NextResponse.json({ error: 'ID richiesta mancante' }, { status: 400, headers: corsHeaders });
+    
+    const labRequests = await getCollection('lab_requests');
+    const labRequest = await labRequests.findOne({ id: labRequestId });
+    if (!labRequest) return NextResponse.json({ error: 'Richiesta non trovata' }, { status: 404, headers: corsHeaders });
+    if (!labRequest.quotedPrice) return NextResponse.json({ error: 'Nessun preventivo disponibile per questa richiesta' }, { status: 400, headers: corsHeaders });
+    if (labRequest.paymentStatus === 'paid') return NextResponse.json({ error: 'Preventivo già pagato' }, { status: 400, headers: corsHeaders });
+    
+    const users = await getCollection('users');
+    const lab = await users.findOne({ id: labRequest.labId, role: 'lab' });
+    if (!lab?.stripeSecretKey) return NextResponse.json({ error: 'Il laboratorio non ha configurato i pagamenti Stripe. Contatta il laboratorio.' }, { status: 400, headers: corsHeaders });
+    
+    const clinic = await users.findOne({ id: user.id });
+    
+    try {
+      const labStripe = new Stripe(lab.stripeSecretKey);
+      const baseUrl = originUrl || process.env.NEXT_PUBLIC_BASE_URL;
+      const successUrl = `${baseUrl}?lab_payment=success&session_id={CHECKOUT_SESSION_ID}&request_id=${labRequestId}`;
+      const cancelUrl = `${baseUrl}?lab_payment=cancelled`;
+      
+      const session = await labStripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [{
+          price_data: {
+            currency: 'eur',
+            product_data: {
+              name: `Analisi: ${labRequest.examType || 'Esame di laboratorio'}`,
+              description: `${labRequest.petName || 'Paziente'} — ${lab.labName || 'Laboratorio'} — Cod. ${labRequest.sampleCode || labRequest.id.substring(0,8)}`
+            },
+            unit_amount: Math.round(labRequest.quotedPrice * 100)
+          },
+          quantity: 1
+        }],
+        mode: 'payment',
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        customer_email: clinic?.email || user.email,
+        metadata: {
+          type: 'lab_quote',
+          labRequestId,
+          labId: labRequest.labId,
+          clinicId: user.id,
+          clinicName: clinic?.clinicName || clinic?.name || '',
+          labName: lab.labName || lab.name || '',
+          examType: labRequest.examType || '',
+          petName: labRequest.petName || ''
+        }
+      });
+      
+      const transactions = await getCollection('payment_transactions');
+      await transactions.insertOne({
+        id: uuidv4(),
+        sessionId: session.id,
+        labRequestId,
+        labId: labRequest.labId,
+        clinicId: user.id,
+        email: clinic?.email || user.email,
+        type: 'lab_quote',
+        amount: labRequest.quotedPrice,
+        currency: 'eur',
+        status: 'pending',
+        paymentStatus: 'unpaid',
+        examType: labRequest.examType || '',
+        createdAt: new Date().toISOString()
+      });
+      
+      // Mark lab request as payment pending
+      await labRequests.updateOne(
+        { id: labRequestId },
+        { $set: { paymentStatus: 'pending', paymentSessionId: session.id, updatedAt: new Date().toISOString() } }
+      );
+      
+      return NextResponse.json({ url: session.url, sessionId: session.id }, { headers: corsHeaders });
+    } catch (error) {
+      return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
+    }
   }
 
   // Stripe Customer Portal (manage subscription, billing, cancel)

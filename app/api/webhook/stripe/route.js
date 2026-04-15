@@ -302,6 +302,223 @@ export async function POST(request) {
               console.error('Error creating auto invoice:', invoiceError);
             }
           }
+          
+          // Caso 3: Pagamento preventivo laboratorio (clinica paga lab)
+          if (metadata.type === 'lab_quote' && metadata.labRequestId) {
+            // Aggiorna stato richiesta lab come pagata
+            await db.collection('lab_requests').updateOne(
+              { id: metadata.labRequestId },
+              { 
+                $set: { 
+                  paymentStatus: 'paid',
+                  paidAt: new Date().toISOString(),
+                  paidAmount: session.amount_total / 100,
+                  stripeSessionId: session.id
+                },
+                $push: {
+                  statusHistory: {
+                    status: 'payment_received',
+                    note: `Pagamento ricevuto: €${(session.amount_total / 100).toFixed(2)}`,
+                    updatedBy: 'system',
+                    updatedByName: 'VetBuddy',
+                    updatedAt: new Date().toISOString()
+                  }
+                }
+              }
+            );
+            
+            // Update transaction
+            await db.collection('payment_transactions').updateOne(
+              { sessionId: session.id },
+              { $set: { status: 'completed', paymentStatus: 'paid', paidAt: new Date().toISOString() } }
+            );
+            
+            console.log(`✅ Lab quote payment completed for request ${metadata.labRequestId}`);
+            
+            // Genera fattura proforma dal laboratorio alla clinica
+            try {
+              const lab = await db.collection('users').findOne({ id: metadata.labId });
+              const clinic = await db.collection('users').findOne({ id: metadata.clinicId });
+              const labRequest = await db.collection('lab_requests').findOne({ id: metadata.labRequestId });
+              
+              const amount = session.amount_total / 100;
+              const subtotal = amount / 1.22;
+              const iva = amount - subtotal;
+              const marcaBollo = subtotal > 77.47 ? 2.00 : 0;
+              const total = amount + marcaBollo;
+              
+              // Genera numero fattura proforma per il lab
+              const year = new Date().getFullYear();
+              const lastProforma = await db.collection('lab_invoices')
+                .find({ labId: metadata.labId, invoiceNumber: { $regex: `^PF-${year}/` } })
+                .sort({ invoiceNumber: -1 }).limit(1).toArray();
+              let nextNum = 1;
+              if (lastProforma.length > 0) {
+                const last = parseInt(lastProforma[0].invoiceNumber.split('/')[1]);
+                nextNum = last + 1;
+              }
+              const invoiceNumber = `PF-${year}/${String(nextNum).padStart(3, '0')}`;
+              
+              const proformaInvoice = {
+                id: uuidv4(),
+                invoiceNumber,
+                type: 'proforma',
+                labId: metadata.labId,
+                clinicId: metadata.clinicId,
+                labRequestId: metadata.labRequestId,
+                
+                // Info laboratorio (emittente)
+                labName: lab?.labName || lab?.name || 'Laboratorio',
+                labAddress: lab?.address || '',
+                labCity: lab?.city || '',
+                labPhone: lab?.phone || '',
+                labEmail: lab?.email || '',
+                labVAT: lab?.vatNumber || lab?.partitaIva || '',
+                
+                // Info clinica (destinatario)
+                clinicName: clinic?.clinicName || clinic?.name || 'Clinica',
+                clinicAddress: clinic?.address || '',
+                clinicEmail: clinic?.email || '',
+                clinicVAT: clinic?.vatNumber || clinic?.partitaIva || '',
+                
+                // Dettagli
+                examType: metadata.examType || labRequest?.examType || '',
+                petName: metadata.petName || labRequest?.petName || '',
+                sampleCode: labRequest?.sampleCode || '',
+                
+                date: new Date().toISOString(),
+                issueDate: new Date().toLocaleDateString('it-IT'),
+                
+                items: [{
+                  id: uuidv4(),
+                  description: `Analisi di laboratorio: ${metadata.examType || 'Esame'}${metadata.petName ? ` — Paziente: ${metadata.petName}` : ''}`,
+                  quantity: 1,
+                  unitPrice: parseFloat(subtotal.toFixed(2)),
+                  total: parseFloat(subtotal.toFixed(2))
+                }],
+                
+                totals: {
+                  subtotal: parseFloat(subtotal.toFixed(2)),
+                  vatRate: 22,
+                  vatAmount: parseFloat(iva.toFixed(2)),
+                  bolloAmount: marcaBollo,
+                  total: parseFloat(total.toFixed(2))
+                },
+                
+                status: 'paid',
+                paidAt: new Date().toISOString(),
+                paymentMethod: 'stripe',
+                stripeSessionId: session.id,
+                
+                notes: 'Fattura proforma generata automaticamente da VetBuddy dopo pagamento online',
+                createdAt: new Date().toISOString()
+              };
+              
+              await db.collection('lab_invoices').insertOne(proformaInvoice);
+              console.log(`✅ Fattura proforma ${invoiceNumber} generata per lab request ${metadata.labRequestId}`);
+              
+              // Genera PDF della fattura proforma
+              let pdfBuffer = null;
+              try {
+                pdfBuffer = await generateInvoicePDF({
+                  ...proformaInvoice,
+                  clinicName: proformaInvoice.labName,
+                  clinicAddress: proformaInvoice.labAddress,
+                  clinicPhone: proformaInvoice.labPhone,
+                  clinicEmail: proformaInvoice.labEmail,
+                  clinicVAT: proformaInvoice.labVAT,
+                  customerName: proformaInvoice.clinicName,
+                  customerEmail: proformaInvoice.clinicEmail,
+                  customerCF: proformaInvoice.clinicVAT,
+                  customerAddress: proformaInvoice.clinicAddress
+                });
+              } catch (pdfErr) {
+                console.error('Error generating proforma PDF:', pdfErr);
+              }
+              
+              const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+              
+              // Email alla clinica (pagante)
+              if (clinic?.email) {
+                const emailConfig = {
+                  to: clinic.email,
+                  subject: `📋 Fattura Proforma ${invoiceNumber} — Pagamento Analisi Confermato`,
+                  html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                      <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 25px; border-radius: 12px 12px 0 0; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 24px;">🧪 vetbuddy</h1>
+                      </div>
+                      <div style="padding: 30px; background: #ffffff;">
+                        <h2 style="color: #6366f1; margin-top: 0;">Pagamento analisi confermato! ✅</h2>
+                        <p style="color: #333;">Ciao <strong>${clinic.clinicName || clinic.name}</strong>,</p>
+                        <p style="color: #666;">Il pagamento per l'analisi di laboratorio è stato confermato. Ecco il riepilogo:</p>
+                        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #6366f1;">
+                          <p style="margin: 0 0 8px;"><strong>📋 Proforma N°:</strong> ${invoiceNumber}</p>
+                          <p style="margin: 0 0 8px;"><strong>🔬 Laboratorio:</strong> ${proformaInvoice.labName}</p>
+                          <p style="margin: 0 0 8px;"><strong>🧪 Esame:</strong> ${proformaInvoice.examType}</p>
+                          <p style="margin: 0 0 8px;"><strong>💰 Importo:</strong> €${proformaInvoice.totals.total.toFixed(2)}</p>
+                          ${proformaInvoice.petName ? `<p style="margin: 0;"><strong>🐾 Paziente:</strong> ${proformaInvoice.petName}</p>` : ''}
+                        </div>
+                        ${pdfBuffer ? '<p style="color: #666;">📎 <strong>La fattura proforma è allegata a questa email.</strong></p>' : ''}
+                        <div style="text-align: center; margin-top: 30px;">
+                          <a href="${baseUrl}" style="display: inline-block; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 14px 35px; text-decoration: none; border-radius: 30px; font-weight: bold;">Vai alla Dashboard</a>
+                        </div>
+                      </div>
+                      <div style="padding: 20px; background: #f5f5f5; border-radius: 0 0 12px 12px; text-align: center;">
+                        <p style="color: #888; font-size: 12px; margin: 0;">Email automatica da vetbuddy</p>
+                      </div>
+                    </div>
+                  `
+                };
+                if (pdfBuffer) {
+                  emailConfig.attachments = [{
+                    filename: `Proforma_${invoiceNumber.replace('/', '-')}.pdf`,
+                    content: pdfBuffer.toString('base64'),
+                    type: 'application/pdf'
+                  }];
+                }
+                await sendEmail(emailConfig);
+                console.log(`📧 Proforma inviata a clinica ${clinic.email}`);
+              }
+              
+              // Email al laboratorio (ricevente)
+              if (lab?.email) {
+                await sendEmail({
+                  to: lab.email,
+                  subject: `💰 Pagamento ricevuto — ${proformaInvoice.examType} — €${proformaInvoice.totals.total.toFixed(2)}`,
+                  html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                      <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 25px; border-radius: 12px 12px 0 0; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 24px;">🧪 vetbuddy</h1>
+                      </div>
+                      <div style="padding: 30px; background: #ffffff;">
+                        <h2 style="color: #22c55e; margin-top: 0;">Pagamento ricevuto! 💰</h2>
+                        <p style="color: #333;">Ciao <strong>${lab.labName || lab.name}</strong>,</p>
+                        <p style="color: #666;">La clinica <strong>${clinic?.clinicName || clinic?.name || ''}</strong> ha completato il pagamento per l'analisi.</p>
+                        <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #22c55e;">
+                          <p style="margin: 0 0 8px;"><strong>🏥 Clinica:</strong> ${clinic?.clinicName || clinic?.name}</p>
+                          <p style="margin: 0 0 8px;"><strong>🧪 Esame:</strong> ${proformaInvoice.examType}</p>
+                          <p style="margin: 0 0 8px;"><strong>💰 Importo:</strong> €${proformaInvoice.totals.total.toFixed(2)}</p>
+                          ${proformaInvoice.petName ? `<p style="margin: 0;"><strong>🐾 Paziente:</strong> ${proformaInvoice.petName}</p>` : ''}
+                        </div>
+                        <p style="color: #666;">La fattura proforma N° <strong>${invoiceNumber}</strong> è stata generata automaticamente.</p>
+                        <div style="text-align: center; margin-top: 30px;">
+                          <a href="${baseUrl}" style="display: inline-block; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 14px 35px; text-decoration: none; border-radius: 30px; font-weight: bold;">Vai alla Dashboard</a>
+                        </div>
+                      </div>
+                      <div style="padding: 20px; background: #f5f5f5; border-radius: 0 0 12px 12px; text-align: center;">
+                        <p style="color: #888; font-size: 12px; margin: 0;">Email automatica da vetbuddy</p>
+                      </div>
+                    </div>
+                  `
+                });
+                console.log(`📧 Notifica pagamento inviata a lab ${lab.email}`);
+              }
+              
+            } catch (proformaError) {
+              console.error('Error creating proforma invoice:', proformaError);
+            }
+          }
         }
         break;
       }

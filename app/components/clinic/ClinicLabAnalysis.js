@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { AlertCircle, Download, Eye, FileCheck, FlaskConical, Info, Loader2, MousePointerClick, Paperclip, PawPrint, Plus, RefreshCw, Send, Upload, X } from 'lucide-react';
+import { AlertCircle, CreditCard, Download, Eye, FileCheck, FlaskConical, Info, Loader2, MousePointerClick, Paperclip, PawPrint, Plus, RefreshCw, Send, Upload, X } from 'lucide-react';
 import api from '@/app/lib/api';
 
 function ClinicLabAnalysis({ user, pets, owners }) {
@@ -21,6 +21,7 @@ function ClinicLabAnalysis({ user, pets, owners }) {
   const [selectedReport, setSelectedReport] = useState(null);
   const [clinicNotesForOwner, setClinicNotesForOwner] = useState('');
   const [sending, setSending] = useState(false);
+  const [payingQuote, setPayingQuote] = useState(false);
   const [newRequest, setNewRequest] = useState({
     petId: '', labId: '', examCategory: '', examType: '', examName: '',
     clinicalNotes: '', internalNotes: '', priority: 'normal', attachments: []
@@ -189,6 +190,23 @@ function ClinicLabAnalysis({ user, pets, owners }) {
     }
   };
 
+  const handlePayQuote = async (requestId) => {
+    setPayingQuote(true);
+    try {
+      const originUrl = window.location.origin;
+      const res = await api.post('stripe/checkout/lab-quote', { labRequestId: requestId, originUrl });
+      if (res.url) {
+        window.location.href = res.url;
+      } else {
+        alert(res.error || 'Errore nella creazione del pagamento');
+      }
+    } catch (error) {
+      alert(error.message || 'Errore: impossibile procedere al pagamento. Il laboratorio potrebbe non aver configurato Stripe.');
+    } finally {
+      setPayingQuote(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -320,6 +338,28 @@ function ClinicLabAnalysis({ user, pets, owners }) {
                           <label className="text-xs text-gray-500">Consegna stimata</label>
                           <p className="text-sm font-medium">{selectedRequest.estimatedDelivery}</p>
                         </div>
+                      )}
+                    </div>
+                    {/* Payment status and button */}
+                    <div className="mt-3 pt-3 border-t border-amber-200">
+                      {selectedRequest.paymentStatus === 'paid' ? (
+                        <div className="flex items-center gap-2 text-green-700 bg-green-50 p-2 rounded-lg">
+                          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                          <span className="text-sm font-semibold">Pagato il {selectedRequest.paidAt ? new Date(selectedRequest.paidAt).toLocaleDateString('it-IT') : ''}</span>
+                        </div>
+                      ) : (
+                        <Button 
+                          size="sm" 
+                          className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold"
+                          onClick={() => handlePayQuote(selectedRequest.id)}
+                          disabled={payingQuote}
+                        >
+                          {payingQuote ? (
+                            <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Preparazione pagamento...</>
+                          ) : (
+                            <><CreditCard className="h-4 w-4 mr-2" />Paga Preventivo — €{selectedRequest.quotedPrice?.toFixed(2)}</>
+                          )}
+                        </Button>
                       )}
                     </div>
                   </div>
