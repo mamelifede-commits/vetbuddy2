@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { AlertCircle, Download, Eye, FileCheck, FlaskConical, Info, Loader2, MousePointerClick, PawPrint, Plus, RefreshCw, Send } from 'lucide-react';
+import { AlertCircle, Download, Eye, FileCheck, FlaskConical, Info, Loader2, MousePointerClick, Paperclip, PawPrint, Plus, RefreshCw, Send, Upload, X } from 'lucide-react';
 import api from '@/app/lib/api';
 
 function ClinicLabAnalysis({ user, pets, owners }) {
@@ -23,8 +23,9 @@ function ClinicLabAnalysis({ user, pets, owners }) {
   const [sending, setSending] = useState(false);
   const [newRequest, setNewRequest] = useState({
     petId: '', labId: '', examCategory: '', examType: '', examName: '',
-    clinicalNotes: '', internalNotes: '', priority: 'normal'
+    clinicalNotes: '', internalNotes: '', priority: 'normal', attachments: []
   });
+  const [attachmentUploading, setAttachmentUploading] = useState(false);
 
   const LAB_STATUSES = [
     { id: 'pending', name: 'In Attesa', color: 'yellow' },
@@ -73,12 +74,53 @@ function ClinicLabAnalysis({ user, pets, owners }) {
     try {
       await api.post('lab-requests', newRequest);
       setShowNewRequest(false);
-      setNewRequest({ petId: '', labId: '', examCategory: '', examType: '', examName: '', clinicalNotes: '', internalNotes: '', priority: 'normal' });
+      setNewRequest({ petId: '', labId: '', examCategory: '', examType: '', examName: '', clinicalNotes: '', internalNotes: '', priority: 'normal', attachments: [] });
       await loadData();
       alert('Richiesta analisi inviata!');
     } catch (error) {
       alert('Errore: ' + error.message);
     }
+  };
+
+  const handleAttachment = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    setAttachmentUploading(true);
+    try {
+      const newAttachments = [];
+      for (const file of files) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert(`Il file "${file.name}" supera il limite di 5MB`);
+          continue;
+        }
+        const base64 = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+        newAttachments.push({
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          url: base64
+        });
+      }
+      setNewRequest(prev => ({
+        ...prev,
+        attachments: [...(prev.attachments || []), ...newAttachments]
+      }));
+    } catch (error) {
+      console.error('Attachment error:', error);
+    }
+    setAttachmentUploading(false);
+    e.target.value = '';
+  };
+
+  const removeAttachment = (index) => {
+    setNewRequest(prev => ({
+      ...prev,
+      attachments: prev.attachments.filter((_, i) => i !== index)
+    }));
   };
 
   const sendReportToOwner = async () => {
@@ -269,6 +311,26 @@ function ClinicLabAnalysis({ user, pets, owners }) {
                   <div>
                     <label className="text-xs font-medium text-gray-500 uppercase">Note Cliniche</label>
                     <p className="mt-1 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">{selectedRequest.clinicalNotes}</p>
+                  </div>
+                )}
+
+                {/* Attachments */}
+                {selectedRequest.attachments && selectedRequest.attachments.length > 0 && (
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 uppercase mb-2 block">Allegati</label>
+                    <div className="space-y-1.5">
+                      {selectedRequest.attachments.map((att, idx) => (
+                        <div key={idx} className="flex items-center gap-2 p-2 bg-indigo-50 rounded-lg">
+                          <Paperclip className="h-4 w-4 text-indigo-500 shrink-0" />
+                          {att.type?.startsWith('image/') ? (
+                            <a href={att.url} target="_blank" rel="noopener noreferrer" className="text-sm text-indigo-600 hover:underline truncate">{att.name}</a>
+                          ) : (
+                            <a href={att.url} download={att.name} className="text-sm text-indigo-600 hover:underline truncate">{att.name}</a>
+                          )}
+                          <span className="text-xs text-gray-400 shrink-0">({(att.size / 1024).toFixed(0)}KB)</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -467,6 +529,39 @@ function ClinicLabAnalysis({ user, pets, owners }) {
                 placeholder="Note riservate per il laboratorio..."
                 rows={2}
               />
+            </div>
+
+            {/* Attachments */}
+            <div>
+              <Label className="flex items-center gap-2">
+                <Paperclip className="h-4 w-4" />
+                Allegati (opzionale)
+              </Label>
+              <div className="mt-1">
+                <label className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-colors">
+                  <Upload className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-500">
+                    {attachmentUploading ? 'Caricamento...' : 'Aggiungi foto, PDF o documenti (max 5MB)'}
+                  </span>
+                  <input type="file" className="hidden" accept="image/*,.pdf,.doc,.docx" multiple onChange={handleAttachment} disabled={attachmentUploading} />
+                </label>
+              </div>
+              {newRequest.attachments && newRequest.attachments.length > 0 && (
+                <div className="mt-2 space-y-1">
+                  {newRequest.attachments.map((att, idx) => (
+                    <div key={idx} className="flex items-center justify-between px-3 py-2 bg-indigo-50 rounded-lg text-sm">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <FileCheck className="h-4 w-4 text-indigo-500 shrink-0" />
+                        <span className="truncate font-medium text-gray-700">{att.name}</span>
+                        <span className="text-xs text-gray-400 shrink-0">({(att.size / 1024).toFixed(0)}KB)</span>
+                      </div>
+                      <button onClick={() => removeAttachment(idx)} className="text-red-400 hover:text-red-600 ml-2 shrink-0">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           

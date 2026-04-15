@@ -510,6 +510,25 @@ function LabDashboard({ user, onLogout }) {
                       {selectedRequest.clinicalNotes && (
                         <div><label className="text-xs font-medium text-gray-500 uppercase">Note Cliniche</label><p className="mt-1 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">{selectedRequest.clinicalNotes}</p></div>
                       )}
+                      {/* Attachments from clinic */}
+                      {selectedRequest.attachments && selectedRequest.attachments.length > 0 && (
+                        <div>
+                          <label className="text-xs font-medium text-gray-500 uppercase mb-2 block">Allegati dalla Clinica</label>
+                          <div className="space-y-1.5">
+                            {selectedRequest.attachments.map((att, idx) => (
+                              <div key={idx} className="flex items-center gap-2 p-2 bg-indigo-50 rounded-lg">
+                                <Package className="h-4 w-4 text-indigo-500 shrink-0" />
+                                {att.type?.startsWith('image/') ? (
+                                  <a href={att.url} target="_blank" rel="noopener noreferrer" className="text-sm text-indigo-600 hover:underline truncate">{att.name}</a>
+                                ) : (
+                                  <a href={att.url} download={att.name} className="text-sm text-indigo-600 hover:underline truncate">{att.name}</a>
+                                )}
+                                <span className="text-xs text-gray-400 shrink-0">({(att.size / 1024).toFixed(0)}KB)</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                       <div className="border-t pt-4">
                         <label className="text-xs font-medium text-gray-500 uppercase mb-2 block">Aggiorna Stato</label>
                         <div className="grid grid-cols-2 gap-2">
