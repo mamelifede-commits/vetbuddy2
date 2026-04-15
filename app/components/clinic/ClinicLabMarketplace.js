@@ -521,7 +521,7 @@ function ClinicLabMarketplace({ user }) {
                 {/* Price List */}
                 {(selectedLab.priceList || []).length > 0 && (
                   <div>
-                    <p className="text-sm font-medium mb-2 flex items-center gap-1"><Euro className="h-4 w-4 text-purple-500" />Listino Prezzi Indicativo</p>
+                    <p className="text-sm font-medium mb-2 flex items-center gap-1"><Euro className="h-4 w-4 text-purple-500" />Listino Prezzi Indicativo <span className="text-xs font-normal text-gray-400 ml-1">(IVA esclusa)</span></p>
                     <div className="border rounded-lg overflow-hidden">
                       <table className="w-full text-sm">
                         <thead className="bg-purple-50">
@@ -553,7 +553,7 @@ function ClinicLabMarketplace({ user }) {
                         </tbody>
                       </table>
                     </div>
-                    <p className="text-xs text-gray-400 mt-1 italic">* Prezzi indicativi, possono variare</p>
+                    <p className="text-xs text-gray-400 mt-1 italic">* Prezzi indicativi, IVA esclusa (22%). Il prezzo finale può variare.</p>
                   </div>
                 )}
 

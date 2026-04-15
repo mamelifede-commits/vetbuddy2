@@ -356,6 +356,21 @@ function LabDashboard({ user, onLogout }) {
             </div>
           </div>
         )}
+        {/* Onboarding Banner - Price List */}
+        {priceList.length === 0 && !loadingPrices && activeTab !== 'prices' && (
+          <div className="mb-6 rounded-xl p-4 border border-violet-200 bg-gradient-to-r from-violet-50 to-purple-50 cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('prices')}>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-violet-100 shrink-0">
+                <Euro className="h-5 w-5 text-violet-600" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-gray-900 text-sm">📋 Completa il tuo profilo: aggiungi il listino prezzi!</p>
+                <p className="text-xs text-gray-600">Per essere visibile alle cliniche nel marketplace, inserisci i tuoi esami con prezzi indicativi (IVA esclusa).</p>
+              </div>
+              <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white shrink-0">Aggiungi Listino →</Button>
+            </div>
+          </div>
+        )}
         {/* REQUESTS TAB */}
         {activeTab === 'requests' && (
           <>
@@ -597,7 +612,7 @@ function LabDashboard({ user, onLogout }) {
             </div>
 
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-              <p className="text-sm text-amber-800 flex items-center gap-2"><Info className="h-4 w-4" /><strong>Nota:</strong> I prezzi sono indicativi e visibili alle cliniche nel marketplace. Il prezzo finale può variare.</p>
+              <p className="text-sm text-amber-800 flex items-center gap-2"><Info className="h-4 w-4" /><strong>Nota:</strong> I prezzi sono indicativi e visibili alle cliniche nel marketplace. Il prezzo finale può variare. <strong>Tutti i prezzi si intendono IVA esclusa (22%).</strong></p>
             </div>
 
             {loadingPrices ? (
