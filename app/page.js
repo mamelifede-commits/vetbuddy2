@@ -53,6 +53,7 @@ const ClinicEvents = dynamic(() => import('@/app/components/clinic/ClinicEvents'
 const ClinicSettings = dynamic(() => import('@/app/components/clinic/ClinicSettings'), { ssr: false });
 const ClinicFeedbackPage = dynamic(() => import('@/app/components/clinic/ClinicFeedbackPage'), { ssr: false });
 const ClinicTutorialInline = dynamic(() => import('@/app/components/clinic/ClinicTutorialInline'), { ssr: false });
+const ClinicLabInvoices = dynamic(() => import('@/app/components/clinic/ClinicLabInvoices'), { ssr: false });
 
 // Owner Dashboard
 const OwnerDashboard = dynamic(() => import('@/app/components/owner/OwnerDashboardLayout'), { ssr: false });
@@ -183,6 +184,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     { icon: Star, label: 'Recensioni', value: 'reviews' },
     { icon: Gift, label: 'Premi Fedeltà', value: 'rewards' },
     { icon: ClipboardList, label: 'Template', value: 'templates' },
+    { icon: Receipt, label: 'Fatture Lab', value: 'labinvoices' },
     { icon: Zap, label: 'Automazioni', value: 'automations' },
     'divider',
     { icon: MessageCircle, label: 'Feedback', value: 'feedback' },
@@ -268,6 +270,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'settings' && <ClinicSettings user={user} onNavigate={setActiveTab} />}
         {activeTab === 'feedback' && <ClinicFeedbackPage user={user} />}
         {activeTab === 'tutorial' && <ClinicTutorialInline />}
+        {activeTab === 'labinvoices' && <ClinicLabInvoices />}
       </main>
     </div>
   );

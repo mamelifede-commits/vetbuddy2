@@ -285,6 +285,16 @@ function ClinicLabAnalysis({ user, pets, owners }) {
                     </div>
                     {getStatusBadge(req.status)}
                   </div>
+                  {req.quotedPrice && (
+                    <div className="mt-1.5 flex items-center justify-between">
+                      <span className="text-xs text-gray-400">Preventivo: €{req.quotedPrice?.toFixed(2)}</span>
+                      {req.paymentStatus === 'paid' ? (
+                        <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">✓ Pagato</span>
+                      ) : (
+                        <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">€ Da pagare</span>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
