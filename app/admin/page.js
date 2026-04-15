@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 
 // Admin email - solo questo può accedere
-const ADMIN_EMAIL = 'info@vetbuddy.it';
+const ADMIN_EMAIL = 'admin@vetbuddy.it';
 
 const api = {
   baseUrl: '/api',
@@ -166,6 +166,37 @@ export default function AdminPage() {
   const [labs, setLabs] = useState([]);
   const [stripeTransactions, setStripeTransactions] = useState([]);
   const [statsLoading, setStatsLoading] = useState(false);
+  const [showLabBillingDialog, setShowLabBillingDialog] = useState(false);
+  const [selectedLabForBilling, setSelectedLabForBilling] = useState(null);
+  const [billingForm, setBillingForm] = useState({ extendTrialDays: 30, maxFreeRequests: 50, resetRequestsCount: false });
+  const [billingLoading, setBillingLoading] = useState(false);
+
+  // Handle lab billing update
+  const handleLabBilling = async () => {
+    if (!selectedLabForBilling) return;
+    setBillingLoading(true);
+    try {
+      await api.post(`admin/labs/${selectedLabForBilling.id}/billing`, billingForm);
+      alert('✅ Impostazioni billing aggiornate con successo!');
+      setShowLabBillingDialog(false);
+      setSelectedLabForBilling(null);
+      loadLabData();
+    } catch (error) {
+      alert('Errore: ' + error.message);
+    } finally {
+      setBillingLoading(false);
+    }
+  };
+
+  const openLabBilling = (lab) => {
+    setSelectedLabForBilling(lab);
+    setBillingForm({
+      extendTrialDays: 30,
+      maxFreeRequests: lab.billing?.maxFreeRequests || 50,
+      resetRequestsCount: false
+    });
+    setShowLabBillingDialog(true);
+  };
 
   const openApproveDialog = (app) => {
     setAppToApprove(app);
@@ -502,7 +533,515 @@ export default function AdminPage() {
             ))}
           </div>
         )}
+      </TabsContent>
+
+          {/* ========== TAB: LABORATORI ========== */}
+          <TabsContent value="laboratori">
+            {statsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <RefreshCw className="h-8 w-8 animate-spin text-purple-500" />
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Lab Overview Stats */}
+                {labStats && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Card>
+                      <CardContent className="p-4 text-center">
+                        <FlaskConical className="h-6 w-6 text-purple-500 mx-auto mb-1" />
+                        <p className="text-3xl font-bold text-gray-900">{labStats.labs?.total || 0}</p>
+                        <p className="text-sm text-gray-500">Laboratori Totali</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="p-4 text-center">
+                        <CheckCircle className="h-6 w-6 text-green-500 mx-auto mb-1" />
+                        <p className="text-3xl font-bold text-green-600">{labStats.labs?.active || 0}</p>
+                        <p className="text-sm text-gray-500">Attivi</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="p-4 text-center">
+                        <FileText className="h-6 w-6 text-blue-500 mx-auto mb-1" />
+                        <p className="text-3xl font-bold text-blue-600">{labStats.requests?.total || 0}</p>
+                        <p className="text-sm text-gray-500">Richieste Totali</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="p-4 text-center">
+                        <TrendingUp className="h-6 w-6 text-emerald-500 mx-auto mb-1" />
+                        <p className="text-3xl font-bold text-emerald-600">{labStats.reports?.total || 0}</p>
+                        <p className="text-sm text-gray-500">Referti Totali</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {/* Billing Alerts */}
+                {labStats && (labStats.billing?.trialExpiringSoon > 0 || labStats.billing?.requestsNearLimit > 0) && (
+                  <Card className="border-amber-200 bg-amber-50">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertTriangle className="h-5 w-5 text-amber-600" />
+                        <h3 className="font-semibold text-amber-800">Avvisi Billing</h3>
+                      </div>
+                      <div className="grid md:grid-cols-3 gap-3 text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="text-amber-700">In prova:</span>
+                          <Badge className="bg-amber-100 text-amber-700">{labStats.billing?.inTrial || 0}</Badge>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-amber-700">Trial in scadenza (30gg):</span>
+                          <Badge className="bg-orange-100 text-orange-700">{labStats.billing?.trialExpiringSoon || 0}</Badge>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-amber-700">Richieste in esaurimento:</span>
+                          <Badge className="bg-red-100 text-red-700">{labStats.billing?.requestsNearLimit || 0}</Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Requests & Connections Summary */}
+                {labStats && (
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">Stato Richieste</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        <div className="flex justify-between text-sm"><span className="text-gray-500">In corso</span><Badge className="bg-amber-100 text-amber-700">{labStats.requests?.pending || 0}</Badge></div>
+                        <div className="flex justify-between text-sm"><span className="text-gray-500">Referto pronto</span><Badge className="bg-blue-100 text-blue-700">{labStats.requests?.reportReady || 0}</Badge></div>
+                        <div className="flex justify-between text-sm"><span className="text-gray-500">Completate</span><Badge className="bg-green-100 text-green-700">{labStats.requests?.completed || 0}</Badge></div>
+                        <div className="flex justify-between text-sm"><span className="text-gray-500">Annullate</span><Badge className="bg-gray-100 text-gray-600">{labStats.requests?.cancelled || 0}</Badge></div>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">Connessioni Clinica-Lab</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        <div className="flex justify-between text-sm"><span className="text-gray-500">Attive</span><Badge className="bg-green-100 text-green-700">{labStats.connections?.active || 0}</Badge></div>
+                        <div className="flex justify-between text-sm"><span className="text-gray-500">In attesa</span><Badge className="bg-amber-100 text-amber-700">{labStats.connections?.pending || 0}</Badge></div>
+                        <div className="flex justify-between text-sm"><span className="text-gray-500">Referti pubblicati</span><Badge className="bg-emerald-100 text-emerald-700">{labStats.reports?.visibleToOwner || 0}</Badge></div>
+                        <div className="flex justify-between text-sm"><span className="text-gray-500">In attesa revisione</span><Badge className="bg-orange-100 text-orange-700">{labStats.reports?.pendingReview || 0}</Badge></div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {/* Top Labs */}
+                {labStats?.topLabs?.length > 0 && (
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">Top Laboratori per Richieste</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        {labStats.topLabs.map((tl, idx) => (
+                          <div key={tl.id} className="flex items-center justify-between p-2 rounded-lg bg-gray-50">
+                            <div className="flex items-center gap-3">
+                              <span className="text-lg font-bold text-purple-500">#{idx + 1}</span>
+                              <div>
+                                <p className="font-medium text-sm">{tl.labName}</p>
+                                <p className="text-xs text-gray-500">{tl.city} · {tl.connections} connessioni</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm font-semibold">{tl.totalRequests} richieste</p>
+                              <p className="text-xs text-green-600">{tl.completedRequests} completate</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Labs List */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-gray-800">Elenco Laboratori</h3>
+                    <Button variant="outline" size="sm" onClick={loadLabData}>
+                      <RefreshCw className="h-4 w-4 mr-1" /> Aggiorna
+                    </Button>
+                  </div>
+                  {labs.length === 0 ? (
+                    <Card><CardContent className="p-8 text-center text-gray-500"><FlaskConical className="h-10 w-10 mx-auto mb-3 text-gray-300" /><p>Nessun laboratorio registrato</p></CardContent></Card>
+                  ) : (
+                    <div className="space-y-3">
+                      {labs.map((lab) => (
+                        <Card key={lab.id} className="hover:shadow-md transition-shadow">
+                          <CardContent className="p-4">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-1">
+                                  <h4 className="font-bold">{lab.labName || lab.name}</h4>
+                                  {lab.isApproved ? (
+                                    <Badge className="bg-green-100 text-green-700"><CheckCircle className="h-3 w-3 mr-1"/>Approvato</Badge>
+                                  ) : (
+                                    <Badge className="bg-amber-100 text-amber-700"><Clock className="h-3 w-3 mr-1"/>In attesa</Badge>
+                                  )}
+                                  <Badge className="bg-purple-100 text-purple-700">{lab.billing?.plan || 'partner_free'}</Badge>
+                                </div>
+                                <div className="grid md:grid-cols-3 gap-1 text-sm text-gray-600 mb-2">
+                                  <span className="flex items-center gap-1"><Mail className="h-3 w-3 text-gray-400"/>{lab.email}</span>
+                                  <span className="flex items-center gap-1"><MapPin className="h-3 w-3 text-gray-400"/>{lab.city || 'N/D'}</span>
+                                  <span className="flex items-center gap-1"><Phone className="h-3 w-3 text-gray-400"/>{lab.phone || 'N/D'}</span>
+                                </div>
+                                <div className="flex flex-wrap gap-3 text-xs text-gray-500">
+                                  <span>Richieste: <strong>{lab.stats?.totalRequests || 0}</strong></span>
+                                  <span>Completate: <strong className="text-green-600">{lab.stats?.completedRequests || 0}</strong></span>
+                                  <span>Referti: <strong className="text-blue-600">{lab.stats?.totalReports || 0}</strong></span>
+                                  <span>Connessioni: <strong>{lab.stats?.totalConnections || 0}</strong></span>
+                                </div>
+                                {/* Billing info */}
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                  {lab.billing?.trialExpired ? (
+                                    <Badge className="bg-red-100 text-red-700 text-xs">Trial scaduto</Badge>
+                                  ) : lab.billing?.daysRemaining > 0 ? (
+                                    <Badge className="bg-blue-100 text-blue-700 text-xs">{lab.billing.daysRemaining}gg rimanenti</Badge>
+                                  ) : null}
+                                  <Badge className="bg-gray-100 text-gray-600 text-xs">{lab.billing?.requestsRemaining ?? 0}/{lab.billing?.maxFreeRequests ?? 50} richieste rimaste</Badge>
+                                </div>
+                              </div>
+                              <Button variant="outline" size="sm" onClick={() => openLabBilling(lab)}>
+                                <CreditCard className="h-4 w-4 mr-1" /> Billing
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Requests by Exam Type */}
+                {labStats?.requestsByExamType?.length > 0 && (
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">Richieste per Tipo Esame</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid md:grid-cols-2 gap-2">
+                        {labStats.requestsByExamType.map((item) => (
+                          <div key={item.examType} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                            <span className="text-sm capitalize">{item.examType?.replace(/_/g, ' ') || 'N/D'}</span>
+                            <Badge className="bg-purple-100 text-purple-700">{item.count}</Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* ========== TAB: PIATTAFORMA ========== */}
+          <TabsContent value="piattaforma">
+            {statsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <RefreshCw className="h-8 w-8 animate-spin text-coral-500" />
+              </div>
+            ) : platformStats ? (
+              <div className="space-y-6">
+                {/* Main Metrics */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <Users className="h-6 w-6 text-blue-500 mx-auto mb-1" />
+                      <p className="text-3xl font-bold text-gray-900">{platformStats.counts?.totalUsers || 0}</p>
+                      <p className="text-xs text-gray-500">Utenti Totali</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <Building2 className="h-6 w-6 text-coral-500 mx-auto mb-1" />
+                      <p className="text-3xl font-bold text-coral-600">{platformStats.counts?.clinics || 0}</p>
+                      <p className="text-xs text-gray-500">Cliniche</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <Users className="h-6 w-6 text-green-500 mx-auto mb-1" />
+                      <p className="text-3xl font-bold text-green-600">{platformStats.counts?.owners || 0}</p>
+                      <p className="text-xs text-gray-500">Proprietari</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <PawPrint className="h-6 w-6 text-purple-500 mx-auto mb-1" />
+                      <p className="text-3xl font-bold text-purple-600">{platformStats.counts?.pets || 0}</p>
+                      <p className="text-xs text-gray-500">Pazienti</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <Calendar className="h-6 w-6 text-amber-500 mx-auto mb-1" />
+                      <p className="text-3xl font-bold text-amber-600">{platformStats.counts?.appointments || 0}</p>
+                      <p className="text-xs text-gray-500">Appuntamenti</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <FileText className="h-6 w-6 text-indigo-500 mx-auto mb-1" />
+                      <p className="text-3xl font-bold text-indigo-600">{platformStats.counts?.documents || 0}</p>
+                      <p className="text-xs text-gray-500">Documenti</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Recent Activity */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4 text-green-500" />
+                        Registrazioni Recenti (7gg)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-4xl font-bold text-green-600 mb-2">{platformStats.recentRegistrations || 0}</p>
+                      <p className="text-sm text-gray-500">nuovi utenti negli ultimi 7 giorni</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-amber-500" />
+                        Appuntamenti per Stato
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {(platformStats.appointmentsByStatus || []).length > 0 ? (
+                        <div className="space-y-2">
+                          {platformStats.appointmentsByStatus.map((s) => (
+                            <div key={s._id} className="flex justify-between items-center text-sm">
+                              <span className="capitalize text-gray-600">{s._id || 'N/D'}</span>
+                              <Badge className="bg-gray-100 text-gray-700">{s.count}</Badge>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-400">Nessun dato disponibile</p>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Recent Users */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-base">Ultimi Utenti Registrati</CardTitle>
+                      <Button variant="outline" size="sm" onClick={loadPlatformStats}><RefreshCw className="h-4 w-4 mr-1" /> Aggiorna</Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    {(platformStats.recentUsers || []).length > 0 ? (
+                      <div className="space-y-2">
+                        {platformStats.recentUsers.map((u) => (
+                          <div key={u.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold ${u.role === 'clinic' ? 'bg-coral-500' : u.role === 'owner' ? 'bg-green-500' : u.role === 'lab' ? 'bg-purple-500' : 'bg-gray-500'}`}>
+                                {(u.name || u.clinicName || u.labName || '?').charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium">{u.name || u.clinicName || u.labName || 'N/D'}</p>
+                                <p className="text-xs text-gray-500">{u.email}</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <Badge className={`text-xs ${u.role === 'clinic' ? 'bg-coral-100 text-coral-700' : u.role === 'owner' ? 'bg-green-100 text-green-700' : u.role === 'lab' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}>{u.role}</Badge>
+                              <p className="text-xs text-gray-400 mt-1">{u.createdAt ? new Date(u.createdAt).toLocaleDateString('it-IT') : ''}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-400 text-center py-4">Nessun utente registrato</p>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
+              <Card><CardContent className="p-12 text-center text-gray-500"><BarChart3 className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p>Nessun dato piattaforma disponibile</p></CardContent></Card>
+            )}
+          </TabsContent>
+
+          {/* ========== TAB: STRIPE ========== */}
+          <TabsContent value="stripe">
+            {statsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <RefreshCw className="h-8 w-8 animate-spin text-green-500" />
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Stripe Connection Status */}
+                <Card className="border-green-200">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                          <CreditCard className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">Stripe Integration</h3>
+                          <p className="text-sm text-gray-500">Gestione abbonamenti e pagamenti</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
+                        <span className="text-sm font-medium text-green-700">Connesso (Test Mode)</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Plan Summary */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <p className="text-3xl font-bold text-gray-900">{stripeTransactions.length}</p>
+                      <p className="text-sm text-gray-500">Utenti con Abbonamento</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <p className="text-3xl font-bold text-coral-600">{stripeTransactions.filter(u => u.subscriptionPlan === 'pro').length}</p>
+                      <p className="text-sm text-gray-500">Piano Pro</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <p className="text-3xl font-bold text-gray-600">{stripeTransactions.filter(u => u.subscriptionPlan === 'starter').length}</p>
+                      <p className="text-sm text-gray-500">Piano Starter</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <p className="text-3xl font-bold text-purple-600">{stripeTransactions.filter(u => u.subscriptionPlan === 'lab_partner').length}</p>
+                      <p className="text-sm text-gray-500">Lab Partner</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Pricing Reference */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Piani Tariffari Attivi</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-4 gap-3">
+                      <div className="p-3 rounded-lg border bg-gray-50">
+                        <p className="font-semibold text-gray-700">Starter Clinica</p>
+                        <p className="text-2xl font-bold text-gray-900">Gratis</p>
+                        <p className="text-xs text-gray-500">1 utente, 50 pazienti</p>
+                      </div>
+                      <div className="p-3 rounded-lg border-2 border-coral-300 bg-coral-50">
+                        <p className="font-semibold text-coral-700">Pro Clinica</p>
+                        <p className="text-2xl font-bold text-coral-600">€79<span className="text-sm font-normal">/mese</span></p>
+                        <p className="text-xs text-gray-500">90gg trial gratuito</p>
+                      </div>
+                      <div className="p-3 rounded-lg border bg-purple-50">
+                        <p className="font-semibold text-purple-700">Lab Partner</p>
+                        <p className="text-2xl font-bold text-purple-600">€29<span className="text-sm font-normal">/mese</span></p>
+                        <p className="text-xs text-gray-500">180gg trial gratuito</p>
+                      </div>
+                      <div className="p-3 rounded-lg border bg-indigo-50">
+                        <p className="font-semibold text-indigo-700">Enterprise</p>
+                        <p className="text-2xl font-bold text-indigo-600">Custom</p>
+                        <p className="text-xs text-gray-500">Contattaci</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Subscribers List */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-base">Utenti con Abbonamento/Stripe</CardTitle>
+                      <Button variant="outline" size="sm" onClick={loadStripeData}><RefreshCw className="h-4 w-4 mr-1" /> Aggiorna</Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    {stripeTransactions.length === 0 ? (
+                      <div className="text-center py-8 text-gray-500">
+                        <CreditCard className="h-10 w-10 mx-auto mb-3 text-gray-300" />
+                        <p>Nessun abbonato trovato</p>
+                        <p className="text-xs text-gray-400 mt-1">Gli utenti appariranno qui dopo il checkout Stripe</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {stripeTransactions.map((u) => (
+                          <div key={u.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold ${u.role === 'clinic' ? 'bg-coral-500' : u.role === 'lab' ? 'bg-purple-500' : 'bg-gray-500'}`}>
+                                {(u.name || u.clinicName || u.labName || '?').charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium">{u.name || u.clinicName || u.labName || 'N/D'}</p>
+                                <p className="text-xs text-gray-500">{u.email}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="text-right">
+                                <Badge className={`text-xs ${u.subscriptionPlan === 'pro' ? 'bg-coral-100 text-coral-700' : u.subscriptionPlan === 'lab_partner' ? 'bg-purple-100 text-purple-700' : u.subscriptionPlan === 'starter' ? 'bg-gray-100 text-gray-700' : 'bg-blue-100 text-blue-700'}`}>
+                                  {u.subscriptionPlan || 'N/D'}
+                                </Badge>
+                                <p className="text-xs text-gray-400 mt-1">
+                                  {u.subscriptionStatus === 'active' ? '✅ Attivo' : u.subscriptionStatus === 'trialing' ? '⏳ In prova' : u.subscriptionStatus === 'canceled' ? '❌ Cancellato' : u.subscriptionStatus || 'Nessuno'}
+                                </p>
+                              </div>
+                              {u.stripeCustomerId && (
+                                <Badge className="bg-indigo-100 text-indigo-700 text-xs font-mono">{u.stripeCustomerId.substring(0, 14)}...</Badge>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Stripe Config Info */}
+                <Card className="bg-gray-50 border-dashed">
+                  <CardContent className="p-4">
+                    <h4 className="font-semibold text-gray-700 mb-2">Configurazione Stripe</h4>
+                    <div className="grid md:grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <span className="text-gray-500">Modalità:</span>{' '}
+                        <Badge className="bg-amber-100 text-amber-700">Test Mode</Badge>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Checkout endpoint:</span>{' '}
+                        <code className="text-xs bg-gray-200 px-1 py-0.5 rounded">/api/payments/checkout</code>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Webhook:</span>{' '}
+                        <code className="text-xs bg-gray-200 px-1 py-0.5 rounded">/api/webhook/stripe</code>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Valuta:</span>{' '}
+                        <span className="font-medium">EUR (€)</span>
+                      </div>
+                    </div>
+                    <div className="mt-3 p-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
+                      <strong>Nota:</strong> Per passare a produzione, sostituire le chiavi Stripe Test con le chiavi Live nel file .env e aggiornare il webhook endpoint nella dashboard Stripe.
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </TabsContent>
+
+        </Tabs>
       </div>
+
+      {/* ===== DIALOGS (fuori dal Tabs) ===== */}
 
       {/* Details Dialog */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
@@ -569,7 +1108,6 @@ export default function AdminPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Reject Dialog */}
       {/* Approve Dialog con selezione piano */}
       <Dialog open={showApproveDialog} onOpenChange={setShowApproveDialog}>
         <DialogContent>
@@ -648,6 +1186,7 @@ export default function AdminPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Reject Dialog */}
       <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
         <DialogContent>
           <DialogHeader>
@@ -675,6 +1214,72 @@ export default function AdminPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Lab Billing Dialog */}
+      <Dialog open={showLabBillingDialog} onOpenChange={setShowLabBillingDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-purple-500" />
+              Gestione Billing - {selectedLabForBilling?.labName || selectedLabForBilling?.name}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedLabForBilling && (
+            <div className="space-y-4">
+              {/* Current billing status */}
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <h4 className="text-sm font-medium text-gray-500 mb-2">Stato Attuale</h4>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div><span className="text-gray-500">Piano:</span> <strong>{selectedLabForBilling.billing?.plan || 'partner_free'}</strong></div>
+                  <div><span className="text-gray-500">Giorni rimasti:</span> <strong>{selectedLabForBilling.billing?.daysRemaining || 0}</strong></div>
+                  <div><span className="text-gray-500">Richieste usate:</span> <strong>{selectedLabForBilling.billing?.requestsCount || 0}</strong></div>
+                  <div><span className="text-gray-500">Limite:</span> <strong>{selectedLabForBilling.billing?.maxFreeRequests || 50}</strong></div>
+                </div>
+              </div>
+              
+              {/* Extend trial */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1">Estendi Trial (giorni)</label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={billingForm.extendTrialDays}
+                  onChange={(e) => setBillingForm(f => ({...f, extendTrialDays: parseInt(e.target.value) || 0}))}
+                />
+              </div>
+              
+              {/* Max free requests */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1">Limite Richieste Gratuite</label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={billingForm.maxFreeRequests}
+                  onChange={(e) => setBillingForm(f => ({...f, maxFreeRequests: parseInt(e.target.value) || 0}))}
+                />
+              </div>
+              
+              {/* Reset counter */}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={billingForm.resetRequestsCount}
+                  onChange={(e) => setBillingForm(f => ({...f, resetRequestsCount: e.target.checked}))}
+                  className="h-4 w-4 rounded"
+                />
+                <span className="text-sm text-gray-700">Azzera contatore richieste</span>
+              </label>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowLabBillingDialog(false)}>Annulla</Button>
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={handleLabBilling} disabled={billingLoading}>
+              {billingLoading ? <><RefreshCw className="h-4 w-4 animate-spin mr-2"/>Salvataggio...</> : 'Salva Modifiche'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

@@ -1,461 +1,447 @@
 #!/usr/bin/env python3
 """
-VetBuddy Backend API Comprehensive Audit
-Testing all endpoints as specified in the review request
-Base URL: https://clinic-report-review.preview.emergentagent.com/api
+VetBuddy Admin Dashboard Backend API Testing
+Tests all admin endpoints with proper authentication and authorization
 """
 
 import requests
 import json
 import sys
-from typing import Dict, Any, Optional
+from datetime import datetime
 
-# Base configuration
+# Base URL from environment
 BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
 
-# Test credentials from review request
-CREDENTIALS = {
-    "clinic": {"email": "demo@vetbuddy.it", "password": "VetBuddy2025!Secure"},
-    "lab": {"email": "laboratorio1@vetbuddy.it", "password": "Lab2025!"},
-    "owner": {"email": "proprietario.demo@vetbuddy.it", "password": "demo123"},
-    "admin": {"email": "admin@vetbuddy.it", "password": "Admin2025!"}
+# Test credentials
+ADMIN_CREDENTIALS = {
+    "email": "admin@vetbuddy.it",
+    "password": "Admin2025!"
 }
 
-class VetBuddyAPITester:
-    def __init__(self):
-        self.session = requests.Session()
-        self.tokens = {}
-        self.clinic_id = None
-        self.test_results = []
-        
-    def log_test(self, test_name: str, success: bool, details: str = "", status_code: int = None):
-        """Log test result"""
-        status = "✅ PASS" if success else "❌ FAIL"
-        result = f"{status} {test_name}"
-        if status_code:
-            result += f" (HTTP {status_code})"
-        if details:
-            result += f" - {details}"
-        print(result)
-        self.test_results.append({
-            "test": test_name,
-            "success": success,
-            "details": details,
-            "status_code": status_code
-        })
-        
-    def login(self, user_type: str) -> bool:
-        """Login and get JWT token"""
-        try:
-            creds = CREDENTIALS[user_type]
-            response = self.session.post(
-                f"{BASE_URL}/auth/login",
-                json=creds,
-                headers={"Content-Type": "application/json"}
-            )
-            
-            if response.status_code == 200:
-                data = response.json()
-                if 'token' in data:
-                    self.tokens[user_type] = data['token']
-                    if user_type == 'clinic' and 'user' in data:
-                        self.clinic_id = data['user'].get('id')
-                    self.log_test(f"Login {user_type}", True, f"Token obtained", response.status_code)
-                    return True
-                else:
-                    self.log_test(f"Login {user_type}", False, "No token in response", response.status_code)
-                    return False
-            else:
-                self.log_test(f"Login {user_type}", False, f"Login failed: {response.text}", response.status_code)
-                return False
-                
-        except Exception as e:
-            self.log_test(f"Login {user_type}", False, f"Exception: {str(e)}")
-            return False
-    
-    def make_request(self, method: str, endpoint: str, auth_type: str = None, data: dict = None, params: dict = None) -> requests.Response:
-        """Make authenticated request"""
-        headers = {"Content-Type": "application/json"}
-        if auth_type and auth_type in self.tokens:
-            headers["Authorization"] = f"Bearer {self.tokens[auth_type]}"
-            
-        url = f"{BASE_URL}/{endpoint.lstrip('/')}"
-        
-        if method.upper() == "GET":
-            return self.session.get(url, headers=headers, params=params)
-        elif method.upper() == "POST":
-            return self.session.post(url, headers=headers, json=data, params=params)
-        elif method.upper() == "PUT":
-            return self.session.put(url, headers=headers, json=data)
-        elif method.upper() == "DELETE":
-            return self.session.delete(url, headers=headers)
-    
-    def test_automations_settings(self):
-        """Test automation settings API (Clinic auth)"""
-        print("\n=== TESTING AUTOMATIONS SETTINGS ===")
-        
-        # GET automation settings
-        response = self.make_request("GET", "/automations/settings", "clinic")
-        if response.status_code == 200:
-            settings = response.json()
-            required_keys = ["appointmentReminder24h", "postVisitFollowUp"]
-            has_required = all(key in settings for key in required_keys)
-            self.log_test("GET /api/automations/settings", has_required, 
-                         f"Found {len(settings)} settings" if has_required else "Missing required keys", 
-                         response.status_code)
-        else:
-            self.log_test("GET /api/automations/settings", False, response.text, response.status_code)
-        
-        # POST update setting (disable)
-        response = self.make_request("POST", "/automations/settings", "clinic", 
-                                   {"key": "appointmentReminder24h", "enabled": False})
-        success = response.status_code == 200
-        self.log_test("POST /api/automations/settings (disable)", success, 
-                     response.json().get('message', '') if success else response.text, 
-                     response.status_code)
-        
-        # POST update setting (enable)
-        response = self.make_request("POST", "/automations/settings", "clinic", 
-                                   {"key": "appointmentReminder24h", "enabled": True})
-        success = response.status_code == 200
-        self.log_test("POST /api/automations/settings (enable)", success, 
-                     response.json().get('message', '') if success else response.text, 
-                     response.status_code)
-    
-    def test_appointment_slots(self):
-        """Test appointment slots/availability (No auth needed)"""
-        print("\n=== TESTING APPOINTMENT SLOTS ===")
-        
-        if not self.clinic_id:
-            self.log_test("Appointment slots test", False, "No clinic ID available")
-            return
-            
-        # Test with valid date
-        response = self.make_request("GET", f"/clinics/{self.clinic_id}/slots", params={"date": "2026-04-21"})
+CLINIC_CREDENTIALS = {
+    "email": "demo@vetbuddy.it", 
+    "password": "VetBuddy2025!Secure"
+}
+
+LAB_CREDENTIALS = {
+    "email": "laboratorio1@vetbuddy.it",
+    "password": "Lab2025!"
+}
+
+def print_test_result(test_name, success, details=""):
+    """Print formatted test result"""
+    status = "✅ PASS" if success else "❌ FAIL"
+    print(f"{status} - {test_name}")
+    if details:
+        print(f"    {details}")
+    print()
+
+def login_user(credentials):
+    """Login and return JWT token"""
+    try:
+        response = requests.post(f"{BASE_URL}/auth/login", json=credentials)
         if response.status_code == 200:
             data = response.json()
-            has_structure = all(key in data for key in ["slots", "totalSlots", "availableCount"])
-            self.log_test("GET /api/clinics/{clinicId}/slots", has_structure, 
-                         f"Found {data.get('totalSlots', 0)} total slots, {data.get('availableCount', 0)} available" if has_structure else "Missing required structure", 
-                         response.status_code)
+            return data.get('token'), data.get('user')
         else:
-            self.log_test("GET /api/clinics/{clinicId}/slots", False, response.text, response.status_code)
-        
-        # Test without date parameter
-        response = self.make_request("GET", f"/clinics/{self.clinic_id}/slots")
-        success = response.status_code == 400
-        self.log_test("GET /api/clinics/{clinicId}/slots (no date)", success, 
-                     "Correctly returns 400" if success else "Should return 400 for missing date", 
-                     response.status_code)
+            print(f"Login failed: {response.status_code} - {response.text}")
+            return None, None
+    except Exception as e:
+        print(f"Login error: {e}")
+        return None, None
+
+def test_admin_login():
+    """Test admin login functionality"""
+    print("🔐 Testing Admin Login...")
     
-    def test_documents(self):
-        """Test documents API (Clinic auth)"""
-        print("\n=== TESTING DOCUMENTS ===")
+    try:
+        token, user = login_user(ADMIN_CREDENTIALS)
         
-        # GET documents
-        response = self.make_request("GET", "/documents", "clinic")
-        success = response.status_code == 200
-        self.log_test("GET /api/documents", success, 
-                     f"Found {len(response.json()) if success else 0} documents" if success else response.text, 
-                     response.status_code)
-        
-        # POST create document
-        doc_data = {
-            "title": "Test Document",
-            "type": "prescrizione",
-            "petId": "test-pet-id",
-            "ownerId": "test-owner-id",
-            "content": "Test content for document"
-        }
-        response = self.make_request("POST", "/documents", "clinic", doc_data)
-        success = response.status_code == 200
-        doc_id = None
-        if success:
-            doc_id = response.json().get('id')
-        self.log_test("POST /api/documents", success, 
-                     f"Created document with ID: {doc_id}" if success else response.text, 
-                     response.status_code)
-        
-        # POST send email (test endpoint response)
-        if doc_id:
-            email_data = {"documentId": doc_id, "recipientEmail": "test@test.com"}
-            response = self.make_request("POST", "/documents/send-email", "clinic", email_data)
-            # This might fail due to missing document, but we test the endpoint exists
-            self.log_test("POST /api/documents/send-email", True, 
-                         f"Endpoint responds (status: {response.status_code})", 
-                         response.status_code)
+        if token and user:
+            if user.get('role') == 'admin':
+                print_test_result("Admin Login", True, f"Successfully logged in as admin: {user.get('email')}")
+                return token
+            else:
+                print_test_result("Admin Login", False, f"User role is {user.get('role')}, expected 'admin'")
+                return None
+        else:
+            print_test_result("Admin Login", False, "Failed to get token or user data")
+            return None
+            
+    except Exception as e:
+        print_test_result("Admin Login", False, f"Exception: {e}")
+        return None
+
+def test_pilot_applications(admin_token):
+    """Test pilot applications endpoint"""
+    print("📋 Testing Pilot Applications API...")
     
-    def test_rewards_loyalty(self):
-        """Test rewards/loyalty system"""
-        print("\n=== TESTING REWARDS/LOYALTY ===")
-        
-        # GET reward types (Clinic auth)
-        response = self.make_request("GET", "/rewards/types", "clinic")
-        success = response.status_code == 200
-        self.log_test("GET /api/rewards/types (Clinic)", success, 
-                     f"Found {len(response.json()) if success else 0} reward types" if success else response.text, 
-                     response.status_code)
-        
-        # GET assigned rewards (Clinic auth)
-        response = self.make_request("GET", "/rewards/assigned", "clinic")
-        success = response.status_code == 200
-        self.log_test("GET /api/rewards/assigned (Clinic)", success, 
-                     f"Found {len(response.json()) if success else 0} assigned rewards" if success else response.text, 
-                     response.status_code)
-        
-        # POST create reward type
-        reward_data = {
-            "name": "Test Reward",
-            "description": "Test reward description",
-            "pointsCost": 100,
-            "type": "sconto"
-        }
-        response = self.make_request("POST", "/rewards/types", "clinic", reward_data)
-        success = response.status_code == 200
-        reward_id = None
-        if success:
-            reward_id = response.json().get('id')
-        self.log_test("POST /api/rewards/types", success, 
-                     f"Created reward with ID: {reward_id}" if success else response.text, 
-                     response.status_code)
+    headers = {"Authorization": f"Bearer {admin_token}"}
     
-    def test_video_consult_settings(self):
-        """Test video consult settings (Clinic auth)"""
-        print("\n=== TESTING VIDEO CONSULT SETTINGS ===")
+    try:
+        # Test GET /api/pilot-applications?status=pending
+        response = requests.get(f"{BASE_URL}/pilot-applications?status=pending", headers=headers)
         
-        # GET video consult settings
-        response = self.make_request("GET", "/clinic/video-consult-settings", "clinic")
-        success = response.status_code == 200
-        self.log_test("GET /api/clinic/video-consult-settings", success, 
-                     "Settings retrieved" if success else response.text, 
-                     response.status_code)
-        
-        # POST update settings
-        settings_data = {
-            "enabled": True,
-            "price": 35,
-            "duration": 30,
-            "platforms": ["google_meet"]
-        }
-        response = self.make_request("POST", "/clinic/video-consult-settings", "clinic", settings_data)
-        success = response.status_code == 200
-        self.log_test("POST /api/clinic/video-consult-settings", success, 
-                     "Settings updated" if success else response.text, 
-                     response.status_code)
-    
-    def test_clinic_search(self):
-        """Test clinic search (No auth / Owner auth)"""
-        print("\n=== TESTING CLINIC SEARCH ===")
-        
-        # GET all clinics
-        response = self.make_request("GET", "/clinics/search")
-        success = response.status_code == 200
-        self.log_test("GET /api/clinics/search", success, 
-                     f"Found {len(response.json()) if success else 0} clinics" if success else response.text, 
-                     response.status_code)
-        
-        # GET clinics by city
-        response = self.make_request("GET", "/clinics/search", params={"city": "Milano"})
-        success = response.status_code == 200
-        self.log_test("GET /api/clinics/search?city=Milano", success, 
-                     f"Found {len(response.json()) if success else 0} clinics in Milano" if success else response.text, 
-                     response.status_code)
-    
-    def test_services(self):
-        """Test services (No auth needed)"""
-        print("\n=== TESTING SERVICES ===")
-        
-        # GET services flat
-        response = self.make_request("GET", "/services/flat")
-        success = response.status_code == 200
-        self.log_test("GET /api/services/flat", success, 
-                     f"Found {len(response.json()) if success else 0} services" if success else response.text, 
-                     response.status_code)
-    
-    def test_pets(self):
-        """Test pets (Owner auth)"""
-        print("\n=== TESTING PETS ===")
-        
-        # GET pets (Owner auth)
-        response = self.make_request("GET", "/pets", "owner")
-        success = response.status_code == 200
-        self.log_test("GET /api/pets (Owner)", success, 
-                     f"Found {len(response.json()) if success else 0} pets" if success else response.text, 
-                     response.status_code)
-    
-    def test_messages(self):
-        """Test messages"""
-        print("\n=== TESTING MESSAGES ===")
-        
-        # GET messages (Clinic auth)
-        response = self.make_request("GET", "/messages", "clinic")
-        success = response.status_code == 200
-        self.log_test("GET /api/messages (Clinic)", success, 
-                     f"Found {len(response.json()) if success else 0} messages" if success else response.text, 
-                     response.status_code)
-        
-        # GET messages (Owner auth)
-        response = self.make_request("GET", "/messages", "owner")
-        success = response.status_code == 200
-        self.log_test("GET /api/messages (Owner)", success, 
-                     f"Found {len(response.json()) if success else 0} messages" if success else response.text, 
-                     response.status_code)
-    
-    def test_appointments(self):
-        """Test appointments"""
-        print("\n=== TESTING APPOINTMENTS ===")
-        
-        # GET appointments (Clinic auth)
-        response = self.make_request("GET", "/appointments", "clinic")
-        success = response.status_code == 200
-        self.log_test("GET /api/appointments (Clinic)", success, 
-                     f"Found {len(response.json()) if success else 0} appointments" if success else response.text, 
-                     response.status_code)
-        
-        # POST appointment request (Owner auth)
-        if self.clinic_id:
-            appt_data = {
-                "clinicId": self.clinic_id,
-                "petId": "test-pet-id",
-                "service": "visita_generale",
-                "date": "2026-04-21",
-                "time": "10:00",
-                "notes": "Test appointment request"
-            }
-            response = self.make_request("POST", "/appointments/request", "owner", appt_data)
-            success = response.status_code == 200
-            self.log_test("POST /api/appointments/request", success, 
-                         "Appointment request created" if success else response.text, 
-                         response.status_code)
-    
-    def test_stripe_plans(self):
-        """Test Stripe plans (No auth)"""
-        print("\n=== TESTING STRIPE PLANS ===")
-        
-        response = self.make_request("GET", "/stripe/plans")
         if response.status_code == 200:
-            plans = response.json()
-            # Check for required plans and prices
-            plan_prices = {plan.get('id'): plan.get('price') for plan in plans if isinstance(plans, list)}
-            if not isinstance(plans, list):
-                plan_prices = {k: v.get('price') for k, v in plans.items() if isinstance(v, dict)}
-            
-            expected_prices = {"starter": 29, "pro": 59, "lab_partner": 39}
-            prices_correct = True
-            price_details = []
-            
-            for plan_id, expected_price in expected_prices.items():
-                actual_price = plan_prices.get(plan_id)
-                if actual_price == expected_price:
-                    price_details.append(f"{plan_id}=€{actual_price}✓")
-                else:
-                    price_details.append(f"{plan_id}=€{actual_price}✗(expected €{expected_price})")
-                    prices_correct = False
-            
-            self.log_test("GET /api/stripe/plans", prices_correct, 
-                         f"Prices: {', '.join(price_details)}", 
-                         response.status_code)
+            data = response.json()
+            if 'applications' in data and 'counts' in data:
+                pending_count = len([app for app in data['applications'] if app.get('status') == 'pending'])
+                print_test_result("GET /api/pilot-applications?status=pending", True, 
+                                f"Found {len(data['applications'])} applications, {pending_count} pending. Counts: {data['counts']}")
+                return True
+            else:
+                print_test_result("GET /api/pilot-applications?status=pending", False, 
+                                f"Missing 'applications' or 'counts' in response: {data}")
+                return False
         else:
-            self.log_test("GET /api/stripe/plans", False, response.text, response.status_code)
+            print_test_result("GET /api/pilot-applications?status=pending", False, 
+                            f"Status: {response.status_code}, Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_test_result("GET /api/pilot-applications?status=pending", False, f"Exception: {e}")
+        return False
+
+def test_admin_labs(admin_token):
+    """Test admin labs endpoint"""
+    print("🏥 Testing Admin Labs API...")
     
-    def test_tutorial_download(self):
-        """Test tutorial download (No auth)"""
-        print("\n=== TESTING TUTORIAL DOWNLOAD ===")
-        
-        # Test clinic tutorial
-        response = self.make_request("GET", "/tutorials/download", params={"type": "clinic"})
-        success = response.status_code == 200
-        self.log_test("GET /api/tutorials/download?type=clinic", success, 
-                     f"Content-Type: {response.headers.get('content-type', 'unknown')}" if success else response.text, 
-                     response.status_code)
-        
-        # Test owner tutorial
-        response = self.make_request("GET", "/tutorials/download", params={"type": "owner"})
-        success = response.status_code == 200
-        self.log_test("GET /api/tutorials/download?type=owner", success, 
-                     f"Content-Type: {response.headers.get('content-type', 'unknown')}" if success else response.text, 
-                     response.status_code)
+    headers = {"Authorization": f"Bearer {admin_token}"}
     
-    def test_import_endpoint(self):
-        """Test import endpoint (Clinic auth)"""
-        print("\n=== TESTING IMPORT ENDPOINT ===")
+    try:
+        # Test GET /api/admin/labs
+        response = requests.get(f"{BASE_URL}/admin/labs", headers=headers)
         
-        # Test POST import (without actual file - just test endpoint response)
-        response = self.make_request("POST", "/import", "clinic", {})
-        # Should return 400 for no file, which means endpoint exists
-        expected_status = response.status_code in [400, 422]  # Either "no file" or validation error
-        self.log_test("POST /api/import", expected_status, 
-                     f"Endpoint responds correctly (expecting 400/422 for no file)" if expected_status else response.text, 
-                     response.status_code)
+        if response.status_code == 200:
+            data = response.json()
+            if isinstance(data, list):
+                labs_with_stats = [lab for lab in data if 'stats' in lab and 'billing' in lab]
+                print_test_result("GET /api/admin/labs", True, 
+                                f"Found {len(data)} labs, {len(labs_with_stats)} with stats and billing info")
+                
+                # Show sample lab data
+                if data:
+                    sample_lab = data[0]
+                    stats = sample_lab.get('stats', {})
+                    billing = sample_lab.get('billing', {})
+                    print(f"    Sample lab: {sample_lab.get('labName', 'N/A')}")
+                    print(f"    Stats: {stats}")
+                    print(f"    Billing: {billing}")
+                
+                return True
+            else:
+                print_test_result("GET /api/admin/labs", False, f"Expected array, got: {type(data)}")
+                return False
+        else:
+            print_test_result("GET /api/admin/labs", False, 
+                            f"Status: {response.status_code}, Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_test_result("GET /api/admin/labs", False, f"Exception: {e}")
+        return False
+
+def test_admin_lab_stats(admin_token):
+    """Test admin lab stats endpoint"""
+    print("📊 Testing Admin Lab Stats API...")
     
-    def run_comprehensive_audit(self):
-        """Run the complete audit of all endpoints"""
-        print("🐾 VetBuddy Backend API Comprehensive Audit")
-        print("=" * 50)
+    headers = {"Authorization": f"Bearer {admin_token}"}
+    
+    try:
+        # Test GET /api/admin/lab-stats
+        response = requests.get(f"{BASE_URL}/admin/lab-stats", headers=headers)
         
-        # Step 1: Login to all accounts
-        print("\n=== AUTHENTICATION ===")
-        login_success = {
-            "clinic": self.login("clinic"),
-            "lab": self.login("lab"), 
-            "owner": self.login("owner"),
-            "admin": self.login("admin")
+        if response.status_code == 200:
+            data = response.json()
+            required_keys = ['labs', 'billing', 'requests', 'connections', 'reports', 'topLabs', 'requestsByExamType']
+            
+            missing_keys = [key for key in required_keys if key not in data]
+            if not missing_keys:
+                print_test_result("GET /api/admin/lab-stats", True, 
+                                f"All required fields present: {required_keys}")
+                
+                # Show key stats
+                print(f"    Labs: {data['labs']}")
+                print(f"    Requests: {data['requests']}")
+                print(f"    Top Labs: {len(data['topLabs'])} entries")
+                print(f"    Exam Types: {len(data['requestsByExamType'])} types")
+                
+                return True
+            else:
+                print_test_result("GET /api/admin/lab-stats", False, 
+                                f"Missing required keys: {missing_keys}")
+                return False
+        else:
+            print_test_result("GET /api/admin/lab-stats", False, 
+                            f"Status: {response.status_code}, Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_test_result("GET /api/admin/lab-stats", False, f"Exception: {e}")
+        return False
+
+def test_admin_stats(admin_token):
+    """Test admin platform stats endpoint"""
+    print("📈 Testing Admin Platform Stats API...")
+    
+    headers = {"Authorization": f"Bearer {admin_token}"}
+    
+    try:
+        # Test GET /api/admin/stats
+        response = requests.get(f"{BASE_URL}/admin/stats", headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            
+            # Check for required counts structure
+            if 'counts' in data:
+                counts = data['counts']
+                required_count_fields = ['totalUsers', 'clinics', 'owners', 'pets', 'appointments', 'documents']
+                missing_fields = [field for field in required_count_fields if field not in counts]
+                
+                if not missing_fields:
+                    print_test_result("GET /api/admin/stats", True, 
+                                    f"All required count fields present")
+                    
+                    # Show platform stats
+                    print(f"    Total Users: {counts['totalUsers']}")
+                    print(f"    Clinics: {counts['clinics']}")
+                    print(f"    Owners: {counts['owners']}")
+                    print(f"    Pets: {counts['pets']}")
+                    print(f"    Appointments: {counts['appointments']}")
+                    print(f"    Documents: {counts['documents']}")
+                    
+                    return True
+                else:
+                    print_test_result("GET /api/admin/stats", False, 
+                                    f"Missing count fields: {missing_fields}")
+                    return False
+            else:
+                print_test_result("GET /api/admin/stats", False, 
+                                f"Missing 'counts' object in response")
+                return False
+        else:
+            print_test_result("GET /api/admin/stats", False, 
+                            f"Status: {response.status_code}, Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_test_result("GET /api/admin/stats", False, f"Exception: {e}")
+        return False
+
+def test_admin_users(admin_token):
+    """Test admin users endpoint"""
+    print("👥 Testing Admin Users API...")
+    
+    headers = {"Authorization": f"Bearer {admin_token}"}
+    
+    try:
+        # Test GET /api/admin/users
+        response = requests.get(f"{BASE_URL}/admin/users", headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if isinstance(data, list):
+                # Check that passwords are not included
+                users_with_passwords = [user for user in data if 'password' in user]
+                
+                if not users_with_passwords:
+                    print_test_result("GET /api/admin/users", True, 
+                                    f"Found {len(data)} users, no passwords exposed")
+                    
+                    # Show user role breakdown
+                    role_counts = {}
+                    for user in data:
+                        role = user.get('role', 'unknown')
+                        role_counts[role] = role_counts.get(role, 0) + 1
+                    
+                    print(f"    User roles: {role_counts}")
+                    return True
+                else:
+                    print_test_result("GET /api/admin/users", False, 
+                                    f"Security issue: {len(users_with_passwords)} users have exposed passwords")
+                    return False
+            else:
+                print_test_result("GET /api/admin/users", False, f"Expected array, got: {type(data)}")
+                return False
+        else:
+            print_test_result("GET /api/admin/users", False, 
+                            f"Status: {response.status_code}, Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_test_result("GET /api/admin/users", False, f"Exception: {e}")
+        return False
+
+def test_admin_lab_billing(admin_token):
+    """Test admin lab billing update endpoint"""
+    print("💰 Testing Admin Lab Billing API...")
+    
+    headers = {"Authorization": f"Bearer {admin_token}"}
+    
+    try:
+        # First get a lab ID from the labs list
+        labs_response = requests.get(f"{BASE_URL}/admin/labs", headers=headers)
+        if labs_response.status_code != 200:
+            print_test_result("POST /api/admin/labs/{labId}/billing", False, 
+                            "Could not get lab list to test billing update")
+            return False
+        
+        labs = labs_response.json()
+        if not labs:
+            print_test_result("POST /api/admin/labs/{labId}/billing", False, 
+                            "No labs available to test billing update")
+            return False
+        
+        lab_id = labs[0]['id']
+        
+        # Test billing update
+        billing_data = {
+            "extendTrialDays": 30,
+            "maxFreeRequests": 100,
+            "resetRequestsCount": False,
+            "plan": "partner_free"
         }
         
-        if not any(login_success.values()):
-            print("❌ CRITICAL: No successful logins. Cannot proceed with testing.")
-            return
+        response = requests.post(f"{BASE_URL}/admin/labs/{lab_id}/billing", 
+                               headers=headers, json=billing_data)
         
-        # Step 2: Run all endpoint tests
-        try:
-            if login_success["clinic"]:
-                self.test_automations_settings()
-                self.test_documents()
-                self.test_rewards_loyalty()
-                self.test_video_consult_settings()
-                self.test_appointments()
-                self.test_import_endpoint()
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success') and 'lab' in data:
+                print_test_result("POST /api/admin/labs/{labId}/billing", True, 
+                                f"Successfully updated billing for lab {lab_id}")
+                return True
+            else:
+                print_test_result("POST /api/admin/labs/{labId}/billing", False, 
+                                f"Unexpected response format: {data}")
+                return False
+        else:
+            print_test_result("POST /api/admin/labs/{labId}/billing", False, 
+                            f"Status: {response.status_code}, Response: {response.text}")
+            return False
             
-            self.test_appointment_slots()
-            self.test_clinic_search()
-            self.test_services()
-            self.test_stripe_plans()
-            self.test_tutorial_download()
-            
-            if login_success["owner"]:
-                self.test_pets()
-                self.test_messages()
-            
-        except Exception as e:
-            print(f"❌ CRITICAL ERROR during testing: {str(e)}")
-        
-        # Step 3: Summary
-        self.print_summary()
+    except Exception as e:
+        print_test_result("POST /api/admin/labs/{labId}/billing", False, f"Exception: {e}")
+        return False
+
+def test_authorization_controls(admin_token):
+    """Test that non-admin users cannot access admin endpoints"""
+    print("🔒 Testing Authorization Controls...")
     
-    def print_summary(self):
-        """Print test summary"""
-        print("\n" + "=" * 50)
-        print("📊 TEST SUMMARY")
-        print("=" * 50)
+    # Test with clinic token
+    clinic_token, _ = login_user(CLINIC_CREDENTIALS)
+    if not clinic_token:
+        print_test_result("Authorization Test Setup", False, "Could not get clinic token")
+        return False
+    
+    # Test with lab token  
+    lab_token, _ = login_user(LAB_CREDENTIALS)
+    if not lab_token:
+        print_test_result("Authorization Test Setup", False, "Could not get lab token")
+        return False
+    
+    admin_endpoints = [
+        "/admin/labs",
+        "/admin/lab-stats", 
+        "/admin/stats",
+        "/admin/users"
+    ]
+    
+    unauthorized_tokens = [
+        ("clinic", clinic_token),
+        ("lab", lab_token)
+    ]
+    
+    all_passed = True
+    
+    for role, token in unauthorized_tokens:
+        headers = {"Authorization": f"Bearer {token}"}
         
-        total_tests = len(self.test_results)
-        passed_tests = sum(1 for result in self.test_results if result["success"])
-        failed_tests = total_tests - passed_tests
-        
-        print(f"Total Tests: {total_tests}")
-        print(f"✅ Passed: {passed_tests}")
-        print(f"❌ Failed: {failed_tests}")
-        print(f"Success Rate: {(passed_tests/total_tests*100):.1f}%" if total_tests > 0 else "0%")
-        
-        if failed_tests > 0:
-            print(f"\n❌ FAILED TESTS:")
-            for result in self.test_results:
-                if not result["success"]:
-                    print(f"  • {result['test']}: {result['details']}")
-        
-        print(f"\n🎯 AUDIT COMPLETE")
-        return passed_tests, failed_tests
+        for endpoint in admin_endpoints:
+            try:
+                response = requests.get(f"{BASE_URL}{endpoint}", headers=headers)
+                
+                if response.status_code == 403:
+                    print_test_result(f"{role.upper()} access to {endpoint}", True, 
+                                    "Correctly blocked with 403 Forbidden")
+                else:
+                    print_test_result(f"{role.upper()} access to {endpoint}", False, 
+                                    f"Expected 403, got {response.status_code}")
+                    all_passed = False
+                    
+            except Exception as e:
+                print_test_result(f"{role.upper()} access to {endpoint}", False, f"Exception: {e}")
+                all_passed = False
+    
+    return all_passed
+
+def main():
+    """Run all admin API tests"""
+    print("🚀 VetBuddy Admin Dashboard Backend API Testing")
+    print("=" * 60)
+    print(f"Base URL: {BASE_URL}")
+    print(f"Test Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print()
+    
+    # Track test results
+    test_results = []
+    
+    # 1. Test admin login
+    admin_token = test_admin_login()
+    if not admin_token:
+        print("❌ Cannot proceed without admin token")
+        sys.exit(1)
+    
+    # 2. Test pilot applications
+    result = test_pilot_applications(admin_token)
+    test_results.append(("Pilot Applications API", result))
+    
+    # 3. Test admin labs
+    result = test_admin_labs(admin_token)
+    test_results.append(("Admin Labs API", result))
+    
+    # 4. Test admin lab stats
+    result = test_admin_lab_stats(admin_token)
+    test_results.append(("Admin Lab Stats API", result))
+    
+    # 5. Test admin platform stats
+    result = test_admin_stats(admin_token)
+    test_results.append(("Admin Platform Stats API", result))
+    
+    # 6. Test admin users
+    result = test_admin_users(admin_token)
+    test_results.append(("Admin Users API", result))
+    
+    # 7. Test admin lab billing
+    result = test_admin_lab_billing(admin_token)
+    test_results.append(("Admin Lab Billing API", result))
+    
+    # 8. Test authorization controls
+    result = test_authorization_controls(admin_token)
+    test_results.append(("Authorization Controls", result))
+    
+    # Summary
+    print("=" * 60)
+    print("📊 TEST SUMMARY")
+    print("=" * 60)
+    
+    passed = sum(1 for _, result in test_results if result)
+    total = len(test_results)
+    
+    for test_name, result in test_results:
+        status = "✅ PASS" if result else "❌ FAIL"
+        print(f"{status} - {test_name}")
+    
+    print()
+    print(f"Overall Result: {passed}/{total} tests passed ({passed/total*100:.1f}%)")
+    
+    if passed == total:
+        print("🎉 All admin API tests passed!")
+        return 0
+    else:
+        print(f"⚠️  {total - passed} test(s) failed")
+        return 1
 
 if __name__ == "__main__":
-    tester = VetBuddyAPITester()
-    tester.run_comprehensive_audit()
+    sys.exit(main())

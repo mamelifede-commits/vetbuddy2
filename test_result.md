@@ -778,8 +778,33 @@ metadata:
   test_sequence: 2
   run_ui: true
 
+  - task: "Admin Dashboard Complete UI - 4 Tabs"
+    implemented: true
+    working: true
+    file: "/app/app/admin/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "ADMIN DASHBOARD FULLY IMPLEMENTED WITH 4 TABS ✅: 1) Candidature tab - pilot applications management with approve/reject dialogs and plan selection. 2) Laboratori tab - lab overview stats (total, active, requests, reports), billing alerts, request status breakdown, connections summary, top labs ranking, full lab list with billing management (extend trial, reset requests, max free requests). 3) Piattaforma tab - 6 metric cards (users, clinics, owners, pets, appointments, documents), recent registrations (7 days), appointments by status, recent users list. 4) Stripe tab - connection status (Test Mode), subscribers count by plan (Pro, Starter, Lab Partner), pricing reference cards (€79/mese Pro, €29/mese Lab, Custom Enterprise), subscribers list with stripe customer IDs, configuration info with webhook/checkout endpoints. All data sourced from real API endpoints. Admin login: admin@vetbuddy.it / Admin2025!. Visual verification via screenshots completed."
+
+  - task: "VetBuddy Admin Dashboard Backend APIs"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE VETBUDDY ADMIN DASHBOARD BACKEND API TESTING COMPLETED - ALL 7/7 TESTS PASSED ✅: Successfully tested all VetBuddy Admin Dashboard backend APIs as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. ✅ **Admin Authentication**: Login with admin@vetbuddy.it / Admin2025! successful, returns proper JWT token and admin role verification. ✅ **GET /api/pilot-applications?status=pending**: Returns pilot applications with proper structure (applications array, counts object). Found 1 total application (0 pending, 1 approved, 0 rejected). ✅ **GET /api/admin/labs**: Returns array of 6 labs with comprehensive stats and billing info. Each lab includes totalRequests, pendingRequests, completedRequests, totalReports, totalConnections, pendingConnections, plus billing details (plan, freeUntil, requestsCount, maxFreeRequests, trialExpired, requestsExhausted, daysRemaining, requestsRemaining). ✅ **GET /api/admin/lab-stats**: Returns comprehensive lab ecosystem statistics with all required fields (labs, billing, requests, connections, reports, topLabs, requestsByExamType). Lab stats: 6 total labs (2 active, 4 pending), 5 total requests (0 pending, 2 completed, 1 report ready), 5 top labs entries, 4 exam types. ✅ **GET /api/admin/stats**: Returns platform statistics with proper counts structure. Platform stats: 30 total users (3 clinics, 19 owners, 6 labs, 2 admins), 29 pets, 28 appointments, 7 documents. ✅ **GET /api/admin/users**: Returns array of 30 users with no password exposure (security verified). User role breakdown correctly displayed. ✅ **POST /api/admin/labs/{labId}/billing**: Successfully updates lab billing settings (extendTrialDays, maxFreeRequests, resetRequestsCount, plan). Tested with real lab ID and confirmed success response. ✅ **Authorization Controls**: All admin endpoints correctly blocked for non-admin users. Clinic and lab tokens receive proper 403 Forbidden responses when attempting to access admin endpoints (/admin/labs, /admin/lab-stats, /admin/stats, /admin/users). All admin dashboard backend APIs fully functional and secure."
+
 test_plan:
-  current_focus: []
+  current_focus:
+    - "VetBuddy Admin Dashboard Backend APIs"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -1233,4 +1258,7 @@ agent_communication:
 
   - agent: "main"
     message: "ROUTE.JS REFACTORING COMPLETED + FRONTEND AUDIT + BUG FIXES - 15-APR-2026: 1) REFACTORING: Extracted route.js (2655 lines) into thin dispatcher (151 lines) + 5 new modules: appointments.js (319), data.js (324), rewards.js (152), payments.js (158), settings.js (286). Total backend: 10 module files + dispatcher. 2) FRONTEND VISUAL AUDIT: Verified all 15+ pages via screenshot. 3) BUGS FIXED: a) BackToDashboard not defined in 9 clinic components -> created shared BackToDashboard.js, b) SERVICE_CATEGORIES not defined in OwnerAppointments.js -> created shared constants.js, c) ChunkLoadError from OOM (512MB) -> increased to 768MB, d) Broken standalone /api/reviews/my-reviews/route.js using raw JWT instead of decoding -> deleted, now handled by catch-all. 4) ALL 21 API ENDPOINTS VERIFIED ✅ after refactoring (clinic, owner, lab)."
+
+  - agent: "testing"
+    message: "VETBUDDY ADMIN DASHBOARD BACKEND API TESTING COMPLETED - ALL 7/7 TESTS PASSED ✅: Successfully completed comprehensive testing of VetBuddy Admin Dashboard backend APIs as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. ✅ **Admin Authentication**: admin@vetbuddy.it / Admin2025! login working perfectly with proper JWT token and role verification. ✅ **All Required Endpoints Working**: 1) POST /api/auth/login (admin credentials), 2) GET /api/pilot-applications?status=pending (returns applications array + counts), 3) GET /api/admin/labs (6 labs with stats & billing info), 4) GET /api/admin/lab-stats (comprehensive lab ecosystem statistics with all required fields), 5) GET /api/admin/stats (platform stats with counts.totalUsers, counts.clinics, counts.owners, counts.pets, counts.appointments, counts.documents), 6) GET /api/admin/users (30 users array for Stripe tab, no password exposure), 7) POST /api/admin/labs/{labId}/billing (billing settings update working). ✅ **Authorization Security**: All admin endpoints correctly blocked for non-admin users - clinic and lab tokens receive proper 403 Forbidden responses. ✅ **Data Integrity**: Platform stats show 30 total users (3 clinics, 19 owners, 6 labs, 2 admins), 29 pets, 28 appointments, 7 documents. Lab ecosystem shows 6 total labs (2 active, 4 pending), 5 total requests. All admin dashboard backend APIs fully functional, secure, and ready for production use."
 
