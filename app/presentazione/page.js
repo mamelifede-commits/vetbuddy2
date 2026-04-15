@@ -618,7 +618,7 @@ export default function PresentazionePage() {
             </div>
 
             {/* Pro Clinica — EVIDENZIATO */}
-            <div className="bg-gradient-to-br from-coral-500 to-orange-500 rounded-3xl p-6 text-white relative shadow-2xl ring-2 ring-coral-300 lg:scale-105">
+            <div className="bg-gradient-to-br from-coral-500 to-orange-500 rounded-3xl p-6 text-white relative shadow-2xl ring-2 ring-coral-300">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-coral-600 text-xs px-4 py-1.5 rounded-full font-bold shadow-lg whitespace-nowrap">
                 Consigliato
               </div>
