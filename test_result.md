@@ -466,6 +466,18 @@ backend:
         agent: "testing"
         comment: "ADMIN APPROVE LAB API FULLY FUNCTIONAL ✅: Successfully tested POST /api/admin/labs/approve endpoint as specified in review request. ✅ **Lab Approval**: POST /api/admin/labs/approve with admin token and {labId} successfully approves lab. Returns {success: true, message: 'Laboratorio approvato'} as expected. Lab approval process working correctly. ✅ **Admin Authorization**: Only admin token can approve labs - unauthorized access (no token) correctly blocked with 401 status. Proper role-based access control implemented. ✅ **Lab ID Validation**: API properly processes labId parameter (tested with b17e3d85-e9fe-4edb-94ec-a2f6f03df16f). Lab approval updates lab status in database. ✅ **Response Format**: API returns proper success response with Italian message as specified. All admin lab approval requirements from review request satisfied - API ready for production use."
 
+  - task: "VetBuddy Lab External API Integration (Webhook System)"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/lab.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE VETBUDDY LAB EXTERNAL API INTEGRATION (WEBHOOK SYSTEM) TESTING COMPLETED - ALL 14/14 TESTS PASSED ✅: Successfully tested complete VetBuddy Lab External API Integration webhook system as specified in review request. ✅ **Lab Self-Service API Key Management**: All 4 endpoints working perfectly - POST /api/lab/generate-api-key generates API key and webhook secret successfully, GET /api/lab/integration returns integration settings with proper masking, GET /api/lab/webhook-logs retrieves webhook call logs (0 logs initially), POST /api/lab/integration/toggle successfully toggles integration active/inactive state. ✅ **Public Webhook Endpoints**: All 3 endpoints working correctly - GET /api/webhook/lab/{apiKey}/pending-requests returns proper structure with labId, count, and requests array (0 pending requests found), POST /api/webhook/lab/{apiKey}/update-status correctly handles invalid requestId with 404 response, POST /api/webhook/lab/{apiKey}/upload-report correctly handles invalid requestId with 404 response. ✅ **Error Handling**: All error cases working perfectly - Invalid API key returns 401, Missing required fields returns 400, Invalid status value returns 400, Non-lab user trying to generate API key returns 403. ✅ **Integration Toggle Workflow**: Complete workflow tested successfully - toggle off → webhook calls fail with 401 → toggle on → webhook calls work again. ✅ **Authentication**: Both lab (laboratorio1@vetbuddy.it / Lab2025!) and clinic (demo@vetbuddy.it / VetBuddy2025!Secure) authentication working correctly. ✅ **API Key Generation**: Successfully generated API key (vb_lab_64a2a74845b21...) and webhook secret, properly stored and masked in integration settings. All webhook system functionality operational and ready for external lab integrations. Base URL: https://clinic-report-review.preview.emergentagent.com/api working correctly."
+
 
 
 frontend:
@@ -835,6 +847,22 @@ agent_communication:
   - task: "Lab Self-Registration and Billing"
     implemented: true
     working: true
+
+  - task: "Lab External API Integration - Webhook Endpoints"
+    implemented: true
+    working: "NA"
+    file: "/app/app/api/[[...path]]/modules/lab.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented full external API integration for labs. Endpoints: POST /api/lab/generate-api-key (generates unique API key for lab), GET /api/lab/integration (read integration settings), GET /api/lab/webhook-logs (read webhook call logs), POST /api/lab/integration/toggle (enable/disable integration), GET /api/webhook/lab/:apiKey/pending-requests (external system fetches pending requests), POST /api/webhook/lab/:apiKey/update-status (external system updates request status), POST /api/webhook/lab/:apiKey/upload-report (external system uploads PDF report). All webhook endpoints log calls to webhook_logs collection."
+
+  - agent: "main"
+    message: "EXTERNAL LAB API INTEGRATION - 15-APR-2026: Full webhook/API system for external lab software. Lab can generate API key from dashboard, view docs, see webhook logs. External systems can: fetch pending requests, update statuses, upload reports via API key auth. All calls logged. Email notifications sent on report_ready. Lab Dashboard has new 'Integrazione API' tab with key management, inline documentation, and call logs. Credenziali test: Lab laboratorio1@vetbuddy.it / Lab2025!"
+
     file: "/app/app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
@@ -900,3 +928,5 @@ agent_communication:
 
   - agent: "main"
     message: "ADMIN DASHBOARD AVANZATA PER GESTIONE LAB - 15-APR-2026: Implementato completamente il nuovo backend e frontend per la gestione avanzata dei laboratori partner. BACKEND: ✅ admin.js completamente riscritto con 3 nuovi endpoint (admin/lab-stats, admin/labs/:id/details, admin/labs/:id/billing), fix del handleAdminDelete (era erroneamente in handleAdminPost), verifyAdmin helper. FRONTEND: ✅ AdminDashboard.js riscritto completamente con: Dashboard principale con alert lab pendenti, Tab Laboratori con 4 sub-tab (Panoramica, In Attesa, Tutti i Lab, Richieste), Vista dettaglio lab full-page con profilo/billing/connessioni/listino/richieste, Modal approvazione/rifiuto/sospensione con motivo, Modal gestione billing (estendi trial, limite richieste, reset). DA TESTARE: Admin lab-stats API, Admin labs details API, Admin labs billing API, Admin delete users API. Credenziali: Admin admin@vetbuddy.it / Admin2025!, Lab laboratorio1@vetbuddy.it / Lab2025!"
+  - agent: "testing"
+    message: "VETBUDDY LAB EXTERNAL API INTEGRATION (WEBHOOK SYSTEM) TESTING COMPLETED SUCCESSFULLY ✅: Comprehensive testing of the newly implemented webhook system completed with 14/14 tests passing (100% success rate). All Lab Self-Service API Key Management endpoints working (generate API key, integration settings, webhook logs, toggle integration). All Public Webhook Endpoints working (pending requests, update status, upload report). All error cases properly handled (401 for invalid API key, 400 for missing fields/invalid status, 403 for non-lab access, 404 for non-existent requests). Integration toggle workflow fully functional (off → webhook fails → on → webhook works). Authentication working for both lab and clinic users. API key generation and webhook secret management operational. System ready for external lab integrations via webhook API."

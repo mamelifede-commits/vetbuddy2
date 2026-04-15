@@ -1,536 +1,523 @@
 #!/usr/bin/env python3
 """
-VetBuddy Admin Lab Management API Testing
-Tests the 4 new admin endpoints plus regression testing of existing endpoints
+VetBuddy Lab External API Integration (Webhook System) Testing
+Tests the webhook system endpoints as specified in the review request.
 """
 
 import requests
 import json
-import sys
-from datetime import datetime
+import base64
+import time
+from typing import Dict, Any, Optional
 
 # Configuration
 BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
-ADMIN_EMAIL = "admin@vetbuddy.it"
-ADMIN_PASSWORD = "Admin2025!"
-LAB_EMAIL = "laboratorio1@vetbuddy.it"
-LAB_PASSWORD = "Lab2025!"
-CLINIC_EMAIL = "demo@vetbuddy.it"
-CLINIC_PASSWORD = "VetBuddy2025!Secure"
 
-# Test lab ID from review request
-TEST_LAB_ID = "b17e3d85-e9fe-4edb-94ec-a2f6f03df16f"
+# Test credentials from review request
+LAB_CREDENTIALS = {
+    "email": "laboratorio1@vetbuddy.it",
+    "password": "Lab2025!"
+}
 
-class VetBuddyAdminTester:
+CLINIC_CREDENTIALS = {
+    "email": "demo@vetbuddy.it", 
+    "password": "VetBuddy2025!Secure"
+}
+
+class VetBuddyWebhookTester:
     def __init__(self):
-        self.admin_token = None
         self.lab_token = None
         self.clinic_token = None
+        self.api_key = None
+        self.webhook_secret = None
         self.test_results = []
         
-    def log_test(self, test_name, success, message, details=None):
+    def log_result(self, test_name: str, success: bool, details: str = "", response_data: Any = None):
         """Log test result"""
-        status = "✅ PASS" if success else "❌ FAIL"
-        print(f"{status}: {test_name} - {message}")
-        if details:
-            print(f"   Details: {details}")
-        
-        self.test_results.append({
+        result = {
             "test": test_name,
             "success": success,
-            "message": message,
             "details": details,
-            "timestamp": datetime.now().isoformat()
-        })
+            "response_data": response_data
+        }
+        self.test_results.append(result)
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status} {test_name}: {details}")
+        if response_data and not success:
+            print(f"   Response: {response_data}")
     
-    def authenticate_admin(self):
-        """Authenticate as admin user"""
+    def login_lab(self) -> bool:
+        """Login as lab user"""
         try:
-            response = requests.post(f"{BASE_URL}/auth/login", json={
-                "email": ADMIN_EMAIL,
-                "password": ADMIN_PASSWORD
-            })
-            
+            response = requests.post(f"{BASE_URL}/auth/login", json=LAB_CREDENTIALS)
             if response.status_code == 200:
                 data = response.json()
-                if data.get('token') and data.get('user', {}).get('role') == 'admin':
-                    self.admin_token = data['token']
-                    self.log_test("Admin Authentication", True, f"Successfully logged in as admin: {data['user']['email']}")
-                    return True
-                else:
-                    self.log_test("Admin Authentication", False, "Login successful but no admin token or role")
-                    return False
-            else:
-                self.log_test("Admin Authentication", False, f"Login failed: {response.status_code} - {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Admin Authentication", False, f"Exception during admin login: {str(e)}")
-            return False
-    
-    def authenticate_lab(self):
-        """Authenticate as lab user"""
-        try:
-            response = requests.post(f"{BASE_URL}/auth/login", json={
-                "email": LAB_EMAIL,
-                "password": LAB_PASSWORD
-            })
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('token'):
-                    self.lab_token = data['token']
-                    self.log_test("Lab Authentication", True, f"Successfully logged in as lab: {data['user']['email']}")
-                    return True
-                else:
-                    self.log_test("Lab Authentication", False, "Login successful but no token")
-                    return False
-            else:
-                self.log_test("Lab Authentication", False, f"Login failed: {response.status_code} - {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Lab Authentication", False, f"Exception during lab login: {str(e)}")
-            return False
-    
-    def authenticate_clinic(self):
-        """Authenticate as clinic user"""
-        try:
-            response = requests.post(f"{BASE_URL}/auth/login", json={
-                "email": CLINIC_EMAIL,
-                "password": CLINIC_PASSWORD
-            })
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('token'):
-                    self.clinic_token = data['token']
-                    self.log_test("Clinic Authentication", True, f"Successfully logged in as clinic: {data['user']['email']}")
-                    return True
-                else:
-                    self.log_test("Clinic Authentication", False, "Login successful but no token")
-                    return False
-            else:
-                self.log_test("Clinic Authentication", False, f"Login failed: {response.status_code} - {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Clinic Authentication", False, f"Exception during clinic login: {str(e)}")
-            return False
-    
-    def test_admin_lab_stats(self):
-        """Test GET /api/admin/lab-stats endpoint"""
-        try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            response = requests.get(f"{BASE_URL}/admin/lab-stats", headers=headers)
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                # Check required fields
-                required_fields = ['labs', 'billing', 'requests', 'connections', 'reports', 'topLabs', 'requestsByExamType', 'pendingLabs']
-                missing_fields = [field for field in required_fields if field not in data]
-                
-                if missing_fields:
-                    self.log_test("Admin Lab Stats", False, f"Missing required fields: {missing_fields}")
-                    return False
-                
-                # Check labs structure
-                labs = data['labs']
-                labs_required = ['total', 'active', 'pending', 'suspended', 'rejected', 'recentRegistrations']
-                labs_missing = [field for field in labs_required if field not in labs]
-                
-                if labs_missing:
-                    self.log_test("Admin Lab Stats", False, f"Missing labs fields: {labs_missing}")
-                    return False
-                
-                # Check billing structure
-                billing = data['billing']
-                billing_required = ['inTrial', 'trialExpiringSoon', 'requestsNearLimit']
-                billing_missing = [field for field in billing_required if field not in billing]
-                
-                if billing_missing:
-                    self.log_test("Admin Lab Stats", False, f"Missing billing fields: {billing_missing}")
-                    return False
-                
-                # Check requests structure
-                requests_data = data['requests']
-                requests_required = ['total', 'pending', 'completed', 'reportReady', 'cancelled']
-                requests_missing = [field for field in requests_required if field not in requests_data]
-                
-                if requests_missing:
-                    self.log_test("Admin Lab Stats", False, f"Missing requests fields: {requests_missing}")
-                    return False
-                
-                self.log_test("Admin Lab Stats", True, 
-                    f"Lab stats retrieved successfully. Labs: {labs['total']}, Requests: {requests_data['total']}, Reports: {data['reports']['total']}")
+                self.lab_token = data.get('token')
+                self.log_result("Lab Login", True, f"Logged in as {LAB_CREDENTIALS['email']}")
                 return True
-                
             else:
-                self.log_test("Admin Lab Stats", False, f"Request failed: {response.status_code} - {response.text}")
+                self.log_result("Lab Login", False, f"Status {response.status_code}", response.json())
                 return False
-                
         except Exception as e:
-            self.log_test("Admin Lab Stats", False, f"Exception: {str(e)}")
+            self.log_result("Lab Login", False, f"Exception: {str(e)}")
             return False
     
-    def test_admin_lab_details(self):
-        """Test GET /api/admin/labs/{labId}/details endpoint"""
+    def login_clinic(self) -> bool:
+        """Login as clinic user"""
         try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            response = requests.get(f"{BASE_URL}/admin/labs/{TEST_LAB_ID}/details", headers=headers)
-            
+            response = requests.post(f"{BASE_URL}/auth/login", json=CLINIC_CREDENTIALS)
             if response.status_code == 200:
                 data = response.json()
-                
-                # Check required fields
-                required_fields = ['lab', 'connections', 'priceList', 'stats', 'recentRequests', 'integration', 'billing']
-                missing_fields = [field for field in required_fields if field not in data]
-                
-                if missing_fields:
-                    self.log_test("Admin Lab Details", False, f"Missing required fields: {missing_fields}")
-                    return False
-                
-                # Check stats structure
-                stats = data['stats']
-                stats_required = ['totalRequests', 'pendingRequests', 'completedRequests', 'totalReports']
-                stats_missing = [field for field in stats_required if field not in stats]
-                
-                if stats_missing:
-                    self.log_test("Admin Lab Details", False, f"Missing stats fields: {stats_missing}")
-                    return False
-                
-                # Check billing structure
-                billing = data['billing']
-                billing_required = ['plan', 'freeUntil', 'requestsCount', 'maxFreeRequests', 'trialExpired', 'requestsExhausted', 'daysRemaining', 'requestsRemaining']
-                billing_missing = [field for field in billing_required if field not in billing]
-                
-                if billing_missing:
-                    self.log_test("Admin Lab Details", False, f"Missing billing fields: {billing_missing}")
-                    return False
-                
-                lab_name = data['lab'].get('labName', 'Unknown')
-                connections_count = len(data['connections'])
-                price_list_count = len(data['priceList'])
-                
-                self.log_test("Admin Lab Details", True, 
-                    f"Lab details retrieved for {lab_name}. Connections: {connections_count}, Price list items: {price_list_count}, Total requests: {stats['totalRequests']}")
+                self.clinic_token = data.get('token')
+                self.log_result("Clinic Login", True, f"Logged in as {CLINIC_CREDENTIALS['email']}")
                 return True
-                
-            elif response.status_code == 404:
-                self.log_test("Admin Lab Details", False, f"Lab not found: {TEST_LAB_ID}")
-                return False
             else:
-                self.log_test("Admin Lab Details", False, f"Request failed: {response.status_code} - {response.text}")
+                self.log_result("Clinic Login", False, f"Status {response.status_code}", response.json())
                 return False
-                
         except Exception as e:
-            self.log_test("Admin Lab Details", False, f"Exception: {str(e)}")
+            self.log_result("Clinic Login", False, f"Exception: {str(e)}")
             return False
     
-    def test_admin_lab_billing_update(self):
-        """Test POST /api/admin/labs/{labId}/billing endpoint"""
+    def test_generate_api_key(self) -> bool:
+        """Test POST /api/lab/generate-api-key"""
         try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            
-            # Test billing update
-            billing_data = {
-                "extendTrialDays": 30,
-                "maxFreeRequests": 100,
-                "resetRequestsCount": False
-            }
-            
-            response = requests.post(f"{BASE_URL}/admin/labs/{TEST_LAB_ID}/billing", 
-                                   headers=headers, json=billing_data)
+            headers = {"Authorization": f"Bearer {self.lab_token}"}
+            response = requests.post(f"{BASE_URL}/lab/generate-api-key", headers=headers)
             
             if response.status_code == 200:
                 data = response.json()
-                
-                if data.get('success') and data.get('lab'):
-                    # Verify the update took effect by checking the lab details
-                    details_response = requests.get(f"{BASE_URL}/admin/labs/{TEST_LAB_ID}/details", headers=headers)
-                    
-                    if details_response.status_code == 200:
-                        details_data = details_response.json()
-                        billing_info = details_data['billing']
-                        
-                        if billing_info['maxFreeRequests'] == 100:
-                            self.log_test("Admin Lab Billing Update", True, 
-                                f"Billing updated successfully. Max free requests: {billing_info['maxFreeRequests']}, Days remaining: {billing_info['daysRemaining']}")
-                            return True
-                        else:
-                            self.log_test("Admin Lab Billing Update", False, 
-                                f"Update not reflected. Expected maxFreeRequests: 100, got: {billing_info['maxFreeRequests']}")
-                            return False
-                    else:
-                        self.log_test("Admin Lab Billing Update", False, "Could not verify update - details request failed")
-                        return False
+                if data.get('success') and data.get('apiKey') and data.get('webhookSecret'):
+                    self.api_key = data['apiKey']
+                    self.webhook_secret = data['webhookSecret']
+                    self.log_result("Generate API Key", True, 
+                                  f"API Key: {self.api_key[:20]}..., Webhook Secret: {self.webhook_secret[:20]}...")
+                    return True
                 else:
-                    self.log_test("Admin Lab Billing Update", False, f"Update failed: {data}")
-                    return False
-                    
-            elif response.status_code == 404:
-                self.log_test("Admin Lab Billing Update", False, f"Lab not found: {TEST_LAB_ID}")
-                return False
-            else:
-                self.log_test("Admin Lab Billing Update", False, f"Request failed: {response.status_code} - {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Admin Lab Billing Update", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_admin_user_deletion(self):
-        """Test DELETE /api/admin/users/{userId} endpoint"""
-        try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            
-            # First create a test lab to delete
-            test_lab_data = {
-                "name": "Test Lab for Deletion",
-                "email": f"testlab_{datetime.now().strftime('%Y%m%d_%H%M%S')}@vetbuddy.it",
-                "password": "TestLab2025!",
-                "role": "lab",
-                "labName": "Test Lab for Deletion",
-                "city": "Test City",
-                "phone": "+39 123 456 7890",
-                "vatNumber": "IT12345678901",
-                "contactPerson": "Test Contact"
-            }
-            
-            # Register the test lab
-            register_response = requests.post(f"{BASE_URL}/labs/register", json=test_lab_data)
-            
-            if register_response.status_code == 201:
-                register_data = register_response.json()
-                test_user_id = register_data.get('user', {}).get('id')
-                
-                if test_user_id:
-                    # Now try to delete the test lab
-                    delete_response = requests.delete(f"{BASE_URL}/admin/users/{test_user_id}", headers=headers)
-                    
-                    if delete_response.status_code == 200:
-                        delete_data = delete_response.json()
-                        if delete_data.get('success'):
-                            self.log_test("Admin User Deletion", True, f"Successfully deleted test lab user: {test_user_id}")
-                            
-                            # Test that admin cannot delete themselves
-                            admin_delete_response = requests.delete(f"{BASE_URL}/admin/users/{self.admin_token}", headers=headers)
-                            # This should fail, but we need the admin user ID, not token
-                            # Let's skip this specific test for now
-                            return True
-                        else:
-                            self.log_test("Admin User Deletion", False, f"Delete failed: {delete_data}")
-                            return False
-                    else:
-                        self.log_test("Admin User Deletion", False, f"Delete request failed: {delete_response.status_code} - {delete_response.text}")
-                        return False
-                else:
-                    self.log_test("Admin User Deletion", False, "Could not get test user ID from registration")
+                    self.log_result("Generate API Key", False, "Missing required fields in response", data)
                     return False
             else:
-                self.log_test("Admin User Deletion", False, f"Could not create test lab: {register_response.status_code} - {register_response.text}")
+                self.log_result("Generate API Key", False, f"Status {response.status_code}", response.json())
                 return False
-                
         except Exception as e:
-            self.log_test("Admin User Deletion", False, f"Exception: {str(e)}")
+            self.log_result("Generate API Key", False, f"Exception: {str(e)}")
             return False
     
-    def test_authorization_controls(self):
-        """Test that non-admin users get 403 errors"""
+    def test_get_integration_settings(self) -> bool:
+        """Test GET /api/lab/integration"""
         try:
-            # Test with clinic token
-            clinic_headers = {"Authorization": f"Bearer {self.clinic_token}"}
-            
-            # Test lab stats with clinic token
-            response = requests.get(f"{BASE_URL}/admin/lab-stats", headers=clinic_headers)
-            if response.status_code == 403:
-                self.log_test("Authorization Control - Clinic", True, "Clinic correctly denied access to admin endpoints")
-            else:
-                self.log_test("Authorization Control - Clinic", False, f"Clinic should get 403, got: {response.status_code}")
-                return False
-            
-            # Test with lab token
-            lab_headers = {"Authorization": f"Bearer {self.lab_token}"}
-            
-            response = requests.get(f"{BASE_URL}/admin/labs", headers=lab_headers)
-            if response.status_code == 403:
-                self.log_test("Authorization Control - Lab", True, "Lab correctly denied access to admin endpoints")
-            else:
-                self.log_test("Authorization Control - Lab", False, f"Lab should get 403, got: {response.status_code}")
-                return False
-            
-            # Test with no token
-            response = requests.get(f"{BASE_URL}/admin/lab-stats")
-            if response.status_code in [401, 403]:
-                self.log_test("Authorization Control - No Token", True, "Unauthenticated request correctly denied")
-            else:
-                self.log_test("Authorization Control - No Token", False, f"Should get 401/403, got: {response.status_code}")
-                return False
-            
-            return True
-            
-        except Exception as e:
-            self.log_test("Authorization Control", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_regression_admin_labs(self):
-        """Test existing GET /api/admin/labs endpoint (regression)"""
-        try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            response = requests.get(f"{BASE_URL}/admin/labs", headers=headers)
+            headers = {"Authorization": f"Bearer {self.lab_token}"}
+            response = requests.get(f"{BASE_URL}/lab/integration", headers=headers)
             
             if response.status_code == 200:
                 data = response.json()
+                expected_fields = ['configured', 'apiKeyMasked', 'hasApiKey', 'isActive']
+                missing_fields = [field for field in expected_fields if field not in data]
                 
+                if not missing_fields and data.get('configured') and data.get('hasApiKey'):
+                    self.log_result("Get Integration Settings", True, 
+                                  f"Configured: {data['configured']}, Active: {data.get('isActive')}, "
+                                  f"Masked Key: {data.get('apiKeyMasked')}")
+                    return True
+                else:
+                    self.log_result("Get Integration Settings", False, 
+                                  f"Missing fields: {missing_fields} or not configured", data)
+                    return False
+            else:
+                self.log_result("Get Integration Settings", False, f"Status {response.status_code}", response.json())
+                return False
+        except Exception as e:
+            self.log_result("Get Integration Settings", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_get_webhook_logs(self) -> bool:
+        """Test GET /api/lab/webhook-logs"""
+        try:
+            headers = {"Authorization": f"Bearer {self.lab_token}"}
+            response = requests.get(f"{BASE_URL}/lab/webhook-logs", headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
                 if isinstance(data, list):
-                    # Check that labs have enriched data
-                    if len(data) > 0:
-                        lab = data[0]
-                        required_fields = ['id', 'labName', 'stats', 'billing']
-                        missing_fields = [field for field in required_fields if field not in lab]
-                        
-                        if missing_fields:
-                            self.log_test("Regression - Admin Labs", False, f"Missing enriched fields: {missing_fields}")
-                            return False
-                        
-                        self.log_test("Regression - Admin Labs", True, f"Labs list retrieved with {len(data)} labs, enriched with stats and billing")
-                        return True
-                    else:
-                        self.log_test("Regression - Admin Labs", True, "Labs list retrieved (empty)")
-                        return True
+                    self.log_result("Get Webhook Logs", True, f"Retrieved {len(data)} webhook logs")
+                    return True
                 else:
-                    self.log_test("Regression - Admin Labs", False, f"Expected array, got: {type(data)}")
+                    self.log_result("Get Webhook Logs", False, "Response is not a list", data)
                     return False
             else:
-                self.log_test("Regression - Admin Labs", False, f"Request failed: {response.status_code} - {response.text}")
+                self.log_result("Get Webhook Logs", False, f"Status {response.status_code}", response.json())
                 return False
-                
         except Exception as e:
-            self.log_test("Regression - Admin Labs", False, f"Exception: {str(e)}")
+            self.log_result("Get Webhook Logs", False, f"Exception: {str(e)}")
             return False
     
-    def test_regression_admin_lab_requests(self):
-        """Test existing GET /api/admin/lab-requests endpoint (regression)"""
+    def test_toggle_integration(self) -> bool:
+        """Test POST /api/lab/integration/toggle"""
         try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            response = requests.get(f"{BASE_URL}/admin/lab-requests", headers=headers)
+            headers = {"Authorization": f"Bearer {self.lab_token}"}
+            
+            # First toggle (should turn off)
+            response = requests.post(f"{BASE_URL}/lab/integration/toggle", headers=headers)
+            if response.status_code == 200:
+                data = response.json()
+                first_state = data.get('isActive')
+                
+                # Second toggle (should turn back on)
+                response2 = requests.post(f"{BASE_URL}/lab/integration/toggle", headers=headers)
+                if response2.status_code == 200:
+                    data2 = response2.json()
+                    second_state = data2.get('isActive')
+                    
+                    if first_state != second_state:
+                        self.log_result("Toggle Integration", True, 
+                                      f"Successfully toggled: {first_state} → {second_state}")
+                        return True
+                    else:
+                        self.log_result("Toggle Integration", False, 
+                                      f"State didn't change: {first_state} → {second_state}")
+                        return False
+                else:
+                    self.log_result("Toggle Integration", False, 
+                                  f"Second toggle failed: {response2.status_code}", response2.json())
+                    return False
+            else:
+                self.log_result("Toggle Integration", False, f"Status {response.status_code}", response.json())
+                return False
+        except Exception as e:
+            self.log_result("Toggle Integration", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_webhook_pending_requests(self) -> bool:
+        """Test GET /api/webhook/lab/{apiKey}/pending-requests"""
+        try:
+            if not self.api_key:
+                self.log_result("Webhook Pending Requests", False, "No API key available")
+                return False
+            
+            response = requests.get(f"{BASE_URL}/webhook/lab/{self.api_key}/pending-requests")
             
             if response.status_code == 200:
                 data = response.json()
+                expected_fields = ['labId', 'count', 'requests']
+                missing_fields = [field for field in expected_fields if field not in data]
                 
-                if 'requests' in data and 'stats' in data:
-                    stats = data['stats']
-                    required_stats = ['total', 'pending', 'reportReady', 'completed']
-                    missing_stats = [field for field in required_stats if field not in stats]
-                    
-                    if missing_stats:
-                        self.log_test("Regression - Admin Lab Requests", False, f"Missing stats fields: {missing_stats}")
-                        return False
-                    
-                    self.log_test("Regression - Admin Lab Requests", True, 
-                        f"Lab requests retrieved with stats. Total: {stats['total']}, Pending: {stats['pending']}")
+                if not missing_fields:
+                    self.log_result("Webhook Pending Requests", True, 
+                                  f"Lab ID: {data['labId']}, Count: {data['count']}, "
+                                  f"Requests: {len(data['requests'])}")
                     return True
                 else:
-                    self.log_test("Regression - Admin Lab Requests", False, "Missing requests or stats in response")
+                    self.log_result("Webhook Pending Requests", False, 
+                                  f"Missing fields: {missing_fields}", data)
                     return False
             else:
-                self.log_test("Regression - Admin Lab Requests", False, f"Request failed: {response.status_code} - {response.text}")
+                self.log_result("Webhook Pending Requests", False, f"Status {response.status_code}", response.json())
                 return False
-                
         except Exception as e:
-            self.log_test("Regression - Admin Lab Requests", False, f"Exception: {str(e)}")
+            self.log_result("Webhook Pending Requests", False, f"Exception: {str(e)}")
             return False
     
-    def test_error_handling(self):
-        """Test error handling for invalid requests"""
+    def test_webhook_update_status(self) -> bool:
+        """Test POST /api/webhook/lab/{apiKey}/update-status"""
         try:
-            headers = {"Authorization": f"Bearer {self.admin_token}"}
-            
-            # Test invalid lab ID
-            response = requests.get(f"{BASE_URL}/admin/labs/invalid-lab-id/details", headers=headers)
-            if response.status_code == 404:
-                self.log_test("Error Handling - Invalid Lab ID", True, "Invalid lab ID correctly returns 404")
-            else:
-                self.log_test("Error Handling - Invalid Lab ID", False, f"Expected 404, got: {response.status_code}")
+            if not self.api_key:
+                self.log_result("Webhook Update Status", False, "No API key available")
                 return False
             
-            # Test billing update with missing fields
-            response = requests.post(f"{BASE_URL}/admin/labs/{TEST_LAB_ID}/billing", 
-                                   headers=headers, json={})
-            if response.status_code in [200, 400]:  # Either succeeds with no changes or fails validation
-                self.log_test("Error Handling - Empty Billing Data", True, "Empty billing data handled correctly")
-            else:
-                self.log_test("Error Handling - Empty Billing Data", False, f"Unexpected status: {response.status_code}")
+            # First get pending requests to find a valid requestId
+            response = requests.get(f"{BASE_URL}/webhook/lab/{self.api_key}/pending-requests")
+            if response.status_code != 200:
+                self.log_result("Webhook Update Status", False, "Could not fetch pending requests")
                 return False
             
-            return True
+            data = response.json()
+            requests_list = data.get('requests', [])
             
+            if not requests_list:
+                # Test with invalid requestId to verify error handling
+                test_payload = {
+                    "requestId": "invalid-request-id",
+                    "status": "in_progress"
+                }
+                
+                response = requests.post(f"{BASE_URL}/webhook/lab/{self.api_key}/update-status", 
+                                       json=test_payload)
+                
+                if response.status_code == 404:
+                    self.log_result("Webhook Update Status", True, 
+                                  "Correctly returned 404 for invalid requestId")
+                    return True
+                else:
+                    self.log_result("Webhook Update Status", False, 
+                                  f"Expected 404 for invalid requestId, got {response.status_code}")
+                    return False
+            else:
+                # Use first available request
+                request_id = requests_list[0]['id']
+                test_payload = {
+                    "requestId": request_id,
+                    "status": "in_progress",
+                    "notes": "Test status update via webhook API"
+                }
+                
+                response = requests.post(f"{BASE_URL}/webhook/lab/{self.api_key}/update-status", 
+                                       json=test_payload)
+                
+                if response.status_code == 200:
+                    result_data = response.json()
+                    if result_data.get('success'):
+                        self.log_result("Webhook Update Status", True, 
+                                      f"Updated request {request_id} to {test_payload['status']}")
+                        return True
+                    else:
+                        self.log_result("Webhook Update Status", False, 
+                                      "Success field is false", result_data)
+                        return False
+                else:
+                    self.log_result("Webhook Update Status", False, 
+                                  f"Status {response.status_code}", response.json())
+                    return False
         except Exception as e:
-            self.log_test("Error Handling", False, f"Exception: {str(e)}")
+            self.log_result("Webhook Update Status", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_webhook_upload_report(self) -> bool:
+        """Test POST /api/webhook/lab/{apiKey}/upload-report"""
+        try:
+            if not self.api_key:
+                self.log_result("Webhook Upload Report", False, "No API key available")
+                return False
+            
+            # First get pending requests to find a valid requestId
+            response = requests.get(f"{BASE_URL}/webhook/lab/{self.api_key}/pending-requests")
+            if response.status_code != 200:
+                self.log_result("Webhook Upload Report", False, "Could not fetch pending requests")
+                return False
+            
+            data = response.json()
+            requests_list = data.get('requests', [])
+            
+            if not requests_list:
+                # Test with invalid requestId to verify error handling
+                test_pdf_content = base64.b64encode(b"Test PDF content for VetBuddy webhook").decode('utf-8')
+                test_payload = {
+                    "requestId": "invalid-request-id",
+                    "reportPdfBase64": test_pdf_content,
+                    "fileName": "test_report.pdf",
+                    "notes": "Test report upload via webhook API"
+                }
+                
+                response = requests.post(f"{BASE_URL}/webhook/lab/{self.api_key}/upload-report", 
+                                       json=test_payload)
+                
+                if response.status_code == 404:
+                    self.log_result("Webhook Upload Report", True, 
+                                  "Correctly returned 404 for invalid requestId")
+                    return True
+                else:
+                    self.log_result("Webhook Upload Report", False, 
+                                  f"Expected 404 for invalid requestId, got {response.status_code}")
+                    return False
+            else:
+                # Use first available request
+                request_id = requests_list[0]['id']
+                test_pdf_content = base64.b64encode(b"Test PDF content for VetBuddy webhook").decode('utf-8')
+                test_payload = {
+                    "requestId": request_id,
+                    "reportPdfBase64": test_pdf_content,
+                    "fileName": "test_report.pdf",
+                    "notes": "Test report upload via webhook API"
+                }
+                
+                response = requests.post(f"{BASE_URL}/webhook/lab/{self.api_key}/upload-report", 
+                                       json=test_payload)
+                
+                if response.status_code == 200:
+                    result_data = response.json()
+                    if result_data.get('success'):
+                        self.log_result("Webhook Upload Report", True, 
+                                      f"Uploaded report for request {request_id}")
+                        return True
+                    else:
+                        self.log_result("Webhook Upload Report", False, 
+                                      "Success field is false", result_data)
+                        return False
+                else:
+                    self.log_result("Webhook Upload Report", False, 
+                                  f"Status {response.status_code}", response.json())
+                    return False
+        except Exception as e:
+            self.log_result("Webhook Upload Report", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_error_cases(self) -> bool:
+        """Test various error cases"""
+        error_tests_passed = 0
+        total_error_tests = 0
+        
+        # Test 1: Invalid API key returns 401
+        total_error_tests += 1
+        try:
+            response = requests.get(f"{BASE_URL}/webhook/lab/invalid_api_key/pending-requests")
+            if response.status_code == 401:
+                self.log_result("Error Case - Invalid API Key", True, "Correctly returned 401")
+                error_tests_passed += 1
+            else:
+                self.log_result("Error Case - Invalid API Key", False, 
+                              f"Expected 401, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Error Case - Invalid API Key", False, f"Exception: {str(e)}")
+        
+        # Test 2: Missing required fields returns 400
+        total_error_tests += 1
+        if self.api_key:
+            try:
+                response = requests.post(f"{BASE_URL}/webhook/lab/{self.api_key}/update-status", 
+                                       json={"status": "in_progress"})  # Missing requestId
+                if response.status_code == 400:
+                    self.log_result("Error Case - Missing Fields", True, "Correctly returned 400")
+                    error_tests_passed += 1
+                else:
+                    self.log_result("Error Case - Missing Fields", False, 
+                                  f"Expected 400, got {response.status_code}")
+            except Exception as e:
+                self.log_result("Error Case - Missing Fields", False, f"Exception: {str(e)}")
+        
+        # Test 3: Invalid status value returns 400
+        total_error_tests += 1
+        if self.api_key:
+            try:
+                response = requests.post(f"{BASE_URL}/webhook/lab/{self.api_key}/update-status", 
+                                       json={"requestId": "test", "status": "invalid_status"})
+                if response.status_code == 400:
+                    self.log_result("Error Case - Invalid Status", True, "Correctly returned 400")
+                    error_tests_passed += 1
+                else:
+                    self.log_result("Error Case - Invalid Status", False, 
+                                  f"Expected 400, got {response.status_code}")
+            except Exception as e:
+                self.log_result("Error Case - Invalid Status", False, f"Exception: {str(e)}")
+        
+        # Test 4: Non-lab user trying to generate API key returns 403
+        total_error_tests += 1
+        if self.clinic_token:
+            try:
+                headers = {"Authorization": f"Bearer {self.clinic_token}"}
+                response = requests.post(f"{BASE_URL}/lab/generate-api-key", headers=headers)
+                if response.status_code == 403:
+                    self.log_result("Error Case - Non-lab Generate API Key", True, "Correctly returned 403")
+                    error_tests_passed += 1
+                else:
+                    self.log_result("Error Case - Non-lab Generate API Key", False, 
+                                  f"Expected 403, got {response.status_code}")
+            except Exception as e:
+                self.log_result("Error Case - Non-lab Generate API Key", False, f"Exception: {str(e)}")
+        
+        return error_tests_passed == total_error_tests
+    
+    def test_integration_toggle_workflow(self) -> bool:
+        """Test the complete integration toggle workflow"""
+        try:
+            if not self.api_key:
+                self.log_result("Integration Toggle Workflow", False, "No API key available")
+                return False
+            
+            headers = {"Authorization": f"Bearer {self.lab_token}"}
+            
+            # Step 1: Toggle integration off
+            response = requests.post(f"{BASE_URL}/lab/integration/toggle", headers=headers)
+            if response.status_code != 200:
+                self.log_result("Integration Toggle Workflow", False, "Failed to toggle off")
+                return False
+            
+            # Step 2: Verify webhook calls fail when integration is off
+            response = requests.get(f"{BASE_URL}/webhook/lab/{self.api_key}/pending-requests")
+            if response.status_code == 401:
+                # Step 3: Toggle back on
+                response = requests.post(f"{BASE_URL}/lab/integration/toggle", headers=headers)
+                if response.status_code == 200:
+                    # Step 4: Verify webhook calls work again
+                    response = requests.get(f"{BASE_URL}/webhook/lab/{self.api_key}/pending-requests")
+                    if response.status_code == 200:
+                        self.log_result("Integration Toggle Workflow", True, 
+                                      "Complete workflow: off → fail → on → success")
+                        return True
+                    else:
+                        self.log_result("Integration Toggle Workflow", False, 
+                                      "Webhook still fails after toggle on")
+                        return False
+                else:
+                    self.log_result("Integration Toggle Workflow", False, "Failed to toggle back on")
+                    return False
+            else:
+                self.log_result("Integration Toggle Workflow", False, 
+                              "Webhook didn't fail when integration was off")
+                return False
+        except Exception as e:
+            self.log_result("Integration Toggle Workflow", False, f"Exception: {str(e)}")
             return False
     
     def run_all_tests(self):
-        """Run all tests in sequence"""
-        print("🧪 Starting VetBuddy Admin Lab Management API Tests")
-        print("=" * 60)
+        """Run all webhook system tests"""
+        print("🧪 Starting VetBuddy Lab External API Integration (Webhook System) Tests")
+        print("=" * 80)
         
         # Authentication
-        if not self.authenticate_admin():
-            print("❌ Cannot proceed without admin authentication")
-            return False
+        if not self.login_lab():
+            print("❌ Cannot proceed without lab authentication")
+            return
         
-        if not self.authenticate_lab():
-            print("⚠️  Lab authentication failed - some tests may be limited")
+        if not self.login_clinic():
+            print("⚠️  Clinic authentication failed, some error tests may be skipped")
         
-        if not self.authenticate_clinic():
-            print("⚠️  Clinic authentication failed - some tests may be limited")
+        # Lab Self-Service API Key Management Tests
+        print("\n📋 Testing Lab Self-Service API Key Management...")
+        self.test_generate_api_key()
+        self.test_get_integration_settings()
+        self.test_get_webhook_logs()
+        self.test_toggle_integration()
         
-        print("\n🔍 Testing New Admin Lab Management Endpoints:")
-        print("-" * 50)
+        # Public Webhook Endpoints Tests
+        print("\n🔗 Testing Public Webhook Endpoints...")
+        self.test_webhook_pending_requests()
+        self.test_webhook_update_status()
+        self.test_webhook_upload_report()
         
-        # Test new endpoints
-        self.test_admin_lab_stats()
-        self.test_admin_lab_details()
-        self.test_admin_lab_billing_update()
-        self.test_admin_user_deletion()
+        # Error Cases Tests
+        print("\n⚠️  Testing Error Cases...")
+        self.test_error_cases()
         
-        print("\n🔒 Testing Authorization Controls:")
-        print("-" * 40)
-        self.test_authorization_controls()
-        
-        print("\n🔄 Testing Regression (Existing Endpoints):")
-        print("-" * 45)
-        self.test_regression_admin_labs()
-        self.test_regression_admin_lab_requests()
-        
-        print("\n⚠️  Testing Error Handling:")
-        print("-" * 30)
-        self.test_error_handling()
+        # Integration Workflow Tests
+        print("\n🔄 Testing Integration Toggle Workflow...")
+        self.test_integration_toggle_workflow()
         
         # Summary
-        print("\n" + "=" * 60)
+        print("\n" + "=" * 80)
         print("📊 TEST SUMMARY")
-        print("=" * 60)
+        print("=" * 80)
         
-        total_tests = len(self.test_results)
-        passed_tests = len([t for t in self.test_results if t['success']])
-        failed_tests = total_tests - passed_tests
+        passed = sum(1 for result in self.test_results if result['success'])
+        total = len(self.test_results)
         
-        print(f"Total Tests: {total_tests}")
-        print(f"✅ Passed: {passed_tests}")
-        print(f"❌ Failed: {failed_tests}")
-        print(f"Success Rate: {(passed_tests/total_tests)*100:.1f}%")
+        print(f"Total Tests: {total}")
+        print(f"Passed: {passed}")
+        print(f"Failed: {total - passed}")
+        print(f"Success Rate: {(passed/total)*100:.1f}%")
         
-        if failed_tests > 0:
-            print("\n❌ FAILED TESTS:")
-            for test in self.test_results:
-                if not test['success']:
-                    print(f"  - {test['test']}: {test['message']}")
+        if passed == total:
+            print("\n🎉 ALL TESTS PASSED! VetBuddy Lab External API Integration is working correctly.")
+        else:
+            print(f"\n⚠️  {total - passed} test(s) failed. Review the details above.")
+            
+            # Show failed tests
+            failed_tests = [result for result in self.test_results if not result['success']]
+            if failed_tests:
+                print("\n❌ Failed Tests:")
+                for test in failed_tests:
+                    print(f"   - {test['test']}: {test['details']}")
         
-        return failed_tests == 0
+        return passed == total
 
 if __name__ == "__main__":
-    tester = VetBuddyAdminTester()
+    tester = VetBuddyWebhookTester()
     success = tester.run_all_tests()
-    sys.exit(0 if success else 1)
+    exit(0 if success else 1)

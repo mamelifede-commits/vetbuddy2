@@ -337,6 +337,59 @@ export async function handleLabGet(path, request) {
       
       return NextResponse.json(reports, { headers: corsHeaders });
     }
+
+    // Lab: Get integration settings (own)
+    if (path === 'lab/integration') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'lab') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 403, headers: corsHeaders });
+      }
+      const labIntegrations = await getCollection('lab_integrations');
+      const integration = await labIntegrations.findOne({ labId: user.id });
+      if (!integration) {
+        return NextResponse.json({ configured: false, message: 'Nessuna integrazione configurata' }, { headers: corsHeaders });
+      }
+      const maskedKey = integration.apiKey ? `${'•'.repeat(20)}${integration.apiKey.slice(-8)}` : null;
+      return NextResponse.json({
+        configured: true, id: integration.id, integrationType: integration.integrationType,
+        apiKeyMasked: maskedKey, hasApiKey: !!integration.apiKey, webhookSecret: integration.webhookSecret,
+        autoSync: integration.autoSync, isActive: integration.isActive !== false,
+        createdAt: integration.createdAt, updatedAt: integration.updatedAt
+      }, { headers: corsHeaders });
+    }
+
+    // Lab: Get webhook logs
+    if (path === 'lab/webhook-logs') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'lab') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 403, headers: corsHeaders });
+      }
+      const webhookLogs = await getCollection('webhook_logs');
+      const logs = await webhookLogs.find({ labId: user.id }).sort({ processedAt: -1 }).limit(50).toArray();
+      return NextResponse.json(logs, { headers: corsHeaders });
+    }
+
+    // Webhook GET: Pending requests for external lab system (public, API key auth)
+    if (path.match(/^webhook\/lab\/[^/]+\/pending-requests$/)) {
+      const apiKey = path.split('/')[2];
+      const labIntegrations = await getCollection('lab_integrations');
+      const integration = await labIntegrations.findOne({ apiKey, isActive: { $ne: false } });
+      if (!integration) {
+        return NextResponse.json({ error: 'API Key non valida o integrazione disattivata' }, { status: 401, headers: corsHeaders });
+      }
+      const webhookLogs = await getCollection('webhook_logs');
+      await webhookLogs.insertOne({ id: require('crypto').randomUUID(), labId: integration.labId, eventType: 'fetch_pending_requests', method: 'GET', ip: request.headers.get('x-forwarded-for') || 'unknown', processedAt: new Date().toISOString(), success: true });
+      const labRequests = await getCollection('lab_requests');
+      const pending = await labRequests.find({ labId: integration.labId, status: { $in: ['pending', 'received', 'sample_waiting', 'sample_received', 'in_progress'] } }).sort({ createdAt: -1 }).toArray();
+      const pets = await getCollection('pets');
+      const users = await getCollection('users');
+      const enriched = await Promise.all(pending.map(async (req) => {
+        const pet = await pets.findOne({ id: req.petId });
+        const clinic = await users.findOne({ id: req.clinicId });
+        return { id: req.id, sampleCode: req.sampleCode, examType: req.examType, examName: req.examName, status: req.status, priority: req.priority, notes: req.clinicNotes || req.notes, petName: pet?.name || 'N/D', petSpecies: pet?.species || '', petBreed: pet?.breed || '', clinicName: clinic?.clinicName || clinic?.name || 'N/D', createdAt: req.createdAt };
+      }));
+      return NextResponse.json({ labId: integration.labId, count: enriched.length, requests: enriched }, { headers: corsHeaders });
+    }
     
     // ==================== END LAB API - GET ====================
 
@@ -1120,6 +1173,256 @@ export async function handleLabPost(path, request, body) {
       );
 
       return NextResponse.json({ success: true, message: 'Laboratorio approvato' }, { headers: corsHeaders });
+    }
+
+    // ==================== LAB SELF-SERVICE API KEY MANAGEMENT ====================
+
+    // Lab: Generate or regenerate API key
+    if (path === 'lab/generate-api-key') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'lab') {
+        return NextResponse.json({ error: 'Solo i laboratori possono generare API key' }, { status: 403, headers: corsHeaders });
+      }
+
+      const crypto = require('crypto');
+      const apiKey = `vb_lab_${crypto.randomBytes(24).toString('hex')}`;
+      const webhookSecret = crypto.randomBytes(32).toString('hex');
+
+      const labIntegrations = await getCollection('lab_integrations');
+      const integrationId = crypto.randomUUID();
+
+      await labIntegrations.updateOne(
+        { labId: user.id },
+        {
+          $set: {
+            labId: user.id,
+            apiKey,
+            webhookSecret,
+            integrationType: 'api',
+            autoSync: true,
+            isActive: true,
+            updatedAt: new Date().toISOString()
+          },
+          $setOnInsert: {
+            id: integrationId,
+            createdAt: new Date().toISOString()
+          }
+        },
+        { upsert: true }
+      );
+
+      return NextResponse.json({
+        success: true,
+        apiKey,
+        webhookSecret,
+        message: 'API Key generata con successo. Conservala in un luogo sicuro!'
+      }, { headers: corsHeaders });
+    }
+
+    // Lab: Toggle integration active/inactive
+    if (path === 'lab/integration/toggle') {
+      const user = getUserFromRequest(request);
+      if (!user || user.role !== 'lab') {
+        return NextResponse.json({ error: 'Non autorizzato' }, { status: 403, headers: corsHeaders });
+      }
+      const labIntegrations = await getCollection('lab_integrations');
+      const integration = await labIntegrations.findOne({ labId: user.id });
+      if (!integration) {
+        return NextResponse.json({ error: 'Nessuna integrazione configurata' }, { status: 404, headers: corsHeaders });
+      }
+      const newState = !integration.isActive;
+      await labIntegrations.updateOne({ labId: user.id }, { $set: { isActive: newState, updatedAt: new Date().toISOString() } });
+      return NextResponse.json({ success: true, isActive: newState }, { headers: corsHeaders });
+    }
+
+    // ==================== PUBLIC WEBHOOK ENDPOINTS - POST ====================
+
+    // Webhook: Update request status
+    if (path.match(/^webhook\/lab\/[^/]+\/update-status$/)) {
+      const apiKey = path.split('/')[2];
+
+      const labIntegrations = await getCollection('lab_integrations');
+      const integration = await labIntegrations.findOne({ apiKey, isActive: { $ne: false } });
+
+      if (!integration) {
+        return NextResponse.json({ error: 'API Key non valida o integrazione disattivata' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { requestId, status, notes } = body;
+
+      if (!requestId || !status) {
+        return NextResponse.json({ error: 'requestId e status sono obbligatori' }, { status: 400, headers: corsHeaders });
+      }
+
+      const validStatuses = ['received', 'sample_waiting', 'sample_received', 'in_progress', 'report_ready', 'completed', 'cancelled'];
+      if (!validStatuses.includes(status)) {
+        return NextResponse.json({ error: `Stato non valido. Valori ammessi: ${validStatuses.join(', ')}` }, { status: 400, headers: corsHeaders });
+      }
+
+      const labRequests = await getCollection('lab_requests');
+      const labRequest = await labRequests.findOne({ id: requestId, labId: integration.labId });
+
+      if (!labRequest) {
+        return NextResponse.json({ error: 'Richiesta non trovata per questo laboratorio' }, { status: 404, headers: corsHeaders });
+      }
+
+      await labRequests.updateOne(
+        { id: requestId },
+        {
+          $set: { status, updatedAt: new Date().toISOString() },
+          $push: {
+            statusHistory: {
+              status,
+              note: notes || 'Aggiornamento automatico via API',
+              updatedBy: 'api_integration',
+              updatedByName: 'API Integrazione',
+              updatedAt: new Date().toISOString()
+            }
+          }
+        }
+      );
+
+      // Log
+      const webhookLogs = await getCollection('webhook_logs');
+      await webhookLogs.insertOne({
+        id: require('crypto').randomUUID(),
+        labId: integration.labId,
+        requestId,
+        eventType: 'update_status',
+        method: 'POST',
+        payload: { status, notes },
+        ip: request.headers.get('x-forwarded-for') || 'unknown',
+        processedAt: new Date().toISOString(),
+        success: true
+      });
+
+      // Send email to clinic if status changed to report_ready
+      if (status === 'report_ready') {
+        try {
+          const usersCol = await getCollection('users');
+          const clinic = await usersCol.findOne({ id: labRequest.clinicId });
+          if (clinic?.email) {
+            await sendEmail({
+              to: clinic.email,
+              subject: `🔬 Referto pronto - ${labRequest.examName || labRequest.examType}`,
+              html: `<div style="font-family:Arial;max-width:600px;margin:0 auto;padding:20px;">
+                <h2 style="color:#7C3AED;">🔬 Referto Pronto</h2>
+                <p>Il laboratorio ha completato l'analisi <strong>${labRequest.examName || labRequest.examType}</strong>.</p>
+                <p>Codice campione: <strong>${labRequest.sampleCode || 'N/D'}</strong></p>
+                <p>Accedi alla tua dashboard per visualizzare i dettagli.</p>
+              </div>`
+            });
+          }
+        } catch (e) { console.error('Email notification error:', e); }
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: 'Stato aggiornato con successo',
+        requestId,
+        newStatus: status
+      }, { headers: corsHeaders });
+    }
+
+    // Webhook: Upload report
+    if (path.match(/^webhook\/lab\/[^/]+\/upload-report$/)) {
+      const apiKey = path.split('/')[2];
+
+      const labIntegrations = await getCollection('lab_integrations');
+      const integration = await labIntegrations.findOne({ apiKey, isActive: { $ne: false } });
+
+      if (!integration) {
+        return NextResponse.json({ error: 'API Key non valida o integrazione disattivata' }, { status: 401, headers: corsHeaders });
+      }
+
+      const { requestId, reportPdfBase64, fileName, notes } = body;
+
+      if (!requestId || !reportPdfBase64) {
+        return NextResponse.json({ error: 'requestId e reportPdfBase64 sono obbligatori' }, { status: 400, headers: corsHeaders });
+      }
+
+      const labRequests = await getCollection('lab_requests');
+      const labRequest = await labRequests.findOne({ id: requestId, labId: integration.labId });
+
+      if (!labRequest) {
+        return NextResponse.json({ error: 'Richiesta non trovata per questo laboratorio' }, { status: 404, headers: corsHeaders });
+      }
+
+      // Create report
+      const labReports = await getCollection('lab_reports');
+      const crypto = require('crypto');
+      const reportId = crypto.randomUUID();
+
+      await labReports.insertOne({
+        id: reportId,
+        labRequestId: requestId,
+        labId: integration.labId,
+        clinicId: labRequest.clinicId,
+        petId: labRequest.petId,
+        ownerId: labRequest.ownerId,
+        fileName: fileName || `report_${requestId.slice(0, 8)}.pdf`,
+        fileContent: reportPdfBase64,
+        reportNotes: notes || '',
+        visibleToOwner: false,
+        source: 'api_integration',
+        uploadedAt: new Date().toISOString()
+      });
+
+      // Update request status to report_ready
+      await labRequests.updateOne(
+        { id: requestId },
+        {
+          $set: { status: 'report_ready', updatedAt: new Date().toISOString() },
+          $push: {
+            statusHistory: {
+              status: 'report_ready',
+              note: 'Referto caricato automaticamente via API',
+              updatedBy: 'api_integration',
+              updatedByName: 'API Integrazione',
+              updatedAt: new Date().toISOString()
+            }
+          }
+        }
+      );
+
+      // Log
+      const webhookLogs = await getCollection('webhook_logs');
+      await webhookLogs.insertOne({
+        id: crypto.randomUUID(),
+        labId: integration.labId,
+        requestId,
+        eventType: 'upload_report',
+        method: 'POST',
+        payload: { fileName: fileName || 'report.pdf', notes, hasContent: true },
+        ip: request.headers.get('x-forwarded-for') || 'unknown',
+        processedAt: new Date().toISOString(),
+        success: true
+      });
+
+      // Notify clinic
+      try {
+        const usersCol = await getCollection('users');
+        const clinic = await usersCol.findOne({ id: labRequest.clinicId });
+        if (clinic?.email) {
+          await sendEmail({
+            to: clinic.email,
+            subject: `📄 Referto caricato - ${labRequest.examName || labRequest.examType}`,
+            html: `<div style="font-family:Arial;max-width:600px;margin:0 auto;padding:20px;">
+              <h2 style="color:#7C3AED;">📄 Nuovo Referto Disponibile</h2>
+              <p>Il laboratorio ha caricato il referto per <strong>${labRequest.examName || labRequest.examType}</strong>.</p>
+              <p>Codice campione: <strong>${labRequest.sampleCode || 'N/D'}</strong></p>
+              <p>Accedi alla dashboard per revisionarlo e inviarlo al proprietario.</p>
+            </div>`
+          });
+        }
+      } catch (e) { console.error('Email notification error:', e); }
+
+      return NextResponse.json({
+        success: true,
+        message: 'Referto caricato con successo',
+        reportId,
+        requestId
+      }, { headers: corsHeaders });
     }
 
     // Admin: Update lab integration settings
