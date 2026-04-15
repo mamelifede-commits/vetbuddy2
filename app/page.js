@@ -395,7 +395,7 @@ function FullLandingPage({ onLogin }) {
           </p>
           
           {/* CTA Buttons - Glassmorphism */}
-          <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-6">
+          <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto mb-6">
             <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-coral-200/50 hover:bg-white/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group animate-fade-in-left animate-delay-300" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
               <div className="h-14 w-14 bg-gradient-to-br from-coral-400 to-coral-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition shadow-lg">
                 <Building2 className="h-7 w-7 text-white" />
@@ -405,6 +405,17 @@ function FullLandingPage({ onLogin }) {
               <p className="text-xs text-amber-600 font-semibold mb-3">🎫 Pilot: 90 giorni gratuiti su invito</p>
               <Button className="w-full bg-gradient-to-r from-coral-500 to-coral-600 hover:from-coral-600 hover:to-coral-700 text-white shadow-lg">
                 Richiedi Invito →
+              </Button>
+            </div>
+            <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-violet-200/50 hover:bg-white/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group animate-fade-in-up animate-delay-300" onClick={() => { setAuthMode('register-lab'); setShowAuth(true); }}>
+              <div className="h-14 w-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition shadow-lg">
+                <FlaskConical className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Per Laboratori di Analisi</h3>
+              <p className="text-sm text-gray-600 mb-3">Ricevi richieste, gestisci referti, connettiti con le cliniche.</p>
+              <p className="text-xs text-violet-600 font-semibold mb-3">🧪 6 mesi gratis + 50 richieste incluse</p>
+              <Button className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-lg">
+                Registra il tuo Lab →
               </Button>
             </div>
             <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-blue-200/50 hover:bg-white/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group animate-fade-in-right animate-delay-300" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
