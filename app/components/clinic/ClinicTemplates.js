@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Bell, Calendar, ClipboardList, Edit, Eye, FileText, Info, Mail, MessageCircle, PawPrint, Plus, Trash2, User, Zap } from 'lucide-react';
+import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
 function ClinicTemplates({ owners = [], pets = [], staff = [], appointments = [], user, onNavigate }) {
   const [activeTab, setActiveTab] = useState('tutti');

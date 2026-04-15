@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Switch } from '@/components/ui/switch';
 import { AlertCircle, AlertTriangle, BarChart3, Bell, Building2, Calendar, Check, CheckCircle, Euro, FileCheck, FileText, Gift, Heart, Info, Lock, Mail, MessageCircle, PawPrint, RefreshCw, Scissors, Shield, Star, Stethoscope, Syringe, Ticket, Timer, TrendingUp, Users, Weight, Zap } from 'lucide-react';
 import api from '@/app/lib/api';
+import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
 function ClinicAutomations({ user, onNavigate }) {
   const [automationSettings, setAutomationSettings] = useState({});

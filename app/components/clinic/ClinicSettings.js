@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { AlertCircle, Bell, Calendar, CalendarCheck, CalendarX, Check, CheckCircle, Clock, CreditCard, Edit, ExternalLink, FileText, MapPin, MessageCircle, Plus, RefreshCw, Save, Search, Star, Trash2, Users, X } from 'lucide-react';
 import api from '@/app/lib/api';
 import SubscriptionPlans from '@/app/components/shared/SubscriptionPlans';
+import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
 function ClinicSettings({ user, onNavigate }) {
   const [googleCalendarStatus, setGoogleCalendarStatus] = useState({ connected: false, loading: true });

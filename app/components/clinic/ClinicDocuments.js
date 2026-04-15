@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { CircleDot, ClipboardList, Download, Eye, FileText, Filter, Info, Mail, PlayCircle, Receipt, Search, Send, Trash2, Upload, Video } from 'lucide-react';
 import api from '@/app/lib/api';
 import DocumentUploadForm from '@/app/components/clinic/DocumentUploadForm';
+import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
 function ClinicDocuments({ documents, owners, pets, onRefresh, onNavigate }) {
   const [showUpload, setShowUpload] = useState(false);

@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Check, Clock, Euro, Plus, Scissors, Search, Settings, Star, Stethoscope, Trash2, X } from 'lucide-react';
 import api from '@/app/lib/api';
+import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
 function ClinicServices({ onNavigate, user }) {
   const [serviceCatalog, setServiceCatalog] = useState({});

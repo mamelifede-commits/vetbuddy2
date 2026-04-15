@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { AlertCircle, Building2, Calendar, Cat, Check, ChevronRight, CreditCard, Dog, FileText, Info, MapPin, PawPrint, Phone, Plus, RefreshCw, Search, Star, Stethoscope, Upload, Video, X } from 'lucide-react';
 import api from '@/app/lib/api';
+import { SERVICE_CATEGORIES } from '@/app/components/shared/constants';
 
 function OwnerAppointments({ appointments, pets }) {
   const [showBooking, setShowBooking] = useState(false);

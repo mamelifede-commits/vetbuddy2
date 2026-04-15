@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Clock, Star, User } from 'lucide-react';
 import api from '@/app/lib/api';
+import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
 function ClinicReviews({ onNavigate }) {
   const [reviews, setReviews] = useState([]);

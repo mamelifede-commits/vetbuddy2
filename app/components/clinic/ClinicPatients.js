@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Beaker, Cat, Check, CheckCircle, ChevronRight, Dog, Download, Edit, FileText, Image, Info, Loader2, Mail, PawPrint, Phone, Plus, RefreshCw, Save, Search, Send, Trash2, Upload, X } from 'lucide-react';
 import api from '@/app/lib/api';
+import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
 function ClinicPatients({ pets, onRefresh, onNavigate, owners = [], onOpenOwner, initialPet, onClearInitialPet }) {
   const [showDialog, setShowDialog] = useState(false);

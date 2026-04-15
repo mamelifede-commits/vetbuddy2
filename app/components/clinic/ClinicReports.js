@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar, CheckCircle, ChevronLeft, ChevronRight, Clock, CreditCard, Download, Euro, Eye, FileText, Filter, Inbox, Mail, MessageCircle, PawPrint, Phone, Receipt, RefreshCw, Send, Stethoscope, Ticket, TrendingUp, User, Users, Video, X } from 'lucide-react';
+import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
 function ClinicReports({ appointments, documents, messages, owners, pets, onNavigate, onOpenOwner, onOpenPet }) {
   const [activeTab, setActiveTab] = useState('overview');

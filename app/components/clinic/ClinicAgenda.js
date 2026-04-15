@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { AlertTriangle, Calendar, CalendarDays, CheckCircle, ChevronLeft, ChevronRight, ClipboardList, Clock, Edit, FileText, Heart, Inbox, ListTodo, Mail, MessageCircle, Navigation, PawPrint, Plus, PlusCircle, Send, Shield, Star, Stethoscope, Syringe, Trash2, User, UserPlus, Video } from 'lucide-react';
 import api from '@/app/lib/api';
+import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
 function ClinicAgenda({ appointments, staff, owners, pets, onRefresh, onNavigate }) {
   const [showDialog, setShowDialog] = useState(false);
