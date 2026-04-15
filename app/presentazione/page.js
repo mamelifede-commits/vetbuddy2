@@ -30,57 +30,53 @@ export default function BrochurePage() {
       </div>
 
       {/* ====== PAGINA 1 — COPERTINA ====== */}
-      <div className="brochure-page flex flex-col items-center justify-center px-12 py-16 text-center text-white relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #f97316 50%, #FF6B6B 100%)' }}>
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-full h-full opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 30%, white 1px, transparent 1px), radial-gradient(circle at 80% 70%, white 1px, transparent 1px), radial-gradient(circle at 50% 10%, white 2px, transparent 2px), radial-gradient(circle at 10% 80%, white 1.5px, transparent 1.5px), radial-gradient(circle at 90% 20%, white 1px, transparent 1px)', backgroundSize: '100% 100%' }}></div>
-        <div className="absolute top-10 right-10 w-64 h-64 rounded-full opacity-10" style={{ background: 'white' }}></div>
-        <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full opacity-10" style={{ background: 'white' }}></div>
+      <div className="brochure-page flex flex-col items-center justify-center px-12 py-12 text-center text-white relative" style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #f97316 50%, #FF6B6B 100%)' }}>
+        {/* Decorative circles */}
+        <div className="absolute top-10 right-10 w-64 h-64 rounded-full" style={{ background: 'rgba(255,255,255,0.1)' }}></div>
+        <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}></div>
 
         {/* Logo */}
-        <div className="relative mb-10">
-          <div className="w-28 h-28 rounded-3xl flex items-center justify-center mx-auto shadow-2xl mb-6 border-4 border-white/30" style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)' }}>
-            <PawPrint className="w-16 h-16 text-white" />
-          </div>
-          <h1 className="text-7xl font-black tracking-tight">
-            vet<span style={{ color: '#fff' }}>buddy</span>
-          </h1>
-          <div className="w-20 h-1 mx-auto mt-4 rounded-full" style={{ background: 'rgba(255,255,255,0.5)' }}></div>
+        <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto shadow-2xl mb-5" style={{ background: '#ffffff' }}>
+          <PawPrint className="w-14 h-14" style={{ color: '#FF6B6B' }} />
         </div>
+        
+        <h1 className="text-6xl font-black tracking-tight mb-2" style={{ color: '#ffffff' }}>
+          vetbuddy
+        </h1>
+        <div className="w-16 h-1 mx-auto mb-8 rounded-full" style={{ background: '#ffffff', opacity: 0.5 }}></div>
 
-        {/* Tagline */}
-        <div className="max-w-xl mx-auto mb-10 relative">
-          <p className="text-2xl leading-relaxed font-medium" style={{ color: 'rgba(255,255,255,0.95)' }}>
-            La piattaforma digitale che connette<br/>
-            <strong className="font-black">cliniche veterinarie</strong>,{' '}
-            <strong className="font-black">proprietari</strong><br/>
-            e <strong className="font-black">laboratori di analisi</strong>.
-          </p>
-        </div>
+        {/* Claim */}
+        <p className="text-2xl leading-relaxed font-medium mb-8" style={{ color: '#ffffff' }}>
+          La piattaforma digitale che connette<br/>
+          <strong className="font-black">cliniche veterinarie</strong>,{' '}
+          <strong className="font-black">proprietari</strong><br/>
+          e <strong className="font-black">laboratori di analisi</strong>.
+        </p>
 
         {/* Pilot Badge */}
-        <div className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl mb-6 border-2 border-white/30" style={{ background: 'rgba(255,255,255,0.15)' }}>
-          <div className="w-3 h-3 rounded-full animate-pulse" style={{ background: '#4ade80' }}></div>
-          <span className="text-xl font-bold">Pilot Milano 2025</span>
+        <div className="inline-flex items-center gap-3 px-7 py-3 rounded-2xl mb-4" style={{ background: 'rgba(255,255,255,0.25)', border: '2px solid rgba(255,255,255,0.4)' }}>
+          <div className="w-3 h-3 rounded-full" style={{ background: '#4ade80' }}></div>
+          <span className="text-lg font-bold" style={{ color: '#ffffff' }}>Pilot Milano 2025</span>
         </div>
 
-        <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.7)' }}>Accesso su invito per cliniche selezionate</p>
+        <p className="text-sm mb-8" style={{ color: '#ffffff', opacity: 0.8 }}>Accesso su invito per cliniche selezionate</p>
 
         {/* 3 key numbers */}
-        <div className="flex gap-8 mt-8 relative">
+        <div className="flex gap-10">
           {[
             { n: '44+', l: 'Automazioni' },
             { n: '100%', l: 'Gratis per proprietari' },
             { n: '€0', l: 'Per 90 giorni' },
           ].map((s, i) => (
             <div key={i} className="text-center">
-              <div className="text-3xl font-black mb-1">{s.n}</div>
-              <div className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>{s.l}</div>
+              <div className="text-3xl font-black mb-1" style={{ color: '#ffffff' }}>{s.n}</div>
+              <div className="text-xs font-medium" style={{ color: '#ffffff', opacity: 0.8 }}>{s.l}</div>
             </div>
           ))}
         </div>
 
-        <div className="absolute bottom-8 left-0 right-0 text-center">
-          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>vetbuddy.it &bull; info@vetbuddy.it</p>
+        <div className="absolute bottom-6 left-0 right-0 text-center">
+          <p className="text-xs" style={{ color: '#ffffff', opacity: 0.5 }}>vetbuddy.it &bull; info@vetbuddy.it</p>
         </div>
       </div>
 
