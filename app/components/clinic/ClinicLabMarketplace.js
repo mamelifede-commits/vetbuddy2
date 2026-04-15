@@ -18,6 +18,19 @@ import {
   ChevronRight, RefreshCw, AlertCircle, Info, Globe, UserPlus, ExternalLink
 } from 'lucide-react';
 import api from '@/app/lib/api';
+import dynamic from 'next/dynamic';
+
+const LabMapView = dynamic(() => import('./LabMapView'), { 
+  ssr: false,
+  loading: () => (
+    <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl h-[320px] flex items-center justify-center border border-purple-200">
+      <div className="flex items-center gap-2 text-purple-500">
+        <div className="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+        <span className="text-sm">Caricamento mappa...</span>
+      </div>
+    </div>
+  )
+});
 
 function ClinicLabMarketplace({ user }) {
   const [labs, setLabs] = useState([]);
@@ -215,65 +228,12 @@ function ClinicLabMarketplace({ user }) {
             </div>
           </div>
 
-          {/* Stylized Map */}
-          <div className="relative">
-            <div className="bg-gradient-to-br from-purple-100 via-indigo-50 to-blue-50 rounded-2xl shadow-lg border border-purple-200 overflow-hidden relative h-[280px]">
-              <div className="absolute inset-0 opacity-30">
-                <svg viewBox="0 0 400 300" className="w-full h-full">
-                  <path d="M0 150 Q 100 130, 200 150 T 400 130" stroke="#94a3b8" strokeWidth="3" fill="none" opacity="0.5"/>
-                  <path d="M0 80 Q 100 100, 200 80 T 400 100" stroke="#94a3b8" strokeWidth="2" fill="none" opacity="0.4"/>
-                  <path d="M0 220 Q 100 200, 200 220 T 400 200" stroke="#94a3b8" strokeWidth="2" fill="none" opacity="0.4"/>
-                  <path d="M100 0 Q 120 75, 100 150 T 120 300" stroke="#94a3b8" strokeWidth="2" fill="none" opacity="0.4"/>
-                  <path d="M200 0 Q 180 75, 200 150 T 180 300" stroke="#94a3b8" strokeWidth="3" fill="none" opacity="0.5"/>
-                  <path d="M300 0 Q 320 75, 300 150 T 320 300" stroke="#94a3b8" strokeWidth="2" fill="none" opacity="0.4"/>
-                  <rect x="50" y="50" width="60" height="40" rx="4" fill="#e2e8f0" opacity="0.6"/>
-                  <rect x="150" y="80" width="50" height="50" rx="4" fill="#e2e8f0" opacity="0.6"/>
-                  <rect x="280" y="40" width="70" height="45" rx="4" fill="#e2e8f0" opacity="0.6"/>
-                  <rect x="40" y="150" width="45" height="60" rx="4" fill="#e2e8f0" opacity="0.6"/>
-                  <rect x="250" y="140" width="55" height="40" rx="4" fill="#e2e8f0" opacity="0.6"/>
-                  <rect x="80" y="210" width="60" height="45" rx="4" fill="#e2e8f0" opacity="0.6"/>
-                  <rect x="290" y="200" width="55" height="40" rx="4" fill="#e2e8f0" opacity="0.6"/>
-                </svg>
-              </div>
-              
-              {/* Lab pins */}
-              {filteredLabs.slice(0, 6).map((lab, i) => {
-                const positions = [
-                  { top: '20%', left: '25%' }, { top: '35%', left: '55%' },
-                  { top: '55%', left: '20%' }, { top: '65%', left: '65%' },
-                  { top: '25%', left: '75%' }, { top: '50%', left: '42%' }
-                ];
-                const pos = positions[i] || positions[0];
-                const colors = ['purple', 'indigo', 'violet', 'blue', 'fuchsia', 'purple'];
-                const color = colors[i % colors.length];
-                return (
-                  <div
-                    key={lab.id}
-                    className="absolute transform -translate-x-1/2 cursor-pointer transition-transform hover:scale-125 z-10"
-                    style={{ top: pos.top, left: pos.left }}
-                    onClick={() => setSelectedLab(lab)}
-                  >
-                    <div className={`bg-${color}-500 text-white p-2 rounded-full shadow-lg`}>
-                      <FlaskConical className="h-4 w-4" />
-                    </div>
-                    <div className={`w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-${color}-500 mx-auto -mt-0.5`}></div>
-                    <div className="bg-white/90 backdrop-blur px-2 py-0.5 rounded-full shadow text-xs font-medium text-gray-700 mt-1 whitespace-nowrap">
-                      {lab.labName?.substring(0, 15) || 'Lab'}
-                    </div>
-                  </div>
-                );
-              })}
-              
-              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full shadow-md">
-                <p className="text-sm font-semibold text-gray-700">🧪 {filteredLabs.length} laboratori disponibili</p>
-              </div>
-              
-              <div className="absolute bottom-3 right-3 flex flex-col gap-1">
-                <div className="bg-white/90 backdrop-blur w-7 h-7 rounded-md shadow flex items-center justify-center text-gray-500 font-bold text-sm">+</div>
-                <div className="bg-white/90 backdrop-blur w-7 h-7 rounded-md shadow flex items-center justify-center text-gray-500 font-bold text-sm">−</div>
-              </div>
-            </div>
-          </div>
+          {/* Google Maps View */}
+          <LabMapView 
+            labs={filteredLabs} 
+            clinicLocation={user.latitude && user.longitude ? { lat: parseFloat(user.latitude), lng: parseFloat(user.longitude) } : null}
+            onSelectLab={setSelectedLab} 
+          />
 
           {/* Labs List */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
