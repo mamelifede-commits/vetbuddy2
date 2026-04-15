@@ -21,10 +21,10 @@ export default function BrochurePage() {
 
       {/* ====== DOWNLOAD BUTTON (screen only) ====== */}
       <div className="no-print fixed top-4 right-4 z-50 flex gap-3">
-        <button onClick={() => window.print()} className="bg-coral-500 text-white px-6 py-3 rounded-xl font-bold shadow-xl hover:bg-coral-600 transition text-sm">
+        <button onClick={() => window.print()} className="bg-coral-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-coral-600 transition text-sm">
           Scarica PDF
         </button>
-        <Link href="/" className="bg-white text-gray-700 px-6 py-3 rounded-xl font-bold shadow-xl hover:bg-gray-50 transition text-sm border">
+        <Link href="/" className="bg-white text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 transition text-sm border">
           Torna al sito
         </Link>
       </div>
@@ -36,7 +36,7 @@ export default function BrochurePage() {
         <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}></div>
 
         {/* Logo */}
-        <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto shadow-2xl mb-5" style={{ background: '#ffffff' }}>
+        <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-5" style={{ background: '#ffffff' }}>
           <PawPrint className="w-14 h-14" style={{ color: '#FF6B6B' }} />
         </div>
         
@@ -335,7 +335,7 @@ export default function BrochurePage() {
             { num: '03', title: 'Importa', desc: 'Invita i tuoi clienti a registrarsi su VetBuddy. Possono trovare la clinica tramite il profilo pubblico.' },
             { num: '04', title: 'Parti!', desc: 'I clienti prenotano online. Tu gestisci tutto da un\'unica dashboard. Le automazioni fanno il resto.' },
           ].map((step, i) => (
-            <div key={i} className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
+            <div key={i} className="bg-white rounded-2xl p-5 border border-gray-200">
               <div className="text-3xl font-black text-coral-500 mb-2">{step.num}</div>
               <h4 className="font-bold text-gray-900 mb-2">{step.title}</h4>
               <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
@@ -399,7 +399,7 @@ export default function BrochurePage() {
           </div>
 
           {/* Pro Clinica */}
-          <div className="border-2 border-coral-400 rounded-2xl p-5 bg-coral-50/30 relative shadow-lg">
+          <div className="border-2 border-coral-400 rounded-2xl p-5 bg-coral-50/30 relative">
             <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-coral-500 text-white text-xs px-3 py-1 rounded-full font-bold whitespace-nowrap">Consigliato</div>
             <p className="text-xs font-bold text-coral-500 uppercase tracking-wider mb-2 mt-1">Pro Clinica</p>
             <div className="mb-1"><span className="text-3xl font-black text-gray-900">€0</span><span className="text-sm text-gray-500 ml-1">per 90 giorni</span></div>
@@ -525,7 +525,7 @@ export default function BrochurePage() {
 function PageHeader() {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-sm" style={{ background: '#FF6B6B' }}>
+      <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: '#FF6B6B' }}>
         <PawPrint className="w-4 h-4 text-white" />
       </div>
       <span className="font-bold text-gray-400 text-sm">vet<span className="text-coral-400">buddy</span></span>
