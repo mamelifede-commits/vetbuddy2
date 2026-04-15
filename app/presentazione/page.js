@@ -1,793 +1,540 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { 
-  Calendar, MessageSquare, FileText, Zap, Heart,
-  Phone, Clock, Video, Bell, CreditCard, BarChart3, PawPrint,
-  Smartphone, Gift, Check, Star, Users, MapPin, Shield, Sparkles,
-  ChevronRight, Mail, ArrowRight, Building2, Inbox, Send,
-  TrendingUp, CalendarCheck, Upload, Download, Stethoscope,
-  Bot, Syringe, Activity, Award, Target, Rocket, Globe
-} from 'lucide-react';
+import { PawPrint, Check, Phone, Mail, Globe, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-// vetbuddy Logo - New Brand Style 4 (Minimal with coral box)
-const VetBuddyLogo = ({ size = 40, white = false, showText = false }) => {
-  const boxSize = size;
-  const iconSize = Math.round(size * 0.55);
-  const padding = Math.round(size * 0.2);
-  const borderRadius = Math.round(size * 0.35);
-  const textSize = size >= 50 ? 'text-2xl' : size >= 35 ? 'text-xl' : 'text-lg';
-  
+export default function BrochurePage() {
   return (
-    <div className={`flex items-center gap-2`}>
-      <div 
-        className={`${white ? 'bg-white/20' : 'bg-gradient-to-br from-coral-500 to-rose-500'} flex items-center justify-center shadow-lg ${!white ? 'shadow-coral-500/30' : ''}`}
-        style={{
-          width: boxSize,
-          height: boxSize,
-          padding: padding,
-          borderRadius: borderRadius
-        }}
-      >
-        <PawPrint 
-          className={white ? 'text-white' : 'text-white'} 
-          style={{ width: iconSize, height: iconSize }}
-        />
+    <div className="brochure-container">
+      <style jsx global>{`
+        @media print {
+          body { margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+          .brochure-container { width: 100%; }
+          .brochure-page { page-break-after: always; page-break-inside: avoid; min-height: 100vh; }
+          .brochure-page:last-child { page-break-after: auto; }
+          .no-print { display: none !important; }
+          @page { margin: 0; size: A4; }
+        }
+        .brochure-container { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .brochure-page { min-height: 100vh; position: relative; overflow: hidden; }
+      `}</style>
+
+      {/* ====== DOWNLOAD BUTTON (screen only) ====== */}
+      <div className="no-print fixed top-4 right-4 z-50 flex gap-3">
+        <button onClick={() => window.print()} className="bg-coral-500 text-white px-6 py-3 rounded-xl font-bold shadow-xl hover:bg-coral-600 transition text-sm">
+          Scarica PDF
+        </button>
+        <Link href="/" className="bg-white text-gray-700 px-6 py-3 rounded-xl font-bold shadow-xl hover:bg-gray-50 transition text-sm border">
+          Torna al sito
+        </Link>
       </div>
-      {showText && (
-        <div className={`font-bold ${textSize}`}>
-          <span className={white ? 'text-white' : 'text-gray-900'}>vet</span>
-          <span className={white ? 'text-white/80' : 'text-coral-500'}>buddy</span>
+
+      {/* =====================================================
+          PAGINA 1 — COPERTINA
+      ===================================================== */}
+      <div className="brochure-page flex flex-col items-center justify-center bg-white px-12 py-16 text-center">
+        {/* Logo grande */}
+        <div className="mb-8">
+          <div className="w-24 h-24 bg-gradient-to-br from-coral-500 to-rose-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl mb-6">
+            <PawPrint className="w-14 h-14 text-white" />
+          </div>
+          <h1 className="text-6xl font-black text-gray-900 tracking-tight">
+            vet<span className="text-coral-500">buddy</span>
+          </h1>
         </div>
-      )}
-    </div>
-  );
-};
 
-// Animated Counter Component
-const AnimatedCounter = ({ value, suffix = '', prefix = '' }) => {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const [started, setStarted] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !started) {
-        setStarted(true);
-      }
-    }, { threshold: 0.5 });
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [started]);
-
-  useEffect(() => {
-    if (!started) return;
-    const duration = 2000;
-    const steps = 60;
-    const increment = value / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= value) {
-        setCount(value);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [started, value]);
-
-  return <span ref={ref}>{prefix}{count}{suffix}</span>;
-};
-
-// Feature Card Component
-const FeatureCard = ({ icon: Icon, title, description, color = 'coral', items = [], badge = null }) => {
-  const colorMap = {
-    coral: 'from-coral-400 to-coral-600 shadow-coral-200',
-    blue: 'from-blue-400 to-blue-600 shadow-blue-200',
-    purple: 'from-purple-400 to-purple-600 shadow-purple-200',
-    green: 'from-green-400 to-green-600 shadow-green-200',
-    amber: 'from-amber-400 to-amber-600 shadow-amber-200',
-    indigo: 'from-indigo-400 to-indigo-600 shadow-indigo-200',
-  };
-
-  return (
-    <div className="group relative bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-white/50">
-      {badge && (
-        <div className="absolute -top-3 right-6 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs px-4 py-1.5 rounded-full font-bold shadow-lg">
-          {badge}
+        <div className="max-w-lg mx-auto mb-12">
+          <p className="text-2xl text-gray-600 leading-relaxed mb-6">
+            La piattaforma digitale che connette<br/>
+            <strong className="text-gray-900">cliniche veterinarie</strong>,{' '}
+            <strong className="text-coral-500">proprietari di animali</strong><br/>
+            e <strong className="text-blue-600">laboratori di analisi</strong>.
+          </p>
         </div>
-      )}
-      <div className={`h-16 w-16 bg-gradient-to-br ${colorMap[color]} rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-        <Icon className="h-8 w-8 text-white" />
+
+        <div className="inline-flex items-center gap-2 bg-coral-50 text-coral-700 px-6 py-3 rounded-full border border-coral-200 mb-8">
+          <span className="text-lg font-bold">Pilot Milano 2025</span>
+        </div>
+
+        <p className="text-gray-400 text-sm">Accesso su invito per cliniche selezionate</p>
+
+        <div className="absolute bottom-8 left-0 right-0 text-center">
+          <p className="text-xs text-gray-300">vetbuddy.it &bull; info@vetbuddy.it</p>
+        </div>
       </div>
-      <h3 className="text-xl font-bold text-gray-900 mb-3">{title}</h3>
-      <p className="text-gray-600 mb-4 leading-relaxed">{description}</p>
-      {items.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {items.map((item, i) => (
-            <span key={i} className="inline-flex items-center gap-1 bg-coral-50 text-coral-700 text-xs px-3 py-1.5 rounded-full font-medium">
-              <Check className="h-3 w-3" /> {item}
-            </span>
+
+      {/* =====================================================
+          PAGINA 2 — CHI SIAMO + PROPOSTA DI VALORE
+      ===================================================== */}
+      <div className="brochure-page bg-white px-12 py-14">
+        <PageHeader />
+        
+        <h2 className="text-4xl font-black text-gray-900 mb-2 mt-6">Perché VetBuddy?</h2>
+        <p className="text-gray-500 text-lg mb-10 max-w-2xl">Gestisci appuntamenti, documenti e comunicazione tra cliniche, proprietari e laboratori. Zero carta, zero caos.</p>
+
+        <div className="grid grid-cols-3 gap-6 mb-12">
+          <StatBox number="70%" label="delle cliniche veterinarie usa ancora agenda cartacea o telefono" />
+          <StatBox number="12 min" label="tempo medio sprecato per ogni prenotazione telefonica" />
+          <StatBox number="40%" label="dei proprietari dimentica appuntamenti senza reminder" />
+        </div>
+
+        <h3 className="text-2xl font-bold text-gray-900 mb-6">Due ecosistemi, una piattaforma</h3>
+        <div className="grid grid-cols-2 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-coral-500 to-orange-500 text-white rounded-2xl p-6">
+            <h4 className="text-xl font-bold mb-3">Per le Cliniche Veterinarie</h4>
+            <p className="text-white/80 text-sm mb-4">Tutto ciò che serve per gestire la tua clinica in modo digitale.</p>
+            <ul className="space-y-1.5 text-sm text-white/90">
+              {['Agenda digitale e prenotazioni online', 'Gestione pazienti e cartelle cliniche', 'Documenti PDF con invio automatico via email', 'Team inbox e messaggistica clienti', '44+ automazioni attive 24/7', 'Metriche e report'].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+            <div className="mt-4 pt-3 border-t border-white/20">
+              <p className="font-bold">Pro Clinica: €0 per 90 giorni</p>
+              <p className="text-white/70 text-xs">Poi €79/mese + IVA</p>
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl p-6">
+            <h4 className="text-xl font-bold mb-3">Per i Proprietari di Animali</h4>
+            <p className="text-white/80 text-sm mb-4">La salute dei tuoi animali in un'unica app.</p>
+            <ul className="space-y-1.5 text-sm text-white/90">
+              {['Prenota visite online in pochi click', 'Ricevi documenti e referti digitali', 'Profilo completo per ogni animale', 'Reminder automatici per visite e vaccini', 'Programma fedeltà e premi', 'Chat diretta con la clinica'].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+            <div className="mt-4 pt-3 border-t border-white/20">
+              <p className="font-bold">100% Gratuito</p>
+              <p className="text-white/70 text-xs">Per sempre, nessun costo nascosto</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* =====================================================
+          PAGINA 3 — FUNZIONALITÀ CLINICA (dettaglio)
+      ===================================================== */}
+      <div className="brochure-page bg-white px-12 py-14">
+        <PageHeader />
+        <h2 className="text-3xl font-black text-gray-900 mb-1 mt-6">Funzionalità per la Clinica</h2>
+        <p className="text-gray-500 mb-8">Tutto ciò che serve per digitalizzare la gestione della tua clinica veterinaria.</p>
+
+        <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+          <FeatureBlock
+            title="Agenda Digitale"
+            desc="Calendario condiviso tra tutto lo staff. Visualizzazione per giorno, settimana e mese. Gestione delle disponibilità per veterinario e servizio."
+          />
+          <FeatureBlock
+            title="Prenotazioni Online"
+            desc="I clienti prenotano direttamente dal profilo pubblico della clinica o tramite link diretto e QR code. Nessuna telefonata necessaria."
+          />
+          <FeatureBlock
+            title="Gestione Pazienti"
+            desc="Cartella clinica digitale per ogni animale: specie, razza, peso, allergie, vaccinazioni, storico visite. Tutto consultabile in un click."
+          />
+          <FeatureBlock
+            title="Documenti e PDF"
+            desc="Carica referti, prescrizioni, fatture in PDF. Invia automaticamente via email al proprietario. Il cliente li ritrova anche nell'app."
+          />
+          <FeatureBlock
+            title="Team Inbox"
+            desc="Messaggistica centralizzata con assegnazione ticket allo staff. Chat diretta con i clienti per comunicazioni rapide."
+          />
+          <FeatureBlock
+            title="Metriche e Report"
+            desc="Dashboard con prenotazioni generate, telefonate evitate, tassi di conversione, analisi servizi più richiesti e trend mensili."
+          />
+          <FeatureBlock
+            title="Google Calendar Sync"
+            desc="Sincronizzazione bidirezionale con Google Calendar. Gli appuntamenti VetBuddy appaiono nel calendario del veterinario e viceversa."
+          />
+          <FeatureBlock
+            title="Video-Consulti"
+            desc="Consulenze veterinarie a distanza con videochiamata integrata. Ideale per follow-up, controlli post-operatori e consulti rapidi."
+          />
+          <FeatureBlock
+            title="Link Prenotazione + QR Code"
+            desc="Link diretto personalizzato da condividere su social, WhatsApp, sito web. QR Code stampabile da esporre in clinica."
+          />
+          <FeatureBlock
+            title="Profilo Pubblico"
+            desc="Pagina pubblica della clinica con servizi, orari, mappa, recensioni. Visibile su Google e condivisibile con un link."
+          />
+        </div>
+      </div>
+
+      {/* =====================================================
+          PAGINA 4 — 44+ AUTOMAZIONI (lista completa)
+      ===================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 text-white px-12 py-14">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+            <PawPrint className="w-5 h-5 text-white" />
+          </div>
+          <span className="font-bold text-white/60 text-sm">vetbuddy</span>
+        </div>
+
+        <h2 className="text-3xl font-black mb-1 mt-2">44+ Automazioni che lavorano per te</h2>
+        <p className="text-white/60 mb-8">Mentre ti occupi dei pazienti, VetBuddy gestisce automaticamente comunicazioni, promemoria e follow-up.</p>
+
+        <div className="grid grid-cols-2 gap-x-10 gap-y-5 text-sm">
+          <div>
+            <h4 className="text-amber-400 font-bold text-xs uppercase tracking-wider mb-3">Promemoria & Reminder</h4>
+            <AutoList items={[
+              'Reminder appuntamento 24h prima (email)',
+              'Reminder appuntamento 1h prima (email)',
+              'Reminder vaccino in scadenza',
+              'Reminder richiamo vaccino annuale',
+              'Reminder trattamento antiparassitario',
+              'Reminder controllo peso periodico',
+              'Reminder visita annuale di routine',
+              'Reminder pulizia dentale',
+              'Reminder rinnovo prescrizione',
+            ]} />
+
+            <h4 className="text-green-400 font-bold text-xs uppercase tracking-wider mb-3 mt-5">Conferme & Stato</h4>
+            <AutoList items={[
+              'Conferma prenotazione al cliente',
+              'Notifica nuova prenotazione alla clinica',
+              'Conferma cancellazione appuntamento',
+              'Notifica modifica appuntamento',
+              'Notifica lista d\'attesa (posto libero)',
+              'Conferma pagamento ricevuto',
+            ]} />
+          </div>
+          <div>
+            <h4 className="text-blue-400 font-bold text-xs uppercase tracking-wider mb-3">Follow-up & Fidelizzazione</h4>
+            <AutoList items={[
+              'Follow-up post-visita (1 giorno dopo)',
+              'Follow-up post-chirurgia (3 giorni dopo)',
+              'Follow-up post-chirurgia (7 giorni dopo)',
+              'Richiesta recensione dopo visita',
+              'Email di benvenuto nuovo cliente',
+              'Auguri compleanno animale',
+              'Auguri compleanno proprietario',
+              'Email di riepilogo visite semestrale',
+              'Invito rinnovo piano fedeltà',
+              'Notifica nuovi punti fedeltà guadagnati',
+            ]} />
+
+            <h4 className="text-purple-300 font-bold text-xs uppercase tracking-wider mb-3 mt-5">Documenti & Lab</h4>
+            <AutoList items={[
+              'Invio automatico documento PDF via email',
+              'Notifica nuovo documento caricato',
+              'Notifica referto lab pronto',
+              'Notifica nuova richiesta lab (al laboratorio)',
+              'Notifica stato richiesta aggiornato',
+              'Report mensile prenotazioni alla clinica',
+              'Report mensile pazienti attivi',
+              'Notifica slot agenda vuoti (alert)',
+              'Email onboarding staff (nuovo membro)',
+            ]} />
+          </div>
+        </div>
+        <p className="text-white/40 text-xs mt-6">+ altre automazioni in arrivo con ogni aggiornamento. Le automazioni si attivano automaticamente con il piano Pro Clinica.</p>
+      </div>
+
+      {/* =====================================================
+          PAGINA 5 — MODULO LABORATORIO + PROPRIETARI
+      ===================================================== */}
+      <div className="brochure-page bg-white px-12 py-14">
+        <PageHeader />
+
+        <h2 className="text-3xl font-black text-gray-900 mb-1 mt-6">Modulo Laboratorio di Analisi</h2>
+        <p className="text-gray-500 mb-6">Connetti la clinica con i laboratori partner. Richiedi esami, ricevi referti, confronta prezzi e tempi.</p>
+
+        <div className="grid grid-cols-2 gap-6 mb-10">
+          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
+            <h4 className="font-bold text-blue-800 text-lg mb-3">Per la Clinica</h4>
+            <ul className="space-y-2 text-sm text-gray-700">
+              {[
+                'Invia richieste di esame direttamente dalla scheda paziente',
+                'Seleziona laboratorio per distanza, prezzo e tempi',
+                'Ricevi notifica quando il referto è pronto',
+                'Rivedi il referto, aggiungi note cliniche, e invialo al proprietario',
+                'Storico completo richieste e referti per paziente',
+                'Marketplace laboratori con confronto visivo',
+              ].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5">
+            <h4 className="font-bold text-indigo-800 text-lg mb-3">Per il Laboratorio</h4>
+            <ul className="space-y-2 text-sm text-gray-700">
+              {[
+                'Dashboard dedicata per gestire le richieste ricevute',
+                'Aggiorna stato: Ricevuto, In Lavorazione, Pronto',
+                'Carica referti PDF con note tecniche',
+                'Profilo pubblico nel marketplace VetBuddy',
+                'Inserisci listino prezzi indicativo e tempi medi',
+                'Indica disponibilità ritiro campioni',
+              ].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <h2 className="text-3xl font-black text-gray-900 mb-1">Per i Proprietari di Animali</h2>
+        <p className="text-gray-500 mb-6">VetBuddy è gratuito per sempre per i proprietari. Ecco cosa possono fare:</p>
+
+        <div className="grid grid-cols-3 gap-4">
+          {[
+            { title: 'Prenota online', desc: 'Scegli clinica, servizio, veterinario e orario. Conferma in pochi click.' },
+            { title: 'Profilo animale', desc: 'Scheda completa con peso, allergie, vaccini, storico visite e documenti.' },
+            { title: 'Documenti e referti', desc: 'Tutti i PDF, referti e prescrizioni in un unico posto, accessibili sempre.' },
+            { title: 'Reminder', desc: 'Non perdi mai un appuntamento. Ricevi promemoria automatici via email.' },
+            { title: 'Programma fedeltà', desc: 'Accumula punti con ogni visita. 100 punti = €5 di sconto.' },
+            { title: 'Chat con la clinica', desc: 'Comunicazione diretta, veloce e senza telefonate.' },
+          ].map((item, i) => (
+            <div key={i} className="bg-gray-50 border border-gray-100 rounded-xl p-4">
+              <h5 className="font-bold text-gray-900 text-sm mb-1">{item.title}</h5>
+              <p className="text-gray-500 text-xs leading-relaxed">{item.desc}</p>
+            </div>
           ))}
         </div>
-      )}
+      </div>
+
+      {/* =====================================================
+          PAGINA 6 — COME FUNZIONA + ANIMALI
+      ===================================================== */}
+      <div className="brochure-page bg-gray-50 px-12 py-14">
+        <PageHeader />
+        
+        <h2 className="text-3xl font-black text-gray-900 mb-1 mt-6">Come funziona</h2>
+        <p className="text-gray-500 mb-8">Inizia in meno di 10 minuti. Nessuna installazione, nessun hardware.</p>
+
+        <div className="grid grid-cols-4 gap-5 mb-14">
+          {[
+            { num: '01', title: 'Registrati', desc: 'Crea il tuo account clinica su vetbuddy.it. Compila il profilo: nome, indirizzo, P.IVA, orari di apertura.' },
+            { num: '02', title: 'Configura', desc: 'Aggiungi servizi con prezzi e durate. Imposta le disponibilità dell\'agenda per ogni veterinario.' },
+            { num: '03', title: 'Importa', desc: 'Invita i tuoi clienti a registrarsi su VetBuddy. Possono trovare la clinica tramite il profilo pubblico.' },
+            { num: '04', title: 'Parti!', desc: 'I clienti prenotano online. Tu gestisci tutto da un\'unica dashboard. Le automazioni fanno il resto.' },
+          ].map((step, i) => (
+            <div key={i} className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
+              <div className="text-3xl font-black text-coral-500 mb-2">{step.num}</div>
+              <h4 className="font-bold text-gray-900 mb-2">{step.title}</h4>
+              <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Per tutti gli animali</h3>
+        <p className="text-gray-500 text-center mb-8">VetBuddy supporta qualsiasi tipo di paziente</p>
+        <div className="flex justify-center gap-6 mb-10">
+          {[
+            { emoji: '🐕', name: 'Cani' },
+            { emoji: '🐈', name: 'Gatti' },
+            { emoji: '🐴', name: 'Cavalli' },
+            { emoji: '🐇', name: 'Conigli' },
+            { emoji: '🐦', name: 'Uccelli' },
+            { emoji: '🦎', name: 'Rettili' },
+            { emoji: '🐹', name: 'Roditori' },
+            { emoji: '🐠', name: 'Pesci' },
+          ].map((a, i) => (
+            <div key={i} className="text-center">
+              <div className="text-4xl mb-1">{a.emoji}</div>
+              <p className="text-xs font-semibold text-gray-600">{a.name}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center max-w-xl mx-auto">
+          <p className="text-gray-900 font-bold text-lg mb-2">Dashboard del valore generato</p>
+          <p className="text-gray-500 text-sm">Ogni mese VetBuddy ti mostra quante prenotazioni ha generato, quante telefonate ti ha evitato e quanto tempo hai risparmiato. Numeri concreti per misurare il ritorno dell'investimento.</p>
+        </div>
+      </div>
+
+      {/* =====================================================
+          PAGINA 7 — PREZZI
+      ===================================================== */}
+      <div className="brochure-page bg-white px-12 py-14">
+        <PageHeader />
+
+        <div className="text-center mb-8 mt-4">
+          <div className="inline-flex items-center gap-2 bg-coral-50 text-coral-700 px-4 py-2 rounded-full border border-coral-200 mb-3">
+            <span className="font-bold text-sm">Pilot Milano</span>
+          </div>
+          <h2 className="text-3xl font-black text-gray-900 mb-2">Abbonamento VetBuddy</h2>
+          <p className="text-gray-500 max-w-xl mx-auto text-sm">Accesso su invito per cliniche selezionate e onboarding gratuito per i primi laboratori partner.</p>
+          <p className="text-xs text-gray-400 mt-1">Prezzi IVA esclusa.</p>
+        </div>
+
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          {/* Starter */}
+          <div className="border-2 border-gray-200 rounded-2xl p-5">
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Starter Clinica</p>
+            <div className="mb-2"><span className="text-3xl font-black text-gray-800">€0</span><span className="text-sm text-gray-400">/mese</span></div>
+            <p className="text-xs text-gray-500 mb-4">Per veterinari freelance e micro-cliniche in fase di valutazione.</p>
+            <ul className="space-y-1.5 text-xs text-gray-700">
+              {['1 sede', '1 utente', 'Fino a 30 richieste/mese', 'Profilo pubblico', 'Link prenotazione', 'Agenda base'].map((f, i) => (
+                <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-green-500 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+            <p className="text-xs text-gray-400 mt-4">Solo per cliniche ammesse al Pilot.</p>
+          </div>
+
+          {/* Pro Clinica */}
+          <div className="border-2 border-coral-400 rounded-2xl p-5 bg-coral-50/30 relative shadow-lg">
+            <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-coral-500 text-white text-xs px-3 py-1 rounded-full font-bold whitespace-nowrap">Consigliato</div>
+            <p className="text-xs font-bold text-coral-500 uppercase tracking-wider mb-2 mt-1">Pro Clinica</p>
+            <div className="mb-1"><span className="text-3xl font-black text-gray-900">€0</span><span className="text-sm text-gray-500 ml-1">per 90 giorni</span></div>
+            <p className="text-sm text-gray-600 mb-1">Poi <strong>€79/mese</strong> + IVA</p>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg px-2 py-1.5 mb-3">
+              <p className="text-xs font-bold text-amber-700">Early adopter: €49/mese + IVA</p>
+            </div>
+            <ul className="space-y-1.5 text-xs text-gray-700">
+              {['Fino a 10 staff', 'Prenotazioni online', 'Agenda digitale', 'Reminder automatici', 'Documenti e PDF', 'Google Calendar sync', 'Report e analytics', 'Lab Marketplace', 'Dashboard valore'].map((f, i) => (
+                <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-coral-500 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+            <p className="text-xs text-gray-400 mt-3">90gg gratis. Estendibile a 6 mesi.</p>
+          </div>
+
+          {/* Lab Partner */}
+          <div className="border-2 border-blue-200 rounded-2xl p-5 bg-blue-50/30">
+            <div className="absolute -top-2.5 left-4"></div>
+            <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Laboratorio Partner</p>
+            <div className="mb-1"><span className="text-3xl font-black text-gray-800">€0</span><span className="text-sm text-gray-500 ml-1">per 6 mesi</span></div>
+            <p className="text-sm text-gray-600 mb-3">Poi <strong>€29/mese</strong> + IVA</p>
+            <ul className="space-y-1.5 text-xs text-gray-700">
+              {['Dashboard laboratorio', 'Profilo marketplace', 'Listino prezzi', 'Tempi refertazione', 'Ritiro campioni', 'Ricezione richieste', 'Upload referti PDF', 'Storico richieste', 'Notifiche email'].map((f, i) => (
+                <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-blue-500 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+            <p className="text-xs text-gray-400 mt-3">Gratis 6 mesi o 50 richieste.</p>
+          </div>
+
+          {/* Enterprise */}
+          <div className="border-2 border-gray-200 rounded-2xl p-5">
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Enterprise</p>
+            <div className="mb-2"><span className="text-3xl font-black text-gray-800">Custom</span><span className="text-sm text-gray-400 ml-1">+ IVA</span></div>
+            <p className="text-xs text-gray-500 mb-4">Per gruppi veterinari, cliniche multi-sede e network di laboratori.</p>
+            <ul className="space-y-1.5 text-xs text-gray-700">
+              {['Multi-sede illimitate', 'Laboratori multipli', 'API dedicata', 'SLA garantito', 'Onboarding dedicato', 'Reportistica avanzata', 'Gestione centralizzata', 'Integrazioni custom'].map((f, i) => (
+                <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-gray-500 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+            <p className="text-xs text-gray-400 mt-3">Soluzione su misura.</p>
+          </div>
+        </div>
+
+        <p className="text-center text-xs text-gray-500 mb-6">Non è una prova libera: stiamo selezionando cliniche e laboratori partner per validare VetBuddy nel Pilot Milano.</p>
+
+        {/* FAQ */}
+        <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+          <h3 className="font-bold text-gray-900 mb-4 text-center">Domande frequenti</h3>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            {[
+              { q: 'Il piano Pro Clinica è davvero gratis per 90 giorni?', a: 'Sì, per le cliniche selezionate nel Pilot Milano.' },
+              { q: 'Cosa succede dopo i 90 giorni?', a: 'Il piano passa a €79/mese + IVA, con tariffa early adopter di €49/mese + IVA per le prime cliniche.' },
+              { q: 'I laboratori possono iscriversi senza invito?', a: 'Sì, possono registrarsi gratuitamente come Laboratorio Partner e attendere approvazione.' },
+              { q: 'I prezzi includono IVA?', a: 'No, tutti i prezzi sono IVA esclusa.' },
+            ].map((item, i) => (
+              <div key={i}>
+                <p className="font-semibold text-gray-900 text-xs mb-0.5">{item.q}</p>
+                <p className="text-gray-500 text-xs">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* =====================================================
+          PAGINA 8 — CONTATTI + CTA FINALE
+      ===================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-coral-500 to-orange-500 text-white px-12 py-14 flex flex-col">
+        <div className="flex items-center gap-3 mb-auto">
+          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+            <PawPrint className="w-5 h-5 text-white" />
+          </div>
+          <span className="font-bold text-white/80 text-sm">vetbuddy</span>
+        </div>
+
+        <div className="flex-1 flex flex-col items-center justify-center text-center">
+          <h2 className="text-5xl font-black mb-6 leading-tight">Pronto a digitalizzare<br/>la tua clinica?</h2>
+          <p className="text-white/80 text-xl max-w-xl mb-12">Unisciti alle cliniche veterinarie che stanno già testando VetBuddy nel Pilot Milano.</p>
+
+          <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full border border-white/20 mb-10">
+            <div className="space-y-4 text-left">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Globe className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-white/60 text-xs">Sito web</p>
+                  <p className="font-bold">vetbuddy.it</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-white/60 text-xs">Email</p>
+                  <p className="font-bold">info@vetbuddy.it</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-white/60 text-xs">Telefono</p>
+                  <p className="font-bold">Contattaci via email</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center mt-auto">
+          <p className="text-white/50 text-xs">© 2025 VetBuddy — Tutti i diritti riservati</p>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
-// Automation Item Component
-const AutomationItem = ({ icon: Icon, title, description, delay = 0 }) => (
-  <div 
-    className="flex items-start gap-4 p-5 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-white/50"
-    style={{ animationDelay: `${delay}ms` }}
-  >
-    <div className="h-12 w-12 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-      <Icon className="h-6 w-6 text-white" />
-    </div>
-    <div>
-      <h4 className="font-bold text-gray-900 mb-1">{title}</h4>
-      <p className="text-gray-600 text-sm">{description}</p>
-    </div>
-  </div>
-);
+/* ====== COMPONENTI HELPER ====== */
 
-export default function PresentazionePage() {
+function PageHeader() {
   return (
-    <div className="min-h-screen">
-      {/* ==================== HERO SECTION ==================== */}
-      <section className="relative min-h-screen bg-gradient-to-br from-coral-500 via-coral-400 to-orange-400 overflow-hidden">
-        {/* Decorative Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-orange-300/20 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-coral-300/10 rounded-full blur-3xl"></div>
-          {/* Floating shapes */}
-          <div className="absolute top-32 right-20 w-16 h-16 bg-white/20 rounded-2xl rotate-12 animate-float"></div>
-          <div className="absolute bottom-32 left-20 w-12 h-12 bg-white/15 rounded-full animate-float" style={{animationDelay: '1s'}}></div>
-          <div className="absolute top-1/3 left-1/4 w-8 h-8 bg-white/10 rounded-lg rotate-45 animate-float" style={{animationDelay: '0.5s'}}></div>
-        </div>
-
-        {/* Header */}
-        <header className="relative z-50 py-6 px-6">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-3">
-              <VetBuddyLogo size={36} white showText={true} />
-            </Link>
-            <Link 
-              href="/" 
-              className="bg-white/20 backdrop-blur-sm text-white px-6 py-2.5 rounded-full font-semibold hover:bg-white/30 transition-all"
-            >
-              Accedi alla Piattaforma
-            </Link>
-          </div>
-        </header>
-
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-12 pb-24 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-5 py-2.5 rounded-full mb-8 border border-white/30">
-            <Sparkles className="h-5 w-5" />
-            <span className="font-semibold">Il Gestionale Veterinario del Futuro</span>
-          </div>
-          
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight">
-            Automatizza la tua clinica.<br/>
-            <span className="text-white/90">Cura più animali.</span>
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mb-12 leading-relaxed">
-            vetbuddy elimina la burocrazia quotidiana con <strong>44+ automazioni intelligenti</strong>. 
-            Agenda, documenti, comunicazioni e pagamenti in un'unica piattaforma.
-          </p>
-
-          {/* Stats Row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12">
-            {[
-              { value: 90, suffix: '%', label: 'Burocrazia Eliminata' },
-              { value: 44, suffix: '+', label: 'Automazioni Attive' },
-              { value: 2, suffix: 'h', label: 'Risparmio al Giorno' },
-              { value: 100, suffix: '%', label: 'Gratuito per Proprietari' },
-            ].map((stat, i) => (
-              <div key={i} className="bg-white/15 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
-                <div className="text-4xl md:text-5xl font-black text-white mb-1">
-                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                </div>
-                <div className="text-white/80 text-sm font-medium">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Scroll indicator */}
-          <div className="animate-bounce">
-            <div className="w-8 h-12 border-2 border-white/50 rounded-full mx-auto flex justify-center">
-              <div className="w-2 h-3 bg-white/80 rounded-full mt-2 animate-pulse"></div>
-            </div>
-            <p className="text-white/60 text-sm mt-2">Scorri per scoprire di più</p>
-          </div>
-        </div>
-
-        {/* Wave Divider */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
-          </svg>
-        </div>
-      </section>
-
-      {/* ==================== CHI SIAMO ==================== */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-6 font-medium">
-            <Target className="h-4 w-4" />
-            La Nostra Missione
-          </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
-            Meno burocrazia, più tempo per <span className="text-coral-500">curare</span>
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            vetbuddy nasce per risolvere un problema reale: i veterinari passano troppo tempo 
-            in attività amministrative. La nostra piattaforma automatizza tutto ciò che può essere 
-            automatizzato, permettendoti di concentrarti su ciò che ami fare: <strong>curare gli animali</strong>.
-          </p>
-        </div>
-      </section>
-
-      {/* ==================== COME FUNZIONA ==================== */}
-      <section className="py-20 px-6 bg-gradient-to-br from-coral-50 via-orange-50 to-amber-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-6 font-medium">
-              <Rocket className="h-4 w-4" />
-              Inizia in 15 Minuti
-            </div>
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
-              Come <span className="text-coral-500">Funziona</span>
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Dalla registrazione all'operatività completa in pochi semplici passi
-            </p>
-          </div>
-
-          <div className="relative">
-            {/* Connection Line */}
-            <div className="hidden md:block absolute top-24 left-[12%] right-[12%] h-1 bg-gradient-to-r from-coral-300 via-orange-300 to-amber-300 rounded-full"></div>
-            
-            <div className="grid md:grid-cols-4 gap-8">
-              {[
-                { num: '01', icon: Users, title: 'Registrati', desc: 'Crea il tuo account in 2 minuti. Nessuna carta di credito richiesta.' },
-                { num: '02', icon: Building2, title: 'Configura', desc: 'Aggiungi i tuoi servizi, prezzi, orari e personalizza il profilo clinica.' },
-                { num: '03', icon: Upload, title: 'Importa', desc: 'Carica i tuoi pazienti esistenti da CSV o aggiungili manualmente.' },
-                { num: '04', icon: Rocket, title: 'Parti!', desc: 'Ricevi prenotazioni e gestisci tutto dalla dashboard unificata.' },
-              ].map((step, i) => (
-                <div key={i} className="relative text-center group">
-                  <div className="relative z-10 w-24 h-24 bg-white rounded-3xl shadow-xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform border-4 border-coral-100">
-                    <step.icon className="h-10 w-10 text-coral-500" />
-                    <div className="absolute -top-3 -right-3 w-8 h-8 bg-gradient-to-br from-coral-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
-                      {step.num}
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-2">{step.title}</h3>
-                  <p className="text-gray-600 text-sm">{step.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== FUNZIONALITÀ PRINCIPALI ==================== */}
-      <section className="py-20 px-6 bg-gradient-to-br from-coral-500 via-coral-400 to-orange-400 relative overflow-hidden">
-        {/* Background decorations */}
-        <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 right-10 w-80 h-80 bg-orange-300/10 rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-white/20 text-white px-4 py-2 rounded-full mb-6 font-medium backdrop-blur-sm">
-              <Zap className="h-4 w-4" />
-              Funzionalità Complete
-            </div>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-              Tutto ciò di cui hai bisogno
-            </h2>
-            <p className="text-white/90 text-lg max-w-2xl mx-auto">
-              Una piattaforma completa per gestire ogni aspetto della tua clinica veterinaria
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <FeatureCard 
-              icon={Calendar}
-              title="Agenda Intelligente"
-              description="Calendario con vista giornaliera, settimanale e mensile. Drag & drop, colori per veterinario, promemoria automatici."
-              color="blue"
-              items={['Multi-veterinario', 'Drag & drop', 'Sync Google']}
-            />
-            <FeatureCard 
-              icon={Inbox}
-              title="Team Inbox"
-              description="Tutti i messaggi dei clienti in un unico posto. Sistema ticket, assegnazione staff, quick replies e storico completo."
-              color="purple"
-              items={['Ticket system', 'Anti-doppioni', 'Template']}
-              badge="⭐ Più richiesto"
-            />
-            <FeatureCard 
-              icon={FileText}
-              title="Documenti Cloud"
-              description="Carica referti, prescrizioni e fatture. Invio automatico via email. Firma digitale integrata. Zero carta."
-              color="green"
-              items={['Upload drag&drop', 'Invio 1-click', 'Firma digitale']}
-            />
-            <FeatureCard 
-              icon={Video}
-              title="Video Consulto HD"
-              description="Consulenze online professionali. Un click per iniziare. Nessun software da installare per il cliente."
-              color="indigo"
-              items={['Qualità HD', '1-click start', 'Recording']}
-            />
-            <FeatureCard 
-              icon={CreditCard}
-              title="Fatturazione Pro"
-              description="Crea preventivi e fatture PROFORMA in secondi. Export CSV per il commercialista. Pagamenti Stripe."
-              color="amber"
-              items={['Preventivi', 'Fatture', 'Export CSV']}
-            />
-            <FeatureCard 
-              icon={BarChart3}
-              title="Analytics & Report"
-              description="Dashboard con KPI in tempo reale. Monitora visite, fatturato, no-show, nuovi clienti e trend mensili."
-              color="coral"
-              items={['KPI dashboard', 'Report no-show', 'Trend']}
-            />
-          </div>
-
-          {/* Lab Marketplace Feature */}
-          <div className="mt-10 bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="flex-shrink-0">
-                <div className="h-20 w-20 bg-purple-500/30 rounded-2xl flex items-center justify-center">
-                  <svg className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
-                </div>
-              </div>
-              <div className="text-white flex-1">
-                <div className="inline-flex items-center gap-2 bg-purple-400/30 px-3 py-1 rounded-full text-xs font-semibold mb-3">
-                  🧪 NOVITÀ
-                </div>
-                <h3 className="text-2xl font-bold mb-2">Marketplace Laboratori di Analisi</h3>
-                <p className="text-white/80 mb-4">
-                  Connetti la tua clinica con laboratori di analisi partner. Cerca per specializzazione, confronta prezzi indicativi, 
-                  verifica tempi di refertazione e ritiro campioni. Invia richieste direttamente dalla dashboard e ricevi i referti digitali.
-                </p>
-                <div className="flex flex-wrap gap-3 text-sm">
-                  <span className="bg-white/20 rounded-full px-3 py-1">🔍 Cerca e filtra</span>
-                  <span className="bg-white/20 rounded-full px-3 py-1">💰 Listino prezzi</span>
-                  <span className="bg-white/20 rounded-full px-3 py-1">📄 Referti digitali</span>
-                  <span className="bg-white/20 rounded-full px-3 py-1">🚚 Ritiro campioni</span>
-                  <span className="bg-white/20 rounded-full px-3 py-1">🔗 Collegamento diretto</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== 44+ AUTOMAZIONI ==================== */}
-      <section className="py-20 px-6 bg-gradient-to-br from-purple-900 via-indigo-900 to-purple-800 relative overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.03%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50"></div>
-          <div className="absolute top-20 right-20 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-20 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full mb-6 font-medium backdrop-blur-sm border border-white/20">
-              <Bot className="h-4 w-4" />
-              Intelligenza Artificiale
-            </div>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300">44+ Automazioni</span> che lavorano per te
-            </h2>
-            <p className="text-purple-200 text-lg max-w-2xl mx-auto">
-              Mentre ti occupi dei pazienti, vetbuddy gestisce automaticamente comunicazioni, promemoria e follow-up
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-5">
-            <AutomationItem 
-              icon={Bell}
-              title="Promemoria Appuntamenti"
-              description="SMS/Email/WhatsApp 24h e 1h prima dell'appuntamento. Riduzione no-show fino al 70%."
-              delay={0}
-            />
-            <AutomationItem 
-              icon={Syringe}
-              title="Richiami Vaccini"
-              description="Notifiche automatiche quando un vaccino sta per scadere. Mai più richiami dimenticati."
-              delay={100}
-            />
-            <AutomationItem 
-              icon={Heart}
-              title="Auguri Compleanno Pet"
-              description="Email personalizzata con sconto per il compleanno dell'animale. +40% retention."
-              delay={200}
-            />
-            <AutomationItem 
-              icon={Activity}
-              title="Follow-up Post Visita"
-              description="Messaggio automatico 48h dopo la visita per verificare lo stato del paziente."
-              delay={300}
-            />
-            <AutomationItem 
-              icon={Star}
-              title="Richiesta Recensioni"
-              description="Invito automatico a lasciare una recensione dopo ogni visita completata."
-              delay={400}
-            />
-            <AutomationItem 
-              icon={Gift}
-              title="Premi Fedeltà"
-              description="Sistema punti automatico: i clienti accumulano punti ad ogni visita e li convertono in sconti."
-              delay={500}
-            />
-            <AutomationItem 
-              icon={Mail}
-              title="Invio Documenti"
-              description="Referti e prescrizioni inviati automaticamente via email al proprietario."
-              delay={600}
-            />
-            <AutomationItem 
-              icon={TrendingUp}
-              title="Report Settimanali"
-              description="Riepilogo automatico ogni lunedì: appuntamenti, fatturato, nuovi clienti."
-              delay={700}
-            />
-          </div>
-
-          <div className="mt-12 text-center">
-            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500/30 to-pink-500/30 backdrop-blur-sm text-white px-8 py-4 rounded-2xl border border-white/20">
-              <div className="text-4xl font-black">-80%</div>
-              <div className="text-left">
-                <div className="font-bold">Telefonate ridotte</div>
-                <div className="text-purple-200 text-sm">grazie alle automazioni</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== DUE ECOSISTEMI ==================== */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-6 font-medium">
-              <Globe className="h-4 w-4" />
-              Un Ecosistema Completo
-            </div>
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
-              Due mondi, <span className="text-coral-500">una piattaforma</span>
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              vetbuddy connette cliniche veterinarie e proprietari di animali in un'unica esperienza fluida
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Per Cliniche */}
-            <div className="relative bg-gradient-to-br from-coral-500 to-orange-500 rounded-3xl p-8 text-white overflow-hidden group hover:shadow-2xl transition-all duration-500">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-500"></div>
-              <div className="relative z-10">
-                <div className="h-16 w-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
-                  <Building2 className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold mb-4">Per le Cliniche Veterinarie</h3>
-                <p className="text-white/90 mb-6">Tutto ciò che serve per gestire la tua clinica in modo efficiente e moderno.</p>
-                <ul className="space-y-3">
-                  {[
-                    'Dashboard "cosa fare oggi" in 10 secondi',
-                    'Team Inbox con assegnazione ticket',
-                    'Documenti → email automatica al cliente',
-                    'Posizione su mappa con indicazioni',
-                    'Report finanziari e analytics completi',
-                    '44+ automazioni attive 24/7'
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <div className="h-6 w-6 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Check className="h-4 w-4" />
-                      </div>
-                      <span className="text-white/95">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-8 pt-6 border-t border-white/20">
-                  <p className="font-bold text-lg">Pilot Milano</p>
-                  <p className="text-white/80 text-sm">Pro Clinica: €0 per 90 giorni, poi €79/mese + IVA</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Per Proprietari */}
-            <div className="relative bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-8 text-white overflow-hidden group hover:shadow-2xl transition-all duration-500">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-500"></div>
-              <div className="relative z-10">
-                <div className="h-16 w-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
-                  <PawPrint className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold mb-4">Per i Proprietari di Animali</h3>
-                <p className="text-white/90 mb-6">La salute del tuo animale sempre sotto controllo, gratuitamente.</p>
-                <ul className="space-y-3">
-                  {[
-                    'Registra tutti i tuoi animali con foto',
-                    'Prenota visite in pochi click, 24/7',
-                    'Ricevi referti e prescrizioni via email',
-                    'Promemoria vaccini automatici',
-                    'Trova cliniche sulla mappa vicino a te',
-                    'Accumula punti fedeltà ad ogni visita'
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <div className="h-6 w-6 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Check className="h-4 w-4" />
-                      </div>
-                      <span className="text-white/95">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-8 pt-6 border-t border-white/20">
-                  <p className="font-bold text-lg">100% Gratuito</p>
-                  <p className="text-white/80 text-sm">Per sempre, nessun costo nascosto</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== ANIMALI SUPPORTATI ==================== */}
-      <section className="py-16 px-6 bg-gradient-to-br from-coral-50 to-orange-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Per <span className="text-coral-500">tutti</span> gli animali
-            </h2>
-            <p className="text-gray-600">vetbuddy supporta qualsiasi tipo di paziente</p>
-          </div>
-
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-            {[
-              { emoji: '🐕', name: 'Cani', color: 'from-amber-400 to-orange-500' },
-              { emoji: '🐱', name: 'Gatti', color: 'from-purple-400 to-pink-500' },
-              { emoji: '🐴', name: 'Cavalli', color: 'from-amber-500 to-amber-700' },
-              { emoji: '🐰', name: 'Conigli', color: 'from-pink-400 to-rose-500' },
-              { emoji: '🦜', name: 'Uccelli', color: 'from-green-400 to-emerald-500' },
-              { emoji: '🦎', name: 'Rettili', color: 'from-teal-400 to-cyan-500' },
-            ].map((animal, i) => (
-              <div key={i} className={`bg-gradient-to-br ${animal.color} rounded-2xl p-5 text-center text-white shadow-lg hover:scale-105 transition-transform`}>
-                <div className="text-4xl mb-2">{animal.emoji}</div>
-                <div className="font-semibold text-sm">{animal.name}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== PREZZI ==================== */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-6 font-medium">
-              <Award className="h-4 w-4" />
-              Pilot Milano
-            </div>
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
-              Abbonamento <span className="text-coral-500">VetBuddy</span>
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Accesso su invito per cliniche selezionate e onboarding gratuito per i primi laboratori partner.
-            </p>
-            <p className="text-xs text-gray-400 mt-3">Prezzi IVA esclusa.</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto items-start">
-            {/* Starter Clinica */}
-            <div className="bg-gray-50 rounded-3xl p-6 border-2 border-gray-200 hover:border-gray-300 transition-all hover:shadow-xl">
-              <div className="text-gray-500 text-sm font-semibold mb-2 uppercase tracking-wider">Starter Clinica</div>
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-4xl font-black text-gray-800">€0</span>
-                <span className="text-gray-400">/mese</span>
-              </div>
-              <p className="text-gray-500 text-sm mb-6">Per veterinari freelance e micro-cliniche in fase di valutazione.</p>
-              <div className="space-y-3 mb-6">
-                {['1 sede', '1 utente', 'Fino a 30 richieste/mese', 'Profilo pubblico', 'Link diretto di prenotazione', 'Agenda base'].map((f, i) => (
-                  <div key={i} className="flex items-center gap-3 text-gray-700 text-sm">
-                    <div className="h-5 w-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="h-3 w-3 text-green-600" />
-                    </div>
-                    {f}
-                  </div>
-                ))}
-              </div>
-              <Link href="/" className="block text-center py-3 px-4 border-2 border-gray-300 rounded-xl text-gray-700 font-semibold text-sm hover:bg-gray-100 transition">
-                Richiedi invito
-              </Link>
-              <p className="text-xs text-gray-400 mt-3 text-center">Disponibile solo per cliniche ammesse al Pilot Milano.</p>
-            </div>
-
-            {/* Pro Clinica — EVIDENZIATO */}
-            <div className="bg-gradient-to-br from-coral-500 to-orange-500 rounded-3xl p-6 text-white relative shadow-2xl ring-2 ring-coral-300">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-coral-600 text-xs px-4 py-1.5 rounded-full font-bold shadow-lg whitespace-nowrap">
-                Consigliato
-              </div>
-              <div className="text-white/80 text-sm font-semibold mb-2 uppercase tracking-wider">Pro Clinica</div>
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-4xl font-black">€0</span>
-                <span className="text-white/70 ml-1">per 90 giorni</span>
-              </div>
-              <p className="text-white/80 text-sm mb-2">Poi <span className="font-bold text-white">€79/mese</span> + IVA</p>
-              <div className="bg-white/15 backdrop-blur-sm rounded-lg px-3 py-2 mb-4 border border-white/20">
-                <p className="text-xs font-semibold text-white">Early adopter Pilot Milano: €49/mese + IVA per le prime cliniche selezionate.</p>
-              </div>
-              <p className="text-white/80 text-xs mb-4">Il piano principale per cliniche veterinarie che vogliono digitalizzare prenotazioni, agenda, documenti e rapporto con i clienti.</p>
-              <div className="space-y-2.5 mb-4">
-                {['Fino a 10 staff', 'Prenotazioni online', 'Agenda digitale', 'Reminder email automatici', 'Documenti e PDF via email', 'Google Calendar sync', 'Report e analytics', 'Link prenotazione + QR code', 'Dashboard valore generato', 'Modulo richieste lab analisi', 'Accesso marketplace laboratori', 'Confronto lab distanza e prezzi'].map((f, i) => (
-                  <div key={i} className="flex items-center gap-3 text-white/95 text-sm">
-                    <div className="h-5 w-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="h-3 w-3" />
-                    </div>
-                    {f}
-                  </div>
-                ))}
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2.5 mb-4 border border-white/20">
-                <p className="text-xs text-white/90 font-medium">Questo mese VetBuddy ti mostra quante prenotazioni ha generato e quante telefonate ti ha evitato.</p>
-              </div>
-              <Link href="/" className="block text-center py-3 px-4 bg-white text-coral-600 rounded-xl font-bold text-sm hover:bg-white/90 transition shadow-lg">
-                Richiedi accesso Pilot
-              </Link>
-              <p className="text-xs text-white/60 mt-3 text-center leading-relaxed">90 giorni gratuiti per cliniche selezionate. Estendibile fino a 6 mesi per cliniche attive.</p>
-            </div>
-
-            {/* Laboratorio Partner */}
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl p-6 text-white relative shadow-xl">
-              <div className="absolute -top-3 left-4 bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-bold shadow-lg">
-                Per Laboratori
-              </div>
-              <div className="text-white/80 text-sm font-semibold mb-2 uppercase tracking-wider">Laboratorio Partner</div>
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-4xl font-black">€0</span>
-                <span className="text-white/70 ml-1">per 6 mesi</span>
-              </div>
-              <p className="text-white/80 text-sm mb-4">Poi <span className="font-bold text-white">€29/mese</span> + IVA</p>
-              <p className="text-white/70 text-xs mb-4">Per laboratori di analisi veterinaria che vogliono ricevere richieste dalle cliniche e caricare referti su VetBuddy.</p>
-              <div className="space-y-2.5 mb-5">
-                {['Dashboard laboratorio', 'Profilo nel marketplace', 'Listino prezzi indicativo', 'Tempi medi di refertazione', 'Servizio ritiro campioni', 'Ricezione richieste da cliniche', 'Gestione stati richiesta', 'Upload referti PDF', 'Storico richieste e referti', 'Notifiche email'].map((f, i) => (
-                  <div key={i} className="flex items-center gap-3 text-white/95 text-sm">
-                    <div className="h-5 w-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="h-3 w-3" />
-                    </div>
-                    {f}
-                  </div>
-                ))}
-              </div>
-              <Link href="/" className="block text-center py-3 px-4 bg-white text-blue-600 rounded-xl font-bold text-sm hover:bg-white/90 transition shadow-lg">
-                Registrati gratis
-              </Link>
-              <p className="text-xs text-white/60 mt-3 text-center leading-relaxed">Gratis per 6 mesi o fino a 50 richieste gestite. Poi €29/mese + IVA.</p>
-            </div>
-
-            {/* Enterprise */}
-            <div className="bg-gray-50 rounded-3xl p-6 border-2 border-gray-100 hover:border-coral-200 transition-all hover:shadow-xl">
-              <div className="text-gray-500 text-sm font-semibold mb-2 uppercase tracking-wider">Enterprise</div>
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-4xl font-black text-gray-900">Custom</span>
-                <span className="text-gray-400 ml-1">+ IVA</span>
-              </div>
-              <p className="text-gray-500 text-sm mb-6">Per gruppi veterinari, cliniche multi-sede e network di laboratori.</p>
-              <div className="space-y-3 mb-6">
-                {['Multi-sede illimitate', 'Laboratori multipli', 'API dedicata', 'SLA garantito', 'Onboarding dedicato', 'Reportistica avanzata', 'Gestione centralizzata', 'Integrazioni personalizzate'].map((f, i) => (
-                  <div key={i} className="flex items-center gap-3 text-gray-700 text-sm">
-                    <div className="h-5 w-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="h-3 w-3 text-green-600" />
-                    </div>
-                    {f}
-                  </div>
-                ))}
-              </div>
-              <a href="mailto:info@vetbuddy.it" className="block text-center py-3 px-4 border-2 border-gray-200 rounded-xl text-gray-700 font-semibold text-sm hover:bg-gray-100 transition">
-                Contattaci
-              </a>
-              <p className="text-xs text-gray-400 mt-3 text-center">Soluzione su misura per gruppi e network veterinari.</p>
-            </div>
-          </div>
-
-          <p className="text-center text-sm text-gray-500 mt-10 max-w-xl mx-auto">
-            Non è una prova libera: stiamo selezionando cliniche e laboratori partner per validare VetBuddy nel Pilot Milano.
-          </p>
-
-          {/* FAQ Prezzi */}
-          <div className="mt-16 max-w-3xl mx-auto">
-            <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">Domande frequenti sui prezzi</h3>
-            <div className="space-y-4">
-              {[
-                { q: 'Il piano Pro Clinica è davvero gratis per 90 giorni?', a: 'Sì, per le cliniche selezionate nel Pilot Milano.' },
-                { q: 'Cosa succede dopo i 90 giorni?', a: 'Il piano passa a €79/mese + IVA, con tariffa early adopter di €49/mese + IVA per le prime cliniche selezionate.' },
-                { q: 'I laboratori possono iscriversi anche senza invito?', a: 'Sì, possono registrarsi gratuitamente come Laboratorio Partner e attendere approvazione.' },
-                { q: 'I prezzi includono IVA?', a: 'No, tutti i prezzi indicati sono IVA esclusa.' },
-              ].map((item, i) => (
-                <div key={i} className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-                  <h4 className="font-semibold text-gray-900 mb-2">{item.q}</h4>
-                  <p className="text-gray-600 text-sm">{item.a}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== CTA FINALE ==================== */}
-      <section className="py-24 px-6 bg-gradient-to-br from-coral-500 via-coral-400 to-orange-400 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 right-10 w-80 h-80 bg-orange-300/20 rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="flex justify-center">
-            <VetBuddyLogo size={70} white showText={true} />
-          </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-white mt-8 mb-6">
-            Pronto a rivoluzionare<br/>la tua clinica?
-          </h2>
-          <p className="text-white/90 text-xl mb-10 max-w-2xl mx-auto">
-            Unisciti alle cliniche che hanno già scelto vetbuddy. 
-            Inizia il tuo percorso verso una gestione più efficiente oggi stesso.
-          </p>
-          <Link 
-            href="/" 
-            className="inline-flex items-center gap-3 bg-white text-coral-600 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/90 transition-all shadow-2xl hover:shadow-xl hover:-translate-y-1"
-          >
-            Inizia Gratuitamente
-            <ArrowRight className="h-6 w-6" />
-          </Link>
-          <p className="text-white/70 text-sm mt-6">
-            Nessuna carta di credito richiesta • Setup in 15 minuti
-          </p>
-        </div>
-      </section>
-
-      {/* ==================== FOOTER ==================== */}
-      <footer className="py-12 px-6 bg-gray-900">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-3">
-              <VetBuddyLogo size={28} white showText={true} />
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-6 text-gray-400 text-sm">
-              <a href="mailto:info@vetbuddy.it" className="hover:text-white transition">info@vetbuddy.it</a>
-              <Link href="/privacy" className="hover:text-white transition">Privacy</Link>
-              <Link href="/termini" className="hover:text-white transition">Termini</Link>
-            </div>
-            <p className="text-gray-500 text-sm">
-              © 2025 vetbuddy. Tutti i diritti riservati.
-            </p>
-          </div>
-        </div>
-      </footer>
-
-      {/* Animation Keyframes */}
-      <style jsx global>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) rotate(12deg); }
-          50% { transform: translateY(-20px) rotate(12deg); }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-      `}</style>
+    <div className="flex items-center gap-3">
+      <div className="w-8 h-8 bg-gradient-to-br from-coral-500 to-rose-500 rounded-xl flex items-center justify-center shadow-sm">
+        <PawPrint className="w-4 h-4 text-white" />
+      </div>
+      <span className="font-bold text-gray-400 text-sm">vet<span className="text-coral-400">buddy</span></span>
     </div>
+  );
+}
+
+function StatBox({ number, label }) {
+  return (
+    <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 text-center">
+      <div className="text-4xl font-black text-coral-500 mb-2">{number}</div>
+      <p className="text-gray-500 text-sm leading-snug">{label}</p>
+    </div>
+  );
+}
+
+function FeatureBlock({ title, desc }) {
+  return (
+    <div className="border-l-4 border-coral-400 pl-4 py-1">
+      <h4 className="font-bold text-gray-900 mb-1">{title}</h4>
+      <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+    </div>
+  );
+}
+
+function AutoList({ items }) {
+  return (
+    <ul className="space-y-1">
+      {items.map((item, i) => (
+        <li key={i} className="flex items-start gap-2 text-white/85">
+          <Check className="w-3 h-3 text-green-400 mt-0.5 flex-shrink-0" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
