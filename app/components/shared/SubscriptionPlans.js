@@ -5,12 +5,13 @@ import { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle, RefreshCw, Crown, Sparkles, FlaskConical, Building2, Check, X } from 'lucide-react';
+import { CheckCircle, RefreshCw, Crown, Sparkles, FlaskConical, Building2, Check, X, Settings, ExternalLink } from 'lucide-react';
 import api from '@/app/lib/api';
 
 function SubscriptionPlans({ user }) {
   const [loading, setLoading] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState(null);
+  const [loadingPortal, setLoadingPortal] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [plans, setPlans] = useState(null);
@@ -78,6 +79,22 @@ function SubscriptionPlans({ user }) {
       alert(error.message || 'Errore durante la creazione del pagamento');
     } finally {
       setLoadingPlan(null);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    setLoadingPortal(true);
+    try {
+      const originUrl = window.location.origin;
+      const res = await api.post('stripe/portal', { originUrl });
+      if (res.url) {
+        window.location.href = res.url;
+      }
+    } catch (error) {
+      console.error('Portal error:', error);
+      alert(error.message || 'Errore durante l\'apertura del portale di gestione');
+    } finally {
+      setLoadingPortal(false);
     }
   };
 
@@ -177,17 +194,32 @@ function SubscriptionPlans({ user }) {
       )}
 
       {isActive && !paymentSuccess && (
-        <div className="bg-violet-50 border border-violet-200 rounded-xl p-4 flex items-center gap-3">
-          <Crown className="h-5 w-5 text-violet-600" />
-          <div>
-            <p className="font-semibold text-violet-800">
-              Piano attivo: {plans?.[currentPlan]?.name || currentPlan}
-            </p>
-            <p className="text-sm text-violet-600">
-              {subscriptionStatus?.status === 'trialing' ? '🎁 Periodo di prova gratuita attivo' : '✓ Abbonamento attivo'}
-              {subscriptionStatus?.trialEnd && ` — scade il ${new Date(subscriptionStatus.trialEnd).toLocaleDateString('it-IT')}`}
-            </p>
+        <div className="bg-violet-50 border border-violet-200 rounded-xl p-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Crown className="h-5 w-5 text-violet-600" />
+            <div>
+              <p className="font-semibold text-violet-800">
+                Piano attivo: {plans?.[currentPlan]?.name || currentPlan}
+              </p>
+              <p className="text-sm text-violet-600">
+                {subscriptionStatus?.status === 'trialing' ? '🎁 Periodo di prova gratuita attivo' : '✓ Abbonamento attivo'}
+                {subscriptionStatus?.trialEnd && ` — scade il ${new Date(subscriptionStatus.trialEnd).toLocaleDateString('it-IT')}`}
+              </p>
+            </div>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-violet-300 text-violet-700 hover:bg-violet-100 whitespace-nowrap"
+            onClick={handleManageSubscription}
+            disabled={loadingPortal}
+          >
+            {loadingPortal ? (
+              <><RefreshCw className="h-4 w-4 mr-2 animate-spin" /> Caricamento...</>
+            ) : (
+              <><Settings className="h-4 w-4 mr-2" /> Gestisci Abbonamento</>
+            )}
+          </Button>
         </div>
       )}
 
@@ -259,9 +291,24 @@ function SubscriptionPlans({ user }) {
               </div>
               
               {isCurrent ? (
-                <Button className="w-full bg-green-500 hover:bg-green-600" disabled>
-                  <CheckCircle className="h-4 w-4 mr-2" /> Piano Attivo
-                </Button>
+                <div className="space-y-2">
+                  <Button className="w-full bg-green-500 hover:bg-green-600" disabled>
+                    <CheckCircle className="h-4 w-4 mr-2" /> Piano Attivo
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full text-violet-600 hover:text-violet-700 hover:bg-violet-50"
+                    onClick={handleManageSubscription}
+                    disabled={loadingPortal}
+                  >
+                    {loadingPortal ? (
+                      <><RefreshCw className="h-3 w-3 mr-1.5 animate-spin" /> Caricamento...</>
+                    ) : (
+                      <><ExternalLink className="h-3 w-3 mr-1.5" /> Gestisci fatturazione</>
+                    )}
+                  </Button>
+                </div>
               ) : (
                 <Button 
                   className={`w-full text-white ${plan.buttonColor}`}
