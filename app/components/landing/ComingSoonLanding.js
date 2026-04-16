@@ -9,6 +9,7 @@ import {
   PawPrint, Heart, Shield, Star, CheckCircle, Calendar, Users, Zap, Mail, Loader2
 } from 'lucide-react';
 import api from '@/app/lib/api';
+import AuthForm from '@/app/components/auth/AuthForm';
 
 function ComingSoonLanding({ onLogin }) {
   const [showTeamLogin, setShowTeamLogin] = useState(false);
