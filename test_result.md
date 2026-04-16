@@ -1404,15 +1404,54 @@ agent_communication:
         comment: "Full compliance implementation: REVComplianceBanner component (3 variants), REVTutorial (6-step accordion + checklist), ClinicREVSettings page (activation state, requirements, modes, roles, CTA). Compliance banner added to ClinicPrescriptions, PrescriptionWizard, PrescriptionDetail. Microcopy updated across all REV components. Homepage REV section + 4 FAQs + Brochure updated. PDF regenerated."
 
 
+  - task: "PDF Tutorial Generation API (Clinic/Owner/Lab)"
+    implemented: true
+    working: true
+    file: "/app/app/api/tutorials/download/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "PDF generation for all 3 tutorials (clinic, owner, lab) verified via analyze_file_tool. Italian accents (è, à, ù, ì, ò) rendering correctly. Branding 'VetBuddy' consistent. Pricing correct: Starter €0, Pro €79, Early €49, Lab €29. REV disclaimer present. Coral theme applied. sanitizeText function fixed to preserve WinAnsi characters."
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE PDF TUTORIAL GENERATION API TESTING COMPLETED - ALL 5/5 TESTS PASSED ✅: Successfully tested VetBuddy PDF Tutorial Generation API as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. ✅ **GET /api/tutorials/download?type=clinic**: Returns HTTP 200, Content-Type application/pdf, 15,158 byte PDF with filename 'VetBuddy_Guida_Cliniche.pdf'. Valid PDF format detected. ✅ **GET /api/tutorials/download?type=owner**: Returns HTTP 200, Content-Type application/pdf, 12,783 byte PDF with filename 'VetBuddy_Guida_Proprietari.pdf'. Valid PDF format detected. ✅ **GET /api/tutorials/download?type=lab**: Returns HTTP 200, Content-Type application/pdf, 11,647 byte PDF with filename 'VetBuddy_Guida_Laboratori.pdf'. Valid PDF format detected. ✅ **All Verification Criteria Met**: HTTP status 200, Content-Type contains application/pdf, response body size > 5000 bytes (all PDFs well above threshold), Content-Disposition headers contain correct filenames, no server errors, valid PDF format (magic bytes %PDF-). ✅ **Error Handling**: API handles invalid types and missing parameters gracefully without crashes. All 3 tutorial download endpoints fully operational and ready for production use."
+
+  - task: "Inline Tutorial Components (Clinic/Owner/Lab) - Text Alignment"
+    implemented: true
+    working: "NA"
+    file: "/app/app/components/clinic/ClinicTutorialInline.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "All 3 inline tutorial components rewritten with proper Italian accents (Unicode escapes), aligned text matching PDF tutorials, correct pricing (€ symbol), and full REV disclaimer. Files: ClinicTutorialInline.js, OwnerTutorialInline.js, LabTutorialInline.js."
+
+  - task: "Brochure UI Branding Fix"
+    implemented: true
+    working: "NA"
+    file: "/app/app/presentazione/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed branding in brochure: changed 'vetbuddy' (lowercase) to 'VetBuddy' in cover page title, automation page header, CTA page header, and PageHeader component. Screenshot verified."
+
 metadata:
   created_by: "testing_agent"
-  version: "2.1"
-  test_sequence: 3
+  version: "2.2"
+  test_sequence: 4
   run_ui: false
 
 test_plan:
   current_focus:
-    - "VetBuddy REV (Ricetta Elettronica Veterinaria) Module Backend API"
+    - "PDF Tutorial Generation API (Clinic/Owner/Lab)"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -1420,4 +1459,10 @@ test_plan:
 agent_communication:
     - agent: "testing"
       message: "COMPREHENSIVE REV MODULE TESTING COMPLETED ✅: Successfully tested all 11 VetBuddy REV (Ricetta Elettronica Veterinaria) backend API endpoints as specified in review request. All tests passed (100% success rate). REV configuration, prescription CRUD operations, manual registration, audit trail, publish to owner, and authorization checks all working perfectly. Email notifications triggered correctly. Owner data sanitization working. Ready for production use."
+
+    - agent: "main"
+      message: "EDITORIAL POLISH SESSION - 16-APR-2026: Completed editorial polish of all marketing/onboarding materials. 1) Verified PDF tutorials generate correctly with Italian accents via analyze_file_tool (all 3 pass). 2) Rewrote all 3 inline tutorial components with proper accents and aligned text. 3) Fixed branding in brochure (VetBuddy not vetbuddy). Please test PDF generation endpoints: GET /api/tutorials/download?type=clinic, GET /api/tutorials/download?type=owner, GET /api/tutorials/download?type=lab. Verify HTTP 200 and Content-Type application/pdf."
+
+    - agent: "testing"
+      message: "PDF TUTORIAL GENERATION API TESTING COMPLETED ✅: Successfully tested all 3 VetBuddy PDF Tutorial Generation API endpoints as requested. All endpoints working perfectly: GET /api/tutorials/download?type=clinic (15,158 bytes), GET /api/tutorials/download?type=owner (12,783 bytes), GET /api/tutorials/download?type=lab (11,647 bytes). All return HTTP 200, Content-Type application/pdf, valid PDF format, and proper filenames. All verification criteria from review request satisfied. API ready for production use."
 

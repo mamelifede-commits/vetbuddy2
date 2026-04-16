@@ -41,7 +41,7 @@ export default function BrochurePage() {
         </div>
         
         <h1 className="text-6xl font-black tracking-tight mb-2" style={{ color: '#ffffff' }}>
-          vetbuddy
+          VetBuddy
         </h1>
         <div className="w-16 h-1 mx-auto mb-8 rounded-full" style={{ background: '#ffffff', opacity: 0.5 }}></div>
 
@@ -283,7 +283,7 @@ export default function BrochurePage() {
           <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
             <PawPrint className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-white/60 text-sm">vetbuddy</span>
+          <span className="font-bold text-white/60 text-sm">VetBuddy</span>
         </div>
 
         <h2 className="text-3xl font-black mb-1 mt-2">44+ Automazioni che lavorano per te</h2>
@@ -573,7 +573,7 @@ export default function BrochurePage() {
           <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
             <PawPrint className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-white/80 text-sm">vetbuddy</span>
+          <span className="font-bold text-white/80 text-sm">VetBuddy</span>
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center text-center">
@@ -629,7 +629,7 @@ function PageHeader() {
       <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: '#FF6B6B' }}>
         <PawPrint className="w-4 h-4 text-white" />
       </div>
-      <span className="font-bold text-gray-400 text-sm">vet<span className="text-coral-400">buddy</span></span>
+      <span className="font-bold text-gray-400 text-sm">Vet<span className="text-coral-400">Buddy</span></span>
     </div>
   );
 }
