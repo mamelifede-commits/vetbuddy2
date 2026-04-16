@@ -31,10 +31,18 @@ VetBuddy è un gestionale veterinario completo per cliniche, proprietari di anim
 ### 4. Admin Dashboard
 - Approvazione laboratori, statistiche, configurazione webhook
 
-### 5. Landing Page
-- Homepage con sezione Marketplace Laboratori
+### 5. Ricette Elettroniche Veterinarie (REV)
+- **Modalità Ponte** (attiva): Wizard bozza → emetti su Vetinfo → registra N°/PIN → pubblica al proprietario
+- **Integrazione API Diretta** (prossimamente): Emissione automatica tramite API Vetinfo
+- Ruoli: Veterinario (CRUD + emissione), Staff (lettura), Proprietario (solo pubblicate)
+- Audit trail completo, notifiche email al proprietario con dettagli farmaci
+- Dashboard statistiche: bozze, emesse oggi, errori, totale
+- Endpoint: `/api/prescriptions`, `/api/prescriptions/:id/register-manual`, `/api/prescriptions/:id/publish`
+
+### 6. Landing Page
+- Homepage con sezioni: Funzionalità, Automazioni, Fatturazione, **Ricette Elettroniche REV**, Premi, Lab Marketplace, Prezzi
 - Prezzi: Starter Clinica (Free), Pro Clinica (€49/mo, 90gg gratis), Lab Partner (€29/mo, 6 mesi gratis), Enterprise (Custom)
-- Brochure con Lab Marketplace e prezzi aggiornati
+- Brochure con Lab Marketplace, REV e prezzi aggiornati — PDF scaricabile a `/brochure-vetbuddy.pdf`
 - Tutorial: Clinica, Proprietario, Laboratorio
 
 ## Key API Endpoints
@@ -52,6 +60,8 @@ VetBuddy è un gestionale veterinario completo per cliniche, proprietari di anim
 ## DB Collections
 - `users` (all roles), `lab_requests`, `lab_reports`, `lab_price_list`
 - `clinic_lab_connections`, `lab_invitations`
+- `prescriptions`, `prescription_items`, `prescription_audit_events`, `prescription_external_logs`
+- `payment_transactions` (Stripe)
 
 ## Tech Stack
 - Next.js 14, Tailwind CSS, Shadcn UI, MongoDB

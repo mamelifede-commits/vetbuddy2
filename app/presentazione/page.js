@@ -101,7 +101,7 @@ export default function BrochurePage() {
             <h4 className="text-xl font-bold mb-3">Per le Cliniche Veterinarie</h4>
             <p className="text-white/80 text-sm mb-4">Tutto ciò che serve per gestire la tua clinica in modo digitale.</p>
             <ul className="space-y-1.5 text-sm text-white/90">
-              {['Agenda digitale e prenotazioni online', 'Gestione pazienti e cartelle cliniche', 'Fatturazione, ricevute e listino servizi', 'Documenti PDF con invio automatico via email', 'Team inbox e messaggistica clienti', '44+ automazioni attive 24/7', 'Metriche, report e dashboard fatturato'].map((f, i) => (
+              {['Agenda digitale e prenotazioni online', 'Gestione pazienti e cartelle cliniche', 'Fatturazione, ricevute e listino servizi', 'Documenti PDF con invio automatico via email', 'Ricette Elettroniche REV (integrazione Vetinfo)', 'Team inbox e messaggistica clienti', '44+ automazioni attive 24/7', 'Metriche, report e dashboard fatturato'].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
@@ -183,6 +183,102 @@ export default function BrochurePage() {
             title="Programma Fedeltà"
             desc="Sistema a punti per fidelizzare i clienti. I proprietari accumulano punti ad ogni visita (100 punti = €5 di sconto). Configurabile dalla clinica."
           />
+        </div>
+      </div>
+
+      {/* =====================================================
+          PAGINA 3B — RICETTE ELETTRONICHE VETERINARIE (REV)
+      ===================================================== */}
+      <div className="brochure-page bg-white px-12 py-14">
+        <PageHeader />
+        <div className="mt-6 mb-2">
+          <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold">
+            💊 NUOVA FUNZIONALITÀ
+          </div>
+        </div>
+        <h2 className="text-3xl font-black text-gray-900 mb-1">Ricette Elettroniche Veterinarie (REV)</h2>
+        <p className="text-gray-500 mb-6">Gestisci l&apos;intero ciclo della prescrizione veterinaria con integrazione al sistema nazionale Vetinfo.</p>
+
+        <div className="grid grid-cols-2 gap-6 mb-8">
+          <div className="border-2 border-emerald-200 rounded-2xl p-5 bg-emerald-50/30 relative">
+            <div className="absolute -top-2.5 left-4 bg-emerald-500 text-white text-xs px-3 py-0.5 rounded-full font-bold">ATTIVO</div>
+            <h4 className="font-bold text-emerald-800 text-lg mb-2 mt-1">Modalità Ponte</h4>
+            <p className="text-gray-600 text-xs mb-3">Subito operativa. Crea la prescrizione su VetBuddy, emettila su Vetinfo, registra N° e PIN.</p>
+            <ul className="space-y-1.5 text-xs text-gray-700">
+              {[
+                'Wizard guidato per creare la bozza',
+                'Checklist per emissione su Vetinfo',
+                'Registrazione N° Ricetta e PIN',
+                'Pubblicazione automatica al proprietario',
+                'Notifica email con dettagli farmaci',
+                'Audit trail completo',
+              ].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="border-2 border-dashed border-gray-300 rounded-2xl p-5 relative opacity-90">
+            <div className="absolute -top-2.5 left-4 bg-gray-400 text-white text-xs px-3 py-0.5 rounded-full font-bold">PROSSIMAMENTE</div>
+            <h4 className="font-bold text-gray-700 text-lg mb-2 mt-1">Integrazione API Diretta</h4>
+            <p className="text-gray-500 text-xs mb-3">Emissione automatica tramite API Vetinfo. Tutto in un unico click senza uscire da VetBuddy.</p>
+            <ul className="space-y-1.5 text-xs text-gray-400">
+              {[
+                'Emissione diretta dalla dashboard',
+                'Recupero automatico N° e PIN',
+                'Validazione dati in tempo reale',
+                'Gestione errori e retry automatico',
+                'Log comunicazioni API',
+                'Conformità normativa garantita',
+              ].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-gray-300 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Flusso in 4 passaggi</h3>
+        <div className="grid grid-cols-4 gap-4 mb-8">
+          {[
+            { num: '01', icon: '📝', title: 'Crea la bozza', desc: 'Wizard guidato: paziente, farmaci, posologia, diagnosi.' },
+            { num: '02', icon: '🌐', title: 'Emetti su Vetinfo', desc: 'Segui la checklist per emettere la ricetta ufficiale.' },
+            { num: '03', icon: '📋', title: 'Registra', desc: 'Inserisci N° ricetta e PIN. Stato aggiornato automaticamente.' },
+            { num: '04', icon: '📧', title: 'Pubblica', desc: 'Il proprietario riceve email e vede tutto nel profilo pet.' },
+          ].map((step, i) => (
+            <div key={i} className="bg-gray-50 rounded-xl border border-gray-100 p-4 text-center">
+              <div className="text-2xl mb-1">{step.icon}</div>
+              <div className="text-xs font-bold text-emerald-600 mb-0.5">STEP {step.num}</div>
+              <h4 className="font-bold text-gray-900 text-sm mb-1">{step.title}</h4>
+              <p className="text-gray-500 text-xs leading-snug">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Ruoli e permessi</h3>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4">
+            <h5 className="font-bold text-emerald-800 text-sm mb-2">🩺 Veterinario</h5>
+            <ul className="space-y-1 text-xs text-gray-700">
+              {['Crea e modifica prescrizioni', 'Emette e registra ricette', 'Pubblica al proprietario', 'Dashboard con statistiche', 'Audit trail completo'].map((f, i) => (
+                <li key={i} className="flex items-start gap-1.5"><Check className="w-3 h-3 text-emerald-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
+            <h5 className="font-bold text-blue-800 text-sm mb-2">👥 Staff Clinica</h5>
+            <ul className="space-y-1 text-xs text-gray-700">
+              {['Visualizza prescrizioni', 'Filtra per stato e paziente', 'Stampa dettagli', 'Accesso in sola lettura'].map((f, i) => (
+                <li key={i} className="flex items-start gap-1.5"><Check className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
+            <h5 className="font-bold text-amber-800 text-sm mb-2">🐾 Proprietario</h5>
+            <ul className="space-y-1 text-xs text-gray-700">
+              {['Vede prescrizioni pubblicate', 'Dettagli farmaci e posologia', 'N° ricetta e PIN', 'Tutto nel profilo del pet', 'Notifica email automatica'].map((f, i) => (
+                <li key={i} className="flex items-start gap-1.5"><Check className="w-3 h-3 text-amber-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 

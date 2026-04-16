@@ -78,6 +78,7 @@ function FullLandingPage({ onLogin }) {
               <button onClick={() => scrollToSection('funzionalita')} className="text-gray-600 hover:text-coral-500 transition">Funzionalità</button>
               <button onClick={() => scrollToSection('automazioni')} className="text-gray-600 hover:text-coral-500 transition">Automazioni</button>
               <button onClick={() => scrollToSection('fatturazione')} className="text-gray-600 hover:text-coral-500 transition">Fatturazione</button>
+              <button onClick={() => scrollToSection('ricette-elettroniche')} className="text-emerald-600 hover:text-emerald-700 font-medium transition">💊 REV</button>
               <button onClick={() => scrollToSection('premi')} className="text-gray-600 hover:text-coral-500 transition">Premi</button>
               <button onClick={() => scrollToSection('pilot')} className="text-gray-600 hover:text-coral-500 transition">Prezzi</button>
               <button onClick={() => scrollToSection('lab-marketplace')} className="text-purple-600 hover:text-purple-700 font-medium transition">🧪 Lab</button>
@@ -96,6 +97,7 @@ function FullLandingPage({ onLogin }) {
               <button onClick={() => { scrollToSection('funzionalita'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Funzionalità</button>
               <button onClick={() => { scrollToSection('automazioni'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Automazioni</button>
               <button onClick={() => { scrollToSection('fatturazione'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Fatturazione</button>
+              <button onClick={() => { scrollToSection('ricette-elettroniche'); setMobileMenuOpen(false); }} className="text-emerald-600 text-left py-2 hover:text-emerald-700 font-medium transition">💊 Ricette REV</button>
               <button onClick={() => { scrollToSection('premi'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Premi</button>
               <button onClick={() => { scrollToSection('pilot'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Prezzi</button>
               <button onClick={() => { scrollToSection('lab-marketplace'); setMobileMenuOpen(false); }} className="text-purple-600 text-left py-2 hover:text-purple-700 font-medium transition">🧪 Laboratori</button>
@@ -1032,6 +1034,150 @@ function FullLandingPage({ onLogin }) {
         </div>
       </section>
 
+      {/* ====== SEZIONE RICETTE ELETTRONICHE VETERINARIE (REV) ====== */}
+      <section id="ricette-elettroniche" className="py-16 px-4 bg-gradient-to-br from-emerald-50 via-teal-50/30 to-cyan-50/30 overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full mb-4 font-semibold text-sm">
+              💊 NUOVA FUNZIONALITÀ
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Ricette Elettroniche Veterinarie
+            </h2>
+            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+              Gestisci l&apos;intero ciclo della prescrizione veterinaria direttamente da VetBuddy. 
+              Dalla creazione alla pubblicazione al proprietario, con integrazione al sistema nazionale <strong>Vetinfo</strong>.
+            </p>
+          </div>
+
+          {/* Due modalità: Bridge e API */}
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
+            {/* Modalità Bridge/Manuale */}
+            <div className="bg-white rounded-2xl border-2 border-emerald-200 p-6 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-emerald-500 text-white text-xs px-3 py-1 rounded-bl-lg font-bold">ATTIVO</div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                  <ClipboardList className="h-6 w-6 text-emerald-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">Modalità Ponte</h3>
+                  <p className="text-xs text-gray-500">Subito operativa, zero configurazione</p>
+                </div>
+              </div>
+              <p className="text-gray-600 text-sm mb-4">
+                Crea la prescrizione su VetBuddy, emettila sul portale ufficiale Vetinfo, e registra il numero ricetta e PIN nel sistema. 
+                Il proprietario riceve tutto automaticamente.
+              </p>
+              <ul className="space-y-2 text-sm">
+                {[
+                  'Wizard guidato per creare la bozza di prescrizione',
+                  'Checklist per l\'emissione sul portale Vetinfo',
+                  'Registrazione N° Ricetta e PIN dal portale',
+                  'Pubblicazione automatica al proprietario',
+                  'Notifica email al proprietario con dettagli farmaci',
+                  'Audit trail completo di ogni passaggio',
+                ].map((f, i) => (
+                  <li key={i} className="flex items-start gap-2 text-gray-700">
+                    <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Integrazione API Vetinfo */}
+            <div className="bg-white rounded-2xl border-2 border-dashed border-gray-300 p-6 shadow-sm relative overflow-hidden opacity-90">
+              <div className="absolute top-0 right-0 bg-gray-400 text-white text-xs px-3 py-1 rounded-bl-lg font-bold">PROSSIMAMENTE</div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <Zap className="h-6 w-6 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">Integrazione API Diretta</h3>
+                  <p className="text-xs text-gray-500">Emissione automatica senza uscire da VetBuddy</p>
+                </div>
+              </div>
+              <p className="text-gray-600 text-sm mb-4">
+                Quando le credenziali ufficiali saranno configurate, VetBuddy emetterà la ricetta direttamente tramite 
+                le API del Sistema Nazionale Vetinfo. Tutto in un unico click.
+              </p>
+              <ul className="space-y-2 text-sm">
+                {[
+                  'Emissione diretta dalla dashboard VetBuddy',
+                  'Recupero automatico N° ricetta e PIN',
+                  'Validazione dati in tempo reale',
+                  'Gestione errori e retry automatico',
+                  'Log completo delle comunicazioni API',
+                  'Conformità normativa garantita',
+                ].map((f, i) => (
+                  <li key={i} className="flex items-start gap-2 text-gray-400">
+                    <Clock className="w-4 h-4 text-gray-300 mt-0.5 flex-shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Flusso REV: 4 Step */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-10">
+            <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Come funziona in 4 passaggi</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {[
+                { num: '01', icon: '📝', title: 'Crea la bozza', desc: 'Wizard guidato: seleziona paziente, proprietario, farmaci, posologia e diagnosi.' },
+                { num: '02', icon: '🌐', title: 'Emetti su Vetinfo', desc: 'Segui la checklist per emettere la ricetta sul portale ufficiale Vetinfo.' },
+                { num: '03', icon: '📋', title: 'Registra in VetBuddy', desc: 'Inserisci il numero ricetta e PIN ricevuti. Lo stato si aggiorna automaticamente.' },
+                { num: '04', icon: '📧', title: 'Pubblica al proprietario', desc: 'Con un click il proprietario riceve email + vede la prescrizione nel profilo pet.' },
+              ].map((step, i) => (
+                <div key={i} className="text-center">
+                  <div className="text-3xl mb-2">{step.icon}</div>
+                  <div className="text-xs font-bold text-emerald-600 mb-1">STEP {step.num}</div>
+                  <h4 className="font-bold text-gray-900 text-sm mb-1">{step.title}</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed">{step.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Chi vede cosa */}
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Stethoscope className="h-5 w-5 text-emerald-600" />
+                <h4 className="font-bold text-emerald-800">Veterinario</h4>
+              </div>
+              <ul className="text-sm text-gray-700 space-y-1.5">
+                {['Crea, modifica e emette prescrizioni', 'Dashboard con statistiche giornaliere', 'Registra manualmente N° e PIN', 'Pubblica al proprietario con note cliniche', 'Audit trail di ogni azione'].map((f, i) => (
+                  <li key={i} className="flex items-start gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" />{f}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Users className="h-5 w-5 text-blue-600" />
+                <h4 className="font-bold text-blue-800">Staff Clinica</h4>
+              </div>
+              <ul className="text-sm text-gray-700 space-y-1.5">
+                {['Visualizza elenco prescrizioni', 'Filtra per stato e paziente', 'Stampa dettagli prescrizione', 'Accesso in sola lettura all\'audit trail'].map((f, i) => (
+                  <li key={i} className="flex items-start gap-1.5"><Check className="w-3.5 h-3.5 text-blue-500 mt-0.5 flex-shrink-0" />{f}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-amber-50 border border-amber-100 rounded-xl p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Heart className="h-5 w-5 text-amber-600" />
+                <h4 className="font-bold text-amber-800">Proprietario</h4>
+              </div>
+              <ul className="text-sm text-gray-700 space-y-1.5">
+                {['Vede solo le prescrizioni pubblicate', 'Dettagli farmaci, posologia e durata', 'Numero ricetta e PIN per la farmacia', 'Tutto nel profilo del pet', 'Notifica email automatica'].map((f, i) => (
+                  <li key={i} className="flex items-start gap-1.5"><Check className="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" />{f}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Premi Fedeltà Section */}
       <section id="premi" className="py-16 px-4 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
         <div className="max-w-6xl mx-auto">
@@ -1204,7 +1350,7 @@ function FullLandingPage({ onLogin }) {
               </CardHeader>
               <CardContent className="flex flex-col flex-1 pt-0">
                 <ul className="space-y-2 text-xs mb-4">
-                  {['Fino a 10 staff', 'Prenotazioni online', 'Agenda digitale', 'Reminder email automatici', 'Documenti e PDF via email', 'Google Calendar sync', 'Report e analytics', 'Link prenotazione + QR code', 'Dashboard valore generato', 'Modulo richieste lab analisi', 'Accesso marketplace laboratori', 'Confronto lab per distanza e prezzi'].map((f, i) => (
+                  {['Fino a 10 staff', 'Prenotazioni online', 'Agenda digitale', 'Reminder email automatici', 'Documenti e PDF via email', 'Ricette Elettroniche REV', 'Google Calendar sync', 'Report e analytics', 'Link prenotazione + QR code', 'Dashboard valore generato', 'Modulo richieste lab analisi', 'Accesso marketplace laboratori', 'Confronto lab per distanza e prezzi'].map((f, i) => (
                     <li key={i} className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-coral-500 flex-shrink-0" /> <span className="text-gray-700">{f}</span></li>
                   ))}
                 </ul>
