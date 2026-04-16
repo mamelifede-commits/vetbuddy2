@@ -800,7 +800,19 @@ metadata:
     status_history:
       - working: true
         agent: "testing"
-        comment: "COMPREHENSIVE VETBUDDY ADMIN DASHBOARD BACKEND API TESTING COMPLETED - ALL 7/7 TESTS PASSED ✅: Successfully tested all VetBuddy Admin Dashboard backend APIs as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. ✅ **Admin Authentication**: Login with admin@vetbuddy.it / Admin2025! successful, returns proper JWT token and admin role verification. ✅ **GET /api/pilot-applications?status=pending**: Returns pilot applications with proper structure (applications array, counts object). Found 1 total application (0 pending, 1 approved, 0 rejected). ✅ **GET /api/admin/labs**: Returns array of 6 labs with comprehensive stats and billing info. Each lab includes totalRequests, pendingRequests, completedRequests, totalReports, totalConnections, pendingConnections, plus billing details (plan, freeUntil, requestsCount, maxFreeRequests, trialExpired, requestsExhausted, daysRemaining, requestsRemaining). ✅ **GET /api/admin/lab-stats**: Returns comprehensive lab ecosystem statistics with all required fields (labs, billing, requests, connections, reports, topLabs, requestsByExamType). Lab stats: 6 total labs (2 active, 4 pending), 5 total requests (0 pending, 2 completed, 1 report ready), 5 top labs entries, 4 exam types. ✅ **GET /api/admin/stats**: Returns platform statistics with proper counts structure. Platform stats: 30 total users (3 clinics, 19 owners, 6 labs, 2 admins), 29 pets, 28 appointments, 7 documents. ✅ **GET /api/admin/users**: Returns array of 30 users with no password exposure (security verified). User role breakdown correctly displayed. ✅ **POST /api/admin/labs/{labId}/billing**: Successfully updates lab billing settings (extendTrialDays, maxFreeRequests, resetRequestsCount, plan). Tested with real lab ID and confirmed success response. ✅ **Authorization Controls**: All admin endpoints correctly blocked for non-admin users. Clinic and lab tokens receive proper 403 Forbidden responses when attempting to access admin endpoints (/admin/labs, /admin/lab-stats, /admin/stats, /admin/users). All admin dashboard backend APIs fully functional and secure."
+        comment: "COMPREHENSIVE VETBUDDY ADMIN DASHBOARD BACKEND API TESTING COMPLETED - ALL 7/7 TESTS PASSED ✅: Successfully tested all VetBuddy Admin Dashboard backend APIs as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. ✅ **Admin Authentication**: Login with admin@vetbuddy.it / Admin2025! successful, returns proper JWT token and admin role verification. ✅ **GET /api/pilot-applications?status=pending**: Returns pilot applications with proper structure (applications array, counts object). Found 1 total application (0 pending, 1 approved, 0 rejected). ✅ **GET /api/admin/labs**: Returns array of 6 labs with comprehensive stats and billing info. Each lab includes totalRequests, pendingRequests, completedRequests, totalReports, totalConnections, pendingConnections, plus billing details (plan, freeUntil, requestsCount, maxFreeRequests, trialExpired, requestsExhausted, daysRemaining, requestsRemaining). ✅ **GET /api/admin/lab-stats**: Returns comprehensive lab ecosystem statistics with all required fields (labs, billing, requests, connections, reports, topLabs, requestsByExamType). Lab stats: 6 total labs (2 active, 4 pending), 5 total requests (0 pending, 2 completed, 1 report ready), 5 top labs entries, 4 exam types. ✅ **GET /api/admin/stats**: Returns platform statistics with proper counts structure. Platform stats: 30 total users (3 clinics, 19 owners, 6 labs, 2 admins), 29 pets, 28 appointments, 7 documents. ✅ **GET /api/admin/users**: Returns array of 30 users with no password exposure (security verified). User role breakdown correctly displayed. ✅ **POST /api/admin/labs/{labId}/billing**: Successfully updates lab billing settings
+
+  - task: "VetBuddy REV (Ricetta Elettronica Veterinaria) Module Backend API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/prescriptions.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE VETBUDDY REV PRESCRIPTIONS MODULE TESTING COMPLETED - ALL 11/11 TESTS PASSED ✅: Successfully tested complete VetBuddy REV (Ricetta Elettronica Veterinaria) module backend API as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. ✅ **Authentication**: All user roles working perfectly - Clinic (demo@vetbuddy.it / VetBuddy2025!Secure), Owner (proprietario.demo@vetbuddy.it / demo123). ✅ **GET /api/rev/config** (No auth): Returns correct configuration {manualMode: true, featureEnabled: true, environment: 'sandbox'}. ✅ **GET /api/prescriptions/stats** (Clinic auth): Returns proper stats structure {drafts: 1, emittedToday: 2, errors: 0, total: 3}. ✅ **POST /api/prescriptions** (Clinic auth): Successfully creates draft prescriptions with proper pet/owner association, items array, and DRAFT status. ✅ **GET /api/prescriptions** (Clinic auth): Lists all clinic prescriptions correctly. ✅ **GET /api/prescriptions/:id** (Clinic auth): Retrieves prescription details with complete items array. ✅ **PUT /api/prescriptions/:id** (Clinic auth): Updates draft prescriptions successfully. ✅ **POST /api/prescriptions/:id/register-manual** (Clinic auth): Manual emission registration working with prescriptionNumber, pin, issueDate, notes - returns REGISTERED_MANUALLY status. ✅ **POST /api/prescriptions/:id/publish** (Clinic auth): Publishes prescriptions to owners, triggers email notifications (mocked/logged), sets visibleToOwner: true. ✅ **GET /api/prescriptions/:id/audit** (Clinic auth): Returns complete audit trail with 3+ events per prescription lifecycle. ✅ **GET /api/prescriptions** (Owner auth): Owner sees only published prescriptions with sanitized data (no technical fields like clinicId, externalStatus). ✅ **Authorization Checks**: Unauthenticated requests correctly blocked (403), Owner cannot create prescriptions (403). All REV prescription endpoints fully functional and ready for production use." (extendTrialDays, maxFreeRequests, resetRequestsCount, plan). Tested with real lab ID and confirmed success response. ✅ **Authorization Controls**: All admin endpoints correctly blocked for non-admin users. Clinic and lab tokens receive proper 403 Forbidden responses when attempting to access admin endpoints (/admin/labs, /admin/lab-stats, /admin/stats, /admin/users). All admin dashboard backend APIs fully functional and secure."
 
 test_plan:
   current_focus:
@@ -1373,4 +1385,39 @@ agent_communication:
       - working: true
         agent: "testing"
         comment: "COMPREHENSIVE VETBUDDY REV PRESCRIPTIONS MODULE TESTING COMPLETED - ALL 11/11 TESTS PASSED ✅: Successfully tested complete VetBuddy REV (Ricetta Elettronica Veterinaria) Prescriptions Module as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. Test credentials working: Clinic (demo@vetbuddy.it / VetBuddy2025!Secure), Owner (proprietario.demo@vetbuddy.it / demo123). ✅ **GET /api/rev/config (No auth)**: Returns expected config {manualMode: true, featureEnabled: true, environment: 'sandbox'} as specified. ✅ **GET /api/prescriptions/stats (Clinic auth)**: Returns prescription statistics with all required fields (drafts, emittedToday, errors, total). Stats working correctly. ✅ **POST /api/prescriptions (Create draft)**: Successfully creates prescription drafts with proper pet/owner association. Returns status 201 with prescription ID and DRAFT status. Items array properly handled with productName, quantity, unit, posology, routeOfAdministration. ✅ **GET /api/prescriptions (List)**: Returns array of prescriptions with proper clinic filtering. Newly created prescriptions appear in list correctly. ✅ **GET /api/prescriptions/:id (Detail)**: Retrieves prescription details with items array populated. All prescription fields accessible. ✅ **PUT /api/prescriptions/:id (Update draft)**: Successfully updates prescription fields (diagnosisNote tested). Only DRAFT prescriptions can be modified as expected. ✅ **POST /api/prescriptions/:id/register-manual (Bridge mode)**: Manual registration working perfectly with prescriptionNumber, pin, issueDate, notes. Returns {success: true, status: 'REGISTERED_MANUALLY'} as specified. ✅ **GET /api/prescriptions/:id/audit (Audit trail)**: Returns array of audit events tracking all prescription changes (CREATED, UPDATED, REGISTERED_MANUALLY, PUBLISHED_TO_OWNER). ✅ **POST /api/prescriptions/:id/publish (Publish to owner)**: Successfully publishes prescriptions to owners, making them visible in owner dashboard. Returns {success: true}. ✅ **GET /api/prescriptions (Owner access)**: Owner can access published prescriptions with sanitized data (technical fields like clinicId, externalStatus properly hidden). Data security working correctly. ✅ **Auth & Permission Checks**: Unauthorized requests properly blocked (403), owner tokens correctly prevented from creating prescriptions (403). Role-based access control fully functional. All REV prescription endpoints working perfectly with proper authentication, authorization, audit trails, and owner visibility controls. Manual bridge mode registration tested and functional. VetBuddy REV Prescriptions Module is production-ready."
+
+
+
+  - agent: "main"
+    message: "REV COMPLIANCE & ONBOARDING IMPLEMENTATION - 16-APR-2026: Implemented full compliance, onboarding and communication section for REV module. Created ClinicREVSettings.js with REVComplianceBanner (3 variants: full/compact/tooltip), REVTutorial (6-step accordion with checklist), and Settings/Activation page. Updated ClinicPrescriptions.js with compliance banner. Updated PrescriptionWizard.js with compliance info + microcopy ('Prepara prescrizione', 'Salva Bozza Prescrizione'). Updated PrescriptionDetail.js with microcopy ('Registra emissione manuale', 'Conferma emissione') and compliance notes. Updated FullLandingPage.js REV section with compliant text (Cosa fa VetBuddy vs Cosa resta al veterinario), 4 REV-specific FAQs. Updated brochure (presentazione/page.js) with compliance-focused REV page. Generated updated PDF brochure."
+
+  - task: "REV Compliance, Onboarding & Communication Frontend"
+    implemented: true
+    working: true
+    file: "/app/app/components/clinic/ClinicREVSettings.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Full compliance implementation: REVComplianceBanner component (3 variants), REVTutorial (6-step accordion + checklist), ClinicREVSettings page (activation state, requirements, modes, roles, CTA). Compliance banner added to ClinicPrescriptions, PrescriptionWizard, PrescriptionDetail. Microcopy updated across all REV components. Homepage REV section + 4 FAQs + Brochure updated. PDF regenerated."
+
+
+metadata:
+  created_by: "testing_agent"
+  version: "2.1"
+  test_sequence: 3
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "VetBuddy REV (Ricetta Elettronica Veterinaria) Module Backend API"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+      message: "COMPREHENSIVE REV MODULE TESTING COMPLETED ✅: Successfully tested all 11 VetBuddy REV (Ricetta Elettronica Veterinaria) backend API endpoints as specified in review request. All tests passed (100% success rate). REV configuration, prescription CRUD operations, manual registration, audit trail, publish to owner, and authorization checks all working perfectly. Email notifications triggered correctly. Owner data sanitization working. Ready for production use."
 
