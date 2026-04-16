@@ -8,9 +8,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import {
   ArrowLeft, ArrowRight, Check, ChevronRight, Loader2, Pill, Plus,
-  Search, Send, Trash2, AlertCircle, PawPrint, Stethoscope, ClipboardList
+  Search, Send, Trash2, AlertCircle, PawPrint, Stethoscope, ClipboardList, Shield, Info
 } from 'lucide-react';
 import api from '@/app/lib/api';
+import { REVComplianceBanner } from './ClinicREVSettings';
 
 const ROUTES = [
   { value: 'orale', label: 'Orale' },
@@ -114,11 +115,14 @@ function PrescriptionWizard({ user, pets = [], owners = [], revConfig, onCreated
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={onCancel}><ArrowLeft className="h-4 w-4 mr-1" />Indietro</Button>
           <div>
-            <h2 className="text-xl font-bold text-gray-800">Nuova Prescrizione Elettronica</h2>
+            <h2 className="text-xl font-bold text-gray-800">Prepara Prescrizione Elettronica</h2>
             <p className="text-sm text-gray-500">Step {step} di 4</p>
           </div>
         </div>
       </div>
+
+      {/* Compliance info */}
+      <REVComplianceBanner variant="compact" />
 
       {/* Progress Steps */}
       <div className="flex items-center justify-center gap-2">
@@ -336,12 +340,18 @@ function PrescriptionWizard({ user, pets = [], owners = [], revConfig, onCreated
                   <div className="flex items-start gap-2">
                     <AlertCircle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-amber-800">Modalità Ponte</p>
+                      <p className="font-semibold text-amber-800">Modalità guidata/manuale</p>
                       <p className="text-sm text-amber-600">La prescrizione verrà salvata come bozza. Dovrai emettere la ricetta sul portale Vetinfo e registrare manualmente il numero ricetta e il PIN.</p>
                     </div>
                   </div>
                 </div>
               )}
+
+              {/* Nota compliance riepilogo */}
+              <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-start gap-2">
+                <Info className="h-4 w-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-gray-500">Solo il medico veterinario può completare l&apos;emissione ufficiale della REV. VetBuddy ti guida nel processo e ti fornisce la struttura pronta.</p>
+              </div>
 
               {error && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
@@ -365,7 +375,7 @@ function PrescriptionWizard({ user, pets = [], owners = [], revConfig, onCreated
             </Button>
           ) : (
             <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave} disabled={saving}>
-              {saving ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Salvataggio...</> : <><Send className="h-4 w-4 mr-2" />Salva Bozza</>}
+              {saving ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Salvataggio...</> : <><ClipboardList className="h-4 w-4 mr-2" />Salva Bozza Prescrizione</>}
             </Button>
           )}
         </div>

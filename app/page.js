@@ -12,7 +12,7 @@ import {
   Calendar, FileText, PawPrint, Gift, Star, MessageCircle, Users, User, Inbox,
   Settings, Zap, Menu, X, LogOut, AlertCircle, Video, Receipt, BarChart3,
   Link2, ClipboardList, Stethoscope, FlaskConical, Globe, BookOpen,
-  LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill
+  LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield
 } from 'lucide-react';
 
 // ==================== DYNAMIC IMPORTS ====================
@@ -55,6 +55,7 @@ const ClinicFeedbackPage = dynamic(() => import('@/app/components/clinic/ClinicF
 const ClinicTutorialInline = dynamic(() => import('@/app/components/clinic/ClinicTutorialInline'), { ssr: false });
 const ClinicLabInvoices = dynamic(() => import('@/app/components/clinic/ClinicLabInvoices'), { ssr: false });
 const ClinicPrescriptions = dynamic(() => import('@/app/components/clinic/ClinicPrescriptions'), { ssr: false });
+const ClinicREVSettings = dynamic(() => import('@/app/components/clinic/ClinicREVSettings'), { ssr: false });
 
 // Owner Dashboard
 const OwnerDashboard = dynamic(() => import('@/app/components/owner/OwnerDashboardLayout'), { ssr: false });
@@ -176,6 +177,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     { icon: PawPrint, label: 'Pazienti', value: 'patients' },
     { icon: FlaskConical, label: 'Analisi Lab', value: 'labanalysis', badge: labReportsReady },
     { icon: Pill, label: 'Prescrizioni REV', value: 'prescriptions' },
+    { icon: Shield, label: 'Impostazioni REV', value: 'rev-settings' },
     { icon: Globe, label: 'Marketplace Lab', value: 'labmarketplace' },
     { icon: User, label: 'Proprietari', value: 'owners' },
     { icon: Users, label: 'Staff', value: 'staff' },
@@ -274,6 +276,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'tutorial' && <ClinicTutorialInline />}
         {activeTab === 'labinvoices' && <ClinicLabInvoices />}
         {activeTab === 'prescriptions' && <ClinicPrescriptions user={user} pets={pets} owners={owners} />}
+        {activeTab === 'rev-settings' && <ClinicREVSettings user={user} onNavigate={setActiveTab} />}
       </main>
     </div>
   );

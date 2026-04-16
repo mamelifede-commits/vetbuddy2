@@ -1037,22 +1037,47 @@ function FullLandingPage({ onLogin }) {
       {/* ====== SEZIONE RICETTE ELETTRONICHE VETERINARIE (REV) ====== */}
       <section id="ricette-elettroniche" className="py-16 px-4 bg-gradient-to-br from-emerald-50 via-teal-50/30 to-cyan-50/30 overflow-hidden">
         <div className="max-w-6xl mx-auto">
+          {/* Header compliant */}
           <div className="text-center mb-12">
             <span className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full mb-4 font-semibold text-sm">
               💊 NUOVA FUNZIONALITÀ
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Ricette Elettroniche Veterinarie
+              Prescrizioni veterinarie, con un flusso più semplice
             </h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-              Gestisci l&apos;intero ciclo della prescrizione veterinaria direttamente da VetBuddy. 
-              Dalla creazione alla pubblicazione al proprietario, con integrazione al sistema nazionale <strong>Vetinfo</strong>.
+              VetBuddy aiuta la clinica a preparare, organizzare e archiviare il flusso della Ricetta Elettronica Veterinaria, 
+              nel rispetto del ruolo del medico veterinario e del sistema nazionale.
             </p>
           </div>
 
-          {/* Due modalità: Bridge e API */}
+          {/* Mini-blocco hero REV */}
+          <div className="bg-white/80 backdrop-blur border border-emerald-100 rounded-2xl p-6 mb-10 text-center">
+            <p className="text-gray-700 text-base max-w-2xl mx-auto">
+              VetBuddy semplifica il lavoro della clinica anche nella gestione della Ricetta Elettronica Veterinaria, 
+              <strong> mantenendo il veterinario al centro del processo</strong>.
+            </p>
+          </div>
+
+          {/* Cosa fa VetBuddy - bullets */}
+          <div className="grid md:grid-cols-5 gap-4 mb-10">
+            {[
+              { icon: '📋', text: 'Prepara la prescrizione dalla scheda paziente' },
+              { icon: '🗂️', text: 'Centralizza dati clinici e storico' },
+              { icon: '🧭', text: 'Guida il veterinario nel processo' },
+              { icon: '📦', text: 'Archivia numero ricetta, PIN e stato' },
+              { icon: '👁️', text: 'Semplifica la consultazione per clinica e proprietario' },
+            ].map((b, i) => (
+              <div key={i} className="bg-white rounded-xl border border-gray-100 p-4 text-center shadow-sm">
+                <div className="text-2xl mb-2">{b.icon}</div>
+                <p className="text-gray-700 text-sm leading-snug">{b.text}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Due modalità: Guidata e API */}
           <div className="grid md:grid-cols-2 gap-6 mb-12">
-            {/* Modalità Bridge/Manuale */}
+            {/* Modalità Guidata/Manuale */}
             <div className="bg-white rounded-2xl border-2 border-emerald-200 p-6 shadow-sm relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-emerald-500 text-white text-xs px-3 py-1 rounded-bl-lg font-bold">ATTIVO</div>
               <div className="flex items-center gap-3 mb-4">
@@ -1060,21 +1085,20 @@ function FullLandingPage({ onLogin }) {
                   <ClipboardList className="h-6 w-6 text-emerald-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">Modalità Ponte</h3>
+                  <h3 className="text-lg font-bold text-gray-900">Modalità guidata/manuale</h3>
                   <p className="text-xs text-gray-500">Subito operativa, zero configurazione</p>
                 </div>
               </div>
               <p className="text-gray-600 text-sm mb-4">
-                Crea la prescrizione su VetBuddy, emettila sul portale ufficiale Vetinfo, e registra il numero ricetta e PIN nel sistema. 
-                Il proprietario riceve tutto automaticamente.
+                VetBuddy prepara il flusso e consente di registrare successivamente gli estremi della ricetta emessa nel sistema ufficiale.
               </p>
               <ul className="space-y-2 text-sm">
                 {[
-                  'Wizard guidato per creare la bozza di prescrizione',
-                  'Checklist per l\'emissione sul portale Vetinfo',
+                  'Wizard guidato per preparare la bozza prescrittiva',
+                  'Checklist per completare l\'emissione nel sistema ufficiale',
                   'Registrazione N° Ricetta e PIN dal portale',
-                  'Pubblicazione automatica al proprietario',
-                  'Notifica email al proprietario con dettagli farmaci',
+                  'Pubblicazione al proprietario quando previsto',
+                  'Notifica email al proprietario con dettagli',
                   'Audit trail completo di ogni passaggio',
                 ].map((f, i) => (
                   <li key={i} className="flex items-start gap-2 text-gray-700">
@@ -1085,7 +1109,7 @@ function FullLandingPage({ onLogin }) {
               </ul>
             </div>
 
-            {/* Integrazione API Vetinfo */}
+            {/* Integrazione API ufficiale */}
             <div className="bg-white rounded-2xl border-2 border-dashed border-gray-300 p-6 shadow-sm relative overflow-hidden opacity-90">
               <div className="absolute top-0 right-0 bg-gray-400 text-white text-xs px-3 py-1 rounded-bl-lg font-bold">PROSSIMAMENTE</div>
               <div className="flex items-center gap-3 mb-4">
@@ -1093,21 +1117,21 @@ function FullLandingPage({ onLogin }) {
                   <Zap className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">Integrazione API Diretta</h3>
-                  <p className="text-xs text-gray-500">Emissione automatica senza uscire da VetBuddy</p>
+                  <h3 className="text-lg font-bold text-gray-900">Integrazione ufficiale</h3>
+                  <p className="text-xs text-gray-500">Quando configurata e disponibile</p>
                 </div>
               </div>
               <p className="text-gray-600 text-sm mb-4">
-                Quando le credenziali ufficiali saranno configurate, VetBuddy emetterà la ricetta direttamente tramite 
-                le API del Sistema Nazionale Vetinfo. Tutto in un unico click.
+                VetBuddy invia e riceve i dati tramite integrazione tecnica con il sistema ufficiale, 
+                quando configurata e disponibile. L&apos;emissione resta sempre in capo al veterinario abilitato.
               </p>
               <ul className="space-y-2 text-sm">
                 {[
-                  'Emissione diretta dalla dashboard VetBuddy',
+                  'Invio dati al sistema ufficiale dalla dashboard',
                   'Recupero automatico N° ricetta e PIN',
                   'Validazione dati in tempo reale',
                   'Gestione errori e retry automatico',
-                  'Log completo delle comunicazioni API',
+                  'Log completo delle comunicazioni',
                   'Conformità normativa garantita',
                 ].map((f, i) => (
                   <li key={i} className="flex items-start gap-2 text-gray-400">
@@ -1124,10 +1148,10 @@ function FullLandingPage({ onLogin }) {
             <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Come funziona in 4 passaggi</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {[
-                { num: '01', icon: '📝', title: 'Crea la bozza', desc: 'Wizard guidato: seleziona paziente, proprietario, farmaci, posologia e diagnosi.' },
-                { num: '02', icon: '🌐', title: 'Emetti su Vetinfo', desc: 'Segui la checklist per emettere la ricetta sul portale ufficiale Vetinfo.' },
+                { num: '01', icon: '📝', title: 'Prepara la bozza', desc: 'Wizard guidato: seleziona paziente, farmaci, posologia e diagnosi dalla scheda clinica.' },
+                { num: '02', icon: '🌐', title: 'Emissione ufficiale', desc: 'Il medico veterinario abilitato completa l\'emissione nel sistema nazionale (es. Vetinfo).' },
                 { num: '03', icon: '📋', title: 'Registra in VetBuddy', desc: 'Inserisci il numero ricetta e PIN ricevuti. Lo stato si aggiorna automaticamente.' },
-                { num: '04', icon: '📧', title: 'Pubblica al proprietario', desc: 'Con un click il proprietario riceve email + vede la prescrizione nel profilo pet.' },
+                { num: '04', icon: '📧', title: 'Consultazione', desc: 'VetBuddy archivia la prescrizione e la rende consultabile per la clinica e, se previsto, per il proprietario.' },
               ].map((step, i) => (
                 <div key={i} className="text-center">
                   <div className="text-3xl mb-2">{step.icon}</div>
@@ -1139,15 +1163,35 @@ function FullLandingPage({ onLogin }) {
             </div>
           </div>
 
-          {/* Chi vede cosa */}
-          <div className="grid md:grid-cols-3 gap-4">
+          {/* Cosa fa VetBuddy vs Cosa resta al veterinario */}
+          <div className="grid md:grid-cols-2 gap-6 mb-10">
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
+              <h4 className="font-bold text-emerald-800 text-base mb-3 flex items-center gap-2"><CheckCircle className="h-5 w-5" />Cosa fa VetBuddy</h4>
+              <ul className="text-sm text-gray-700 space-y-2">
+                {['Prepara la bozza dalla scheda paziente', 'Centralizza farmaci, posologia e durata', 'Riduce errori e passaggi manuali', 'Archivia prescrizioni e storico', 'Rende consultabili i dati autorizzati'].map((f, i) => (
+                  <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />{f}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
+              <h4 className="font-bold text-amber-800 text-base mb-3 flex items-center gap-2"><Shield className="h-5 w-5" />Cosa resta in capo al veterinario</h4>
+              <ul className="text-sm text-gray-700 space-y-2">
+                {['Conferma finale dell\'emissione ufficiale', 'Utilizzo delle credenziali e dell\'abilitazione previste', 'Responsabilità professionale della prescrizione'].map((f, i) => (
+                  <li key={i} className="flex items-start gap-2"><Stethoscope className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />{f}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Ruoli e permessi */}
+          <div className="grid md:grid-cols-3 gap-4 mb-10">
             <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Stethoscope className="h-5 w-5 text-emerald-600" />
-                <h4 className="font-bold text-emerald-800">Veterinario</h4>
+                <h4 className="font-bold text-emerald-800">Medico Veterinario</h4>
               </div>
               <ul className="text-sm text-gray-700 space-y-1.5">
-                {['Crea, modifica e emette prescrizioni', 'Dashboard con statistiche giornaliere', 'Registra manualmente N° e PIN', 'Pubblica al proprietario con note cliniche', 'Audit trail di ogni azione'].map((f, i) => (
+                {['Prepara e modifica prescrizioni', 'Conferma l\'emissione ufficiale', 'Registra N° e PIN', 'Pubblica al proprietario', 'Audit trail completo'].map((f, i) => (
                   <li key={i} className="flex items-start gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" />{f}</li>
                 ))}
               </ul>
@@ -1158,7 +1202,7 @@ function FullLandingPage({ onLogin }) {
                 <h4 className="font-bold text-blue-800">Staff Clinica</h4>
               </div>
               <ul className="text-sm text-gray-700 space-y-1.5">
-                {['Visualizza elenco prescrizioni', 'Filtra per stato e paziente', 'Stampa dettagli prescrizione', 'Accesso in sola lettura all\'audit trail'].map((f, i) => (
+                {['Visualizza elenco prescrizioni', 'Filtra per stato e paziente', 'Stampa dettagli prescrizione', 'Accesso in sola lettura'].map((f, i) => (
                   <li key={i} className="flex items-start gap-1.5"><Check className="w-3.5 h-3.5 text-blue-500 mt-0.5 flex-shrink-0" />{f}</li>
                 ))}
               </ul>
@@ -1169,11 +1213,31 @@ function FullLandingPage({ onLogin }) {
                 <h4 className="font-bold text-amber-800">Proprietario</h4>
               </div>
               <ul className="text-sm text-gray-700 space-y-1.5">
-                {['Vede solo le prescrizioni pubblicate', 'Dettagli farmaci, posologia e durata', 'Numero ricetta e PIN per la farmacia', 'Tutto nel profilo del pet', 'Notifica email automatica'].map((f, i) => (
+                {['Consulta solo le prescrizioni pubblicate', 'Dettagli farmaci, posologia e durata', 'N° ricetta e PIN per la farmacia', 'Tutto nel profilo del pet', 'Notifica email automatica'].map((f, i) => (
                   <li key={i} className="flex items-start gap-1.5"><Check className="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" />{f}</li>
                 ))}
               </ul>
             </div>
+          </div>
+
+          {/* Nota di compliance */}
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+            <div className="flex items-start gap-3">
+              <Shield className="h-6 w-6 text-amber-500 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm text-amber-800 leading-relaxed">
+                  L&apos;emissione ufficiale della Ricetta Elettronica Veterinaria richiede l&apos;abilitazione del medico veterinario al sistema nazionale competente. 
+                  VetBuddy non sostituisce il sistema pubblico di emissione.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="text-center">
+            <button onClick={() => scrollToSection('pilot')} className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold transition shadow-lg shadow-emerald-100">
+              Scopri il modulo REV
+            </button>
           </div>
         </div>
       </section>
@@ -1461,6 +1525,10 @@ function FullLandingPage({ onLogin }) {
           <div className="text-center mb-12"><h2 className="text-3xl font-bold text-gray-900 mb-4">Domande frequenti</h2></div>
           <Accordion type="single" collapsible className="space-y-4">
             {[
+              { q: 'VetBuddy emette direttamente la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale richiede l\'abilitazione del medico veterinario al sistema nazionale competente.' },
+              { q: 'Chi può confermare l\'emissione di una REV?', a: 'Solo il medico veterinario autorizzato.' },
+              { q: 'Posso usare VetBuddy anche se l\'integrazione ufficiale non è ancora attiva?', a: 'Sì. VetBuddy può operare in modalità guidata/manuale, permettendo alla clinica di preparare il flusso e registrare poi gli estremi della ricetta emessa nel sistema ufficiale.' },
+              { q: 'Il proprietario può vedere la prescrizione?', a: 'Il proprietario può consultare in piattaforma solo le informazioni rese disponibili dalla clinica e dal flusso previsto.' },
               { q: 'Il piano Pro Clinica è davvero gratis per 90 giorni?', a: 'Sì, per le cliniche selezionate nel Pilot Milano.' },
               { q: 'Cosa succede dopo i 90 giorni?', a: 'Il piano passa a €79/mese + IVA, con tariffa early adopter di €49/mese + IVA per le prime cliniche selezionate.' },
               { q: 'I laboratori possono iscriversi anche senza invito?', a: 'Sì, possono registrarsi gratuitamente come Laboratorio Partner e attendere approvazione.' },

@@ -9,9 +9,10 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   ArrowLeft, CheckCircle, Clock, ClipboardCheck, Edit, Eye, FileText, History,
   Loader2, Pill, Send, Shield, Trash2, X, XCircle, AlertCircle, Calendar, User,
-  ExternalLink, Copy
+  ExternalLink, Copy, Info
 } from 'lucide-react';
 import api from '@/app/lib/api';
+import { REVComplianceBanner } from './ClinicREVSettings';
 
 const STATUS_CONFIG = {
   DRAFT: { label: 'Bozza', color: 'bg-gray-100 text-gray-700', icon: Edit },
@@ -279,18 +280,21 @@ function PrescriptionDetail({ prescription: initialPrescription, user, revConfig
                   {!revConfig?.manualMode ? (
                     <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSubmitToREV} disabled={loading}>
                       {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
-                      Conferma ed Emetti (API)
+                      Conferma emissione
                     </Button>
                   ) : (
                     <>
                       <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white" onClick={() => setShowManualForm(true)}>
-                        <ClipboardCheck className="h-4 w-4 mr-2" />Registra Manualmente
+                        <ClipboardCheck className="h-4 w-4 mr-2" />Registra emissione manuale
                       </Button>
                       <a href="https://www.vetinfo.it" target="_blank" rel="noopener noreferrer">
                         <Button variant="outline" className="w-full mt-1" size="sm">
                           <ExternalLink className="h-4 w-4 mr-2" />Apri Portale Vetinfo
                         </Button>
                       </a>
+                      <p className="text-xs text-amber-600 text-center mt-1 flex items-center justify-center gap-1">
+                        <Info className="h-3 w-3" />Solo il medico veterinario può confermare l&apos;emissione ufficiale.
+                      </p>
                     </>
                   )}
                 </>
@@ -332,8 +336,12 @@ function PrescriptionDetail({ prescription: initialPrescription, user, revConfig
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm text-gray-500">
-                Inserisci i dati della ricetta emessa sul portale Vetinfo.
+                Inserisci i dati della ricetta emessa sul portale Vetinfo. Prescrizione registrata manualmente dopo emissione nel sistema ufficiale.
               </p>
+              <div className="p-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 flex items-start gap-1.5">
+                <Info className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
+                <span>Questa azione è disponibile solo per il medico veterinario autorizzato.</span>
+              </div>
               <div>
                 <Label>Numero Ricetta *</Label>
                 <Input className="mt-1" placeholder="Es. REV-2026-123456" value={manualForm.prescriptionNumber}

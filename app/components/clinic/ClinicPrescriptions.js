@@ -8,11 +8,12 @@ import { Badge } from '@/components/ui/badge';
 import {
   AlertCircle, CheckCircle, Clock, Edit, Eye, FileText, Filter, Loader2,
   Pill, Plus, RefreshCw, Search, Send, Trash2, X, XCircle, ClipboardCheck,
-  AlertTriangle, Calendar
+  AlertTriangle, Calendar, Shield, Info
 } from 'lucide-react';
 import api from '@/app/lib/api';
 import PrescriptionWizard from './PrescriptionWizard';
 import PrescriptionDetail from './PrescriptionDetail';
+import { REVComplianceBanner } from './ClinicREVSettings';
 
 const STATUS_CONFIG = {
   DRAFT: { label: 'Bozza', icon: Edit, color: 'bg-gray-100 text-gray-700 border-gray-300' },
@@ -116,7 +117,7 @@ function ClinicPrescriptions({ user, pets = [], owners = [] }) {
             <RefreshCw className="h-4 w-4 mr-1" />Aggiorna
           </Button>
           <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => setShowWizard(true)}>
-            <Plus className="h-4 w-4 mr-2" />Nuova Prescrizione
+            <Plus className="h-4 w-4 mr-2" />Prepara prescrizione
           </Button>
         </div>
       </div>
@@ -156,6 +157,9 @@ function ClinicPrescriptions({ user, pets = [], owners = [] }) {
           </CardContent>
         </Card>
       </div>
+
+      {/* Banner di Compliance REV */}
+      <REVComplianceBanner variant="compact" />
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
