@@ -9,6 +9,7 @@ import { getCollection } from '@/lib/db';
 import { corsHeaders } from './constants';
 import { PRESCRIPTION_STATUSES, AUDIT_EVENTS } from '@/lib/rev/config';
 import { REVPrescriptionService } from '@/lib/rev/REVPrescriptionService';
+import { sendEmail } from '@/lib/email';
 
 const revService = new REVPrescriptionService();
 
@@ -506,7 +507,7 @@ export async function handlePrescriptionsPost(path, request, body) {
     return NextResponse.json({ success: true, status: PRESCRIPTION_STATUSES.CANCELLED }, { headers: corsHeaders });
   }
 
-  // Publish to owner
+  // Publish to owner (with email notification)
   const publishMatch = path.match(/^prescriptions\/([^\/]+)\/publish$/);
   if (publishMatch) {
     const user = getUserFromRequest(request);
@@ -516,6 +517,9 @@ export async function handlePrescriptionsPost(path, request, body) {
 
     const prescriptionId = publishMatch[1];
     const prescriptions = await getCollection('prescriptions');
+    const prescription = await prescriptions.findOne({ id: prescriptionId });
+    if (!prescription) return NextResponse.json({ error: 'Prescrizione non trovata' }, { status: 404, headers: corsHeaders });
+
     await prescriptions.updateOne({ id: prescriptionId }, {
       $set: { visibleToOwner: true, updatedAt: new Date().toISOString() }
     });
@@ -523,6 +527,60 @@ export async function handlePrescriptionsPost(path, request, body) {
     await createAuditEvent(prescriptionId, user.id, AUDIT_EVENTS.PUBLISHED_TO_OWNER, {
       note: 'Prescrizione resa visibile al proprietario'
     });
+
+    // Send email notification to owner
+    if (prescription.ownerId) {
+      try {
+        const users = await getCollection('users');
+        const owner = await users.findOne({ id: prescription.ownerId });
+        if (owner?.email) {
+          // Load items for the email
+          const itemsColl = await getCollection('prescription_items');
+          const items = await itemsColl.find({ prescriptionId }).toArray();
+          const itemsList = items.map(i => `<li style="margin: 4px 0;"><strong>${i.productName}</strong> — ${i.quantity} ${i.unit} — ${i.posology}</li>`).join('');
+
+          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
+          await sendEmail({
+            to: owner.email,
+            subject: `💊 Nuova prescrizione per ${prescription.petName || 'il tuo pet'}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #059669, #10b981); padding: 25px; border-radius: 12px 12px 0 0; text-align: center;">
+                  <h1 style="color: white; margin: 0; font-size: 24px;">🐾 vetbuddy</h1>
+                </div>
+                <div style="padding: 30px; background: #ffffff;">
+                  <h2 style="color: #059669; margin-top: 0;">Nuova prescrizione veterinaria 💊</h2>
+                  <p style="color: #333;">Ciao <strong>${owner.name || ''}</strong>,</p>
+                  <p style="color: #666;">Il veterinario ha emesso una prescrizione per <strong>${prescription.petName || 'il tuo pet'}</strong>.</p>
+                  
+                  <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #059669;">
+                    <p style="margin: 0 0 8px;"><strong>🩺 Diagnosi:</strong> ${prescription.diagnosisNote || '-'}</p>
+                    <p style="margin: 0 0 8px;"><strong>💊 Farmaci:</strong></p>
+                    <ul style="margin: 0; padding-left: 20px;">${itemsList || '<li>-</li>'}</ul>
+                    ${prescription.treatmentDuration ? `<p style="margin: 8px 0 0;"><strong>⏱ Durata:</strong> ${prescription.treatmentDuration}</p>` : ''}
+                    ${prescription.externalPrescriptionNumber ? `<p style="margin: 8px 0 0;"><strong>📋 N° Ricetta:</strong> ${prescription.externalPrescriptionNumber}</p>` : ''}
+                    ${prescription.externalPin ? `<p style="margin: 8px 0 0;"><strong>🔑 PIN:</strong> ${prescription.externalPin}</p>` : ''}
+                  </div>
+                  
+                  <p style="color: #666;">Puoi consultare i dettagli completi nel profilo del tuo pet su VetBuddy.</p>
+                  <div style="text-align: center; margin-top: 30px;">
+                    <a href="${baseUrl}" style="display: inline-block; background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 14px 35px; text-decoration: none; border-radius: 30px; font-weight: bold;">
+                      Vai al Profilo Pet
+                    </a>
+                  </div>
+                </div>
+                <div style="padding: 20px; background: #f5f5f5; border-radius: 0 0 12px 12px; text-align: center;">
+                  <p style="color: #888; font-size: 12px; margin: 0;">Email automatica da vetbuddy</p>
+                </div>
+              </div>
+            `
+          });
+          console.log(`📧 Notifica prescrizione inviata a ${owner.email}`);
+        }
+      } catch (emailErr) {
+        console.error('Error sending prescription notification:', emailErr);
+      }
+    }
 
     return NextResponse.json({ success: true }, { headers: corsHeaders });
   }
