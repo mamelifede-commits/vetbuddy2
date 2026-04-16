@@ -11,8 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
-import { AlertCircle, AlertTriangle, Calendar, Cat, Check, ChevronLeft, ChevronRight, ClipboardList, Dog, Download, Droplet, Edit, Euro, Eye, FileCheck, FileText, FlaskConical, Heart, Loader2, PawPrint, RefreshCw, Shield, Stethoscope, Syringe, Upload, Video, Weight } from 'lucide-react';
+import { AlertCircle, AlertTriangle, Calendar, Cat, Check, ChevronLeft, ChevronRight, ClipboardList, Dog, Download, Droplet, Edit, Euro, Eye, FileCheck, FileText, FlaskConical, Heart, Loader2, PawPrint, Pill, RefreshCw, Shield, Stethoscope, Syringe, Upload, Video, Weight } from 'lucide-react';
 import api from '@/app/lib/api';
+import dynamic from 'next/dynamic';
+const OwnerPrescriptions = dynamic(() => import('./OwnerPrescriptions'), { ssr: false });
 
 function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
   const [pet, setPet] = useState(null);
@@ -233,6 +235,7 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
           <TabsTrigger value="visits">Visite</TabsTrigger>
           <TabsTrigger value="documents">Documenti</TabsTrigger>
           <TabsTrigger value="labReports">🧪 Referti</TabsTrigger>
+          <TabsTrigger value="prescriptions">💊 Prescrizioni</TabsTrigger>
           <TabsTrigger value="vaccines">Vaccini & Terapie</TabsTrigger>
           <TabsTrigger value="data">Dati & Spese</TabsTrigger>
         </TabsList>
@@ -534,6 +537,23 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* Prescrizioni */}
+        <TabsContent value="prescriptions">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Pill className="h-5 w-5 text-emerald-500" />
+                Prescrizioni Veterinarie
+              </CardTitle>
+              <p className="text-sm text-gray-500">Ricette elettroniche veterinarie per {pet?.name}</p>
+            </CardHeader>
+            <CardContent>
+              <OwnerPrescriptions petId={pet?.id} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
 
         {/* Dati & Spese */}
         <TabsContent value="data">

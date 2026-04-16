@@ -12,6 +12,7 @@ import { handleDataGet, handleDataPost, handleDataPut, handleDataDelete } from '
 import { handleRewardsGet, handleRewardsPost } from './modules/rewards';
 import { handlePaymentsGet, handlePaymentsPost } from './modules/payments';
 import { handleSettingsGet, handleSettingsPost, handleSettingsPut } from './modules/settings';
+import { handlePrescriptionsGet, handlePrescriptionsPost, handlePrescriptionsPut, handlePrescriptionsDelete } from './modules/prescriptions';
 
 // CORS preflight handler
 export async function OPTIONS() {
@@ -31,6 +32,7 @@ export async function GET(request, { params }) {
     const handlers = [
       handleAuthGet,
       handleAppointmentsGet,
+      handlePrescriptionsGet,
       handleDataGet,
       handlePaymentsGet,
       handleSettingsGet,
@@ -68,6 +70,7 @@ export async function POST(request, { params }) {
       handleSettingsPost,    // waitlist, invite-clinic, automations, video-consult, reviews
       handleAuthPost,        // login, register, reset password
       handleAppointmentsPost, // appointments, google calendar
+      handlePrescriptionsPost, // prescriptions REV
       handleDataPost,        // documents, messages, staff, pets, owners, vaccinations
       handlePaymentsPost,    // stripe checkout, stripe settings
       handleRewardsPost,     // rewards types, assign, redeem, use
@@ -101,6 +104,7 @@ export async function PUT(request, { params }) {
     // Delegate to modules
     const handlers = [
       handleAppointmentsPut,
+      handlePrescriptionsPut,
       handleDataPut,
       handleSettingsPut,
     ];
@@ -136,6 +140,9 @@ export async function DELETE(request, { params }) {
     // Delegate to modules
     const adminResult = await handleAdminDelete(path, request);
     if (adminResult) return adminResult;
+
+    const prescriptionResult = await handlePrescriptionsDelete(path, request, user);
+    if (prescriptionResult) return prescriptionResult;
 
     const appointmentResult = await handleAppointmentsDelete(path, request, user);
     if (appointmentResult) return appointmentResult;

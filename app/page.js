@@ -12,7 +12,7 @@ import {
   Calendar, FileText, PawPrint, Gift, Star, MessageCircle, Users, User, Inbox,
   Settings, Zap, Menu, X, LogOut, AlertCircle, Video, Receipt, BarChart3,
   Link2, ClipboardList, Stethoscope, FlaskConical, Globe, BookOpen,
-  LayoutDashboard, TrendingUp, CalendarDays, FolderArchive
+  LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill
 } from 'lucide-react';
 
 // ==================== DYNAMIC IMPORTS ====================
@@ -54,6 +54,7 @@ const ClinicSettings = dynamic(() => import('@/app/components/clinic/ClinicSetti
 const ClinicFeedbackPage = dynamic(() => import('@/app/components/clinic/ClinicFeedbackPage'), { ssr: false });
 const ClinicTutorialInline = dynamic(() => import('@/app/components/clinic/ClinicTutorialInline'), { ssr: false });
 const ClinicLabInvoices = dynamic(() => import('@/app/components/clinic/ClinicLabInvoices'), { ssr: false });
+const ClinicPrescriptions = dynamic(() => import('@/app/components/clinic/ClinicPrescriptions'), { ssr: false });
 
 // Owner Dashboard
 const OwnerDashboard = dynamic(() => import('@/app/components/owner/OwnerDashboardLayout'), { ssr: false });
@@ -174,6 +175,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     { icon: Video, label: 'Video Consulto', value: 'videoconsult' },
     { icon: PawPrint, label: 'Pazienti', value: 'patients' },
     { icon: FlaskConical, label: 'Analisi Lab', value: 'labanalysis', badge: labReportsReady },
+    { icon: Pill, label: 'Prescrizioni REV', value: 'prescriptions' },
     { icon: Globe, label: 'Marketplace Lab', value: 'labmarketplace' },
     { icon: User, label: 'Proprietari', value: 'owners' },
     { icon: Users, label: 'Staff', value: 'staff' },
@@ -271,6 +273,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'feedback' && <ClinicFeedbackPage user={user} />}
         {activeTab === 'tutorial' && <ClinicTutorialInline />}
         {activeTab === 'labinvoices' && <ClinicLabInvoices />}
+        {activeTab === 'prescriptions' && <ClinicPrescriptions user={user} pets={pets} owners={owners} />}
       </main>
     </div>
   );
