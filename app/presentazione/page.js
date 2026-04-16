@@ -534,22 +534,34 @@ export default function BrochurePage() {
 
         <p className="text-center text-xs text-gray-500 mb-6">Non è una prova libera: stiamo selezionando cliniche e laboratori partner per validare VetBuddy nel Pilot Milano.</p>
 
-        {/* FAQ */}
-        <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-          <h3 className="font-bold text-gray-900 mb-4 text-center">Domande frequenti</h3>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            {[
-              { q: 'Il piano Pro Clinica è davvero gratis per 90 giorni?', a: 'Sì, per le cliniche selezionate nel Pilot Milano.' },
-              { q: 'Cosa succede dopo i 90 giorni?', a: 'Il piano passa a €79/mese + IVA, con tariffa early adopter di €49/mese + IVA per le prime cliniche.' },
-              { q: 'I laboratori possono iscriversi senza invito?', a: 'Sì, possono registrarsi gratuitamente come Laboratorio Partner e attendere approvazione.' },
-              { q: 'I prezzi includono IVA?', a: 'No, tutti i prezzi sono IVA esclusa.' },
-            ].map((item, i) => (
-              <div key={i}>
-                <p className="font-semibold text-gray-900 text-xs mb-0.5">{item.q}</p>
-                <p className="text-gray-500 text-xs">{item.a}</p>
-              </div>
-            ))}
-          </div>
+      </div>
+
+      {/* =====================================================
+          PAGINA 7B — FAQ DEDICATE
+      ===================================================== */}
+      <div className="brochure-page bg-white px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-6">Domande frequenti</h2>
+        
+        <div className="space-y-4">
+          {[
+            { q: 'VetBuddy emette direttamente la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale richiede l\'abilitazione del medico veterinario al sistema nazionale competente.' },
+            { q: 'Chi può confermare l\'emissione di una REV?', a: 'Solo il medico veterinario autorizzato.' },
+            { q: 'Posso usare VetBuddy anche se l\'integrazione ufficiale non è ancora attiva?', a: 'Sì. VetBuddy può operare in modalità guidata/manuale, permettendo alla clinica di preparare il flusso e registrare poi gli estremi della ricetta emessa nel sistema ufficiale.' },
+            { q: 'Il proprietario può vedere la prescrizione?', a: 'Il proprietario può consultare in piattaforma solo le informazioni rese disponibili dalla clinica e dal flusso previsto.' },
+            { q: 'Il piano Pro Clinica è davvero gratis per 90 giorni?', a: 'Sì, per le cliniche selezionate nel Pilot Milano.' },
+            { q: 'Cosa succede dopo i 90 giorni?', a: 'Il piano passa a €79/mese + IVA, con tariffa early adopter di €49/mese + IVA per le prime cliniche.' },
+            { q: 'I laboratori possono iscriversi senza invito?', a: 'Sì, possono registrarsi gratuitamente come Laboratorio Partner e attendere approvazione.' },
+            { q: 'I prezzi includono IVA?', a: 'No, tutti i prezzi sono IVA esclusa.' },
+            { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti vanno direttamente alla clinica tramite Stripe. VetBuddy incassa solo l\'abbonamento.' },
+            { q: 'Come funziona l\'invio dei referti?', a: 'Il laboratorio carica il referto. Il veterinario lo rivede, aggiunge note cliniche e lo pubblica al proprietario.' },
+            { q: 'VetBuddy è gratuito per i proprietari?', a: 'Sì, completamente gratuito per i proprietari di animali. Nessun costo nascosto, mai.' },
+          ].map((item, i) => (
+            <div key={i} className="pb-3 border-b border-gray-100 last:border-0">
+              <p className="font-semibold text-gray-900 text-sm mb-1">{item.q}</p>
+              <p className="text-gray-500 text-xs leading-relaxed">{item.a}</p>
+            </div>
+          ))}
         </div>
       </div>
 

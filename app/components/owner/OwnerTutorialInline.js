@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, PawPrint, MapPin, Calendar, FileText, MessageCircle, Bell, Gift, Smartphone, ChevronRight, CheckCircle, Heart } from 'lucide-react';
+import { Download, PawPrint, MapPin, Calendar, FileText, MessageCircle, Bell, Gift, Smartphone, ChevronRight, CheckCircle, Heart, Pill } from 'lucide-react';
 
 function OwnerTutorialInline() {
   const [downloadingPDF, setDownloadingPDF] = useState(false);
@@ -29,6 +29,7 @@ function OwnerTutorialInline() {
     { icon: MapPin, title: 'Prenotare con il Link Diretto', color: 'bg-violet-500', content: ['Hai ricevuto un link dalla clinica? Aprilo nel browser', 'Vedrai il profilo della clinica con servizi e orari', 'Clicca "Prenota Appuntamento" e compila il modulo', 'NON serve registrarsi! Basta nome, telefono e data', 'La clinica ti contatterà per confermare'], tip: 'Il link funziona anche senza account vetbuddy!' },
     { icon: Calendar, title: 'Prenotare un Appuntamento', color: 'bg-purple-500', content: ['Clicca "Prenota Visita" dalla dashboard', 'Seleziona la clinica e il servizio', 'Scegli data e orario disponibili', 'Conferma e ricevi promemoria automatici'], tip: 'Riceverai promemoria prima della visita.' },
     { icon: FileText, title: 'Documenti e Referti Lab', color: 'bg-amber-500', content: ['Visualizza prescrizioni, referti e certificati', 'Scarica i documenti in PDF o ZIP', 'Apri il profilo animale → tab "Referti" per i risultati lab', 'Il veterinario aggiunge note cliniche prima di inviarti il referto'], tip: 'I referti lab arrivano dopo la revisione del veterinario.' },
+    { icon: Pill, title: 'Ricette Elettroniche (REV)', color: 'bg-emerald-500', content: ['Quando il veterinario pubblica una prescrizione, ricevi una email', 'Apri il profilo del tuo animale → tab "Prescrizioni"', 'Consulta dettagli: farmaci, posologia, durata del trattamento', 'Trovi N° ricetta e PIN per la farmacia', 'Le prescrizioni sono visibili solo dopo la pubblicazione del veterinario'], tip: 'Le informazioni sulle prescrizioni sono rese disponibili dal veterinario secondo il flusso previsto.' },
     { icon: MessageCircle, title: 'Messaggistica', color: 'bg-green-500', content: ['Vai su "Messaggi" per comunicare con la clinica', 'Scrivi messaggi diretti al veterinario', 'Allega foto o documenti ai messaggi'], tip: 'Usa i messaggi per domande rapide senza chiamare!' },
     { icon: Bell, title: 'Notifiche e Promemoria', color: 'bg-red-500', content: ['Ricevi notifiche per appuntamenti in arrivo', 'Promemoria per vaccini e controlli periodici', 'Avvisi quando ricevi nuovi documenti o referti'], tip: 'Non dimenticare mai un vaccino!' },
     { icon: Gift, title: 'Programma Fedeltà', color: 'bg-yellow-500', content: ['Accumula punti con ogni prenotazione completata', 'Invita amici e guadagna punti extra', '100 punti = €5 di sconto sulla prossima visita'], tip: 'Ogni visita ti premia!' },

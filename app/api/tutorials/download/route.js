@@ -107,6 +107,17 @@ const ownerTutorial = {
       tip: 'I referti lab sono visibili solo dopo la revisione del veterinario.'
     },
     {
+      title: 'PRESCRIZIONI ELETTRONICHE (REV)',
+      content: [
+        'Quando il veterinario pubblica una prescrizione, ricevi una email',
+        'Apri il profilo del tuo animale -> tab "Prescrizioni"',
+        'Consulta dettagli: farmaci, posologia, durata del trattamento',
+        'Trovi il N. ricetta e PIN per la farmacia',
+        'Le prescrizioni sono visibili solo dopo la pubblicazione del veterinario'
+      ],
+      tip: 'Le informazioni sulle prescrizioni sono rese disponibili dal veterinario secondo il flusso previsto.'
+    },
+    {
       title: 'FATTURE E PAGAMENTI',
       content: [
         'Vai su "Fatture" nella dashboard',
@@ -145,6 +156,7 @@ const ownerTutorial = {
     { q: 'Posso usare vetbuddy con qualsiasi clinica?', a: 'Solo con le cliniche registrate su vetbuddy.' },
     { q: 'Come posso prenotare senza account?', a: 'Usa il link di prenotazione della tua clinica, non serve registrarsi!' },
     { q: 'Come vedo i referti del laboratorio?', a: 'Apri il profilo del tuo animale e vai alla tab Referti.' },
+    { q: 'Come vedo le prescrizioni del veterinario?', a: 'Apri il profilo del tuo animale e vai alla tab Prescrizioni. Sono visibili solo dopo la pubblicazione del veterinario.' },
     { q: 'I miei dati sono al sicuro?', a: 'Si, crittografia avanzata e conformita GDPR.' }
   ],
   
@@ -240,6 +252,20 @@ const clinicTutorial = {
       tip: 'I documenti digitali riducono le chiamate del 90%!'
     },
     {
+      title: 'RICETTE ELETTRONICHE VETERINARIE (REV)',
+      content: [
+        'Vai su "Prescrizioni REV" nel menu laterale',
+        'Prepara la bozza con il wizard guidato: paziente, farmaci, posologia, diagnosi',
+        'Completa l\'emissione ufficiale sul sistema nazionale (es. Vetinfo)',
+        'Registra il N. ricetta e PIN in VetBuddy',
+        'Pubblica al proprietario: riceve email + vede nel profilo pet',
+        'Dashboard statistiche: bozze, emesse oggi, errori, totale',
+        'Audit trail completo di ogni passaggio',
+        'Configura il modulo da "Impostazioni REV"'
+      ],
+      tip: 'L\'emissione ufficiale della REV richiede l\'abilitazione del veterinario al sistema nazionale. VetBuddy prepara e organizza il flusso.'
+    },
+    {
       title: 'FATTURAZIONE PROFORMA',
       content: [
         'Vai a "Fatturazione" nella dashboard',
@@ -294,8 +320,127 @@ const clinicTutorial = {
     { q: 'Quanto costa vetbuddy?', a: 'Starter Clinica EUR 0/mese. Pro Clinica EUR 79/mese + IVA (EUR 49/mese early adopter). Laboratorio Partner EUR 29/mese + IVA. Prezzi IVA esclusa.' },
     { q: 'Come funziona il link di prenotazione?', a: 'E un link condivisibile che permette ai clienti di prenotare senza registrarsi.' },
     { q: 'Come funziona il Lab Marketplace?', a: 'Scegli un laboratorio partner, invia la richiesta, ricevi il referto e invialo al proprietario.' },
+    { q: 'VetBuddy emette direttamente la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione e l\'archiviazione. L\'emissione ufficiale richiede l\'abilitazione del veterinario al sistema nazionale.' },
     { q: 'I pagamenti dei clienti passano da vetbuddy?', a: 'No! I pagamenti vanno direttamente alla clinica. vetbuddy incassa solo l\'abbonamento.' },
     { q: 'Posso importare dati dal gestionale attuale?', a: 'Si! Supportiamo import da CSV.' }
+  ],
+  
+  contacts: {
+    website: 'www.vetbuddy.it',
+    email: 'support@vetbuddy.it'
+  }
+};
+
+// ==================== LAB TUTORIAL CONTENT ====================
+const labTutorial = {
+  title: 'vetbuddy - Guida per Laboratori',
+  subtitle: 'Il marketplace che collega il tuo laboratorio alle cliniche veterinarie',
+  
+  quickStart: [
+    'Registrati come laboratorio su vetbuddy.it',
+    'Completa il profilo e configura i prezzi',
+    'Configura Stripe per ricevere pagamenti',
+    'Inizia a ricevere richieste dalle cliniche'
+  ],
+  
+  sections: [
+    {
+      title: 'CONFIGURAZIONE INIZIALE',
+      content: [
+        'Registrati come laboratorio su vetbuddy.it',
+        'Completa il profilo: nome lab, indirizzo, P.IVA, telefono',
+        'Aggiungi descrizione, specializzazioni e area geografica',
+        'Indica se offri il ritiro campioni a domicilio',
+        'Il tuo profilo apparira nel Marketplace delle cliniche'
+      ],
+      tip: 'Un profilo completo attira piu cliniche partner!'
+    },
+    {
+      title: 'CONFIGURARE STRIPE (PAGAMENTI)',
+      content: [
+        'Crea un account Stripe su stripe.com (gratuito)',
+        'Vai su dashboard.stripe.com/apikeys',
+        'Copia la Publishable key (inizia con pk_live_)',
+        'Copia la Secret key (inizia con sk_live_)',
+        'Su VetBuddy: Profilo -> Pagamenti -> Configura Stripe',
+        'Incolla le chiavi e salva. I pagamenti arrivano direttamente a te'
+      ],
+      tip: 'Le chiavi API Stripe si trovano su dashboard.stripe.com/apikeys'
+    },
+    {
+      title: 'LISTINO PREZZI',
+      content: [
+        'Vai su "Listino Prezzi" nel menu laterale',
+        'Crea categorie (es. Ematologia, Biochimica)',
+        'Aggiungi esami con nome, codice, prezzo e tempi di consegna',
+        'Il listino e visibile alle cliniche nel Marketplace',
+        'Modifica i prezzi in qualsiasi momento'
+      ],
+      tip: 'Un listino completo e aggiornato ti rende piu competitivo.'
+    },
+    {
+      title: 'GESTIONE RICHIESTE',
+      content: [
+        'Le richieste delle cliniche arrivano nella tua dashboard',
+        'Per ogni richiesta vedi: paziente, esame, clinica, urgenza',
+        'Aggiorna lo stato: Ricevuta -> In lavorazione -> Completata',
+        'Puoi inviare un preventivo personalizzato',
+        'La clinica puo accettare e pagare direttamente'
+      ],
+      tip: 'Aggiorna lo stato in tempo reale per mantenere informata la clinica.'
+    },
+    {
+      title: 'CARICAMENTO REFERTI',
+      content: [
+        'Quando l\'analisi e completata, carica il referto PDF',
+        'Aggiungi note tecniche al referto',
+        'Il veterinario riceve notifica e rivede il referto',
+        'Solo dopo la revisione del veterinario, il proprietario puo vederlo',
+        'Mantieni uno storico completo di tutti i referti'
+      ],
+      tip: 'I referti sono nascosti al proprietario fino alla revisione del veterinario.'
+    },
+    {
+      title: 'FATTURAZIONE E PAGAMENTI',
+      content: [
+        'Quando la clinica paga un preventivo, ricevi il pagamento via Stripe',
+        'Una fattura proforma viene generata automaticamente',
+        'Visualizza tutte le fatture nella sezione "Fatture"',
+        'Esporta i dati per il commercialista',
+        'Le commissioni Stripe standard si applicano (circa 1.4% + 0.25 EUR)'
+      ],
+      tip: 'Le fatture proforma sono documenti di cortesia, non fiscali. La fattura fiscale la emetti tu.'
+    },
+    {
+      title: 'DASHBOARD E METRICHE',
+      content: [
+        'Visualizza le statistiche principali nella dashboard',
+        'Richieste ricevute, completate, in attesa',
+        'Fatturato totale e andamento mensile',
+        'Cliniche partner attive',
+        'Tempi medi di consegna'
+      ],
+      tip: 'Usa le metriche per ottimizzare i tempi e attirare piu cliniche!'
+    },
+    {
+      title: 'ABBONAMENTO',
+      content: [
+        'Lab Partner: EUR 29/mese + IVA',
+        'Gratis per i primi 6 mesi o le prime 50 richieste',
+        'Include: profilo marketplace, gestione richieste, fatturazione',
+        'Pagamento sicuro tramite Stripe',
+        'Annulla in qualsiasi momento'
+      ],
+      tip: 'Il piano Lab Partner include tutto il necessario per iniziare.'
+    }
+  ],
+  
+  faqs: [
+    { q: 'Quanto costa per il laboratorio?', a: 'Lab Partner EUR 29/mese + IVA. Gratis per 6 mesi o 50 richieste.' },
+    { q: 'Come ricevo i pagamenti dalle cliniche?', a: 'Direttamente sul tuo account Stripe. VetBuddy non trattiene nulla.' },
+    { q: 'Posso iscrivermi senza invito?', a: 'Si! Puoi registrarti gratuitamente e attendere approvazione.' },
+    { q: 'Le fatture proforma sono fiscalmente valide?', a: 'No, sono documenti di cortesia. La fattura fiscale la emetti tu direttamente.' },
+    { q: 'Come funziona la revisione dei referti?', a: 'Il veterinario rivede il tuo referto e aggiunge note cliniche prima di condividerlo con il proprietario.' }
   ],
   
   contacts: {
@@ -376,7 +521,9 @@ async function generateTutorialPDF(tutorial, isClinic = false) {
   });
   
   // Subtitle
-  page.drawText(isClinic ? 'Guida per Cliniche Veterinarie' : 'Guida per Proprietari di Animali', {
+  const coverSubtitle = tutorial.title.includes('Laboratori') ? 'Guida per Laboratori di Analisi' :
+    (isClinic ? 'Guida per Cliniche Veterinarie' : 'Guida per Proprietari di Animali');
+  page.drawText(coverSubtitle, {
     x: margin, y: pageHeight - 100, size: 14, font: font, color: rgb(1, 1, 1)
   });
   
@@ -618,11 +765,25 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type') || 'owner';
     
-    const isClinic = type === 'clinic';
-    const tutorial = isClinic ? clinicTutorial : ownerTutorial;
-    const filename = isClinic ? 'vetbuddy_Tutorial_Cliniche.pdf' : 'vetbuddy_Tutorial_Proprietari.pdf';
+    let tutorial, isClinic, isLab, filename, subtitle;
+    if (type === 'clinic') {
+      tutorial = clinicTutorial;
+      isClinic = true;
+      isLab = false;
+      filename = 'vetbuddy_Tutorial_Cliniche.pdf';
+    } else if (type === 'lab') {
+      tutorial = labTutorial;
+      isClinic = false;
+      isLab = true;
+      filename = 'vetbuddy_Tutorial_Laboratori.pdf';
+    } else {
+      tutorial = ownerTutorial;
+      isClinic = false;
+      isLab = false;
+      filename = 'vetbuddy_Tutorial_Proprietari.pdf';
+    }
     
-    const pdfBytes = await generateTutorialPDF(tutorial, isClinic);
+    const pdfBytes = await generateTutorialPDF(tutorial, isClinic || isLab);
     
     return new NextResponse(pdfBytes, {
       status: 200,

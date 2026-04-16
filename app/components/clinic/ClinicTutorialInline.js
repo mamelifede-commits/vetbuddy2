@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, Building2, Calendar, FileText, Receipt, CreditCard, MessageCircle, Zap, BarChart3, ChevronRight, Link, FlaskConical } from 'lucide-react';
+import { Download, Building2, Calendar, FileText, Receipt, CreditCard, MessageCircle, Zap, BarChart3, ChevronRight, Link, FlaskConical, Pill } from 'lucide-react';
 
 function ClinicTutorialInline() {
   const [downloadingPDF, setDownloadingPDF] = useState(false);
@@ -29,6 +29,7 @@ function ClinicTutorialInline() {
     { icon: Link, title: 'Link di Prenotazione', color: 'bg-coral-500', content: ['Vai su "Link Prenotazione" nel menu', 'Copia e condividi il tuo link personalizzato', 'Genera un QR Code da stampare in reception', 'I clienti prenotano SENZA registrarsi!', 'Le prenotazioni arrivano nella tua agenda'], tip: 'Condividi su WhatsApp ai clienti per fidelizzarli!' },
     { icon: Calendar, title: 'Gestione Appuntamenti', color: 'bg-blue-500', content: ['Visualizza il calendario dalla dashboard', 'Vedi appuntamenti in vista giornaliera, settimanale o mensile', 'Gestisci richieste: accetta, rifiuta o riprogramma', 'Le prenotazioni dal link diretto hanno fonte "booking_link"'], tip: 'Usa i codici colore per distinguere tipi di appuntamento.' },
     { icon: FlaskConical, title: 'Lab Marketplace', color: 'bg-purple-500', content: ['Sfoglia i laboratori partner disponibili', 'Crea richieste di analisi per i tuoi pazienti', 'Segui lo stato in tempo reale', 'Rivedi i referti e invia al proprietario'], tip: 'I referti sono nascosti al proprietario fino alla tua approvazione.' },
+    { icon: Pill, title: 'Ricette Elettroniche REV', color: 'bg-emerald-500', content: ['Prepara la bozza dalla scheda paziente con il wizard guidato', 'Completa l\'emissione sul sistema ufficiale (es. Vetinfo)', 'Registra N° ricetta e PIN in VetBuddy', 'Pubblica al proprietario: riceve email + vede nel profilo pet', 'Dashboard con statistiche: bozze, emesse oggi, errori'], tip: 'L\'emissione ufficiale richiede l\'abilitazione del veterinario al sistema nazionale. VetBuddy ti guida nel processo.' },
     { icon: CreditCard, title: 'Pagamenti Laboratorio', color: 'bg-green-500', content: ['Quando il lab invia un preventivo, appare nella richiesta', 'Clicca "Paga Preventivo" per pagare direttamente con carta', 'Il pagamento va direttamente all\'account Stripe del lab', 'Dopo il pagamento ricevi fattura proforma via email', 'Vedi tutte le fatture nella sezione "Fatture Lab"'], tip: 'Le fatture proforma sono documenti di cortesia. La fattura fiscale la emette il laboratorio.' },
     { icon: BarChart3, title: 'Dashboard Metriche', color: 'bg-emerald-500', content: ['KPI: fatturato, appuntamenti, pazienti, visite al profilo', 'Grafico andamento fatturato 6 mesi', 'Funnel conversione prenotazioni', 'Analisi lab richieste e completate'], tip: 'Usa le metriche per capire quali canali portano più prenotazioni!' },
     { icon: FileText, title: 'Documenti e Fatturazione', color: 'bg-amber-500', content: ['Crea prescrizioni, referti, certificati', 'Fatturazione proforma con IVA e marca da bollo', 'Genera PDF ed esporta in CSV per il commercialista'], tip: 'I documenti digitali riducono le telefonate!' },
