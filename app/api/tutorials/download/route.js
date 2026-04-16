@@ -581,7 +581,6 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
   const mediumGray = rgb(0.45, 0.45, 0.45);
   const lightGray = rgb(0.7, 0.7, 0.7);
   const bgLight = rgb(0.97, 0.97, 0.97);
-  const emeraldColor = rgb(0.06, 0.60, 0.42);
 
   // Helper: Add new page
   const addPage = () => {
@@ -713,10 +712,14 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
   });
 
   // ==================== CONTENT SECTIONS ====================
+  // Always start content on a new page after index
+  ({ page, y } = addPage());
+
   for (let i = 0; i < tutorial.sections.length; i++) {
     const section = tutorial.sections[i];
 
-    if (y < 300) {
+    // Check if we need a new page (need enough space for header + some content)
+    if (y < 250) {
       ({ page, y } = addPage());
     }
 
@@ -777,10 +780,10 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
     const ob = tutorial.onboarding;
     ({ page, y } = addPage());
 
-    // Section header
+    // Section header - CORAL (not green)
     page.drawRectangle({
       x: margin, y: y - 5, width: contentWidth, height: 30,
-      color: emeraldColor
+      color: coralColor
     });
 
     const obIdx = tutorial.sections.length + 1;
@@ -800,7 +803,7 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
 
     for (const item of ob.first10.items) {
       if (y < 80) ({ page, y } = addPage());
-      page.drawText('-', { x: margin + 10, y, size: 10, font: font, color: emeraldColor });
+      page.drawText('-', { x: margin + 10, y, size: 10, font: font, color: coralColor });
       y = drawWrappedText(page, item, margin + 25, y, contentWidth - 25, 10, font, darkGray);
       y -= 6;
     }
@@ -816,7 +819,7 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
 
     for (const item of ob.firstWeek.items) {
       if (y < 80) ({ page, y } = addPage());
-      page.drawText('-', { x: margin + 10, y, size: 10, font: font, color: emeraldColor });
+      page.drawText('-', { x: margin + 10, y, size: 10, font: font, color: coralColor });
       y = drawWrappedText(page, item, margin + 25, y, contentWidth - 25, 10, font, darkGray);
       y -= 6;
     }
@@ -826,20 +829,21 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
     // Checklist
     if (y < 200) ({ page, y } = addPage());
 
+    const checklistHeight = ob.checklist.items.length * 18 + 40;
     page.drawRectangle({
-      x: margin, y: y - (ob.checklist.items.length * 18 + 30), width: contentWidth,
-      height: ob.checklist.items.length * 18 + 40,
+      x: margin, y: y - checklistHeight + 10, width: contentWidth,
+      height: checklistHeight,
       color: bgLight
     });
 
     page.drawText(sanitizeText(ob.checklist.title), {
-      x: margin + 10, y, size: 11, font: boldFont, color: emeraldColor
+      x: margin + 10, y, size: 11, font: boldFont, color: coralColor
     });
     y -= 22;
 
     for (const item of ob.checklist.items) {
       if (y < 60) ({ page, y } = addPage());
-      page.drawText('[ ]', { x: margin + 10, y, size: 10, font: font, color: emeraldColor });
+      page.drawText('[ ]', { x: margin + 10, y, size: 10, font: font, color: coralColor });
       page.drawText(sanitizeText(item), { x: margin + 32, y, size: 10, font: font, color: darkGray });
       y -= 18;
     }
@@ -847,12 +851,8 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
     y -= 15;
   }
 
-  // ==================== FAQ PAGE ====================
-  if (y < 300) {
-    ({ page, y } = addPage());
-  }
-
-  y -= sectionGap;
+  // ==================== FAQ PAGE (always new page) ====================
+  ({ page, y } = addPage());
 
   page.drawRectangle({
     x: margin, y: y - 5, width: contentWidth, height: 30,
@@ -881,7 +881,7 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
   }
 
   // ==================== CONTACT PAGE ====================
-  if (y < 200) {
+  if (y < 250) {
     ({ page, y } = addPage());
   }
 
