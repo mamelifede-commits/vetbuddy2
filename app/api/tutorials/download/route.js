@@ -3,33 +3,28 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 
 export const dynamic = 'force-dynamic';
 
-// Helper to sanitize text for PDF (remove unsupported unicode characters)
+// Helper: sanitize text for PDF — keeps Italian accented chars (WinAnsi supported)
 function sanitizeText(text) {
   if (!text) return '';
   return text
     .replace(/→/g, '->')
     .replace(/←/g, '<-')
-    .replace(/€/g, 'EUR')
     .replace(/•/g, '-')
     .replace(/…/g, '...')
     .replace(/–/g, '-')
     .replace(/—/g, '-')
-    .replace(/'/g, "'")
-    .replace(/'/g, "'")
-    .replace(/"/g, '"')
-    .replace(/"/g, '"')
-    .replace(/✅/g, '[OK]')
-    .replace(/❌/g, '[X]')
-    .replace(/⚠️/g, '[!]')
-    .replace(/💡/g, '*')
-    .replace(/[^\x00-\x7F]/g, '');
+    .replace(/\u2018/g, "'")
+    .replace(/\u2019/g, "'")
+    .replace(/\u201C/g, '"')
+    .replace(/\u201D/g, '"')
+    .replace(/[^\x00-\xFF]/g, '');
 }
 
 // ==========================================================================
 //  TUTORIAL PROPRIETARIO
 // ==========================================================================
 const ownerTutorial = {
-  title: 'vetbuddy - Guida per Proprietari di Animali',
+  title: 'VetBuddy \u2014 Guida per Proprietari di Animali',
   subtitle: 'Tutto quello che serve per gestire la salute dei tuoi animali, in un unico posto.',
 
   quickStart: [
@@ -43,19 +38,19 @@ const ownerTutorial = {
     {
       title: 'REGISTRAZIONE E PRIMO ACCESSO',
       content: [
-        'Vai su vetbuddy.it e clicca "Registrati"',
-        'Seleziona "Proprietario di Animali"',
+        'Vai su vetbuddy.it e clicca \u201CRegistrati\u201D',
+        'Seleziona \u201CProprietario di Animali\u201D',
         'Inserisci email e crea una password sicura',
         'Completa il profilo: nome, cognome, telefono',
-        'La registrazione e completamente gratuita e lo restera sempre'
+        'La registrazione \u00E8 gratuita per i proprietari'
       ],
-      tip: 'VetBuddy e gratuito per i proprietari. Nessun costo nascosto, mai.'
+      tip: 'VetBuddy \u00E8 gratuito per i proprietari. Nessun costo nascosto.'
     },
     {
       title: 'AGGIUNGERE I TUOI ANIMALI',
       content: [
-        'Dalla dashboard clicca su "I Miei Animali"',
-        'Premi "+" per aggiungere un nuovo animale',
+        'Dalla dashboard clicca su \u201CI Miei Animali\u201D',
+        'Premi \u201C+\u201D per aggiungere un nuovo animale',
         'Inserisci: nome, specie, razza, data di nascita',
         'Aggiungi peso, numero microchip e foto se disponibili',
         'Indica eventuali allergie o condizioni particolari',
@@ -67,9 +62,9 @@ const ownerTutorial = {
       title: 'PRENOTARE CON IL LINK DIRETTO',
       content: [
         'Se la tua clinica ti ha inviato un link, aprilo nel browser',
-        'Vedrai il profilo della clinica con servizi e disponibilita',
+        'Vedrai il profilo della clinica con servizi e disponibilit\u00E0',
         'Compila il modulo: nome, telefono, animale, data preferita',
-        'La richiesta arriva alla clinica, che ti contattera per confermare',
+        'La richiesta arriva alla clinica, che ti contatter\u00E0 per confermare',
         'Non serve un account VetBuddy per inviare una richiesta tramite link'
       ],
       tip: 'Il link diretto permette di inviare una richiesta rapida. La clinica conferma poi data e orario.'
@@ -77,17 +72,17 @@ const ownerTutorial = {
     {
       title: 'GESTIRE GLI APPUNTAMENTI',
       content: [
-        'Clicca su "Agenda" nella dashboard',
+        'Clicca su \u201CAgenda\u201D nella dashboard',
         'Vedi tutti gli appuntamenti confermati e in attesa',
         'Ricevi promemoria automatici prima della visita',
-        'Lo stato dell\'appuntamento si aggiorna in tempo reale'
+        'Lo stato dell\u2019appuntamento si aggiorna in tempo reale'
       ],
       tip: 'Controlla regolarmente la sezione Agenda per eventuali aggiornamenti.'
     },
     {
       title: 'DOCUMENTI E REFERTI',
       content: [
-        'Accedi a "I Miei Documenti" dalla dashboard',
+        'Accedi a \u201CI Miei Documenti\u201D dalla dashboard',
         'Trovi prescrizioni, referti, certificati e altri documenti',
         'Scarica singoli documenti in PDF o tutti insieme in formato ZIP',
         'I documenti sono disponibili quando la clinica li pubblica'
@@ -97,10 +92,10 @@ const ownerTutorial = {
     {
       title: 'REFERTI DI LABORATORIO',
       content: [
-        'Apri il profilo del tuo animale e vai alla tab "Referti"',
-        'I referti lab sono visibili solo dopo la revisione del veterinario',
-        'Il veterinario puo aggiungere note cliniche per aiutarti a comprendere i risultati',
-        'Ricevi una notifica quando un nuovo referto e disponibile',
+        'Apri il profilo del tuo animale e vai alla tab \u201CReferti\u201D',
+        'I referti di laboratorio sono visibili solo dopo la revisione del veterinario',
+        'Il veterinario pu\u00F2 aggiungere note cliniche per aiutarti a comprendere i risultati',
+        'Ricevi una notifica quando un nuovo referto \u00E8 disponibile',
         'Puoi scaricare il referto PDF per i tuoi archivi'
       ],
       tip: 'Il veterinario rivede ogni referto prima di renderlo visibile. Questo garantisce che le informazioni siano accompagnate da un commento clinico.'
@@ -109,7 +104,7 @@ const ownerTutorial = {
       title: 'PRESCRIZIONI ELETTRONICHE (REV)',
       content: [
         'Quando il veterinario pubblica una prescrizione, ricevi una notifica email',
-        'Apri il profilo del tuo animale e vai alla tab "Prescrizioni"',
+        'Apri il profilo del tuo animale e vai alla tab \u201CPrescrizioni\u201D',
         'Consulta i dettagli: farmaci, posologia, durata del trattamento',
         'Trovi il numero ricetta e PIN utili per il ritiro in farmacia',
         'Le prescrizioni sono visibili solo quando il veterinario decide di pubblicarle'
@@ -121,7 +116,7 @@ const ownerTutorial = {
       content: [
         'I pagamenti per visite e servizi avvengono direttamente con la clinica',
         'La clinica gestisce i propri metodi di pagamento (contanti, carta, bonifico)',
-        'VetBuddy non e un intermediario di pagamento per i servizi veterinari',
+        'VetBuddy non \u00E8 un intermediario di pagamento per i servizi veterinari',
         'Eventuali documenti di cortesia (proforma) possono essere consultati nella sezione Fatture'
       ],
       tip: 'Per qualsiasi chiarimento sui pagamenti, fai riferimento direttamente alla tua clinica.'
@@ -129,28 +124,28 @@ const ownerTutorial = {
     {
       title: 'MESSAGGISTICA',
       content: [
-        'Vai su "Messaggi" per comunicare con la clinica',
+        'Vai su \u201CMessaggi\u201D per comunicare con la clinica',
         'Scrivi messaggi e ricevi risposte dal team veterinario',
         'Puoi allegare foto o documenti ai messaggi',
         'Ricevi notifiche per ogni nuovo messaggio ricevuto'
       ],
-      tip: 'La messaggistica e utile per domande rapide senza dover telefonare.'
+      tip: 'La messaggistica \u00E8 utile per domande rapide senza dover telefonare.'
     },
     {
-      title: 'PROGRAMMA FEDELTA',
+      title: 'PROGRAMMA FEDELT\u00C0',
       content: [
         'Accumula punti con le prenotazioni completate',
         'Visualizza il tuo saldo punti nella dashboard',
         'I punti possono essere convertiti in vantaggi presso la clinica',
         'Consulta i dettagli del programma nella sezione dedicata'
       ],
-      tip: 'Il programma fedelta e gestito dalla clinica. Verifica con il tuo veterinario le condizioni attive.'
+      tip: 'Il programma fedelt\u00E0 \u00E8 gestito dalla clinica. Verifica con il tuo veterinario le condizioni attive.'
     }
   ],
 
   onboarding: {
     title: 'COME USARE VETBUDDY AL MEGLIO',
-    subtitle: 'Suggerimenti per sfruttare tutte le funzionalita della piattaforma.',
+    subtitle: 'Suggerimenti per sfruttare tutte le funzionalit\u00E0 della piattaforma.',
     first10: {
       title: 'Cosa fare nei primi 10 minuti',
       items: [
@@ -182,14 +177,14 @@ const ownerTutorial = {
   },
 
   faqs: [
-    { q: 'Quanto costa usare VetBuddy?', a: 'Completamente gratuito per i proprietari di animali. Nessun costo nascosto, mai.' },
+    { q: 'Quanto costa usare VetBuddy?', a: 'Completamente gratuito per i proprietari di animali. Nessun costo nascosto.' },
     { q: 'Posso usare VetBuddy con qualsiasi clinica?', a: 'VetBuddy funziona con le cliniche registrate sulla piattaforma.' },
-    { q: 'Posso prenotare senza creare un account?', a: 'Si. Tramite il link diretto della clinica puoi inviare una richiesta rapida senza account. La clinica conferma successivamente.' },
+    { q: 'Posso prenotare senza creare un account?', a: 'S\u00EC. Tramite il link diretto della clinica puoi inviare una richiesta rapida senza account. La clinica conferma successivamente.' },
     { q: 'Come vedo i referti del laboratorio?', a: 'Nel profilo del tuo animale, alla tab Referti. Sono visibili solo dopo la revisione del veterinario.' },
     { q: 'Come vedo le prescrizioni del veterinario?', a: 'Nel profilo del tuo animale, alla tab Prescrizioni. Sono visibili solo quando il veterinario le pubblica.' },
-    { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione e l\'archiviazione. L\'emissione ufficiale e responsabilita del medico veterinario abilitato al sistema nazionale.' },
+    { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione e l\u2019archiviazione del flusso. L\u2019emissione ufficiale \u00E8 responsabilit\u00E0 del medico veterinario abilitato al sistema nazionale.' },
     { q: 'Come funzionano i pagamenti?', a: 'I pagamenti per visite e servizi avvengono direttamente con la clinica, secondo i metodi da essa previsti. VetBuddy non gestisce pagamenti per servizi veterinari.' },
-    { q: 'I miei dati sono al sicuro?', a: 'Si. VetBuddy utilizza crittografia avanzata e opera nel rispetto della normativa sulla protezione dei dati.' }
+    { q: 'I miei dati sono al sicuro?', a: 'S\u00EC. VetBuddy utilizza crittografia avanzata e opera nel rispetto della normativa sulla protezione dei dati.' }
   ],
 
   contacts: {
@@ -202,7 +197,7 @@ const ownerTutorial = {
 //  TUTORIAL CLINICA
 // ==========================================================================
 const clinicTutorial = {
-  title: 'vetbuddy - Guida per Cliniche Veterinarie',
+  title: 'VetBuddy \u2014 Guida per Cliniche Veterinarie',
   subtitle: 'La piattaforma digitale che semplifica la gestione quotidiana della clinica.',
 
   quickStart: [
@@ -221,21 +216,21 @@ const clinicTutorial = {
         'Carica il logo e le foto della struttura',
         'Configura i servizi offerti con prezzi e durata stimata',
         'Pilot Milano: Piano Pro Clinica gratuito per 90 giorni',
-        'Dopo il periodo gratuito: EUR 79/mese + IVA (EUR 49/mese per early adopter)'
+        'Dopo il periodo gratuito: \u20AC79/mese + IVA (\u20AC49/mese per early adopter)'
       ],
       tip: 'Un profilo completo e professionale aiuta i clienti a scegliere la tua clinica.'
     },
     {
       title: 'LINK DI PRENOTAZIONE DIRETTO',
       content: [
-        'Vai su "Link Prenotazione" nel menu laterale',
+        'Vai su \u201CLink Prenotazione\u201D nel menu laterale',
         'Trovi il link personalizzato della tua clinica',
         'Condividilo su WhatsApp, social, email o sito web',
         'Puoi generare un QR Code da stampare in reception',
         'I clienti possono inviare una richiesta rapida senza registrarsi',
         'Le richieste arrivano nella tua agenda e le confermi tu'
       ],
-      tip: 'Il link permette ai clienti di inviare una richiesta rapida. La clinica conferma poi data, orario e disponibilita.'
+      tip: 'Il link permette ai clienti di inviare una richiesta rapida. La clinica conferma poi data, orario e disponibilit\u00E0.'
     },
     {
       title: 'GESTIONE APPUNTAMENTI',
@@ -252,18 +247,18 @@ const clinicTutorial = {
     {
       title: 'GESTIONE CLIENTI E PAZIENTI',
       content: [
-        'Accedi a "Pazienti" per consultare l\'elenco clienti',
+        'Accedi a \u201CPazienti\u201D per consultare l\u2019elenco clienti',
         'Visualizza la scheda completa di ogni animale',
         'Consulta lo storico visite, trattamenti e documenti',
         'Importa clienti da file CSV per migrare da altri gestionali',
-        'Esporta i dati per backup o per il commercialista'
+        'Esporta i dati per backup o per esigenze amministrative'
       ],
       tip: 'La funzione import CSV consente di migrare dati da altri sistemi in modo semplice.'
     },
     {
       title: 'DOCUMENTI E PDF',
       content: [
-        'Vai a "Documenti" dalla dashboard',
+        'Vai a \u201CDocumenti\u201D dalla dashboard',
         'Crea documenti: prescrizioni, referti, certificati, vaccinazioni',
         'Carica PDF esistenti o genera da template',
         'Associa il documento al paziente e al proprietario',
@@ -272,48 +267,48 @@ const clinicTutorial = {
       tip: 'I documenti digitali aiutano a ridurre richieste ripetitive e telefonate non necessarie.'
     },
     {
-      title: 'LAB MARKETPLACE - ANALISI DI LABORATORIO',
+      title: 'LAB MARKETPLACE \u2014 ANALISI DI LABORATORIO',
       content: [
-        'Vai su "Analisi Lab" nel menu laterale',
+        'Vai su \u201CAnalisi Lab\u201D nel menu laterale',
         'Sfoglia i laboratori partner disponibili nel marketplace',
         'Crea una richiesta di analisi selezionando paziente ed esame',
         'Segui lo stato della richiesta in tempo reale',
         'Ricevi il referto quando il laboratorio lo carica',
         'Rivedi il referto, aggiungi note cliniche e decidi quando renderlo visibile al proprietario'
       ],
-      tip: 'I referti lab restano riservati fino a quando non li rivedi e li approvi. Il proprietario vede solo cio che tu decidi di pubblicare.'
+      tip: 'I referti di laboratorio restano riservati fino a quando non li rivedi e li approvi. Il proprietario vede solo ci\u00F2 che tu decidi di pubblicare.'
     },
     {
       title: 'RICETTE ELETTRONICHE VETERINARIE (REV)',
       content: [
-        'Vai su "Prescrizioni REV" nel menu laterale',
+        'Vai su \u201CPrescrizioni REV\u201D nel menu laterale',
         'Prepara la bozza con il wizard guidato: paziente, farmaci, posologia, diagnosi',
-        'Completa l\'emissione ufficiale sul portale del sistema nazionale (es. Vetinfo)',
+        'Completa l\u2019emissione ufficiale sul portale del sistema nazionale (es. Vetinfo)',
         'Registra il numero ricetta e PIN in VetBuddy',
-        'Pubblica al proprietario quando opportuno: riceve email e consulta nel profilo pet',
+        'Pubblica al proprietario quando opportuno: riceve email e consulta nel profilo',
         'Dashboard statistiche: bozze, emesse, errori, totale',
         'Audit trail completo di ogni passaggio',
-        'Configura il modulo da "Impostazioni REV"'
+        'Configura il modulo da \u201CImpostazioni REV\u201D'
       ],
-      tip: 'L\'emissione ufficiale della REV richiede l\'abilitazione del medico veterinario al sistema nazionale. VetBuddy prepara, organizza e archivia il flusso, ma non sostituisce il sistema pubblico di emissione.'
+      tip: 'L\u2019emissione ufficiale della REV richiede l\u2019abilitazione del medico veterinario al sistema nazionale. VetBuddy prepara, organizza e archivia il flusso, ma non sostituisce il sistema pubblico di emissione.'
     },
     {
       title: 'FATTURAZIONE PROFORMA',
       content: [
-        'Vai a "Fatturazione" nella dashboard',
+        'Vai a \u201CFatturazione\u201D nella dashboard',
         'Crea una nuova fattura proforma selezionando il cliente',
-        'Aggiungi servizi prestati con prezzi e quantita',
+        'Aggiungi servizi prestati con prezzi e quantit\u00E0',
         'Genera il documento PDF con tutti i dati',
-        'Esporta i dati in CSV o PDF per il commercialista'
+        'Esporta i dati per backup o per esigenze amministrative'
       ],
       tip: 'Le fatture proforma sono documenti di cortesia e non hanno valore fiscale. La fattura fiscale va emessa secondo le normative vigenti.'
     },
     {
       title: 'DASHBOARD METRICHE',
       content: [
-        'Vai su "Metriche" nel menu laterale',
+        'Vai su \u201CMetriche\u201D nel menu laterale',
         'Visualizza i dati principali: appuntamenti, pazienti, documenti',
-        'Consulta l\'andamento nel tempo',
+        'Consulta l\u2019andamento nel tempo',
         'Analizza le prenotazioni per canale di provenienza',
         'Monitora le richieste lab e lo stato di completamento'
       ],
@@ -322,26 +317,26 @@ const clinicTutorial = {
     {
       title: 'ABBONAMENTO E PAGAMENTI',
       content: [
-        'Vai su "Impostazioni" -> "Abbonamento"',
-        'Starter Clinica: EUR 0/mese (funzionalita base, 1 utente)',
-        'Pro Clinica: EUR 79/mese + IVA (EUR 49/mese per early adopter)',
+        'Vai su \u201CImpostazioni\u201D -> \u201CAbbonamento\u201D',
+        'Starter Clinica: \u20AC0/mese (funzionalit\u00E0 base, 1 utente)',
+        'Pro Clinica: \u20AC79/mese + IVA (\u20AC49/mese per early adopter)',
         'Pilot Milano: Piano Pro gratuito per 90 giorni',
         'Pagamento sicuro con carta tramite Stripe',
         'I pagamenti dei clienti alla clinica non passano da VetBuddy',
-        'VetBuddy incassa esclusivamente l\'abbonamento della piattaforma'
+        'VetBuddy incassa esclusivamente l\u2019abbonamento della piattaforma'
       ],
-      tip: 'Tutti i prezzi indicati sono IVA esclusa. Puoi annullare l\'abbonamento in qualsiasi momento.'
+      tip: 'Tutti i prezzi indicati sono IVA esclusa. Puoi annullare l\u2019abbonamento in qualsiasi momento.'
     },
     {
       title: 'AUTOMAZIONI (PIANO PRO)',
       content: [
-        'Promemoria automatici prima dell\'appuntamento via email',
+        'Promemoria automatici prima dell\u2019appuntamento via email',
         'Follow-up post visita con istruzioni personalizzabili',
         'Reminder per vaccini e controlli periodici',
-        'Report settimanale automatico con riepilogo attivita',
-        'Notifiche per nuove richieste dal lab marketplace'
+        'Report settimanale automatico con riepilogo attivit\u00E0',
+        'Notifiche per nuove richieste dal Lab Marketplace'
       ],
-      tip: 'Le automazioni aiutano la clinica a risparmiare tempo nelle attivita ripetitive e a mantenere una comunicazione costante con i clienti.'
+      tip: 'Le automazioni aiutano la clinica a risparmiare tempo nelle attivit\u00E0 ripetitive e a mantenere una comunicazione costante con i clienti.'
     }
   ],
 
@@ -363,8 +358,8 @@ const clinicTutorial = {
         'Importa i clienti esistenti tramite CSV (se necessario)',
         'Condividi il link di prenotazione ai primi clienti',
         'Prova a creare un appuntamento di test',
-        'Carica un documento di prova e verifica l\'invio al cliente',
-        'Attiva il modulo REV da "Impostazioni REV" e scegli la modalita',
+        'Carica un documento di prova e verifica l\u2019invio al cliente',
+        'Attiva il modulo REV da \u201CImpostazioni REV\u201D e scegli la modalit\u00E0',
         'Configura il team: aggiungi collaboratori con i rispettivi ruoli',
         'Verifica la dashboard metriche'
       ]
@@ -376,7 +371,7 @@ const clinicTutorial = {
         'Servizi configurati con prezzi e durate',
         'Link di prenotazione attivato e testato',
         'Clienti importati o primi pazienti inseriti',
-        'Modulo REV configurato (modalita guidata/manuale)',
+        'Modulo REV configurato (modalit\u00E0 guidata/manuale)',
         'Documento di prova creato e inviato',
         'Prenotazione di test completata',
         'Dashboard metriche verificata',
@@ -386,14 +381,14 @@ const clinicTutorial = {
   },
 
   faqs: [
-    { q: 'Quanto costa VetBuddy per la clinica?', a: 'Starter Clinica: EUR 0/mese. Pro Clinica: EUR 79/mese + IVA (EUR 49/mese per early adopter). Pilot Milano: Pro gratuito per 90 giorni. Prezzi IVA esclusa.' },
-    { q: 'Come funziona il link di prenotazione?', a: 'E un link condivisibile che permette ai clienti di inviare una richiesta rapida senza registrarsi. La clinica conferma poi data e orario.' },
-    { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti per visite e servizi avvengono direttamente tra clinica e cliente. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
+    { q: 'Quanto costa VetBuddy per la clinica?', a: 'Starter Clinica: \u20AC0/mese. Pro Clinica: \u20AC79/mese + IVA (\u20AC49/mese per early adopter). Pilot Milano: Pro gratuito per 90 giorni. Prezzi IVA esclusa.' },
+    { q: 'Come funziona il link di prenotazione?', a: '\u00C8 un link condivisibile che permette ai clienti di inviare una richiesta rapida senza registrarsi. La clinica conferma poi data e orario.' },
+    { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti per visite e servizi avvengono direttamente tra clinica e cliente. VetBuddy incassa esclusivamente l\u2019abbonamento della piattaforma.' },
     { q: 'Come funziona il Lab Marketplace?', a: 'Scegli un laboratorio partner, invia la richiesta di analisi, ricevi il referto e decidine la pubblicazione al proprietario dopo la tua revisione.' },
-    { q: 'VetBuddy emette direttamente la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, l\'organizzazione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale richiede l\'abilitazione del medico veterinario al sistema nazionale competente.' },
+    { q: 'VetBuddy emette direttamente la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, l\u2019organizzazione e l\u2019archiviazione del flusso prescrittivo. L\u2019emissione ufficiale richiede l\u2019abilitazione del medico veterinario al sistema nazionale.' },
     { q: 'Le fatture proforma hanno valore fiscale?', a: 'No. Sono documenti di cortesia. La fattura fiscale va emessa secondo le normative vigenti.' },
-    { q: 'Posso importare dati dal gestionale attuale?', a: 'Si. VetBuddy supporta l\'importazione da file CSV.' },
-    { q: 'Posso annullare l\'abbonamento?', a: 'Si, in qualsiasi momento, senza vincoli o penali.' }
+    { q: 'Posso importare dati dal gestionale attuale?', a: 'S\u00EC. VetBuddy supporta l\u2019importazione da file CSV.' },
+    { q: 'Posso annullare l\u2019abbonamento?', a: 'S\u00EC, in qualsiasi momento, senza vincoli o penali.' }
   ],
 
   contacts: {
@@ -406,7 +401,7 @@ const clinicTutorial = {
 //  TUTORIAL LABORATORIO
 // ==========================================================================
 const labTutorial = {
-  title: 'vetbuddy - Guida per Laboratori di Analisi',
+  title: 'VetBuddy \u2014 Guida per Laboratori di Analisi',
   subtitle: 'Il marketplace che connette il tuo laboratorio alle cliniche veterinarie partner.',
 
   quickStart: [
@@ -424,29 +419,29 @@ const labTutorial = {
         'Completa il profilo: nome, indirizzo, P.IVA, telefono',
         'Aggiungi descrizione, specializzazioni e area geografica',
         'Indica se offri il servizio di ritiro campioni a domicilio',
-        'Il tuo profilo sara visibile alle cliniche nel marketplace'
+        'Il tuo profilo sar\u00E0 visibile alle cliniche nel marketplace'
       ],
-      tip: 'Un profilo completo e dettagliato migliora la visibilita verso le cliniche partner.'
+      tip: 'Un profilo completo e dettagliato migliora la visibilit\u00E0 verso le cliniche partner.'
     },
     {
       title: 'COLLEGAMENTO PAGAMENTI',
       content: [
         'VetBuddy utilizza Stripe per gestire i pagamenti tra cliniche e laboratori',
-        'Dalla dashboard, vai su "Profilo" -> "Pagamenti"',
+        'Dalla dashboard, vai su \u201CProfilo\u201D -> \u201CPagamenti\u201D',
         'Segui la procedura guidata per collegare il tuo account Stripe',
         'Autorizza VetBuddy a ricevere i dati necessari tramite collegamento sicuro',
-        'Non e necessario condividere manualmente chiavi o credenziali',
-        'I pagamenti dalle cliniche arrivano direttamente sul tuo conto Stripe'
+        'Non \u00E8 necessario condividere manualmente chiavi o credenziali',
+        'Il collegamento pagamenti \u00E8 disponibile quando attivato per il tuo account'
       ],
       tip: 'Il collegamento avviene tramite procedura guidata e sicura. Non devi mai condividere chiavi segrete o password.'
     },
     {
       title: 'LISTINO PREZZI',
       content: [
-        'Vai su "Listino Prezzi" nel menu laterale',
+        'Vai su \u201CListino Prezzi\u201D nel menu laterale',
         'Crea categorie di esami (es. Ematologia, Biochimica, Microbiologia)',
         'Per ogni esame indica: nome, codice, prezzo e tempi medi di consegna',
-        'Il listino e visibile alle cliniche che consultano il marketplace',
+        'Il listino \u00E8 visibile alle cliniche che consultano il marketplace',
         'Puoi aggiornare i prezzi e i tempi in qualsiasi momento'
       ],
       tip: 'Un listino chiaro e aggiornato facilita la scelta delle cliniche e aumenta le richieste.'
@@ -465,13 +460,13 @@ const labTutorial = {
     {
       title: 'CARICAMENTO REFERTI',
       content: [
-        'Quando l\'analisi e completata, carica il referto in formato PDF',
+        'Quando l\u2019analisi \u00E8 completata, carica il referto in formato PDF',
         'Puoi aggiungere note tecniche a corredo del referto',
         'La clinica riceve una notifica e il veterinario rivede il referto',
-        'Solo dopo la revisione del veterinario il referto puo essere reso visibile al proprietario',
+        'Solo dopo la revisione del veterinario il referto pu\u00F2 essere reso visibile al proprietario',
         'Tutti i referti caricati restano archiviati nel sistema'
       ],
-      tip: 'La condivisione del referto al proprietario e gestita dalla clinica, non dal laboratorio. Il veterinario aggiunge note cliniche prima della pubblicazione.'
+      tip: 'La condivisione del referto al proprietario \u00E8 gestita dalla clinica, non dal laboratorio. Il veterinario aggiunge note cliniche prima della pubblicazione.'
     },
     {
       title: 'FATTURAZIONE',
@@ -480,28 +475,28 @@ const labTutorial = {
         'Una fattura proforma viene generata automaticamente da VetBuddy',
         'Le fatture proforma sono documenti di cortesia e non hanno valore fiscale',
         'La fattura fiscale va emessa dal laboratorio secondo le normative vigenti',
-        'Puoi consultare e scaricare tutte le fatture proforma dalla sezione "Fatture"'
+        'Puoi consultare e scaricare tutte le fatture proforma dalla sezione \u201CFatture\u201D'
       ],
       tip: 'Le fatture proforma sono documenti non fiscali. Ricorda di emettere fattura fiscale autonomamente per ogni transazione.'
     },
     {
       title: 'DASHBOARD E METRICHE',
       content: [
-        'La dashboard mostra una panoramica delle attivita del laboratorio',
+        'La dashboard mostra una panoramica delle attivit\u00E0 del laboratorio',
         'Richieste ricevute, in lavorazione e completate',
         'Andamento delle richieste nel tempo',
         'Cliniche partner attive e nuove collaborazioni',
         'Tempi medi di consegna dei referti'
       ],
-      tip: 'Le metriche aiutano a monitorare le performance e a identificare opportunita di miglioramento nel servizio.'
+      tip: 'Le metriche aiutano a monitorare le performance e a identificare opportunit\u00E0 di miglioramento nel servizio.'
     },
     {
       title: 'ABBONAMENTO',
       content: [
-        'Piano Lab Partner: EUR 29/mese + IVA',
+        'Piano Lab Partner: \u20AC29/mese + IVA',
         'Gratuito per i primi 6 mesi o le prime 50 richieste ricevute',
         'Include: profilo nel marketplace, gestione richieste, fatturazione, dashboard',
-        'Pagamento dell\'abbonamento tramite Stripe',
+        'Pagamento dell\u2019abbonamento tramite Stripe',
         'Puoi annullare in qualsiasi momento senza vincoli'
       ],
       tip: 'Tutti i prezzi indicati sono IVA esclusa.'
@@ -509,7 +504,7 @@ const labTutorial = {
   ],
 
   onboarding: {
-    title: 'COME RENDERE IL TUO LABORATORIO PIU VISIBILE NEL MARKETPLACE',
+    title: 'COME RENDERE IL TUO LABORATORIO PI\u00D9 VISIBILE',
     subtitle: 'Segui questi passaggi per ottimizzare il profilo e iniziare a ricevere richieste.',
     first10: {
       title: 'Cosa fare nei primi 10 minuti',
@@ -522,7 +517,7 @@ const labTutorial = {
     firstWeek: {
       title: 'Cosa attivare nella prima settimana',
       items: [
-        'Definisci l\'area geografica di operativita',
+        'Definisci l\u2019area geografica di operativit\u00E0',
         'Indica se offri il ritiro campioni a domicilio',
         'Completa il collegamento pagamenti tramite procedura guidata',
         'Prova a ricevere e gestire una richiesta di test',
@@ -536,7 +531,7 @@ const labTutorial = {
         'Profilo laboratorio completo (nome, indirizzo, P.IVA, descrizione)',
         'Listino prezzi con almeno le categorie principali',
         'Tempi di consegna indicati per ogni esame',
-        'Disponibilita ritiro campioni specificata',
+        'Disponibilit\u00E0 ritiro campioni specificata',
         'Collegamento pagamenti configurato (se disponibile)',
         'Richiesta di test ricevuta e gestita',
         'Referto di prova caricato',
@@ -546,12 +541,12 @@ const labTutorial = {
   },
 
   faqs: [
-    { q: 'Quanto costa VetBuddy per il laboratorio?', a: 'Piano Lab Partner: EUR 29/mese + IVA. Gratuito per i primi 6 mesi o le prime 50 richieste. Prezzi IVA esclusa.' },
+    { q: 'Quanto costa VetBuddy per il laboratorio?', a: 'Piano Lab Partner: \u20AC29/mese + IVA. Gratuito per i primi 6 mesi o le prime 50 richieste. Prezzi IVA esclusa.' },
     { q: 'Come ricevo i pagamenti dalle cliniche?', a: 'I pagamenti arrivano direttamente sul tuo conto tramite Stripe. VetBuddy non trattiene commissioni sui pagamenti tra clinica e laboratorio.' },
-    { q: 'Posso iscrivermi senza invito?', a: 'Si. Puoi registrarti gratuitamente come Laboratorio Partner.' },
+    { q: 'Posso iscrivermi senza invito?', a: 'S\u00EC. Puoi registrarti gratuitamente come Laboratorio Partner.' },
     { q: 'Le fatture proforma sono documenti fiscali?', a: 'No. Le fatture proforma generate da VetBuddy sono documenti di cortesia. La fattura fiscale va emessa dal laboratorio secondo le normative vigenti.' },
-    { q: 'Chi vede i referti che carico?', a: 'Il referto viene prima revisionato dal veterinario della clinica. Solo dopo la revisione del veterinario puo essere reso visibile al proprietario dell\'animale.' },
-    { q: 'Posso annullare l\'abbonamento?', a: 'Si, in qualsiasi momento, senza vincoli o penali.' }
+    { q: 'Chi vede i referti che carico?', a: 'Il referto viene prima revisionato dal veterinario della clinica. Solo dopo la revisione del veterinario pu\u00F2 essere reso visibile al proprietario dell\u2019animale.' },
+    { q: 'Posso annullare l\u2019abbonamento?', a: 'S\u00EC, in qualsiasi momento, senza vincoli o penali.' }
   ],
 
   contacts: {
@@ -563,7 +558,7 @@ const labTutorial = {
 // ==========================================================================
 //  PDF GENERATION (PROFESSIONAL STYLE)
 // ==========================================================================
-async function generateTutorialPDF(tutorial, hasOnboarding = false) {
+async function generateTutorialPDF(tutorial) {
   const pdfDoc = await PDFDocument.create();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -624,11 +619,12 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
     color: coralColor
   });
 
-  page.drawText('vet', {
-    x: margin, y: pageHeight - 70, size: 36, font: boldFont, color: darkGray
+  // Brand: "VetBuddy" with consistent casing
+  page.drawText('Vet', {
+    x: margin, y: pageHeight - 70, size: 36, font: boldFont, color: rgb(1, 1, 1)
   });
-  page.drawText('buddy', {
-    x: margin + 55, y: pageHeight - 70, size: 36, font: font, color: rgb(1, 1, 1)
+  page.drawText('Buddy', {
+    x: margin + boldFont.widthOfTextAtSize('Vet', 36), y: pageHeight - 70, size: 36, font: font, color: rgb(1, 1, 1)
   });
 
   // Dynamic subtitle
@@ -718,7 +714,7 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
   for (let i = 0; i < tutorial.sections.length; i++) {
     const section = tutorial.sections[i];
 
-    // Check if we need a new page (need enough space for header + some content)
+    // Check if we need a new page
     if (y < 250) {
       ({ page, y } = addPage());
     }
@@ -780,7 +776,7 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
     const ob = tutorial.onboarding;
     ({ page, y } = addPage());
 
-    // Section header - CORAL (not green)
+    // Section header - CORAL
     page.drawRectangle({
       x: margin, y: y - 5, width: contentWidth, height: 30,
       color: coralColor
@@ -871,10 +867,8 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
       ({ page, y } = addPage());
     }
 
-    page.drawText(`D: ${sanitizeText(faq.q)}`, {
-      x: margin, y, size: 10, font: boldFont, color: darkGray
-    });
-    y -= 16;
+    y = drawWrappedText(page, `D: ${faq.q}`, margin, y, contentWidth, 10, boldFont, darkGray);
+    y -= 4;
 
     y = drawWrappedText(page, `R: ${faq.a}`, margin, y, contentWidth, 10, font, mediumGray);
     y -= 15;
@@ -920,7 +914,7 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
     x: margin, y, size: 10, font: font, color: mediumGray
   });
 
-  // ==================== ADD PAGE NUMBERS ====================
+  // ==================== ADD PAGE NUMBERS & FOOTER ====================
   const pages = pdfDoc.getPages();
   for (let i = 0; i < pages.length; i++) {
     const pg = pages[i];
@@ -936,11 +930,12 @@ async function generateTutorialPDF(tutorial, hasOnboarding = false) {
       });
     }
 
-    pg.drawText('vet', {
-      x: margin, y: 5, size: 8, font: font, color: darkGray
+    // Footer brand: "VetBuddy"
+    pg.drawText('Vet', {
+      x: margin, y: 5, size: 8, font: boldFont, color: darkGray
     });
-    pg.drawText('buddy', {
-      x: margin + 14, y: 5, size: 8, font: font, color: coralColor
+    pg.drawText('Buddy', {
+      x: margin + boldFont.widthOfTextAtSize('Vet', 8), y: 5, size: 8, font: font, color: coralColor
     });
   }
 
@@ -955,16 +950,16 @@ export async function GET(request) {
     let tutorial, filename;
     if (type === 'clinic') {
       tutorial = clinicTutorial;
-      filename = 'vetbuddy_Tutorial_Cliniche.pdf';
+      filename = 'VetBuddy_Guida_Cliniche.pdf';
     } else if (type === 'lab') {
       tutorial = labTutorial;
-      filename = 'vetbuddy_Tutorial_Laboratori.pdf';
+      filename = 'VetBuddy_Guida_Laboratori.pdf';
     } else {
       tutorial = ownerTutorial;
-      filename = 'vetbuddy_Tutorial_Proprietari.pdf';
+      filename = 'VetBuddy_Guida_Proprietari.pdf';
     }
 
-    const pdfBytes = await generateTutorialPDF(tutorial, true);
+    const pdfBytes = await generateTutorialPDF(tutorial);
 
     return new NextResponse(pdfBytes, {
       status: 200,
