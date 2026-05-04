@@ -389,17 +389,17 @@ export default function BrochurePage() {
           </div>
         </div>
 
-        <h2 className="text-3xl font-black text-gray-900 mb-1">Per i Proprietari di Animali</h2>
-        <p className="text-gray-500 mb-6">VetBuddy è gratuito per sempre per i proprietari. Ecco cosa possono fare:</p>
+        <h2 className="text-3xl font-black text-gray-900 mb-1">Perché l'esperienza Owner aiuta la Clinica</h2>
+        <p className="text-gray-500 mb-6">Il proprietario è il miglior alleato della clinica. Più è soddisfatto, più torna.</p>
 
         <div className="grid grid-cols-3 gap-4">
           {[
-            { title: 'Prenota online', desc: 'Scegli clinica, servizio, veterinario e orario. Conferma in pochi click.' },
-            { title: 'Profilo animale', desc: 'Scheda completa con peso, allergie, vaccini, storico visite e documenti.' },
-            { title: 'Documenti e referti', desc: 'Tutti i PDF, referti e prescrizioni in un unico posto, accessibili sempre.' },
-            { title: 'Reminder', desc: 'Non perdi mai un appuntamento. Ricevi promemoria automatici via email.' },
-            { title: 'Programma fedeltà', desc: 'Accumula punti con ogni visita. 100 punti = €5 di sconto.' },
-            { title: 'Chat con la clinica', desc: 'Comunicazione diretta, veloce e senza telefonate.' },
+            { title: 'Riduce le telefonate', desc: 'Il proprietario prenota, consulta referti e riceve reminder da solo. Lo staff non viene interrotto.' },
+            { title: 'Aumenta i ritorni', desc: 'Reminder e follow-up automatici riportano i clienti per vaccini, controlli e richiami.' },
+            { title: 'Fidelizza a lungo termine', desc: 'Programma fedeltà, comunicazioni dirette e cura costante creano un legame duraturo.' },
+            { title: 'Meno no-show', desc: 'Promemoria automatici 24h e 1h prima riducono le assenze fino al 60%.' },
+            { title: 'Referti senza caos', desc: 'Il proprietario riceve i referti direttamente in app. Niente WhatsApp, niente email perse.' },
+            { title: 'Passaparola positivo', desc: 'Un\'esperienza digitale moderna genera recensioni positive e nuovi clienti.' },
           ].map((item, i) => (
             <div key={i} className="bg-gray-50 border border-gray-100 rounded-xl p-4">
               <h5 className="font-bold text-gray-900 text-sm mb-1">{item.title}</h5>
@@ -466,74 +466,75 @@ export default function BrochurePage() {
         <PageHeader />
 
         <div className="text-center mb-8 mt-4">
-          <div className="inline-flex items-center gap-2 bg-coral-50 text-coral-700 px-4 py-2 rounded-full border border-coral-200 mb-3">
-            <span className="font-bold text-sm">Pilot Milano</span>
-          </div>
-          <h2 className="text-3xl font-black text-gray-900 mb-2">Abbonamento VetBuddy</h2>
-          <p className="text-gray-500 max-w-xl mx-auto text-sm">Accesso su invito per cliniche selezionate e onboarding gratuito per i primi laboratori partner.</p>
-          <p className="text-xs text-gray-400 mt-1">Prezzi IVA esclusa.</p>
+          <h2 className="text-3xl font-black text-gray-900 mb-2">Scegli il piano adatto alla tua clinica</h2>
+          <p className="text-gray-500 max-w-xl mx-auto text-sm">Tutti i prezzi sono IVA esclusa. Puoi annullare in qualsiasi momento, senza vincoli.</p>
         </div>
 
         <div className="grid grid-cols-4 gap-4 mb-6">
           {/* Starter */}
           <div className="border-2 border-gray-200 rounded-2xl p-5">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Starter Clinica</p>
-            <div className="mb-2"><span className="text-3xl font-black text-gray-800">€0</span><span className="text-sm text-gray-400">/mese</span></div>
-            <p className="text-xs text-gray-500 mb-4">Per veterinari freelance e micro-cliniche in fase di valutazione.</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Starter</p>
+            <div className="mb-2"><span className="text-3xl font-black text-gray-800">€29</span><span className="text-sm text-gray-400">/mese + IVA</span></div>
+            <p className="text-xs text-gray-500 mb-4">Per veterinari freelance e micro-cliniche.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
-              {['1 sede', '1 utente', 'Fino a 30 richieste/mese', 'Profilo pubblico', 'Link prenotazione', 'Agenda base'].map((f, i) => (
+              {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Reminder base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
                 <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-green-500 flex-shrink-0" />{f}</li>
               ))}
             </ul>
-            <p className="text-xs text-gray-400 mt-4">Solo per cliniche ammesse al Pilot.</p>
           </div>
 
-          {/* Pro Clinica */}
+          {/* Growth — Consigliato */}
           <div className="border-2 border-coral-400 rounded-2xl p-5 bg-coral-50/30 relative">
-            <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-coral-500 text-white text-xs px-3 py-1 rounded-full font-bold whitespace-nowrap">Consigliato</div>
-            <p className="text-xs font-bold text-coral-500 uppercase tracking-wider mb-2 mt-1">Pro Clinica</p>
-            <div className="mb-1"><span className="text-3xl font-black text-gray-900">€0</span><span className="text-sm text-gray-500 ml-1">per 90 giorni</span></div>
-            <p className="text-sm text-gray-600 mb-1">Poi <strong>€79/mese</strong> + IVA</p>
-            <div className="bg-amber-50 border border-amber-200 rounded-lg px-2 py-1.5 mb-3">
-              <p className="text-xs font-bold text-amber-700">Early adopter: €49/mese + IVA</p>
-            </div>
+            <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-coral-500 text-white text-xs px-3 py-1 rounded-full font-bold whitespace-nowrap">⭐ Consigliato</div>
+            <p className="text-xs font-bold text-coral-500 uppercase tracking-wider mb-2 mt-1">Growth</p>
+            <div className="mb-1"><span className="text-3xl font-black text-gray-900">€69</span><span className="text-sm text-gray-500 ml-1">/mese + IVA</span></div>
+            <p className="text-xs text-gray-500 mb-3">Per cliniche piccole e medie.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
-              {['Fino a 10 staff', 'Prenotazioni online', 'Agenda digitale', 'Reminder automatici', 'Documenti e PDF', 'Google Calendar sync', 'Report e analytics', 'Lab Marketplace', 'Dashboard valore'].map((f, i) => (
+              {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Reminder automatici', 'Documenti e PDF', 'App proprietario', 'Inbox', 'Dashboard valore', 'Lab request base'].map((f, i) => (
                 <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-coral-500 flex-shrink-0" />{f}</li>
               ))}
             </ul>
-            <p className="text-xs text-gray-400 mt-3">90gg gratis. Estendibile a 6 mesi.</p>
+            <div className="mt-3 pt-2 border-t border-coral-200">
+              <p className="text-xs font-bold text-coral-600">Pilot: Growth gratis 90 giorni</p>
+            </div>
+          </div>
+
+          {/* Pro */}
+          <div className="border-2 border-gray-200 rounded-2xl p-5">
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Pro</p>
+            <div className="mb-1"><span className="text-3xl font-black text-gray-800">€99</span><span className="text-sm text-gray-500 ml-1">/mese + IVA</span></div>
+            <p className="text-xs text-gray-500 mb-3">Per cliniche strutturate.</p>
+            <ul className="space-y-1.5 text-xs text-gray-700">
+              {['Tutto Growth più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Lab Network completo', 'Analytics avanzati', 'Report mensili', 'AI assistente'].map((f, i) => (
+                <li key={i} className={`flex items-center gap-1.5 ${i === 0 ? 'font-semibold' : ''}`}><Check className="w-3 h-3 text-green-500 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
           </div>
 
           {/* Lab Partner */}
           <div className="border-2 border-blue-200 rounded-2xl p-5 bg-blue-50/30">
-            <div className="absolute -top-2.5 left-4"></div>
-            <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Laboratorio Partner</p>
-            <div className="mb-1"><span className="text-3xl font-black text-gray-800">€0</span><span className="text-sm text-gray-500 ml-1">per 6 mesi</span></div>
-            <p className="text-sm text-gray-600 mb-3">Poi <strong>€29/mese</strong> + IVA</p>
+            <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Lab Partner</p>
+            <div className="mb-1"><span className="text-3xl font-black text-gray-800">€39</span><span className="text-sm text-gray-500 ml-1">/mese + IVA</span></div>
+            <p className="text-xs text-gray-500 mb-3">Per laboratori di analisi.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
-              {['Dashboard laboratorio', 'Profilo marketplace', 'Listino prezzi', 'Tempi refertazione', 'Ritiro campioni', 'Ricezione richieste', 'Upload referti PDF', 'Storico richieste', 'Notifiche email'].map((f, i) => (
+              {['Dashboard laboratorio', 'Profilo marketplace', 'Listino prezzi', 'Gestione richieste', 'Upload referti PDF', 'Notifiche email', 'Disponibilità ritiro'].map((f, i) => (
                 <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-blue-500 flex-shrink-0" />{f}</li>
               ))}
             </ul>
-            <p className="text-xs text-gray-400 mt-3">Gratis 6 mesi o 50 richieste.</p>
-          </div>
-
-          {/* Enterprise */}
-          <div className="border-2 border-gray-200 rounded-2xl p-5">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Enterprise</p>
-            <div className="mb-2"><span className="text-3xl font-black text-gray-800">Custom</span><span className="text-sm text-gray-400 ml-1">+ IVA</span></div>
-            <p className="text-xs text-gray-500 mb-4">Per gruppi veterinari, cliniche multi-sede e network di laboratori.</p>
-            <ul className="space-y-1.5 text-xs text-gray-700">
-              {['Multi-sede illimitate', 'Laboratori multipli', 'API dedicata', 'SLA garantito', 'Onboarding dedicato', 'Reportistica avanzata', 'Gestione centralizzata', 'Integrazioni custom'].map((f, i) => (
-                <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-gray-500 flex-shrink-0" />{f}</li>
-              ))}
-            </ul>
-            <p className="text-xs text-gray-400 mt-3">Soluzione su misura.</p>
+            <div className="mt-3 pt-2 border-t border-blue-200">
+              <p className="text-xs font-bold text-blue-600">Pilot: gratis per 6 mesi</p>
+            </div>
           </div>
         </div>
 
-        <p className="text-center text-xs text-gray-500 mb-6">Non è una prova libera: stiamo selezionando cliniche e laboratori partner per validare VetBuddy nel Pilot Milano.</p>
+        {/* Pilot nota */}
+        <div className="bg-coral-50 border border-coral-200 rounded-xl p-4 mb-4">
+          <p className="text-xs text-coral-800 leading-relaxed text-center">
+            <strong>🏙️ Pilot Milano:</strong> Piano Growth gratuito per 90 giorni. Nessun vincolo, nessun costo iniziale. Se non ti convince, non paghi nulla.
+          </p>
+        </div>
+
+        <p className="text-center text-xs text-gray-400">Non sostituisce il tuo gestionale: VetBuddy lavora accanto ai tuoi strumenti attuali.</p>
 
       </div>
 
@@ -546,17 +547,15 @@ export default function BrochurePage() {
         
         <div className="space-y-4">
           {[
-            { q: 'VetBuddy emette direttamente la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale richiede l\'abilitazione del medico veterinario al sistema nazionale competente.' },
-            { q: 'Chi può confermare l\'emissione di una REV?', a: 'Solo il medico veterinario autorizzato.' },
-            { q: 'Posso usare VetBuddy anche se l\'integrazione ufficiale non è ancora attiva?', a: 'Sì. VetBuddy può operare in modalità guidata/manuale, permettendo alla clinica di preparare il flusso e registrare poi gli estremi della ricetta emessa nel sistema ufficiale.' },
-            { q: 'Il proprietario può vedere la prescrizione?', a: 'Il proprietario può consultare in piattaforma solo le informazioni rese disponibili dalla clinica e dal flusso previsto.' },
-            { q: 'Il piano Pro Clinica è davvero gratis per 90 giorni?', a: 'Sì, per le cliniche selezionate nel Pilot Milano.' },
-            { q: 'Cosa succede dopo i 90 giorni?', a: 'Il piano passa a €79/mese + IVA, con tariffa early adopter di €49/mese + IVA per le prime cliniche.' },
-            { q: 'I laboratori possono iscriversi senza invito?', a: 'Sì, possono registrarsi gratuitamente come Laboratorio Partner e attendere approvazione.' },
-            { q: 'I prezzi includono IVA?', a: 'No, tutti i prezzi sono IVA esclusa.' },
-            { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti vanno direttamente alla clinica tramite Stripe. VetBuddy incassa solo l\'abbonamento.' },
-            { q: 'Come funziona l\'invio dei referti?', a: 'Il laboratorio carica il referto. Il veterinario lo rivede, aggiunge note cliniche e lo pubblica al proprietario.' },
-            { q: 'VetBuddy è gratuito per i proprietari?', a: 'Sì, completamente gratuito per i proprietari di animali. Nessun costo nascosto, mai.' },
+            { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale completo. È un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, reminder, comunicazioni e follow-up.' },
+            { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale resta in capo al medico veterinario abilitato sul sistema nazionale.' },
+            { q: 'Quanto costa VetBuddy?', a: 'Starter €29/mese, Growth €69/mese (consigliato), Pro €99/mese. Laboratori €39/mese. Tutti i prezzi IVA esclusa.' },
+            { q: 'Cos\'è il Pilot Milano?', a: '90 giorni di piano Growth gratuito per cliniche selezionate. Include onboarding, configurazione e supporto. Nessun vincolo: se non ti convince, non paghi nulla.' },
+            { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite vanno direttamente alla clinica. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
+            { q: 'Come funziona l\'invio dei referti?', a: 'Il laboratorio carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando pubblicarlo al proprietario.' },
+            { q: 'VetBuddy è gratuito per i proprietari?', a: 'Sì, completamente gratuito per sempre. Nessun costo nascosto.' },
+            { q: 'Posso annullare in qualsiasi momento?', a: 'Sì. Nessun vincolo contrattuale. Puoi annullare l\'abbonamento quando vuoi.' },
+            { q: 'Serve una formazione tecnica?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile.' },
           ].map((item, i) => (
             <div key={i} className="pb-3 border-b border-gray-100 last:border-0">
               <p className="font-semibold text-gray-900 text-sm mb-1">{item.q}</p>
