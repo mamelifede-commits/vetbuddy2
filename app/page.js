@@ -45,6 +45,7 @@ const ClinicLabAnalysis = dynamic(() => import('@/app/components/clinic/ClinicLa
 const ClinicLabMarketplace = dynamic(() => import('@/app/components/clinic/ClinicLabMarketplace'), { ssr: false });
 const ClinicInvoicing = dynamic(() => import('@/app/components/clinic/ClinicInvoicing'), { ssr: false });
 const ClinicMetrics = dynamic(() => import('@/app/components/clinic/ClinicMetrics'), { ssr: false });
+const ClinicValueDashboard = dynamic(() => import('@/app/components/clinic/ClinicValueDashboard'), { ssr: false });
 const ClinicBookingLink = dynamic(() => import('@/app/components/clinic/ClinicBookingLink'), { ssr: false });
 const ClinicTemplates = dynamic(() => import('@/app/components/clinic/ClinicTemplates'), { ssr: false });
 const ClinicAutomations = dynamic(() => import('@/app/components/clinic/ClinicAutomations'), { ssr: false });
@@ -167,6 +168,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
 
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', value: 'dashboard' },
+    { icon: TrendingUp, label: 'Valore Generato', value: 'value-dashboard' },
     { icon: Calendar, label: 'Agenda', value: 'agenda', badge: pendingAppointments },
     { icon: Inbox, label: 'Team Inbox', value: 'inbox', badge: unreadMessages },
     { icon: FileText, label: 'Documenti', value: 'documents' },
@@ -182,7 +184,6 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     { icon: User, label: 'Proprietari', value: 'owners' },
     { icon: Users, label: 'Staff', value: 'staff' },
     { icon: Receipt, label: 'Fatturazione', value: 'invoicing' },
-    { icon: TrendingUp, label: 'Report', value: 'reports' },
     { icon: BarChart3, label: 'Metriche', value: 'metrics' },
     { icon: Link2, label: 'Link Prenotazione', value: 'bookinglink' },
     { icon: Star, label: 'Recensioni', value: 'reviews' },
@@ -266,6 +267,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'labmarketplace' && <ClinicLabMarketplace user={user} />}
         {activeTab === 'invoicing' && <ClinicInvoicing user={user} owners={owners} pets={pets} />}
         {activeTab === 'metrics' && <ClinicMetrics user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'value-dashboard' && <ClinicValueDashboard />}
         {activeTab === 'bookinglink' && <ClinicBookingLink user={user} onNavigate={setActiveTab} />}
         {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} onNavigate={setActiveTab} />}
         {activeTab === 'automations' && <ClinicAutomations user={user} onNavigate={setActiveTab} />}

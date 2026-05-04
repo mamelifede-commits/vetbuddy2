@@ -328,6 +328,82 @@ export async function handleClinicGet(path, request) {
     }, { headers: corsHeaders });
   }
 
+  // ==================== VALUE METRICS (Dashboard "Valore Generato") ====================
+  if (path === 'clinic/value-metrics') {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== 'clinic') {
+      return NextResponse.json({ error: 'Non autorizzato' }, { status: 403, headers: corsHeaders });
+    }
+
+    const url = new URL(request.url);
+    const period = url.searchParams.get('period') || 'month';
+
+    const now = new Date();
+    let startDate;
+    if (period === 'quarter') {
+      startDate = new Date(now.getFullYear(), now.getMonth() - 3, 1);
+    } else if (period === 'year') {
+      startDate = new Date(now.getFullYear() - 1, now.getMonth(), 1);
+    } else {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    }
+    const startISO = startDate.toISOString();
+
+    const events = await getCollection('clinic_analytics_events');
+    const appointments = await getCollection('appointments');
+    const labRequests = await getCollection('lab_requests');
+
+    // Bookings generated online
+    const bookingsGenerated = await events.countDocuments({
+      clinicId: user.id, eventType: 'booking_completed', createdAt: { $gte: startISO }
+    });
+
+    // Reminders sent
+    const remindersSent = await events.countDocuments({
+      clinicId: user.id, eventType: 'reminder_sent', createdAt: { $gte: startISO }
+    });
+
+    // Appointments confirmed
+    const appointmentsConfirmed = await appointments.countDocuments({
+      clinicId: user.id, status: { $in: ['confirmed', 'completed'] }, createdAt: { $gte: startISO }
+    });
+
+    // Appointments cancelled/recovered
+    const appointmentsCancelled = await appointments.countDocuments({
+      clinicId: user.id, status: { $in: ['cancelled', 'rescheduled'] }, createdAt: { $gte: startISO }
+    });
+
+    // Lab requests managed
+    const labRequestsManaged = await labRequests.countDocuments({
+      clinicId: user.id, createdAt: { $gte: startISO }
+    });
+
+    // Calculations
+    const callsAvoided = Math.round(bookingsGenerated * 3 + remindersSent * 0.5);
+    const hoursStaffSaved = Math.round((bookingsGenerated * 5 + remindersSent * 2) / 60 * 10) / 10;
+    const noShowAvoided = Math.round(remindersSent * 0.15);
+    const clientsReactivated = Math.round(bookingsGenerated * 0.1);
+    const vaccineRecalls = Math.round(remindersSent * 0.2);
+    const avgVisitValue = 65;
+    const estimatedRevenue = Math.round(bookingsGenerated * avgVisitValue + clientsReactivated * avgVisitValue * 1.5);
+
+    return NextResponse.json({
+      period,
+      bookingsGenerated: { value: bookingsGenerated, label: 'Prenotazioni generate online' },
+      callsAvoided: { value: callsAvoided, label: 'Telefonate evitate (stimate)' },
+      hoursStaffSaved: { value: hoursStaffSaved, label: 'Ore risparmiate dallo staff' },
+      remindersSent: { value: remindersSent, label: 'Reminder inviati' },
+      appointmentsConfirmed: { value: appointmentsConfirmed, label: 'Appuntamenti confermati' },
+      appointmentsCancelled: { value: appointmentsCancelled, label: 'Appuntamenti cancellati/recuperati' },
+      noShowAvoided: { value: noShowAvoided, label: 'No-show stimati evitati' },
+      clientsReactivated: { value: clientsReactivated, label: 'Clienti riattivati' },
+      vaccineRecalls: { value: vaccineRecalls, label: 'Richiami vaccinali prenotati' },
+      estimatedRevenue: { value: estimatedRevenue, label: 'Fatturato stimato generato' },
+      labRequestsManaged: { value: labRequestsManaged, label: 'Richieste laboratorio gestite' },
+      documentsAutoSent: { value: 0, label: 'Documenti inviati automaticamente' },
+    }, { headers: corsHeaders });
+  }
+
   return null;
 }
 

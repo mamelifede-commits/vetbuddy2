@@ -10,15 +10,14 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { AuthForm } from '@/app/components/auth';
-import { EcosystemToggle, FeatureCarousel, HomepageMapSection } from '@/app/components/landing';
 import NewBrandLogo from '@/app/components/shared/NewBrandLogo';
 import api from '@/app/lib/api';
 import {
-  Calendar, CalendarCheck, CalendarDays, FileText, FileCheck, Users, Send, Building2, Phone, PawPrint, Zap, Shield, Heart, MessageCircle, Bell,
-  CheckCircle, ChevronRight, Menu, X, ClipboardList, Settings, Inbox, Search, TrendingUp, Upload, Download,
-  Star, Check, AlertCircle, Video, Euro, Receipt, Syringe, Activity,
-  MapPin, Globe, Stethoscope, Mail, Clock, User, Gift, Link2, Info,
-  Loader2, Ticket, MousePointerClick, FlaskConical
+  Calendar, FileText, Users, Send, Building2, Phone, PawPrint, Zap, Shield, Heart, MessageCircle, Bell,
+  CheckCircle, ChevronRight, Menu, X, ClipboardList, TrendingUp,
+  Star, Check, Euro, Receipt, Activity,
+  MapPin, Stethoscope, Mail, Clock, Gift, Loader2, FlaskConical, BarChart3,
+  ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer
 } from 'lucide-react';
 
 function FullLandingPage({ onLogin }) {
@@ -26,9 +25,11 @@ function FullLandingPage({ onLogin }) {
   const [authMode, setAuthMode] = useState('login');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
+  const [pilotForm, setPilotForm] = useState({ clinicName: '', city: '', email: '', phone: '', message: '' });
+  const [pilotSubmitting, setPilotSubmitting] = useState(false);
+  const [pilotSubmitted, setPilotSubmitted] = useState(false);
   const scrollToSection = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMobileMenuOpen(false); };
 
-  // Auto-open login if there's a pending email action
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedAction = sessionStorage.getItem('vetbuddy_email_action');
@@ -36,17 +37,13 @@ function FullLandingPage({ onLogin }) {
         try {
           const actionData = JSON.parse(savedAction);
           setPendingAction(actionData);
-          // Auto-open login dialog
           setAuthMode('login');
           setShowAuth(true);
-        } catch (e) {
-          // ignore
-        }
+        } catch (e) { /* ignore */ }
       }
     }
   }, []);
 
-  // Get action message for display
   const getActionMessage = () => {
     if (!pendingAction) return null;
     switch (pendingAction.action) {
@@ -58,1540 +55,634 @@ function FullLandingPage({ onLogin }) {
     }
   };
 
+  const handlePilotSubmit = async () => {
+    if (!pilotForm.clinicName || !pilotForm.email) return;
+    setPilotSubmitting(true);
+    try {
+      await api.post('pilot-applications', pilotForm);
+      setPilotSubmitted(true);
+    } catch (err) {
+      alert('Errore nell\'invio. Riprova.');
+    }
+    setPilotSubmitting(false);
+  };
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Banner Under Construction */}
-      <div className="bg-amber-500 text-white text-center py-2.5 px-4 text-sm font-medium">
-        <span>⚠️ <strong>Sito in costruzione</strong> - Ci stiamo preparando al lancio. Se ti registri, ti avviseremo quando saremo pronti!</span>
-      </div>
-      {/* Pilot Banner - Milano */}
+      {/* Pilot Banner */}
       <div className="bg-gradient-to-r from-coral-500 to-orange-500 text-white text-center py-2.5 px-4 text-sm">
-        <span className="font-semibold">🏙️ Pilot Milano</span> — Accesso su invito per cliniche selezionate. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Candidati →</button>
+        <span className="font-semibold">🏙️ Pilot Milano</span> — 90 giorni per misurare il valore che VetBuddy genera per la tua clinica. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Candidati →</button>
       </div>
 
-      {/* Header */}
-      <header className="sticky top-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-                        <NewBrandLogo size="sm" />
-            <nav className="hidden md:flex items-center gap-8">
-              <button onClick={() => scrollToSection('funzionalita')} className="text-gray-600 hover:text-coral-500 transition">Funzionalità</button>
-              <button onClick={() => scrollToSection('automazioni')} className="text-gray-600 hover:text-coral-500 transition">Automazioni</button>
-              <button onClick={() => scrollToSection('fatturazione')} className="text-gray-600 hover:text-coral-500 transition">Fatturazione</button>
-              <button onClick={() => scrollToSection('ricette-elettroniche')} className="text-emerald-600 hover:text-emerald-700 font-medium transition">💊 REV</button>
-              <button onClick={() => scrollToSection('premi')} className="text-gray-600 hover:text-coral-500 transition">Premi</button>
-              <button onClick={() => scrollToSection('pilot')} className="text-gray-600 hover:text-coral-500 transition">Prezzi</button>
-              <button onClick={() => scrollToSection('lab-marketplace')} className="text-purple-600 hover:text-purple-700 font-medium transition">🧪 Lab</button>
-              <a href="/presentazione" className="text-gray-600 hover:text-coral-500 transition">Brochure</a>
-            </nav>
-            <div className="hidden md:flex items-center gap-4">
-              <Button variant="ghost" onClick={() => { setAuthMode('login'); setShowAuth(true); }}>Accedi</Button>
-              <Button className="bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Registrati</Button>
-            </div>
-            <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>{mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}</button>
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <NewBrandLogo size="md" />
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <button onClick={() => scrollToSection('soluzione')} className="text-gray-600 hover:text-coral-500 transition">Soluzione</button>
+            <button onClick={() => scrollToSection('moduli')} className="text-gray-600 hover:text-coral-500 transition">Moduli</button>
+            <button onClick={() => scrollToSection('lab-network')} className="text-purple-600 hover:text-purple-700 font-medium transition">🧪 Lab Network</button>
+            <button onClick={() => scrollToSection('prezzi')} className="text-gray-600 hover:text-coral-500 transition">Prezzi</button>
+            <button onClick={() => scrollToSection('pilot')} className="text-gray-600 hover:text-coral-500 transition">Pilot</button>
+            <button onClick={() => scrollToSection('faq')} className="text-gray-600 hover:text-coral-500 transition">FAQ</button>
           </div>
+          <div className="hidden md:flex items-center gap-3">
+            <Button variant="outline" size="sm" onClick={() => { setAuthMode('login'); setShowAuth(true); }}>Accedi</Button>
+            <Button size="sm" className="bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Prova Gratis</Button>
+          </div>
+          <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>{mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}</button>
         </div>
         {mobileMenuOpen && (
           <div className="md:hidden bg-white border-t py-4 px-4 shadow-lg">
-            <nav className="flex flex-col gap-3">
-              <button onClick={() => { scrollToSection('funzionalita'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Funzionalità</button>
-              <button onClick={() => { scrollToSection('automazioni'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Automazioni</button>
-              <button onClick={() => { scrollToSection('fatturazione'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Fatturazione</button>
-              <button onClick={() => { scrollToSection('ricette-elettroniche'); setMobileMenuOpen(false); }} className="text-emerald-600 text-left py-2 hover:text-emerald-700 font-medium transition">💊 Ricette REV</button>
-              <button onClick={() => { scrollToSection('premi'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Premi</button>
-              <button onClick={() => { scrollToSection('pilot'); setMobileMenuOpen(false); }} className="text-gray-600 text-left py-2 hover:text-coral-500 transition">Prezzi</button>
-              <button onClick={() => { scrollToSection('lab-marketplace'); setMobileMenuOpen(false); }} className="text-purple-600 text-left py-2 hover:text-purple-700 font-medium transition">🧪 Laboratori</button>
-              <a href="/presentazione" className="text-gray-600 text-left py-2 hover:text-coral-500 transition block">Brochure</a>
-              <hr className="my-2" />
-              <Button variant="ghost" className="justify-start" onClick={() => { setAuthMode('login'); setShowAuth(true); setMobileMenuOpen(false); }}>Accedi</Button>
-              <Button className="bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); setMobileMenuOpen(false); }}>Registrati</Button>
-            </nav>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => { scrollToSection('soluzione'); }} className="text-gray-600 text-left py-2 hover:text-coral-500">Soluzione</button>
+              <button onClick={() => { scrollToSection('moduli'); }} className="text-gray-600 text-left py-2 hover:text-coral-500">Moduli</button>
+              <button onClick={() => { scrollToSection('lab-network'); }} className="text-purple-600 text-left py-2 font-medium">🧪 Lab Network</button>
+              <button onClick={() => { scrollToSection('prezzi'); }} className="text-gray-600 text-left py-2 hover:text-coral-500">Prezzi</button>
+              <button onClick={() => { scrollToSection('pilot'); }} className="text-gray-600 text-left py-2 hover:text-coral-500">Pilot</button>
+              <a href="/presentazione" className="text-gray-600 text-left py-2 hover:text-coral-500 block">Brochure</a>
+              <div className="flex gap-2 pt-2 border-t mt-2">
+                <Button variant="outline" size="sm" className="flex-1" onClick={() => { setAuthMode('login'); setShowAuth(true); setMobileMenuOpen(false); }}>Accedi</Button>
+                <Button size="sm" className="flex-1 bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); setMobileMenuOpen(false); }}>Prova Gratis</Button>
+              </div>
+            </div>
           </div>
         )}
-      </header>
+      </nav>
 
-      {/* Hero - Messaggio chiaro per cliniche e proprietari */}
-      <section className="pt-12 pb-12 px-4 bg-gradient-to-br from-white via-coral-50/30 to-blue-50/30 relative overflow-hidden">
-        {/* Decorative blobs */}
-        <div className="absolute top-0 left-0 w-72 h-72 bg-coral-300/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute top-1/2 right-0 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl translate-x-1/2"></div>
-        <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-purple-300/20 rounded-full blur-3xl"></div>
-        
+      {/* ============================================================ */}
+      {/* HERO — Nuovo posizionamento */}
+      {/* ============================================================ */}
+      <section className="pt-16 pb-16 px-4 bg-gradient-to-br from-white via-coral-50/30 to-blue-50/30 relative overflow-hidden">
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          {/* Badge Pilot */}
-          <div className="inline-flex items-center gap-2 bg-white/70 backdrop-blur-md text-amber-800 px-4 py-2 rounded-full mb-6 border border-amber-200/50 shadow-lg animate-fade-in-up">
-            <MapPin className="h-4 w-4" />
-            <span className="font-semibold">Pilot Milano — Accesso su invito</span>
-          </div>
-          
-          {/* Headline principale */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight animate-fade-in-up animate-delay-100">
-            <span className="text-coral-500">Cliniche veterinarie</span> e <span className="text-blue-500">proprietari di pet</span> in un&apos;unica piattaforma
+          <Badge className="bg-coral-100 text-coral-700 mb-6 text-sm px-4 py-1.5">🚀 Il copilota operativo per cliniche veterinarie</Badge>
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            Più prenotazioni. Meno telefonate.<br className="hidden md:block" />
+            <span className="text-coral-500">Clienti sempre seguiti.</span>
           </h1>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto animate-fade-in-up animate-delay-200">
-            Gestisci appuntamenti, documenti e comunicazione tra cliniche, proprietari e <span className="text-purple-600 font-medium">laboratori di analisi</span>. Zero carta, zero caos.
+          <p className="text-lg md:text-xl text-gray-600 mb-4 max-w-3xl mx-auto leading-relaxed">
+            VetBuddy automatizza prenotazioni, reminder, comunicazioni, referti e follow-up tra cliniche veterinarie, proprietari e laboratori.
           </p>
-          
-          {/* CTA Buttons - Glassmorphism */}
-          <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto mb-6">
-            <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-coral-200/50 hover:bg-white/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group animate-fade-in-left animate-delay-300 flex flex-col" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <div className="h-14 w-14 bg-gradient-to-br from-coral-400 to-coral-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition shadow-lg">
-                <Building2 className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Per Cliniche Veterinarie</h3>
-              <p className="text-sm text-gray-600 mb-3 flex-1">Dashboard completa, inbox team, documenti, reportistica.</p>
-              <p className="text-xs text-amber-600 font-semibold mb-3">🎫 Pro Clinica: €0 per 90 giorni — poi €79/mese + IVA</p>
-              <Button className="w-full bg-gradient-to-r from-coral-500 to-coral-600 hover:from-coral-600 hover:to-coral-700 text-white shadow-lg mt-auto">
-                Richiedi Invito →
-              </Button>
-            </div>
-            <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-violet-200/50 hover:bg-white/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group animate-fade-in-up animate-delay-300 flex flex-col" onClick={() => { setAuthMode('register-lab'); setShowAuth(true); }}>
-              <div className="h-14 w-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition shadow-lg">
-                <FlaskConical className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Per Laboratori di Analisi</h3>
-              <p className="text-sm text-gray-600 mb-3 flex-1">Ricevi richieste, gestisci referti, connettiti con le cliniche.</p>
-              <p className="text-xs text-violet-600 font-semibold mb-3">🧪 Gratis per 6 mesi — poi €29/mese + IVA</p>
-              <Button className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-lg mt-auto">
-                Registra il tuo Lab →
-              </Button>
-            </div>
-            <div className="bg-white/60 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-blue-200/50 hover:bg-white/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group animate-fade-in-right animate-delay-300 flex flex-col" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-              <div className="h-14 w-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition shadow-lg">
-                <PawPrint className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Per Proprietari di Animali</h3>
-              <p className="text-sm text-gray-600 mb-3 flex-1">Prenota visite, ricevi documenti, invita la tua clinica.</p>
-              <p className="text-xs text-blue-600 font-semibold mb-3">🆓 Gratis per sempre • Invita la tua clinica</p>
-              <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg mt-auto">
-                Iscriviti Gratis →
-              </Button>
-            </div>
-          </div>
-          
-          {/* Freelancer callout */}
-          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-4 max-w-2xl mx-auto mb-6 animate-fade-in-up animate-delay-400 cursor-pointer hover:shadow-lg hover:border-purple-300 transition-all" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Stethoscope className="h-5 w-5 text-white" />
-              </div>
-              <div className="text-left flex-1">
-                <p className="font-semibold text-gray-900 text-sm">Sei un veterinario freelance?</p>
-                <p className="text-xs text-gray-600">Registrati come clinica e inizia con il <span className="font-bold text-purple-600">Piano Starter €0/mese</span>. Ideale per gestire i tuoi clienti in autonomia!</p>
-              </div>
-              <Button size="sm" className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white flex-shrink-0">
-                Richiedi Invito →
-              </Button>
-            </div>
-          </div>
-          
-          {/* Trust indicators */}
-          <p className="text-sm text-gray-400">Pilot attivo a Milano e provincia • Accesso prioritario per cliniche selezionate</p>
-        </div>
-      </section>
-
-      {/* COSA CI RENDE UNICI - Sezione unificata e compatta */}
-      <section id="funzionalita" className="py-16 px-4 bg-gradient-to-br from-gray-50 via-white to-coral-50/30">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-4">
-              <Zap className="h-4 w-4" />
-              <span className="font-medium">Tutto in una piattaforma</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Non il solito gestionale veterinario
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Funzionalità pensate per risparmiare tempo e lavorare meglio. Cliniche e proprietari connessi.
-            </p>
+          <p className="text-base text-gray-500 mb-8 max-w-2xl mx-auto italic">
+            Non sostituisce il tuo gestionale: lavora accanto alla clinica per ridurre il caos operativo e aumentare le visite ricorrenti.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
+            <Button size="lg" className="bg-coral-500 hover:bg-coral-600 text-white px-8 py-6 text-lg" onClick={() => scrollToSection('pilot')}>
+              Candidati al Pilot Milano <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button variant="outline" size="lg" className="px-8 py-6 text-lg" onClick={() => scrollToSection('soluzione')}>
+              Scopri come funziona
+            </Button>
           </div>
 
-          {/* Feature Grid - 7 features chiave */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {/* Agenda */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
-              <div className="h-14 w-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <CalendarDays className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Agenda Intelligente</h3>
-              <p className="text-gray-600 text-sm mb-4">Calendario settimanale con colori per veterinario. Drag & drop appuntamenti, 10+ tipi di visita.</p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-xs">Multi-veterinario</Badge>
-                <Badge variant="outline" className="text-xs">Drag & drop</Badge>
-              </div>
-            </div>
-
-            {/* Automazioni */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100 hover:shadow-xl hover:-translate-y-1 transition-all group relative">
-              <div className="absolute -top-3 right-4 bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-medium">
-                44+ attive
-              </div>
-              <div className="h-14 w-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <Zap className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Automazioni AI</h3>
-              <p className="text-gray-600 text-sm mb-4">Promemoria, richiami vaccini, follow-up, auguri compleanno pet. Tutto automatico, 24/7.</p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-xs">-80% telefonate</Badge>
-                <Badge variant="outline" className="text-xs">+40% ritorno</Badge>
-              </div>
-            </div>
-
-            {/* Team Inbox */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
-              <div className="h-14 w-14 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <Inbox className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Team Inbox</h3>
-              <p className="text-gray-600 text-sm mb-4">Tutti i messaggi in un unico posto. Assegna ticket, segui le conversazioni, rispondi velocemente.</p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-xs">Ticket system</Badge>
-                <Badge variant="outline" className="text-xs">Quick replies</Badge>
-              </div>
-            </div>
-
-            {/* Video Consulto */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-indigo-100 hover:shadow-xl hover:-translate-y-1 transition-all group relative">
-              <div className="absolute -top-3 right-4 bg-indigo-500 text-white text-xs px-3 py-1 rounded-full font-medium">
-                Novità
-              </div>
-              <div className="h-14 w-14 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <Video className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Video Consulto</h3>
-              <p className="text-gray-600 text-sm mb-4">Consulenze online con un click. Link automatico al cliente, nessun software esterno.</p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-xs">1-click</Badge>
-                <Badge variant="outline" className="text-xs">HD Quality</Badge>
-              </div>
-            </div>
-
-            {/* Documenti */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-amber-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
-              <div className="h-14 w-14 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <FileText className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Documenti Cloud</h3>
-              <p className="text-gray-600 text-sm mb-4">Referti, prescrizioni, fatture. Upload drag & drop, firma digitale, invio 1-click ai clienti.</p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-xs">Firma digitale</Badge>
-                <Badge variant="outline" className="text-xs">Invio email</Badge>
-              </div>
-            </div>
-
-            {/* Template */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-coral-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
-              <div className="h-14 w-14 bg-gradient-to-br from-coral-400 to-coral-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <ClipboardList className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Template Smart</h3>
-              <p className="text-gray-600 text-sm mb-4">Messaggi pre-compilati con variabili automatiche. Nome cliente, pet, data, orario... tutto al suo posto.</p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-xs">WhatsApp</Badge>
-                <Badge variant="outline" className="text-xs">Email</Badge>
-              </div>
-            </div>
-
-            {/* Report */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-cyan-100 hover:shadow-xl hover:-translate-y-1 transition-all group">
-              <div className="h-14 w-14 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-lg">
-                <TrendingUp className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Report & Analytics</h3>
-              <p className="text-gray-600 text-sm mb-4">Fatturato, appuntamenti, no-show, clienti top. Export CSV, grafici interattivi, trend mensili.</p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-xs">Export CSV</Badge>
-                <Badge variant="outline" className="text-xs">Dashboard</Badge>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* TROVA CLINICA - Google Maps Interattiva */}
-      <section className="py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-coral-50/30 overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-4">
-                <MapPin className="h-4 w-4" />
-                <span className="font-medium">Per i proprietari</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Trova la clinica <span className="text-blue-500">più vicina</span>
-              </h2>
-              <p className="text-gray-600 mb-6">
-                I tuoi clienti possono trovarti facilmente sulla mappa. Vedono distanza in tempo reale, orari e servizi disponibili.
-              </p>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-3">
-                  <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <MapPin className="h-4 w-4 text-blue-600" />
-                  </div>
-                  <span className="text-gray-700">Geolocalizzazione GPS automatica</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <Clock className="h-4 w-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700">Calcolo distanza in tempo reale</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="h-8 w-8 bg-coral-100 rounded-full flex items-center justify-center">
-                    <Stethoscope className="h-4 w-4 text-coral-600" />
-                  </div>
-                  <span className="text-gray-700">Servizi e specializzazioni visibili</span>
-                </li>
-              </ul>
-              <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-                Trova clinica vicino a te →
-              </Button>
-            </div>
-            
-            {/* Google Maps Interattiva */}
-            <HomepageMapSection />
-          </div>
-        </div>
-      </section>
-
-      {/* MARKETPLACE LABORATORI - NEW */}
-      <section className="py-16 px-4 bg-gradient-to-br from-purple-50 via-white to-indigo-50/30 overflow-hidden" id="lab-marketplace">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full mb-4">
-              <FlaskConical className="h-4 w-4" />
-              <span className="font-medium">Novità</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Marketplace <span className="text-purple-500">Laboratori di Analisi</span>
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Connetti la tua clinica con i migliori laboratori di analisi veterinarie. Confronta prezzi, tempi di refertazione e servizi offerti.
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Illustrazione Marketplace */}
-            <div className="relative">
-              <div className="bg-gradient-to-br from-purple-100 via-indigo-50 to-blue-50 rounded-2xl shadow-lg border border-purple-200 p-8 relative overflow-hidden">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white rounded-xl p-4 shadow-sm border border-purple-100">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="h-8 w-8 bg-purple-500 rounded-lg flex items-center justify-center">
-                        <FlaskConical className="h-4 w-4 text-white" />
-                      </div>
-                      <span className="font-semibold text-sm">VetLab Milano</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mb-2">Ematologia • Biochimica</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-green-600 font-medium">da €25</span>
-                      <span className="text-xs text-blue-600">24-48h</span>
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-xl p-4 shadow-sm border border-indigo-100">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="h-8 w-8 bg-indigo-500 rounded-lg flex items-center justify-center">
-                        <FlaskConical className="h-4 w-4 text-white" />
-                      </div>
-                      <span className="font-semibold text-sm">BioVet Roma</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mb-2">Citologia • Istologia</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-green-600 font-medium">da €45</span>
-                      <span className="text-xs text-blue-600">48-72h</span>
-                    </div>
-                  </div>
-                  <div className="col-span-2 bg-white/80 rounded-xl p-4 border border-purple-100">
-                    <div className="flex items-center gap-3">
-                      <div className="flex -space-x-2">
-                        <div className="h-8 w-8 bg-purple-400 rounded-full border-2 border-white flex items-center justify-center"><FlaskConical className="h-3 w-3 text-white" /></div>
-                        <div className="h-8 w-8 bg-indigo-400 rounded-full border-2 border-white flex items-center justify-center"><FlaskConical className="h-3 w-3 text-white" /></div>
-                        <div className="h-8 w-8 bg-violet-400 rounded-full border-2 border-white flex items-center justify-center"><FlaskConical className="h-3 w-3 text-white" /></div>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">Lab partner in crescita</p>
-                        <p className="text-xs text-gray-500">Trova il laboratorio ideale per la tua clinica</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Info */}
-            <div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-start gap-4">
-                  <div className="h-10 w-10 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Search className="h-5 w-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900">Cerca e Confronta</h4>
-                    <p className="text-sm text-gray-600">Filtra per tipo di esame, città, tempi di refertazione, servizio di ritiro campioni e prezzi indicativi.</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="h-10 w-10 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Link2 className="h-5 w-5 text-indigo-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900">Collegamento Diretto</h4>
-                    <p className="text-sm text-gray-600">Richiedi un collegamento al laboratorio. Una volta accettato, invia richieste di analisi direttamente dalla dashboard.</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="h-10 w-10 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <FileCheck className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900">Referti Digitali con Revisione</h4>
-                    <p className="text-sm text-gray-600">I referti arrivano in piattaforma. Li revisioni, aggiungi note cliniche e li invii al proprietario con un click.</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="h-10 w-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Euro className="h-5 w-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900">Prezzi Trasparenti</h4>
-                    <p className="text-sm text-gray-600">Ogni laboratorio pubblica il suo listino prezzi indicativo. Confronta e scegli il partner ideale per la tua clinica.</p>
-                  </div>
-                </li>
-              </ul>
-
-              <div className="flex gap-3">
-                <Button className="bg-purple-500 hover:bg-purple-600" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-                  Esplora il Marketplace →
-                </Button>
-                <Button variant="outline" className="border-purple-200 text-purple-600 hover:bg-purple-50" onClick={() => { setAuthMode('register-lab'); setShowAuth(true); }}>
-                  Registra il tuo Lab
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Come Funziona - Semplificato */}
-      <section className="py-12 px-4 bg-gradient-to-br from-gray-50 via-white to-blue-50/30 overflow-hidden relative" id="come-funziona">
-        <div className="absolute bottom-10 right-10 w-40 h-40 bg-green-300/20 rounded-full blur-2xl"></div>
-        
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-6">
-            <p className="text-coral-500 font-semibold mb-2">PERCHÉ VETBUDDY</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Le feature che ci distinguono</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Strumenti progettati per semplificare il lavoro quotidiano della clinica e migliorare l'esperienza dei tuoi clienti.</p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-5 mb-6">
-            {/* Feature 1 - Team Inbox */}
-            <div className="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-purple-200/50 hover:bg-white/90 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg animate-float" style={{animationDelay: '0s'}}>
-                  <Inbox className="h-7 w-7 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-2">Team Inbox con assegnazione ticket</h3>
-                  <p className="text-gray-600 mb-3">Una inbox condivisa per tutto lo staff. Assegna richieste, evita doppioni, traccia chi risponde. Niente messaggi persi.</p>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="text-purple-600 border-purple-300 bg-purple-50/50">Anti-doppioni</Badge>
-                    <Badge variant="outline" className="text-purple-600 border-purple-300 bg-purple-50/50">Assegnazione staff</Badge>
-                    <Badge variant="outline" className="text-purple-600 border-purple-300 bg-purple-50/50">Storico completo</Badge>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Feature 2 - Documenti automatici */}
-            <div className="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-green-200/50 hover:bg-white/90 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg animate-float" style={{animationDelay: '0.5s'}}>
-                  <FileText className="h-7 w-7 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-2">Documenti: upload e invio automatico</h3>
-                  <p className="text-gray-600 mb-3">Carica PDF (referti, prescrizioni, fatture) e inviali automaticamente via email al proprietario. Tutto tracciato.</p>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="text-green-600 border-green-300 bg-green-50/50">Upload PDF</Badge>
-                    <Badge variant="outline" className="text-green-600 border-green-300 bg-green-50/50">Email automatica</Badge>
-                    <Badge variant="outline" className="text-green-600 border-green-300 bg-green-50/50">Archivio clinico</Badge>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Feature 3 - Prenotazioni + Video */}
-            <div className="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-blue-200/50 hover:bg-white/90 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg animate-float" style={{animationDelay: '1s'}}>
-                  <CalendarCheck className="h-7 w-7 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-2">Prenotazioni + Video + Google Calendar</h3>
-                  <p className="text-gray-600 mb-3">Agenda sincronizzata, video-consulti integrati, reminder automatici via email/SMS. I clienti prenotano 24/7.</p>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="text-blue-600 border-blue-300 bg-blue-50/50">Sync Google Calendar</Badge>
-                    <Badge variant="outline" className="text-blue-600 border-blue-300 bg-blue-50/50">Video-consulti</Badge>
-                    <Badge variant="outline" className="text-blue-600 border-blue-300 bg-blue-50/50">Reminder auto</Badge>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Feature 4 - Reportistica */}
-            <div className="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-amber-200/50 hover:bg-white/90 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="flex items-start gap-4">
-                <div className="h-14 w-14 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg animate-float" style={{animationDelay: '1.5s'}}>
-                  <TrendingUp className="h-7 w-7 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-2">Reportistica clinica completa</h3>
-                  <p className="text-gray-600 mb-3">Dashboard con metriche chiave: clienti attivi, fatturato, tempi di risposta, no-show. Prendi decisioni basate sui dati.</p>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="text-amber-600 border-amber-300 bg-amber-50/50">Analytics</Badge>
-                    <Badge variant="outline" className="text-amber-600 border-amber-300 bg-amber-50/50">Report no-show</Badge>
-                    <Badge variant="outline" className="text-amber-600 border-amber-300 bg-amber-50/50">Trend fatturato</Badge>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Altre Funzionalità - Carousel */}
-      <section className="py-6 px-4 bg-white overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">E molto altro...</h2>
-          </div>
-          
-          {/* Carousel Container */}
-          <FeatureCarousel />
-        </div>
-      </section>
-
-
-      {/* Potenzialità / Vision */}
-      <section className="py-12 px-4 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-coral-400 font-semibold mb-2">LA NOSTRA VISIONE</p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Il futuro della veterinaria è digitale</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">vetbuddy non è solo un gestionale. È una piattaforma che connette cliniche e proprietari, semplifica la comunicazione e migliora la cura degli animali.</p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="h-16 w-16 bg-coral-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="h-8 w-8 text-coral-400" />
-              </div>
-              <h3 className="font-bold text-xl mb-2">+30% Efficienza</h3>
-              <p className="text-gray-400 text-sm">Meno tempo al telefono, più tempo con i pazienti. Automatizza le attività ripetitive.</p>
-            </div>
-            <div className="text-center p-6">
-              <div className="h-16 w-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-blue-400" />
-              </div>
-              <h3 className="font-bold text-xl mb-2">Clienti più fedeli</h3>
-              <p className="text-gray-400 text-sm">Comunicazione moderna, documenti sempre disponibili, prenotazioni facili = clienti soddisfatti.</p>
-            </div>
-            <div className="text-center p-6">
-              <div className="h-16 w-16 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Activity className="h-8 w-8 text-green-400" />
-              </div>
-              <h3 className="font-bold text-xl mb-2">Dati per crescere</h3>
-              <p className="text-gray-400 text-sm">Dashboard con KPI, report finanziari e analytics per prendere decisioni informate.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 🤖 SEZIONE AUTOMAZIONI */}
-      <section id="automazioni" className="py-16 px-4 bg-gradient-to-br from-purple-50 via-white to-blue-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full mb-4">
-              <Zap className="h-4 w-4" />
-              <span className="font-medium">Zero stress, tutto automatico</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Riduci il <span className="text-purple-600">carico di lavoro</span> del 70%
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-              Basta telefonate, promemoria manuali e clienti che dimenticano gli appuntamenti. 
-              <strong> vetbuddy lavora mentre tu curi gli animali.</strong>
-            </p>
-          </div>
-
-          {/* Hero stats - impatto sul lavoro */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-green-100">
-              <div className="text-3xl font-bold text-green-600 mb-1">-80%</div>
-              <p className="text-sm text-gray-600">Telefonate per promemoria</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-blue-100">
-              <div className="text-3xl font-bold text-blue-600 mb-1">-60%</div>
-              <p className="text-sm text-gray-600">No-show e appuntamenti persi</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-amber-100">
-              <div className="text-3xl font-bold text-amber-600 mb-1">+40%</div>
-              <p className="text-sm text-gray-600">Clienti che tornano</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 text-center shadow-md border border-purple-100">
-              <div className="text-3xl font-bold text-purple-600 mb-1">2h/giorno</div>
-              <p className="text-sm text-gray-600">Risparmiate in media</p>
-            </div>
-          </div>
-
-          {/* Striscia 44+ automazioni - SOPRA le card */}
-          <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 text-white mb-12">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <h3 className="text-2xl font-bold mb-2">🎯 44+ automazioni disponibili</h3>
-                <p className="text-purple-200">Antiparassitari, refill farmaci, lista d'attesa, richiesta recensioni, alert stagionali e molto altro...</p>
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <div className="text-center bg-white/10 rounded-lg px-6 py-3">
-                  <p className="text-3xl font-bold">24/7</p>
-                  <p className="text-purple-200 text-sm">Sempre attive</p>
-                </div>
-                <p className="text-xs text-purple-300">Attiva solo quelle che ti servono</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Automazioni che riducono il carico */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {/* Promemoria automatici */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-green-200 hover:shadow-xl transition-shadow relative">
-              <div className="absolute -top-3 left-4 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium">
-                🔥 Più richiesta
-              </div>
-              <div className="h-12 w-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 mt-2">
-                <Bell className="h-6 w-6 text-green-600" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">📱 Promemoria Automatici</h3>
-              <p className="text-gray-600 text-sm mb-3">Mai più telefonate per ricordare gli appuntamenti. Email e SMS partono da soli 24h prima.</p>
-              <div className="bg-green-50 rounded-lg p-3 text-sm">
-                <span className="text-green-700 font-medium">💡 Risparmio:</span>
-                <span className="text-green-600"> 15+ chiamate/giorno</span>
-              </div>
-            </div>
-
-            {/* Richiamo vaccini */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-200 hover:shadow-xl transition-shadow relative">
-              <div className="absolute -top-3 left-4 bg-blue-500 text-white text-xs px-3 py-1 rounded-full font-medium">
-                💰 Più fatturato
-              </div>
-              <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 mt-2">
-                <Syringe className="h-6 w-6 text-blue-600" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">💉 Richiamo Vaccini</h3>
-              <p className="text-gray-600 text-sm mb-3">I clienti ricevono il promemoria 30 giorni prima della scadenza. Tu non devi ricordarti nulla.</p>
-              <div className="bg-blue-50 rounded-lg p-3 text-sm">
-                <span className="text-blue-700 font-medium">💡 Risultato:</span>
-                <span className="text-blue-600"> +35% richiami rispettati</span>
-              </div>
-            </div>
-
-            {/* Conferme prenotazione */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100 hover:shadow-xl transition-shadow">
-              <div className="h-12 w-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
-                <CheckCircle className="h-6 w-6 text-purple-600" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">✅ Conferme Istantanee</h3>
-              <p className="text-gray-600 text-sm mb-3">Appena il cliente prenota, riceve subito la conferma con tutti i dettagli. Zero lavoro per te.</p>
-              <div className="bg-purple-50 rounded-lg p-3 text-sm">
-                <span className="text-purple-700 font-medium">💡 Automatico:</span>
-                <span className="text-purple-600"> 100% delle prenotazioni</span>
-              </div>
-            </div>
-
-            {/* Follow-up post visita */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-coral-100 hover:shadow-xl transition-shadow">
-              <div className="h-12 w-12 bg-coral-100 rounded-xl flex items-center justify-center mb-4">
-                <Heart className="h-6 w-6 text-coral-600" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">💝 Follow-up Post Visita</h3>
-              <p className="text-gray-600 text-sm mb-3">48h dopo la visita, il cliente riceve un messaggio per sapere come sta il pet. Cura e attenzione automatiche.</p>
-              <div className="bg-coral-50 rounded-lg p-3 text-sm">
-                <span className="text-coral-700 font-medium">💡 Effetto:</span>
-                <span className="text-coral-600"> Clienti più fedeli</span>
-              </div>
-            </div>
-
-            {/* No-show detection */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-red-100 hover:shadow-xl transition-shadow">
-              <div className="h-12 w-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
-                <AlertCircle className="h-6 w-6 text-red-600" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">🚫 Anti No-Show</h3>
-              <p className="text-gray-600 text-sm mb-3">Identifica automaticamente chi non si presenta e tiene traccia per gestire i recidivi.</p>
-              <div className="bg-red-50 rounded-lg p-3 text-sm">
-                <span className="text-red-700 font-medium">💡 Recupero:</span>
-                <span className="text-red-600"> Slot persi ridotti del 60%</span>
-              </div>
-            </div>
-
-            {/* Compleanno Pet */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-amber-100 hover:shadow-xl transition-shadow">
-              <div className="h-12 w-12 bg-amber-100 rounded-xl flex items-center justify-center mb-4">
-                <Gift className="h-6 w-6 text-amber-600" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">🎂 Auguri Automatici</h3>
-              <p className="text-gray-600 text-sm mb-3">Email di auguri per il compleanno del pet con eventuale sconto. I clienti adorano questo tocco personale!</p>
-              <div className="bg-amber-50 rounded-lg p-3 text-sm">
-                <span className="text-amber-700 font-medium">💡 Engagement:</span>
-                <span className="text-amber-600"> +25% prenotazioni</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Import Dati Section */}
-      <section id="import" className="py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-4 font-semibold">
-              MIGRAZIONE FACILE
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Importa i tuoi Pazienti Esistenti</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Passa a vetbuddy senza perdere nulla. Importa in pochi click i dati dal tuo gestionale attuale.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            {/* Left: Features */}
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-                  <FileText className="h-6 w-6 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Import da CSV/Excel</h3>
-                  <p className="text-gray-600 text-sm">Esporta dal tuo gestionale e carica su vetbuddy. Supportiamo tutti i formati comuni.</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="h-12 w-12 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <Users className="h-6 w-6 text-green-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Proprietari + Animali + Vaccini</h3>
-                  <p className="text-gray-600 text-sm">Importa tutto in un colpo solo: anagrafica, dati sanitari, storico vaccinazioni.</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="h-12 w-12 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
-                  <Upload className="h-6 w-6 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Documenti con Abbinamento Auto</h3>
-                  <p className="text-gray-600 text-sm">Carica referti ed esami. vetbuddy li associa automaticamente ai pazienti giusti.</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="h-12 w-12 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-                  <Shield className="h-6 w-6 text-amber-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">100% Sicuro e Conforme GDPR</h3>
-                  <p className="text-gray-600 text-sm">I dati sono criptati e trattati secondo le normative europee sulla privacy.</p>
-                </div>
-              </div>
-            </div>
-            
-            {/* Right: Visual Demo */}
-            <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-200">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 pb-4 border-b">
-                  <div className="h-10 w-10 rounded-lg bg-blue-500 flex items-center justify-center">
-                    <Upload className="h-5 w-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Import Wizard</h4>
-                    <p className="text-xs text-gray-500">4 semplici passaggi</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                    <div className="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">1</div>
-                    <span className="text-sm text-green-800">Scarica template CSV</span>
-                    <CheckCircle className="h-4 w-4 text-green-500 ml-auto" />
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                    <div className="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">2</div>
-                    <span className="text-sm text-green-800">Compila con i tuoi dati</span>
-                    <CheckCircle className="h-4 w-4 text-green-500 ml-auto" />
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <div className="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">3</div>
-                    <span className="text-sm text-blue-800">Carica il file</span>
-                    <Loader2 className="h-4 w-4 text-blue-500 ml-auto animate-spin" />
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <div className="h-6 w-6 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs font-bold">4</div>
-                    <span className="text-sm text-gray-500">Aggiungi documenti (opzionale)</span>
-                  </div>
-                </div>
-                
-                <div className="pt-4 border-t text-center">
-                  <p className="text-sm text-gray-500 mb-3">Esempio risultato import:</p>
-                  <div className="flex justify-center gap-4">
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-blue-600">127</p>
-                      <p className="text-xs text-gray-500">Pazienti</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-green-600">89</p>
-                      <p className="text-xs text-gray-500">Proprietari</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-purple-600">234</p>
-                      <p className="text-xs text-gray-500">Vaccini</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-10 text-center">
-            <p className="text-gray-500 text-sm mb-4">Supportiamo import da:</p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <span className="bg-white px-4 py-2 rounded-full shadow border text-gray-700 font-medium">📄 CSV</span>
-              <span className="bg-white px-4 py-2 rounded-full shadow border text-gray-700 font-medium">📊 Excel (.xlsx)</span>
-              <span className="bg-white px-4 py-2 rounded-full shadow border text-gray-700 font-medium">📑 PDF (documenti)</span>
-              <span className="bg-white px-4 py-2 rounded-full shadow border text-gray-700 font-medium">🖼️ Immagini (JPG, PNG)</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Sistema Fatturazione Section */}
-      <section id="fatturazione" className="py-16 px-4 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full mb-4 font-semibold">
-              FATTURAZIONE
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Fatturazione <span className="text-green-600">Flessibile</span>
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Crea fatture direttamente in vetbuddy ed esportale nel formato che preferisci. 
-              <strong> Integra con il tuo software di fatturazione</strong> o usa il nostro sistema.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            {/* Opzione 1: Export per software esterni */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-green-200 hover:shadow-xl transition-shadow">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-lg">
-                  <Download className="h-7 w-7 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Esporta per il Tuo Software</h3>
-                  <p className="text-sm text-green-600">Usa il tuo sistema preferito</p>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-6">
-                Crea le fatture in vetbuddy ed esportale in CSV, JSON o PDF. 
-                Importale nel tuo software di fatturazione elettronica per l'invio al Sistema di Interscambio (SdI).
-              </p>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-3">
-                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center">
-                    <Check className="h-4 w-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700"><strong>Export CSV</strong> - Compatibile con Excel e gestionali</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center">
-                    <Check className="h-4 w-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700"><strong>Export PDF</strong> - Fattura professionale stampabile</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center">
-                    <Check className="h-4 w-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700"><strong>Export JSON</strong> - Per integrazione API</span>
-                </li>
-              </ul>
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <p className="text-sm text-green-800">
-                  💡 <strong>Software compatibili:</strong> Fatture in Cloud, TeamSystem, Aruba, 
-                  Zucchetti, Buffetti, e qualsiasi software che accetta import CSV/Excel.
-                </p>
-              </div>
-            </div>
-
-            {/* Opzione 2: Funzionalità integrate */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-emerald-200 hover:shadow-xl transition-shadow">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg">
-                  <Receipt className="h-7 w-7 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Sistema Integrato vetbuddy</h3>
-                  <p className="text-sm text-emerald-600">Tutto in un unico posto</p>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-6">
-                Gestisci tutto direttamente in vetbuddy: listino prezzi, creazione fatture, 
-                tracciamento pagamenti e statistiche finanziarie.
-              </p>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-3">
-                  <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Check className="h-4 w-4 text-emerald-600" />
-                  </div>
-                  <span className="text-gray-700"><strong>Listino Prezzi</strong> - Crea e gestisci le tue tariffe</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Check className="h-4 w-4 text-emerald-600" />
-                  </div>
-                  <span className="text-gray-700"><strong>Fatture Rapide</strong> - Seleziona cliente e prestazioni</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Check className="h-4 w-4 text-emerald-600" />
-                  </div>
-                  <span className="text-gray-700"><strong>Dashboard Finanziaria</strong> - Fatturato, pagati, in attesa</span>
-                </li>
-              </ul>
-              <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-200">
-                <p className="text-sm text-emerald-800">
-                  📊 <strong>Calcolo automatico:</strong> IVA 22%, marca da bollo per importi {'>'} €77.47, 
-                  numerazione progressiva.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Come funziona il flusso */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-            <h3 className="text-lg font-bold text-gray-900 mb-6 text-center">
-              📋 Come Funziona: Da vetbuddy al Tuo Software
-            </h3>
-            <div className="grid md:grid-cols-4 gap-4">
-              <div className="text-center p-4">
-                <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-blue-600 font-bold">1</span>
-                </div>
-                <p className="text-sm font-semibold text-gray-900 mb-1">Crea Fattura</p>
-                <p className="text-xs text-gray-500">Seleziona cliente e prestazioni in vetbuddy</p>
-              </div>
-              <div className="text-center p-4">
-                <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-green-600 font-bold">2</span>
-                </div>
-                <p className="text-sm font-semibold text-gray-900 mb-1">Esporta CSV/PDF</p>
-                <p className="text-xs text-gray-500">Un click per scaricare i dati</p>
-              </div>
-              <div className="text-center p-4">
-                <div className="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-purple-600 font-bold">3</span>
-                </div>
-                <p className="text-sm font-semibold text-gray-900 mb-1">Importa nel Tuo SW</p>
-                <p className="text-xs text-gray-500">Fatture in Cloud, TeamSystem, etc.</p>
-              </div>
-              <div className="text-center p-4">
-                <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-amber-600 font-bold">4</span>
-                </div>
-                <p className="text-sm font-semibold text-gray-900 mb-1">Invio al SdI</p>
-                <p className="text-xs text-gray-500">Il tuo software invia all'Agenzia Entrate</p>
-              </div>
-            </div>
-            <div className="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-200 text-center">
-              <p className="text-sm text-amber-800">
-                ⚠️ <strong>Nota importante:</strong> Le fatture vetbuddy sono <strong>pre-fatture/proforma</strong>. 
-                Per essere valide fiscalmente devono essere inviate al SdI tramite un software certificato.
-              </p>
-            </div>
-          </div>
-
-          {/* CTA */}
-          <div className="mt-10 text-center">
-            <p className="text-gray-600 mb-4">Formati di export disponibili:</p>
-            <div className="flex flex-wrap justify-center gap-3 mb-6">
-              <span className="bg-white px-4 py-2 rounded-full shadow border border-green-200 text-green-700 font-medium">📄 CSV (Excel)</span>
-              <span className="bg-white px-4 py-2 rounded-full shadow border border-blue-200 text-blue-700 font-medium">📑 PDF</span>
-              <span className="bg-white px-4 py-2 rounded-full shadow border border-purple-200 text-purple-700 font-medium">💾 JSON (API)</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ====== SEZIONE RICETTE ELETTRONICHE VETERINARIE (REV) ====== */}
-      <section id="ricette-elettroniche" className="py-16 px-4 bg-gradient-to-br from-emerald-50 via-teal-50/30 to-cyan-50/30 overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          {/* Header compliant */}
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full mb-4 font-semibold text-sm">
-              💊 NUOVA FUNZIONALITÀ
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Prescrizioni veterinarie, con un flusso più semplice
-            </h2>
-            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-              VetBuddy aiuta la clinica a preparare, organizzare e archiviare il flusso della Ricetta Elettronica Veterinaria, 
-              nel rispetto del ruolo del medico veterinario e del sistema nazionale.
-            </p>
-          </div>
-
-          {/* Mini-blocco hero REV */}
-          <div className="bg-white/80 backdrop-blur border border-emerald-100 rounded-2xl p-6 mb-10 text-center">
-            <p className="text-gray-700 text-base max-w-2xl mx-auto">
-              VetBuddy semplifica il lavoro della clinica anche nella gestione della Ricetta Elettronica Veterinaria, 
-              <strong> mantenendo il veterinario al centro del processo</strong>.
-            </p>
-          </div>
-
-          {/* Cosa fa VetBuddy - bullets */}
-          <div className="grid md:grid-cols-5 gap-4 mb-10">
+          {/* Risultati chiave — numeri impatto */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
-              { icon: '📋', text: 'Prepara la prescrizione dalla scheda paziente' },
-              { icon: '🗂️', text: 'Centralizza dati clinici e storico' },
-              { icon: '🧭', text: 'Guida il veterinario nel processo' },
-              { icon: '📦', text: 'Archivia numero ricetta, PIN e stato' },
-              { icon: '👁️', text: 'Semplifica la consultazione per clinica e proprietario' },
-            ].map((b, i) => (
-              <div key={i} className="bg-white rounded-xl border border-gray-100 p-4 text-center shadow-sm">
-                <div className="text-2xl mb-2">{b.icon}</div>
-                <p className="text-gray-700 text-sm leading-snug">{b.text}</p>
+              { icon: PhoneOff, value: '-70%', label: 'Telefonate', color: 'text-red-500' },
+              { icon: CalendarCheck, value: '+40%', label: 'Prenotazioni online', color: 'text-green-500' },
+              { icon: Timer, value: '15h', label: 'Risparmiate/mese', color: 'text-blue-500' },
+              { icon: Repeat, value: '+25%', label: 'Clienti che tornano', color: 'text-purple-500' },
+            ].map((stat, i) => (
+              <div key={i} className="bg-white/80 backdrop-blur rounded-xl p-4 border border-gray-100 shadow-sm">
+                <stat.icon className={`h-6 w-6 ${stat.color} mx-auto mb-2`} />
+                <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
+                <p className="text-xs text-gray-500">{stat.label}</p>
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Due modalità: Guidata e API */}
-          <div className="grid md:grid-cols-2 gap-6 mb-12">
-            {/* Modalità Guidata/Manuale */}
-            <div className="bg-white rounded-2xl border-2 border-emerald-200 p-6 shadow-sm relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-emerald-500 text-white text-xs px-3 py-1 rounded-bl-lg font-bold">ATTIVO</div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
-                  <ClipboardList className="h-6 w-6 text-emerald-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900">Modalità guidata/manuale</h3>
-                  <p className="text-xs text-gray-500">Subito operativa, zero configurazione</p>
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm mb-4">
-                VetBuddy prepara il flusso e consente di registrare successivamente gli estremi della ricetta emessa nel sistema ufficiale.
-              </p>
-              <ul className="space-y-2 text-sm">
-                {[
-                  'Wizard guidato per preparare la bozza prescrittiva',
-                  'Checklist per completare l\'emissione nel sistema ufficiale',
-                  'Registrazione N° Ricetta e PIN dal portale',
-                  'Pubblicazione al proprietario quando previsto',
-                  'Notifica email al proprietario con dettagli',
-                  'Audit trail completo di ogni passaggio',
-                ].map((f, i) => (
-                  <li key={i} className="flex items-start gap-2 text-gray-700">
-                    <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Integrazione API ufficiale */}
-            <div className="bg-white rounded-2xl border-2 border-dashed border-gray-300 p-6 shadow-sm relative overflow-hidden opacity-90">
-              <div className="absolute top-0 right-0 bg-gray-400 text-white text-xs px-3 py-1 rounded-bl-lg font-bold">PROSSIMAMENTE</div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <Zap className="h-6 w-6 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900">Integrazione ufficiale</h3>
-                  <p className="text-xs text-gray-500">Quando configurata e disponibile</p>
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm mb-4">
-                VetBuddy invia e riceve i dati tramite integrazione tecnica con il sistema ufficiale, 
-                quando configurata e disponibile. L&apos;emissione resta sempre in capo al veterinario abilitato.
-              </p>
-              <ul className="space-y-2 text-sm">
-                {[
-                  'Invio dati al sistema ufficiale dalla dashboard',
-                  'Recupero automatico N° ricetta e PIN',
-                  'Validazione dati in tempo reale',
-                  'Gestione errori e retry automatico',
-                  'Log completo delle comunicazioni',
-                  'Conformità normativa garantita',
-                ].map((f, i) => (
-                  <li key={i} className="flex items-start gap-2 text-gray-400">
-                    <Clock className="w-4 h-4 text-gray-300 mt-0.5 flex-shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
+      {/* ============================================================ */}
+      {/* PROBLEMA */}
+      {/* ============================================================ */}
+      <section className="py-16 px-4 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="bg-red-100 text-red-700 mb-4">⚠️ Il problema</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Le cliniche perdono tempo e clienti ogni giorno</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Suona familiare? Ecco cosa succede nella maggior parte delle cliniche veterinarie italiane.</p>
           </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { icon: Phone, title: 'Telefonate continue', desc: 'La segreteria passa ore al telefono per conferme, disdette, richieste info e promemoria. Tempo sottratto alla cura dei pazienti.' },
+              { icon: Calendar, title: 'Appuntamenti dimenticati', desc: 'I no-show costano alla clinica. Senza reminder automatici, i proprietari dimenticano le visite e i richiami.' },
+              { icon: MessageCircle, title: 'WhatsApp e caos comunicativo', desc: 'Referti via WhatsApp, richieste su canali diversi, informazioni perse. Nessun ordine, nessuno storico.' },
+              { icon: FlaskConical, title: 'Referti sparsi e laboratori disconnessi', desc: 'I risultati delle analisi arrivano per email, telefono o fax. Nessun flusso strutturato per gestirli e condividerli.' },
+              { icon: Repeat, title: 'Clienti che non tornano', desc: 'Senza follow-up e richiami automatici, i clienti si dimenticano delle visite di controllo e dei vaccini.' },
+              { icon: BarChart3, title: 'Nessuna visibilità sui risultati', desc: 'La clinica non sa quante prenotazioni genera, quanto tempo risparmia o quanto fatturato perde per disorganizzazione.' },
+            ].map((p, i) => (
+              <Card key={i} className="border-red-100 hover:shadow-md transition">
+                <CardContent className="p-6">
+                  <div className="h-10 w-10 bg-red-50 rounded-lg flex items-center justify-center mb-4"><p.icon className="h-5 w-5 text-red-500" /></div>
+                  <h3 className="font-bold text-gray-900 mb-2">{p.title}</h3>
+                  <p className="text-sm text-gray-600">{p.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          {/* Flusso REV: 4 Step */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-10">
-            <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Come funziona in 4 passaggi</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      {/* ============================================================ */}
+      {/* SOLUZIONE */}
+      {/* ============================================================ */}
+      <section id="soluzione" className="py-16 px-4 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="bg-green-100 text-green-700 mb-4">✅ La soluzione</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">VetBuddy automatizza il lavoro operativo della clinica</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Una piattaforma che lavora per te mentre ti concentri sulla cura dei pazienti.</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="space-y-6">
               {[
-                { num: '01', icon: '📝', title: 'Prepara la bozza', desc: 'Wizard guidato: seleziona paziente, farmaci, posologia e diagnosi dalla scheda clinica.' },
-                { num: '02', icon: '🌐', title: 'Emissione ufficiale', desc: 'Il medico veterinario abilitato completa l\'emissione nel sistema nazionale (es. Vetinfo).' },
-                { num: '03', icon: '📋', title: 'Registra in VetBuddy', desc: 'Inserisci il numero ricetta e PIN ricevuti. Lo stato si aggiorna automaticamente.' },
-                { num: '04', icon: '📧', title: 'Consultazione', desc: 'VetBuddy archivia la prescrizione e la rende consultabile per la clinica e, se previsto, per il proprietario.' },
-              ].map((step, i) => (
-                <div key={i} className="text-center">
-                  <div className="text-3xl mb-2">{step.icon}</div>
-                  <div className="text-xs font-bold text-emerald-600 mb-1">STEP {step.num}</div>
-                  <h4 className="font-bold text-gray-900 text-sm mb-1">{step.title}</h4>
-                  <p className="text-gray-500 text-xs leading-relaxed">{step.desc}</p>
+                { icon: CalendarCheck, text: 'Prenotazioni online automatiche', desc: 'I proprietari prenotano dal link diretto. Tu confermi con un click.' },
+                { icon: Bell, text: 'Reminder e follow-up automatici', desc: 'Niente più telefonate per ricordare appuntamenti, vaccini e controlli.' },
+                { icon: MessageCircle, text: 'Comunicazione centralizzata', desc: 'Un\'unica inbox per messaggi, richieste e notifiche. Ordine al posto del caos.' },
+                { icon: FileText, text: 'Documenti e referti digitali', desc: 'Referti, certificati e prescrizioni inviati automaticamente al proprietario.' },
+                { icon: FlaskConical, text: 'Lab Network integrato', desc: 'Richiedi analisi, ricevi referti, rivedi e condividi. Tutto in un flusso ordinato.' },
+                { icon: TrendingUp, text: 'Dashboard valore generato', desc: 'Ogni mese sai esattamente quanto tempo hai risparmiato e quante visite hai generato.' },
+              ].map((s, i) => (
+                <div key={i} className="flex items-start gap-4">
+                  <div className="h-10 w-10 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0"><s.icon className="h-5 w-5 text-green-600" /></div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">{s.text}</h4>
+                    <p className="text-sm text-gray-600">{s.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Cosa fa VetBuddy vs Cosa resta al veterinario */}
-          <div className="grid md:grid-cols-2 gap-6 mb-10">
-            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
-              <h4 className="font-bold text-emerald-800 text-base mb-3 flex items-center gap-2"><CheckCircle className="h-5 w-5" />Cosa fa VetBuddy</h4>
-              <ul className="text-sm text-gray-700 space-y-2">
-                {['Prepara la bozza dalla scheda paziente', 'Centralizza farmaci, posologia e durata', 'Riduce errori e passaggi manuali', 'Archivia prescrizioni e storico', 'Rende consultabili i dati autorizzati'].map((f, i) => (
-                  <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />{f}</li>
+            <div className="bg-gradient-to-br from-coral-50 to-blue-50 rounded-2xl p-8 border border-coral-100">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Il risultato per la tua clinica</h3>
+              <div className="space-y-4">
+                {[
+                  { label: 'Telefonate evitate', value: '~120/mese', icon: PhoneOff, color: 'text-red-500' },
+                  { label: 'Ore risparmiate dallo staff', value: '~15h/mese', icon: Timer, color: 'text-blue-500' },
+                  { label: 'Prenotazioni generate online', value: '~45/mese', icon: CalendarCheck, color: 'text-green-500' },
+                  { label: 'No-show ridotti', value: '~60%', icon: Shield, color: 'text-purple-500' },
+                  { label: 'Clienti riattivati', value: '~20/mese', icon: Repeat, color: 'text-orange-500' },
+                  { label: 'Fatturato stimato generato', value: '€2.800/mese', icon: Euro, color: 'text-emerald-600' },
+                ].map((r, i) => (
+                  <div key={i} className="flex items-center justify-between bg-white rounded-lg p-3 border">
+                    <div className="flex items-center gap-3">
+                      <r.icon className={`h-5 w-5 ${r.color}`} />
+                      <span className="text-sm text-gray-700">{r.label}</span>
+                    </div>
+                    <span className={`font-bold ${r.color}`}>{r.value}</span>
+                  </div>
                 ))}
-              </ul>
-            </div>
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
-              <h4 className="font-bold text-amber-800 text-base mb-3 flex items-center gap-2"><Shield className="h-5 w-5" />Cosa resta in capo al veterinario</h4>
-              <ul className="text-sm text-gray-700 space-y-2">
-                {['Conferma finale dell\'emissione ufficiale', 'Utilizzo delle credenziali e dell\'abilitazione previste', 'Responsabilità professionale della prescrizione'].map((f, i) => (
-                  <li key={i} className="flex items-start gap-2"><Stethoscope className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />{f}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Ruoli e permessi */}
-          <div className="grid md:grid-cols-3 gap-4 mb-10">
-            <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <Stethoscope className="h-5 w-5 text-emerald-600" />
-                <h4 className="font-bold text-emerald-800">Medico Veterinario</h4>
               </div>
-              <ul className="text-sm text-gray-700 space-y-1.5">
-                {['Prepara e modifica prescrizioni', 'Conferma l\'emissione ufficiale', 'Registra N° e PIN', 'Pubblica al proprietario', 'Audit trail completo'].map((f, i) => (
-                  <li key={i} className="flex items-start gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" />{f}</li>
-                ))}
-              </ul>
+              <p className="text-xs text-gray-400 mt-4 text-center italic">*Stime basate su una clinica media con 3 veterinari</p>
             </div>
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <Users className="h-5 w-5 text-blue-600" />
-                <h4 className="font-bold text-blue-800">Staff Clinica</h4>
-              </div>
-              <ul className="text-sm text-gray-700 space-y-1.5">
-                {['Visualizza elenco prescrizioni', 'Filtra per stato e paziente', 'Stampa dettagli prescrizione', 'Accesso in sola lettura'].map((f, i) => (
-                  <li key={i} className="flex items-start gap-1.5"><Check className="w-3.5 h-3.5 text-blue-500 mt-0.5 flex-shrink-0" />{f}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="bg-amber-50 border border-amber-100 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <Heart className="h-5 w-5 text-amber-600" />
-                <h4 className="font-bold text-amber-800">Proprietario</h4>
-              </div>
-              <ul className="text-sm text-gray-700 space-y-1.5">
-                {['Consulta solo le prescrizioni pubblicate', 'Dettagli farmaci, posologia e durata', 'N° ricetta e PIN per la farmacia', 'Tutto nel profilo del pet', 'Notifica email automatica'].map((f, i) => (
-                  <li key={i} className="flex items-start gap-1.5"><Check className="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" />{f}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Nota di compliance */}
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
-            <div className="flex items-start gap-3">
-              <Shield className="h-6 w-6 text-amber-500 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm text-amber-800 leading-relaxed">
-                  L&apos;emissione ufficiale della Ricetta Elettronica Veterinaria richiede l&apos;abilitazione del medico veterinario al sistema nazionale competente. 
-                  VetBuddy non sostituisce il sistema pubblico di emissione.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* CTA */}
-          <div className="text-center">
-            <button onClick={() => scrollToSection('pilot')} className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold transition shadow-lg shadow-emerald-100">
-              Scopri il modulo REV
-            </button>
           </div>
         </div>
       </section>
 
-      {/* Premi Fedeltà Section */}
-      <section id="premi" className="py-16 px-4 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
+      {/* ============================================================ */}
+      {/* MODULI PRINCIPALI */}
+      {/* ============================================================ */}
+      <section id="moduli" className="py-16 px-4 bg-gradient-to-br from-gray-50 via-white to-coral-50/20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full mb-4 font-semibold">
-              NOVITÀ
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Premi Fedeltà</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Le cliniche possono premiare i clienti più fedeli. Sconti, servizi gratuiti e regali speciali direttamente dalla tua clinica di fiducia.
-            </p>
+            <Badge className="bg-coral-100 text-coral-700 mb-4">🛠️ I moduli</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Tutto quello che serve, niente di superfluo</h2>
+            <p className="text-gray-600">Ogni modulo è progettato per risolvere un problema concreto della clinica.</p>
           </div>
-          
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            {/* Left: For Pet Owners */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-amber-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                  <PawPrint className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900">Per i Proprietari</h3>
+          <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {[
+              { icon: Calendar, title: 'Booking e Agenda', desc: 'Prenotazioni online, link diretto, calendario multi-vista, richieste da confermare.', color: 'bg-blue-500', tag: null },
+              { icon: Bell, title: 'Reminder e Follow-up', desc: 'Promemoria automatici: 24h prima, 1h prima, post-visita, post-chirurgia, richiami vaccini.', color: 'bg-amber-500', tag: null },
+              { icon: MessageCircle, title: 'Team Inbox', desc: 'Messaggi, richieste, notifiche lab, follow-up da gestire. Tutto in un posto.', color: 'bg-cyan-500', tag: null },
+              { icon: FileText, title: 'Referti e Documenti', desc: 'Prescrizioni, certificati, referti PDF. Generazione, invio automatico e archivio.', color: 'bg-teal-500', tag: null },
+              { icon: FlaskConical, title: 'Lab Network', desc: 'Richieste analisi, marketplace laboratori, upload referti, revisione e invio al proprietario.', color: 'bg-purple-500', tag: 'Vantaggio competitivo' },
+              { icon: PawPrint, title: 'App Proprietario', desc: 'L\'app ufficiale della tua clinica: prenotazioni, reminder, referti, messaggi, follow-up.', color: 'bg-pink-500', tag: null },
+              { icon: BarChart3, title: 'Dashboard Valore', desc: 'Prenotazioni generate, telefonate evitate, ore risparmiate, fatturato stimato.', color: 'bg-emerald-500', tag: 'Esclusivo' },
+              { icon: Receipt, title: 'Fatturazione', desc: 'Fatture proforma, documenti di cortesia, export dati per il commercialista.', color: 'bg-orange-500', tag: null },
+              { icon: Stethoscope, title: 'Assistente REV', desc: 'Preparazione bozze, archiviazione ricette, storico prescrizioni. L\'emissione ufficiale resta al veterinario.', color: 'bg-emerald-600', tag: null },
+              { icon: Gift, title: 'Programma Fedeltà', desc: 'Punti, premi e incentivi per far tornare i clienti. Personalizzabile dalla clinica.', color: 'bg-yellow-500', tag: null },
+              { icon: Users, title: 'Gestione Pazienti', desc: 'Schede animali complete, storico visite, documenti, import CSV da altri gestionali.', color: 'bg-slate-500', tag: null },
+              { icon: Zap, title: 'Automazioni', desc: 'Reminder, follow-up, richiami, cliente inattivo, compleanno animale. Tutto automatico.', color: 'bg-violet-500', tag: 'Pro' },
+            ].map((m, i) => (
+              <Card key={i} className="hover:shadow-lg transition group relative overflow-hidden">
+                {m.tag && <div className="absolute top-2 right-2"><Badge className="bg-coral-500 text-white text-[10px]">{m.tag}</Badge></div>}
+                <CardContent className="p-5">
+                  <div className={`h-10 w-10 ${m.color} rounded-lg flex items-center justify-center mb-3`}><m.icon className="h-5 w-5 text-white" /></div>
+                  <h3 className="font-bold text-gray-900 mb-1.5 text-sm">{m.title}</h3>
+                  <p className="text-xs text-gray-600 leading-relaxed">{m.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* LAB NETWORK */}
+      {/* ============================================================ */}
+      <section id="lab-network" className="py-16 px-4 bg-gradient-to-br from-purple-50 via-white to-indigo-50/30">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="bg-purple-100 text-purple-700 mb-4">🧪 VetBuddy Lab Network</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Il laboratorio carica. La clinica valida. Il proprietario riceve.</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Un flusso ordinato e professionale per gestire le analisi di laboratorio senza telefonate, email o fogli volanti.</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2"><Building2 className="h-5 w-5 text-coral-500" /> Per la Clinica</h3>
+              <div className="space-y-3">
+                {[
+                  'Richiesta esame direttamente dalla scheda animale',
+                  'Selezione laboratorio dal marketplace',
+                  'Confronto per tempi medi e servizi',
+                  'Stato richiesta in tempo reale',
+                  'Revisione referto + note cliniche',
+                  'Invio controllato al proprietario',
+                  'Storico referti per ogni animale',
+                ].map((f, i) => (
+                  <div key={i} className="flex items-start gap-2"><Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span className="text-sm text-gray-700">{f}</span></div>
+                ))}
               </div>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="h-4 w-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700">Ricevi <strong>premi fedeltà</strong> dalla tua clinica</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="h-4 w-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700">Sconti %, servizi gratis, prodotti omaggio</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="h-4 w-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700">Notifica email quando ricevi un premio</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="h-4 w-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700">Sezione dedicata "I Miei Premi" nella dashboard</span>
-                </li>
-              </ul>
-              <p className="mt-6 text-sm text-gray-500 bg-blue-50 p-3 rounded-lg">
-                💡 <strong>100% gratuito</strong> per i proprietari. È la clinica che decide quando premiarti!
-              </p>
             </div>
-            
-            {/* Right: For Clinics */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-coral-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-coral-400 to-coral-600 flex items-center justify-center">
-                  <Building2 className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900">Per le Cliniche</h3>
+            <div>
+              <h3 className="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2"><FlaskConical className="h-5 w-5 text-purple-500" /> Per il Laboratorio</h3>
+              <div className="space-y-3">
+                {[
+                  'Dashboard dedicata per gestire richieste',
+                  'Profilo pubblico nel marketplace',
+                  'Listino prezzi indicativo',
+                  'Disponibilità ritiro campioni',
+                  'Upload referto PDF con note tecniche',
+                  'Notifiche automatiche alla clinica',
+                  'Integrazione API per software di laboratorio',
+                ].map((f, i) => (
+                  <div key={i} className="flex items-start gap-2"><Check className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" /><span className="text-sm text-gray-700">{f}</span></div>
+                ))}
               </div>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-full bg-coral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Star className="h-4 w-4 text-coral-600" />
-                  </div>
-                  <span className="text-gray-700">Crea <strong>tipi di premio</strong> personalizzati</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-full bg-coral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Star className="h-4 w-4 text-coral-600" />
-                  </div>
-                  <span className="text-gray-700">Assegna premi ai clienti più fedeli</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-full bg-coral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Star className="h-4 w-4 text-coral-600" />
-                  </div>
-                  <span className="text-gray-700">Email automatica di notifica al cliente</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-full bg-coral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Star className="h-4 w-4 text-coral-600" />
-                  </div>
-                  <span className="text-gray-700">Traccia premi assegnati e utilizzati</span>
-                </li>
-              </ul>
-              <p className="mt-6 text-sm text-gray-500 bg-coral-50 p-3 rounded-lg">
-                🎯 <strong>Fidelizza i clienti</strong> e aumenta il ritorno. I premi creano legame!
-              </p>
             </div>
           </div>
-          
-          {/* Example Rewards */}
-          <div className="mt-12 text-center">
-            <p className="text-gray-500 mb-6">Esempi di premi che puoi creare:</p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <span className="bg-white px-4 py-2 rounded-full shadow border border-amber-200 text-amber-700 font-medium">🏷️ -10% prossima visita</span>
-              <span className="bg-white px-4 py-2 rounded-full shadow border border-green-200 text-green-700 font-medium">🎁 Visita gratuita</span>
-              <span className="bg-white px-4 py-2 rounded-full shadow border border-blue-200 text-blue-700 font-medium">💊 Antiparassitario omaggio</span>
-              <span className="bg-white px-4 py-2 rounded-full shadow border border-purple-200 text-purple-700 font-medium">✂️ Toelettatura gratis</span>
-              <span className="bg-white px-4 py-2 rounded-full shadow border border-pink-200 text-pink-700 font-medium">🎂 Regalo compleanno pet</span>
+          <div className="mt-8 bg-white border border-purple-200 rounded-xl p-6">
+            <div className="flex items-start gap-3">
+              <Shield className="h-6 w-6 text-purple-500 flex-shrink-0 mt-0.5" />
+              <div>
+                <h4 className="font-semibold text-gray-900">Sicurezza e controllo</h4>
+                <p className="text-sm text-gray-600">I referti di laboratorio restano riservati fino a quando il veterinario non li rivede, aggiunge le proprie note cliniche e decide di pubblicarli al proprietario. Nessun dato sensibile viene condiviso senza il controllo della clinica.</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Come Funziona */}
-      <section id="come-funziona" className="py-12 px-4 bg-gradient-to-b from-white to-gray-50">
+      {/* ============================================================ */}
+      {/* APP PROPRIETARIO */}
+      {/* ============================================================ */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge className="bg-pink-100 text-pink-700 mb-4">🐾 Per i proprietari</Badge>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">L'app ufficiale della tua clinica per seguire la salute del tuo animale.</h2>
+              <p className="text-gray-600 mb-6">Il proprietario riceve reminder, referti e follow-up senza intasare la segreteria. Tutto automatico, tutto ordinato.</p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  'Prenotazione online',
+                  'Reminder vaccini',
+                  'Reminder antiparassitari',
+                  'Storico documenti e referti',
+                  'Profilo animale completo',
+                  'Messaggi dalla clinica',
+                  'Follow-up post visita',
+                  'Prossima visita consigliata',
+                  'Programma fedeltà',
+                  'Notifiche richiami',
+                ].map((f, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm text-gray-700"><CheckCircle className="h-4 w-4 text-pink-500 flex-shrink-0" />{f}</div>
+                ))}
+              </div>
+              <p className="text-sm text-gray-500 mt-6 italic">L'app proprietario serve soprattutto a far tornare il cliente in clinica.</p>
+            </div>
+            <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-8 text-center">
+              <PawPrint className="h-16 w-16 text-coral-400 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Gratuita per i proprietari</h3>
+              <p className="text-gray-600 text-sm mb-4">Nessun costo nascosto. Il proprietario accede gratis e riceve tutto dalla clinica.</p>
+              <Button className="bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Registrati gratis <ArrowRight className="ml-2 h-4 w-4" /></Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* REV — Assistente flusso */}
+      {/* ============================================================ */}
+      <section className="py-12 px-4 bg-gradient-to-br from-emerald-50 via-teal-50/30 to-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-start gap-4 bg-white border border-emerald-200 rounded-xl p-6">
+            <Stethoscope className="h-8 w-8 text-emerald-600 flex-shrink-0 mt-1" />
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">💊 Assistente al flusso REV</h3>
+              <p className="text-sm text-gray-600 mb-4">VetBuddy aiuta la clinica a preparare, organizzare e archiviare il flusso relativo alla Ricetta Elettronica Veterinaria. L'emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali e responsabilità professionali.</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {[
+                  'Preparazione bozza dal paziente',
+                  'Riepilogo farmaci e posologia',
+                  'Archiviazione n° ricetta e PIN',
+                  'Collegamento cartella clinica',
+                  'Storico prescrizioni',
+                  'Invio info autorizzate al proprietario',
+                ].map((f, i) => (
+                  <div key={i} className="flex items-center gap-1.5 text-xs text-gray-600"><Check className="h-3.5 w-3.5 text-emerald-500 flex-shrink-0" />{f}</div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* PRICING */}
+      {/* ============================================================ */}
+      <section id="prezzi" className="py-16 px-4 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="bg-coral-100 text-coral-700 mb-4">💰 Prezzi</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Scegli il piano adatto alla tua clinica</h2>
+            <p className="text-gray-600">Tutti i prezzi sono IVA esclusa. Puoi annullare in qualsiasi momento.</p>
+          </div>
+          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-5">
+            {/* STARTER */}
+            <Card className="border-gray-200 hover:shadow-lg transition">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-gray-900 text-lg mb-1">Starter</h3>
+                <p className="text-xs text-gray-500 mb-4">Per veterinari freelance e micro-cliniche</p>
+                <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€29</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <div className="space-y-2 text-sm">
+                  {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Reminder base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className="text-gray-700">{f}</span></div>
+                  ))}
+                </div>
+                <Button variant="outline" className="w-full mt-6" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Inizia ora</Button>
+              </CardContent>
+            </Card>
+
+            {/* GROWTH */}
+            <Card className="border-coral-300 ring-2 ring-coral-200 hover:shadow-lg transition relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2"><Badge className="bg-coral-500 text-white px-3">⭐ Consigliato</Badge></div>
+              <CardContent className="p-6">
+                <h3 className="font-bold text-coral-600 text-lg mb-1">Growth</h3>
+                <p className="text-xs text-gray-500 mb-4">Per cliniche piccole e medie</p>
+                <div className="mb-4"><span className="text-3xl font-bold text-coral-600">€69</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <div className="space-y-2 text-sm">
+                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Reminder automatici', 'Documenti e PDF', 'App proprietario', 'Inbox', 'Dashboard valore', 'Lab request base'].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-500" /><span className="text-gray-700">{f}</span></div>
+                  ))}
+                </div>
+                <Button className="w-full mt-6 bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Scegli Growth</Button>
+              </CardContent>
+            </Card>
+
+            {/* PRO */}
+            <Card className="border-gray-200 hover:shadow-lg transition">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-gray-900 text-lg mb-1">Pro</h3>
+                <p className="text-xs text-gray-500 mb-4">Per cliniche strutturate</p>
+                <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€99</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <div className="space-y-2 text-sm">
+                  {['Tutto Growth più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Lab Network completo', 'Analytics avanzati', 'Report mensili', 'AI assistente'].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className={`text-gray-700 ${i === 0 ? 'font-semibold' : ''}`}>{f}</span></div>
+                  ))}
+                </div>
+                <Button variant="outline" className="w-full mt-6" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Scegli Pro</Button>
+              </CardContent>
+            </Card>
+
+            {/* LAB PARTNER */}
+            <Card className="border-purple-200 hover:shadow-lg transition">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-purple-700 text-lg mb-1">Lab Partner</h3>
+                <p className="text-xs text-gray-500 mb-4">Per laboratori di analisi</p>
+                <div className="mb-4"><span className="text-3xl font-bold text-purple-700">€39</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <p className="text-xs text-purple-600 mb-3 font-medium">Gratis per 6 mesi</p>
+                <div className="space-y-2 text-sm">
+                  {['Dashboard laboratorio', 'Profilo pubblico', 'Listino prezzi', 'Gestione richieste', 'Upload referti PDF', 'Notifiche email', 'Disponibilità ritiro'].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /><span className="text-gray-700">{f}</span></div>
+                  ))}
+                </div>
+                <Button variant="outline" className="w-full mt-6 border-purple-300 text-purple-700 hover:bg-purple-50" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Registra il Lab</Button>
+              </CardContent>
+            </Card>
+
+            {/* ENTERPRISE */}
+            <Card className="border-gray-300 bg-gradient-to-br from-gray-900 to-gray-800 hover:shadow-lg transition">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-white text-lg mb-1">Enterprise</h3>
+                <p className="text-xs text-gray-400 mb-4">Per gruppi multi-sede e network</p>
+                <div className="mb-4"><span className="text-3xl font-bold text-white">Custom</span></div>
+                <div className="space-y-2 text-sm">
+                  {['Sedi illimitate', 'Utenti illimitati', 'Account manager dedicato', 'Onboarding personalizzato', 'API e integrazioni', 'SLA garantito', 'Fatturazione centralizzata'].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-400" /><span className="text-gray-300">{f}</span></div>
+                  ))}
+                </div>
+                <Button variant="outline" className="w-full mt-6 border-gray-600 text-white hover:bg-gray-700" onClick={() => scrollToSection('contatti')}>Contattaci</Button>
+              </CardContent>
+            </Card>
+          </div>
+          <p className="text-center text-sm text-gray-500 mt-6 italic">Non devi cambiare gestionale per iniziare: VetBuddy può lavorare accanto ai tuoi strumenti attuali.</p>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* PILOT MILANO */}
+      {/* ============================================================ */}
+      <section id="pilot" className="py-16 px-4 bg-gradient-to-br from-coral-50 via-orange-50/30 to-white">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-coral-500 font-semibold mb-2">COME FUNZIONA</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Due app, un ecosistema</h2>
+            <Badge className="bg-coral-100 text-coral-700 mb-4">🏙️ Pilot Milano</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">90 giorni per misurare quante telefonate, ore e prenotazioni VetBuddy genera per la tua clinica.</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Piano Growth gratuito per 90 giorni. Nessun vincolo. Se non ti convince, non paghi nulla.</p>
           </div>
-          
-          {/* Toggle Tabs Component */}
-          <EcosystemToggle />
-        </div>
-      </section>
-
-      {/* Abbonamento VetBuddy */}
-      <section id="pilot" className="py-16 px-4 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-coral-100 text-coral-700 px-4 py-2 rounded-full mb-4 font-semibold text-sm">
-              <MapPin className="h-4 w-4" />
-              Pilot Milano
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <h3 className="font-bold text-lg text-gray-900">Cosa include il Pilot:</h3>
+              {[
+                { icon: CheckCircle, text: 'Onboarding e configurazione iniziale inclusi' },
+                { icon: CheckCircle, text: 'Configurazione servizi, orari e link prenotazione' },
+                { icon: CheckCircle, text: 'Import clienti e pazienti da CSV' },
+                { icon: CheckCircle, text: 'Supporto avvio dedicato' },
+                { icon: CheckCircle, text: 'Dashboard valore attiva dal primo mese' },
+                { icon: CheckCircle, text: 'Report a fine pilot con risultati misurabili' },
+                { icon: CheckCircle, text: 'Estensione possibile se servono più dati' },
+              ].map((p, i) => (
+                <div key={i} className="flex items-center gap-3"><p.icon className="h-5 w-5 text-coral-500" /><span className="text-gray-700">{p.text}</span></div>
+              ))}
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Abbonamento VetBuddy</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Accesso su invito per cliniche selezionate e onboarding gratuito per i primi laboratori partner.</p>
-            <p className="text-xs text-gray-400 mt-3">Prezzi IVA esclusa.</p>
+            <div>
+              {pilotSubmitted ? (
+                <Card className="border-green-200 bg-green-50">
+                  <CardContent className="p-8 text-center">
+                    <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                    <h3 className="text-xl font-bold text-green-800 mb-2">Candidatura inviata!</h3>
+                    <p className="text-green-600">Ti contatteremo entro 48 ore per organizzare l'onboarding.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="border-coral-200">
+                  <CardContent className="p-6 space-y-4">
+                    <h3 className="font-bold text-lg text-gray-900 text-center">Candidati al Pilot</h3>
+                    <div>
+                      <Label className="text-sm text-gray-600">Nome clinica *</Label>
+                      <Input value={pilotForm.clinicName} onChange={(e) => setPilotForm(f => ({...f, clinicName: e.target.value}))} placeholder="Es. Clinica Veterinaria Brera" className="mt-1" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label className="text-sm text-gray-600">Città</Label>
+                        <Input value={pilotForm.city} onChange={(e) => setPilotForm(f => ({...f, city: e.target.value}))} placeholder="Milano" className="mt-1" />
+                      </div>
+                      <div>
+                        <Label className="text-sm text-gray-600">Telefono</Label>
+                        <Input value={pilotForm.phone} onChange={(e) => setPilotForm(f => ({...f, phone: e.target.value}))} placeholder="+39..." className="mt-1" />
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">Email *</Label>
+                      <Input type="email" value={pilotForm.email} onChange={(e) => setPilotForm(f => ({...f, email: e.target.value}))} placeholder="info@clinica.it" className="mt-1" />
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">Note (opzionale)</Label>
+                      <Textarea value={pilotForm.message} onChange={(e) => setPilotForm(f => ({...f, message: e.target.value}))} rows={2} placeholder="Quanti veterinari, pazienti attivi..." className="mt-1" />
+                    </div>
+                    <Button className="w-full bg-coral-500 hover:bg-coral-600 text-white py-5" onClick={handlePilotSubmit} disabled={pilotSubmitting}>
+                      {pilotSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                      Candidati al Pilot Milano
+                    </Button>
+                    <p className="text-xs text-gray-400 text-center">Nessun costo, nessun vincolo. Rispondiamo entro 48h.</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6 items-start">
-            {/* 1. Starter Clinica */}
-            <Card className="border-2 border-gray-200 hover:border-gray-300 transition-all hover:shadow-md relative flex flex-col">
-              <CardHeader className="pt-6 pb-3">
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Starter Clinica</p>
-                <div className="mt-1">
-                  <span className="text-3xl font-black text-gray-800">€0</span><span className="text-sm text-gray-400">/mese</span>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">Per veterinari freelance e micro-cliniche in fase di valutazione.</p>
-              </CardHeader>
-              <CardContent className="flex flex-col flex-1 pt-0">
-                <ul className="space-y-2 text-xs mb-5">
-                  {['1 sede', '1 utente', 'Fino a 30 richieste/mese', 'Profilo pubblico', 'Link diretto di prenotazione', 'Agenda base'].map((f, i) => (
-                    <li key={i} className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-500 flex-shrink-0" /> <span className="text-gray-700">{f}</span></li>
-                  ))}
-                </ul>
-                <div className="mt-auto pt-3 border-t">
-                  <Button className="w-full bg-gray-700 hover:bg-gray-800 text-sm" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi invito</Button>
-                  <p className="text-xs text-gray-400 mt-2 text-center">Disponibile solo per cliniche ammesse al Pilot Milano.</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* 2. Pro Clinica — EVIDENZIATO */}
-            <Card className="border-2 border-coral-500 relative shadow-2xl flex flex-col ring-2 ring-coral-200 bg-gradient-to-b from-white to-coral-50/30">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-coral-500 to-orange-500 text-white text-xs px-4 py-1.5 rounded-full font-bold whitespace-nowrap shadow-lg">Consigliato</div>
-              <CardHeader className="pt-7 pb-3">
-                <p className="text-xs font-semibold text-coral-500 uppercase tracking-wider mb-1">Pro Clinica</p>
-                <div className="mt-1">
-                  <span className="text-3xl font-black text-gray-900">€0</span><span className="text-sm text-gray-500 ml-1">per 90 giorni</span>
-                </div>
-                <p className="text-sm text-gray-500 mt-1">Poi <span className="font-bold text-gray-800">€79/mese</span> + IVA</p>
-                <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-3">
-                  <p className="text-xs font-semibold text-amber-700">Early adopter Pilot Milano: <span className="text-amber-900">€49/mese + IVA</span> per le prime cliniche selezionate.</p>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">Il piano principale per cliniche veterinarie che vogliono digitalizzare prenotazioni, agenda, documenti e rapporto con i clienti.</p>
-              </CardHeader>
-              <CardContent className="flex flex-col flex-1 pt-0">
-                <ul className="space-y-2 text-xs mb-4">
-                  {['Fino a 10 staff', 'Prenotazioni online', 'Agenda digitale', 'Reminder email automatici', 'Documenti e PDF via email', 'Ricette Elettroniche REV', 'Google Calendar sync', 'Report e analytics', 'Link prenotazione + QR code', 'Dashboard valore generato', 'Modulo richieste lab analisi', 'Accesso marketplace laboratori', 'Confronto lab per distanza e prezzi'].map((f, i) => (
-                    <li key={i} className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-coral-500 flex-shrink-0" /> <span className="text-gray-700">{f}</span></li>
-                  ))}
-                </ul>
-                <div className="bg-coral-50 border border-coral-200 rounded-lg px-3 py-2.5 mb-4">
-                  <p className="text-xs text-coral-700 font-medium leading-relaxed">Questo mese VetBuddy ti mostra quante prenotazioni ha generato e quante telefonate ti ha evitato.</p>
-                </div>
-                <div className="mt-auto pt-3 border-t">
-                  <Button className="w-full bg-gradient-to-r from-coral-500 to-orange-500 hover:from-coral-600 hover:to-orange-600 text-sm font-bold shadow-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi accesso Pilot</Button>
-                  <p className="text-xs text-gray-400 mt-2 text-center leading-relaxed">90 giorni gratuiti per cliniche selezionate. Estendibile fino a 6 mesi per cliniche attive.</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 3. Laboratorio Partner */}
-            <Card className="border-2 border-blue-200 hover:border-blue-300 transition-all hover:shadow-md relative flex flex-col bg-gradient-to-b from-white to-blue-50/30">
-              <div className="absolute -top-3 left-4 bg-blue-600 text-white text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">Per Laboratori</div>
-              <CardHeader className="pt-6 pb-3">
-                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Laboratorio Partner</p>
-                <div className="mt-1">
-                  <span className="text-3xl font-black text-gray-800">€0</span><span className="text-sm text-gray-500 ml-1">per 6 mesi</span>
-                </div>
-                <p className="text-sm text-gray-500 mt-1">Poi <span className="font-bold text-gray-800">€29/mese</span> + IVA</p>
-                <p className="text-xs text-gray-500 mt-2">Per laboratori di analisi veterinaria che vogliono ricevere richieste dalle cliniche e caricare referti su VetBuddy.</p>
-              </CardHeader>
-              <CardContent className="flex flex-col flex-1 pt-0">
-                <ul className="space-y-2 text-xs mb-4">
-                  {['Dashboard laboratorio', 'Profilo nel marketplace', 'Listino prezzi indicativo', 'Tempi medi di refertazione', 'Servizio ritiro campioni', 'Ricezione richieste da cliniche', 'Gestione stati richiesta', 'Upload referti PDF', 'Storico richieste e referti', 'Notifiche email'].map((f, i) => (
-                    <li key={i} className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" /> <span className="text-gray-700">{f}</span></li>
-                  ))}
-                </ul>
-                <div className="mt-auto pt-3 border-t space-y-2">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-sm" onClick={() => { setAuthMode('register-lab'); setShowAuth(true); }}>Registrati gratis</Button>
-                  <p className="text-xs text-gray-400 text-center leading-relaxed">Gratis per 6 mesi o fino a 50 richieste gestite. Poi €29/mese + IVA.</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* 4. Enterprise */}
-            <Card className="border-2 border-gray-200 hover:border-gray-300 transition-all hover:shadow-md flex flex-col">
-              <CardHeader className="pt-6 pb-3">
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Enterprise</p>
-                <div className="mt-1">
-                  <span className="text-3xl font-black text-gray-800">Custom</span><span className="text-sm text-gray-400 ml-1">+ IVA</span>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">Per gruppi veterinari, cliniche multi-sede e network di laboratori.</p>
-              </CardHeader>
-              <CardContent className="flex flex-col flex-1 pt-0">
-                <ul className="space-y-2 text-xs mb-5">
-                  {['Multi-sede illimitate', 'Laboratori multipli', 'API dedicata', 'SLA garantito', 'Onboarding dedicato', 'Reportistica avanzata', 'Gestione centralizzata', 'Integrazioni personalizzate'].map((f, i) => (
-                    <li key={i} className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-gray-500 flex-shrink-0" /> <span className="text-gray-700">{f}</span></li>
-                  ))}
-                </ul>
-                <div className="mt-auto pt-3 border-t">
-                  <Button className="w-full bg-gray-700 hover:bg-gray-800 text-sm" onClick={() => scrollToSection('contatti')}>Contattaci</Button>
-                  <p className="text-xs text-gray-400 mt-2 text-center">Soluzione su misura per gruppi e network veterinari.</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          <p className="text-center text-sm text-gray-500 mt-8 max-w-xl mx-auto">Non è una prova libera: stiamo selezionando cliniche e laboratori partner per validare VetBuddy nel Pilot Milano.</p>
         </div>
       </section>
 
-      {/* Contact Form for Enterprise */}
+      {/* ============================================================ */}
+      {/* CONTATTI */}
+      {/* ============================================================ */}
       <section id="contatti" className="py-12 px-4 bg-white">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Contattaci</h2>
-            <p className="text-gray-600">Hai una catena di cliniche o domande specifiche? Scrivici!</p>
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Vuoi saperne di più?</h2>
+          <p className="text-gray-600 mb-6">Prenota una demo personalizzata o scrivici per qualsiasi domanda.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="bg-coral-500 hover:bg-coral-600 text-white" onClick={() => scrollToSection('pilot')}>
+              <Calendar className="mr-2 h-5 w-5" /> Prenota una demo
+            </Button>
+            <Button variant="outline" size="lg" onClick={() => window.location.href = 'mailto:info@vetbuddy.it'}>
+              <Mail className="mr-2 h-5 w-5" /> info@vetbuddy.it
+            </Button>
           </div>
-          <Card>
-            <CardContent className="p-6">
-              <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('Grazie! Ti ricontatteremo presto a info@vetbuddy.it'); }}>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="contact-name">Nome e Cognome</Label>
-                    <Input id="contact-name" placeholder="Mario Rossi" required />
-                  </div>
-                  <div>
-                    <Label htmlFor="contact-clinic">Nome Clinica</Label>
-                    <Input id="contact-clinic" placeholder="Clinica Veterinaria Roma" />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="contact-email">Email</Label>
-                  <Input id="contact-email" type="email" placeholder="mario@clinica.it" required />
-                </div>
-                <div>
-                  <Label htmlFor="contact-phone">Telefono (opzionale)</Label>
-                  <Input id="contact-phone" type="tel" placeholder="+39 02 1234567" />
-                </div>
-                <div>
-                  <Label htmlFor="contact-message">Messaggio</Label>
-                  <Textarea id="contact-message" placeholder="Descrivi le tue esigenze o domande..." rows={4} required />
-                </div>
-                <Button type="submit" className="w-full bg-coral-500 hover:bg-coral-600">
-                  <Send className="h-4 w-4 mr-2" />Invia messaggio
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
         </div>
       </section>
 
+      {/* ============================================================ */}
       {/* FAQ */}
-      <section id="faq" className="py-12 px-4">
+      {/* ============================================================ */}
+      <section id="faq" className="py-16 px-4 bg-gray-50">
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12"><h2 className="text-3xl font-bold text-gray-900 mb-4">Domande frequenti</h2></div>
-          <Accordion type="single" collapsible className="space-y-4">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Domande frequenti</h2>
+          </div>
+          <Accordion type="single" collapsible className="space-y-3">
             {[
-              { q: 'VetBuddy emette direttamente la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale richiede l\'abilitazione del medico veterinario al sistema nazionale competente.' },
-              { q: 'Chi può confermare l\'emissione di una REV?', a: 'Solo il medico veterinario autorizzato.' },
-              { q: 'Posso usare VetBuddy anche se l\'integrazione ufficiale non è ancora attiva?', a: 'Sì. VetBuddy può operare in modalità guidata/manuale, permettendo alla clinica di preparare il flusso e registrare poi gli estremi della ricetta emessa nel sistema ufficiale.' },
-              { q: 'Il proprietario può vedere la prescrizione?', a: 'Il proprietario può consultare in piattaforma solo le informazioni rese disponibili dalla clinica e dal flusso previsto.' },
-              { q: 'Il piano Pro Clinica è davvero gratis per 90 giorni?', a: 'Sì, per le cliniche selezionate nel Pilot Milano.' },
-              { q: 'Cosa succede dopo i 90 giorni?', a: 'Il piano passa a €79/mese + IVA, con tariffa early adopter di €49/mese + IVA per le prime cliniche selezionate.' },
-              { q: 'I laboratori possono iscriversi anche senza invito?', a: 'Sì, possono registrarsi gratuitamente come Laboratorio Partner e attendere approvazione.' },
-              { q: 'I prezzi includono IVA?', a: 'No, tutti i prezzi indicati sono IVA esclusa.' },
-              { q: 'Cos\'è il Pilot e come funziona l\'invito?', a: 'vetbuddy è in fase Pilot a Milano. L\'accesso è su invito per garantire qualità e supporto dedicato. Candidati compilando il form e ti contatteremo per l\'attivazione.' },
-              { q: 'Quanto costa per i proprietari?', a: 'vetbuddy è e sarà sempre gratuito per i proprietari di animali. Nessun costo nascosto, mai.' },
-              { q: 'Come funziona l\'invio documenti?', a: 'Carichi un PDF (referto, prescrizione, fattura), selezioni cliente e animale, e il documento viene inviato automaticamente via email. Il cliente lo ritrova anche nell\'app.' },
-              { q: 'Posso esplorare l\'app prima di candidarmi?', a: 'Sì! Registrati come proprietario per esplorare la demo. Vedrai le funzionalità ma nota: le cliniche nell\'app demo non sono ancora affiliate realmente.' },
-            ].map((item, i) => (
-              <AccordionItem key={i} value={`item-${i}`} className="bg-white rounded-lg px-6 border">
-                <AccordionTrigger className="text-left font-medium">{item.q}</AccordionTrigger>
-                <AccordionContent className="text-gray-600">{item.a}</AccordionContent>
+              { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale completo. È un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, reminder, comunicazioni e follow-up. Puoi usarlo insieme al tuo gestionale senza problemi.' },
+              { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy aiuta a preparare, organizzare e archiviare il flusso della REV. L\'emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali sul sistema nazionale (es. Vetinfo).' },
+              { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. VetBuddy non è un intermediario di pagamento per i servizi veterinari. I pagamenti delle visite avvengono direttamente tra clinica e proprietario. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
+              { q: 'Quanto costa per i proprietari di animali?', a: 'Zero. L\'app proprietario è completamente gratuita. Nessun costo nascosto, mai.' },
+              { q: 'Cos\'è il Pilot Milano?', a: '90 giorni di Piano Growth gratuito per cliniche selezionate a Milano e provincia. Include onboarding, configurazione, import dati e supporto. A fine pilot ricevi un report con i risultati misurabili.' },
+              { q: 'Posso annullare in qualsiasi momento?', a: 'Sì. Nessun vincolo contrattuale. Puoi annullare l\'abbonamento quando vuoi dalla sezione Impostazioni.' },
+              { q: 'Come funziona il Lab Network?', a: 'La clinica richiede un\'analisi dalla scheda del paziente, il laboratorio la riceve, la processa e carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando renderlo visibile al proprietario.' },
+              { q: 'Serve una formazione tecnica per usarlo?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile via email e chat.' },
+            ].map((faq, i) => (
+              <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-lg border px-4">
+                <AccordionTrigger className="text-left font-semibold text-gray-900 py-4">{faq.q}</AccordionTrigger>
+                <AccordionContent className="text-gray-600 pb-4">{faq.a}</AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
         </div>
       </section>
 
-      {/* CTA - Invita la tua clinica */}
-      <section className="py-10 px-4 bg-gradient-to-r from-coral-500 to-orange-500">
+      {/* ============================================================ */}
+      {/* CTA FINALE */}
+      {/* ============================================================ */}
+      <section className="py-12 px-4 bg-gradient-to-r from-coral-500 to-orange-500">
         <div className="max-w-3xl mx-auto text-center text-white">
-          <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full mb-6">
-            <MapPin className="h-4 w-4" />
-            <span className="font-medium">Pilot Milano</span>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Pronto a ridurre le telefonate e aumentare le prenotazioni?</h2>
+          <p className="text-white/80 mb-6">Ogni mese sai esattamente quanto tempo hai risparmiato e quante visite sono state generate.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button size="lg" className="bg-white text-coral-600 hover:bg-gray-100 px-8" onClick={() => scrollToSection('pilot')}>Candidati al Pilot</Button>
+            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 px-8" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Registrati gratis</Button>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Non trovi la tua clinica?</h2>
-          <p className="text-coral-100 mb-8 text-lg">Siamo in fase pilot a Milano. Invita il tuo veterinario a unirsi a vetbuddy!</p>
-          <Button size="lg" className="bg-white text-coral-500 hover:bg-coral-50 h-14 px-8 text-lg" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>
-            <Mail className="h-5 w-5 mr-2" />Invita la tua clinica
-          </Button>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <NewBrandLogo size="xs" className="text-white [&>div:last-child>span]:text-white" />
-            <div className="flex items-center gap-3 text-sm text-gray-400">
-              <span>🏙️ Pilot Milano</span>
-              <span>•</span>
-              <span>🇮🇹 Made in Italy</span>
+      {/* FOOTER */}
+      <footer className="py-8 px-4 bg-gray-900 text-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-6 mb-6">
+            <div>
+              <NewBrandLogo size="md" variant="light" />
+              <p className="text-gray-400 text-sm mt-2">Il copilota operativo per cliniche veterinarie.</p>
             </div>
-            <div className="flex gap-4 text-sm text-gray-400">
-              <a href="/privacy" className="hover:text-white">Privacy</a>
-              <a href="/termini" className="hover:text-white">Termini</a>
-              <a href="/cookie-policy" className="hover:text-white">Cookie</a>
-              <a href="mailto:info@vetbuddy.it" className="hover:text-white">info@vetbuddy.it</a>
+            <div>
+              <h4 className="font-semibold mb-3 text-sm">Piattaforma</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <button onClick={() => scrollToSection('moduli')} className="block hover:text-white transition">Moduli</button>
+                <button onClick={() => scrollToSection('prezzi')} className="block hover:text-white transition">Prezzi</button>
+                <button onClick={() => scrollToSection('lab-network')} className="block hover:text-white transition">Lab Network</button>
+                <a href="/presentazione" className="block hover:text-white transition">Brochure</a>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3 text-sm">Risorse</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <a href="/tutorial" className="block hover:text-white transition">Guide e Tutorial</a>
+                <button onClick={() => scrollToSection('faq')} className="block hover:text-white transition">FAQ</button>
+                <button onClick={() => scrollToSection('contatti')} className="block hover:text-white transition">Contattaci</button>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3 text-sm">Legale</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <a href="/privacy" className="block hover:text-white transition">Privacy Policy</a>
+                <a href="/termini" className="block hover:text-white transition">Termini di Servizio</a>
+                <a href="/cookie-policy" className="block hover:text-white transition">Cookie Policy</a>
+              </div>
             </div>
           </div>
-          <p className="text-center text-gray-500 text-xs mt-4">© 2026 vetbuddy. Tutti i diritti riservati.</p>
+          <div className="border-t border-gray-800 pt-4 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
+            <p>© {new Date().getFullYear()} VetBuddy. Tutti i diritti riservati.</p>
+            <p>Made with ❤️ in Milano</p>
+          </div>
         </div>
       </footer>
 
-      {/* Auth Modal */}
-      <Dialog open={showAuth} onOpenChange={setShowAuth}>
-        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+      {/* AUTH DIALOG */}
+      <Dialog open={showAuth} onOpenChange={(open) => { setShowAuth(open); if (!open) setPendingAction(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{authMode === 'login' ? 'Accedi a VetBuddy' : 'Registrati su VetBuddy'}</DialogTitle>
+            <DialogDescription>
+              {authMode === 'login' ? 'Inserisci le tue credenziali per accedere' : 'Crea il tuo account gratuito'}
+            </DialogDescription>
+          </DialogHeader>
           {pendingAction && (
-            <div className="bg-coral-50 border border-coral-200 rounded-lg p-3 mb-4">
-              <p className="text-coral-700 text-sm font-medium">{getActionMessage()}</p>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-2">
+              <p className="text-sm text-amber-800">{getActionMessage()}</p>
             </div>
           )}
-          <AuthForm mode={authMode} setMode={setAuthMode} onLogin={(user) => { setShowAuth(false); onLogin(user); }} />
+          <AuthForm
+            mode={authMode}
+            setMode={setAuthMode}
+            onLogin={(user) => { setShowAuth(false); setPendingAction(null); onLogin(user); }}
+          />
         </DialogContent>
       </Dialog>
     </div>
