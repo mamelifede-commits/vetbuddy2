@@ -46,11 +46,12 @@ export default function BrochurePage() {
         <div className="w-16 h-1 mx-auto mb-8 rounded-full" style={{ background: '#ffffff', opacity: 0.5 }}></div>
 
         {/* Claim */}
-        <p className="text-2xl leading-relaxed font-medium mb-8" style={{ color: '#ffffff' }}>
-          La piattaforma digitale che connette<br/>
-          <strong className="font-black">cliniche veterinarie</strong>,{' '}
-          <strong className="font-black">proprietari</strong><br/>
-          e <strong className="font-black">laboratori di analisi</strong>.
+        <p className="text-2xl leading-relaxed font-medium mb-3" style={{ color: '#ffffff' }}>
+          Più prenotazioni. Meno telefonate.<br/>
+          <strong className="font-black">Clienti sempre seguiti.</strong>
+        </p>
+        <p className="text-base mb-8" style={{ color: '#ffffff', opacity: 0.85 }}>
+          Il copilota operativo che automatizza prenotazioni, reminder,<br/>comunicazioni, referti e follow-up per la tua clinica.
         </p>
 
         {/* Pilot Badge */}
@@ -59,14 +60,14 @@ export default function BrochurePage() {
           <span className="text-lg font-bold" style={{ color: '#ffffff' }}>Pilot Milano 2025</span>
         </div>
 
-        <p className="text-sm mb-8" style={{ color: '#ffffff', opacity: 0.8 }}>Accesso su invito per cliniche selezionate</p>
+        <p className="text-sm mb-8" style={{ color: '#ffffff', opacity: 0.8 }}>90 giorni per misurare il valore che generiamo per la tua clinica</p>
 
         {/* 3 key numbers */}
         <div className="flex gap-10">
           {[
-            { n: '44+', l: 'Automazioni' },
-            { n: '100%', l: 'Gratis per proprietari' },
-            { n: '€0', l: 'Per 90 giorni' },
+            { n: '-70%', l: 'Telefonate' },
+            { n: '+40%', l: 'Prenotazioni online' },
+            { n: '15h', l: 'Risparmiate/mese' },
           ].map((s, i) => (
             <div key={i} className="text-center">
               <div className="text-3xl font-black mb-1" style={{ color: '#ffffff' }}>{s.n}</div>
@@ -87,12 +88,12 @@ export default function BrochurePage() {
         <PageHeader />
         
         <h2 className="text-4xl font-black text-gray-900 mb-2 mt-6">Perché VetBuddy?</h2>
-        <p className="text-gray-500 text-lg mb-10 max-w-2xl">Gestisci appuntamenti, documenti e comunicazione tra cliniche, proprietari e laboratori. Zero carta, zero caos.</p>
+        <p className="text-gray-500 text-lg mb-10 max-w-2xl">Non è l'ennesimo gestionale. È il copilota che riduce il caos operativo e aumenta le visite ricorrenti.</p>
 
         <div className="grid grid-cols-3 gap-6 mb-12">
-          <StatBox number="70%" label="delle cliniche veterinarie usa ancora agenda cartacea o telefono" />
-          <StatBox number="12 min" label="tempo medio sprecato per ogni prenotazione telefonica" />
-          <StatBox number="40%" label="dei proprietari dimentica appuntamenti senza reminder" />
+          <StatBox number="-70%" label="telefonate evitate grazie a prenotazioni online e reminder automatici" />
+          <StatBox number="15h" label="risparmiate ogni mese dallo staff della clinica" />
+          <StatBox number="+25%" label="clienti che tornano grazie a follow-up e richiami automatici" />
         </div>
 
         <h3 className="text-2xl font-bold text-gray-900 mb-6">Due ecosistemi, una piattaforma</h3>
@@ -106,8 +107,8 @@ export default function BrochurePage() {
               ))}
             </ul>
             <div className="mt-4 pt-3 border-t border-white/20">
-              <p className="font-bold">Pro Clinica: €0 per 90 giorni</p>
-              <p className="text-white/70 text-xs">Poi €79/mese + IVA</p>
+              <p className="font-bold">Growth: Piano consigliato</p>
+              <p className="text-white/70 text-xs">€69/mese + IVA • Pilot: gratis 90 giorni</p>
             </div>
           </div>
           <div className="rounded-2xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #2563EB, #4F46E5)' }}>
