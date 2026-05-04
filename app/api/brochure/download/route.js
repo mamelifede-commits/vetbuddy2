@@ -3,12 +3,12 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 
 export const dynamic = 'force-dynamic';
 
-// ====================== CONSTANTS ======================
-const W = 842; // A4 landscape
-const H = 595;
-const M = 48;  // margin
+// ====================== A4 PORTRAIT ======================
+const W = 595;  // A4 portrait width
+const H = 842;  // A4 portrait height
+const M = 50;   // generous margin
 
-// Brand colors as [r, g, b] arrays for gradient math
+// Colors as [r,g,b] for gradients
 const _coral = [1.0, 0.42, 0.42];
 const _orange = [0.976, 0.451, 0.086];
 const _purple = [0.192, 0.180, 0.506];
@@ -16,16 +16,14 @@ const _purpleMid = [0.345, 0.110, 0.529];
 const _blue = [0.145, 0.388, 0.922];
 const _indigo = [0.310, 0.275, 0.898];
 
-// Handy rgb shortcuts
+// rgb shortcuts
 const CORAL = rgb(1.0, 0.42, 0.42);
-const CORAL_DARK = rgb(0.88, 0.30, 0.30);
 const ORANGE = rgb(0.976, 0.451, 0.086);
 const PURPLE = rgb(0.192, 0.180, 0.506);
-const PURPLE_MID = rgb(0.345, 0.110, 0.529);
 const BLUE = rgb(0.145, 0.388, 0.922);
 const INDIGO = rgb(0.310, 0.275, 0.898);
 const EMERALD = rgb(0.063, 0.725, 0.506);
-const EMERALD_BG = rgb(0.92, 0.97, 0.93);
+const EMERALD_BG = rgb(0.93, 0.98, 0.94);
 const AMBER = rgb(0.961, 0.620, 0.043);
 const AMBER_BG = rgb(0.99, 0.96, 0.91);
 const WHITE = rgb(1, 1, 1);
@@ -40,7 +38,7 @@ const G50 = rgb(0.97, 0.97, 0.97);
 const GREEN_CK = rgb(0.22, 0.80, 0.44);
 const CORAL_BG = rgb(1.0, 0.95, 0.94);
 const BLUE_BG = rgb(0.94, 0.96, 1.0);
-const INDIGO_BG = rgb(0.93, 0.93, 0.99);
+const INDIGO_BG = rgb(0.94, 0.94, 0.99);
 
 // ====================== HELPERS ======================
 function san(t) {
@@ -64,11 +62,11 @@ function wrap(text, font, size, maxW) {
   return lines;
 }
 
-function centerX(text, font, size) {
+function cx(text, font, size) {
   return (W - font.widthOfTextAtSize(text, size)) / 2;
 }
 
-// Vertical gradient (top color → bottom color)
+// Gradient fill (top to bottom)
 function grad(page, x, y, w, h, c1, c2, steps = 50) {
   const sh = h / steps;
   for (let i = 0; i < steps; i++) {
@@ -80,958 +78,883 @@ function grad(page, x, y, w, h, c1, c2, steps = 50) {
   }
 }
 
-// Draw a paw print icon using circles/ellipses
-function paw(page, cx, cy, s, color) {
-  // Main pad
-  page.drawEllipse({ x: cx, y: cy - 1.5 * s, xScale: 5 * s, yScale: 4 * s, color });
-  // Toes
-  page.drawEllipse({ x: cx - 4 * s, y: cy + 5 * s, xScale: 1.8 * s, yScale: 2.3 * s, color });
-  page.drawEllipse({ x: cx - 1.3 * s, y: cy + 7.2 * s, xScale: 1.8 * s, yScale: 2.3 * s, color });
-  page.drawEllipse({ x: cx + 1.3 * s, y: cy + 7.2 * s, xScale: 1.8 * s, yScale: 2.3 * s, color });
-  page.drawEllipse({ x: cx + 4 * s, y: cy + 5 * s, xScale: 1.8 * s, yScale: 2.3 * s, color });
+// Draw paw print
+function drawPaw(page, pcx, pcy, s, color) {
+  page.drawEllipse({ x: pcx, y: pcy - 1.5 * s, xScale: 5.5 * s, yScale: 4.2 * s, color });
+  page.drawEllipse({ x: pcx - 4.2 * s, y: pcy + 5.5 * s, xScale: 2 * s, yScale: 2.5 * s, color });
+  page.drawEllipse({ x: pcx - 1.4 * s, y: pcy + 7.8 * s, xScale: 2 * s, yScale: 2.5 * s, color });
+  page.drawEllipse({ x: pcx + 1.4 * s, y: pcy + 7.8 * s, xScale: 2 * s, yScale: 2.5 * s, color });
+  page.drawEllipse({ x: pcx + 4.2 * s, y: pcy + 5.5 * s, xScale: 2 * s, yScale: 2.5 * s, color });
 }
 
-// Small colored bullet dot
+// Draw VetBuddy logo block (white square + coral paw)
+function drawLogo(page, lcx, lcy, size, pawColor, bgColor) {
+  const half = size / 2;
+  page.drawRectangle({ x: lcx - half, y: lcy - half, width: size, height: size, color: bgColor });
+  drawPaw(page, lcx, lcy, size / 28, pawColor);
+}
+
+// Bullet dot
 function dot(page, x, y, color) {
-  page.drawCircle({ x: x + 3, y: y + 3.5, size: 3, color });
+  page.drawCircle({ x: x + 3, y: y + 3, size: 2.8, color });
 }
 
-// Header bar + VetBuddy logo for content pages
-function hdr(page, f) {
-  page.drawRectangle({ x: 0, y: H - 10, width: W, height: 10, color: CORAL });
-  // Paw icon
-  page.drawCircle({ x: 32, y: H - 32, size: 12, color: CORAL });
-  paw(page, 32, H - 34, 0.7, WHITE);
-  page.drawText('VetBuddy', { x: 50, y: H - 37, size: 11, font: f.b, color: CORAL });
+// Page header with coral bar + logo
+function pageHdr(page, f) {
+  page.drawRectangle({ x: 0, y: H - 8, width: W, height: 8, color: CORAL });
+  page.drawCircle({ x: 34, y: H - 30, size: 14, color: CORAL });
+  drawPaw(page, 34, H - 32, 0.8, WHITE);
+  page.drawText('Vet', { x: 54, y: H - 36, size: 12, font: f.b, color: G900 });
+  page.drawText('Buddy', { x: 54 + f.b.widthOfTextAtSize('Vet', 12), y: H - 36, size: 12, font: f.b, color: CORAL });
 }
 
-// Page number
-function pNum(page, num, total, f, dark = false) {
+// Page number footer
+function pageNum(page, num, total, f, light) {
   const t = `${num} / ${total}`;
-  page.drawText(t, { x: centerX(t, f.r, 8), y: 16, size: 8, font: f.r, color: dark ? rgb(1, 1, 1, 0.4) : G400 });
+  page.drawText(t, { x: cx(t, f.r, 8), y: 20, size: 8, font: f.r, color: light ? WHITE : G400, opacity: light ? 0.4 : 1 });
 }
 
-// Draw feature item with left colored bar
-function feat(page, x, y, title, desc, f, maxW) {
-  page.drawRectangle({ x, y: y - 1, width: 3, height: 30, color: CORAL });
-  page.drawText(san(title), { x: x + 10, y: y + 15, size: 10, font: f.b, color: G900 });
-  const lines = wrap(san(desc), f.r, 8.5, maxW - 14);
-  let ly = y + 2;
-  for (const l of lines) {
-    page.drawText(l, { x: x + 10, y: ly, size: 8.5, font: f.r, color: G500 });
-    ly -= 11;
-  }
-  return ly;
+// Draw a list of items with dots
+function drawList(page, items, x, startY, dotColor, font, fontSize, textColor, lineH, maxW, opacity) {
+  let y = startY;
+  items.forEach(item => {
+    dot(page, x, y - 3, dotColor);
+    const lines = wrap(san(item), font, fontSize, maxW - 16);
+    lines.forEach(l => {
+      page.drawText(l, { x: x + 14, y, size: fontSize, font, color: textColor, opacity: opacity || 1 });
+      y -= lineH;
+    });
+  });
+  return y;
 }
 
-// ====================== PAGE GENERATORS ======================
-
-// ─── PAGE 1: COVER ───
+// ====================================================================
+//  PAGE 1: COVER
+// ====================================================================
 function drawCover(doc, f) {
   const page = doc.addPage([W, H]);
-
-  // Background gradient
   grad(page, 0, 0, W, H, _coral, _orange);
 
   // Decorative circles
-  page.drawCircle({ x: W - 90, y: H - 80, size: 120, color: WHITE, opacity: 0.08 });
-  page.drawCircle({ x: 80, y: 80, size: 80, color: WHITE, opacity: 0.06 });
-  page.drawCircle({ x: W - 200, y: 50, size: 50, color: WHITE, opacity: 0.05 });
+  page.drawCircle({ x: W - 40, y: H - 60, size: 130, color: WHITE, opacity: 0.07 });
+  page.drawCircle({ x: 50, y: 120, size: 90, color: WHITE, opacity: 0.05 });
+  page.drawCircle({ x: W - 120, y: 200, size: 50, color: WHITE, opacity: 0.04 });
 
-  // Logo box
-  const lcx = W / 2;
-  const lcy = H - 115;
-  page.drawRectangle({ x: lcx - 30, y: lcy - 30, width: 60, height: 60, color: WHITE });
-  paw(page, lcx, lcy, 1.8, CORAL);
+  // Logo block (white square + coral paw)
+  const logoY = H - 220;
+  drawLogo(page, W / 2, logoY, 70, CORAL, WHITE);
 
-  // Title
+  // Brand name
+  let y = logoY - 60;
   const title = 'VetBuddy';
-  page.drawText(title, { x: centerX(title, f.b, 52), y: H - 195, size: 52, font: f.b, color: WHITE });
+  page.drawText(title, { x: cx(title, f.b, 48), y, size: 48, font: f.b, color: WHITE });
 
   // Divider
-  page.drawRectangle({ x: W / 2 - 30, y: H - 210, width: 60, height: 2, color: WHITE, opacity: 0.5 });
+  y -= 18;
+  page.drawRectangle({ x: W / 2 - 30, y, width: 60, height: 2, color: WHITE, opacity: 0.5 });
 
-  // Tagline line 1
+  // Tagline
+  y -= 40;
   const t1 = san('Piu prenotazioni. Meno telefonate.');
-  page.drawText(t1, { x: centerX(t1, f.r, 18), y: H - 240, size: 18, font: f.r, color: WHITE });
-  // Tagline line 2
+  page.drawText(t1, { x: cx(t1, f.r, 16), y, size: 16, font: f.r, color: WHITE });
+  y -= 26;
   const t2 = san('Clienti sempre seguiti.');
-  page.drawText(t2, { x: centerX(t2, f.b, 20), y: H - 265, size: 20, font: f.b, color: WHITE });
+  page.drawText(t2, { x: cx(t2, f.b, 18), y, size: 18, font: f.b, color: WHITE });
 
-  // Sub-tagline
-  const st1 = san('Il copilota operativo che automatizza prenotazioni, reminder,');
-  const st2 = san('comunicazioni, referti e follow-up per la tua clinica.');
-  page.drawText(st1, { x: centerX(st1, f.r, 11), y: H - 295, size: 11, font: f.r, color: WHITE, opacity: 0.85 });
-  page.drawText(st2, { x: centerX(st2, f.r, 11), y: H - 310, size: 11, font: f.r, color: WHITE, opacity: 0.85 });
+  // Subtitle
+  y -= 36;
+  const st = san('Il copilota operativo che automatizza prenotazioni,');
+  page.drawText(st, { x: cx(st, f.r, 11), y, size: 11, font: f.r, color: WHITE, opacity: 0.85 });
+  y -= 16;
+  const st2 = san('reminder, comunicazioni, referti e follow-up.');
+  page.drawText(st2, { x: cx(st2, f.r, 11), y, size: 11, font: f.r, color: WHITE, opacity: 0.85 });
 
   // Pilot badge
-  const bw = 240;
+  y -= 40;
+  const bw = 230;
   const bx = (W - bw) / 2;
-  const by = H - 360;
-  page.drawRectangle({ x: bx, y: by, width: bw, height: 34, color: WHITE, opacity: 0.2 });
-  page.drawRectangle({ x: bx, y: by, width: bw, height: 34, borderColor: WHITE, borderWidth: 1.5, opacity: 0.3 });
-  // Green dot
-  page.drawCircle({ x: bx + 18, y: by + 17, size: 5, color: rgb(0.29, 0.87, 0.50) });
-  const pilotT = 'Pilot Milano 2025';
-  page.drawText(pilotT, { x: bx + 30, y: by + 10, size: 13, font: f.b, color: WHITE });
+  page.drawRectangle({ x: bx, y: y - 4, width: bw, height: 36, color: WHITE, opacity: 0.18 });
+  page.drawCircle({ x: bx + 20, y: y + 13, size: 5, color: rgb(0.29, 0.87, 0.50) });
+  page.drawText('Pilot Milano 2025', { x: bx + 34, y: y + 6, size: 14, font: f.b, color: WHITE });
 
-  // Sub-pilot text
-  const pt = san('90 giorni per misurare il valore che generiamo per la tua clinica');
-  page.drawText(pt, { x: centerX(pt, f.r, 9), y: by - 18, size: 9, font: f.r, color: WHITE, opacity: 0.75 });
+  y -= 32;
+  const pt = san('90 giorni per misurare il valore che generiamo');
+  page.drawText(pt, { x: cx(pt, f.r, 9), y, size: 9, font: f.r, color: WHITE, opacity: 0.7 });
 
   // 3 key numbers
+  y -= 65;
   const nums = [
     { n: '-70%', l: 'Telefonate' },
     { n: '+40%', l: 'Prenotazioni online' },
     { n: '15h', l: 'Risparmiate/mese' },
   ];
-  const numY = 75;
-  const numSpacing = 180;
-  const numStartX = W / 2 - numSpacing;
+  const spacing = 155;
+  const startX = W / 2 - spacing;
   nums.forEach((s, i) => {
-    const nx = numStartX + i * numSpacing;
-    page.drawText(s.n, { x: nx - f.b.widthOfTextAtSize(s.n, 28) / 2, y: numY + 15, size: 28, font: f.b, color: WHITE });
-    page.drawText(s.l, { x: nx - f.r.widthOfTextAtSize(s.l, 9) / 2, y: numY - 5, size: 9, font: f.r, color: WHITE, opacity: 0.7 });
+    const nx = startX + i * spacing;
+    page.drawText(s.n, { x: nx - f.b.widthOfTextAtSize(s.n, 28) / 2, y: y + 18, size: 28, font: f.b, color: WHITE });
+    page.drawText(s.l, { x: nx - f.r.widthOfTextAtSize(s.l, 9) / 2, y, size: 9, font: f.r, color: WHITE, opacity: 0.7 });
   });
 
   // Footer
-  const foot = 'vetbuddy.it  -  info@vetbuddy.it';
-  page.drawText(foot, { x: centerX(foot, f.r, 8), y: 22, size: 8, font: f.r, color: WHITE, opacity: 0.5 });
+  const foot = 'vetbuddy.it  |  info@vetbuddy.it';
+  page.drawText(foot, { x: cx(foot, f.r, 8), y: 28, size: 8, font: f.r, color: WHITE, opacity: 0.45 });
 }
 
-// ─── PAGE 2: PERCHÉ VETBUDDY ───
+// ====================================================================
+//  PAGE 2: PERCHÉ VETBUDDY
+// ====================================================================
 function drawWhyPage(doc, f) {
   const page = doc.addPage([W, H]);
   page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: WHITE });
-  hdr(page, f);
+  pageHdr(page, f);
 
-  let y = H - 65;
-  page.drawText(san('Perche VetBuddy?'), { x: M, y, size: 28, font: f.b, color: G900 });
+  let y = H - 70;
+  page.drawText(san('Perche VetBuddy?'), { x: M, y, size: 26, font: f.b, color: G900 });
   y -= 22;
   const sub = san("Non e l'ennesimo gestionale. E il copilota che riduce il caos operativo e aumenta le visite ricorrenti.");
-  const subLines = wrap(sub, f.r, 11, W - 2 * M);
-  for (const l of subLines) { page.drawText(l, { x: M, y, size: 11, font: f.r, color: G500 }); y -= 15; }
-  y -= 10;
-
-  // 3 stat boxes
-  const statW = (W - 2 * M - 24) / 3;
-  const stats = [
-    { n: '-70%', l: 'telefonate evitate grazie a prenotazioni online e reminder automatici' },
-    { n: '15h', l: 'risparmiate ogni mese dallo staff della clinica' },
-    { n: '+25%', l: 'clienti che tornano grazie a follow-up e richiami automatici' },
-  ];
-  stats.forEach((s, i) => {
-    const sx = M + i * (statW + 12);
-    const sy = y - 70;
-    page.drawRectangle({ x: sx, y: sy, width: statW, height: 70, color: G50 });
-    page.drawRectangle({ x: sx, y: sy + 64, width: statW, height: 6, color: CORAL });
-    page.drawText(s.n, { x: sx + statW / 2 - f.b.widthOfTextAtSize(s.n, 26) / 2, y: sy + 38, size: 26, font: f.b, color: CORAL });
-    const sLines = wrap(san(s.l), f.r, 8, statW - 16);
-    let sly = sy + 20;
-    for (const l of sLines) {
-      page.drawText(l, { x: sx + 8, y: sly, size: 8, font: f.r, color: G500 });
-      sly -= 10;
-    }
-  });
-  y -= 100;
-
-  // Two ecosystems title
-  page.drawText('Due ecosistemi, una piattaforma', { x: M, y, size: 16, font: f.b, color: G900 });
+  const subL = wrap(sub, f.r, 11, W - 2 * M);
+  for (const l of subL) { page.drawText(l, { x: M, y, size: 11, font: f.r, color: G500 }); y -= 16; }
   y -= 20;
 
-  // Clinic card (coral gradient)
-  const cardW = (W - 2 * M - 16) / 2;
-  const cardH = 215;
-  const cy = y - cardH;
+  // 3 stat boxes
+  const bw = (W - 2 * M - 20) / 3;
+  const bh = 80;
+  const stats = [
+    { n: '-70%', l: 'telefonate evitate grazie a prenotazioni online e reminder' },
+    { n: '15h', l: 'risparmiate ogni mese dallo staff della clinica' },
+    { n: '+25%', l: 'clienti che tornano grazie a follow-up e richiami' },
+  ];
+  stats.forEach((s, i) => {
+    const sx = M + i * (bw + 10);
+    page.drawRectangle({ x: sx, y: y - bh, width: bw, height: bh, color: G50 });
+    page.drawRectangle({ x: sx, y: y - 4, width: bw, height: 4, color: CORAL });
+    page.drawText(s.n, { x: sx + bw / 2 - f.b.widthOfTextAtSize(s.n, 22) / 2, y: y - 32, size: 22, font: f.b, color: CORAL });
+    const sl = wrap(san(s.l), f.r, 7.5, bw - 16);
+    let sly = y - 48;
+    for (const l of sl) { page.drawText(l, { x: sx + 8, y: sly, size: 7.5, font: f.r, color: G500 }); sly -= 10; }
+  });
+  y -= bh + 28;
 
-  // Clinic card background
-  grad(page, M, cy, cardW, cardH, _coral, _orange);
-  let cly = cy + cardH - 22;
-  page.drawText('Per le Cliniche Veterinarie', { x: M + 14, y: cly, size: 14, font: f.b, color: WHITE });
-  cly -= 16;
-  page.drawText(san("Tutto cio che serve per gestire la tua clinica in modo digitale."), { x: M + 14, y: cly, size: 8.5, font: f.r, color: WHITE, opacity: 0.8 });
+  // Title
+  page.drawText('Due ecosistemi, una piattaforma', { x: M, y, size: 16, font: f.b, color: G900 });
+  y -= 24;
+
+  // Full width cards stacked
+  const cardW = W - 2 * M;
+  const cardH = 190;
+
+  // Clinic card
+  grad(page, M, y - cardH, cardW, cardH, _coral, _orange);
+  let cly = y - 18;
+  page.drawText('Per le Cliniche Veterinarie', { x: M + 18, y: cly, size: 15, font: f.b, color: WHITE });
   cly -= 18;
-  const clinicFeats = [
-    'Agenda digitale e prenotazioni online',
-    'Gestione pazienti e cartelle cliniche',
-    'Fatturazione, ricevute e listino servizi',
-    'Documenti PDF con invio automatico via email',
-    'Ricette Elettroniche REV (integrazione Vetinfo)',
-    'Team inbox e messaggistica clienti',
-    '44+ automazioni attive 24/7',
-    'Metriche, report e dashboard fatturato',
+  page.drawText(san("Tutto cio che serve per gestire la tua clinica in modo digitale."), { x: M + 18, y: cly, size: 9, font: f.r, color: WHITE, opacity: 0.8 });
+  cly -= 20;
+  const clinicF = [
+    'Agenda digitale e prenotazioni online', 'Gestione pazienti e cartelle cliniche',
+    'Fatturazione, ricevute e listino servizi', 'Documenti PDF con invio automatico via email',
+    'Ricette Elettroniche REV (integrazione Vetinfo)', 'Team inbox e messaggistica clienti',
+    '44+ automazioni attive 24/7', 'Metriche, report e dashboard fatturato',
   ];
-  clinicFeats.forEach(feat => {
-    dot(page, M + 12, cly - 3, WHITE);
-    page.drawText(san(feat), { x: M + 24, y: cly, size: 8, font: f.r, color: WHITE, opacity: 0.9 });
-    cly -= 13;
-  });
-  // Divider
-  page.drawRectangle({ x: M + 14, y: cly + 2, width: cardW - 28, height: 0.5, color: WHITE, opacity: 0.3 });
-  cly -= 10;
-  page.drawText('Growth: Piano consigliato', { x: M + 14, y: cly, size: 9, font: f.b, color: WHITE });
-  cly -= 12;
-  page.drawText(san('EUR 69/mese + IVA - Pilot: gratis 90 giorni'), { x: M + 14, y: cly, size: 7.5, font: f.r, color: WHITE, opacity: 0.7 });
+  cly = drawList(page, clinicF, M + 16, cly, WHITE, f.r, 8.5, WHITE, 15, cardW - 32, 0.9);
+  // Footer bar
+  page.drawRectangle({ x: M + 18, y: y - cardH + 32, width: cardW - 36, height: 0.5, color: WHITE, opacity: 0.3 });
+  page.drawText('Growth: Piano consigliato', { x: M + 18, y: y - cardH + 18, size: 9, font: f.b, color: WHITE });
+  page.drawText(san('EUR 69/mese + IVA  |  Pilot: gratis 90 giorni'), { x: M + 18, y: y - cardH + 6, size: 7.5, font: f.r, color: WHITE, opacity: 0.7 });
 
-  // Owner card (blue gradient)
-  const ox = M + cardW + 16;
-  grad(page, ox, cy, cardW, cardH, _blue, _indigo);
-  let oly = cy + cardH - 22;
-  page.drawText('Per i Proprietari di Animali', { x: ox + 14, y: oly, size: 14, font: f.b, color: WHITE });
-  oly -= 16;
-  page.drawText(san("La salute dei tuoi animali in un'unica app."), { x: ox + 14, y: oly, size: 8.5, font: f.r, color: WHITE, opacity: 0.8 });
+  y -= cardH + 14;
+
+  // Owner card
+  const oH = 155;
+  grad(page, M, y - oH, cardW, oH, _blue, _indigo);
+  let oly = y - 18;
+  page.drawText('Per i Proprietari di Animali', { x: M + 18, y: oly, size: 15, font: f.b, color: WHITE });
   oly -= 18;
-  const ownerFeats = [
-    'Prenota visite online in pochi click',
-    'Ricevi documenti e referti digitali',
-    'Profilo completo per ogni animale',
-    'Reminder automatici per visite e vaccini',
-    'Programma fedelta e premi',
-    'Chat diretta con la clinica',
+  page.drawText(san("La salute dei tuoi animali in un'unica app."), { x: M + 18, y: oly, size: 9, font: f.r, color: WHITE, opacity: 0.8 });
+  oly -= 20;
+  const ownerF = [
+    'Prenota visite online in pochi click', 'Ricevi documenti e referti digitali',
+    'Profilo completo per ogni animale', 'Reminder automatici per visite e vaccini',
+    'Programma fedelta e premi', 'Chat diretta con la clinica',
   ];
-  ownerFeats.forEach(feat => {
-    dot(page, ox + 12, oly - 3, WHITE);
-    page.drawText(san(feat), { x: ox + 24, y: oly, size: 8, font: f.r, color: WHITE, opacity: 0.9 });
-    oly -= 13;
-  });
-  page.drawRectangle({ x: ox + 14, y: oly + 2, width: cardW - 28, height: 0.5, color: WHITE, opacity: 0.3 });
-  oly -= 10;
-  page.drawText('100% Gratuito', { x: ox + 14, y: oly, size: 9, font: f.b, color: WHITE });
-  oly -= 12;
-  page.drawText('Per sempre, nessun costo nascosto', { x: ox + 14, y: oly, size: 7.5, font: f.r, color: WHITE, opacity: 0.7 });
+  drawList(page, ownerF, M + 16, oly, WHITE, f.r, 8.5, WHITE, 15, cardW - 32, 0.9);
+  page.drawRectangle({ x: M + 18, y: y - oH + 24, width: cardW - 36, height: 0.5, color: WHITE, opacity: 0.3 });
+  page.drawText('100% Gratuito', { x: M + 18, y: y - oH + 10, size: 9, font: f.b, color: WHITE });
 
-  pNum(page, 2, 10, f);
+  pageNum(page, 2, 11, f, false);
 }
 
-// ─── PAGE 3: FUNZIONALITÀ CLINICA ───
+// ====================================================================
+//  PAGE 3: FUNZIONALITÀ CLINICA
+// ====================================================================
 function drawFeaturesPage(doc, f) {
   const page = doc.addPage([W, H]);
   page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: WHITE });
-  hdr(page, f);
+  pageHdr(page, f);
 
-  let y = H - 62;
-  page.drawText(san('Funzionalita per la Clinica'), { x: M, y, size: 24, font: f.b, color: G900 });
-  y -= 18;
-  page.drawText(san('Tutto cio che serve per digitalizzare la gestione della tua clinica veterinaria.'), { x: M, y, size: 10, font: f.r, color: G500 });
-  y -= 24;
+  let y = H - 68;
+  page.drawText(san('Funzionalita per la Clinica'), { x: M, y, size: 22, font: f.b, color: G900 });
+  y -= 20;
+  page.drawText(san('Tutto cio che serve per digitalizzare la gestione della tua clinica.'), { x: M, y, size: 10, font: f.r, color: G500 });
+  y -= 30;
 
   const features = [
-    ['Agenda Digitale', 'Calendario condiviso tra tutto lo staff. Visualizzazione per giorno, settimana e mese. Gestione disponibilita per veterinario.'],
-    ['Prenotazioni Online', 'I clienti prenotano dal profilo pubblico della clinica o tramite link diretto e QR code. Nessuna telefonata.'],
-    ['Gestione Pazienti', 'Cartella clinica digitale per ogni animale: specie, razza, peso, allergie, vaccinazioni, storico visite.'],
-    ['Documenti e PDF', 'Carica referti, prescrizioni, fatture in PDF. Invia automaticamente via email al proprietario.'],
-    ['Fatturazione e Pagamenti', 'Crea fatture e ricevute dalla piattaforma. Listino servizi, export CSV/PDF. Statistiche fatturato.'],
-    ['Team Inbox', 'Messaggistica centralizzata con assegnazione ticket allo staff. Priorita, template, chat diretta.'],
-    ['Metriche e Report', 'Dashboard con prenotazioni, telefonate evitate, fatturato, tassi di conversione, trend mensili.'],
-    ['Google Calendar Sync', 'Sincronizzazione bidirezionale con Google Calendar. Appuntamenti visibili su entrambi.'],
-    ['Video-Consulti', 'Consulenze veterinarie a distanza con videochiamata integrata. Ideale per follow-up.'],
-    ['Link Prenotazione + QR Code', 'Link personalizzato da condividere su social, WhatsApp, sito web. QR Code stampabile.'],
-    ['Profilo Pubblico', 'Pagina pubblica con servizi, orari, mappa, recensioni. Visibile su Google.'],
-    ['Programma Fedelta', 'Sistema a punti per fidelizzare i clienti. 100 punti = EUR 5 di sconto. Configurabile.'],
+    ['Agenda Digitale', 'Calendario condiviso tra lo staff. Visualizzazione giorno, settimana, mese.'],
+    ['Prenotazioni Online', 'I clienti prenotano dal profilo pubblico o tramite link diretto e QR code.'],
+    ['Gestione Pazienti', 'Cartella clinica digitale: specie, razza, peso, allergie, vaccini, storico visite.'],
+    ['Documenti e PDF', 'Carica referti, prescrizioni, fatture. Invio automatico via email al proprietario.'],
+    ['Fatturazione e Pagamenti', 'Fatture, ricevute, listino servizi. Export CSV/PDF. Statistiche fatturato.'],
+    ['Team Inbox', 'Messaggistica centralizzata con ticket, assegnazione staff, priorita, template.'],
+    ['Metriche e Report', 'Dashboard: prenotazioni, telefonate evitate, fatturato, trend mensili.'],
+    ['Google Calendar Sync', 'Sincronizzazione bidirezionale. Appuntamenti visibili su entrambi i calendari.'],
+    ['Video-Consulti', 'Consulenze a distanza con videochiamata. Ideale per follow-up post-operatori.'],
+    ['Link Prenotazione + QR', 'Link personalizzato da condividere su social, WhatsApp. QR stampabile.'],
+    ['Profilo Pubblico', 'Pagina pubblica: servizi, orari, mappa, recensioni. Visibile su Google.'],
+    ['Programma Fedelta', 'Sistema a punti per fidelizzare. 100 punti = EUR 5 di sconto. Configurabile.'],
   ];
 
-  const colW = (W - 2 * M - 24) / 2;
-  const leftX = M;
-  const rightX = M + colW + 24;
-  let ly = y;
-  let ry = y;
-
+  const colW = (W - 2 * M - 20) / 2;
   features.forEach((item, i) => {
-    const isRight = i % 2 === 1;
-    const x = isRight ? rightX : leftX;
-    let cy = isRight ? ry : ly;
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const fx = M + col * (colW + 20);
+    const fy = y - row * 58;
 
-    // Left accent bar
-    page.drawRectangle({ x, y: cy - 24, width: 3, height: 36, color: CORAL });
-    page.drawText(san(item[0]), { x: x + 10, y: cy, size: 10, font: f.b, color: G900 });
-    const dLines = wrap(san(item[1]), f.r, 8, colW - 14);
-    let dl = cy - 13;
-    for (const l of dLines) {
-      page.drawText(l, { x: x + 10, y: dl, size: 8, font: f.r, color: G500 });
-      dl -= 10;
-    }
-
-    const bottom = dl - 8;
-    if (isRight) ry = bottom; else ly = bottom;
+    page.drawRectangle({ x: fx, y: fy - 30, width: 3.5, height: 40, color: CORAL });
+    page.drawText(san(item[0]), { x: fx + 12, y: fy, size: 10, font: f.b, color: G900 });
+    const dL = wrap(san(item[1]), f.r, 8.5, colW - 16);
+    let dy = fy - 14;
+    for (const l of dL) { page.drawText(l, { x: fx + 12, y: dy, size: 8.5, font: f.r, color: G500 }); dy -= 12; }
   });
 
-  pNum(page, 3, 10, f);
+  pageNum(page, 3, 11, f, false);
 }
 
-// ─── PAGE 4: MODULO REV ───
+// ====================================================================
+//  PAGE 4: MODULO REV
+// ====================================================================
 function drawREVPage(doc, f) {
   const page = doc.addPage([W, H]);
   page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: WHITE });
-  hdr(page, f);
+  pageHdr(page, f);
 
-  let y = H - 58;
+  let y = H - 62;
   // Badge
-  page.drawRectangle({ x: M, y: y - 2, width: 150, height: 18, color: EMERALD_BG });
-  page.drawText('NUOVA FUNZIONALITA', { x: M + 10, y: y + 1, size: 8, font: f.b, color: EMERALD });
-  y -= 26;
-  page.drawText('Modulo Ricetta Elettronica Veterinaria', { x: M, y, size: 22, font: f.b, color: G900 });
-  y -= 17;
-  const revSub = wrap(san("VetBuddy aiuta la clinica a gestire il flusso prescrittivo in modo ordinato e digitale: dalla preparazione della prescrizione alla sua archiviazione."), f.r, 9, W - 2 * M);
-  for (const l of revSub) { page.drawText(l, { x: M, y, size: 9, font: f.r, color: G500 }); y -= 12; }
-  y -= 10;
+  page.drawRectangle({ x: M, y: y - 1, width: 155, height: 18, color: EMERALD_BG });
+  page.drawText('NUOVA FUNZIONALITA', { x: M + 10, y: y + 2, size: 8, font: f.b, color: EMERALD });
+  y -= 30;
 
-  // Two columns
-  const colW = (W - 2 * M - 16) / 2;
+  page.drawText('Modulo Ricetta Elettronica', { x: M, y, size: 22, font: f.b, color: G900 });
+  y -= 24;
+  page.drawText('Veterinaria (REV)', { x: M, y, size: 22, font: f.b, color: G900 });
+  y -= 20;
+  const revSub = wrap(san("VetBuddy aiuta la clinica a gestire il flusso prescrittivo: dalla preparazione alla archiviazione nella cartella clinica."), f.r, 10, W - 2 * M);
+  for (const l of revSub) { page.drawText(l, { x: M, y, size: 10, font: f.r, color: G500 }); y -= 15; }
+  y -= 18;
 
-  // Green box - Cosa fa VetBuddy
-  page.drawRectangle({ x: M, y: y - 120, width: colW, height: 120, color: EMERALD_BG });
-  page.drawRectangle({ x: M, y: y - 120, width: colW, height: 120, borderColor: EMERALD, borderWidth: 1.5 });
-  let gy = y - 14;
-  page.drawText('Cosa fa VetBuddy', { x: M + 12, y: gy, size: 11, font: f.b, color: rgb(0.04, 0.45, 0.32) });
-  gy -= 16;
-  const greenItems = [
+  // Two boxes side by side
+  const bw = (W - 2 * M - 14) / 2;
+
+  // Green box
+  const gbH = 140;
+  page.drawRectangle({ x: M, y: y - gbH, width: bw, height: gbH, color: EMERALD_BG });
+  page.drawRectangle({ x: M, y: y - gbH, width: bw, height: gbH, borderColor: EMERALD, borderWidth: 1.5 });
+  let gy = y - 18;
+  page.drawText('Cosa fa VetBuddy', { x: M + 14, y: gy, size: 11, font: f.b, color: rgb(0.04, 0.45, 0.32) });
+  gy -= 20;
+  gy = drawList(page, [
     'Prepara la bozza dalla scheda paziente',
     'Centralizza farmaci, posologia e durata',
     'Riduce errori e passaggi manuali',
     'Archivia prescrizioni e storico',
     'Rende consultabili i dati autorizzati',
-  ];
-  greenItems.forEach(item => {
-    dot(page, M + 10, gy - 3, EMERALD);
-    page.drawText(san(item), { x: M + 22, y: gy, size: 8.5, font: f.r, color: G700 });
-    gy -= 14;
-  });
+  ], M + 12, gy, EMERALD, f.r, 8.5, G700, 16, bw - 28);
 
-  // Amber box - Cosa resta al veterinario
-  const ax = M + colW + 16;
-  page.drawRectangle({ x: ax, y: y - 120, width: colW, height: 120, color: AMBER_BG });
-  page.drawRectangle({ x: ax, y: y - 120, width: colW, height: 120, borderColor: AMBER, borderWidth: 1.5 });
-  let ay = y - 14;
-  page.drawText('Cosa resta in capo al veterinario', { x: ax + 12, y: ay, size: 11, font: f.b, color: rgb(0.55, 0.35, 0.02) });
-  ay -= 16;
-  const amberItems = [
+  // Amber box
+  const ax = M + bw + 14;
+  page.drawRectangle({ x: ax, y: y - gbH, width: bw, height: gbH, color: AMBER_BG });
+  page.drawRectangle({ x: ax, y: y - gbH, width: bw, height: gbH, borderColor: AMBER, borderWidth: 1.5 });
+  let ay = y - 18;
+  page.drawText('Resta al veterinario', { x: ax + 14, y: ay, size: 11, font: f.b, color: rgb(0.55, 0.35, 0.02) });
+  ay -= 20;
+  drawList(page, [
     "Conferma finale dell'emissione",
-    "Utilizzo delle credenziali e dell'abilitazione previste",
-    "Responsabilita professionale della prescrizione",
-  ];
-  amberItems.forEach(item => {
-    dot(page, ax + 10, ay - 3, AMBER);
-    page.drawText(san(item), { x: ax + 22, y: ay, size: 8.5, font: f.r, color: G700 });
-    ay -= 14;
-  });
+    "Utilizzo credenziali e abilitazione",
+    "Responsabilita professionale",
+  ], ax + 12, ay, AMBER, f.r, 8.5, G700, 16, bw - 28);
 
-  y -= 140;
+  y -= gbH + 24;
 
   // Two mode boxes
-  const modeW = (W - 2 * M - 16) / 2;
-  const modeH = 60;
+  const mH = 70;
+  // Active
+  page.drawRectangle({ x: M, y: y - mH, width: bw, height: mH, color: EMERALD_BG });
+  page.drawRectangle({ x: M, y: y - mH, width: bw, height: mH, borderColor: EMERALD, borderWidth: 1.5 });
+  page.drawRectangle({ x: M + 12, y: y - 4, width: 52, height: 15, color: EMERALD });
+  page.drawText('ATTIVO', { x: M + 18, y: y - 1, size: 7.5, font: f.b, color: WHITE });
+  page.drawText(san('Modalita guidata/manuale'), { x: M + 14, y: y - 24, size: 9.5, font: f.b, color: rgb(0.04, 0.45, 0.32) });
+  const md1 = wrap(san('VetBuddy prepara il flusso e consente di registrare gli estremi della ricetta nel sistema ufficiale.'), f.r, 8, bw - 28);
+  let mdy = y - 38;
+  for (const l of md1) { page.drawText(l, { x: M + 14, y: mdy, size: 8, font: f.r, color: G500 }); mdy -= 11; }
 
-  // Active mode
-  page.drawRectangle({ x: M, y: y - modeH, width: modeW, height: modeH, color: EMERALD_BG });
-  page.drawRectangle({ x: M, y: y - modeH, width: modeW, height: modeH, borderColor: EMERALD, borderWidth: 1.5 });
-  page.drawRectangle({ x: M + 10, y: y - 5, width: 50, height: 14, color: EMERALD });
-  page.drawText('ATTIVO', { x: M + 16, y: y - 2, size: 7, font: f.b, color: WHITE });
-  page.drawText(san('Modalita guidata/manuale'), { x: M + 12, y: y - 22, size: 9, font: f.b, color: rgb(0.04, 0.45, 0.32) });
-  const modeDesc1 = wrap(san('VetBuddy prepara il flusso e consente di registrare gli estremi della ricetta emessa nel sistema ufficiale.'), f.r, 7.5, modeW - 24);
-  let md1y = y - 35;
-  for (const l of modeDesc1) { page.drawText(l, { x: M + 12, y: md1y, size: 7.5, font: f.r, color: G500 }); md1y -= 10; }
+  // Coming soon
+  page.drawRectangle({ x: ax, y: y - mH, width: bw, height: mH, color: G50 });
+  page.drawRectangle({ x: ax, y: y - mH, width: bw, height: mH, borderColor: G300, borderWidth: 1 });
+  page.drawRectangle({ x: ax + 12, y: y - 4, width: 90, height: 15, color: G400 });
+  page.drawText('PROSSIMAMENTE', { x: ax + 16, y: y - 1, size: 7.5, font: f.b, color: WHITE });
+  page.drawText('Integrazione ufficiale', { x: ax + 14, y: y - 24, size: 9.5, font: f.b, color: G700 });
+  const md2 = wrap(san('VetBuddy inviera e ricevera dati tramite integrazione tecnica con il sistema nazionale.'), f.r, 8, bw - 28);
+  mdy = y - 38;
+  for (const l of md2) { page.drawText(l, { x: ax + 14, y: mdy, size: 8, font: f.r, color: G500 }); mdy -= 11; }
 
-  // Coming soon mode
-  const mx = M + modeW + 16;
-  page.drawRectangle({ x: mx, y: y - modeH, width: modeW, height: modeH, color: G50 });
-  page.drawRectangle({ x: mx, y: y - modeH, width: modeW, height: modeH, borderColor: G300, borderWidth: 1 });
-  page.drawRectangle({ x: mx + 10, y: y - 5, width: 85, height: 14, color: G400 });
-  page.drawText('PROSSIMAMENTE', { x: mx + 14, y: y - 2, size: 7, font: f.b, color: WHITE });
-  page.drawText('Integrazione ufficiale', { x: mx + 12, y: y - 22, size: 9, font: f.b, color: G700 });
-  const modeDesc2 = wrap(san('VetBuddy invia e riceve i dati tramite integrazione tecnica con il sistema ufficiale.'), f.r, 7.5, modeW - 24);
-  let md2y = y - 35;
-  for (const l of modeDesc2) { page.drawText(l, { x: mx + 12, y: md2y, size: 7.5, font: f.r, color: G500 }); md2y -= 10; }
-
-  y -= modeH + 18;
+  y -= mH + 28;
 
   // Flow in 4 steps
-  page.drawText('Flusso in 4 passaggi', { x: M, y, size: 14, font: f.b, color: G900 });
-  y -= 20;
-
+  page.drawText('Flusso in 4 passaggi', { x: M, y, size: 15, font: f.b, color: G900 });
+  y -= 24;
   const steps = [
     { num: '01', title: 'Prepara', desc: 'Wizard guidato: paziente, farmaci, posologia, diagnosi.' },
-    { num: '02', title: 'Emissione', desc: 'Il veterinario completa nel sistema nazionale.' },
+    { num: '02', title: 'Emissione ufficiale', desc: 'Il veterinario completa nel sistema nazionale.' },
     { num: '03', title: 'Registra', desc: 'Inserisci N. ricetta e PIN. Stato aggiornato.' },
     { num: '04', title: 'Archivia', desc: 'Consultabile per clinica e proprietario.' },
   ];
-  const stepW = (W - 2 * M - 24) / 4;
+  const sw = (W - 2 * M - 18) / 4;
+  const sH = 80;
   steps.forEach((s, i) => {
-    const sx = M + i * (stepW + 8);
-    page.drawRectangle({ x: sx, y: y - 65, width: stepW, height: 65, color: G50 });
-    page.drawRectangle({ x: sx, y: y - 65, width: stepW, height: 65, borderColor: G200, borderWidth: 0.5 });
-    page.drawText(`STEP ${s.num}`, { x: sx + 8, y: y - 14, size: 7, font: f.b, color: EMERALD });
-    page.drawText(san(s.title), { x: sx + 8, y: y - 28, size: 9, font: f.b, color: G900 });
-    const dLines = wrap(san(s.desc), f.r, 7, stepW - 16);
-    let dy = y - 40;
-    for (const l of dLines) { page.drawText(l, { x: sx + 8, y: dy, size: 7, font: f.r, color: G500 }); dy -= 9; }
+    const sx = M + i * (sw + 6);
+    page.drawRectangle({ x: sx, y: y - sH, width: sw, height: sH, color: G50 });
+    page.drawRectangle({ x: sx, y: y - sH, width: sw, height: sH, borderColor: G200, borderWidth: 0.5 });
+    page.drawText(`STEP ${s.num}`, { x: sx + 8, y: y - 16, size: 7, font: f.b, color: EMERALD });
+    page.drawText(san(s.title), { x: sx + 8, y: y - 30, size: 8.5, font: f.b, color: G900 });
+    const dl = wrap(san(s.desc), f.r, 7, sw - 16);
+    let dly = y - 44;
+    for (const l of dl) { page.drawText(l, { x: sx + 8, y: dly, size: 7, font: f.r, color: G500 }); dly -= 9; }
   });
 
-  // Compliance note at bottom
-  const noteY = 40;
-  page.drawRectangle({ x: M, y: noteY, width: W - 2 * M, height: 28, color: AMBER_BG });
-  const noteText = san("Nota: L'emissione ufficiale della REV richiede l'abilitazione del medico veterinario al sistema nazionale. VetBuddy supporta il flusso operativo ma non sostituisce il sistema pubblico.");
-  const noteLines = wrap(noteText, f.r, 7, W - 2 * M - 20);
-  let ny = noteY + 18;
-  for (const l of noteLines) { page.drawText(l, { x: M + 10, y: ny, size: 7, font: f.r, color: rgb(0.55, 0.35, 0.02) }); ny -= 9; }
+  y -= sH + 20;
 
-  pNum(page, 4, 10, f);
+  // Compliance note
+  page.drawRectangle({ x: M, y: y - 30, width: W - 2 * M, height: 30, color: AMBER_BG });
+  const noteT = san("Nota: L'emissione ufficiale della REV richiede l'abilitazione del medico veterinario. VetBuddy supporta il flusso ma non sostituisce il sistema pubblico.");
+  const noteL = wrap(noteT, f.r, 7.5, W - 2 * M - 24);
+  let ny = y - 10;
+  for (const l of noteL) { page.drawText(l, { x: M + 12, y: ny, size: 7.5, font: f.r, color: rgb(0.55, 0.35, 0.02) }); ny -= 10; }
+
+  pageNum(page, 4, 11, f, false);
 }
 
-// ─── PAGE 5: 44+ AUTOMAZIONI ───
-function drawAutomationsPage(doc, f) {
+// ====================================================================
+//  PAGE 5: 44+ AUTOMAZIONI (dark)
+// ====================================================================
+function drawAutoPage(doc, f) {
   const page = doc.addPage([W, H]);
-  // Dark purple gradient background
   grad(page, 0, 0, W, H, _purple, _purpleMid);
 
   // Logo
-  page.drawRectangle({ x: 26, y: H - 42, width: 28, height: 28, color: WHITE, opacity: 0.1 });
-  paw(page, 40, H - 30, 0.8, WHITE);
-  page.drawText('VetBuddy', { x: 60, y: H - 35, size: 10, font: f.b, color: WHITE, opacity: 0.6 });
+  page.drawCircle({ x: 36, y: H - 34, size: 16, color: WHITE, opacity: 0.1 });
+  drawPaw(page, 36, H - 36, 0.8, WHITE);
+  page.drawText('VetBuddy', { x: 58, y: H - 40, size: 11, font: f.b, color: WHITE, opacity: 0.5 });
 
-  let y = H - 72;
-  page.drawText('44+ Automazioni che lavorano per te', { x: M, y, size: 24, font: f.b, color: WHITE });
-  y -= 17;
-  page.drawText(san("Mentre ti occupi dei pazienti, VetBuddy gestisce automaticamente comunicazioni e follow-up."), { x: M, y, size: 10, font: f.r, color: WHITE, opacity: 0.6 });
+  let y = H - 76;
+  page.drawText('44+ Automazioni che', { x: M, y, size: 24, font: f.b, color: WHITE });
   y -= 28;
+  page.drawText('lavorano per te', { x: M, y, size: 24, font: f.b, color: WHITE });
+  y -= 18;
+  page.drawText(san("Mentre ti occupi dei pazienti, VetBuddy gestisce tutto il resto."), { x: M, y, size: 10, font: f.r, color: WHITE, opacity: 0.55 });
+  y -= 32;
 
-  const colW = (W - 2 * M - 40) / 2;
-  const leftX = M;
-  const rightX = M + colW + 40;
+  const colW = (W - 2 * M - 30) / 2;
+  const lx = M;
+  const rx = M + colW + 30;
 
-  // Left column
+  // LEFT COLUMN
   let ly = y;
-  // Promemoria
-  page.drawText('Promemoria & Reminder', { x: leftX, y: ly, size: 9, font: f.b, color: rgb(0.96, 0.76, 0.26) });
-  ly -= 14;
-  const reminders = [
-    'Reminder appuntamento 24h prima (email)',
-    'Reminder appuntamento 1h prima (email)',
+  page.drawText('Promemoria & Reminder', { x: lx, y: ly, size: 9, font: f.b, color: rgb(0.96, 0.76, 0.26) });
+  ly -= 16;
+  ly = drawList(page, [
+    'Reminder appuntamento 24h prima',
+    'Reminder appuntamento 1h prima',
     'Reminder vaccino in scadenza',
     'Reminder richiamo vaccino annuale',
-    'Reminder trattamento antiparassitario',
-    'Reminder controllo peso periodico',
-    'Reminder visita annuale di routine',
+    'Reminder antiparassitario',
+    'Reminder controllo peso',
+    'Reminder visita annuale',
     'Reminder pulizia dentale',
     'Reminder rinnovo prescrizione',
-  ];
-  reminders.forEach(item => {
-    dot(page, leftX - 2, ly - 3, GREEN_CK);
-    page.drawText(san(item), { x: leftX + 10, y: ly, size: 8, font: f.r, color: WHITE, opacity: 0.85 });
-    ly -= 12;
-  });
-  ly -= 10;
-
-  // Conferme
-  page.drawText('Conferme & Stato', { x: leftX, y: ly, size: 9, font: f.b, color: rgb(0.29, 0.87, 0.50) });
+  ], lx - 2, ly, GREEN_CK, f.r, 8, WHITE, 14, colW, 0.85);
   ly -= 14;
-  const confirms = [
+
+  page.drawText('Conferme & Stato', { x: lx, y: ly, size: 9, font: f.b, color: rgb(0.29, 0.87, 0.50) });
+  ly -= 16;
+  drawList(page, [
     'Conferma prenotazione al cliente',
     'Notifica nuova prenotazione alla clinica',
     'Conferma cancellazione appuntamento',
     'Notifica modifica appuntamento',
-    "Notifica lista d'attesa (posto libero)",
+    "Notifica lista d'attesa",
     'Conferma pagamento ricevuto',
-  ];
-  confirms.forEach(item => {
-    dot(page, leftX - 2, ly - 3, GREEN_CK);
-    page.drawText(san(item), { x: leftX + 10, y: ly, size: 8, font: f.r, color: WHITE, opacity: 0.85 });
-    ly -= 12;
-  });
+  ], lx - 2, ly, GREEN_CK, f.r, 8, WHITE, 14, colW, 0.85);
 
-  // Right column
+  // RIGHT COLUMN
   let ry = y;
-  // Follow-up
-  page.drawText(san('Follow-up & Fidelizzazione'), { x: rightX, y: ry, size: 9, font: f.b, color: rgb(0.38, 0.65, 1.0) });
-  ry -= 14;
-  const followups = [
-    'Follow-up post-visita (1 giorno dopo)',
-    'Follow-up post-chirurgia (3 giorni dopo)',
-    'Follow-up post-chirurgia (7 giorni dopo)',
+  page.drawText(san('Follow-up & Fidelizzazione'), { x: rx, y: ry, size: 9, font: f.b, color: rgb(0.38, 0.65, 1.0) });
+  ry -= 16;
+  ry = drawList(page, [
+    'Follow-up post-visita (1 giorno)',
+    'Follow-up post-chirurgia (3 giorni)',
+    'Follow-up post-chirurgia (7 giorni)',
     'Richiesta recensione dopo visita',
     'Email di benvenuto nuovo cliente',
     'Auguri compleanno animale',
     'Auguri compleanno proprietario',
-    'Email di riepilogo visite semestrale',
+    'Riepilogo visite semestrale',
     'Invito rinnovo piano fedelta',
-    'Notifica nuovi punti fedelta guadagnati',
-  ];
-  followups.forEach(item => {
-    dot(page, rightX - 2, ry - 3, GREEN_CK);
-    page.drawText(san(item), { x: rightX + 10, y: ry, size: 8, font: f.r, color: WHITE, opacity: 0.85 });
-    ry -= 12;
-  });
-  ry -= 10;
-
-  // Documenti & Lab
-  page.drawText('Documenti & Lab', { x: rightX, y: ry, size: 9, font: f.b, color: rgb(0.73, 0.55, 1.0) });
+    'Notifica punti fedelta guadagnati',
+  ], rx - 2, ry, GREEN_CK, f.r, 8, WHITE, 14, colW, 0.85);
   ry -= 14;
-  const docs = [
-    'Invio automatico documento PDF via email',
+
+  page.drawText('Documenti & Lab', { x: rx, y: ry, size: 9, font: f.b, color: rgb(0.73, 0.55, 1.0) });
+  ry -= 16;
+  drawList(page, [
+    'Invio automatico PDF via email',
     'Notifica nuovo documento caricato',
     'Notifica referto lab pronto',
-    'Notifica nuova richiesta lab (al laboratorio)',
-    'Notifica stato richiesta aggiornato',
-    'Report mensile prenotazioni alla clinica',
+    'Notifica nuova richiesta lab',
+    'Report mensile prenotazioni',
     'Report mensile pazienti attivi',
-    'Notifica slot agenda vuoti (alert)',
-    'Email onboarding staff (nuovo membro)',
-  ];
-  docs.forEach(item => {
-    dot(page, rightX - 2, ry - 3, GREEN_CK);
-    page.drawText(san(item), { x: rightX + 10, y: ry, size: 8, font: f.r, color: WHITE, opacity: 0.85 });
-    ry -= 12;
-  });
+    'Notifica slot agenda vuoti',
+    'Email onboarding staff',
+  ], rx - 2, ry, GREEN_CK, f.r, 8, WHITE, 14, colW, 0.85);
 
-  // Footer note
-  page.drawText(san('+ altre automazioni in arrivo con ogni aggiornamento. Le automazioni si attivano automaticamente con il piano Pro Clinica.'), {
-    x: M, y: 22, size: 7, font: f.r, color: WHITE, opacity: 0.35,
+  page.drawText(san('+ altre automazioni in arrivo. Si attivano con il piano Pro Clinica.'), {
+    x: M, y: 28, size: 7, font: f.r, color: WHITE, opacity: 0.3,
   });
-
-  pNum(page, 5, 10, f, true);
+  pageNum(page, 5, 11, f, true);
 }
 
-// ─── PAGE 6: LAB + OWNER ───
+// ====================================================================
+//  PAGE 6: LAB + OWNER
+// ====================================================================
 function drawLabOwnerPage(doc, f) {
   const page = doc.addPage([W, H]);
   page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: WHITE });
-  hdr(page, f);
+  pageHdr(page, f);
 
-  let y = H - 62;
-  page.drawText('Modulo Laboratorio di Analisi', { x: M, y, size: 22, font: f.b, color: G900 });
-  y -= 16;
-  page.drawText(san('Connetti la clinica con i laboratori partner. Richiedi esami, ricevi referti, confronta prezzi e tempi.'), { x: M, y, size: 9.5, font: f.r, color: G500 });
-  y -= 20;
+  let y = H - 68;
+  page.drawText('Modulo Laboratorio', { x: M, y, size: 22, font: f.b, color: G900 });
+  y -= 18;
+  page.drawText(san('Connetti la clinica con i laboratori partner.'), { x: M, y, size: 10, font: f.r, color: G500 });
+  y -= 26;
 
-  const cardW = (W - 2 * M - 16) / 2;
-  const cardH = 150;
-
+  const cw = W - 2 * M;
   // Clinic lab card
-  page.drawRectangle({ x: M, y: y - cardH, width: cardW, height: cardH, color: BLUE_BG });
-  page.drawRectangle({ x: M, y: y - cardH, width: cardW, height: cardH, borderColor: rgb(0.82, 0.87, 1.0), borderWidth: 1 });
-  let cly = y - 16;
-  page.drawText('Per la Clinica', { x: M + 12, y: cly, size: 12, font: f.b, color: BLUE });
-  cly -= 16;
-  const clinicLab = [
+  const clH = 140;
+  page.drawRectangle({ x: M, y: y - clH, width: cw, height: clH, color: BLUE_BG });
+  page.drawRectangle({ x: M, y: y - clH, width: cw, height: clH, borderColor: rgb(0.82, 0.87, 1.0), borderWidth: 1 });
+  let cly = y - 18;
+  page.drawText('Per la Clinica', { x: M + 16, y: cly, size: 13, font: f.b, color: BLUE });
+  cly -= 18;
+  drawList(page, [
     'Invia richieste di esame dalla scheda paziente',
     'Seleziona laboratorio per distanza, prezzo e tempi',
     'Ricevi notifica quando il referto e pronto',
     'Rivedi il referto, aggiungi note cliniche, invialo al proprietario',
     'Storico completo richieste e referti per paziente',
     'Marketplace laboratori con confronto visivo',
-  ];
-  clinicLab.forEach(item => {
-    dot(page, M + 10, cly - 3, BLUE);
-    page.drawText(san(item), { x: M + 22, y: cly, size: 8, font: f.r, color: G700 });
-    cly -= 13;
-  });
+  ], M + 14, cly, BLUE, f.r, 9, G700, 15, cw - 32);
+
+  y -= clH + 14;
 
   // Lab card
-  const lx = M + cardW + 16;
-  page.drawRectangle({ x: lx, y: y - cardH, width: cardW, height: cardH, color: INDIGO_BG });
-  page.drawRectangle({ x: lx, y: y - cardH, width: cardW, height: cardH, borderColor: rgb(0.80, 0.80, 0.95), borderWidth: 1 });
-  let lly = y - 16;
-  page.drawText('Per il Laboratorio', { x: lx + 12, y: lly, size: 12, font: f.b, color: INDIGO });
-  lly -= 16;
-  const labFeats = [
-    'Dashboard dedicata per gestire le richieste ricevute',
+  const lbH = 140;
+  page.drawRectangle({ x: M, y: y - lbH, width: cw, height: lbH, color: INDIGO_BG });
+  page.drawRectangle({ x: M, y: y - lbH, width: cw, height: lbH, borderColor: rgb(0.80, 0.80, 0.95), borderWidth: 1 });
+  let lby = y - 18;
+  page.drawText('Per il Laboratorio', { x: M + 16, y: lby, size: 13, font: f.b, color: INDIGO });
+  lby -= 18;
+  drawList(page, [
+    'Dashboard dedicata per gestire richieste ricevute',
     'Aggiorna stato: Ricevuto, In Lavorazione, Pronto',
     'Carica referti PDF con note tecniche',
     'Profilo pubblico nel marketplace VetBuddy',
-    'Inserisci listino prezzi indicativo e tempi medi',
-    'Indica disponibilita ritiro campioni',
-  ];
-  labFeats.forEach(item => {
-    dot(page, lx + 10, lly - 3, INDIGO);
-    page.drawText(san(item), { x: lx + 22, y: lly, size: 8, font: f.r, color: G700 });
-    lly -= 13;
-  });
+    'Listino prezzi indicativo e tempi medi',
+    'Disponibilita ritiro campioni',
+  ], M + 14, lby, INDIGO, f.r, 9, G700, 15, cw - 32);
 
-  y -= cardH + 18;
+  y -= lbH + 24;
 
   // Owner section
   page.drawText(san("Perche l'esperienza Owner aiuta la Clinica"), { x: M, y, size: 16, font: f.b, color: G900 });
   y -= 14;
-  page.drawText(san("Il proprietario e il miglior alleato della clinica. Piu e soddisfatto, piu torna."), { x: M, y, size: 9, font: f.r, color: G500 });
-  y -= 20;
+  page.drawText(san("Il proprietario e il miglior alleato della clinica."), { x: M, y, size: 9.5, font: f.r, color: G500 });
+  y -= 22;
 
   const benefits = [
-    ['Riduce le telefonate', 'Il proprietario prenota, consulta referti e riceve reminder da solo.'],
-    ['Aumenta i ritorni', 'Reminder e follow-up automatici riportano i clienti per vaccini e controlli.'],
-    ['Fidelizza a lungo termine', 'Programma fedelta, comunicazioni dirette e cura costante.'],
-    ['Meno no-show', 'Promemoria automatici 24h e 1h prima riducono le assenze (-60%).'],
-    ['Referti senza caos', 'Il proprietario riceve i referti in app. Niente WhatsApp o email perse.'],
-    ['Passaparola positivo', "Un'esperienza digitale moderna genera recensioni e nuovi clienti."],
+    ['Riduce le telefonate', 'Il proprietario prenota e consulta da solo.'],
+    ['Aumenta i ritorni', 'Reminder e follow-up riportano i clienti.'],
+    ['Fidelizza a lungo termine', 'Fedelta, comunicazioni, cura costante.'],
+    ['Meno no-show', 'Promemoria automatici (-60% assenze).'],
+    ['Referti senza caos', 'Tutto in app, niente WhatsApp perse.'],
+    ['Passaparola positivo', 'Esperienza digitale = nuovi clienti.'],
   ];
-  const benW = (W - 2 * M - 16) / 3;
-  const benH = 52;
+  const benW = (W - 2 * M - 10) / 2;
+  const benH = 50;
   benefits.forEach((b, i) => {
-    const col = i % 3;
-    const row = Math.floor(i / 3);
-    const bx = M + col * (benW + 8);
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const bx = M + col * (benW + 10);
     const by = y - row * (benH + 8) - benH;
     page.drawRectangle({ x: bx, y: by, width: benW, height: benH, color: G50 });
-    page.drawRectangle({ x: bx, y: by, width: benW, height: benH, borderColor: G200, borderWidth: 0.5 });
-    page.drawText(san(b[0]), { x: bx + 8, y: by + benH - 16, size: 9, font: f.b, color: G900 });
-    const bLines = wrap(san(b[1]), f.r, 7.5, benW - 16);
-    let bly = by + benH - 30;
-    for (const l of bLines) { page.drawText(l, { x: bx + 8, y: bly, size: 7.5, font: f.r, color: G500 }); bly -= 9; }
+    page.drawText(san(b[0]), { x: bx + 10, y: by + benH - 17, size: 9, font: f.b, color: G900 });
+    const bl = wrap(san(b[1]), f.r, 8, benW - 20);
+    let bly = by + benH - 32;
+    for (const l of bl) { page.drawText(l, { x: bx + 10, y: bly, size: 8, font: f.r, color: G500 }); bly -= 11; }
   });
 
-  pNum(page, 6, 10, f);
+  pageNum(page, 6, 11, f, false);
 }
 
-// ─── PAGE 7: PIANI SALUTE + AI ───
+// ====================================================================
+//  PAGE 7: PIANI SALUTE + AI
+// ====================================================================
 function drawHealthAIPage(doc, f) {
   const page = doc.addPage([W, H]);
   page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: WHITE });
-  hdr(page, f);
+  pageHdr(page, f);
 
-  let y = H - 58;
-  // Badge
-  page.drawRectangle({ x: M, y: y - 2, width: 140, height: 18, color: rgb(0.93, 0.93, 1.0) });
-  page.drawText('NUOVE FUNZIONALITA', { x: M + 10, y: y + 1, size: 8, font: f.b, color: INDIGO });
-  y -= 28;
+  let y = H - 62;
+  page.drawRectangle({ x: M, y: y - 1, width: 150, height: 18, color: rgb(0.93, 0.93, 1.0) });
+  page.drawText('NUOVE FUNZIONALITA', { x: M + 10, y: y + 2, size: 8, font: f.b, color: INDIGO });
+  y -= 32;
 
   page.drawText(san('Piani Salute + AI Assistant'), { x: M, y, size: 22, font: f.b, color: G900 });
-  y -= 16;
-  page.drawText(san('Programmi di prevenzione strutturati e strumenti AI integrati.'), { x: M, y, size: 10, font: f.r, color: G500 });
-  y -= 24;
+  y -= 18;
+  page.drawText(san('Programmi di prevenzione e strumenti AI integrati.'), { x: M, y, size: 10, font: f.r, color: G500 });
+  y -= 28;
 
-  // Piani Salute section
-  const colW = (W - 2 * M - 20) / 2;
+  const cw = W - 2 * M;
 
   // Health Plans card
-  page.drawRectangle({ x: M, y: y - 195, width: colW, height: 195, color: EMERALD_BG });
-  page.drawRectangle({ x: M, y: y - 195, width: colW, height: 195, borderColor: EMERALD, borderWidth: 1.5 });
-  let hy = y - 16;
-  page.drawText('Piani Salute', { x: M + 14, y: hy, size: 14, font: f.b, color: rgb(0.04, 0.45, 0.32) });
-  hy -= 18;
-  const healthFeats = [
-    'Crea programmi di prevenzione: Cucciolo, Senior, Prevenzione',
+  const hpH = 170;
+  page.drawRectangle({ x: M, y: y - hpH, width: cw, height: hpH, color: EMERALD_BG });
+  page.drawRectangle({ x: M, y: y - hpH, width: cw, height: hpH, borderColor: EMERALD, borderWidth: 1.5 });
+  let hy = y - 20;
+  page.drawText('Piani Salute', { x: M + 18, y: hy, size: 15, font: f.b, color: rgb(0.04, 0.45, 0.32) });
+  hy -= 20;
+  page.drawText(san('Programmi di prevenzione strutturati per ogni paziente.'), { x: M + 18, y: hy, size: 9, font: f.r, color: G500 });
+  hy -= 22;
+  drawList(page, [
+    'Crea programmi: Piano Cucciolo, Piano Senior, Prevenzione',
     'Servizi inclusi: visite, vaccini, esami, trattamenti',
     'Assegna piani ai pazienti e monitora il progresso',
     'Segna i servizi completati con un click',
     'Dashboard: piani attivi, pazienti iscritti, prossimi 30gg',
-  ];
-  healthFeats.forEach(item => {
-    dot(page, M + 12, hy - 3, EMERALD);
-    page.drawText(san(item), { x: M + 24, y: hy, size: 8.5, font: f.r, color: G700 });
-    hy -= 15;
-  });
+  ], M + 16, hy, EMERALD, f.r, 9, G700, 17, cw - 36);
+
+  y -= hpH + 18;
 
   // AI Assistant card
-  const aix = M + colW + 20;
-  page.drawRectangle({ x: aix, y: y - 195, width: colW, height: 195, color: rgb(0.95, 0.93, 1.0) });
-  page.drawRectangle({ x: aix, y: y - 195, width: colW, height: 195, borderColor: INDIGO, borderWidth: 1.5 });
-  let aiy = y - 16;
-  page.drawText('AI Assistant', { x: aix + 14, y: aiy, size: 14, font: f.b, color: INDIGO });
+  const aiH = 160;
+  page.drawRectangle({ x: M, y: y - aiH, width: cw, height: aiH, color: rgb(0.95, 0.93, 1.0) });
+  page.drawRectangle({ x: M, y: y - aiH, width: cw, height: aiH, borderColor: INDIGO, borderWidth: 1.5 });
+  let aiy = y - 20;
+  page.drawText('AI Assistant', { x: M + 18, y: aiy, size: 15, font: f.b, color: INDIGO });
   aiy -= 16;
-  page.drawText('Powered by AI', { x: aix + 14, y: aiy, size: 8, font: f.r, color: G500 });
-  aiy -= 16;
-  const aiFeats = [
+  page.drawText('Powered by AI', { x: M + 18, y: aiy, size: 8.5, font: f.r, color: G500 });
+  aiy -= 22;
+  drawList(page, [
     'Riassumi Visita: riassunto strutturato dalle note cliniche',
     'Scrivi Messaggio: comunicazioni professionali per i proprietari',
     'Traduci Note Cliniche: da termini tecnici a linguaggio semplice',
     'Risposta Intelligente: risposte ai messaggi dei clienti',
-  ];
-  aiFeats.forEach(item => {
-    dot(page, aix + 12, aiy - 3, INDIGO);
-    page.drawText(san(item), { x: aix + 24, y: aiy, size: 8.5, font: f.r, color: G700 });
-    aiy -= 15;
-  });
+  ], M + 16, aiy, INDIGO, f.r, 9, G700, 17, cw - 36);
 
-  y -= 220;
+  y -= aiH + 24;
 
-  // Dashboard Valore box
-  page.drawRectangle({ x: M, y: y - 55, width: W - 2 * M, height: 55, color: G50 });
-  page.drawRectangle({ x: M, y: y - 55, width: W - 2 * M, height: 55, borderColor: G200, borderWidth: 0.5 });
-  page.drawText('Dashboard del Valore Generato', { x: M + 16, y: y - 18, size: 12, font: f.b, color: G900 });
-  const dashDesc = wrap(san("Ogni mese VetBuddy ti mostra prenotazioni generate, telefonate evitate, tempo risparmiato e stima fatturato dalla piattaforma."), f.r, 8.5, W - 2 * M - 32);
-  let dy = y - 33;
-  for (const l of dashDesc) { page.drawText(l, { x: M + 16, y: dy, size: 8.5, font: f.r, color: G500 }); dy -= 11; }
+  // Value Dashboard
+  const vH = 65;
+  page.drawRectangle({ x: M, y: y - vH, width: cw, height: vH, color: G50 });
+  page.drawRectangle({ x: M, y: y - vH, width: cw, height: vH, borderColor: G200, borderWidth: 0.5 });
+  page.drawText('Dashboard del Valore Generato', { x: M + 18, y: y - 20, size: 13, font: f.b, color: G900 });
+  const vdL = wrap(san("Ogni mese VetBuddy ti mostra prenotazioni generate, telefonate evitate, tempo risparmiato e stima fatturato dalla piattaforma."), f.r, 9, cw - 36);
+  let vdy = y - 38;
+  for (const l of vdL) { page.drawText(l, { x: M + 18, y: vdy, size: 9, font: f.r, color: G500 }); vdy -= 13; }
 
-  pNum(page, 7, 10, f);
+  pageNum(page, 7, 11, f, false);
 }
 
-// ─── PAGE 8: COME FUNZIONA ───
-function drawHowItWorksPage(doc, f) {
+// ====================================================================
+//  PAGE 8: COME FUNZIONA
+// ====================================================================
+function drawHowItWorks(doc, f) {
   const page = doc.addPage([W, H]);
   page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: G50 });
-  hdr(page, f);
+  pageHdr(page, f);
 
-  let y = H - 62;
+  let y = H - 68;
   page.drawText('Come funziona', { x: M, y, size: 24, font: f.b, color: G900 });
-  y -= 16;
-  page.drawText(san('Inizia in meno di 10 minuti. Nessuna installazione, nessun hardware.'), { x: M, y, size: 10, font: f.r, color: G500 });
-  y -= 28;
+  y -= 18;
+  page.drawText(san('Inizia in meno di 10 minuti. Nessuna installazione.'), { x: M, y, size: 10, font: f.r, color: G500 });
+  y -= 32;
 
   const steps = [
-    { num: '01', title: 'Registrati', desc: 'Crea il tuo account clinica su vetbuddy.it. Compila il profilo: nome, indirizzo, P.IVA, orari.' },
+    { num: '01', title: 'Registrati', desc: 'Crea il tuo account clinica su vetbuddy.it. Compila il profilo: nome, indirizzo, P.IVA, orari di apertura.' },
     { num: '02', title: 'Configura', desc: "Aggiungi servizi con prezzi e durate. Imposta le disponibilita dell'agenda per ogni veterinario." },
     { num: '03', title: 'Importa', desc: 'Invita i tuoi clienti a registrarsi su VetBuddy. Possono trovare la clinica tramite il profilo pubblico.' },
     { num: '04', title: 'Parti!', desc: "I clienti prenotano online. Tu gestisci tutto da un'unica dashboard. Le automazioni fanno il resto." },
   ];
 
-  const stepW = (W - 2 * M - 24) / 4;
-  const stepH = 110;
+  const sw = (W - 2 * M - 12) / 2;
+  const sH = 110;
   steps.forEach((s, i) => {
-    const sx = M + i * (stepW + 8);
-    page.drawRectangle({ x: sx, y: y - stepH, width: stepW, height: stepH, color: WHITE });
-    page.drawRectangle({ x: sx, y: y - stepH, width: stepW, height: stepH, borderColor: G200, borderWidth: 1 });
-    // Number
-    page.drawText(s.num, { x: sx + 12, y: y - 30, size: 28, font: f.b, color: CORAL });
-    page.drawText(san(s.title), { x: sx + 12, y: y - 50, size: 11, font: f.b, color: G900 });
-    const dLines = wrap(san(s.desc), f.r, 8, stepW - 24);
-    let dy = y - 65;
-    for (const l of dLines) { page.drawText(l, { x: sx + 12, y: dy, size: 8, font: f.r, color: G500 }); dy -= 10; }
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const sx = M + col * (sw + 12);
+    const sy = y - row * (sH + 12) - sH;
+    page.drawRectangle({ x: sx, y: sy, width: sw, height: sH, color: WHITE });
+    page.drawRectangle({ x: sx, y: sy, width: sw, height: sH, borderColor: G200, borderWidth: 1 });
+    page.drawText(s.num, { x: sx + 16, y: sy + sH - 34, size: 30, font: f.b, color: CORAL });
+    page.drawText(san(s.title), { x: sx + 16, y: sy + sH - 58, size: 12, font: f.b, color: G900 });
+    const dl = wrap(san(s.desc), f.r, 8.5, sw - 32);
+    let dly = sy + sH - 74;
+    for (const l of dl) { page.drawText(l, { x: sx + 16, y: dly, size: 8.5, font: f.r, color: G500 }); dly -= 12; }
   });
-  y -= stepH + 26;
 
-  // Animals section
-  page.drawText('Per tutti gli animali', { x: centerX('Per tutti gli animali', f.b, 18), y, size: 18, font: f.b, color: G900 });
-  y -= 14;
+  y -= 2 * (sH + 12) + 32;
+
+  // Animals
+  const anTitle = 'Per tutti gli animali';
+  page.drawText(anTitle, { x: cx(anTitle, f.b, 18), y, size: 18, font: f.b, color: G900 });
+  y -= 16;
   const anSub = 'VetBuddy supporta qualsiasi tipo di paziente';
-  page.drawText(anSub, { x: centerX(anSub, f.r, 9), y, size: 9, font: f.r, color: G500 });
-  y -= 28;
+  page.drawText(anSub, { x: cx(anSub, f.r, 9), y, size: 9, font: f.r, color: G500 });
+  y -= 30;
 
   const animals = ['Cani', 'Gatti', 'Cavalli', 'Conigli', 'Uccelli', 'Rettili', 'Roditori', 'Pesci'];
-  const anSpacing = 75;
-  const anStartX = W / 2 - (animals.length * anSpacing) / 2 + anSpacing / 2;
+  const anSp = 56;
+  const anStart = W / 2 - (animals.length * anSp) / 2 + anSp / 2;
   animals.forEach((a, i) => {
-    const ax = anStartX + i * anSpacing;
-    // Draw a small circle as placeholder for animal icon
-    page.drawCircle({ x: ax, y: y + 10, size: 16, color: WHITE });
-    page.drawCircle({ x: ax, y: y + 10, size: 16, borderColor: G200, borderWidth: 1 });
-    page.drawText(a, { x: ax - f.r.widthOfTextAtSize(a, 8) / 2, y: y - 12, size: 8, font: f.b, color: G700 });
+    const ax = anStart + i * anSp;
+    page.drawCircle({ x: ax, y: y + 8, size: 16, color: WHITE });
+    page.drawCircle({ x: ax, y: y + 8, size: 16, borderColor: G200, borderWidth: 0.5 });
+    page.drawText(a, { x: ax - f.b.widthOfTextAtSize(a, 7.5) / 2, y: y - 14, size: 7.5, font: f.b, color: G700 });
   });
-  y -= 42;
 
-  // Value dashboard box
-  const boxW = 380;
-  const boxH = 55;
-  const bx = (W - boxW) / 2;
-  page.drawRectangle({ x: bx, y: y - boxH, width: boxW, height: boxH, color: WHITE });
-  page.drawRectangle({ x: bx, y: y - boxH, width: boxW, height: boxH, borderColor: G200, borderWidth: 1 });
-  page.drawText('Dashboard del valore generato', { x: bx + 16, y: y - 18, size: 11, font: f.b, color: G900 });
-  const vdLines = wrap(san("Ogni mese VetBuddy ti mostra quante prenotazioni ha generato, quante telefonate ti ha evitato e quanto tempo hai risparmiato."), f.r, 8, boxW - 32);
-  let vdy = y - 32;
-  for (const l of vdLines) { page.drawText(l, { x: bx + 16, y: vdy, size: 8, font: f.r, color: G500 }); vdy -= 10; }
+  y -= 50;
 
-  pNum(page, 8, 10, f);
+  // Value box
+  const vbw = W - 2 * M - 40;
+  const vbx = (W - vbw) / 2;
+  page.drawRectangle({ x: vbx, y: y - 60, width: vbw, height: 60, color: WHITE });
+  page.drawRectangle({ x: vbx, y: y - 60, width: vbw, height: 60, borderColor: G200, borderWidth: 1 });
+  page.drawText('Dashboard del valore generato', { x: vbx + 16, y: y - 18, size: 11, font: f.b, color: G900 });
+  const vdL = wrap(san("Ogni mese VetBuddy mostra prenotazioni generate, telefonate evitate e tempo risparmiato."), f.r, 8.5, vbw - 32);
+  let vdy = y - 34;
+  for (const l of vdL) { page.drawText(l, { x: vbx + 16, y: vdy, size: 8.5, font: f.r, color: G500 }); vdy -= 12; }
+
+  pageNum(page, 8, 11, f, false);
 }
 
-// ─── PAGE 9: PREZZI ───
+// ====================================================================
+//  PAGE 9: PREZZI
+// ====================================================================
 function drawPricingPage(doc, f) {
   const page = doc.addPage([W, H]);
   page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: WHITE });
-  hdr(page, f);
+  pageHdr(page, f);
 
-  let y = H - 58;
-  const title = 'Scegli il piano adatto alla tua clinica';
-  page.drawText(san(title), { x: centerX(san(title), f.b, 22), y, size: 22, font: f.b, color: G900 });
+  let y = H - 62;
+  const title = 'Scegli il piano adatto';
+  page.drawText(san(title), { x: cx(san(title), f.b, 22), y, size: 22, font: f.b, color: G900 });
   y -= 16;
-  const sub = 'Tutti i prezzi sono IVA esclusa. Puoi annullare in qualsiasi momento.';
-  page.drawText(sub, { x: centerX(sub, f.r, 9), y, size: 9, font: f.r, color: G500 });
+  const sub = 'Tutti i prezzi sono IVA esclusa. Annulla quando vuoi.';
+  page.drawText(sub, { x: cx(sub, f.r, 9), y, size: 9, font: f.r, color: G500 });
   y -= 28;
 
-  const cardW = (W - 2 * M - 24) / 4;
-  const cardH = 310;
-  const cardY = y - cardH;
+  // 2x2 grid
+  const cw = (W - 2 * M - 14) / 2;
+  const cH = 260;
 
   const plans = [
     {
       name: 'STARTER', price: '29', sub: 'Per veterinari freelance e micro-cliniche.',
-      color: G400, accent: GREEN_CK, bgColor: null, highlight: false,
-      features: ['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Reminder base', 'Fino a 30 prenotazioni/mese'],
+      nameColor: G400, dotColor: GREEN_CK, bg: null, border: G200, borderW: 1, badge: null,
+      feats: ['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Reminder base', 'Fino a 30 prenotazioni/mese'],
       footer: null,
     },
     {
       name: 'GROWTH', price: '69', sub: 'Per cliniche piccole e medie.',
-      color: CORAL, accent: CORAL, bgColor: CORAL_BG, highlight: true,
-      features: ['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Reminder automatici', 'Documenti e PDF', 'App proprietario', 'Inbox', 'Dashboard valore', 'Lab request base'],
+      nameColor: CORAL, dotColor: CORAL, bg: CORAL_BG, border: CORAL, borderW: 2, badge: 'Consigliato',
+      feats: ['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Reminder automatici', 'Documenti e PDF', 'App proprietario', 'Inbox', 'Dashboard valore', 'Lab request base'],
       footer: 'Pilot: Growth gratis 90 giorni',
     },
     {
       name: 'PRO', price: '99', sub: 'Per cliniche strutturate.',
-      color: G400, accent: GREEN_CK, bgColor: null, highlight: false,
-      features: ['Tutto Growth piu:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedelta', 'Lab Network completo', 'Analytics avanzati', 'Report mensili', 'AI assistente'],
+      nameColor: G400, dotColor: GREEN_CK, bg: null, border: G200, borderW: 1, badge: null,
+      feats: ['Tutto Growth piu:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedelta', 'Lab Network completo', 'Analytics avanzati', 'Report mensili', 'AI assistente'],
       footer: null,
     },
     {
       name: 'LAB PARTNER', price: '39', sub: 'Per laboratori di analisi.',
-      color: BLUE, accent: BLUE, bgColor: BLUE_BG, highlight: false,
-      features: ['Dashboard laboratorio', 'Profilo marketplace', 'Listino prezzi', 'Gestione richieste', 'Upload referti PDF', 'Notifiche email', 'Disponibilita ritiro'],
+      nameColor: BLUE, dotColor: BLUE, bg: BLUE_BG, border: BLUE, borderW: 1.5, badge: null,
+      feats: ['Dashboard laboratorio', 'Profilo marketplace', 'Listino prezzi', 'Gestione richieste', 'Upload referti PDF', 'Notifiche email', 'Disponibilita ritiro'],
       footer: 'Pilot: gratis per 6 mesi',
     },
   ];
 
-  plans.forEach((plan, i) => {
-    const cx = M + i * (cardW + 8);
+  plans.forEach((p, i) => {
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const px = M + col * (cw + 14);
+    const py = y - row * (cH + 14) - cH;
 
-    // Card background
-    if (plan.bgColor) {
-      page.drawRectangle({ x: cx, y: cardY, width: cardW, height: cardH, color: plan.bgColor });
+    if (p.bg) page.drawRectangle({ x: px, y: py, width: cw, height: cH, color: p.bg });
+    page.drawRectangle({ x: px, y: py, width: cw, height: cH, borderColor: p.border, borderWidth: p.borderW });
+
+    // Badge
+    if (p.badge) {
+      const bw = f.b.widthOfTextAtSize(p.badge, 8) + 18;
+      page.drawRectangle({ x: px + cw / 2 - bw / 2, y: py + cH - 5, width: bw, height: 18, color: CORAL });
+      page.drawText(p.badge, { x: px + cw / 2 - f.b.widthOfTextAtSize(p.badge, 8) / 2, y: py + cH - 1, size: 8, font: f.b, color: WHITE });
     }
 
-    // Card border
-    const bColor = plan.highlight ? CORAL : G200;
-    const bWidth = plan.highlight ? 2 : 1;
-    page.drawRectangle({ x: cx, y: cardY, width: cardW, height: cardH, borderColor: bColor, borderWidth: bWidth });
+    let ty = py + cH - 28;
+    page.drawText(p.name, { x: px + 14, y: ty, size: 8.5, font: f.b, color: p.nameColor });
+    ty -= 28;
+    page.drawText(san(`EUR ${p.price}`), { x: px + 14, y: ty, size: 26, font: f.b, color: G900 });
+    const pw = f.b.widthOfTextAtSize(san(`EUR ${p.price}`), 26);
+    page.drawText('/mese + IVA', { x: px + 18 + pw, y: ty + 6, size: 8, font: f.r, color: G500 });
+    ty -= 18;
+    const sl = wrap(san(p.sub), f.r, 8, cw - 28);
+    for (const l of sl) { page.drawText(l, { x: px + 14, y: ty, size: 8, font: f.r, color: G500 }); ty -= 12; }
+    ty -= 8;
+    page.drawRectangle({ x: px + 14, y: ty + 4, width: cw - 28, height: 0.5, color: G200 });
+    ty -= 10;
 
-    // Highlight badge
-    if (plan.highlight) {
-      const badge = 'Consigliato';
-      const bw = f.b.widthOfTextAtSize(badge, 8) + 16;
-      page.drawRectangle({ x: cx + cardW / 2 - bw / 2, y: cardY + cardH - 4, width: bw, height: 16, color: CORAL });
-      page.drawText(badge, { x: cx + cardW / 2 - f.b.widthOfTextAtSize(badge, 8) / 2, y: cardY + cardH, size: 8, font: f.b, color: WHITE });
-    }
-
-    let py = cardY + cardH - 24;
-
-    // Plan name
-    page.drawText(plan.name, { x: cx + 10, y: py, size: 8, font: f.b, color: plan.color });
-    py -= 22;
-
-    // Price
-    page.drawText(san(`EUR ${plan.price}`), { x: cx + 10, y: py, size: 24, font: f.b, color: G900 });
-    const priceW = f.b.widthOfTextAtSize(san(`EUR ${plan.price}`), 24);
-    page.drawText('/mese + IVA', { x: cx + 14 + priceW, y: py + 4, size: 8, font: f.r, color: G500 });
-    py -= 16;
-
-    // Sub description
-    const sLines = wrap(san(plan.sub), f.r, 7.5, cardW - 20);
-    for (const l of sLines) { page.drawText(l, { x: cx + 10, y: py, size: 7.5, font: f.r, color: G500 }); py -= 10; }
-    py -= 8;
-
-    // Separator
-    page.drawRectangle({ x: cx + 10, y: py + 4, width: cardW - 20, height: 0.5, color: G200 });
-    py -= 10;
-
-    // Features
-    plan.features.forEach((feat, fi) => {
-      dot(page, cx + 8, py - 3, plan.accent);
-      const isBold = fi === 0 && feat.includes(':');
-      page.drawText(san(feat), { x: cx + 20, y: py, size: 8, font: isBold ? f.b : f.r, color: G700 });
-      py -= 13;
+    p.feats.forEach((feat, fi) => {
+      dot(page, px + 12, ty - 3, p.dotColor);
+      const bold = fi === 0 && feat.includes(':');
+      page.drawText(san(feat), { x: px + 26, y: ty, size: 8.5, font: bold ? f.b : f.r, color: G700 });
+      ty -= 15;
     });
 
-    // Footer
-    if (plan.footer) {
-      py = cardY + 16;
-      page.drawRectangle({ x: cx + 10, y: py + 10, width: cardW - 20, height: 0.5, color: plan.highlight ? CORAL : BLUE });
-      page.drawText(san(plan.footer), { x: cx + 10, y: py, size: 7.5, font: f.b, color: plan.highlight ? CORAL : BLUE });
+    if (p.footer) {
+      const fy = py + 14;
+      page.drawRectangle({ x: px + 14, y: fy + 12, width: cw - 28, height: 0.5, color: p.nameColor === CORAL ? CORAL : BLUE });
+      page.drawText(san(p.footer), { x: px + 14, y: fy, size: 8, font: f.b, color: p.nameColor === CORAL ? CORAL : BLUE });
     }
   });
 
-  // Pilot note at bottom
-  const noteY = cardY - 26;
-  page.drawRectangle({ x: M, y: noteY, width: W - 2 * M, height: 22, color: CORAL_BG });
-  const pilotNote = san('Pilot Milano: Piano Growth gratuito per 90 giorni. Nessun vincolo, nessun costo iniziale. Se non ti convince, non paghi nulla.');
-  page.drawText(pilotNote, { x: centerX(pilotNote, f.r, 8), y: noteY + 6, size: 8, font: f.r, color: rgb(0.65, 0.22, 0.22) });
+  // Pilot note
+  const noteY = y - 2 * (cH + 14) - 16;
+  page.drawRectangle({ x: M, y: noteY, width: W - 2 * M, height: 24, color: CORAL_BG });
+  const pilotN = san('Pilot Milano: Growth gratuito 90 giorni. Nessun vincolo.');
+  page.drawText(pilotN, { x: cx(pilotN, f.b, 8.5), y: noteY + 7, size: 8.5, font: f.b, color: rgb(0.65, 0.22, 0.22) });
 
-  pNum(page, 9, 10, f);
+  pageNum(page, 9, 11, f, false);
 }
 
-// ─── PAGE 10: FAQ ───
+// ====================================================================
+//  PAGE 10: FAQ
+// ====================================================================
 function drawFAQPage(doc, f) {
   const page = doc.addPage([W, H]);
   page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: WHITE });
-  hdr(page, f);
+  pageHdr(page, f);
 
-  let y = H - 62;
+  let y = H - 68;
   page.drawText('Domande frequenti', { x: M, y, size: 22, font: f.b, color: G900 });
-  y -= 26;
+  y -= 32;
 
   const faqs = [
-    ['VetBuddy sostituisce il mio gestionale?', "No. VetBuddy e un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, reminder, comunicazioni e follow-up."],
-    ['VetBuddy emette la Ricetta Elettronica Veterinaria?', "No. VetBuddy supporta la preparazione, la gestione e l'archiviazione del flusso prescrittivo. L'emissione ufficiale resta in capo al medico veterinario abilitato."],
-    ['Quanto costa VetBuddy?', 'Starter EUR 29, Growth EUR 69 (consigliato), Pro EUR 99. Laboratori EUR 39. Tutti i prezzi IVA esclusa.'],
-    ["Cos'e il Pilot Milano?", '90 giorni di piano Growth gratuito per cliniche selezionate. Include onboarding, configurazione e supporto. Nessun vincolo.'],
-    ['I pagamenti dei clienti passano da VetBuddy?', "No. I pagamenti delle visite vanno direttamente alla clinica. VetBuddy incassa esclusivamente l'abbonamento della piattaforma."],
-    ["Come funziona l'invio dei referti?", 'Il laboratorio carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando pubblicarlo al proprietario.'],
-    ['VetBuddy e gratuito per i proprietari?', 'Si, completamente gratuito per sempre. Nessun costo nascosto.'],
-    ['Posso annullare in qualsiasi momento?', 'Si. Nessun vincolo contrattuale. Puoi annullare quando vuoi.'],
-    ['Serve una formazione tecnica?', "No. VetBuddy e progettato per essere intuitivo. L'onboarding e incluso e il supporto e sempre disponibile."],
+    ['VetBuddy sostituisce il mio gestionale?', "No. VetBuddy e un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, reminder e follow-up."],
+    ['VetBuddy emette la Ricetta Elettronica?', "No. VetBuddy supporta il flusso prescrittivo. L'emissione ufficiale resta in capo al medico veterinario abilitato sul sistema nazionale."],
+    ['Quanto costa VetBuddy?', 'Starter EUR 29, Growth EUR 69 (consigliato), Pro EUR 99. Laboratori EUR 39. Tutti IVA esclusa.'],
+    ["Cos'e il Pilot Milano?", '90 giorni di Growth gratuito per cliniche selezionate. Include onboarding, configurazione e supporto. Nessun vincolo.'],
+    ['I pagamenti dei clienti passano da VetBuddy?', "No. I pagamenti delle visite vanno alla clinica. VetBuddy incassa solo l'abbonamento."],
+    ["Come funziona l'invio dei referti?", 'Il laboratorio carica il referto. Il veterinario lo rivede, aggiunge note cliniche e lo pubblica al proprietario.'],
+    ['Gratuito per i proprietari?', 'Si, completamente gratuito per sempre. Nessun costo nascosto.'],
+    ['Posso annullare quando voglio?', 'Si. Nessun vincolo contrattuale. Annulla quando vuoi.'],
+    ['Serve formazione tecnica?', "No. VetBuddy e intuitivo. Onboarding incluso e supporto sempre disponibile."],
   ];
 
   const maxW = W - 2 * M;
   faqs.forEach((faq, i) => {
-    if (y < 50) return;
-    // Alternating background
+    if (y < 55) return;
+    // Subtle alternating background
     if (i % 2 === 0) {
-      page.drawRectangle({ x: M - 6, y: y - 30, width: maxW + 12, height: 44, color: G50 });
+      page.drawRectangle({ x: M - 8, y: y - 38, width: maxW + 16, height: 52, color: G50 });
     }
-
     page.drawText(san(faq[0]), { x: M, y, size: 10, font: f.b, color: G900 });
-    y -= 14;
-    const aLines = wrap(san(faq[1]), f.r, 8.5, maxW);
-    for (const l of aLines) {
-      page.drawText(l, { x: M, y, size: 8.5, font: f.r, color: G500 });
-      y -= 11;
-    }
-    y -= 10;
+    y -= 16;
+    const aL = wrap(san(faq[1]), f.r, 9, maxW);
+    for (const l of aL) { page.drawText(l, { x: M, y, size: 9, font: f.r, color: G500 }); y -= 13; }
+    y -= 16;
   });
 
-  pNum(page, 10, 10, f);
+  pageNum(page, 10, 11, f, false);
 }
 
-// ─── PAGE 11: CTA FINALE ───
+// ====================================================================
+//  PAGE 11: CTA FINALE
+// ====================================================================
 function drawCTAPage(doc, f) {
   const page = doc.addPage([W, H]);
-
-  // Full gradient background
   grad(page, 0, 0, W, H, _coral, _orange);
 
+  // Decorative
+  page.drawCircle({ x: W - 30, y: H - 30, size: 100, color: WHITE, opacity: 0.06 });
+  page.drawCircle({ x: 60, y: 80, size: 70, color: WHITE, opacity: 0.04 });
+
   // Logo
-  page.drawRectangle({ x: 30, y: H - 44, width: 30, height: 30, color: WHITE, opacity: 0.15 });
-  paw(page, 45, H - 31, 0.8, WHITE);
-  page.drawText('VetBuddy', { x: 66, y: H - 36, size: 11, font: f.b, color: WHITE, opacity: 0.8 });
+  page.drawCircle({ x: 38, y: H - 38, size: 18, color: WHITE, opacity: 0.15 });
+  drawPaw(page, 38, H - 40, 0.9, WHITE);
+  page.drawText('VetBuddy', { x: 62, y: H - 44, size: 12, font: f.b, color: WHITE, opacity: 0.75 });
 
-  // Decorative circles
-  page.drawCircle({ x: W - 60, y: H - 40, size: 80, color: WHITE, opacity: 0.06 });
-  page.drawCircle({ x: 100, y: 60, size: 60, color: WHITE, opacity: 0.05 });
+  // Main CTA
+  let y = H / 2 + 120;
+  const c1 = 'Pronto a digitalizzare';
+  page.drawText(c1, { x: cx(c1, f.b, 32), y, size: 32, font: f.b, color: WHITE });
+  y -= 40;
+  const c2 = 'la tua clinica?';
+  page.drawText(c2, { x: cx(c2, f.b, 32), y, size: 32, font: f.b, color: WHITE });
+  y -= 30;
 
-  // Main CTA text
-  let y = H / 2 + 80;
-  const cta1 = 'Pronto a digitalizzare';
-  const cta2 = 'la tua clinica?';
-  page.drawText(cta1, { x: centerX(cta1, f.b, 38), y, size: 38, font: f.b, color: WHITE });
-  y -= 44;
-  page.drawText(cta2, { x: centerX(cta2, f.b, 38), y, size: 38, font: f.b, color: WHITE });
-  y -= 28;
-
-  const ctaSub = san('Unisciti alle cliniche veterinarie che stanno gia testando VetBuddy nel Pilot Milano.');
-  page.drawText(ctaSub, { x: centerX(ctaSub, f.r, 12), y, size: 12, font: f.r, color: WHITE, opacity: 0.8 });
-  y -= 50;
+  const ctaSub = san('Unisciti alle cliniche veterinarie che stanno');
+  page.drawText(ctaSub, { x: cx(ctaSub, f.r, 12), y, size: 12, font: f.r, color: WHITE, opacity: 0.8 });
+  y -= 18;
+  const ctaSub2 = 'gia testando VetBuddy nel Pilot Milano.';
+  page.drawText(ctaSub2, { x: cx(ctaSub2, f.r, 12), y, size: 12, font: f.r, color: WHITE, opacity: 0.8 });
+  y -= 55;
 
   // Contact box
-  const boxW = 320;
-  const boxH = 130;
+  const boxW = 280;
+  const boxH = 150;
   const bx = (W - boxW) / 2;
   page.drawRectangle({ x: bx, y: y - boxH, width: boxW, height: boxH, color: WHITE, opacity: 0.12 });
-  page.drawRectangle({ x: bx, y: y - boxH, width: boxW, height: boxH, borderColor: WHITE, borderWidth: 1, opacity: 0.2 });
 
-  let cy = y - 24;
+  let cy = y - 28;
   // Web
-  page.drawCircle({ x: bx + 28, y: cy + 4, size: 12, color: WHITE, opacity: 0.15 });
-  page.drawText('Sito web', { x: bx + 48, y: cy + 4, size: 7, font: f.r, color: WHITE, opacity: 0.6 });
-  page.drawText('vetbuddy.it', { x: bx + 48, y: cy - 8, size: 11, font: f.b, color: WHITE });
-  cy -= 36;
+  page.drawCircle({ x: bx + 28, y: cy + 4, size: 14, color: WHITE, opacity: 0.12 });
+  page.drawText('Sito web', { x: bx + 50, y: cy + 6, size: 7.5, font: f.r, color: WHITE, opacity: 0.6 });
+  page.drawText('vetbuddy.it', { x: bx + 50, y: cy - 8, size: 12, font: f.b, color: WHITE });
+  cy -= 42;
 
   // Email
-  page.drawCircle({ x: bx + 28, y: cy + 4, size: 12, color: WHITE, opacity: 0.15 });
-  page.drawText('Email', { x: bx + 48, y: cy + 4, size: 7, font: f.r, color: WHITE, opacity: 0.6 });
-  page.drawText('info@vetbuddy.it', { x: bx + 48, y: cy - 8, size: 11, font: f.b, color: WHITE });
-  cy -= 36;
+  page.drawCircle({ x: bx + 28, y: cy + 4, size: 14, color: WHITE, opacity: 0.12 });
+  page.drawText('Email', { x: bx + 50, y: cy + 6, size: 7.5, font: f.r, color: WHITE, opacity: 0.6 });
+  page.drawText('info@vetbuddy.it', { x: bx + 50, y: cy - 8, size: 12, font: f.b, color: WHITE });
+  cy -= 42;
 
   // Phone
-  page.drawCircle({ x: bx + 28, y: cy + 4, size: 12, color: WHITE, opacity: 0.15 });
-  page.drawText('Telefono', { x: bx + 48, y: cy + 4, size: 7, font: f.r, color: WHITE, opacity: 0.6 });
-  page.drawText('Contattaci via email', { x: bx + 48, y: cy - 8, size: 11, font: f.b, color: WHITE });
+  page.drawCircle({ x: bx + 28, y: cy + 4, size: 14, color: WHITE, opacity: 0.12 });
+  page.drawText('Telefono', { x: bx + 50, y: cy + 6, size: 7.5, font: f.r, color: WHITE, opacity: 0.6 });
+  page.drawText('Contattaci via email', { x: bx + 50, y: cy - 8, size: 12, font: f.b, color: WHITE });
 
   // Footer
   const foot = san('(c) 2025 VetBuddy - Tutti i diritti riservati');
-  page.drawText(foot, { x: centerX(foot, f.r, 8), y: 22, size: 8, font: f.r, color: WHITE, opacity: 0.4 });
+  page.drawText(foot, { x: cx(foot, f.r, 8), y: 28, size: 8, font: f.r, color: WHITE, opacity: 0.4 });
 }
 
 // ====================== MAIN GENERATOR ======================
@@ -1041,17 +964,17 @@ async function generateBrochurePDF() {
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
   const f = { r: reg, b: bold };
 
-  drawCover(doc, f);          // Page 1
-  drawWhyPage(doc, f);        // Page 2
-  drawFeaturesPage(doc, f);   // Page 3
-  drawREVPage(doc, f);        // Page 4
-  drawAutomationsPage(doc, f);// Page 5
-  drawLabOwnerPage(doc, f);   // Page 6
-  drawHealthAIPage(doc, f);   // Page 7
-  drawHowItWorksPage(doc, f); // Page 8
-  drawPricingPage(doc, f);    // Page 9
-  drawFAQPage(doc, f);        // Page 10
-  drawCTAPage(doc, f);        // Page 11
+  drawCover(doc, f);
+  drawWhyPage(doc, f);
+  drawFeaturesPage(doc, f);
+  drawREVPage(doc, f);
+  drawAutoPage(doc, f);
+  drawLabOwnerPage(doc, f);
+  drawHealthAIPage(doc, f);
+  drawHowItWorks(doc, f);
+  drawPricingPage(doc, f);
+  drawFAQPage(doc, f);
+  drawCTAPage(doc, f);
 
   return doc.save();
 }
