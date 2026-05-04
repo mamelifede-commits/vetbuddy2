@@ -21,9 +21,9 @@ export default function BrochurePage() {
 
       {/* ====== DOWNLOAD BUTTON (screen only) ====== */}
       <div className="no-print fixed top-4 right-4 z-50 flex gap-3">
-        <button onClick={() => window.print()} className="bg-coral-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-coral-600 transition text-sm">
+        <a href="/api/brochure/download" download="VetBuddy_Brochure_2025.pdf" className="bg-coral-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-coral-600 transition text-sm inline-flex items-center gap-2">
           Scarica PDF
-        </button>
+        </a>
         <Link href="/" className="bg-white text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 transition text-sm border">
           Torna al sito
         </Link>
