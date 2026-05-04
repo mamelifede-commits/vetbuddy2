@@ -189,10 +189,49 @@ export async function handleDataPost(path, request, body) {
       clinicName: clinicName || '', subject: subject || 'Nuovo messaggio',
       content, from: from || (user.role === 'owner' ? 'owner' : 'clinic'),
       type: type || 'message', petId: petId || null, petName: petName || null,
-      read: false, createdAt: new Date().toISOString()
+      read: false, status: 'nuovo', priority: 'media',
+      createdAt: new Date().toISOString()
     };
     await messages.insertOne(message);
     return NextResponse.json(message, { headers: corsHeaders });
+  }
+
+  // Reply to message (from inbox)
+  if (path === 'messages/reply') {
+    const user = getUserFromRequest(request);
+    if (!user) return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const { originalMessageId, content, subject } = body;
+    
+    const messages = await getCollection('messages');
+    const original = originalMessageId ? await messages.findOne({ id: originalMessageId }) : null;
+    
+    const reply = {
+      id: uuidv4(),
+      senderId: user.id,
+      senderName: user.name || user.clinicName,
+      receiverId: original?.senderId || body.receiverId,
+      clinicId: user.id,
+      clinicName: user.clinicName || '',
+      subject: subject || (original ? `Re: ${original.subject}` : 'Risposta'),
+      content,
+      from: 'clinic',
+      type: 'reply',
+      replyTo: originalMessageId || null,
+      petId: original?.petId || null,
+      petName: original?.petName || null,
+      read: false,
+      status: 'nuovo',
+      priority: original?.priority || 'media',
+      createdAt: new Date().toISOString()
+    };
+    await messages.insertOne(reply);
+
+    // Update original message status to "in_lavorazione" if it was "nuovo"
+    if (original && (!original.status || original.status === 'nuovo')) {
+      await messages.updateOne({ id: originalMessageId }, { $set: { status: 'in_lavorazione', updatedAt: new Date().toISOString() } });
+    }
+
+    return NextResponse.json({ success: true, reply }, { headers: corsHeaders });
   }
 
   // Add staff member
@@ -282,11 +321,32 @@ export async function handleDataPost(path, request, body) {
 }
 
 export async function handleDataPut(path, request, user, body) {
-  // Mark message as read
+  // Update message: status, priority, assignedTo, or mark as read
   if (path.startsWith('messages/')) {
-    const id = path.split('/')[1];
+    const parts = path.split('/');
+    const id = parts[1];
+    const action = parts[2]; // optional: 'assign', 'status', 'priority'
+    
     const messages = await getCollection('messages');
-    await messages.updateOne({ id }, { $set: { read: true } });
+    const updateData = { updatedAt: new Date().toISOString() };
+    
+    if (action === 'assign') {
+      updateData.assignedTo = body.assignedTo || user.name || user.email;
+      updateData.status = 'in_lavorazione';
+    } else if (action === 'status') {
+      updateData.status = body.status; // nuovo, in_lavorazione, risolto
+      if (body.status === 'risolto') updateData.resolvedAt = new Date().toISOString();
+    } else if (action === 'priority') {
+      updateData.priority = body.priority; // bassa, media, alta
+    } else {
+      // Default: mark as read + update any fields provided
+      updateData.read = true;
+      if (body.status) updateData.status = body.status;
+      if (body.priority) updateData.priority = body.priority;
+      if (body.assignedTo) updateData.assignedTo = body.assignedTo;
+    }
+    
+    await messages.updateOne({ id }, { $set: updateData });
     const updated = await messages.findOne({ id });
     return NextResponse.json(updated, { headers: corsHeaders });
   }
