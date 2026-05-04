@@ -12,7 +12,7 @@ import {
   Calendar, FileText, PawPrint, Gift, Star, MessageCircle, Users, User, Inbox,
   Settings, Zap, Menu, X, LogOut, AlertCircle, Video, Receipt, BarChart3,
   Link2, ClipboardList, Stethoscope, FlaskConical, Globe, BookOpen,
-  LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield
+  LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield, Heart
 } from 'lucide-react';
 
 // ==================== DYNAMIC IMPORTS ====================
@@ -57,6 +57,7 @@ const ClinicTutorialInline = dynamic(() => import('@/app/components/clinic/Clini
 const ClinicLabInvoices = dynamic(() => import('@/app/components/clinic/ClinicLabInvoices'), { ssr: false });
 const ClinicPrescriptions = dynamic(() => import('@/app/components/clinic/ClinicPrescriptions'), { ssr: false });
 const ClinicREVSettings = dynamic(() => import('@/app/components/clinic/ClinicREVSettings'), { ssr: false });
+const ClinicHealthPlans = dynamic(() => import('@/app/components/clinic/ClinicHealthPlans'), { ssr: false });
 
 // Owner Dashboard
 const OwnerDashboard = dynamic(() => import('@/app/components/owner/OwnerDashboardLayout'), { ssr: false });
@@ -177,6 +178,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     { icon: Stethoscope, label: 'Servizi', value: 'services' },
     { icon: Video, label: 'Video Consulto', value: 'videoconsult' },
     { icon: PawPrint, label: 'Pazienti', value: 'patients' },
+    { icon: Heart, label: 'Piani Salute', value: 'healthplans' },
     { icon: FlaskConical, label: 'Analisi Lab', value: 'labanalysis', badge: labReportsReady },
     { icon: Pill, label: 'Prescrizioni REV', value: 'prescriptions' },
     { icon: Shield, label: 'Impostazioni REV', value: 'rev-settings' },
@@ -258,6 +260,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'services' && <ClinicServices onNavigate={setActiveTab} user={user} />}
         {activeTab === 'videoconsult' && <ClinicVideoConsult user={user} onNavigate={setActiveTab} />}
         {activeTab === 'patients' && <ClinicPatients pets={pets} owners={owners} onRefresh={loadData} onNavigate={setActiveTab} onOpenOwner={handleOpenOwnerFromPet} initialPet={selectedPetFromOwner} onClearInitialPet={() => setSelectedPetFromOwner(null)} />}
+        {activeTab === 'healthplans' && <ClinicHealthPlans user={user} pets={pets} owners={owners} onNavigate={setActiveTab} />}
         {activeTab === 'owners' && <ClinicOwners owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} onOpenPet={handleOpenPetFromOwner} initialOwner={selectedOwnerFromPet} onClearInitialOwner={() => setSelectedOwnerFromPet(null)} />}
         {activeTab === 'staff' && <ClinicStaff staff={staff} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'reports' && <ClinicReports appointments={appointments} documents={documents} messages={messages} owners={owners} pets={pets} onNavigate={setActiveTab} onOpenOwner={handleOpenOwnerFromPet} onOpenPet={handleOpenPetFromOwner} />}

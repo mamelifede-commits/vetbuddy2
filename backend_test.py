@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-VetBuddy Admin Dashboard Backend API Testing
-Tests all admin endpoints with proper authentication and authorization
+VetBuddy Backend API Testing Script - Health Plans (Piani Salute) Module
+Tests all Health Plans API endpoints as specified in the review request
 """
 
 import requests
@@ -13,435 +13,588 @@ from datetime import datetime
 BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
 
 # Test credentials
-ADMIN_CREDENTIALS = {
-    "email": "admin@vetbuddy.it",
-    "password": "Admin2025!"
-}
+CLINIC_EMAIL = "demo@vetbuddy.it"
+CLINIC_PASSWORD = "VetBuddy2025!Secure"
 
-CLINIC_CREDENTIALS = {
-    "email": "demo@vetbuddy.it", 
-    "password": "VetBuddy2025!Secure"
-}
+# Color codes for output
+GREEN = '\033[92m'
+RED = '\033[91m'
+YELLOW = '\033[93m'
+BLUE = '\033[94m'
+RESET = '\033[0m'
 
-LAB_CREDENTIALS = {
-    "email": "laboratorio1@vetbuddy.it",
-    "password": "Lab2025!"
-}
+def print_test(message):
+    print(f"{BLUE}[TEST]{RESET} {message}")
 
-def print_test_result(test_name, success, details=""):
-    """Print formatted test result"""
-    status = "✅ PASS" if success else "❌ FAIL"
-    print(f"{status} - {test_name}")
-    if details:
-        print(f"    {details}")
-    print()
+def print_success(message):
+    print(f"{GREEN}✅ {message}{RESET}")
 
-def login_user(credentials):
-    """Login and return JWT token"""
-    try:
-        response = requests.post(f"{BASE_URL}/auth/login", json=credentials)
-        if response.status_code == 200:
-            data = response.json()
-            return data.get('token'), data.get('user')
-        else:
-            print(f"Login failed: {response.status_code} - {response.text}")
-            return None, None
-    except Exception as e:
-        print(f"Login error: {e}")
-        return None, None
+def print_error(message):
+    print(f"{RED}❌ {message}{RESET}")
 
-def test_admin_login():
-    """Test admin login functionality"""
-    print("🔐 Testing Admin Login...")
+def print_info(message):
+    print(f"{YELLOW}ℹ️  {message}{RESET}")
+
+def print_separator():
+    print("\n" + "="*80 + "\n")
+
+# Global variables to store data between tests
+auth_token = None
+created_plan_id = None
+pet_id = None
+assignment_id = None
+
+def test_1_login():
+    """Test 1: Login with clinic credentials"""
+    global auth_token
+    print_separator()
+    print_test("Test 1: POST /api/auth/login - Clinic Authentication")
     
     try:
-        token, user = login_user(ADMIN_CREDENTIALS)
+        response = requests.post(
+            f"{BASE_URL}/auth/login",
+            json={"email": CLINIC_EMAIL, "password": CLINIC_PASSWORD},
+            headers={"Content-Type": "application/json"}
+        )
         
-        if token and user:
-            if user.get('role') == 'admin':
-                print_test_result("Admin Login", True, f"Successfully logged in as admin: {user.get('email')}")
-                return token
-            else:
-                print_test_result("Admin Login", False, f"User role is {user.get('role')}, expected 'admin'")
-                return None
-        else:
-            print_test_result("Admin Login", False, "Failed to get token or user data")
-            return None
-            
-    except Exception as e:
-        print_test_result("Admin Login", False, f"Exception: {e}")
-        return None
-
-def test_pilot_applications(admin_token):
-    """Test pilot applications endpoint"""
-    print("📋 Testing Pilot Applications API...")
-    
-    headers = {"Authorization": f"Bearer {admin_token}"}
-    
-    try:
-        # Test GET /api/pilot-applications?status=pending
-        response = requests.get(f"{BASE_URL}/pilot-applications?status=pending", headers=headers)
+        print_info(f"Status Code: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
-            if 'applications' in data and 'counts' in data:
-                pending_count = len([app for app in data['applications'] if app.get('status') == 'pending'])
-                print_test_result("GET /api/pilot-applications?status=pending", True, 
-                                f"Found {len(data['applications'])} applications, {pending_count} pending. Counts: {data['counts']}")
+            if 'token' in data:
+                auth_token = data['token']
+                print_success(f"Login successful! Token received (length: {len(auth_token)})")
+                print_info(f"User: {data.get('user', {}).get('email', 'N/A')}")
+                print_info(f"Role: {data.get('user', {}).get('role', 'N/A')}")
                 return True
             else:
-                print_test_result("GET /api/pilot-applications?status=pending", False, 
-                                f"Missing 'applications' or 'counts' in response: {data}")
+                print_error("Login response missing token")
+                print_info(f"Response: {json.dumps(data, indent=2)}")
                 return False
         else:
-            print_test_result("GET /api/pilot-applications?status=pending", False, 
-                            f"Status: {response.status_code}, Response: {response.text}")
+            print_error(f"Login failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
             return False
             
     except Exception as e:
-        print_test_result("GET /api/pilot-applications?status=pending", False, f"Exception: {e}")
+        print_error(f"Login test failed with exception: {str(e)}")
         return False
 
-def test_admin_labs(admin_token):
-    """Test admin labs endpoint"""
-    print("🏥 Testing Admin Labs API...")
-    
-    headers = {"Authorization": f"Bearer {admin_token}"}
+def test_2_get_plans_empty():
+    """Test 2: Get health plans (should be empty initially)"""
+    print_separator()
+    print_test("Test 2: GET /api/health-plans - List Plans (Empty)")
     
     try:
-        # Test GET /api/admin/labs
-        response = requests.get(f"{BASE_URL}/admin/labs", headers=headers)
+        response = requests.get(
+            f"{BASE_URL}/health-plans",
+            headers={"Authorization": f"Bearer {auth_token}"}
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
-            if isinstance(data, list):
-                labs_with_stats = [lab for lab in data if 'stats' in lab and 'billing' in lab]
-                print_test_result("GET /api/admin/labs", True, 
-                                f"Found {len(data)} labs, {len(labs_with_stats)} with stats and billing info")
-                
-                # Show sample lab data
-                if data:
-                    sample_lab = data[0]
-                    stats = sample_lab.get('stats', {})
-                    billing = sample_lab.get('billing', {})
-                    print(f"    Sample lab: {sample_lab.get('labName', 'N/A')}")
-                    print(f"    Stats: {stats}")
-                    print(f"    Billing: {billing}")
-                
+            if data.get('success') and 'plans' in data:
+                plans_count = len(data['plans'])
+                print_success(f"Plans retrieved successfully. Count: {plans_count}")
+                print_info(f"Response structure: {json.dumps(data, indent=2)[:200]}...")
                 return True
             else:
-                print_test_result("GET /api/admin/labs", False, f"Expected array, got: {type(data)}")
+                print_error("Unexpected response structure")
+                print_info(f"Response: {json.dumps(data, indent=2)}")
                 return False
         else:
-            print_test_result("GET /api/admin/labs", False, 
-                            f"Status: {response.status_code}, Response: {response.text}")
+            print_error(f"Request failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
             return False
             
     except Exception as e:
-        print_test_result("GET /api/admin/labs", False, f"Exception: {e}")
+        print_error(f"Test failed with exception: {str(e)}")
         return False
 
-def test_admin_lab_stats(admin_token):
-    """Test admin lab stats endpoint"""
-    print("📊 Testing Admin Lab Stats API...")
-    
-    headers = {"Authorization": f"Bearer {admin_token}"}
+def test_3_get_stats_empty():
+    """Test 3: Get health plans stats (should show zeros)"""
+    print_separator()
+    print_test("Test 3: GET /api/health-plans/stats - Get Statistics (Empty)")
     
     try:
-        # Test GET /api/admin/lab-stats
-        response = requests.get(f"{BASE_URL}/admin/lab-stats", headers=headers)
+        response = requests.get(
+            f"{BASE_URL}/health-plans/stats",
+            headers={"Authorization": f"Bearer {auth_token}"}
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
-            required_keys = ['labs', 'billing', 'requests', 'connections', 'reports', 'topLabs', 'requestsByExamType']
-            
-            missing_keys = [key for key in required_keys if key not in data]
-            if not missing_keys:
-                print_test_result("GET /api/admin/lab-stats", True, 
-                                f"All required fields present: {required_keys}")
-                
-                # Show key stats
-                print(f"    Labs: {data['labs']}")
-                print(f"    Requests: {data['requests']}")
-                print(f"    Top Labs: {len(data['topLabs'])} entries")
-                print(f"    Exam Types: {len(data['requestsByExamType'])} types")
-                
+            if data.get('success') and 'stats' in data:
+                stats = data['stats']
+                print_success("Stats retrieved successfully")
+                print_info(f"Total Plans: {stats.get('totalPlans', 0)}")
+                print_info(f"Total Assignments: {stats.get('totalAssignments', 0)}")
+                print_info(f"Completed Assignments: {stats.get('completedAssignments', 0)}")
+                print_info(f"Upcoming Services: {stats.get('upcomingServices', 0)}")
                 return True
             else:
-                print_test_result("GET /api/admin/lab-stats", False, 
-                                f"Missing required keys: {missing_keys}")
+                print_error("Unexpected response structure")
+                print_info(f"Response: {json.dumps(data, indent=2)}")
                 return False
         else:
-            print_test_result("GET /api/admin/lab-stats", False, 
-                            f"Status: {response.status_code}, Response: {response.text}")
+            print_error(f"Request failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
             return False
             
     except Exception as e:
-        print_test_result("GET /api/admin/lab-stats", False, f"Exception: {e}")
+        print_error(f"Test failed with exception: {str(e)}")
         return False
 
-def test_admin_stats(admin_token):
-    """Test admin platform stats endpoint"""
-    print("📈 Testing Admin Platform Stats API...")
+def test_4_create_plan():
+    """Test 4: Create a new health plan"""
+    global created_plan_id
+    print_separator()
+    print_test("Test 4: POST /api/health-plans - Create Health Plan")
     
-    headers = {"Authorization": f"Bearer {admin_token}"}
+    plan_data = {
+        "name": "Piano Cucciolo Test",
+        "description": "Piano test per cuccioli",
+        "targetGroup": "cucciolo",
+        "durationMonths": 12,
+        "services": [
+            {"name": "Prima visita", "type": "visita", "monthOffset": 0},
+            {"name": "Vaccino polivalente", "type": "vaccino", "monthOffset": 1},
+            {"name": "Sverminazione", "type": "trattamento", "monthOffset": 2}
+        ],
+        "price": 150
+    }
     
     try:
-        # Test GET /api/admin/stats
-        response = requests.get(f"{BASE_URL}/admin/stats", headers=headers)
+        response = requests.post(
+            f"{BASE_URL}/health-plans",
+            json=plan_data,
+            headers={
+                "Authorization": f"Bearer {auth_token}",
+                "Content-Type": "application/json"
+            }
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 201:
+            data = response.json()
+            if data.get('success') and 'plan' in data:
+                plan = data['plan']
+                created_plan_id = plan.get('id')
+                print_success(f"Plan created successfully! ID: {created_plan_id}")
+                print_info(f"Name: {plan.get('name')}")
+                print_info(f"Target Group: {plan.get('targetGroup')}")
+                print_info(f"Duration: {plan.get('durationMonths')} months")
+                print_info(f"Services: {len(plan.get('services', []))}")
+                print_info(f"Price: €{plan.get('price')}")
+                return True
+            else:
+                print_error("Unexpected response structure")
+                print_info(f"Response: {json.dumps(data, indent=2)}")
+                return False
+        else:
+            print_error(f"Request failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_error(f"Test failed with exception: {str(e)}")
+        return False
+
+def test_5_get_plans_with_data():
+    """Test 5: Get health plans (should now have 1 plan)"""
+    print_separator()
+    print_test("Test 5: GET /api/health-plans - List Plans (With Data)")
+    
+    try:
+        response = requests.get(
+            f"{BASE_URL}/health-plans",
+            headers={"Authorization": f"Bearer {auth_token}"}
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
-            
-            # Check for required counts structure
-            if 'counts' in data:
-                counts = data['counts']
-                required_count_fields = ['totalUsers', 'clinics', 'owners', 'pets', 'appointments', 'documents']
-                missing_fields = [field for field in required_count_fields if field not in counts]
+            if data.get('success') and 'plans' in data:
+                plans_count = len(data['plans'])
+                print_success(f"Plans retrieved successfully. Count: {plans_count}")
                 
-                if not missing_fields:
-                    print_test_result("GET /api/admin/stats", True, 
-                                    f"All required count fields present")
-                    
-                    # Show platform stats
-                    print(f"    Total Users: {counts['totalUsers']}")
-                    print(f"    Clinics: {counts['clinics']}")
-                    print(f"    Owners: {counts['owners']}")
-                    print(f"    Pets: {counts['pets']}")
-                    print(f"    Appointments: {counts['appointments']}")
-                    print(f"    Documents: {counts['documents']}")
-                    
+                if plans_count > 0:
+                    print_info(f"First plan: {data['plans'][0].get('name')}")
+                    print_info(f"Plan ID: {data['plans'][0].get('id')}")
+                
+                if plans_count >= 1:
                     return True
                 else:
-                    print_test_result("GET /api/admin/stats", False, 
-                                    f"Missing count fields: {missing_fields}")
+                    print_error("Expected at least 1 plan but got 0")
                     return False
             else:
-                print_test_result("GET /api/admin/stats", False, 
-                                f"Missing 'counts' object in response")
+                print_error("Unexpected response structure")
+                print_info(f"Response: {json.dumps(data, indent=2)}")
                 return False
         else:
-            print_test_result("GET /api/admin/stats", False, 
-                            f"Status: {response.status_code}, Response: {response.text}")
+            print_error(f"Request failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
             return False
             
     except Exception as e:
-        print_test_result("GET /api/admin/stats", False, f"Exception: {e}")
+        print_error(f"Test failed with exception: {str(e)}")
         return False
 
-def test_admin_users(admin_token):
-    """Test admin users endpoint"""
-    print("👥 Testing Admin Users API...")
-    
-    headers = {"Authorization": f"Bearer {admin_token}"}
+def test_6_get_pet_id():
+    """Test 6: Get a pet ID for assignment"""
+    global pet_id
+    print_separator()
+    print_test("Test 6: GET /api/pets - Get Pet ID for Assignment")
     
     try:
-        # Test GET /api/admin/users
-        response = requests.get(f"{BASE_URL}/admin/users", headers=headers)
+        response = requests.get(
+            f"{BASE_URL}/pets",
+            headers={"Authorization": f"Bearer {auth_token}"}
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
-            if isinstance(data, list):
-                # Check that passwords are not included
-                users_with_passwords = [user for user in data if 'password' in user]
-                
-                if not users_with_passwords:
-                    print_test_result("GET /api/admin/users", True, 
-                                    f"Found {len(data)} users, no passwords exposed")
-                    
-                    # Show user role breakdown
-                    role_counts = {}
-                    for user in data:
-                        role = user.get('role', 'unknown')
-                        role_counts[role] = role_counts.get(role, 0) + 1
-                    
-                    print(f"    User roles: {role_counts}")
-                    return True
-                else:
-                    print_test_result("GET /api/admin/users", False, 
-                                    f"Security issue: {len(users_with_passwords)} users have exposed passwords")
-                    return False
-            else:
-                print_test_result("GET /api/admin/users", False, f"Expected array, got: {type(data)}")
-                return False
-        else:
-            print_test_result("GET /api/admin/users", False, 
-                            f"Status: {response.status_code}, Response: {response.text}")
-            return False
+            # Handle both array response and object with pets key
+            pets = data if isinstance(data, list) else data.get('pets', [])
             
-    except Exception as e:
-        print_test_result("GET /api/admin/users", False, f"Exception: {e}")
-        return False
-
-def test_admin_lab_billing(admin_token):
-    """Test admin lab billing update endpoint"""
-    print("💰 Testing Admin Lab Billing API...")
-    
-    headers = {"Authorization": f"Bearer {admin_token}"}
-    
-    try:
-        # First get a lab ID from the labs list
-        labs_response = requests.get(f"{BASE_URL}/admin/labs", headers=headers)
-        if labs_response.status_code != 200:
-            print_test_result("POST /api/admin/labs/{labId}/billing", False, 
-                            "Could not get lab list to test billing update")
-            return False
-        
-        labs = labs_response.json()
-        if not labs:
-            print_test_result("POST /api/admin/labs/{labId}/billing", False, 
-                            "No labs available to test billing update")
-            return False
-        
-        lab_id = labs[0]['id']
-        
-        # Test billing update
-        billing_data = {
-            "extendTrialDays": 30,
-            "maxFreeRequests": 100,
-            "resetRequestsCount": False,
-            "plan": "partner_free"
-        }
-        
-        response = requests.post(f"{BASE_URL}/admin/labs/{lab_id}/billing", 
-                               headers=headers, json=billing_data)
-        
-        if response.status_code == 200:
-            data = response.json()
-            if data.get('success') and 'lab' in data:
-                print_test_result("POST /api/admin/labs/{labId}/billing", True, 
-                                f"Successfully updated billing for lab {lab_id}")
+            if len(pets) > 0:
+                pet_id = pets[0].get('id')
+                print_success(f"Pet ID retrieved: {pet_id}")
+                print_info(f"Pet Name: {pets[0].get('name', 'N/A')}")
+                print_info(f"Species: {pets[0].get('species', 'N/A')}")
                 return True
             else:
-                print_test_result("POST /api/admin/labs/{labId}/billing", False, 
-                                f"Unexpected response format: {data}")
+                print_error("No pets found in the system")
+                print_info(f"Response: {json.dumps(data, indent=2)[:500]}...")
                 return False
         else:
-            print_test_result("POST /api/admin/labs/{labId}/billing", False, 
-                            f"Status: {response.status_code}, Response: {response.text}")
+            print_error(f"Request failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
             return False
             
     except Exception as e:
-        print_test_result("POST /api/admin/labs/{labId}/billing", False, f"Exception: {e}")
+        print_error(f"Test failed with exception: {str(e)}")
         return False
 
-def test_authorization_controls(admin_token):
-    """Test that non-admin users cannot access admin endpoints"""
-    print("🔒 Testing Authorization Controls...")
+def test_7_assign_plan():
+    """Test 7: Assign plan to pet"""
+    global assignment_id
+    print_separator()
+    print_test("Test 7: POST /api/health-plans/assign - Assign Plan to Pet")
     
-    # Test with clinic token
-    clinic_token, _ = login_user(CLINIC_CREDENTIALS)
-    if not clinic_token:
-        print_test_result("Authorization Test Setup", False, "Could not get clinic token")
+    if not created_plan_id:
+        print_error("No plan ID available. Skipping test.")
         return False
     
-    # Test with lab token  
-    lab_token, _ = login_user(LAB_CREDENTIALS)
-    if not lab_token:
-        print_test_result("Authorization Test Setup", False, "Could not get lab token")
+    if not pet_id:
+        print_error("No pet ID available. Skipping test.")
         return False
     
-    admin_endpoints = [
-        "/admin/labs",
-        "/admin/lab-stats", 
-        "/admin/stats",
-        "/admin/users"
-    ]
+    assignment_data = {
+        "planId": created_plan_id,
+        "petId": pet_id
+    }
     
-    unauthorized_tokens = [
-        ("clinic", clinic_token),
-        ("lab", lab_token)
-    ]
-    
-    all_passed = True
-    
-    for role, token in unauthorized_tokens:
-        headers = {"Authorization": f"Bearer {token}"}
+    try:
+        response = requests.post(
+            f"{BASE_URL}/health-plans/assign",
+            json=assignment_data,
+            headers={
+                "Authorization": f"Bearer {auth_token}",
+                "Content-Type": "application/json"
+            }
+        )
         
-        for endpoint in admin_endpoints:
-            try:
-                response = requests.get(f"{BASE_URL}{endpoint}", headers=headers)
-                
-                if response.status_code == 403:
-                    print_test_result(f"{role.upper()} access to {endpoint}", True, 
-                                    "Correctly blocked with 403 Forbidden")
-                else:
-                    print_test_result(f"{role.upper()} access to {endpoint}", False, 
-                                    f"Expected 403, got {response.status_code}")
-                    all_passed = False
-                    
-            except Exception as e:
-                print_test_result(f"{role.upper()} access to {endpoint}", False, f"Exception: {e}")
-                all_passed = False
+        print_info(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 201:
+            data = response.json()
+            if data.get('success') and 'assignment' in data:
+                assignment = data['assignment']
+                assignment_id = assignment.get('id')
+                print_success(f"Plan assigned successfully! Assignment ID: {assignment_id}")
+                print_info(f"Plan Name: {assignment.get('planName')}")
+                print_info(f"Pet ID: {assignment.get('petId')}")
+                print_info(f"Status: {assignment.get('status')}")
+                return True
+            else:
+                print_error("Unexpected response structure")
+                print_info(f"Response: {json.dumps(data, indent=2)}")
+                return False
+        else:
+            print_error(f"Request failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_error(f"Test failed with exception: {str(e)}")
+        return False
+
+def test_8_get_assignments():
+    """Test 8: Get assignments (should have 1 assignment)"""
+    print_separator()
+    print_test("Test 8: GET /api/health-plans/assignments - List Assignments")
     
-    return all_passed
+    try:
+        response = requests.get(
+            f"{BASE_URL}/health-plans/assignments",
+            headers={"Authorization": f"Bearer {auth_token}"}
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success') and 'assignments' in data:
+                assignments_count = len(data['assignments'])
+                print_success(f"Assignments retrieved successfully. Count: {assignments_count}")
+                
+                if assignments_count > 0:
+                    print_info(f"First assignment ID: {data['assignments'][0].get('id')}")
+                    print_info(f"Plan Name: {data['assignments'][0].get('planName')}")
+                    print_info(f"Status: {data['assignments'][0].get('status')}")
+                
+                if assignments_count >= 1:
+                    return True
+                else:
+                    print_error("Expected at least 1 assignment but got 0")
+                    return False
+            else:
+                print_error("Unexpected response structure")
+                print_info(f"Response: {json.dumps(data, indent=2)}")
+                return False
+        else:
+            print_error(f"Request failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_error(f"Test failed with exception: {str(e)}")
+        return False
+
+def test_9_complete_service():
+    """Test 9: Complete a service in the assignment"""
+    print_separator()
+    print_test("Test 9: POST /api/health-plans/complete-service - Complete Service")
+    
+    if not assignment_id:
+        print_error("No assignment ID available. Skipping test.")
+        return False
+    
+    completion_data = {
+        "assignmentId": assignment_id,
+        "serviceIndex": 0
+    }
+    
+    try:
+        response = requests.post(
+            f"{BASE_URL}/health-plans/complete-service",
+            json=completion_data,
+            headers={
+                "Authorization": f"Bearer {auth_token}",
+                "Content-Type": "application/json"
+            }
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success'):
+                print_success("Service completed successfully!")
+                print_info(f"All services completed: {data.get('completed', False)}")
+                print_info(f"Completed services count: {len(data.get('completedServices', []))}")
+                return True
+            else:
+                print_error("Unexpected response structure")
+                print_info(f"Response: {json.dumps(data, indent=2)}")
+                return False
+        else:
+            print_error(f"Request failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_error(f"Test failed with exception: {str(e)}")
+        return False
+
+def test_10_update_plan():
+    """Test 10: Update the health plan"""
+    print_separator()
+    print_test("Test 10: PUT /api/health-plans/{planId} - Update Plan")
+    
+    if not created_plan_id:
+        print_error("No plan ID available. Skipping test.")
+        return False
+    
+    update_data = {
+        "name": "Piano Cucciolo Aggiornato",
+        "price": 180
+    }
+    
+    try:
+        response = requests.put(
+            f"{BASE_URL}/health-plans/{created_plan_id}",
+            json=update_data,
+            headers={
+                "Authorization": f"Bearer {auth_token}",
+                "Content-Type": "application/json"
+            }
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success'):
+                print_success("Plan updated successfully!")
+                print_info(f"Updated name: {update_data['name']}")
+                print_info(f"Updated price: €{update_data['price']}")
+                return True
+            else:
+                print_error("Unexpected response structure")
+                print_info(f"Response: {json.dumps(data, indent=2)}")
+                return False
+        else:
+            print_error(f"Request failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_error(f"Test failed with exception: {str(e)}")
+        return False
+
+def test_11_delete_plan():
+    """Test 11: Delete (deactivate) the health plan"""
+    print_separator()
+    print_test("Test 11: DELETE /api/health-plans/{planId} - Delete Plan (Soft Delete)")
+    
+    if not created_plan_id:
+        print_error("No plan ID available. Skipping test.")
+        return False
+    
+    try:
+        response = requests.delete(
+            f"{BASE_URL}/health-plans/{created_plan_id}",
+            headers={"Authorization": f"Bearer {auth_token}"}
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success'):
+                print_success("Plan deleted (deactivated) successfully!")
+                return True
+            else:
+                print_error("Unexpected response structure")
+                print_info(f"Response: {json.dumps(data, indent=2)}")
+                return False
+        else:
+            print_error(f"Request failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_error(f"Test failed with exception: {str(e)}")
+        return False
+
+def test_12_verify_stats():
+    """Test 12: Verify stats after all operations"""
+    print_separator()
+    print_test("Test 12: GET /api/health-plans/stats - Verify Final Statistics")
+    
+    try:
+        response = requests.get(
+            f"{BASE_URL}/health-plans/stats",
+            headers={"Authorization": f"Bearer {auth_token}"}
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success') and 'stats' in data:
+                stats = data['stats']
+                print_success("Final stats retrieved successfully")
+                print_info(f"Total Plans: {stats.get('totalPlans', 0)}")
+                print_info(f"Total Assignments: {stats.get('totalAssignments', 0)}")
+                print_info(f"Completed Assignments: {stats.get('completedAssignments', 0)}")
+                print_info(f"Upcoming Services: {stats.get('upcomingServices', 0)}")
+                return True
+            else:
+                print_error("Unexpected response structure")
+                print_info(f"Response: {json.dumps(data, indent=2)}")
+                return False
+        else:
+            print_error(f"Request failed with status {response.status_code}")
+            print_info(f"Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_error(f"Test failed with exception: {str(e)}")
+        return False
 
 def main():
-    """Run all admin API tests"""
-    print("🚀 VetBuddy Admin Dashboard Backend API Testing")
-    print("=" * 60)
+    """Run all tests in sequence"""
+    print("\n" + "="*80)
+    print(f"{BLUE}VetBuddy Health Plans (Piani Salute) API Testing{RESET}")
     print(f"Base URL: {BASE_URL}")
-    print(f"Test Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print()
+    print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("="*80)
     
-    # Track test results
-    test_results = []
+    tests = [
+        ("Login", test_1_login),
+        ("Get Plans (Empty)", test_2_get_plans_empty),
+        ("Get Stats (Empty)", test_3_get_stats_empty),
+        ("Create Plan", test_4_create_plan),
+        ("Get Plans (With Data)", test_5_get_plans_with_data),
+        ("Get Pet ID", test_6_get_pet_id),
+        ("Assign Plan", test_7_assign_plan),
+        ("Get Assignments", test_8_get_assignments),
+        ("Complete Service", test_9_complete_service),
+        ("Update Plan", test_10_update_plan),
+        ("Delete Plan", test_11_delete_plan),
+        ("Verify Stats", test_12_verify_stats)
+    ]
     
-    # 1. Test admin login
-    admin_token = test_admin_login()
-    if not admin_token:
-        print("❌ Cannot proceed without admin token")
-        sys.exit(1)
+    results = []
     
-    # 2. Test pilot applications
-    result = test_pilot_applications(admin_token)
-    test_results.append(("Pilot Applications API", result))
+    for test_name, test_func in tests:
+        try:
+            result = test_func()
+            results.append((test_name, result))
+        except Exception as e:
+            print_error(f"Test '{test_name}' crashed: {str(e)}")
+            results.append((test_name, False))
     
-    # 3. Test admin labs
-    result = test_admin_labs(admin_token)
-    test_results.append(("Admin Labs API", result))
+    # Print summary
+    print_separator()
+    print(f"{BLUE}TEST SUMMARY{RESET}")
+    print("="*80)
     
-    # 4. Test admin lab stats
-    result = test_admin_lab_stats(admin_token)
-    test_results.append(("Admin Lab Stats API", result))
+    passed = sum(1 for _, result in results if result)
+    total = len(results)
     
-    # 5. Test admin platform stats
-    result = test_admin_stats(admin_token)
-    test_results.append(("Admin Platform Stats API", result))
+    for test_name, result in results:
+        status = f"{GREEN}✅ PASSED{RESET}" if result else f"{RED}❌ FAILED{RESET}"
+        print(f"{test_name:.<50} {status}")
     
-    # 6. Test admin users
-    result = test_admin_users(admin_token)
-    test_results.append(("Admin Users API", result))
+    print("="*80)
+    print(f"Total: {passed}/{total} tests passed ({(passed/total*100):.1f}%)")
+    print(f"Finished at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("="*80 + "\n")
     
-    # 7. Test admin lab billing
-    result = test_admin_lab_billing(admin_token)
-    test_results.append(("Admin Lab Billing API", result))
-    
-    # 8. Test authorization controls
-    result = test_authorization_controls(admin_token)
-    test_results.append(("Authorization Controls", result))
-    
-    # Summary
-    print("=" * 60)
-    print("📊 TEST SUMMARY")
-    print("=" * 60)
-    
-    passed = sum(1 for _, result in test_results if result)
-    total = len(test_results)
-    
-    for test_name, result in test_results:
-        status = "✅ PASS" if result else "❌ FAIL"
-        print(f"{status} - {test_name}")
-    
-    print()
-    print(f"Overall Result: {passed}/{total} tests passed ({passed/total*100:.1f}%)")
-    
-    if passed == total:
-        print("🎉 All admin API tests passed!")
-        return 0
-    else:
-        print(f"⚠️  {total - passed} test(s) failed")
-        return 1
+    # Exit with appropriate code
+    sys.exit(0 if passed == total else 1)
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

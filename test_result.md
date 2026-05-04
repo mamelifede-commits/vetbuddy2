@@ -1443,15 +1443,29 @@ agent_communication:
         agent: "main"
         comment: "Fixed branding in brochure: changed 'vetbuddy' (lowercase) to 'VetBuddy' in cover page title, automation page header, CTA page header, and PageHeader component. Screenshot verified."
 
+  - task: "Health Plans (Piani Salute) API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/healthplans.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "New Health Plans module created. Endpoints: GET /api/health-plans (list), GET /api/health-plans/assignments, GET /api/health-plans/stats, POST /api/health-plans (create plan), POST /api/health-plans/assign (assign to pet), POST /api/health-plans/complete-service, PUT /api/health-plans/:id (update), DELETE /api/health-plans/:id (deactivate). Frontend component ClinicHealthPlans.js created with templates, assignment management, and service completion tracking."
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE HEALTH PLANS API TESTING COMPLETED - ALL 12/12 TESTS PASSED ✅: Successfully tested complete VetBuddy Health Plans (Piani Salute) API module as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. ✅ **Authentication**: Login with demo@vetbuddy.it / VetBuddy2025!Secure successful, returns proper JWT token and clinic role verification. ✅ **GET /api/health-plans**: Returns empty plans array initially {success: true, plans: []}. After plan creation, correctly returns 1 plan with all details (name, targetGroup, durationMonths, services, price). ✅ **GET /api/health-plans/stats**: Returns comprehensive statistics with all required fields (totalPlans, totalAssignments, completedAssignments, upcomingServices). Initial stats show zeros, final stats correctly reflect 0 active plans (after deletion), 1 assignment, 0 completed assignments, 1 upcoming service. ✅ **POST /api/health-plans**: Successfully creates health plan with all fields - name: 'Piano Cucciolo Test', description, targetGroup: 'cucciolo', durationMonths: 12, services array with 3 services (Prima visita, Vaccino polivalente, Sverminazione), price: €150. Returns 201 status with plan ID and complete plan object. ✅ **GET /api/pets**: Successfully retrieves pet list (27 pets found), extracted pet ID (e6850cf1-073a-44bb-94a4-44effa4dfc75) for assignment testing. ✅ **POST /api/health-plans/assign**: Successfully assigns plan to pet with planId and petId. Returns 201 status with assignment ID (b180483a-35ac-49bb-9373-4b7209616606), planName, petId, status: 'active'. ✅ **GET /api/health-plans/assignments**: Returns assignments array with 1 assignment showing correct assignment ID, plan name, and active status. ✅ **POST /api/health-plans/complete-service**: Successfully marks service as completed with assignmentId and serviceIndex: 0. Returns success: true, completed: false (not all services done), completedServices count: 1. Service completion tracking working correctly. ✅ **PUT /api/health-plans/{planId}**: Successfully updates plan with new name 'Piano Cucciolo Aggiornato' and price €180. Returns 200 status with success: true. ✅ **DELETE /api/health-plans/{planId}**: Successfully performs soft delete (deactivation) of plan. Returns 200 status with success: true. Plan no longer appears in active plans list but assignment remains. All Health Plans API endpoints fully functional and ready for production use. Complete workflow tested: plan creation → assignment → service completion → update → deletion."
+
 metadata:
   created_by: "testing_agent"
-  version: "2.2"
-  test_sequence: 4
+  version: "2.4"
+  test_sequence: 6
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "PDF Tutorial Generation API (Clinic/Owner/Lab)"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -1461,8 +1475,8 @@ agent_communication:
       message: "COMPREHENSIVE REV MODULE TESTING COMPLETED ✅: Successfully tested all 11 VetBuddy REV (Ricetta Elettronica Veterinaria) backend API endpoints as specified in review request. All tests passed (100% success rate). REV configuration, prescription CRUD operations, manual registration, audit trail, publish to owner, and authorization checks all working perfectly. Email notifications triggered correctly. Owner data sanitization working. Ready for production use."
 
     - agent: "main"
-      message: "EDITORIAL POLISH SESSION - 16-APR-2026: Completed editorial polish of all marketing/onboarding materials. 1) Verified PDF tutorials generate correctly with Italian accents via analyze_file_tool (all 3 pass). 2) Rewrote all 3 inline tutorial components with proper accents and aligned text. 3) Fixed branding in brochure (VetBuddy not vetbuddy). Please test PDF generation endpoints: GET /api/tutorials/download?type=clinic, GET /api/tutorials/download?type=owner, GET /api/tutorials/download?type=lab. Verify HTTP 200 and Content-Type application/pdf."
+      message: "NEW MODULE: Health Plans (Piani Salute) - Created full backend API module at /app/app/api/[[...path]]/modules/healthplans.js. Endpoints to test: 1) POST /api/auth/login with demo@vetbuddy.it / VetBuddy2025!Secure to get token. 2) GET /api/health-plans (should return empty plans array). 3) POST /api/health-plans with body {name, description, targetGroup, durationMonths, services:[{name, type, monthOffset}]}. 4) GET /api/health-plans/stats. 5) POST /api/health-plans/assign with {planId, petId}. 6) POST /api/health-plans/complete-service with {assignmentId, serviceIndex}. 7) GET /api/health-plans/assignments. 8) PUT /api/health-plans/:id. 9) DELETE /api/health-plans/:id. All endpoints require clinic role auth token."
 
     - agent: "testing"
-      message: "PDF TUTORIAL GENERATION API TESTING COMPLETED ✅: Successfully tested all 3 VetBuddy PDF Tutorial Generation API endpoints as requested. All endpoints working perfectly: GET /api/tutorials/download?type=clinic (15,158 bytes), GET /api/tutorials/download?type=owner (12,783 bytes), GET /api/tutorials/download?type=lab (11,647 bytes). All return HTTP 200, Content-Type application/pdf, valid PDF format, and proper filenames. All verification criteria from review request satisfied. API ready for production use."
+      message: "HEALTH PLANS API TESTING COMPLETED ✅: All 12 tests passed (100% success rate). Tested complete workflow: authentication → list plans (empty) → get stats (empty) → create plan → list plans (with data) → get pet ID → assign plan to pet → list assignments → complete service → update plan → delete plan (soft delete) → verify final stats. All endpoints working perfectly: GET /api/health-plans, GET /api/health-plans/stats, GET /api/health-plans/assignments, POST /api/health-plans, POST /api/health-plans/assign, POST /api/health-plans/complete-service, PUT /api/health-plans/{id}, DELETE /api/health-plans/{id}. Authorization checks working (clinic role required). Data persistence verified. Service completion tracking functional. Soft delete (deactivation) working correctly. Health Plans module fully operational and ready for production."
 
