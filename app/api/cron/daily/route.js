@@ -1,107 +1,13 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/db';
 import { sendEmail } from '@/lib/email';
+import { DEFAULT_AUTOMATION_SETTINGS, isAutomationEnabled, getCurrentMonth, getContactButton, getPhoneButton, getCancellationPolicyText, wrapEmail } from './cron-helpers';
 
 // Force dynamic rendering to prevent static generation errors
 export const dynamic = 'force-dynamic';
 
 // Vercel Cron Job - Eseguito ogni giorno alle 8:00
 // Configura in vercel.json
-
-// Default settings for clinics without custom configuration
-const DEFAULT_AUTOMATION_SETTINGS = {
-  appointmentReminders: true,
-  vaccineRecalls: true,
-  postVisitFollowup: true,
-  noShowDetection: true,
-  documentReminders: true,
-  weeklyReport: true,
-  petBirthday: true,
-  reviewRequest: true,
-  inactiveClientReactivation: true,
-  antiparasiticReminder: true,
-  annualCheckup: true,
-  medicationRefill: true,
-  weightAlert: true,
-  dentalHygiene: true,
-  appointmentConfirmation: true,
-  labResultsReady: true,
-  paymentReminder: true,
-  postSurgeryFollowup: true,
-  summerHeatAlert: true,
-  tickSeasonAlert: true,
-  newYearFireworksAlert: true,
-  // New automations
-  whatsappReminders: false,
-  smsEmergency: false,
-  sterilizationReminder: true,
-  seniorPetCare: true,
-  microchipCheck: true,
-  welcomeNewPet: true,
-  aiLabExplanation: true,
-  breedRiskAlert: true,
-  dietSuggestions: true,
-  loyaltyProgram: true,
-  referralProgram: true,
-  holidayClosures: true,
-  petCondolences: true,
-  griefFollowup: true,
-  dailySummary: true,
-  lowStockAlert: true,
-  staffBirthday: true
-};
-
-// Helper: Check if automation is enabled for a clinic
-function isAutomationEnabled(clinic, automationKey) {
-  const settings = clinic?.automationSettings || DEFAULT_AUTOMATION_SETTINGS;
-  return settings[automationKey] !== false; // Default to true if not set
-}
-
-// Helper: Get current month (1-12)
-function getCurrentMonth() {
-  return new Date().getMonth() + 1;
-}
-
-// Helper: Generate contact button - prioritizes WhatsApp if available
-function getContactButton(clinic, baseUrl, buttonText = 'Scrivi alla Clinica', subject = '') {
-  const whatsappNumber = clinic?.whatsappNumber;
-  const phoneNumber = clinic?.phone || clinic?.telefono || '';
-  
-  if (whatsappNumber) {
-    // Use WhatsApp if configured
-    const cleanNumber = whatsappNumber.replace(/\D/g, '');
-    const whatsappUrl = `https://wa.me/${cleanNumber}${subject ? `?text=${encodeURIComponent(subject)}` : ''}`;
-    return `<a href="${whatsappUrl}" style="display: inline-block; background: #25D366; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-      💬 ${buttonText} (WhatsApp)
-    </a>`;
-  } else {
-    // Fallback to in-app messaging
-    const messageUrl = `${baseUrl}?action=message&clinicId=${clinic?.id || ''}`;
-    return `<a href="${messageUrl}" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-      💬 ${buttonText}
-    </a>`;
-  }
-}
-
-// Helper: Generate phone button (only for urgent communications)
-function getPhoneButton(clinic, showButton = false) {
-  if (!showButton) return '';
-  
-  const phoneNumber = clinic?.phone || clinic?.telefono || '';
-  if (!phoneNumber) return '';
-  
-  const phoneLink = `tel:${phoneNumber.replace(/\s/g, '')}`;
-  return `<a href="${phoneLink}" style="display: inline-block; background: #E74C3C; color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: bold; margin: 5px;">
-    📞 Chiama (Urgenze)
-  </a>`;
-}
-
-// Helper: Get cancellation policy text
-function getCancellationPolicyText(clinic) {
-  return clinic?.cancellationPolicyText || 
-         clinic?.cancellationPolicy?.message || 
-         'Ti preghiamo di avvisarci almeno 24 ore prima in caso di disdetta.';
-}
 
 export async function GET(request) {
   // Verifica che sia una richiesta cron autorizzata
