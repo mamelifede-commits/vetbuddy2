@@ -5,7 +5,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { AlertCircle, AlertTriangle, BarChart3, Bell, Building2, Calendar, Check, CheckCircle, Euro, FileCheck, FileText, Gift, Heart, Info, Lock, Mail, MessageCircle, PawPrint, RefreshCw, Scissors, Shield, Star, Stethoscope, Syringe, Ticket, Timer, TrendingUp, Users, Weight, Zap } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertCircle, AlertTriangle, BarChart3, Bell, Building2, Calendar, Check, CheckCircle, Euro, FileCheck, FileText, Gift, Heart, History, Info, Lock, Mail, MessageCircle, PawPrint, RefreshCw, Scissors, Settings2, Shield, Star, Stethoscope, Syringe, Ticket, Timer, TrendingUp, Users, Weight, Zap } from 'lucide-react';
 import api from '@/app/lib/api';
 import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
@@ -16,6 +21,12 @@ function ClinicAutomations({ user, onNavigate }) {
   const [clinicPlan, setClinicPlan] = useState('starter');
   const [allowedAutomations, setAllowedAutomations] = useState([]);
   const [planAutomationsCount, setPlanAutomationsCount] = useState(0);
+  const [automationConfig, setAutomationConfig] = useState({});
+  const [automationLogs, setAutomationLogs] = useState([]);
+  const [showConfigDialog, setShowConfigDialog] = useState(false);
+  const [showLogSection, setShowLogSection] = useState(false);
+  const [configTarget, setConfigTarget] = useState(null);
+  const [configForm, setConfigForm] = useState({ timing: '', messageTemplate: '', channel: 'email' });
 
   useEffect(() => {
     loadAutomationSettings();
@@ -23,12 +34,19 @@ function ClinicAutomations({ user, onNavigate }) {
 
   const loadAutomationSettings = async () => {
     try {
-      const response = await api.get('automations/settings');
-      if (response.success) {
-        setAutomationSettings(response.settings || {});
-        setClinicPlan(response.plan || 'starter');
-        setAllowedAutomations(response.allowedAutomations || []);
-        setPlanAutomationsCount(response.automationsCount || 0);
+      const [settingsRes, logRes] = await Promise.all([
+        api.get('automations/settings'),
+        api.get('automations/log')
+      ]);
+      if (settingsRes.success) {
+        setAutomationSettings(settingsRes.settings || {});
+        setAutomationConfig(settingsRes.config || {});
+        setClinicPlan(settingsRes.plan || 'starter');
+        setAllowedAutomations(settingsRes.allowedAutomations || []);
+        setPlanAutomationsCount(settingsRes.automationsCount || 0);
+      }
+      if (logRes.success) {
+        setAutomationLogs(logRes.logs || []);
       }
     } catch (error) {
       console.error('Error loading automation settings:', error);
@@ -82,24 +100,58 @@ function ClinicAutomations({ user, onNavigate }) {
     }
   };
 
+  const openConfig = (settingKey, title) => {
+    const existingConfig = automationConfig[settingKey] || {};
+    setConfigTarget({ key: settingKey, title });
+    setConfigForm({
+      timing: existingConfig.timing || '',
+      messageTemplate: existingConfig.messageTemplate || '',
+      channel: existingConfig.channel || 'email'
+    });
+    setShowConfigDialog(true);
+  };
+
+  const saveConfig = async () => {
+    if (!configTarget) return;
+    try {
+      await api.post('automations/config', {
+        key: configTarget.key,
+        ...configForm
+      });
+      setAutomationConfig(prev => ({ ...prev, [configTarget.key]: { ...configForm } }));
+      setShowConfigDialog(false);
+    } catch (err) {
+      console.error('Error saving config:', err);
+    }
+  };
+
   // Helper component for automation item
   const AutomationItem = ({ settingKey, icon, title, description, gradient, forceDisabled = false }) => {
     const allowed = isAutomationAllowed(settingKey);
     const isDisabled = forceDisabled || !allowed;
+    const hasConfig = automationConfig[settingKey];
     
     return (
-      <div className={`flex items-center justify-between p-3 ${gradient} rounded-lg ${isDisabled ? 'opacity-50' : ''} relative`}>
+      <div className={`flex items-center justify-between p-3 ${gradient} rounded-lg ${isDisabled ? 'opacity-50' : ''} relative group`}>
         <div className="flex items-center gap-2">
           {icon}
           <div>
             <p className="text-sm font-medium flex items-center gap-1">
               {title}
               {!allowed && <Lock className="h-3 w-3 text-gray-400" />}
+              {hasConfig && <Settings2 className="h-3 w-3 text-purple-400" />}
             </p>
-            <p className="text-xs text-gray-500">{description}</p>
+            <p className="text-xs text-gray-500">
+              {hasConfig?.timing ? hasConfig.timing : description}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {allowed && !isDisabled && (
+            <button onClick={() => openConfig(settingKey, title)} className="p-1 rounded text-gray-400 hover:text-purple-500 hover:bg-purple-50 opacity-0 group-hover:opacity-100 transition-all">
+              <Settings2 className="h-3.5 w-3.5" />
+            </button>
+          )}
           {!allowed && (
             <Badge variant="outline" className="text-xs bg-amber-50 text-amber-600 border-amber-200">
               {clinicPlan === 'starter' ? 'Pro+' : 'Custom'}
@@ -128,6 +180,9 @@ function ClinicAutomations({ user, onNavigate }) {
           <p className="text-gray-500 text-sm">Configura le automazioni per la tua clinica</p>
         </div>
         <div className="flex items-center gap-3">
+          <Button variant="outline" size="sm" onClick={() => setShowLogSection(!showLogSection)} className="text-xs">
+            <History className="h-3.5 w-3.5 mr-1" /> Cronologia
+          </Button>
           <Badge variant="outline" className={`text-sm px-3 py-1 ${getPlanBadgeColor()}`}>
             Piano: {clinicPlan === 'pro' ? 'Pro' : clinicPlan === 'custom' ? 'Custom' : 'Starter'}
           </Badge>
@@ -365,10 +420,93 @@ function ClinicAutomations({ user, onNavigate }) {
           </Card>
         </div>
       )}
+
+      {/* Cronologia Esecuzioni */}
+      {showLogSection && (
+        <Card className="mt-4">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <History className="h-5 w-5 text-gray-500" /> Cronologia Esecuzioni
+            </CardTitle>
+            <CardDescription>Ultime 50 automazioni eseguite</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {automationLogs.length === 0 ? (
+              <div className="text-center py-8 text-gray-400">
+                <History className="h-10 w-10 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">Nessuna esecuzione registrata</p>
+                <p className="text-xs mt-1">Le automazioni verranno registrate qui quando si attivano</p>
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                {automationLogs.map((log, i) => (
+                  <div key={log.id || i} className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${log.status === 'completed' ? 'bg-green-500' : log.status === 'failed' ? 'bg-red-500' : 'bg-amber-500'}`}></div>
+                      <span className="font-medium text-gray-700">{log.automationName}</span>
+                      {log.petName && <Badge variant="outline" className="text-xs">🐾 {log.petName}</Badge>}
+                      {log.ownerName && <span className="text-gray-400">• {log.ownerName}</span>}
+                    </div>
+                    <span className="text-gray-400">{new Date(log.executedAt).toLocaleString('it-IT', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' })}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Config Dialog */}
+      <Dialog open={showConfigDialog} onOpenChange={setShowConfigDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings2 className="h-5 w-5 text-purple-500" /> Configura: {configTarget?.title}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Tempistica</Label>
+              <Input
+                value={configForm.timing}
+                onChange={e => setConfigForm(f => ({...f, timing: e.target.value}))}
+                placeholder="Es. 24 ore dopo, 14 giorni prima, ogni 6 mesi..."
+                className="mt-1"
+              />
+              <p className="text-xs text-gray-400 mt-1">Personalizza quando questa automazione si attiva</p>
+            </div>
+            <div>
+              <Label>Canale di invio</Label>
+              <Select value={configForm.channel} onValueChange={v => setConfigForm(f => ({...f, channel: v}))}>
+                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="email">📧 Email</SelectItem>
+                  <SelectItem value="app">📱 Notifica App</SelectItem>
+                  <SelectItem value="both">📧+📱 Entrambi</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Template messaggio (opzionale)</Label>
+              <Textarea
+                value={configForm.messageTemplate}
+                onChange={e => setConfigForm(f => ({...f, messageTemplate: e.target.value}))}
+                placeholder="Scrivi il testo del messaggio automatico...&#10;&#10;Usa {{nome_pet}}, {{nome_cliente}}, {{data}} come variabili."
+                rows={4}
+                className="mt-1 text-sm"
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="outline" onClick={() => setShowConfigDialog(false)}>Annulla</Button>
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={saveConfig}>
+                <Check className="h-4 w-4 mr-1" /> Salva Config
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-
-
 
 export default ClinicAutomations;

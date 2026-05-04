@@ -12,7 +12,7 @@ import {
   Calendar, FileText, PawPrint, Gift, Star, MessageCircle, Users, User, Inbox,
   Settings, Zap, Menu, X, LogOut, AlertCircle, Video, Receipt, BarChart3,
   Link2, ClipboardList, Stethoscope, FlaskConical, Globe, BookOpen,
-  LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield, Heart
+  LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield, Heart, Brain
 } from 'lucide-react';
 
 // ==================== DYNAMIC IMPORTS ====================
@@ -58,6 +58,7 @@ const ClinicLabInvoices = dynamic(() => import('@/app/components/clinic/ClinicLa
 const ClinicPrescriptions = dynamic(() => import('@/app/components/clinic/ClinicPrescriptions'), { ssr: false });
 const ClinicREVSettings = dynamic(() => import('@/app/components/clinic/ClinicREVSettings'), { ssr: false });
 const ClinicHealthPlans = dynamic(() => import('@/app/components/clinic/ClinicHealthPlans'), { ssr: false });
+const ClinicAIAssistant = dynamic(() => import('@/app/components/clinic/ClinicAIAssistant'), { ssr: false });
 
 // Owner Dashboard
 const OwnerDashboard = dynamic(() => import('@/app/components/owner/OwnerDashboardLayout'), { ssr: false });
@@ -193,6 +194,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     { icon: ClipboardList, label: 'Template', value: 'templates' },
     { icon: Receipt, label: 'Fatture Lab', value: 'labinvoices' },
     { icon: Zap, label: 'Automazioni', value: 'automations' },
+    { icon: Brain, label: 'AI Assistant', value: 'ai-assistant' },
     'divider',
     { icon: MessageCircle, label: 'Feedback', value: 'feedback' },
     { icon: Settings, label: 'Impostazioni', value: 'settings' },
@@ -274,6 +276,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'bookinglink' && <ClinicBookingLink user={user} onNavigate={setActiveTab} />}
         {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} onNavigate={setActiveTab} />}
         {activeTab === 'automations' && <ClinicAutomations user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'ai-assistant' && <ClinicAIAssistant user={user} onNavigate={setActiveTab} />}
         {activeTab === 'archive' && <ClinicArchive user={user} />}
         {activeTab === 'events' && <ClinicEvents user={user} />}
         {activeTab === 'settings' && <ClinicSettings user={user} onNavigate={setActiveTab} />}

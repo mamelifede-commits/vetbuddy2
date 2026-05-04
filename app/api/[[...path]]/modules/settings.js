@@ -21,6 +21,7 @@ export async function handleSettingsGet(path, request) {
   }
 
   // Automations settings
+  // Automations settings (enhanced with plan info)
   if (path === 'automations/settings') {
     const user = getUserFromRequest(request);
     if (!user || user.role !== 'clinic') return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
@@ -36,7 +37,40 @@ export async function handleSettingsGet(path, request) {
       referralThankYou: false, inactivePatientReminder: false, emergencyAlert: true
     };
     const settings = clinic?.automationSettings || defaultSettings;
-    return NextResponse.json(settings, { headers: corsHeaders });
+    const config = clinic?.automationConfig || {};
+    const plan = clinic?.subscriptionPlan || 'starter';
+    
+    // Starter: 5 automations, Pro: 21, Custom: all
+    const starterAllowed = ['appointmentReminders', 'bookingConfirmation', 'welcomeNewPet', 'petBirthday', 'appointmentConfirmation'];
+    const allowedAutomations = plan === 'custom' ? 'all' : plan === 'pro' ? 'all' : starterAllowed;
+    const automationsCount = plan === 'custom' ? 44 : plan === 'pro' ? 21 : 5;
+
+    return NextResponse.json({ 
+      success: true, 
+      settings, 
+      config,
+      plan, 
+      allowedAutomations, 
+      automationsCount 
+    }, { headers: corsHeaders });
+  }
+
+  // Automation config per key
+  if (path === 'automations/config') {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== 'clinic') return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const users = await getCollection('users');
+    const clinic = await users.findOne({ id: user.id });
+    return NextResponse.json({ success: true, config: clinic?.automationConfig || {} }, { headers: corsHeaders });
+  }
+
+  // Automation execution log
+  if (path === 'automations/log') {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== 'clinic') return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const logs = await getCollection('automation_logs');
+    const entries = await logs.find({ clinicId: user.id }).sort({ executedAt: -1 }).limit(50).toArray();
+    return NextResponse.json({ success: true, logs: entries }, { headers: corsHeaders });
   }
 
   // Video consult settings
@@ -190,7 +224,7 @@ export async function handleSettingsPost(path, request, body) {
     }
   }
 
-  // Automations settings
+  // Automations settings toggle
   if (path === 'automations/settings') {
     const user = getUserFromRequest(request);
     if (!user || user.role !== 'clinic') return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
@@ -200,6 +234,45 @@ export async function handleSettingsPost(path, request, body) {
     const updateKey = `automationSettings.${key}`;
     await users.updateOne({ id: user.id }, { $set: { [updateKey]: enabled } });
     return NextResponse.json({ success: true, key, enabled }, { headers: corsHeaders });
+  }
+
+  // Save automation config (timing, message template)
+  if (path === 'automations/config') {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== 'clinic') return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const { key, timing, messageTemplate, channel } = body;
+    if (!key) return NextResponse.json({ error: 'Chiave automazione mancante' }, { status: 400, headers: corsHeaders });
+    const users = await getCollection('users');
+    const updateKey = `automationConfig.${key}`;
+    const configData = {};
+    if (timing !== undefined) configData.timing = timing;
+    if (messageTemplate !== undefined) configData.messageTemplate = messageTemplate;
+    if (channel !== undefined) configData.channel = channel;
+    configData.updatedAt = new Date().toISOString();
+    await users.updateOne({ id: user.id }, { $set: { [updateKey]: configData } });
+    return NextResponse.json({ success: true, key, config: configData }, { headers: corsHeaders });
+  }
+
+  // Simulate automation execution (adds to log)
+  if (path === 'automations/simulate') {
+    const user = getUserFromRequest(request);
+    if (!user || user.role !== 'clinic') return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const { automationKey, automationName, petName, ownerName, details } = body;
+    const logs = await getCollection('automation_logs');
+    const logEntry = {
+      id: uuidv4(),
+      clinicId: user.id,
+      automationKey: automationKey || 'unknown',
+      automationName: automationName || 'Automazione',
+      petName: petName || '',
+      ownerName: ownerName || '',
+      details: details || '',
+      status: 'completed',
+      channel: 'email',
+      executedAt: new Date().toISOString()
+    };
+    await logs.insertOne(logEntry);
+    return NextResponse.json({ success: true, log: logEntry }, { headers: corsHeaders });
   }
 
   // Video consult settings

@@ -141,6 +141,7 @@ export async function GET(request) {
         ...DEFAULT_SETTINGS,
         ...settings
       },
+      config: clinic?.automationConfig || {},
       plan,
       planLimits,
       allowedAutomations,
