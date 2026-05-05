@@ -10,13 +10,33 @@ export default function BrochurePage() {
         @media print {
           body { margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
           .brochure-container { width: 100%; }
-          .brochure-page { page-break-after: always; page-break-inside: avoid; min-height: 100vh; }
-          .brochure-page:last-child { page-break-after: auto; }
           .no-print { display: none !important; }
           @page { margin: 0; size: A4; }
         }
         .brochure-container { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        .brochure-page { min-height: 100vh; position: relative; overflow: hidden; }
+        .brochure-page { 
+          min-height: 100vh; 
+          position: relative; 
+          overflow: hidden;
+          page-break-after: always;
+          break-after: page;
+          page-break-inside: avoid;
+          break-inside: avoid;
+          box-sizing: border-box;
+        }
+        .brochure-page:last-child {
+          page-break-after: auto;
+          break-after: auto;
+        }
+        @media print {
+          .brochure-page {
+            height: 297mm;
+            max-height: 297mm;
+            min-height: 297mm;
+            width: 210mm;
+            overflow: hidden;
+          }
+        }
       `}</style>
 
       {/* ====== DOWNLOAD BUTTON (screen only) ====== */}

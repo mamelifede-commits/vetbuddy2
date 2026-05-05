@@ -36,6 +36,9 @@ export async function GET(request) {
 
     const page = await browser.newPage();
     
+    // Set viewport to match A4 proportions (210mm x 297mm at 96dpi)
+    await page.setViewport({ width: 794, height: 1123 });
+    
     // Get the base URL
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     
@@ -49,6 +52,25 @@ export async function GET(request) {
     await page.evaluate(() => {
       const noprint = document.querySelectorAll('.no-print');
       noprint.forEach(el => el.style.display = 'none');
+      
+      // Force exact A4 page dimensions on each brochure page
+      const pages = document.querySelectorAll('.brochure-page');
+      pages.forEach(p => {
+        p.style.height = '297mm';
+        p.style.maxHeight = '297mm';
+        p.style.minHeight = '297mm';
+        p.style.overflow = 'hidden';
+        p.style.pageBreakAfter = 'always';
+        p.style.breakAfter = 'page';
+        p.style.pageBreakInside = 'avoid';
+        p.style.breakInside = 'avoid';
+        p.style.boxSizing = 'border-box';
+      });
+      // Remove page-break on last page
+      if (pages.length > 0) {
+        pages[pages.length - 1].style.pageBreakAfter = 'auto';
+        pages[pages.length - 1].style.breakAfter = 'auto';
+      }
     });
 
     // Wait for renders to complete
