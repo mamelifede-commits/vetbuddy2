@@ -410,6 +410,86 @@ export default function BrochurePage() {
       </div>
 
       {/* =====================================================
+          PAGINA 5B — PIANI SALUTE + AI ASSISTANT
+      ===================================================== */}
+      <div className="brochure-page bg-white px-12 py-14">
+        <PageHeader />
+
+        <div className="mt-6 mb-3">
+          <div className="inline-flex items-center gap-2 bg-indigo-100 text-indigo-700 px-4 py-1.5 rounded-full text-xs font-bold">
+            🚀 NUOVE FUNZIONALITÀ
+          </div>
+        </div>
+        <h2 className="text-3xl font-black text-gray-900 mb-1">Piani Salute + AI Assistant</h2>
+        <p className="text-gray-500 mb-8 text-sm">Programmi di prevenzione strutturati e strumenti AI integrati per il veterinario moderno.</p>
+
+        <div className="grid grid-cols-2 gap-6 mb-8">
+          <div className="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-6">
+            <h4 className="text-xl font-bold text-emerald-800 mb-3">Piani Salute</h4>
+            <p className="text-gray-500 text-sm mb-4">Crea programmi di prevenzione personalizzati per ogni paziente.</p>
+            <ul className="space-y-2 text-sm text-gray-700">
+              {[
+                'Crea programmi: Piano Cucciolo, Piano Senior, Prevenzione',
+                'Servizi inclusi: visite, vaccini, esami, trattamenti programmati',
+                'Assegna piani ai pazienti e monitora il progresso',
+                'Segna i servizi completati con un click',
+                'Dashboard: piani attivi, pazienti iscritti, servizi prossimi 30gg',
+                'Prezzo configurabile per ogni piano',
+              ].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-6">
+            <h4 className="text-xl font-bold text-indigo-800 mb-3">AI Assistant</h4>
+            <p className="text-gray-500 text-sm mb-4">Intelligenza artificiale al servizio del veterinario.</p>
+            <ul className="space-y-2 text-sm text-gray-700">
+              {[
+                'Riassumi Visita: riassunto strutturato dalle note cliniche',
+                'Scrivi Messaggio: comunicazioni professionali per i proprietari',
+                'Traduci Note Cliniche: da termini tecnici a linguaggio semplice',
+                'Risposta Intelligente: risposte contestuali ai messaggi clienti',
+                'Powered by AI — veloce, preciso, integrato nella dashboard',
+              ].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-6">
+          <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-6">
+            <h4 className="text-xl font-bold text-amber-800 mb-3">Team Inbox Avanzata</h4>
+            <p className="text-gray-500 text-sm mb-4">Gestione messaggi con priorità, stato e template.</p>
+            <ul className="space-y-2 text-sm text-gray-700">
+              {[
+                'Assegna priorità: Alta, Media, Bassa',
+                'Stati messaggi: Nuovo, In lavorazione, Risolto',
+                'Template di risposta rapida configurabili',
+                'Filtri per stato, priorità e data',
+              ].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-purple-50 border-2 border-purple-200 rounded-2xl p-6">
+            <h4 className="text-xl font-bold text-purple-800 mb-3">Automazioni Avanzate</h4>
+            <p className="text-gray-500 text-sm mb-4">Configurazione completa e log di esecuzione.</p>
+            <ul className="space-y-2 text-sm text-gray-700">
+              {[
+                'Timing personalizzabile (24h, 48h, 7gg, 30gg...)',
+                'Log di esecuzione per ogni automazione',
+                'Template con variabili dinamiche',
+                'Attivazione/disattivazione singola',
+              ].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* =====================================================
           PAGINA 6 — COME FUNZIONA + ANIMALI
       ===================================================== */}
       <div className="brochure-page bg-gray-50 px-12 py-14">
