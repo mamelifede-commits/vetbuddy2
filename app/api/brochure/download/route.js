@@ -7,21 +7,36 @@ export async function GET(request) {
   try {
     const puppeteer = require('puppeteer-core');
     
-    const browser = await puppeteer.launch({
-      executablePath: '/usr/bin/chromium',
-      headless: true,
-      args: [
+    let executablePath;
+    let args;
+
+    // Detect environment: Vercel (serverless) vs local
+    if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+      // Vercel / AWS Lambda — use @sparticuz/chromium
+      const chromium = require('@sparticuz/chromium');
+      executablePath = await chromium.executablePath();
+      args = chromium.args;
+    } else {
+      // Local development — use system chromium
+      executablePath = '/usr/bin/chromium';
+      args = [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
         '--font-render-hinting=none',
-      ],
+      ];
+    }
+
+    const browser = await puppeteer.launch({
+      executablePath,
+      headless: true,
+      args,
     });
 
     const page = await browser.newPage();
     
-    // Get the base URL from environment
+    // Get the base URL
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     
     // Navigate to the presentazione page
@@ -30,13 +45,13 @@ export async function GET(request) {
       timeout: 20000,
     });
 
-    // Hide the download button and "Torna al sito" button for the PDF
+    // Hide the download button and navigation elements for PDF
     await page.evaluate(() => {
       const noprint = document.querySelectorAll('.no-print');
       noprint.forEach(el => el.style.display = 'none');
     });
 
-    // Wait a bit for any animations/renders to complete
+    // Wait for renders to complete
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     // Generate PDF - A4 portrait, print background colors
