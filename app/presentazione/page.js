@@ -65,9 +65,9 @@ export default function BrochurePage() {
         {/* 3 key numbers */}
         <div className="flex gap-10">
           {[
-            { n: '-70%', l: 'Telefonate' },
-            { n: '+40%', l: 'Prenotazioni online' },
-            { n: '15h', l: 'Risparmiate/mese' },
+            { n: 'Fino a -70%', l: 'Telefonate (obiettivo pilot)' },
+            { n: 'Fino a +40%', l: 'Prenotazioni online (obiettivo pilot)' },
+            { n: 'Fino a 15h', l: 'Risparmiate/mese (obiettivo pilot)' },
           ].map((s, i) => (
             <div key={i} className="text-center">
               <div className="text-3xl font-black mb-1" style={{ color: '#ffffff' }}>{s.n}</div>
@@ -91,9 +91,9 @@ export default function BrochurePage() {
         <p className="text-gray-500 text-lg mb-10 max-w-2xl">Non è l'ennesimo gestionale. È il copilota che riduce il caos operativo e aumenta le visite ricorrenti.</p>
 
         <div className="grid grid-cols-3 gap-6 mb-12">
-          <StatBox number="-70%" label="telefonate evitate grazie a prenotazioni online e reminder automatici" />
-          <StatBox number="15h" label="risparmiate ogni mese dallo staff della clinica" />
-          <StatBox number="+25%" label="clienti che tornano grazie a follow-up e richiami automatici" />
+          <StatBox number="Fino a -70%" label="telefonate evitate grazie a prenotazioni online e reminder automatici (obiettivo pilot)" />
+          <StatBox number="Fino a 15h" label="risparmiate ogni mese dallo staff della clinica (obiettivo pilot)" />
+          <StatBox number="Fino a +25%" label="clienti che tornano grazie a follow-up e richiami automatici (obiettivo pilot)" />
         </div>
 
         <h3 className="text-2xl font-bold text-gray-900 mb-6">Due ecosistemi, una piattaforma</h3>
@@ -102,7 +102,7 @@ export default function BrochurePage() {
             <h4 className="text-xl font-bold mb-3">Per le Cliniche Veterinarie</h4>
             <p className="text-white/80 text-sm mb-4">Tutto ciò che serve per gestire la tua clinica in modo digitale.</p>
             <ul className="space-y-1.5 text-sm text-white/90">
-              {['Agenda digitale e prenotazioni online', 'Gestione pazienti e cartelle cliniche', 'Fatturazione, ricevute e listino servizi', 'Documenti PDF con invio automatico via email', 'Ricette Elettroniche REV (integrazione Vetinfo)', 'Team inbox e messaggistica clienti', '44+ automazioni attive 24/7', 'Metriche, report e dashboard fatturato'].map((f, i) => (
+              {['Agenda digitale e prenotazioni online', 'Gestione pazienti e cartelle cliniche', 'Listino servizi, ricevute operative ed esportazioni', 'Documenti PDF con invio automatico via email', 'Assistente al flusso REV: preparazione, registrazione e archiviazione', 'Team inbox e messaggistica clienti', '44+ automazioni attive 24/7', 'Metriche, report e dashboard fatturato'].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
@@ -153,8 +153,8 @@ export default function BrochurePage() {
             desc="Carica referti, prescrizioni, fatture in PDF. Invia automaticamente via email al proprietario. Il cliente li ritrova anche nell'app."
           />
           <FeatureBlock
-            title="Fatturazione e Pagamenti"
-            desc="Crea fatture e ricevute direttamente dalla piattaforma. Listino servizi con prezzi preimpostati. Export CSV e PDF. Statistiche fatturato mensile, pagato e in sospeso."
+            title="Listino e Riepiloghi Economici"
+            desc="Listino servizi con prezzi preimpostati, ricevute operative, esportazioni CSV/PDF e riepiloghi economici mensili per tenere tutto sotto controllo."
           />
           <FeatureBlock
             title="Team Inbox"
@@ -454,6 +454,7 @@ export default function BrochurePage() {
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
+            <p className="text-xs text-indigo-600/70 mt-4 italic border-t border-indigo-200 pt-3">L&apos;assistente non sostituisce il veterinario: aiuta a scrivere, riassumere e organizzare comunicazioni sempre validate dalla clinica.</p>
           </div>
         </div>
 

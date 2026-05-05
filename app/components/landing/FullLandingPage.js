@@ -138,10 +138,10 @@ function FullLandingPage({ onLogin }) {
           {/* Risultati chiave — numeri impatto */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
-              { icon: PhoneOff, value: '-70%', label: 'Telefonate', color: 'text-red-500' },
-              { icon: CalendarCheck, value: '+40%', label: 'Prenotazioni online', color: 'text-green-500' },
-              { icon: Timer, value: '15h', label: 'Risparmiate/mese', color: 'text-blue-500' },
-              { icon: Repeat, value: '+25%', label: 'Clienti che tornano', color: 'text-purple-500' },
+              { icon: PhoneOff, value: 'Fino a -70%', label: 'Telefonate (obiettivo pilot)', color: 'text-red-500' },
+              { icon: CalendarCheck, value: 'Fino a +40%', label: 'Prenotazioni online (obiettivo pilot)', color: 'text-green-500' },
+              { icon: Timer, value: 'Fino a 15h', label: 'Risparmiate/mese (obiettivo pilot)', color: 'text-blue-500' },
+              { icon: Repeat, value: 'Fino a +25%', label: 'Clienti che tornano (obiettivo pilot)', color: 'text-purple-500' },
             ].map((stat, i) => (
               <div key={i} className="bg-white/80 backdrop-blur rounded-xl p-4 border border-gray-100 shadow-sm">
                 <stat.icon className={`h-6 w-6 ${stat.color} mx-auto mb-2`} />
@@ -217,12 +217,12 @@ function FullLandingPage({ onLogin }) {
               <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Il risultato per la tua clinica</h3>
               <div className="space-y-4">
                 {[
-                  { label: 'Telefonate evitate', value: '~120/mese', icon: PhoneOff, color: 'text-red-500' },
-                  { label: 'Ore risparmiate dallo staff', value: '~15h/mese', icon: Timer, color: 'text-blue-500' },
-                  { label: 'Prenotazioni generate online', value: '~45/mese', icon: CalendarCheck, color: 'text-green-500' },
-                  { label: 'No-show ridotti', value: '~60%', icon: Shield, color: 'text-purple-500' },
-                  { label: 'Clienti riattivati', value: '~20/mese', icon: Repeat, color: 'text-orange-500' },
-                  { label: 'Fatturato stimato generato', value: '€2.800/mese', icon: Euro, color: 'text-emerald-600' },
+                  { label: 'Telefonate evitate (obiettivo)', value: 'Fino a 120/mese', icon: PhoneOff, color: 'text-red-500' },
+                  { label: 'Ore risparmiate (obiettivo)', value: 'Fino a 15h/mese', icon: Timer, color: 'text-blue-500' },
+                  { label: 'Prenotazioni online (obiettivo)', value: 'Fino a 45/mese', icon: CalendarCheck, color: 'text-green-500' },
+                  { label: 'No-show ridotti (obiettivo)', value: 'Fino a -60%', icon: Shield, color: 'text-purple-500' },
+                  { label: 'Clienti riattivati (obiettivo)', value: 'Fino a 20/mese', icon: Repeat, color: 'text-orange-500' },
+                  { label: 'Fatturato stimato (obiettivo)', value: 'Fino a €2.800/mese', icon: Euro, color: 'text-emerald-600' },
                 ].map((r, i) => (
                   <div key={i} className="flex items-center justify-between bg-white rounded-lg p-3 border">
                     <div className="flex items-center gap-3">
@@ -258,11 +258,13 @@ function FullLandingPage({ onLogin }) {
               { icon: FlaskConical, title: 'Lab Network', desc: 'Richieste analisi, marketplace laboratori, upload referti, revisione e invio al proprietario.', color: 'bg-purple-500', tag: 'Vantaggio competitivo' },
               { icon: PawPrint, title: 'App Proprietario', desc: 'L\'app ufficiale della tua clinica: prenotazioni, reminder, referti, messaggi, follow-up.', color: 'bg-pink-500', tag: null },
               { icon: BarChart3, title: 'Dashboard Valore', desc: 'Prenotazioni generate, telefonate evitate, ore risparmiate, fatturato stimato.', color: 'bg-emerald-500', tag: 'Esclusivo' },
-              { icon: Receipt, title: 'Fatturazione', desc: 'Fatture proforma, documenti di cortesia, export dati per il commercialista.', color: 'bg-orange-500', tag: null },
+              { icon: Receipt, title: 'Listino e Riepiloghi', desc: 'Listino servizi, ricevute operative, esportazioni e riepiloghi economici.', color: 'bg-orange-500', tag: null },
               { icon: Stethoscope, title: 'Assistente REV', desc: 'Preparazione bozze, archiviazione ricette, storico prescrizioni. L\'emissione ufficiale resta al veterinario.', color: 'bg-emerald-600', tag: null },
               { icon: Gift, title: 'Programma Fedeltà', desc: 'Punti, premi e incentivi per far tornare i clienti. Personalizzabile dalla clinica.', color: 'bg-yellow-500', tag: null },
               { icon: Users, title: 'Gestione Pazienti', desc: 'Schede animali complete, storico visite, documenti, import CSV da altri gestionali.', color: 'bg-slate-500', tag: null },
               { icon: Zap, title: 'Automazioni', desc: 'Reminder, follow-up, richiami, cliente inattivo, compleanno animale. Tutto automatico.', color: 'bg-violet-500', tag: 'Pro' },
+              { icon: Heart, title: 'Piani Salute', desc: 'Programmi di prevenzione strutturati: Cucciolo, Senior, Prevenzione. Monitora il progresso per ogni paziente.', color: 'bg-rose-500', tag: 'Nuovo' },
+              { icon: Brain, title: 'AI Assistant', desc: 'Riassumi visite, scrivi messaggi, traduci note cliniche. Sempre validato dalla clinica.', color: 'bg-indigo-600', tag: 'Nuovo' },
             ].map((m, i) => (
               <Card key={i} className="hover:shadow-lg transition group relative overflow-hidden">
                 {m.tag && <div className="absolute top-2 right-2"><Badge className="bg-coral-500 text-white text-[10px]">{m.tag}</Badge></div>}
