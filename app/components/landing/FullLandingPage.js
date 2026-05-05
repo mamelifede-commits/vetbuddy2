@@ -220,9 +220,9 @@ function FullLandingPage({ onLogin }) {
                   { label: 'Telefonate evitate (obiettivo)', value: 'Fino a 120/mese', icon: PhoneOff, color: 'text-red-500' },
                   { label: 'Ore risparmiate (obiettivo)', value: 'Fino a 15h/mese', icon: Timer, color: 'text-blue-500' },
                   { label: 'Prenotazioni online (obiettivo)', value: 'Fino a 45/mese', icon: CalendarCheck, color: 'text-green-500' },
-                  { label: 'No-show ridotti (obiettivo)', value: 'Fino a -60%', icon: Shield, color: 'text-purple-500' },
+                  { label: 'No-show ridotti (obiettivo)', value: 'Obiettivo pilot', icon: Shield, color: 'text-purple-500' },
                   { label: 'Clienti riattivati (obiettivo)', value: 'Fino a 20/mese', icon: Repeat, color: 'text-orange-500' },
-                  { label: 'Fatturato stimato (obiettivo)', value: 'Fino a €2.800/mese', icon: Euro, color: 'text-emerald-600' },
+                  { label: 'Valore stimato generato (obiettivo)', value: 'Fino a €2.800/mese', icon: Euro, color: 'text-emerald-600' },
                 ].map((r, i) => (
                   <div key={i} className="flex items-center justify-between bg-white rounded-lg p-3 border">
                     <div className="flex items-center gap-3">
@@ -233,7 +233,7 @@ function FullLandingPage({ onLogin }) {
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-gray-400 mt-4 text-center italic">*Stime basate su una clinica media con 3 veterinari</p>
+              <p className="text-xs text-gray-400 mt-4 text-center italic">*Obiettivi del progetto pilota. L'impatto viene misurato durante il pilot.</p>
             </div>
           </div>
         </div>
@@ -246,8 +246,8 @@ function FullLandingPage({ onLogin }) {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <Badge className="bg-coral-100 text-coral-700 mb-4">🛠️ I moduli</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Tutto quello che serve, niente di superfluo</h2>
-            <p className="text-gray-600">Ogni modulo è progettato per risolvere un problema concreto della clinica.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Gli strumenti operativi per la tua clinica</h2>
+            <p className="text-gray-600">Ogni modulo è progettato per risolvere un problema concreto, senza sostituire i tuoi strumenti esistenti.</p>
           </div>
           <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">
             {[
@@ -316,7 +316,7 @@ function FullLandingPage({ onLogin }) {
                   'Disponibilità ritiro campioni',
                   'Upload referto PDF con note tecniche',
                   'Notifiche automatiche alla clinica',
-                  'Integrazione API per software di laboratorio',
+                  'Integrazione API (quando disponibile e configurata)',
                 ].map((f, i) => (
                   <div key={i} className="flex items-start gap-2"><Check className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" /><span className="text-sm text-gray-700">{f}</span></div>
                 ))}
@@ -408,7 +408,7 @@ function FullLandingPage({ onLogin }) {
           <div className="text-center mb-12">
             <Badge className="bg-coral-100 text-coral-700 mb-4">💰 Prezzi</Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Scegli il piano adatto alla tua clinica</h2>
-            <p className="text-gray-600">Tutti i prezzi sono IVA esclusa. Puoi annullare in qualsiasi momento.</p>
+            <p className="text-gray-600">Tutti i prezzi sono IVA esclusa. Abbonamento mensile, nessun vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.</p>
           </div>
           <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-5">
             {/* STARTER */}
@@ -480,7 +480,7 @@ function FullLandingPage({ onLogin }) {
                 <p className="text-xs text-gray-400 mb-4">Per gruppi multi-sede e network</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-white">Custom</span></div>
                 <div className="space-y-2 text-sm">
-                  {['Sedi illimitate', 'Utenti illimitati', 'Account manager dedicato', 'Onboarding personalizzato', 'API e integrazioni', 'SLA garantito', 'Fatturazione centralizzata'].map((f, i) => (
+                  {['Sedi illimitate', 'Utenti illimitati', 'Account manager dedicato', 'Onboarding personalizzato', 'API e integrazioni', 'SLA garantito', 'Reportistica centralizzata'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-400" /><span className="text-gray-300">{f}</span></div>
                   ))}
                 </div>
@@ -488,7 +488,7 @@ function FullLandingPage({ onLogin }) {
               </CardContent>
             </Card>
           </div>
-          <p className="text-center text-sm text-gray-500 mt-6 italic">Non devi cambiare gestionale per iniziare: VetBuddy può lavorare accanto ai tuoi strumenti attuali.</p>
+          <p className="text-center text-sm text-gray-500 mt-6 italic">Non devi cambiare gestionale per iniziare: VetBuddy lavora accanto ai tuoi strumenti attuali. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.</p>
         </div>
       </section>
 
@@ -499,8 +499,8 @@ function FullLandingPage({ onLogin }) {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <Badge className="bg-coral-100 text-coral-700 mb-4">🏙️ Pilot Milano</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">90 giorni per misurare quante telefonate, ore e prenotazioni VetBuddy genera per la tua clinica.</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Piano Growth gratuito per 90 giorni. Nessun vincolo. Se non ti convince, non paghi nulla.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Pilot Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica.</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Piano Growth gratuito per 90 giorni. Nessun vincolo. Alla fine del pilot ricevi un riepilogo con prenotazioni generate, telefonate evitate, reminder inviati, tempo risparmiato e clienti riattivati.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-4">
@@ -598,7 +598,7 @@ function FullLandingPage({ onLogin }) {
               { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. VetBuddy non è un intermediario di pagamento per i servizi veterinari. I pagamenti delle visite avvengono direttamente tra clinica e proprietario. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
               { q: 'Quanto costa per i proprietari di animali?', a: 'Zero. L\'app proprietario è completamente gratuita. Nessun costo nascosto, mai.' },
               { q: 'Cos\'è il Pilot Milano?', a: 'Pilot Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Include onboarding, configurazione e supporto. Nessun vincolo. Alla fine del pilot ricevi un riepilogo con prenotazioni generate, telefonate evitate, reminder inviati, tempo risparmiato e clienti riattivati.' },
-              { q: 'Posso annullare in qualsiasi momento?', a: 'Sì. Nessun vincolo contrattuale. Puoi annullare l\'abbonamento quando vuoi dalla sezione Impostazioni.' },
+              { q: 'Posso annullare in qualsiasi momento?', a: 'Abbonamento mensile, nessun vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.' },
               { q: 'Come funziona il Lab Network?', a: 'La clinica richiede un\'analisi dalla scheda del paziente, il laboratorio la riceve, la processa e carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando renderlo visibile al proprietario.' },
               { q: 'Serve una formazione tecnica per usarlo?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile via email e chat.' },
             ].map((faq, i) => (
