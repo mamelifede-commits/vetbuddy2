@@ -980,15 +980,21 @@ async function generateBrochurePDF() {
 }
 
 // ====================== API HANDLER ======================
-export async function GET() {
+export async function GET(request) {
   try {
     const pdfBytes = await generateBrochurePDF();
+    const { searchParams } = new URL(request.url);
+    const forceDownload = searchParams.get('download') === '1';
+    
     return new NextResponse(pdfBytes, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="VetBuddy_Brochure_2025.pdf"',
+        'Content-Disposition': forceDownload 
+          ? 'attachment; filename="VetBuddy_Brochure_2025.pdf"'
+          : 'inline; filename="VetBuddy_Brochure_2025.pdf"',
         'Content-Length': pdfBytes.length.toString(),
+        'Cache-Control': 'no-cache',
       },
     });
   } catch (error) {
