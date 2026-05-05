@@ -29,45 +29,40 @@ export default function BrochurePage() {
         </Link>
       </div>
 
-      {/* ====== PAGINA 1 — COPERTINA ====== */}
+      {/* ====================================================================
+          PAGINA 1 — COPERTINA
+      ==================================================================== */}
       <div className="brochure-page flex flex-col items-center justify-center px-12 py-12 text-center text-white relative" style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #f97316 50%, #FF6B6B 100%)' }}>
-        {/* Decorative circles */}
         <div className="absolute top-10 right-10 w-64 h-64 rounded-full" style={{ background: 'rgba(255,255,255,0.1)' }}></div>
         <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}></div>
 
-        {/* Logo */}
         <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-5" style={{ background: '#ffffff' }}>
           <PawPrint className="w-14 h-14" style={{ color: '#FF6B6B' }} />
         </div>
         
-        <h1 className="text-6xl font-black tracking-tight mb-2" style={{ color: '#ffffff' }}>
-          VetBuddy
-        </h1>
+        <h1 className="text-6xl font-black tracking-tight mb-2" style={{ color: '#ffffff' }}>VetBuddy</h1>
         <div className="w-16 h-1 mx-auto mb-8 rounded-full" style={{ background: '#ffffff', opacity: 0.5 }}></div>
 
-        {/* Claim */}
         <p className="text-2xl leading-relaxed font-medium mb-3" style={{ color: '#ffffff' }}>
           Più prenotazioni. Meno telefonate.<br/>
           <strong className="font-black">Clienti sempre seguiti.</strong>
         </p>
         <p className="text-base mb-8" style={{ color: '#ffffff', opacity: 0.85 }}>
-          Il copilota operativo che automatizza prenotazioni, reminder,<br/>comunicazioni, referti e follow-up per la tua clinica.
+          Il copilota operativo che automatizza prenotazioni, promemoria,<br/>comunicazioni, referti e ricontatti per la tua clinica.
         </p>
 
-        {/* Pilot Badge */}
         <div className="inline-flex items-center gap-3 px-7 py-3 rounded-2xl mb-4" style={{ background: 'rgba(255,255,255,0.25)', border: '2px solid rgba(255,255,255,0.4)' }}>
           <div className="w-3 h-3 rounded-full" style={{ background: '#4ade80' }}></div>
-          <span className="text-lg font-bold" style={{ color: '#ffffff' }}>Pilot Milano 2025</span>
+          <span className="text-lg font-bold" style={{ color: '#ffffff' }}>Progetto pilota Milano 2025</span>
         </div>
 
-        <p className="text-sm mb-8" style={{ color: '#ffffff', opacity: 0.8 }}>Pilot Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica</p>
+        <p className="text-sm mb-8" style={{ color: '#ffffff', opacity: 0.8 }}>90 giorni per misurare il valore generato da VetBuddy nella tua clinica.</p>
 
-        {/* 3 key numbers */}
         <div className="flex gap-10">
           {[
-            { n: 'Fino a -70%', l: 'Telefonate (obiettivo pilot)' },
-            { n: 'Fino a +40%', l: 'Prenotazioni online (obiettivo pilot)' },
-            { n: 'Fino a 15h', l: 'Risparmiate/mese (obiettivo pilot)' },
+            { n: 'Fino a -70%', l: 'Telefonate (obiettivo del progetto pilota)' },
+            { n: 'Fino a +40%', l: 'Prenotazioni online (obiettivo del progetto pilota)' },
+            { n: 'Fino a 15h', l: 'Risparmiate/mese (obiettivo del progetto pilota)' },
           ].map((s, i) => (
             <div key={i} className="text-center">
               <div className="text-3xl font-black mb-1" style={{ color: '#ffffff' }}>{s.n}</div>
@@ -81,19 +76,19 @@ export default function BrochurePage() {
         </div>
       </div>
 
-      {/* =====================================================
-          PAGINA 2 — CHI SIAMO + PROPOSTA DI VALORE
-      ===================================================== */}
+      {/* ====================================================================
+          PAGINA 2 — PERCHÉ VETBUDDY + PROPOSTA DI VALORE
+      ==================================================================== */}
       <div className="brochure-page bg-white px-12 py-14">
         <PageHeader />
         
         <h2 className="text-4xl font-black text-gray-900 mb-2 mt-6">Perché VetBuddy?</h2>
-        <p className="text-gray-500 text-lg mb-10 max-w-2xl">Non è l'ennesimo gestionale. È il copilota che riduce il caos operativo e aumenta le visite ricorrenti.</p>
+        <p className="text-gray-500 text-lg mb-10 max-w-2xl">Non è l&apos;ennesimo gestionale. È il copilota operativo che riduce il caos quotidiano e aumenta le visite ricorrenti.</p>
 
         <div className="grid grid-cols-3 gap-6 mb-12">
-          <StatBox number="Fino a -70%" label="telefonate evitate grazie a prenotazioni online e reminder automatici (obiettivo pilot)" />
-          <StatBox number="Fino a 15h" label="risparmiate ogni mese dallo staff della clinica (obiettivo pilot)" />
-          <StatBox number="Fino a +25%" label="clienti che tornano grazie a follow-up e richiami automatici (obiettivo pilot)" />
+          <StatBox number="Fino a -70%" label="telefonate evitate grazie a prenotazioni online e promemoria automatici (obiettivo del progetto pilota)" />
+          <StatBox number="Fino a 15h" label="risparmiate ogni mese dallo staff della clinica (obiettivo del progetto pilota)" />
+          <StatBox number="Fino a +25%" label="clienti che tornano grazie a ricontatti e richiami automatici (obiettivo del progetto pilota)" />
         </div>
 
         <h3 className="text-2xl font-bold text-gray-900 mb-6">Due ecosistemi, una piattaforma</h3>
@@ -102,34 +97,34 @@ export default function BrochurePage() {
             <h4 className="text-xl font-bold mb-3">Per le Cliniche Veterinarie</h4>
             <p className="text-white/80 text-sm mb-4">Gli strumenti operativi per ridurre telefonate, automatizzare comunicazioni e seguire meglio i clienti.</p>
             <ul className="space-y-1.5 text-sm text-white/90">
-              {['Agenda digitale e prenotazioni online', 'Schede animale, documenti e storico visite', 'Listino servizi, ricevute operative ed esportazioni', 'Documenti PDF con invio automatico via email', 'Assistente al flusso REV: preparazione, registrazione e archiviazione', 'Team inbox e messaggistica clienti', '44+ automazioni attive 24/7', 'Metriche, report e dashboard valore generato'].map((f, i) => (
+              {['Agenda digitale e prenotazioni online', 'Schede animale, documenti e storico visite', 'Listino servizi, ricevute operative ed esportazioni', 'Documenti PDF con invio automatico al proprietario', 'Assistente al flusso Ricetta Elettronica Veterinaria', 'Casella messaggi condivisa', 'Oltre 40 automazioni operative', 'Cruscotto del valore generato'].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
             <div className="mt-4 pt-3 border-t border-white/20">
-              <p className="font-bold">Growth: Piano consigliato</p>
-              <p className="text-white/70 text-xs">€69/mese + IVA • Pilot: gratis 90 giorni</p>
+              <p className="font-bold">Piano Crescita: consigliato</p>
+              <p className="text-white/70 text-xs">€69/mese + IVA • Progetto pilota: gratis 90 giorni</p>
             </div>
           </div>
           <div className="rounded-2xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #2563EB, #4F46E5)' }}>
             <h4 className="text-xl font-bold mb-3">Per i Proprietari di Animali</h4>
-            <p className="text-white/80 text-sm mb-4">La salute dei tuoi animali in un'unica app.</p>
+            <p className="text-white/80 text-sm mb-4">L&apos;area proprietario è il canale digitale con cui la clinica segue il cliente anche dopo la visita.</p>
             <ul className="space-y-1.5 text-sm text-white/90">
-              {['Prenota visite online in pochi click', 'Ricevi documenti e referti digitali', 'Profilo completo per ogni animale', 'Reminder automatici per visite e vaccini', 'Programma fedeltà e premi', 'Chat diretta con la clinica'].map((f, i) => (
+              {['Prenotazione online in pochi click', 'Profilo animale completo', 'Documenti e referti autorizzati dalla clinica', 'Promemoria visite e vaccini', 'Comunicazioni dalla clinica', 'Programma fedeltà configurabile', 'Storico visite e documenti', 'Accesso tramite area riservata'].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
             <div className="mt-4 pt-3 border-t border-white/20">
-              <p className="font-bold">100% Gratuito</p>
+              <p className="font-bold">100% Gratuito per il proprietario</p>
               <p className="text-white/70 text-xs">Per sempre, nessun costo nascosto</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* =====================================================
-          PAGINA 3 — FUNZIONALITÀ CLINICA (dettaglio)
-      ===================================================== */}
+      {/* ====================================================================
+          PAGINA 3 — FUNZIONALITÀ CLINICA
+      ==================================================================== */}
       <div className="brochure-page bg-white px-12 py-14">
         <PageHeader />
         <h2 className="text-3xl font-black text-gray-900 mb-1 mt-6">Funzionalità per la Clinica</h2>
@@ -150,19 +145,19 @@ export default function BrochurePage() {
           />
           <FeatureBlock
             title="Documenti e PDF"
-            desc="Carica referti, prescrizioni, fatture in PDF. Invia automaticamente via email al proprietario. Il cliente li ritrova anche nell'app."
+            desc="Carica referti, prescrizioni, documenti e riepiloghi in PDF. Invia automaticamente al proprietario. Il proprietario può consultarli tramite area riservata, solo quando autorizzati dalla clinica."
           />
           <FeatureBlock
-            title="Listino e Riepiloghi Economici"
-            desc="Listino servizi con prezzi preimpostati, ricevute operative, esportazioni CSV/PDF e riepiloghi economici mensili per tenere tutto sotto controllo."
+            title="Listino e riepiloghi economici"
+            desc="VetBuddy consente di organizzare listini, ricevute operative, esportazioni e riepiloghi economici. Gli adempimenti fiscali e contabili restano in capo alla clinica e ai suoi strumenti amministrativi."
           />
           <FeatureBlock
-            title="Team Inbox"
-            desc="Messaggistica centralizzata con assegnazione ticket allo staff. Chat diretta con i clienti per comunicazioni rapide."
+            title="Casella messaggi condivisa"
+            desc="Messaggistica centralizzata con assegnazione allo staff, priorità, stato e modelli di risposta. Comunicazioni rapide e ordinate con i proprietari."
           />
           <FeatureBlock
-            title="Metriche e Report"
-            desc="Dashboard con prenotazioni generate, telefonate evitate, reminder inviati, tempo risparmiato, clienti riattivati, richieste laboratorio gestite e riepiloghi economici mensili."
+            title="Cruscotto del valore generato"
+            desc="Prenotazioni generate, telefonate evitate, promemoria inviati, tempo risparmiato, clienti riattivati, richieste laboratorio gestite e riepiloghi economici mensili."
           />
           <FeatureBlock
             title="Google Calendar Sync"
@@ -170,7 +165,7 @@ export default function BrochurePage() {
           />
           <FeatureBlock
             title="Video-Consulti"
-            desc="Consulenze veterinarie a distanza con videochiamata integrata. Ideale per follow-up, controlli post-operatori e consulti rapidi."
+            desc="Consulenze veterinarie a distanza con videochiamata integrata. Ideale per ricontatti, controlli post-operatori e consulti rapidi."
           />
           <FeatureBlock
             title="Link Prenotazione + QR Code"
@@ -182,35 +177,34 @@ export default function BrochurePage() {
           />
           <FeatureBlock
             title="Programma Fedeltà"
-            desc="Sistema a punti per fidelizzare i clienti. I proprietari accumulano punti ad ogni visita (100 punti = €5 di sconto). Configurabile dalla clinica."
+            desc="Sistema a punti configurabile dalla clinica, con premi o vantaggi definiti secondo le proprie regole commerciali. La clinica decide in autonomia regole, vantaggi e condizioni del programma."
           />
         </div>
       </div>
 
-      {/* =====================================================
-          PAGINA 3B — MODULO RICETTA ELETTRONICA VETERINARIA
-      ===================================================== */}
+      {/* ====================================================================
+          PAGINA 4 — ASSISTENTE AL FLUSSO REV
+      ==================================================================== */}
       <div className="brochure-page bg-white px-12 py-14">
         <PageHeader />
         <div className="mt-6 mb-2">
           <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold">
-            💊 NUOVA FUNZIONALITÀ
+            💊 FUNZIONALITÀ
           </div>
         </div>
-        <h2 className="text-3xl font-black text-gray-900 mb-1">Modulo Ricetta Elettronica Veterinaria</h2>
-        <p className="text-gray-500 mb-5 text-sm">VetBuddy aiuta la clinica a gestire il flusso prescrittivo in modo ordinato e digitale: dalla preparazione della prescrizione alla sua archiviazione nella cartella clinica del paziente.</p>
+        <h2 className="text-3xl font-black text-gray-900 mb-1">Assistente al flusso Ricetta Elettronica Veterinaria</h2>
+        <p className="text-gray-500 mb-5 text-sm">VetBuddy aiuta la clinica a preparare, organizzare e archiviare il flusso relativo alla Ricetta Elettronica Veterinaria. L&apos;emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali e sotto la propria responsabilità professionale.</p>
 
-        {/* Cosa fa VetBuddy vs Cosa resta al veterinario */}
         <div className="grid grid-cols-2 gap-5 mb-6">
           <div className="border-2 border-emerald-200 rounded-2xl p-5 bg-emerald-50/30">
             <h4 className="font-bold text-emerald-800 text-base mb-3 flex items-center gap-1.5">✅ Cosa fa VetBuddy</h4>
             <ul className="space-y-1.5 text-xs text-gray-700">
               {[
-                'Prepara la bozza dalla scheda paziente',
-                'Centralizza farmaci, posologia e durata',
-                'Riduce errori e passaggi manuali',
-                'Archivia prescrizioni e storico',
-                'Rende consultabili i dati autorizzati',
+                'Prepara la bozza dalla scheda animale',
+                'Organizza farmaci, posologia e durata',
+                'Riduce passaggi manuali',
+                'Archivia numero ricetta, PIN e storico',
+                'Rende consultabili solo i dati autorizzati dalla clinica',
               ].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
@@ -220,9 +214,11 @@ export default function BrochurePage() {
             <h4 className="font-bold text-amber-800 text-base mb-3 flex items-center gap-1.5">🩺 Cosa resta in capo al veterinario</h4>
             <ul className="space-y-1.5 text-xs text-gray-700">
               {[
-                'Conferma finale dell\'emissione',
-                'Utilizzo delle credenziali e dell\'abilitazione previste',
-                'Responsabilità professionale della prescrizione',
+                'Emissione ufficiale',
+                'Uso delle credenziali personali',
+                'Abilitazione al sistema nazionale',
+                'Verifica delle informazioni',
+                'Responsabilità professionale',
               ].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
@@ -230,12 +226,11 @@ export default function BrochurePage() {
           </div>
         </div>
 
-        {/* Modalità operative */}
         <div className="grid grid-cols-2 gap-5 mb-6">
           <div className="border-2 border-emerald-200 rounded-2xl p-4 bg-emerald-50/20 relative">
             <div className="absolute -top-2.5 left-4 bg-emerald-500 text-white text-xs px-3 py-0.5 rounded-full font-bold">ATTIVO</div>
             <h4 className="font-bold text-emerald-800 text-sm mb-2 mt-1">Modalità guidata/manuale</h4>
-            <p className="text-gray-600 text-xs leading-snug">VetBuddy prepara il flusso e consente di registrare successivamente gli estremi della ricetta emessa nel sistema ufficiale.</p>
+            <p className="text-gray-600 text-xs leading-snug">VetBuddy prepara il flusso e consente di registrare gli estremi della ricetta emessa nel sistema ufficiale.</p>
           </div>
           <div className="border-2 border-dashed border-gray-300 rounded-2xl p-4 relative opacity-80">
             <div className="absolute -top-2.5 left-4 bg-gray-400 text-white text-xs px-3 py-0.5 rounded-full font-bold">PROSSIMAMENTE</div>
@@ -244,14 +239,13 @@ export default function BrochurePage() {
           </div>
         </div>
 
-        {/* Flusso */}
         <h3 className="text-lg font-bold text-gray-900 mb-3">Flusso in 4 passaggi</h3>
         <div className="grid grid-cols-4 gap-3 mb-6">
           {[
-            { num: '01', icon: '📝', title: 'Prepara', desc: 'Wizard guidato: paziente, farmaci, posologia, diagnosi.' },
-            { num: '02', icon: '🌐', title: 'Emissione ufficiale', desc: 'Il veterinario abilitato completa l\'emissione nel sistema nazionale.' },
-            { num: '03', icon: '📋', title: 'Registra', desc: 'Inserisci N° ricetta e PIN. Stato aggiornato.' },
-            { num: '04', icon: '📦', title: 'Archivia', desc: 'VetBuddy archivia e rende consultabile per clinica e proprietario.' },
+            { num: '01', icon: '📝', title: 'Prepara', desc: 'Preparazione guidata: paziente, farmaci, posologia, diagnosi.' },
+            { num: '02', icon: '🩺', title: 'Emissione ufficiale', desc: 'Il veterinario abilitato completa l\'emissione nel sistema nazionale.' },
+            { num: '03', icon: '📋', title: 'Registra', desc: 'Inserisci numero ricetta e PIN. Stato aggiornato automaticamente.' },
+            { num: '04', icon: '📦', title: 'Archivia', desc: 'VetBuddy archivia e rende consultabile solo su autorizzazione della clinica.' },
           ].map((step, i) => (
             <div key={i} className="bg-gray-50 rounded-xl border border-gray-100 p-3 text-center">
               <div className="text-xl mb-1">{step.icon}</div>
@@ -262,23 +256,17 @@ export default function BrochurePage() {
           ))}
         </div>
 
-        {/* Nota compliance brochure */}
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
           <p className="text-xs text-amber-800 leading-relaxed">
-            <strong>Nota:</strong> L&apos;emissione ufficiale della Ricetta Elettronica Veterinaria richiede l&apos;abilitazione del medico veterinario al sistema nazionale competente. 
+            <strong>Nota:</strong> L&apos;emissione ufficiale della Ricetta Elettronica Veterinaria richiede l&apos;abilitazione del medico veterinario al sistema nazionale competente.
             VetBuddy supporta il flusso operativo della clinica ma non sostituisce il sistema pubblico di emissione.
           </p>
         </div>
-
-        {/* Box laterale versione breve */}
-        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center">
-          <p className="text-sm text-emerald-800 font-medium">VetBuddy ti dà la struttura pronta. L&apos;emissione ufficiale resta subordinata ai requisiti del veterinario e del sistema nazionale.</p>
-        </div>
       </div>
 
-      {/* =====================================================
-          PAGINA 4 — 44+ AUTOMAZIONI (lista completa)
-      ===================================================== */}
+      {/* ====================================================================
+          PAGINA 5 — OLTRE 40 AUTOMAZIONI OPERATIVE
+      ==================================================================== */}
       <div className="brochure-page text-white px-12 py-14" style={{ background: 'linear-gradient(135deg, #312E81, #581C87, #312E81)' }}>
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
@@ -287,86 +275,81 @@ export default function BrochurePage() {
           <span className="font-bold text-white/60 text-sm">VetBuddy</span>
         </div>
 
-        <h2 className="text-3xl font-black mb-1 mt-2">44+ Automazioni che lavorano per te</h2>
-        <p className="text-white/60 mb-8">Mentre ti occupi dei pazienti, VetBuddy gestisce automaticamente comunicazioni, promemoria e follow-up.</p>
+        <h2 className="text-3xl font-black mb-1 mt-2">Oltre 40 automazioni operative</h2>
+        <p className="text-white/60 mb-8">Mentre ti occupi dei pazienti, VetBuddy gestisce automaticamente comunicazioni, promemoria e ricontatti.</p>
 
         <div className="grid grid-cols-2 gap-x-10 gap-y-5 text-sm">
           <div>
-            <h4 className="text-amber-400 font-bold text-xs uppercase tracking-wider mb-3">Promemoria & Reminder</h4>
+            <h4 className="text-amber-400 font-bold text-xs uppercase tracking-wider mb-3">Promemoria</h4>
             <AutoList items={[
-              'Reminder appuntamento 24h prima (email)',
-              'Reminder appuntamento 1h prima (email)',
-              'Reminder vaccino in scadenza',
-              'Reminder richiamo vaccino annuale',
-              'Reminder trattamento antiparassitario',
-              'Reminder controllo peso periodico',
-              'Reminder visita annuale di routine',
-              'Reminder pulizia dentale',
-              'Reminder rinnovo prescrizione',
+              'Promemoria appuntamento 24 ore prima',
+              'Promemoria appuntamento 1 ora prima',
+              'Promemoria vaccino in scadenza',
+              'Promemoria richiamo annuale',
+              'Promemoria trattamento antiparassitario',
+              'Promemoria visita periodica',
+              'Promemoria pulizia dentale',
+              'Promemoria rinnovo prescrizione',
             ]} />
 
-            <h4 className="text-green-400 font-bold text-xs uppercase tracking-wider mb-3 mt-5">Conferme & Stato</h4>
+            <h4 className="text-green-400 font-bold text-xs uppercase tracking-wider mb-3 mt-5">Conferme e stati</h4>
             <AutoList items={[
-              'Conferma prenotazione al cliente',
+              'Conferma prenotazione al proprietario',
               'Notifica nuova prenotazione alla clinica',
-              'Conferma cancellazione appuntamento',
+              'Conferma cancellazione',
               'Notifica modifica appuntamento',
-              'Notifica lista d\'attesa (posto libero)',
-              'Conferma pagamento ricevuto',
+              'Notifica posto libero',
+              'Conferma pagamento ricevuto, se gestito dalla clinica',
             ]} />
           </div>
           <div>
-            <h4 className="text-blue-400 font-bold text-xs uppercase tracking-wider mb-3">Follow-up & Fidelizzazione</h4>
+            <h4 className="text-blue-400 font-bold text-xs uppercase tracking-wider mb-3">Ricontatti e fidelizzazione</h4>
             <AutoList items={[
-              'Follow-up post-visita (1 giorno dopo)',
-              'Follow-up post-chirurgia (3 giorni dopo)',
-              'Follow-up post-chirurgia (7 giorni dopo)',
-              'Richiesta recensione dopo visita',
-              'Email di benvenuto nuovo cliente',
+              'Ricontatto post-visita',
+              'Ricontatto post-chirurgia',
+              'Richiesta recensione',
+              'Messaggio di benvenuto nuovo cliente',
               'Auguri compleanno animale',
-              'Auguri compleanno proprietario',
-              'Email di riepilogo visite semestrale',
-              'Invito rinnovo piano fedeltà',
-              'Notifica nuovi punti fedeltà guadagnati',
+              'Riepilogo visite periodico',
+              'Promemoria piano salute',
+              'Notifica punti o vantaggi fedeltà',
             ]} />
 
-            <h4 className="text-purple-300 font-bold text-xs uppercase tracking-wider mb-3 mt-5">Documenti & Lab</h4>
+            <h4 className="text-purple-300 font-bold text-xs uppercase tracking-wider mb-3 mt-5">Documenti e laboratori</h4>
             <AutoList items={[
-              'Invio automatico documento PDF via email',
+              'Invio automatico documento PDF',
               'Notifica nuovo documento caricato',
-              'Notifica referto lab pronto',
-              'Notifica nuova richiesta lab (al laboratorio)',
+              'Notifica referto pronto',
+              'Notifica nuova richiesta al laboratorio',
               'Notifica stato richiesta aggiornato',
-              'Report mensile prenotazioni alla clinica',
-              'Report mensile pazienti attivi',
-              'Notifica slot agenda vuoti (alert)',
-              'Email onboarding staff (nuovo membro)',
+              'Riepilogo mensile prenotazioni',
+              'Riepilogo pazienti attivi',
+              'Avviso slot agenda disponibili',
             ]} />
           </div>
         </div>
-        <p className="text-white/40 text-xs mt-6">+ altre automazioni in arrivo con ogni aggiornamento. Le automazioni si attivano automaticamente con il piano Pro Clinica.</p>
+        <p className="text-white/40 text-xs mt-6">+ altre automazioni in arrivo. Le automazioni si attivano automaticamente con il piano Pro.</p>
       </div>
 
-      {/* =====================================================
-          PAGINA 5 — MODULO LABORATORIO + PROPRIETARI
-      ===================================================== */}
+      {/* ====================================================================
+          PAGINA 6 — RETE LABORATORI + PROPRIETARI
+      ==================================================================== */}
       <div className="brochure-page bg-white px-12 py-14">
         <PageHeader />
 
-        <h2 className="text-3xl font-black text-gray-900 mb-1 mt-6">Modulo Laboratorio di Analisi</h2>
-        <p className="text-gray-500 mb-6">Connetti la clinica con i laboratori partner. Richiedi esami, ricevi referti, confronta prezzi e tempi.</p>
+        <h2 className="text-3xl font-black text-gray-900 mb-1 mt-6">Rete laboratori VetBuddy</h2>
+        <p className="text-gray-500 mb-6">VetBuddy collega cliniche e laboratori partner in un flusso semplice: richiesta esame, aggiornamento stato, caricamento referto, revisione della clinica e pubblicazione al proprietario tramite area riservata.</p>
 
         <div className="grid grid-cols-2 gap-6 mb-10">
           <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
             <h4 className="font-bold text-blue-800 text-lg mb-3">Per la Clinica</h4>
             <ul className="space-y-2 text-sm text-gray-700">
               {[
-                'Invia richieste di esame direttamente dalla scheda paziente',
-                'Seleziona laboratorio per distanza, prezzo e tempi',
-                'Ricevi notifica quando il referto è pronto',
-                'Rivedi il referto, aggiungi note cliniche, e invialo al proprietario',
-                'Storico completo richieste e referti per paziente',
-                'Marketplace laboratori con confronto visivo',
+                'Invia richieste di esame dalla scheda animale',
+                'Seleziona il laboratorio in base a distanza, prezzo indicativo e tempi medi',
+                'Riceve notifiche sullo stato della richiesta',
+                'Rivede il referto prima di renderlo visibile al proprietario',
+                'Conserva lo storico richieste e referti',
               ].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
@@ -376,12 +359,13 @@ export default function BrochurePage() {
             <h4 className="font-bold text-indigo-800 text-lg mb-3">Per il Laboratorio</h4>
             <ul className="space-y-2 text-sm text-gray-700">
               {[
-                'Dashboard dedicata per gestire le richieste ricevute',
-                'Aggiorna stato: Ricevuto, In Lavorazione, Pronto',
-                'Carica referti PDF con note tecniche',
-                'Profilo pubblico nel marketplace VetBuddy',
-                'Inserisci listino prezzi indicativo e tempi medi',
-                'Indica disponibilità ritiro campioni',
+                'Riceve richieste dalla clinica',
+                'Aggiorna lo stato della lavorazione',
+                'Carica referti PDF',
+                'Inserisce listino indicativo',
+                'Indica tempi medi',
+                'Segnala disponibilità ritiro campioni',
+                'Gestisce lo storico delle richieste',
               ].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
@@ -389,17 +373,17 @@ export default function BrochurePage() {
           </div>
         </div>
 
-        <h2 className="text-3xl font-black text-gray-900 mb-1">Perché l'esperienza Owner aiuta la Clinica</h2>
-        <p className="text-gray-500 mb-6">Il proprietario è il miglior alleato della clinica. Più è soddisfatto, più torna.</p>
+        <h2 className="text-3xl font-black text-gray-900 mb-1">Perché l&apos;area proprietario aiuta la clinica</h2>
+        <p className="text-gray-500 mb-6">L&apos;area proprietario è il canale digitale con cui la clinica segue il cliente anche dopo la visita.</p>
 
         <div className="grid grid-cols-3 gap-4">
           {[
-            { title: 'Riduce le telefonate', desc: 'Il proprietario prenota, consulta referti e riceve reminder da solo. Lo staff non viene interrotto.' },
-            { title: 'Aumenta i ritorni', desc: 'Reminder e follow-up automatici riportano i clienti per vaccini, controlli e richiami.' },
-            { title: 'Fidelizza a lungo termine', desc: 'Programma fedeltà, comunicazioni dirette e cura costante creano un legame duraturo.' },
-            { title: 'Meno no-show', desc: 'Promemoria automatici 24h e 1h prima aiutano a ridurre le assenze. Durante il progetto pilota misuriamo l\'impatto reale sulla tua clinica.' },
-            { title: 'Referti senza caos', desc: 'Il proprietario riceve i referti direttamente in app. Niente WhatsApp, niente email perse.' },
-            { title: 'Passaparola positivo', desc: 'Un\'esperienza digitale moderna genera recensioni positive e nuovi clienti.' },
+            { title: 'Riduce le telefonate', desc: 'Il proprietario prenota, consulta documenti e riceve promemoria in autonomia.' },
+            { title: 'Aumenta i ritorni', desc: 'Promemoria e ricontatti automatici riportano i clienti per vaccini, controlli e richiami.' },
+            { title: 'Fidelizza a lungo termine', desc: 'Programma fedeltà configurabile, comunicazioni dirette e cura costante creano un legame duraturo.' },
+            { title: 'Meno assenze agli appuntamenti', desc: 'Promemoria automatici 24 ore e 1 ora prima aiutano a ridurre le assenze. Durante il progetto pilota misuriamo l\'impatto reale sulla tua clinica.' },
+            { title: 'Referti organizzati', desc: 'Il proprietario può consultare referti e documenti autorizzati tramite area riservata. La clinica mantiene sempre il controllo su cosa rendere visibile.' },
+            { title: 'Passaparola positivo', desc: 'Un\'esperienza digitale moderna e ordinata genera recensioni positive e nuovi clienti.' },
           ].map((item, i) => (
             <div key={i} className="bg-gray-50 border border-gray-100 rounded-xl p-4">
               <h5 className="font-bold text-gray-900 text-sm mb-1">{item.title}</h5>
@@ -409,78 +393,80 @@ export default function BrochurePage() {
         </div>
       </div>
 
-      {/* =====================================================
-          PAGINA 5B — PIANI SALUTE + AI ASSISTANT
-      ===================================================== */}
+      {/* ====================================================================
+          PAGINA 7 — PIANI SALUTE + ASSISTENTE INTELLIGENTE
+      ==================================================================== */}
       <div className="brochure-page bg-white px-12 py-14">
         <PageHeader />
 
         <div className="mt-6 mb-3">
           <div className="inline-flex items-center gap-2 bg-indigo-100 text-indigo-700 px-4 py-1.5 rounded-full text-xs font-bold">
-            🚀 NUOVE FUNZIONALITÀ
+            🚀 FUNZIONALITÀ
           </div>
         </div>
-        <h2 className="text-3xl font-black text-gray-900 mb-1">Piani Salute + AI Assistant</h2>
-        <p className="text-gray-500 mb-8 text-sm">Programmi di prevenzione strutturati e strumenti AI integrati per il veterinario moderno.</p>
+        <h2 className="text-3xl font-black text-gray-900 mb-1">Piani Salute + Assistente intelligente</h2>
+        <p className="text-gray-500 mb-8 text-sm">Programmi di prevenzione strutturati e strumenti basati su intelligenza artificiale per il veterinario.</p>
 
         <div className="grid grid-cols-2 gap-6 mb-8">
           <div className="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-6">
             <h4 className="text-xl font-bold text-emerald-800 mb-3">Piani Salute</h4>
-            <p className="text-gray-500 text-sm mb-4">Crea programmi di prevenzione personalizzati per ogni paziente.</p>
+            <p className="text-gray-500 text-sm mb-4">Crea percorsi di prevenzione per trasformare visite occasionali in richiami ricorrenti.</p>
             <ul className="space-y-2 text-sm text-gray-700">
               {[
-                'Crea programmi: Piano Cucciolo, Piano Senior, Prevenzione',
-                'Servizi inclusi: visite, vaccini, esami, trattamenti programmati',
-                'Assegna piani ai pazienti e monitora il progresso',
-                'Segna i servizi completati con un click',
-                'Dashboard: piani attivi, pazienti iscritti, servizi prossimi 30gg',
-                'Prezzo configurabile per ogni piano',
+                'Piano Cucciolo, Piano Senior, Piano Prevenzione Annuale',
+                'Piano Antiparassitario, Piano Dental Care, Piano Post-Operatorio',
+                'Servizi inclusi con frequenza consigliata',
+                'Promemoria automatici e stato avanzamento',
+                'Prossimi servizi in evidenza',
+                'Prezzo configurabile dalla clinica',
               ].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
           </div>
           <div className="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-6">
-            <h4 className="text-xl font-bold text-indigo-800 mb-3">AI Assistant</h4>
-            <p className="text-gray-500 text-sm mb-4">Intelligenza artificiale al servizio del veterinario.</p>
+            <h4 className="text-xl font-bold text-indigo-800 mb-3">Assistente intelligente</h4>
+            <p className="text-gray-500 text-sm mb-4">Basato su intelligenza artificiale, al servizio del veterinario.</p>
             <ul className="space-y-2 text-sm text-gray-700">
               {[
-                'Riassumi Visita: riassunto strutturato dalle note cliniche',
-                'Scrivi Messaggio: comunicazioni professionali per i proprietari',
-                'Traduci Note Cliniche: da termini tecnici a linguaggio semplice',
-                'Risposta Intelligente: risposte contestuali ai messaggi clienti',
-                'Powered by AI — veloce, preciso, integrato nella dashboard',
+                'Riassunto visita strutturato dalle note cliniche',
+                'Scrittura messaggio al proprietario',
+                'Traduzione note tecniche in linguaggio semplice',
+                'Suggerimento risposta ai messaggi frequenti',
+                'Riepilogo referto in linguaggio comprensibile',
               ].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
-            <p className="text-xs text-indigo-600/70 mt-4 italic border-t border-indigo-200 pt-3">L&apos;assistente non sostituisce il veterinario: aiuta a scrivere, riassumere e organizzare comunicazioni sempre validate dalla clinica. Ogni contenuto generato deve essere verificato e approvato dal personale della clinica prima dell&apos;invio.</p>
+            <p className="text-xs text-indigo-600/70 mt-4 italic border-t border-indigo-200 pt-3">L&apos;assistente intelligente non sostituisce il veterinario. Aiuta a scrivere, riassumere e organizzare comunicazioni, ma ogni contenuto generato deve essere verificato e approvato dal personale della clinica prima dell&apos;invio.</p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-6">
-            <h4 className="text-xl font-bold text-amber-800 mb-3">Team Inbox Avanzata</h4>
-            <p className="text-gray-500 text-sm mb-4">Gestione messaggi con priorità, stato e template.</p>
+            <h4 className="text-xl font-bold text-amber-800 mb-3">Casella messaggi condivisa</h4>
+            <p className="text-gray-500 text-sm mb-4">Gestione messaggi centralizzata per tutto lo staff.</p>
             <ul className="space-y-2 text-sm text-gray-700">
               {[
-                'Assegna priorità: Alta, Media, Bassa',
-                'Stati messaggi: Nuovo, In lavorazione, Risolto',
-                'Template di risposta rapida configurabili',
-                'Filtri per stato, priorità e data',
+                'Messaggi dei proprietari e richieste appuntamento',
+                'Notifiche laboratorio e documenti caricati',
+                'Assegnazione allo staff',
+                'Stato: nuovo, in lavorazione, risolto',
+                'Priorità: alta, media, bassa',
+                'Modelli di risposta configurabili',
               ].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
           </div>
           <div className="bg-purple-50 border-2 border-purple-200 rounded-2xl p-6">
-            <h4 className="text-xl font-bold text-purple-800 mb-3">Automazioni Avanzate</h4>
-            <p className="text-gray-500 text-sm mb-4">Configurazione completa e log di esecuzione.</p>
+            <h4 className="text-xl font-bold text-purple-800 mb-3">Automazioni avanzate</h4>
+            <p className="text-gray-500 text-sm mb-4">Configurazione completa e registro di esecuzione.</p>
             <ul className="space-y-2 text-sm text-gray-700">
               {[
-                'Timing personalizzabile (24h, 48h, 7gg, 30gg...)',
-                'Log di esecuzione per ogni automazione',
-                'Template con variabili dinamiche',
+                'Frequenza personalizzabile (24h, 48h, 7gg, 30gg...)',
+                'Registro di esecuzione per ogni automazione',
+                'Modelli con variabili dinamiche',
                 'Attivazione/disattivazione singola',
               ].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />{f}</li>
@@ -490,9 +476,9 @@ export default function BrochurePage() {
         </div>
       </div>
 
-      {/* =====================================================
-          PAGINA 6 — COME FUNZIONA + ANIMALI
-      ===================================================== */}
+      {/* ====================================================================
+          PAGINA 8 — COME FUNZIONA
+      ==================================================================== */}
       <div className="brochure-page bg-gray-50 px-12 py-14">
         <PageHeader />
         
@@ -503,8 +489,8 @@ export default function BrochurePage() {
           {[
             { num: '01', title: 'Registrati', desc: 'Crea il tuo account clinica su vetbuddy.it. Compila il profilo: nome, indirizzo, P.IVA, orari di apertura.' },
             { num: '02', title: 'Configura', desc: 'Aggiungi servizi con prezzi e durate. Imposta le disponibilità dell\'agenda per ogni veterinario.' },
-            { num: '03', title: 'Importa', desc: 'Invita i tuoi clienti a registrarsi su VetBuddy. Possono trovare la clinica tramite il profilo pubblico.' },
-            { num: '04', title: 'Parti!', desc: 'I clienti prenotano online. Tu gestisci tutto da un\'unica dashboard. Le automazioni fanno il resto.' },
+            { num: '03', title: 'Invita', desc: 'Invita i tuoi clienti a registrarsi. Possono trovare la clinica tramite il profilo pubblico o il link diretto.' },
+            { num: '04', title: 'Parti', desc: 'I clienti prenotano online. Tu gestisci tutto da un\'unica interfaccia. Le automazioni fanno il resto.' },
           ].map((step, i) => (
             <div key={i} className="bg-white rounded-2xl p-5 border border-gray-200">
               <div className="text-3xl font-black text-coral-500 mb-2">{step.num}</div>
@@ -535,14 +521,18 @@ export default function BrochurePage() {
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center max-w-xl mx-auto">
-          <p className="text-gray-900 font-bold text-lg mb-2">Dashboard del valore generato</p>
-          <p className="text-gray-500 text-sm">Ogni mese VetBuddy ti mostra quante prenotazioni ha generato, quante telefonate ti ha evitato e quanto tempo hai risparmiato. Numeri concreti per misurare il ritorno dell'investimento.</p>
+          <p className="text-gray-900 font-bold text-lg mb-2">Cruscotto del valore generato</p>
+          <p className="text-gray-500 text-sm">Ogni mese VetBuddy ti mostra quante prenotazioni ha generato, quante telefonate ti ha evitato e quanto tempo hai risparmiato. Numeri concreti per misurare il ritorno dell&apos;investimento.</p>
+        </div>
+
+        <div className="mt-6 bg-coral-50 border border-coral-200 rounded-xl p-4 text-center max-w-xl mx-auto">
+          <p className="text-xs text-coral-800 font-medium">VetBuddy lavora accanto agli strumenti già usati dalla clinica, senza obbligare a migrare tutti i dati o cambiare i flussi principali.</p>
         </div>
       </div>
 
-      {/* =====================================================
-          PAGINA 7 — PREZZI
-      ===================================================== */}
+      {/* ====================================================================
+          PAGINA 9 — PREZZI
+      ==================================================================== */}
       <div className="brochure-page bg-white px-12 py-14">
         <PageHeader />
 
@@ -558,7 +548,7 @@ export default function BrochurePage() {
             <div className="mb-2"><span className="text-3xl font-black text-gray-800">€29</span><span className="text-sm text-gray-400">/mese + IVA</span></div>
             <p className="text-xs text-gray-500 mb-4">Per veterinari freelance e micro-cliniche.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
-              {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Reminder base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
+              {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Promemoria base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
                 <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-green-500 flex-shrink-0" />{f}</li>
               ))}
             </ul>
@@ -567,16 +557,16 @@ export default function BrochurePage() {
           {/* Growth — Consigliato */}
           <div className="border-2 border-coral-400 rounded-2xl p-5 bg-coral-50/30 relative">
             <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-coral-500 text-white text-xs px-3 py-1 rounded-full font-bold whitespace-nowrap">⭐ Consigliato</div>
-            <p className="text-xs font-bold text-coral-500 uppercase tracking-wider mb-2 mt-1">Growth</p>
+            <p className="text-xs font-bold text-coral-500 uppercase tracking-wider mb-2 mt-1">Crescita (Growth)</p>
             <div className="mb-1"><span className="text-3xl font-black text-gray-900">€69</span><span className="text-sm text-gray-500 ml-1">/mese + IVA</span></div>
-            <p className="text-xs text-gray-500 mb-3">Per cliniche piccole e medie.</p>
+            <p className="text-xs text-gray-500 mb-3">Piano consigliato per cliniche piccole e medie.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
-              {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Reminder automatici', 'Documenti e PDF', 'App proprietario', 'Inbox', 'Dashboard valore', 'Lab request base'].map((f, i) => (
+              {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio'].map((f, i) => (
                 <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-coral-500 flex-shrink-0" />{f}</li>
               ))}
             </ul>
             <div className="mt-3 pt-2 border-t border-coral-200">
-              <p className="text-xs font-bold text-coral-600">Pilot: Growth gratis 90 giorni</p>
+              <p className="text-xs font-bold text-coral-600">Progetto pilota: gratis 90 giorni</p>
             </div>
           </div>
 
@@ -586,56 +576,54 @@ export default function BrochurePage() {
             <div className="mb-1"><span className="text-3xl font-black text-gray-800">€99</span><span className="text-sm text-gray-500 ml-1">/mese + IVA</span></div>
             <p className="text-xs text-gray-500 mb-3">Per cliniche strutturate.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
-              {['Tutto Growth più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Lab Network completo', 'Analytics avanzati', 'Report mensili', 'AI assistente'].map((f, i) => (
+              {['Tutto Crescita più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente'].map((f, i) => (
                 <li key={i} className={`flex items-center gap-1.5 ${i === 0 ? 'font-semibold' : ''}`}><Check className="w-3 h-3 text-green-500 flex-shrink-0" />{f}</li>
               ))}
             </ul>
           </div>
 
-          {/* Lab Partner */}
+          {/* Laboratorio Partner */}
           <div className="border-2 border-blue-200 rounded-2xl p-5 bg-blue-50/30">
-            <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Lab Partner</p>
+            <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Laboratorio Partner</p>
             <div className="mb-1"><span className="text-3xl font-black text-gray-800">€39</span><span className="text-sm text-gray-500 ml-1">/mese + IVA</span></div>
             <p className="text-xs text-gray-500 mb-3">Per laboratori di analisi.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
-              {['Dashboard laboratorio', 'Profilo marketplace', 'Listino prezzi', 'Gestione richieste', 'Upload referti PDF', 'Notifiche email', 'Disponibilità ritiro'].map((f, i) => (
+              {['Pannello di gestione richieste', 'Profilo nella vetrina laboratori', 'Listino prezzi indicativo', 'Gestione richieste', 'Caricamento referti PDF', 'Notifiche automatiche', 'Disponibilità ritiro'].map((f, i) => (
                 <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-blue-500 flex-shrink-0" />{f}</li>
               ))}
             </ul>
             <div className="mt-3 pt-2 border-t border-blue-200">
-              <p className="text-xs font-bold text-blue-600">Pilot: gratis per 6 mesi</p>
+              <p className="text-xs font-bold text-blue-600">Progetto pilota: gratis per 6 mesi</p>
             </div>
           </div>
         </div>
 
-        {/* Pilot nota */}
         <div className="bg-coral-50 border border-coral-200 rounded-xl p-4 mb-4">
           <p className="text-xs text-coral-800 leading-relaxed text-center">
-            <strong>🏙️ Pilot Milano:</strong> 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Nessun vincolo, nessun costo iniziale. Alla fine del pilot ricevi un riepilogo con prenotazioni generate, telefonate evitate, reminder inviati e tempo risparmiato.
+            <strong>🏙️ Progetto pilota Milano:</strong> 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Nessun vincolo, nessun costo iniziale. Alla fine del progetto pilota ricevi un riepilogo con prenotazioni generate, telefonate evitate, promemoria inviati, tempo risparmiato e clienti riattivati.
           </p>
         </div>
 
-        <p className="text-center text-xs text-gray-400">Non sostituisce il tuo gestionale: VetBuddy lavora accanto ai tuoi strumenti attuali. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.</p>
-
+        <p className="text-center text-xs text-gray-400">VetBuddy lavora accanto agli strumenti già usati dalla clinica, senza obbligare a migrare tutti i dati o cambiare i flussi principali.</p>
       </div>
 
-      {/* =====================================================
-          PAGINA 7B — FAQ DEDICATE
-      ===================================================== */}
+      {/* ====================================================================
+          PAGINA 10 — DOMANDE FREQUENTI
+      ==================================================================== */}
       <div className="brochure-page bg-white px-12 py-14">
         <PageHeader />
         <h2 className="text-2xl font-black text-gray-900 mt-6 mb-6">Domande frequenti</h2>
         
         <div className="space-y-4">
           {[
-            { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale completo. È un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, reminder, comunicazioni e follow-up. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.' },
-            { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale resta in capo al medico veterinario abilitato sul sistema nazionale.' },
-            { q: 'Quanto costa VetBuddy?', a: 'Starter €29/mese, Growth €69/mese (consigliato), Pro €99/mese. Laboratori €39/mese. Tutti i prezzi IVA esclusa.' },
-            { q: 'Cos\'è il Pilot Milano?', a: 'Pilot Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Include onboarding, configurazione e supporto. Nessun vincolo: se non ti convince, non paghi nulla. Alla fine del pilot ricevi un riepilogo con prenotazioni generate, telefonate evitate, reminder inviati, tempo risparmiato e clienti riattivati.' },
-            { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite vanno direttamente alla clinica. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
-            { q: 'Come funziona l\'invio dei referti?', a: 'Il laboratorio carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando pubblicarlo al proprietario.' },
-            { q: 'VetBuddy è gratuito per i proprietari?', a: 'Sì, completamente gratuito per sempre. Nessun costo nascosto.' },
-            { q: 'Posso annullare in qualsiasi momento?', a: 'Abbonamento mensile, nessun vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.' },
+            { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale veterinario completo. È un copilota operativo che lavora accanto agli strumenti già usati dalla clinica per automatizzare prenotazioni, promemoria, comunicazioni, documenti e ricontatti. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali.' },
+            { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali e responsabilità professionale.' },
+            { q: 'Come funziona l\'invio dei referti?', a: 'Il laboratorio carica il referto. La clinica lo rivede, aggiunge eventuali note e decide se e quando renderlo visibile al proprietario tramite area riservata.' },
+            { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite restano gestiti dalla clinica. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma, salvo eventuali servizi aggiuntivi concordati.' },
+            { q: 'Il proprietario paga VetBuddy?', a: 'No. L\'area proprietario è gratuita per il proprietario dell\'animale.' },
+            { q: 'Posso annullare l\'abbonamento?', a: 'Sì. L\'abbonamento è mensile, senza vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.' },
+            { q: 'Devo cambiare tutti i miei strumenti?', a: 'No. VetBuddy può lavorare accanto agli strumenti già usati dalla clinica. Il progetto pilota serve proprio a misurare il valore senza stravolgere l\'organizzazione.' },
+            { q: 'I dati e i referti sono visibili automaticamente al proprietario?', a: 'No. La clinica mantiene il controllo sui documenti e decide quali informazioni rendere visibili al proprietario tramite area riservata.' },
             { q: 'Serve una formazione tecnica?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile.' },
           ].map((item, i) => (
             <div key={i} className="pb-3 border-b border-gray-100 last:border-0">
@@ -646,9 +634,9 @@ export default function BrochurePage() {
         </div>
       </div>
 
-      {/* =====================================================
-          PAGINA 8 — CONTATTI + CTA FINALE
-      ===================================================== */}
+      {/* ====================================================================
+          PAGINA 11 — CTA FINALE
+      ==================================================================== */}
       <div className="brochure-page text-white px-12 py-14 flex flex-col" style={{ background: 'linear-gradient(135deg, #FF6B6B, #f97316)' }}>
         <div className="flex items-center gap-3 mb-auto">
           <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
@@ -658,8 +646,8 @@ export default function BrochurePage() {
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center text-center">
-          <h2 className="text-5xl font-black mb-6 leading-tight">Pronto a digitalizzare<br/>la tua clinica?</h2>
-          <p className="text-white/80 text-xl max-w-xl mb-12">Unisciti alle cliniche veterinarie che stanno già testando VetBuddy nel Pilot Milano.</p>
+          <h2 className="text-4xl font-black mb-4 leading-tight">Vuoi ridurre telefonate e misurare<br/>quante prenotazioni VetBuddy può<br/>generare per la tua clinica?</h2>
+          <p className="text-white/80 text-lg max-w-xl mb-12">Candidati al Progetto pilota Milano e ricevi un riepilogo concreto del valore generato in 90 giorni.</p>
 
           <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full border border-white/20 mb-10">
             <div className="space-y-4 text-left">
@@ -686,8 +674,8 @@ export default function BrochurePage() {
                   <Phone className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-white/60 text-xs">Telefono</p>
-                  <p className="font-bold">Contattaci via email</p>
+                  <p className="text-white/60 text-xs">Candidatura</p>
+                  <p className="font-bold">Scrivici per entrare nella lista delle cliniche selezionate</p>
                 </div>
               </div>
             </div>
