@@ -71,7 +71,7 @@ function FullLandingPage({ onLogin }) {
     <div className="min-h-screen bg-white">
       {/* Pilot Banner */}
       <div className="bg-gradient-to-r from-coral-500 to-orange-500 text-white text-center py-2.5 px-4 text-sm">
-        <span className="font-semibold">🏙️ Pilot Milano</span> — 90 giorni per misurare il valore che VetBuddy genera per la tua clinica. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Candidati →</button>
+        <span className="font-semibold">🏙️ Pilot Milano</span> — 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Candidati →</button>
       </div>
 
       {/* Navigation */}
@@ -257,11 +257,11 @@ function FullLandingPage({ onLogin }) {
               { icon: FileText, title: 'Referti e Documenti', desc: 'Prescrizioni, certificati, referti PDF. Generazione, invio automatico e archivio.', color: 'bg-teal-500', tag: null },
               { icon: FlaskConical, title: 'Lab Network', desc: 'Richieste analisi, marketplace laboratori, upload referti, revisione e invio al proprietario.', color: 'bg-purple-500', tag: 'Vantaggio competitivo' },
               { icon: PawPrint, title: 'App Proprietario', desc: 'L\'app ufficiale della tua clinica: prenotazioni, reminder, referti, messaggi, follow-up.', color: 'bg-pink-500', tag: null },
-              { icon: BarChart3, title: 'Dashboard Valore', desc: 'Prenotazioni generate, telefonate evitate, ore risparmiate, fatturato stimato.', color: 'bg-emerald-500', tag: 'Esclusivo' },
+              { icon: BarChart3, title: 'Dashboard Valore', desc: 'Prenotazioni generate, telefonate evitate, ore risparmiate, clienti riattivati e riepiloghi economici.', color: 'bg-emerald-500', tag: 'Esclusivo' },
               { icon: Receipt, title: 'Listino e Riepiloghi', desc: 'Listino servizi, ricevute operative, esportazioni e riepiloghi economici.', color: 'bg-orange-500', tag: null },
               { icon: Stethoscope, title: 'Assistente REV', desc: 'Preparazione bozze, archiviazione ricette, storico prescrizioni. L\'emissione ufficiale resta al veterinario.', color: 'bg-emerald-600', tag: null },
               { icon: Gift, title: 'Programma Fedeltà', desc: 'Punti, premi e incentivi per far tornare i clienti. Personalizzabile dalla clinica.', color: 'bg-yellow-500', tag: null },
-              { icon: Users, title: 'Gestione Pazienti', desc: 'Schede animali complete, storico visite, documenti, import CSV da altri gestionali.', color: 'bg-slate-500', tag: null },
+              { icon: Users, title: 'Schede Animale e Storico', desc: 'Informazioni principali di ogni animale, documenti, referti e storico visite consultabile.', color: 'bg-slate-500', tag: null },
               { icon: Zap, title: 'Automazioni', desc: 'Reminder, follow-up, richiami, cliente inattivo, compleanno animale. Tutto automatico.', color: 'bg-violet-500', tag: 'Pro' },
               { icon: Heart, title: 'Piani Salute', desc: 'Programmi di prevenzione strutturati: Cucciolo, Senior, Prevenzione. Monitora il progresso per ogni paziente.', color: 'bg-rose-500', tag: 'Nuovo' },
               { icon: Brain, title: 'AI Assistant', desc: 'Riassumi visite, scrivi messaggi, traduci note cliniche. Sempre validato dalla clinica.', color: 'bg-indigo-600', tag: 'Nuovo' },
@@ -593,11 +593,11 @@ function FullLandingPage({ onLogin }) {
           </div>
           <Accordion type="single" collapsible className="space-y-3">
             {[
-              { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale completo. È un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, reminder, comunicazioni e follow-up. Puoi usarlo insieme al tuo gestionale senza problemi.' },
+              { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale completo. È un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, reminder, comunicazioni e follow-up. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.' },
               { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy aiuta a preparare, organizzare e archiviare il flusso della REV. L\'emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali sul sistema nazionale (es. Vetinfo).' },
               { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. VetBuddy non è un intermediario di pagamento per i servizi veterinari. I pagamenti delle visite avvengono direttamente tra clinica e proprietario. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
               { q: 'Quanto costa per i proprietari di animali?', a: 'Zero. L\'app proprietario è completamente gratuita. Nessun costo nascosto, mai.' },
-              { q: 'Cos\'è il Pilot Milano?', a: '90 giorni di Piano Growth gratuito per cliniche selezionate a Milano e provincia. Include onboarding, configurazione, import dati e supporto. A fine pilot ricevi un report con i risultati misurabili.' },
+              { q: 'Cos\'è il Pilot Milano?', a: 'Pilot Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Include onboarding, configurazione e supporto. Nessun vincolo. Alla fine del pilot ricevi un riepilogo con prenotazioni generate, telefonate evitate, reminder inviati, tempo risparmiato e clienti riattivati.' },
               { q: 'Posso annullare in qualsiasi momento?', a: 'Sì. Nessun vincolo contrattuale. Puoi annullare l\'abbonamento quando vuoi dalla sezione Impostazioni.' },
               { q: 'Come funziona il Lab Network?', a: 'La clinica richiede un\'analisi dalla scheda del paziente, il laboratorio la riceve, la processa e carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando renderlo visibile al proprietario.' },
               { q: 'Serve una formazione tecnica per usarlo?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile via email e chat.' },

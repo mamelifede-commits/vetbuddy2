@@ -60,7 +60,7 @@ export default function BrochurePage() {
           <span className="text-lg font-bold" style={{ color: '#ffffff' }}>Pilot Milano 2025</span>
         </div>
 
-        <p className="text-sm mb-8" style={{ color: '#ffffff', opacity: 0.8 }}>90 giorni per misurare il valore che generiamo per la tua clinica</p>
+        <p className="text-sm mb-8" style={{ color: '#ffffff', opacity: 0.8 }}>Pilot Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica</p>
 
         {/* 3 key numbers */}
         <div className="flex gap-10">
@@ -100,9 +100,9 @@ export default function BrochurePage() {
         <div className="grid grid-cols-2 gap-6 mb-8">
           <div className="rounded-2xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #FF6B6B, #f97316)' }}>
             <h4 className="text-xl font-bold mb-3">Per le Cliniche Veterinarie</h4>
-            <p className="text-white/80 text-sm mb-4">Tutto ciò che serve per gestire la tua clinica in modo digitale.</p>
+            <p className="text-white/80 text-sm mb-4">Gli strumenti operativi per ridurre telefonate, automatizzare comunicazioni e seguire meglio i clienti.</p>
             <ul className="space-y-1.5 text-sm text-white/90">
-              {['Agenda digitale e prenotazioni online', 'Gestione pazienti e cartelle cliniche', 'Listino servizi, ricevute operative ed esportazioni', 'Documenti PDF con invio automatico via email', 'Assistente al flusso REV: preparazione, registrazione e archiviazione', 'Team inbox e messaggistica clienti', '44+ automazioni attive 24/7', 'Metriche, report e dashboard fatturato'].map((f, i) => (
+              {['Agenda digitale e prenotazioni online', 'Schede animale, documenti e storico visite', 'Listino servizi, ricevute operative ed esportazioni', 'Documenti PDF con invio automatico via email', 'Assistente al flusso REV: preparazione, registrazione e archiviazione', 'Team inbox e messaggistica clienti', '44+ automazioni attive 24/7', 'Metriche, report e dashboard valore generato'].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
@@ -133,7 +133,7 @@ export default function BrochurePage() {
       <div className="brochure-page bg-white px-12 py-14">
         <PageHeader />
         <h2 className="text-3xl font-black text-gray-900 mb-1 mt-6">Funzionalità per la Clinica</h2>
-        <p className="text-gray-500 mb-8">Tutto ciò che serve per digitalizzare la gestione della tua clinica veterinaria.</p>
+        <p className="text-gray-500 mb-8">Gli strumenti operativi per ridurre telefonate, automatizzare comunicazioni e seguire meglio i clienti.</p>
 
         <div className="grid grid-cols-2 gap-x-8 gap-y-4">
           <FeatureBlock
@@ -145,8 +145,8 @@ export default function BrochurePage() {
             desc="I clienti prenotano direttamente dal profilo pubblico della clinica o tramite link diretto e QR code. Nessuna telefonata necessaria."
           />
           <FeatureBlock
-            title="Gestione Pazienti"
-            desc="Cartella clinica digitale per ogni animale: specie, razza, peso, allergie, vaccinazioni, storico visite. Tutto consultabile in un click."
+            title="Schede Animale e Storico"
+            desc="Organizza le informazioni principali di ogni animale: specie, razza, peso, allergie, documenti, referti e storico visite. Tutto resta consultabile in modo ordinato dalla clinica."
           />
           <FeatureBlock
             title="Documenti e PDF"
@@ -162,7 +162,7 @@ export default function BrochurePage() {
           />
           <FeatureBlock
             title="Metriche e Report"
-            desc="Dashboard con prenotazioni generate, telefonate evitate, fatturato, tassi di conversione, analisi servizi più richiesti e trend mensili."
+            desc="Dashboard con prenotazioni generate, telefonate evitate, reminder inviati, tempo risparmiato, clienti riattivati, richieste laboratorio gestite e riepiloghi economici mensili."
           />
           <FeatureBlock
             title="Google Calendar Sync"
@@ -239,8 +239,8 @@ export default function BrochurePage() {
           </div>
           <div className="border-2 border-dashed border-gray-300 rounded-2xl p-4 relative opacity-80">
             <div className="absolute -top-2.5 left-4 bg-gray-400 text-white text-xs px-3 py-0.5 rounded-full font-bold">PROSSIMAMENTE</div>
-            <h4 className="font-bold text-gray-700 text-sm mb-2 mt-1">Integrazione ufficiale</h4>
-            <p className="text-gray-500 text-xs leading-snug">VetBuddy invia e riceve i dati tramite integrazione tecnica con il sistema ufficiale, quando configurata e disponibile.</p>
+            <h4 className="font-bold text-gray-700 text-sm mb-2 mt-1">Integrazione tecnica futura</h4>
+            <p className="text-gray-500 text-xs leading-snug">Eventuali integrazioni tecniche con sistemi ufficiali saranno disponibili solo se autorizzate, configurate e compatibili con i requisiti previsti.</p>
           </div>
         </div>
 
@@ -397,7 +397,7 @@ export default function BrochurePage() {
             { title: 'Riduce le telefonate', desc: 'Il proprietario prenota, consulta referti e riceve reminder da solo. Lo staff non viene interrotto.' },
             { title: 'Aumenta i ritorni', desc: 'Reminder e follow-up automatici riportano i clienti per vaccini, controlli e richiami.' },
             { title: 'Fidelizza a lungo termine', desc: 'Programma fedeltà, comunicazioni dirette e cura costante creano un legame duraturo.' },
-            { title: 'Meno no-show', desc: 'Promemoria automatici 24h e 1h prima riducono le assenze fino al 60%.' },
+            { title: 'Meno no-show', desc: 'Promemoria automatici 24h e 1h prima aiutano a ridurre le assenze. Durante il progetto pilota misuriamo l\'impatto reale sulla tua clinica.' },
             { title: 'Referti senza caos', desc: 'Il proprietario riceve i referti direttamente in app. Niente WhatsApp, niente email perse.' },
             { title: 'Passaparola positivo', desc: 'Un\'esperienza digitale moderna genera recensioni positive e nuovi clienti.' },
           ].map((item, i) => (
@@ -454,7 +454,7 @@ export default function BrochurePage() {
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-indigo-500 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
-            <p className="text-xs text-indigo-600/70 mt-4 italic border-t border-indigo-200 pt-3">L&apos;assistente non sostituisce il veterinario: aiuta a scrivere, riassumere e organizzare comunicazioni sempre validate dalla clinica.</p>
+            <p className="text-xs text-indigo-600/70 mt-4 italic border-t border-indigo-200 pt-3">L&apos;assistente non sostituisce il veterinario: aiuta a scrivere, riassumere e organizzare comunicazioni sempre validate dalla clinica. Ogni contenuto generato deve essere verificato e approvato dal personale della clinica prima dell&apos;invio.</p>
           </div>
         </div>
 
@@ -548,7 +548,7 @@ export default function BrochurePage() {
 
         <div className="text-center mb-8 mt-4">
           <h2 className="text-3xl font-black text-gray-900 mb-2">Scegli il piano adatto alla tua clinica</h2>
-          <p className="text-gray-500 max-w-xl mx-auto text-sm">Tutti i prezzi sono IVA esclusa. Puoi annullare in qualsiasi momento, senza vincoli.</p>
+          <p className="text-gray-500 max-w-xl mx-auto text-sm">Tutti i prezzi sono IVA esclusa. Abbonamento mensile, nessun vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.</p>
         </div>
 
         <div className="grid grid-cols-4 gap-4 mb-6">
@@ -611,11 +611,11 @@ export default function BrochurePage() {
         {/* Pilot nota */}
         <div className="bg-coral-50 border border-coral-200 rounded-xl p-4 mb-4">
           <p className="text-xs text-coral-800 leading-relaxed text-center">
-            <strong>🏙️ Pilot Milano:</strong> Piano Growth gratuito per 90 giorni. Nessun vincolo, nessun costo iniziale. Se non ti convince, non paghi nulla.
+            <strong>🏙️ Pilot Milano:</strong> 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Nessun vincolo, nessun costo iniziale. Alla fine del pilot ricevi un riepilogo con prenotazioni generate, telefonate evitate, reminder inviati e tempo risparmiato.
           </p>
         </div>
 
-        <p className="text-center text-xs text-gray-400">Non sostituisce il tuo gestionale: VetBuddy lavora accanto ai tuoi strumenti attuali.</p>
+        <p className="text-center text-xs text-gray-400">Non sostituisce il tuo gestionale: VetBuddy lavora accanto ai tuoi strumenti attuali. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.</p>
 
       </div>
 
@@ -628,14 +628,14 @@ export default function BrochurePage() {
         
         <div className="space-y-4">
           {[
-            { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale completo. È un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, reminder, comunicazioni e follow-up.' },
+            { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale completo. È un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, reminder, comunicazioni e follow-up. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.' },
             { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale resta in capo al medico veterinario abilitato sul sistema nazionale.' },
             { q: 'Quanto costa VetBuddy?', a: 'Starter €29/mese, Growth €69/mese (consigliato), Pro €99/mese. Laboratori €39/mese. Tutti i prezzi IVA esclusa.' },
-            { q: 'Cos\'è il Pilot Milano?', a: '90 giorni di piano Growth gratuito per cliniche selezionate. Include onboarding, configurazione e supporto. Nessun vincolo: se non ti convince, non paghi nulla.' },
+            { q: 'Cos\'è il Pilot Milano?', a: 'Pilot Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Include onboarding, configurazione e supporto. Nessun vincolo: se non ti convince, non paghi nulla. Alla fine del pilot ricevi un riepilogo con prenotazioni generate, telefonate evitate, reminder inviati, tempo risparmiato e clienti riattivati.' },
             { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite vanno direttamente alla clinica. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
             { q: 'Come funziona l\'invio dei referti?', a: 'Il laboratorio carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando pubblicarlo al proprietario.' },
             { q: 'VetBuddy è gratuito per i proprietari?', a: 'Sì, completamente gratuito per sempre. Nessun costo nascosto.' },
-            { q: 'Posso annullare in qualsiasi momento?', a: 'Sì. Nessun vincolo contrattuale. Puoi annullare l\'abbonamento quando vuoi.' },
+            { q: 'Posso annullare in qualsiasi momento?', a: 'Abbonamento mensile, nessun vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.' },
             { q: 'Serve una formazione tecnica?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile.' },
           ].map((item, i) => (
             <div key={i} className="pb-3 border-b border-gray-100 last:border-0">
