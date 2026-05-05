@@ -17,7 +17,7 @@ import {
   CheckCircle, ChevronRight, Menu, X, ClipboardList, TrendingUp,
   Star, Check, Euro, Receipt, Activity,
   MapPin, Stethoscope, Mail, Clock, Gift, Loader2, FlaskConical, BarChart3,
-  ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer
+  ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer, Video, Link2
 } from 'lucide-react';
 
 function FullLandingPage({ onLogin }) {
@@ -201,8 +201,8 @@ function FullLandingPage({ onLogin }) {
                 { icon: Bell, text: 'Promemoria e ricontatti automatici', desc: 'Niente più telefonate per ricordare appuntamenti, vaccini e controlli.' },
                 { icon: MessageCircle, text: 'Comunicazione centralizzata', desc: 'Un\'unica casella messaggi per richieste e notifiche. Ordine al posto del caos.' },
                 { icon: FileText, text: 'Documenti e referti digitali', desc: 'Referti, certificati e prescrizioni inviati automaticamente al proprietario.' },
-                { icon: FlaskConical, text: 'Rete laboratori integrata', desc: 'Richiedi analisi, ricevi referti, rivedi e condividi. Tutto in un flusso ordinato.' },
-                { icon: TrendingUp, text: 'Cruscotto del valore generato', desc: 'Ogni mese sai esattamente quanto tempo hai risparmiato e quante visite hai generato.' },
+                { icon: FlaskConical, text: 'Rete laboratori integrata', desc: 'Richiedi analisi, ricevi referti, rivedi e condividi con il proprietario. Tutto in un flusso ordinato.' },
+                { icon: TrendingUp, text: 'Cruscotto del valore generato', desc: 'Ogni mese sai esattamente quanto tempo hai risparmiato e quante visite sono state generate.' },
               ].map((s, i) => (
                 <div key={i} className="flex items-start gap-4">
                   <div className="h-10 w-10 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0"><s.icon className="h-5 w-5 text-green-600" /></div>
@@ -255,14 +255,16 @@ function FullLandingPage({ onLogin }) {
               { icon: Bell, title: 'Promemoria e Ricontatti', desc: 'Promemoria automatici: 24h prima, 1h prima, post-visita, post-chirurgia, richiami vaccini.', color: 'bg-amber-500', tag: null },
               { icon: MessageCircle, title: 'Casella messaggi condivisa', desc: 'Messaggi, richieste, notifiche laboratorio, ricontatti da gestire. Tutto in un posto.', color: 'bg-cyan-500', tag: null },
               { icon: FileText, title: 'Referti e Documenti', desc: 'Prescrizioni, certificati, referti PDF. Generazione, invio automatico e archivio.', color: 'bg-teal-500', tag: null },
-              { icon: FlaskConical, title: 'Rete laboratori', desc: 'Richieste analisi, marketplace laboratori, upload referti, revisione e invio al proprietario.', color: 'bg-purple-500', tag: 'Vantaggio competitivo' },
-              { icon: PawPrint, title: 'Area Proprietario', desc: 'L\'area ufficiale della tua clinica: prenotazioni, promemoria, referti, messaggi, ricontatti.', color: 'bg-pink-500', tag: null },
+              { icon: FlaskConical, title: 'Rete laboratori', desc: 'Richieste analisi, vetrina laboratori, caricamento referti, revisione e invio al proprietario.', color: 'bg-purple-500', tag: 'Vantaggio competitivo' },
+              { icon: PawPrint, title: 'Area Proprietario', desc: 'Il canale digitale con cui la clinica segue il cliente anche dopo la visita: prenotazioni, promemoria, referti, comunicazioni.', color: 'bg-pink-500', tag: null },
               { icon: BarChart3, title: 'Cruscotto del valore', desc: 'Prenotazioni generate, telefonate evitate, ore risparmiate, clienti riattivati e riepiloghi economici.', color: 'bg-emerald-500', tag: 'Esclusivo' },
               { icon: Receipt, title: 'Listino e Riepiloghi', desc: 'Listino servizi, ricevute operative, esportazioni e riepiloghi economici.', color: 'bg-orange-500', tag: null },
               { icon: Stethoscope, title: 'Assistente REV', desc: 'Preparazione bozze, archiviazione ricette, storico prescrizioni. L\'emissione ufficiale resta al veterinario.', color: 'bg-emerald-600', tag: null },
-              { icon: Gift, title: 'Programma Fedeltà', desc: 'Punti, premi e incentivi per far tornare i clienti. Personalizzabile dalla clinica.', color: 'bg-yellow-500', tag: null },
+              { icon: Gift, title: 'Programma Fedeltà', desc: 'Sistema a punti configurabile dalla clinica, con premi o vantaggi definiti secondo le proprie regole commerciali.', color: 'bg-yellow-500', tag: null },
               { icon: Users, title: 'Schede Animale e Storico', desc: 'Informazioni principali di ogni animale, documenti, referti e storico visite consultabile.', color: 'bg-slate-500', tag: null },
-              { icon: Zap, title: 'Automazioni', desc: 'Promemoria, ricontatti, richiami, cliente inattivo, compleanno animale. Tutto automatico.', color: 'bg-violet-500', tag: 'Pro' },
+              { icon: Link2, title: 'Google Calendar Sync', desc: 'Sincronizzazione bidirezionale con Google Calendar. Gli appuntamenti VetBuddy appaiono nel calendario del veterinario.', color: 'bg-blue-600', tag: null },
+              { icon: Video, title: 'Video-Consulti', desc: 'Consulenze veterinarie a distanza con videochiamata integrata. Ideale per ricontatti e controlli post-operatori.', color: 'bg-sky-500', tag: null },
+              { icon: Zap, title: 'Automazioni', desc: 'Oltre 40 automazioni operative: promemoria, ricontatti, richiami, cliente inattivo, compleanno animale.', color: 'bg-violet-500', tag: 'Pro' },
               { icon: Heart, title: 'Piani Salute', desc: 'Programmi di prevenzione strutturati: Cucciolo, Senior, Prevenzione. Monitora il progresso per ogni paziente.', color: 'bg-rose-500', tag: 'Nuovo' },
               { icon: Brain, title: 'Assistente intelligente', desc: 'Riassumi visite, scrivi messaggi, traduci note cliniche. Sempre validato dalla clinica.', color: 'bg-indigo-600', tag: 'Nuovo' },
             ].map((m, i) => (
@@ -294,13 +296,11 @@ function FullLandingPage({ onLogin }) {
               <h3 className="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2"><Building2 className="h-5 w-5 text-coral-500" /> Per la Clinica</h3>
               <div className="space-y-3">
                 {[
-                  'Richiesta esame direttamente dalla scheda animale',
-                  'Selezione laboratorio dal marketplace',
-                  'Confronto per tempi medi e servizi',
-                  'Stato richiesta in tempo reale',
-                  'Revisione referto + note cliniche',
-                  'Invio controllato al proprietario',
-                  'Storico referti per ogni animale',
+                  'Invia richieste di esame dalla scheda animale',
+                  'Seleziona il laboratorio in base a distanza, prezzo indicativo e tempi medi',
+                  'Riceve notifiche sullo stato della richiesta',
+                  'Rivede il referto prima di renderlo visibile al proprietario',
+                  'Conserva lo storico richieste e referti',
                 ].map((f, i) => (
                   <div key={i} className="flex items-start gap-2"><Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" /><span className="text-sm text-gray-700">{f}</span></div>
                 ))}
@@ -310,13 +310,13 @@ function FullLandingPage({ onLogin }) {
               <h3 className="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2"><FlaskConical className="h-5 w-5 text-purple-500" /> Per il Laboratorio</h3>
               <div className="space-y-3">
                 {[
-                  'Pannello dedicato per gestire richieste',
-                  'Profilo pubblico nel marketplace',
-                  'Listino prezzi indicativo',
-                  'Disponibilità ritiro campioni',
-                  'Upload referto PDF con note tecniche',
-                  'Notifiche automatiche alla clinica',
-                  'Integrazione API (quando disponibile e configurata)',
+                  'Riceve richieste dalla clinica',
+                  'Aggiorna lo stato della lavorazione',
+                  'Carica referti PDF',
+                  'Inserisce listino indicativo',
+                  'Indica tempi medi',
+                  'Segnala disponibilità ritiro campioni',
+                  'Gestisce lo storico delle richieste',
                 ].map((f, i) => (
                   <div key={i} className="flex items-start gap-2"><Check className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" /><span className="text-sm text-gray-700">{f}</span></div>
                 ))}
@@ -343,30 +343,28 @@ function FullLandingPage({ onLogin }) {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <Badge className="bg-pink-100 text-pink-700 mb-4">🐾 Per i proprietari</Badge>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">L'app ufficiale della tua clinica per seguire la salute del tuo animale.</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">L'area proprietario: il canale digitale con cui la clinica segue il cliente anche dopo la visita.</h2>
               <p className="text-gray-600 mb-6">Il proprietario riceve promemoria, referti e ricontatti senza intasare la segreteria. Tutto automatico, tutto ordinato.</p>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  'Prenotazione online',
-                  'Promemoria vaccini',
-                  'Promemoria antiparassitari',
-                  'Storico documenti e referti',
+                  'Prenotazione online in pochi click',
                   'Profilo animale completo',
-                  'Messaggi dalla clinica',
-                  'Ricontatto post visita',
-                  'Prossima visita consigliata',
-                  'Programma fedeltà',
-                  'Notifiche richiami',
+                  'Documenti e referti autorizzati dalla clinica',
+                  'Promemoria visite e vaccini',
+                  'Comunicazioni dalla clinica',
+                  'Programma fedeltà configurabile',
+                  'Storico visite e documenti',
+                  'Accesso tramite area riservata',
                 ].map((f, i) => (
                   <div key={i} className="flex items-center gap-2 text-sm text-gray-700"><CheckCircle className="h-4 w-4 text-pink-500 flex-shrink-0" />{f}</div>
                 ))}
               </div>
-              <p className="text-sm text-gray-500 mt-6 italic">L'app proprietario serve soprattutto a far tornare il cliente in clinica.</p>
+              <p className="text-sm text-gray-500 mt-6 italic">L'area proprietario serve soprattutto a far tornare il cliente in clinica.</p>
             </div>
             <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-8 text-center">
               <PawPrint className="h-16 w-16 text-coral-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Gratuita per i proprietari</h3>
-              <p className="text-gray-600 text-sm mb-4">Nessun costo nascosto. Il proprietario accede gratis e riceve tutto dalla clinica.</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">100% Gratuita per il proprietario</h3>
+              <p className="text-gray-600 text-sm mb-4">Per sempre, nessun costo nascosto. Il proprietario accede gratis e riceve tutto dalla clinica.</p>
               <Button className="bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Registrati gratis <ArrowRight className="ml-2 h-4 w-4" /></Button>
             </div>
           </div>
@@ -426,19 +424,19 @@ function FullLandingPage({ onLogin }) {
               </CardContent>
             </Card>
 
-            {/* GROWTH */}
+            {/* CRESCITA */}
             <Card className="border-coral-300 ring-2 ring-coral-200 hover:shadow-lg transition relative">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2"><Badge className="bg-coral-500 text-white px-3">⭐ Consigliato</Badge></div>
               <CardContent className="p-6">
-                <h3 className="font-bold text-coral-600 text-lg mb-1">Growth</h3>
+                <h3 className="font-bold text-coral-600 text-lg mb-1">Crescita</h3>
                 <p className="text-xs text-gray-500 mb-4">Per cliniche piccole e medie</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-coral-600">€69</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <div className="space-y-2 text-sm">
-                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Area proprietario', 'Casella messaggi', 'Cruscotto del valore', 'Richieste analisi base'].map((f, i) => (
+                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-500" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
-                <Button className="w-full mt-6 bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Scegli Growth</Button>
+                <Button className="w-full mt-6 bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Scegli Crescita</Button>
               </CardContent>
             </Card>
 
@@ -449,7 +447,7 @@ function FullLandingPage({ onLogin }) {
                 <p className="text-xs text-gray-500 mb-4">Per cliniche strutturate</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€99</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <div className="space-y-2 text-sm">
-                  {['Tutto Growth più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Analisi avanzate', 'Resoconti mensili', 'Assistente intelligente'].map((f, i) => (
+                  {['Tutto Crescita più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className={`text-gray-700 ${i === 0 ? 'font-semibold' : ''}`}>{f}</span></div>
                   ))}
                 </div>
@@ -465,7 +463,7 @@ function FullLandingPage({ onLogin }) {
                 <div className="mb-4"><span className="text-3xl font-bold text-purple-700">€39</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <p className="text-xs text-purple-600 mb-3 font-medium">Gratis per 6 mesi</p>
                 <div className="space-y-2 text-sm">
-                  {['Pannello laboratorio', 'Profilo pubblico', 'Listino prezzi', 'Gestione richieste', 'Upload referti PDF', 'Notifiche email', 'Disponibilità ritiro'].map((f, i) => (
+                  {['Pannello di gestione richieste', 'Profilo nella vetrina laboratori', 'Listino prezzi indicativo', 'Gestione richieste', 'Caricamento referti PDF', 'Notifiche automatiche', 'Disponibilità ritiro'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
@@ -500,7 +498,7 @@ function FullLandingPage({ onLogin }) {
           <div className="text-center mb-10">
             <Badge className="bg-coral-100 text-coral-700 mb-4">🏙️ Progetto pilota Milano</Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Progetto pilota Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica.</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Piano Growth gratuito per 90 giorni. Nessun vincolo. Alla fine del progetto pilota ricevi un riepilogo con prenotazioni generate, telefonate evitate, promemoria inviati, tempo risparmiato e clienti riattivati.</p>
+            <p className="text-gray-600 max-w-2xl mx-auto">Piano Crescita gratuito per 90 giorni. Nessun vincolo. Alla fine del progetto pilota ricevi un riepilogo con prenotazioni generate, telefonate evitate, promemoria inviati, tempo risparmiato e clienti riattivati.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-4">
@@ -593,13 +591,15 @@ function FullLandingPage({ onLogin }) {
           </div>
           <Accordion type="single" collapsible className="space-y-3">
             {[
-              { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale completo. È un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, promemoria, comunicazioni e ricontatti. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.' },
-              { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy aiuta a preparare, organizzare e archiviare il flusso della REV. L\'emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali sul sistema nazionale (es. Vetinfo).' },
-              { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. VetBuddy non è un intermediario di pagamento per i servizi veterinari. I pagamenti delle visite avvengono direttamente tra clinica e proprietario. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
-              { q: 'Quanto costa per i proprietari di animali?', a: 'Zero. L\'area proprietario è completamente gratuita. Nessun costo nascosto, mai.' },
+              { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale veterinario completo. È un copilota operativo che lavora accanto agli strumenti già usati dalla clinica per automatizzare prenotazioni, promemoria, comunicazioni, documenti e ricontatti. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali.' },
+              { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali e responsabilità professionale.' },
+              { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite restano gestiti dalla clinica. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
+              { q: 'Quanto costa per i proprietari di animali?', a: 'Zero. L\'area proprietario è completamente gratuita per il proprietario dell\'animale. Nessun costo nascosto, mai.' },
               { q: 'Cos\'è il Progetto pilota Milano?', a: 'Progetto pilota Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Include onboarding, configurazione e supporto. Nessun vincolo. Alla fine del progetto pilota ricevi un riepilogo con prenotazioni generate, telefonate evitate, promemoria inviati, tempo risparmiato e clienti riattivati.' },
-              { q: 'Posso annullare in qualsiasi momento?', a: 'Abbonamento mensile, nessun vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.' },
+              { q: 'Posso annullare in qualsiasi momento?', a: 'Sì. L\'abbonamento è mensile, senza vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.' },
+              { q: 'Devo cambiare tutti i miei strumenti?', a: 'No. VetBuddy può lavorare accanto agli strumenti già usati dalla clinica. Il progetto pilota serve proprio a misurare il valore senza stravolgere l\'organizzazione.' },
               { q: 'Come funziona la Rete laboratori?', a: 'La clinica richiede un\'analisi dalla scheda del paziente, il laboratorio la riceve, la processa e carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando renderlo visibile al proprietario.' },
+              { q: 'I dati e i referti sono visibili automaticamente al proprietario?', a: 'No. La clinica mantiene il controllo sui documenti e decide quali informazioni rendere visibili al proprietario tramite area riservata.' },
               { q: 'Serve una formazione tecnica per usarlo?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile via email e chat.' },
             ].map((faq, i) => (
               <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-lg border px-4">
