@@ -69,9 +69,9 @@ function FullLandingPage({ onLogin }) {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Pilot Banner */}
+      {/* Progetto pilota Banner */}
       <div className="bg-gradient-to-r from-coral-500 to-orange-500 text-white text-center py-2.5 px-4 text-sm">
-        <span className="font-semibold">🏙️ Pilot Milano</span> — 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Candidati →</button>
+        <span className="font-semibold">🏙️ Progetto pilota Milano</span> — 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. <button onClick={() => scrollToSection('pilot')} className="underline font-semibold ml-1">Candidati →</button>
       </div>
 
       {/* Navigation */}
@@ -81,9 +81,9 @@ function FullLandingPage({ onLogin }) {
           <div className="hidden md:flex items-center gap-6 text-sm font-medium">
             <button onClick={() => scrollToSection('soluzione')} className="text-gray-600 hover:text-coral-500 transition">Soluzione</button>
             <button onClick={() => scrollToSection('moduli')} className="text-gray-600 hover:text-coral-500 transition">Moduli</button>
-            <button onClick={() => scrollToSection('lab-network')} className="text-purple-600 hover:text-purple-700 font-medium transition">🧪 Lab Network</button>
+            <button onClick={() => scrollToSection('lab-network')} className="text-purple-600 hover:text-purple-700 font-medium transition">🧪 Rete laboratori</button>
             <button onClick={() => scrollToSection('prezzi')} className="text-gray-600 hover:text-coral-500 transition">Prezzi</button>
-            <button onClick={() => scrollToSection('pilot')} className="text-gray-600 hover:text-coral-500 transition">Pilot</button>
+            <button onClick={() => scrollToSection('pilot')} className="text-gray-600 hover:text-coral-500 transition">Progetto pilota</button>
             <button onClick={() => scrollToSection('faq')} className="text-gray-600 hover:text-coral-500 transition">FAQ</button>
           </div>
           <div className="hidden md:flex items-center gap-3">
@@ -97,9 +97,9 @@ function FullLandingPage({ onLogin }) {
             <div className="flex flex-col gap-2">
               <button onClick={() => { scrollToSection('soluzione'); }} className="text-gray-600 text-left py-2 hover:text-coral-500">Soluzione</button>
               <button onClick={() => { scrollToSection('moduli'); }} className="text-gray-600 text-left py-2 hover:text-coral-500">Moduli</button>
-              <button onClick={() => { scrollToSection('lab-network'); }} className="text-purple-600 text-left py-2 font-medium">🧪 Lab Network</button>
+              <button onClick={() => { scrollToSection('lab-network'); }} className="text-purple-600 text-left py-2 font-medium">🧪 Rete laboratori</button>
               <button onClick={() => { scrollToSection('prezzi'); }} className="text-gray-600 text-left py-2 hover:text-coral-500">Prezzi</button>
-              <button onClick={() => { scrollToSection('pilot'); }} className="text-gray-600 text-left py-2 hover:text-coral-500">Pilot</button>
+              <button onClick={() => { scrollToSection('pilot'); }} className="text-gray-600 text-left py-2 hover:text-coral-500">Progetto pilota</button>
               <a href="/presentazione" className="text-gray-600 text-left py-2 hover:text-coral-500 block">Brochure</a>
               <div className="flex gap-2 pt-2 border-t mt-2">
                 <Button variant="outline" size="sm" className="flex-1" onClick={() => { setAuthMode('login'); setShowAuth(true); setMobileMenuOpen(false); }}>Accedi</Button>
@@ -121,14 +121,14 @@ function FullLandingPage({ onLogin }) {
             <span className="text-coral-500">Clienti sempre seguiti.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-4 max-w-3xl mx-auto leading-relaxed">
-            VetBuddy automatizza prenotazioni, reminder, comunicazioni, referti e follow-up tra cliniche veterinarie, proprietari e laboratori.
+            VetBuddy automatizza prenotazioni, promemoria, comunicazioni, referti e ricontatti tra cliniche veterinarie, proprietari e laboratori.
           </p>
           <p className="text-base text-gray-500 mb-8 max-w-2xl mx-auto italic">
             Non sostituisce il tuo gestionale: lavora accanto alla clinica per ridurre il caos operativo e aumentare le visite ricorrenti.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
             <Button size="lg" className="bg-coral-500 hover:bg-coral-600 text-white px-8 py-6 text-lg" onClick={() => scrollToSection('pilot')}>
-              Candidati al Pilot Milano <ArrowRight className="ml-2 h-5 w-5" />
+              Candidati al Progetto pilota Milano <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button variant="outline" size="lg" className="px-8 py-6 text-lg" onClick={() => scrollToSection('soluzione')}>
               Scopri come funziona
@@ -138,10 +138,10 @@ function FullLandingPage({ onLogin }) {
           {/* Risultati chiave — numeri impatto */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
-              { icon: PhoneOff, value: 'Fino a -70%', label: 'Telefonate (obiettivo pilot)', color: 'text-red-500' },
-              { icon: CalendarCheck, value: 'Fino a +40%', label: 'Prenotazioni online (obiettivo pilot)', color: 'text-green-500' },
-              { icon: Timer, value: 'Fino a 15h', label: 'Risparmiate/mese (obiettivo pilot)', color: 'text-blue-500' },
-              { icon: Repeat, value: 'Fino a +25%', label: 'Clienti che tornano (obiettivo pilot)', color: 'text-purple-500' },
+              { icon: PhoneOff, value: 'Fino a -70%', label: 'Telefonate (obiettivo progetto pilota)', color: 'text-red-500' },
+              { icon: CalendarCheck, value: 'Fino a +40%', label: 'Prenotazioni online (obiettivo progetto pilota)', color: 'text-green-500' },
+              { icon: Timer, value: 'Fino a 15h', label: 'Risparmiate/mese (obiettivo progetto pilota)', color: 'text-blue-500' },
+              { icon: Repeat, value: 'Fino a +25%', label: 'Clienti che tornano (obiettivo progetto pilota)', color: 'text-purple-500' },
             ].map((stat, i) => (
               <div key={i} className="bg-white/80 backdrop-blur rounded-xl p-4 border border-gray-100 shadow-sm">
                 <stat.icon className={`h-6 w-6 ${stat.color} mx-auto mb-2`} />
@@ -166,10 +166,10 @@ function FullLandingPage({ onLogin }) {
           <div className="grid md:grid-cols-3 gap-6">
             {[
               { icon: Phone, title: 'Telefonate continue', desc: 'La segreteria passa ore al telefono per conferme, disdette, richieste info e promemoria. Tempo sottratto alla cura dei pazienti.' },
-              { icon: Calendar, title: 'Appuntamenti dimenticati', desc: 'I no-show costano alla clinica. Senza reminder automatici, i proprietari dimenticano le visite e i richiami.' },
+              { icon: Calendar, title: 'Appuntamenti dimenticati', desc: 'I no-show costano alla clinica. Senza promemoria automatici, i proprietari dimenticano le visite e i richiami.' },
               { icon: MessageCircle, title: 'WhatsApp e caos comunicativo', desc: 'Referti via WhatsApp, richieste su canali diversi, informazioni perse. Nessun ordine, nessuno storico.' },
               { icon: FlaskConical, title: 'Referti sparsi e laboratori disconnessi', desc: 'I risultati delle analisi arrivano per email, telefono o fax. Nessun flusso strutturato per gestirli e condividerli.' },
-              { icon: Repeat, title: 'Clienti che non tornano', desc: 'Senza follow-up e richiami automatici, i clienti si dimenticano delle visite di controllo e dei vaccini.' },
+              { icon: Repeat, title: 'Clienti che non tornano', desc: 'Senza ricontatti e richiami automatici, i clienti si dimenticano delle visite di controllo e dei vaccini.' },
               { icon: BarChart3, title: 'Nessuna visibilità sui risultati', desc: 'La clinica non sa quante prenotazioni genera, quanto tempo risparmia o quanto fatturato perde per disorganizzazione.' },
             ].map((p, i) => (
               <Card key={i} className="border-red-100 hover:shadow-md transition">
@@ -198,11 +198,11 @@ function FullLandingPage({ onLogin }) {
             <div className="space-y-6">
               {[
                 { icon: CalendarCheck, text: 'Prenotazioni online automatiche', desc: 'I proprietari prenotano dal link diretto. Tu confermi con un click.' },
-                { icon: Bell, text: 'Reminder e follow-up automatici', desc: 'Niente più telefonate per ricordare appuntamenti, vaccini e controlli.' },
-                { icon: MessageCircle, text: 'Comunicazione centralizzata', desc: 'Un\'unica inbox per messaggi, richieste e notifiche. Ordine al posto del caos.' },
+                { icon: Bell, text: 'Promemoria e ricontatti automatici', desc: 'Niente più telefonate per ricordare appuntamenti, vaccini e controlli.' },
+                { icon: MessageCircle, text: 'Comunicazione centralizzata', desc: 'Un\'unica casella messaggi per richieste e notifiche. Ordine al posto del caos.' },
                 { icon: FileText, text: 'Documenti e referti digitali', desc: 'Referti, certificati e prescrizioni inviati automaticamente al proprietario.' },
-                { icon: FlaskConical, text: 'Lab Network integrato', desc: 'Richiedi analisi, ricevi referti, rivedi e condividi. Tutto in un flusso ordinato.' },
-                { icon: TrendingUp, text: 'Dashboard valore generato', desc: 'Ogni mese sai esattamente quanto tempo hai risparmiato e quante visite hai generato.' },
+                { icon: FlaskConical, text: 'Rete laboratori integrata', desc: 'Richiedi analisi, ricevi referti, rivedi e condividi. Tutto in un flusso ordinato.' },
+                { icon: TrendingUp, text: 'Cruscotto del valore generato', desc: 'Ogni mese sai esattamente quanto tempo hai risparmiato e quante visite hai generato.' },
               ].map((s, i) => (
                 <div key={i} className="flex items-start gap-4">
                   <div className="h-10 w-10 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0"><s.icon className="h-5 w-5 text-green-600" /></div>
@@ -220,7 +220,7 @@ function FullLandingPage({ onLogin }) {
                   { label: 'Telefonate evitate (obiettivo)', value: 'Fino a 120/mese', icon: PhoneOff, color: 'text-red-500' },
                   { label: 'Ore risparmiate (obiettivo)', value: 'Fino a 15h/mese', icon: Timer, color: 'text-blue-500' },
                   { label: 'Prenotazioni online (obiettivo)', value: 'Fino a 45/mese', icon: CalendarCheck, color: 'text-green-500' },
-                  { label: 'No-show ridotti (obiettivo)', value: 'Obiettivo pilot', icon: Shield, color: 'text-purple-500' },
+                  { label: 'No-show ridotti (obiettivo)', value: 'Obiettivo progetto pilota', icon: Shield, color: 'text-purple-500' },
                   { label: 'Clienti riattivati (obiettivo)', value: 'Fino a 20/mese', icon: Repeat, color: 'text-orange-500' },
                   { label: 'Valore stimato generato (obiettivo)', value: 'Fino a €2.800/mese', icon: Euro, color: 'text-emerald-600' },
                 ].map((r, i) => (
@@ -233,7 +233,7 @@ function FullLandingPage({ onLogin }) {
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-gray-400 mt-4 text-center italic">*Obiettivi del progetto pilota. L'impatto viene misurato durante il pilot.</p>
+              <p className="text-xs text-gray-400 mt-4 text-center italic">*Obiettivi del progetto pilota. L'impatto viene misurato durante i 90 giorni.</p>
             </div>
           </div>
         </div>
@@ -251,20 +251,20 @@ function FullLandingPage({ onLogin }) {
           </div>
           <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">
             {[
-              { icon: Calendar, title: 'Booking e Agenda', desc: 'Prenotazioni online, link diretto, calendario multi-vista, richieste da confermare.', color: 'bg-blue-500', tag: null },
-              { icon: Bell, title: 'Reminder e Follow-up', desc: 'Promemoria automatici: 24h prima, 1h prima, post-visita, post-chirurgia, richiami vaccini.', color: 'bg-amber-500', tag: null },
-              { icon: MessageCircle, title: 'Team Inbox', desc: 'Messaggi, richieste, notifiche lab, follow-up da gestire. Tutto in un posto.', color: 'bg-cyan-500', tag: null },
+              { icon: Calendar, title: 'Prenotazioni e Agenda', desc: 'Prenotazioni online, link diretto, calendario multi-vista, richieste da confermare.', color: 'bg-blue-500', tag: null },
+              { icon: Bell, title: 'Promemoria e Ricontatti', desc: 'Promemoria automatici: 24h prima, 1h prima, post-visita, post-chirurgia, richiami vaccini.', color: 'bg-amber-500', tag: null },
+              { icon: MessageCircle, title: 'Casella messaggi condivisa', desc: 'Messaggi, richieste, notifiche laboratorio, ricontatti da gestire. Tutto in un posto.', color: 'bg-cyan-500', tag: null },
               { icon: FileText, title: 'Referti e Documenti', desc: 'Prescrizioni, certificati, referti PDF. Generazione, invio automatico e archivio.', color: 'bg-teal-500', tag: null },
-              { icon: FlaskConical, title: 'Lab Network', desc: 'Richieste analisi, marketplace laboratori, upload referti, revisione e invio al proprietario.', color: 'bg-purple-500', tag: 'Vantaggio competitivo' },
-              { icon: PawPrint, title: 'App Proprietario', desc: 'L\'app ufficiale della tua clinica: prenotazioni, reminder, referti, messaggi, follow-up.', color: 'bg-pink-500', tag: null },
-              { icon: BarChart3, title: 'Dashboard Valore', desc: 'Prenotazioni generate, telefonate evitate, ore risparmiate, clienti riattivati e riepiloghi economici.', color: 'bg-emerald-500', tag: 'Esclusivo' },
+              { icon: FlaskConical, title: 'Rete laboratori', desc: 'Richieste analisi, marketplace laboratori, upload referti, revisione e invio al proprietario.', color: 'bg-purple-500', tag: 'Vantaggio competitivo' },
+              { icon: PawPrint, title: 'Area Proprietario', desc: 'L\'area ufficiale della tua clinica: prenotazioni, promemoria, referti, messaggi, ricontatti.', color: 'bg-pink-500', tag: null },
+              { icon: BarChart3, title: 'Cruscotto del valore', desc: 'Prenotazioni generate, telefonate evitate, ore risparmiate, clienti riattivati e riepiloghi economici.', color: 'bg-emerald-500', tag: 'Esclusivo' },
               { icon: Receipt, title: 'Listino e Riepiloghi', desc: 'Listino servizi, ricevute operative, esportazioni e riepiloghi economici.', color: 'bg-orange-500', tag: null },
               { icon: Stethoscope, title: 'Assistente REV', desc: 'Preparazione bozze, archiviazione ricette, storico prescrizioni. L\'emissione ufficiale resta al veterinario.', color: 'bg-emerald-600', tag: null },
               { icon: Gift, title: 'Programma Fedeltà', desc: 'Punti, premi e incentivi per far tornare i clienti. Personalizzabile dalla clinica.', color: 'bg-yellow-500', tag: null },
               { icon: Users, title: 'Schede Animale e Storico', desc: 'Informazioni principali di ogni animale, documenti, referti e storico visite consultabile.', color: 'bg-slate-500', tag: null },
-              { icon: Zap, title: 'Automazioni', desc: 'Reminder, follow-up, richiami, cliente inattivo, compleanno animale. Tutto automatico.', color: 'bg-violet-500', tag: 'Pro' },
+              { icon: Zap, title: 'Automazioni', desc: 'Promemoria, ricontatti, richiami, cliente inattivo, compleanno animale. Tutto automatico.', color: 'bg-violet-500', tag: 'Pro' },
               { icon: Heart, title: 'Piani Salute', desc: 'Programmi di prevenzione strutturati: Cucciolo, Senior, Prevenzione. Monitora il progresso per ogni paziente.', color: 'bg-rose-500', tag: 'Nuovo' },
-              { icon: Brain, title: 'AI Assistant', desc: 'Riassumi visite, scrivi messaggi, traduci note cliniche. Sempre validato dalla clinica.', color: 'bg-indigo-600', tag: 'Nuovo' },
+              { icon: Brain, title: 'Assistente intelligente', desc: 'Riassumi visite, scrivi messaggi, traduci note cliniche. Sempre validato dalla clinica.', color: 'bg-indigo-600', tag: 'Nuovo' },
             ].map((m, i) => (
               <Card key={i} className="hover:shadow-lg transition group relative overflow-hidden">
                 {m.tag && <div className="absolute top-2 right-2"><Badge className="bg-coral-500 text-white text-[10px]">{m.tag}</Badge></div>}
@@ -280,12 +280,12 @@ function FullLandingPage({ onLogin }) {
       </section>
 
       {/* ============================================================ */}
-      {/* LAB NETWORK */}
+      {/* RETE LABORATORI */}
       {/* ============================================================ */}
       <section id="lab-network" className="py-16 px-4 bg-gradient-to-br from-purple-50 via-white to-indigo-50/30">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <Badge className="bg-purple-100 text-purple-700 mb-4">🧪 VetBuddy Lab Network</Badge>
+            <Badge className="bg-purple-100 text-purple-700 mb-4">🧪 Rete laboratori VetBuddy</Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Il laboratorio carica. La clinica valida. Il proprietario riceve.</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">Un flusso ordinato e professionale per gestire le analisi di laboratorio senza telefonate, email o fogli volanti.</p>
           </div>
@@ -310,7 +310,7 @@ function FullLandingPage({ onLogin }) {
               <h3 className="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2"><FlaskConical className="h-5 w-5 text-purple-500" /> Per il Laboratorio</h3>
               <div className="space-y-3">
                 {[
-                  'Dashboard dedicata per gestire richieste',
+                  'Pannello dedicato per gestire richieste',
                   'Profilo pubblico nel marketplace',
                   'Listino prezzi indicativo',
                   'Disponibilità ritiro campioni',
@@ -344,16 +344,16 @@ function FullLandingPage({ onLogin }) {
             <div>
               <Badge className="bg-pink-100 text-pink-700 mb-4">🐾 Per i proprietari</Badge>
               <h2 className="text-3xl font-bold text-gray-900 mb-4">L'app ufficiale della tua clinica per seguire la salute del tuo animale.</h2>
-              <p className="text-gray-600 mb-6">Il proprietario riceve reminder, referti e follow-up senza intasare la segreteria. Tutto automatico, tutto ordinato.</p>
+              <p className="text-gray-600 mb-6">Il proprietario riceve promemoria, referti e ricontatti senza intasare la segreteria. Tutto automatico, tutto ordinato.</p>
               <div className="grid grid-cols-2 gap-3">
                 {[
                   'Prenotazione online',
-                  'Reminder vaccini',
-                  'Reminder antiparassitari',
+                  'Promemoria vaccini',
+                  'Promemoria antiparassitari',
                   'Storico documenti e referti',
                   'Profilo animale completo',
                   'Messaggi dalla clinica',
-                  'Follow-up post visita',
+                  'Ricontatto post visita',
                   'Prossima visita consigliata',
                   'Programma fedeltà',
                   'Notifiche richiami',
@@ -418,7 +418,7 @@ function FullLandingPage({ onLogin }) {
                 <p className="text-xs text-gray-500 mb-4">Per veterinari freelance e micro-cliniche</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€29</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <div className="space-y-2 text-sm">
-                  {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Reminder base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
+                  {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Promemoria base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
@@ -434,7 +434,7 @@ function FullLandingPage({ onLogin }) {
                 <p className="text-xs text-gray-500 mb-4">Per cliniche piccole e medie</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-coral-600">€69</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <div className="space-y-2 text-sm">
-                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Reminder automatici', 'Documenti e PDF', 'App proprietario', 'Inbox', 'Dashboard valore', 'Lab request base'].map((f, i) => (
+                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Area proprietario', 'Casella messaggi', 'Cruscotto del valore', 'Richieste analisi base'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-500" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
@@ -449,7 +449,7 @@ function FullLandingPage({ onLogin }) {
                 <p className="text-xs text-gray-500 mb-4">Per cliniche strutturate</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€99</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <div className="space-y-2 text-sm">
-                  {['Tutto Growth più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Lab Network completo', 'Analytics avanzati', 'Report mensili', 'AI assistente'].map((f, i) => (
+                  {['Tutto Growth più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Analisi avanzate', 'Resoconti mensili', 'Assistente intelligente'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className={`text-gray-700 ${i === 0 ? 'font-semibold' : ''}`}>{f}</span></div>
                   ))}
                 </div>
@@ -457,15 +457,15 @@ function FullLandingPage({ onLogin }) {
               </CardContent>
             </Card>
 
-            {/* LAB PARTNER */}
+            {/* LABORATORIO PARTNER */}
             <Card className="border-purple-200 hover:shadow-lg transition">
               <CardContent className="p-6">
-                <h3 className="font-bold text-purple-700 text-lg mb-1">Lab Partner</h3>
+                <h3 className="font-bold text-purple-700 text-lg mb-1">Laboratorio partner</h3>
                 <p className="text-xs text-gray-500 mb-4">Per laboratori di analisi</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-purple-700">€39</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <p className="text-xs text-purple-600 mb-3 font-medium">Gratis per 6 mesi</p>
                 <div className="space-y-2 text-sm">
-                  {['Dashboard laboratorio', 'Profilo pubblico', 'Listino prezzi', 'Gestione richieste', 'Upload referti PDF', 'Notifiche email', 'Disponibilità ritiro'].map((f, i) => (
+                  {['Pannello laboratorio', 'Profilo pubblico', 'Listino prezzi', 'Gestione richieste', 'Upload referti PDF', 'Notifiche email', 'Disponibilità ritiro'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
@@ -493,25 +493,25 @@ function FullLandingPage({ onLogin }) {
       </section>
 
       {/* ============================================================ */}
-      {/* PILOT MILANO */}
+      {/* PROGETTO PILOTA MILANO */}
       {/* ============================================================ */}
       <section id="pilot" className="py-16 px-4 bg-gradient-to-br from-coral-50 via-orange-50/30 to-white">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <Badge className="bg-coral-100 text-coral-700 mb-4">🏙️ Pilot Milano</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Pilot Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica.</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Piano Growth gratuito per 90 giorni. Nessun vincolo. Alla fine del pilot ricevi un riepilogo con prenotazioni generate, telefonate evitate, reminder inviati, tempo risparmiato e clienti riattivati.</p>
+            <Badge className="bg-coral-100 text-coral-700 mb-4">🏙️ Progetto pilota Milano</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Progetto pilota Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica.</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Piano Growth gratuito per 90 giorni. Nessun vincolo. Alla fine del progetto pilota ricevi un riepilogo con prenotazioni generate, telefonate evitate, promemoria inviati, tempo risparmiato e clienti riattivati.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-4">
-              <h3 className="font-bold text-lg text-gray-900">Cosa include il Pilot:</h3>
+              <h3 className="font-bold text-lg text-gray-900">Cosa include il Progetto pilota:</h3>
               {[
                 { icon: CheckCircle, text: 'Onboarding e configurazione iniziale inclusi' },
                 { icon: CheckCircle, text: 'Configurazione servizi, orari e link prenotazione' },
                 { icon: CheckCircle, text: 'Import clienti e pazienti da CSV' },
                 { icon: CheckCircle, text: 'Supporto avvio dedicato' },
-                { icon: CheckCircle, text: 'Dashboard valore attiva dal primo mese' },
-                { icon: CheckCircle, text: 'Report a fine pilot con risultati misurabili' },
+                { icon: CheckCircle, text: 'Cruscotto del valore attivo dal primo mese' },
+                { icon: CheckCircle, text: 'Riepilogo a fine progetto pilota con risultati misurabili' },
                 { icon: CheckCircle, text: 'Estensione possibile se servono più dati' },
               ].map((p, i) => (
                 <div key={i} className="flex items-center gap-3"><p.icon className="h-5 w-5 text-coral-500" /><span className="text-gray-700">{p.text}</span></div>
@@ -529,7 +529,7 @@ function FullLandingPage({ onLogin }) {
               ) : (
                 <Card className="border-coral-200">
                   <CardContent className="p-6 space-y-4">
-                    <h3 className="font-bold text-lg text-gray-900 text-center">Candidati al Pilot</h3>
+                    <h3 className="font-bold text-lg text-gray-900 text-center">Candidati al Progetto pilota</h3>
                     <div>
                       <Label className="text-sm text-gray-600">Nome clinica *</Label>
                       <Input value={pilotForm.clinicName} onChange={(e) => setPilotForm(f => ({...f, clinicName: e.target.value}))} placeholder="Es. Clinica Veterinaria Brera" className="mt-1" />
@@ -554,7 +554,7 @@ function FullLandingPage({ onLogin }) {
                     </div>
                     <Button className="w-full bg-coral-500 hover:bg-coral-600 text-white py-5" onClick={handlePilotSubmit} disabled={pilotSubmitting}>
                       {pilotSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                      Candidati al Pilot Milano
+                      Candidati al Progetto pilota Milano
                     </Button>
                     <p className="text-xs text-gray-400 text-center">Nessun costo, nessun vincolo. Rispondiamo entro 48h.</p>
                   </CardContent>
@@ -593,13 +593,13 @@ function FullLandingPage({ onLogin }) {
           </div>
           <Accordion type="single" collapsible className="space-y-3">
             {[
-              { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale completo. È un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, reminder, comunicazioni e follow-up. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.' },
+              { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale completo. È un copilota operativo che lavora accanto ai tuoi strumenti attuali per automatizzare prenotazioni, promemoria, comunicazioni e ricontatti. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.' },
               { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy aiuta a preparare, organizzare e archiviare il flusso della REV. L\'emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali sul sistema nazionale (es. Vetinfo).' },
               { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. VetBuddy non è un intermediario di pagamento per i servizi veterinari. I pagamenti delle visite avvengono direttamente tra clinica e proprietario. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
-              { q: 'Quanto costa per i proprietari di animali?', a: 'Zero. L\'app proprietario è completamente gratuita. Nessun costo nascosto, mai.' },
-              { q: 'Cos\'è il Pilot Milano?', a: 'Pilot Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Include onboarding, configurazione e supporto. Nessun vincolo. Alla fine del pilot ricevi un riepilogo con prenotazioni generate, telefonate evitate, reminder inviati, tempo risparmiato e clienti riattivati.' },
+              { q: 'Quanto costa per i proprietari di animali?', a: 'Zero. L\'area proprietario è completamente gratuita. Nessun costo nascosto, mai.' },
+              { q: 'Cos\'è il Progetto pilota Milano?', a: 'Progetto pilota Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Include onboarding, configurazione e supporto. Nessun vincolo. Alla fine del progetto pilota ricevi un riepilogo con prenotazioni generate, telefonate evitate, promemoria inviati, tempo risparmiato e clienti riattivati.' },
               { q: 'Posso annullare in qualsiasi momento?', a: 'Abbonamento mensile, nessun vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali della clinica.' },
-              { q: 'Come funziona il Lab Network?', a: 'La clinica richiede un\'analisi dalla scheda del paziente, il laboratorio la riceve, la processa e carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando renderlo visibile al proprietario.' },
+              { q: 'Come funziona la Rete laboratori?', a: 'La clinica richiede un\'analisi dalla scheda del paziente, il laboratorio la riceve, la processa e carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando renderlo visibile al proprietario.' },
               { q: 'Serve una formazione tecnica per usarlo?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile via email e chat.' },
             ].map((faq, i) => (
               <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-lg border px-4">
@@ -619,7 +619,7 @@ function FullLandingPage({ onLogin }) {
           <h2 className="text-2xl md:text-3xl font-bold mb-4">Pronto a ridurre le telefonate e aumentare le prenotazioni?</h2>
           <p className="text-white/80 mb-6">Ogni mese sai esattamente quanto tempo hai risparmiato e quante visite sono state generate.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button size="lg" className="bg-white text-coral-600 hover:bg-gray-100 px-8" onClick={() => scrollToSection('pilot')}>Candidati al Pilot</Button>
+            <Button size="lg" className="bg-white text-coral-600 hover:bg-gray-100 px-8" onClick={() => scrollToSection('pilot')}>Candidati al Progetto pilota</Button>
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 px-8" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Registrati gratis</Button>
           </div>
         </div>
@@ -638,7 +638,7 @@ function FullLandingPage({ onLogin }) {
               <div className="space-y-2 text-sm text-gray-400">
                 <button onClick={() => scrollToSection('moduli')} className="block hover:text-white transition">Moduli</button>
                 <button onClick={() => scrollToSection('prezzi')} className="block hover:text-white transition">Prezzi</button>
-                <button onClick={() => scrollToSection('lab-network')} className="block hover:text-white transition">Lab Network</button>
+                <button onClick={() => scrollToSection('lab-network')} className="block hover:text-white transition">Rete laboratori</button>
                 <a href="/presentazione" className="block hover:text-white transition">Brochure</a>
               </div>
             </div>
