@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/auth';
 import { corsHeaders } from './modules/constants';
+import { sendTestEmail } from '@/lib/email';
 
 // Import all module handlers
 import { handleAuthGet, handleAuthPost } from './modules/auth';
@@ -67,6 +68,17 @@ export async function POST(request, { params }) {
     }
 
     const body = await request.json().catch(() => ({}));
+
+    // Test email endpoint (no auth required for testing)
+    if (path === 'email/test') {
+      const to = body.to || 'info@vetbuddy.it';
+      const result = await sendTestEmail(to);
+      if (result.success) {
+        return NextResponse.json({ success: true, message: `Email di test inviata a ${to}`, id: result.id }, { headers: corsHeaders });
+      } else {
+        return NextResponse.json({ success: false, error: result.error }, { status: 500, headers: corsHeaders });
+      }
+    }
 
     const handlers = [
       handleSettingsPost,    // waitlist, invite-clinic, automations, video-consult, reviews
