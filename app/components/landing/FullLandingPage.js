@@ -410,12 +410,12 @@ function FullLandingPage({ onLogin }) {
           </div>
           <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-5">
             {/* STARTER */}
-            <Card className="border-gray-200 hover:shadow-lg transition">
-              <CardContent className="p-6">
+            <Card className="border-gray-200 hover:shadow-lg transition flex flex-col">
+              <CardContent className="p-6 flex flex-col flex-1">
                 <h3 className="font-bold text-gray-900 text-lg mb-1">Starter</h3>
                 <p className="text-xs text-gray-500 mb-4">Per veterinari freelance e micro-cliniche</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€29</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 text-sm flex-1">
                   {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Promemoria base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className="text-gray-700">{f}</span></div>
                   ))}
@@ -425,13 +425,13 @@ function FullLandingPage({ onLogin }) {
             </Card>
 
             {/* CRESCITA */}
-            <Card className="border-coral-300 ring-2 ring-coral-200 hover:shadow-lg transition relative">
+            <Card className="border-coral-300 ring-2 ring-coral-200 hover:shadow-lg transition relative flex flex-col">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2"><Badge className="bg-coral-500 text-white px-3">⭐ Consigliato</Badge></div>
-              <CardContent className="p-6">
+              <CardContent className="p-6 flex flex-col flex-1">
                 <h3 className="font-bold text-coral-600 text-lg mb-1">Crescita</h3>
                 <p className="text-xs text-gray-500 mb-4">Per cliniche piccole e medie</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-coral-600">€69</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 text-sm flex-1">
                   {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-500" /><span className="text-gray-700">{f}</span></div>
                   ))}
@@ -441,12 +441,12 @@ function FullLandingPage({ onLogin }) {
             </Card>
 
             {/* PRO */}
-            <Card className="border-gray-200 hover:shadow-lg transition">
-              <CardContent className="p-6">
+            <Card className="border-gray-200 hover:shadow-lg transition flex flex-col">
+              <CardContent className="p-6 flex flex-col flex-1">
                 <h3 className="font-bold text-gray-900 text-lg mb-1">Pro</h3>
                 <p className="text-xs text-gray-500 mb-4">Per cliniche strutturate</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€99</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 text-sm flex-1">
                   {['Tutto Crescita più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className={`text-gray-700 ${i === 0 ? 'font-semibold' : ''}`}>{f}</span></div>
                   ))}
@@ -456,13 +456,13 @@ function FullLandingPage({ onLogin }) {
             </Card>
 
             {/* LABORATORIO PARTNER */}
-            <Card className="border-purple-200 hover:shadow-lg transition">
-              <CardContent className="p-6">
+            <Card className="border-purple-200 hover:shadow-lg transition flex flex-col">
+              <CardContent className="p-6 flex flex-col flex-1">
                 <h3 className="font-bold text-purple-700 text-lg mb-1">Laboratorio partner</h3>
                 <p className="text-xs text-gray-500 mb-4">Per laboratori di analisi</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-purple-700">€39</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <p className="text-xs text-purple-600 mb-3 font-medium">Gratis per 6 mesi</p>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 text-sm flex-1">
                   {['Pannello di gestione richieste', 'Profilo nella vetrina laboratori', 'Listino prezzi indicativo', 'Gestione richieste', 'Caricamento referti PDF', 'Notifiche automatiche', 'Disponibilità ritiro'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /><span className="text-gray-700">{f}</span></div>
                   ))}
@@ -472,17 +472,17 @@ function FullLandingPage({ onLogin }) {
             </Card>
 
             {/* ENTERPRISE */}
-            <Card className="border-gray-300 bg-gradient-to-br from-gray-900 to-gray-800 hover:shadow-lg transition">
-              <CardContent className="p-6">
+            <Card className="border-gray-300 bg-gradient-to-br from-gray-900 to-gray-800 hover:shadow-lg transition flex flex-col">
+              <CardContent className="p-6 flex flex-col flex-1">
                 <h3 className="font-bold text-white text-lg mb-1">Enterprise</h3>
                 <p className="text-xs text-gray-400 mb-4">Per gruppi multi-sede e network</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-white">Custom</span></div>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 text-sm flex-1">
                   {['Sedi illimitate', 'Utenti illimitati', 'Account manager dedicato', 'Onboarding personalizzato', 'API e integrazioni', 'SLA garantito', 'Reportistica centralizzata'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-400" /><span className="text-gray-300">{f}</span></div>
                   ))}
                 </div>
-                <Button variant="outline" className="w-full mt-6 border-gray-600 text-white hover:bg-gray-700" onClick={() => scrollToSection('contatti')}>Contattaci</Button>
+                <Button className="w-full mt-6 bg-white text-gray-900 hover:bg-gray-100 font-semibold" onClick={() => scrollToSection('contatti')}>Contattaci</Button>
               </CardContent>
             </Card>
           </div>
