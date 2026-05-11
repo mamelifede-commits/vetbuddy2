@@ -620,7 +620,7 @@ function FullLandingPage({ onLogin }) {
           <p className="text-white/80 mb-6">Ogni mese sai esattamente quanto tempo hai risparmiato e quante visite sono state generate.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button size="lg" className="bg-white text-coral-600 hover:bg-gray-100 px-8" onClick={() => scrollToSection('pilot')}>Candidati al Progetto pilota</Button>
-            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 px-8" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Registrati gratis</Button>
+            <Button size="lg" className="bg-transparent border-2 border-white text-white hover:bg-white/10 px-8" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Registrati gratis</Button>
           </div>
         </div>
       </section>

@@ -2,7 +2,7 @@
 
 import { PawPrint } from 'lucide-react';
 
-const NewBrandLogo = ({ size = 'md', showText = true, className = '' }) => {
+const NewBrandLogo = ({ size = 'md', variant = 'default', showText = true, className = '' }) => {
   const sizes = {
     xs: { box: 'p-1.5 rounded-lg', icon: 'h-4 w-4', text: 'text-lg', gap: 'gap-1.5' },
     sm: { box: 'p-2 rounded-xl', icon: 'h-5 w-5', text: 'text-xl', gap: 'gap-2' },
@@ -12,6 +12,8 @@ const NewBrandLogo = ({ size = 'md', showText = true, className = '' }) => {
   };
   const s = sizes[size] || sizes.md;
   
+  const vetColor = variant === 'light' ? 'text-white' : 'text-gray-900';
+  
   return (
     <div className={`flex items-center ${s.gap} ${className}`}>
       <div className={`bg-gradient-to-br from-coral-500 to-rose-500 ${s.box} shadow-lg shadow-coral-500/30`}>
@@ -19,7 +21,7 @@ const NewBrandLogo = ({ size = 'md', showText = true, className = '' }) => {
       </div>
       {showText && (
         <div className={`font-bold ${s.text}`}>
-          <span className="text-gray-900">vet</span>
+          <span className={vetColor}>vet</span>
           <span className="text-coral-500">buddy</span>
         </div>
       )}
