@@ -17,7 +17,8 @@ import {
   CheckCircle, ChevronRight, Menu, X, ClipboardList, TrendingUp,
   Star, Check, Euro, Receipt, Activity,
   MapPin, Stethoscope, Mail, Clock, Gift, Loader2, FlaskConical, BarChart3,
-  ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer, Video, Link2
+  ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer, Video, Link2,
+  QrCode, Syringe, Plane, Share2, AlertTriangle
 } from 'lucide-react';
 
 function FullLandingPage({ onLogin }) {
@@ -372,6 +373,59 @@ function FullLandingPage({ onLogin }) {
       </section>
 
       {/* ============================================================ */}
+      {/* VETBUDDY PASSPORT */}
+      {/* ============================================================ */}
+      <section className="py-16 px-4 bg-gradient-to-br from-amber-50 via-orange-50/30 to-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <Badge className="bg-amber-100 text-amber-700 mb-4">🐾 Nuovo</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Il passaporto digitale della salute dell'animale</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Con VetBuddy Passport, ogni proprietario ha documenti, vaccini, referti, allergie, farmaci, contatti di emergenza e QR personale sempre a portata di mano.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-4 mb-8">
+            {[
+              { icon: QrCode, title: 'QR emergenza', desc: 'Un codice QR personale con contatti e informazioni essenziali in caso di smarrimento o urgenza.' },
+              { icon: Syringe, title: 'Vaccini e richiami', desc: 'Tutti i vaccini registrati, con stato, scadenze e promemoria automatici per i richiami.' },
+              { icon: FileText, title: 'Documenti e referti', desc: 'Referti, certificati, prescrizioni e documenti sempre consultabili e condivisibili.' },
+              { icon: Plane, title: 'Travel Pack', desc: 'Checklist viaggio, documenti richiesti, alimentazione, farmaci e contatti utili per ogni trasferta.' },
+              { icon: Share2, title: 'Condivisione pet sitter', desc: 'Condivisione temporanea con pet sitter, familiari o pensioni, con permessi e scadenza.' },
+              { icon: AlertTriangle, title: 'Lost Pet Mode', desc: 'In caso di smarrimento, il QR mostra lo stato e un pulsante per segnalare il ritrovamento.' },
+            ].map((f, i) => (
+              <Card key={i} className="hover:shadow-md transition">
+                <CardContent className="p-4">
+                  <f.icon className="h-6 w-6 text-amber-500 mb-2" />
+                  <h3 className="font-semibold text-sm text-gray-900">{f.title}</h3>
+                  <p className="text-xs text-gray-500 mt-1">{f.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card className="border-coral-200 bg-coral-50/50">
+              <CardContent className="p-5">
+                <h3 className="font-bold text-sm text-coral-700 mb-2">Per la clinica</h3>
+                <p className="text-sm text-gray-600">Meno richieste manuali, più clienti autonomi e più ritorni grazie a promemoria, richiami e Passport sempre aggiornato.</p>
+              </CardContent>
+            </Card>
+            <Card className="border-amber-200 bg-amber-50/50">
+              <CardContent className="p-5">
+                <h3 className="font-bold text-sm text-amber-700 mb-2">Per il proprietario</h3>
+                <p className="text-sm text-gray-600">Tutto ciò che serve per la salute e la sicurezza del tuo animale, sempre a portata di mano.</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center mt-8">
+            <Button className="bg-amber-500 hover:bg-amber-600 text-white px-8" onClick={() => scrollToSection('pilot')}>
+              Attiva Passport nella tua clinica
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
       {/* REV — Assistente flusso */}
       {/* ============================================================ */}
       <section className="py-12 px-4 bg-gradient-to-br from-emerald-50 via-teal-50/30 to-white">
@@ -416,7 +470,7 @@ function FullLandingPage({ onLogin }) {
                 <p className="text-xs text-gray-500 mb-4">Per veterinari freelance e micro-cliniche</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€29</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <div className="space-y-2 text-sm flex-1">
-                  {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Promemoria base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
+                  {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Promemoria base', 'Passport base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
@@ -432,7 +486,7 @@ function FullLandingPage({ onLogin }) {
                 <p className="text-xs text-gray-500 mb-4">Per cliniche piccole e medie</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-coral-600">€69</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <div className="space-y-2 text-sm flex-1">
-                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio'].map((f, i) => (
+                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Passport completo', 'QR emergenza', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-500" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
@@ -447,7 +501,7 @@ function FullLandingPage({ onLogin }) {
                 <p className="text-xs text-gray-500 mb-4">Per cliniche strutturate</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€99</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <div className="space-y-2 text-sm flex-1">
-                  {['Tutto Crescita più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente'].map((f, i) => (
+                  {['Tutto Crescita più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Passport + QR brandizzato', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className={`text-gray-700 ${i === 0 ? 'font-semibold' : ''}`}>{f}</span></div>
                   ))}
                 </div>

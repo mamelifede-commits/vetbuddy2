@@ -11,9 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
-import { AlertCircle, AlertTriangle, Calendar, Cat, Check, ChevronLeft, ChevronRight, ClipboardList, Dog, Download, Droplet, Edit, Euro, Eye, FileCheck, FileText, FlaskConical, Heart, Loader2, PawPrint, Pill, RefreshCw, Shield, Stethoscope, Syringe, Upload, Video, Weight } from 'lucide-react';
+import { AlertCircle, AlertTriangle, Calendar, Cat, Check, ChevronLeft, ChevronRight, ClipboardList, Dog, Download, Droplet, Edit, Euro, Eye, FileCheck, FileText, FlaskConical, Heart, Loader2, PawPrint, Pill, RefreshCw, Shield, Stethoscope, Syringe, Upload, Video, Weight, QrCode } from 'lucide-react';
 import api from '@/app/lib/api';
 import dynamic from 'next/dynamic';
+const PetPassport = dynamic(() => import('@/app/components/passport/PetPassport'), { ssr: false });
 const OwnerPrescriptions = dynamic(() => import('./OwnerPrescriptions'), { ssr: false });
 
 function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
@@ -237,6 +238,7 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
           <TabsTrigger value="labReports">🧪 Referti</TabsTrigger>
           <TabsTrigger value="prescriptions">💊 Prescrizioni</TabsTrigger>
           <TabsTrigger value="vaccines">Vaccini & Terapie</TabsTrigger>
+          <TabsTrigger value="passport" className="flex items-center gap-1"><QrCode className="h-3 w-3" /> Passport</TabsTrigger>
           <TabsTrigger value="data">Dati & Spese</TabsTrigger>
         </TabsList>
 
@@ -554,6 +556,10 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
           </Card>
         </TabsContent>
 
+        {/* Passport */}
+        <TabsContent value="passport">
+          <PetPassport pet={pet} token={typeof window !== 'undefined' ? localStorage.getItem('token') : null} userRole="owner" />
+        </TabsContent>
 
         {/* Dati & Spese */}
         <TabsContent value="data">

@@ -15,6 +15,7 @@ import { handlePaymentsGet, handlePaymentsPost } from './modules/payments';
 import { handleSettingsGet, handleSettingsPost, handleSettingsPut } from './modules/settings';
 import { handlePrescriptionsGet, handlePrescriptionsPost, handlePrescriptionsPut, handlePrescriptionsDelete } from './modules/prescriptions';
 import { handleHealthPlansGet, handleHealthPlansPost, handleHealthPlansPut, handleHealthPlansDelete } from './modules/healthplans';
+import { handlePassportGet, handlePassportPost, handlePassportPut, handlePassportDelete } from './modules/passport';
 
 // CORS preflight handler
 export async function OPTIONS() {
@@ -43,6 +44,7 @@ export async function GET(request, { params }) {
       handleClinicGet,
       handleLabGet,
       handleAdminGet,
+      handlePassportGet,
     ];
 
     for (const handler of handlers) {
@@ -92,6 +94,7 @@ export async function POST(request, { params }) {
       handleClinicPost,      // clinic-specific routes
       handleLabPost,         // lab routes
       handleAdminPost,       // admin routes
+      handlePassportPost,    // passport routes
     ];
 
     for (const handler of handlers) {
@@ -121,6 +124,7 @@ export async function PUT(request, { params }) {
       handleAppointmentsPut,
       handlePrescriptionsPut,
       handleHealthPlansPut,
+      handlePassportPut,
       handleDataPut,
       handleSettingsPut,
     ];
@@ -168,6 +172,9 @@ export async function DELETE(request, { params }) {
 
     const dataResult = await handleDataDelete(path, request, user);
     if (dataResult) return dataResult;
+
+    const passportResult = await handlePassportDelete(path, request, user);
+    if (passportResult) return passportResult;
 
     return NextResponse.json({ error: 'Route non trovata' }, { status: 404, headers: corsHeaders });
   } catch (error) {
