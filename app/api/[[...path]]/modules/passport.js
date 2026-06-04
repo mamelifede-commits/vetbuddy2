@@ -7,6 +7,32 @@ import { sendEmail } from '@/lib/email';
 import { corsHeaders } from './constants';
 
 // ============================================================
+// HELPER: Build passport email HTML template
+// ============================================================
+function buildPassportEmail({ icon, title, greeting, body, color = '#6366f1' }) {
+  return `<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb;">
+  <div style="padding:24px 16px;">
+    <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+      <div style="background:linear-gradient(135deg,${color},${color}dd);padding:32px 24px;text-align:center;">
+        <div style="font-size:36px;">${icon}</div>
+        <h1 style="color:#fff;font-size:20px;margin:12px 0 4px;font-weight:700;">VetBuddy Passport</h1>
+        <p style="color:rgba(255,255,255,0.85);font-size:14px;margin:0;">${title}</p>
+      </div>
+      <div style="padding:28px 24px;">
+        <p style="color:#4b5563;font-size:15px;line-height:1.6;margin:0 0 16px;">${greeting},</p>
+        ${body}
+      </div>
+      <div style="background:#f9fafb;padding:16px 24px;text-align:center;border-top:1px solid #f3f4f6;">
+        <p style="color:#9ca3af;font-size:11px;margin:0;">© ${new Date().getFullYear()} VetBuddy — Passaporto sanitario digitale per i tuoi animali</p>
+      </div>
+    </div>
+  </div>
+</body></html>`;
+}
+
+// ============================================================
 // HELPER: Calculate passport completion score
 // ============================================================
 function calculateCompletionScore(pet, passport, emergencyContacts, documents, vaccinations) {
@@ -121,6 +147,47 @@ export async function handlePassportGet(path, request) {
       id: uuidv4(), petId: passport.petId, scannedAt: new Date().toISOString(),
       approximateLocation: null, userAgent: ua, actionTaken: 'view',
     });
+
+    // 📧 EMAIL: If pet is in Lost Pet Mode, notify owner of scan
+    if (passport.lostPetMode) {
+      try {
+        if (pet.ownerId) {
+          const users = await getCollection('users');
+          const owner = await users.findOne({ id: pet.ownerId });
+          if (owner?.email) {
+            // Rate limit: don't send more than 1 scan notification per 10 minutes
+            const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+            const recentNotif = await scanLogs.findOne({
+              petId: passport.petId, actionTaken: 'view', scannedAt: { $gte: tenMinAgo },
+              _notified: true
+            });
+            if (!recentNotif) {
+              await sendEmail({
+                to: owner.email,
+                subject: `📱 Qualcuno ha scansionato il QR di ${pet.name}! — VetBuddy`,
+                html: buildPassportEmail({
+                  icon: '📱',
+                  title: `Scansione QR rilevata per ${pet.name}`,
+                  greeting: `Ciao ${owner.name || 'Proprietario'}`,
+                  body: `<p>Qualcuno ha appena <strong>scansionato il QR code</strong> di <strong>${pet.name}</strong>.</p>
+                    <div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:16px;margin:16px 0;">
+                      <p style="color:#92400e;margin:0;font-size:14px;">📍 Il Lost Pet Mode è attivo. Chi scansiona il QR vede l'avviso di smarrimento e può segnalare il ritrovamento.</p>
+                    </div>
+                    <p style="color:#6b7280;font-size:13px;">⏰ Ora scansione: ${new Date().toLocaleString('it-IT')}</p>
+                    <p style="color:#6b7280;font-size:13px;">Riceverai una notifica separata se qualcuno segnala di aver trovato ${pet.name}.</p>`,
+                  color: '#f59e0b'
+                }),
+              });
+              // Mark this scan as notified
+              await scanLogs.updateOne(
+                { petId: passport.petId, scannedAt: { $gte: tenMinAgo }, actionTaken: 'view' },
+                { $set: { _notified: true } }
+              );
+            }
+          }
+        }
+      } catch (emailErr) { console.error('QR scan notification error:', emailErr); }
+    }
 
     // Build public data based on visibility settings
     const vis = passport.publicVisibilitySettings || {};
@@ -311,6 +378,33 @@ export async function handlePassportPost(path, request, body) {
       createdAt: new Date().toISOString(),
     };
     await ec.insertOne(contact);
+
+    // 📧 EMAIL: Notify emergency contact they've been added
+    if (email) {
+      try {
+        const pets = await getCollection('pets');
+        const pet = await pets.findOne({ id: petId });
+        const users = await getCollection('users');
+        const owner = pet?.ownerId ? await users.findOne({ id: pet.ownerId }) : null;
+        await sendEmail({
+          to: email,
+          subject: `🚨 Sei un contatto di emergenza per ${pet?.name || 'un animale'} — VetBuddy Passport`,
+          html: buildPassportEmail({
+            icon: '🚨',
+            title: 'Contatto di emergenza',
+            greeting: `Ciao ${name}`,
+            body: `<p><strong>${owner?.name || 'Un proprietario'}</strong> ti ha aggiunto come <strong>contatto di emergenza</strong> per <strong>${pet?.name || 'il proprio animale'}</strong> su VetBuddy Passport.</p>
+              <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:16px;margin:16px 0;">
+                <p style="color:#92400e;margin:0;font-size:14px;">📞 In caso di emergenza o smarrimento di ${pet?.name || "l'animale"}, potresti essere contattato.</p>
+              </div>
+              <p>Il tuo ruolo: <strong>${relationship || 'Contatto'}</strong></p>
+              <p style="color:#6b7280;font-size:13px;">Se ritieni che questo sia un errore, contatta il proprietario.</p>`,
+            color: '#f59e0b'
+          }),
+        });
+      } catch (emailErr) { console.error('Emergency contact email error:', emailErr); }
+    }
+
     return NextResponse.json(contact, { headers: corsHeaders });
   }
 
@@ -347,6 +441,34 @@ export async function handlePassportPost(path, request, body) {
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const qrPageUrl = `${baseUrl}/passport/${qrToken}`;
+
+    // 📧 EMAIL: Notify owner that QR has been generated
+    try {
+      const pets = await getCollection('pets');
+      const pet = await pets.findOne({ id: petId });
+      if (pet?.ownerId) {
+        const users = await getCollection('users');
+        const owner = await users.findOne({ id: pet.ownerId });
+        if (owner?.email) {
+          await sendEmail({
+            to: owner.email,
+            subject: `🔲 QR Emergenza attivato per ${pet.name} — VetBuddy Passport`,
+            html: buildPassportEmail({
+              icon: '🔲',
+              title: 'QR Emergenza Attivato',
+              greeting: `Ciao ${owner.name || 'Proprietario'}`,
+              body: `<p>Il <strong>QR Code di emergenza</strong> per <strong>${pet.name}</strong> è stato generato con successo!</p>
+                <p>Chiunque scanzioni il codice potrà vedere le informazioni di emergenza del tuo animale (allergie, farmaci, contatti).</p>
+                <div style="text-align:center;margin:16px 0;">
+                  <a href="${qrPageUrl}" style="display:inline-block;background:linear-gradient(135deg,#8b5cf6,#6366f1);color:white;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:600;">Visualizza pagina QR →</a>
+                </div>
+                <p style="color:#6b7280;font-size:13px;">💡 Consiglio: stampa il QR e attaccalo al collare o alla medaglietta di ${pet.name}.</p>`,
+              color: '#8b5cf6'
+            }),
+          });
+        }
+      }
+    } catch (emailErr) { console.error('QR email notification error:', emailErr); }
 
     return NextResponse.json({ success: true, qrToken, qrPageUrl }, { headers: corsHeaders });
   }
@@ -527,6 +649,41 @@ export async function handlePassportPost(path, request, body) {
       createdAt: new Date().toISOString(),
     };
     await vaccs.insertOne(vaccination);
+
+    // 📧 EMAIL: Notify owner about new vaccination
+    try {
+      const pets = await getCollection('pets');
+      const pet = await pets.findOne({ id: petId });
+      if (pet?.ownerId) {
+        const users = await getCollection('users');
+        const owner = await users.findOne({ id: pet.ownerId });
+        if (owner?.email) {
+          const dueDateStr = nextDueDate ? new Date(nextDueDate).toLocaleDateString('it-IT') : null;
+          await sendEmail({
+            to: owner.email,
+            subject: `💉 Vaccino registrato per ${pet.name}: ${name} — VetBuddy Passport`,
+            html: buildPassportEmail({
+              icon: '💉',
+              title: `Nuovo vaccino registrato`,
+              greeting: `Ciao ${owner.name || 'Proprietario'}`,
+              body: `<p>Un nuovo vaccino è stato registrato nel Passport di <strong>${pet.name}</strong>.</p>
+                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin:16px 0;">
+                  <table style="width:100%;font-size:14px;">
+                    <tr><td style="color:#6b7280;padding:4px 0;">Vaccino:</td><td style="font-weight:600;color:#111827;">${name}</td></tr>
+                    <tr><td style="color:#6b7280;padding:4px 0;">Data:</td><td style="font-weight:600;color:#111827;">${new Date(date).toLocaleDateString('it-IT')}</td></tr>
+                    ${dueDateStr ? `<tr><td style="color:#6b7280;padding:4px 0;">Prossimo richiamo:</td><td style="font-weight:600;color:#6366f1;">${dueDateStr}</td></tr>` : ''}
+                    ${batchNumber ? `<tr><td style="color:#6b7280;padding:4px 0;">Lotto:</td><td style="font-weight:600;color:#111827;">${batchNumber}</td></tr>` : ''}
+                    <tr><td style="color:#6b7280;padding:4px 0;">Stato:</td><td style="font-weight:600;color:${status === 'in_regola' ? '#22c55e' : status === 'in_scadenza' ? '#f59e0b' : '#dc2626'};">${status === 'in_regola' ? '✅ In regola' : status === 'in_scadenza' ? '⚠️ In scadenza' : '❌ Scaduto'}</td></tr>
+                  </table>
+                </div>
+                ${dueDateStr ? `<p style="color:#6b7280;font-size:13px;">🔔 Ti invieremo un promemoria quando sarà il momento del richiamo.</p>` : ''}`,
+              color: '#22c55e'
+            }),
+          });
+        }
+      }
+    } catch (emailErr) { console.error('Vaccination email notification error:', emailErr); }
+
     return NextResponse.json(vaccination, { headers: corsHeaders });
   }
 
@@ -563,6 +720,88 @@ export async function handlePassportPut(path, request, user, body) {
 
     await passports.updateOne({ petId }, { $set: update }, { upsert: true });
     const updated = await passports.findOne({ petId });
+
+    // 📧 EMAIL: Notify owner about Lost Pet Mode change
+    if (body.lostPetMode !== undefined) {
+      try {
+        const pets = await getCollection('pets');
+        const pet = await pets.findOne({ id: petId });
+        if (pet?.ownerId) {
+          const users = await getCollection('users');
+          const owner = await users.findOne({ id: pet.ownerId });
+          if (owner?.email) {
+            if (body.lostPetMode) {
+              // Lost Pet Mode ACTIVATED
+              const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+              await sendEmail({
+                to: owner.email,
+                subject: `🆘 Lost Pet Mode ATTIVATO per ${pet.name} — VetBuddy Passport`,
+                html: buildPassportEmail({
+                  icon: '🆘',
+                  title: `Smarrimento segnalato: ${pet.name}`,
+                  greeting: `Ciao ${owner.name || 'Proprietario'}`,
+                  body: `<p>Il <strong>Lost Pet Mode</strong> è stato attivato per <strong>${pet.name}</strong>.</p>
+                    <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:16px;margin:16px 0;">
+                      <p style="color:#dc2626;font-weight:600;margin:0 0 8px;">⚠️ Cosa succede ora:</p>
+                      <ul style="color:#7f1d1d;margin:0;padding-left:20px;font-size:14px;">
+                        <li>La pagina QR di ${pet.name} mostra un avviso di smarrimento</li>
+                        <li>Chi scansiona il QR vedrà il tuo messaggio e potrà segnalare il ritrovamento</li>
+                        ${body.lostPetZone ? `<li>Zona indicata: <strong>${body.lostPetZone}</strong></li>` : ''}
+                        ${body.lostPetReward ? `<li>Ricompensa: <strong>${body.lostPetReward}</strong></li>` : ''}
+                      </ul>
+                    </div>
+                    <p>Riceverai un'email immediata quando qualcuno scansiona il QR e segnala di aver trovato ${pet.name}.</p>
+                    <p style="color:#6b7280;font-size:13px;">💡 Consiglio: condividi il link del QR sui social e nei gruppi della tua zona.</p>`,
+                  color: '#dc2626'
+                }),
+              });
+
+              // Also notify emergency contacts
+              const ecCollection = await getCollection('pet_emergency_contacts');
+              const contacts = await ecCollection.find({ petId }).toArray();
+              for (const contact of contacts) {
+                if (contact.email) {
+                  await sendEmail({
+                    to: contact.email,
+                    subject: `🆘 ${pet.name} è stato segnalato come smarrito — VetBuddy`,
+                    html: buildPassportEmail({
+                      icon: '🆘',
+                      title: `Smarrimento: ${pet.name}`,
+                      greeting: `Ciao ${contact.name}`,
+                      body: `<p>Ti scriviamo perché sei un contatto di emergenza di <strong>${pet.name}</strong> (${pet.species} ${pet.breed}).</p>
+                        <p>${owner.name || 'Il proprietario'} ha attivato il <strong>Lost Pet Mode</strong>.</p>
+                        ${body.lostPetZone ? `<p>📍 Ultima zona nota: <strong>${body.lostPetZone}</strong></p>` : ''}
+                        ${body.lostPetMessage ? `<p>💬 Messaggio: "${body.lostPetMessage}"</p>` : ''}
+                        <p>Se vedi ${pet.name}, contatta immediatamente ${owner.name || 'il proprietario'}.</p>`,
+                      color: '#dc2626'
+                    }),
+                  });
+                }
+              }
+            } else {
+              // Lost Pet Mode DEACTIVATED (pet found!)
+              await sendEmail({
+                to: owner.email,
+                subject: `🎉 ${pet.name} ritrovato! Lost Pet Mode disattivato — VetBuddy Passport`,
+                html: buildPassportEmail({
+                  icon: '🎉',
+                  title: `${pet.name} è stato ritrovato!`,
+                  greeting: `Ciao ${owner.name || 'Proprietario'}`,
+                  body: `<p>Il <strong>Lost Pet Mode</strong> per <strong>${pet.name}</strong> è stato disattivato.</p>
+                    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin:16px 0;text-align:center;">
+                      <p style="font-size:36px;margin:0;">🐾❤️</p>
+                      <p style="color:#166534;font-weight:600;font-size:16px;margin:8px 0 0;">Che bello che ${pet.name} sia tornato a casa!</p>
+                    </div>
+                    <p>La pagina QR di emergenza è tornata alla modalità normale.</p>`,
+                  color: '#22c55e'
+                }),
+              });
+            }
+          }
+        }
+      } catch (emailErr) { console.error('Lost pet email notification error:', emailErr); }
+    }
+
     return NextResponse.json(updated, { headers: corsHeaders });
   }
 
