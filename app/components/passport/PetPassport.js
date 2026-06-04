@@ -671,33 +671,45 @@ export default function PetPassport({ pet, token, userRole }) {
           <Card>
             <CardContent className="p-4">
               <h3 className="font-semibold text-sm mb-3">Timeline salute</h3>
+              <p className="text-xs text-gray-400 mb-4">Cronologia di tutti gli eventi del Passport di {pet?.name}.</p>
               {(() => {
                 const events = [];
-                vaccinations?.forEach(v => events.push({ date: v.date, type: 'vaccino', icon: '💉', text: `Vaccino: ${v.name}`, status: v.status }));
-                documents?.forEach(d => events.push({ date: d.createdAt, type: 'documento', icon: '📄', text: `Documento: ${d.name || d.fileName || 'Senza nome'}` }));
-                travelPacks?.forEach(t => events.push({ date: t.createdAt, type: 'viaggio', icon: '✈️', text: `Viaggio: ${t.destination}` }));
-                sharingLinks?.forEach(s => events.push({ date: s.createdAt, type: 'condivisione', icon: '🔗', text: `Condivisione con ${s.recipientName}` }));
-                recentScans?.forEach(s => events.push({ date: s.scannedAt, type: 'scansione', icon: '📱', text: s.actionTaken === 'report_found' ? 'Segnalazione ritrovamento' : 'Scansione QR' }));
-                if (passport?.lostPetDate) events.push({ date: passport.lostPetDate, type: 'lost', icon: '🆘', text: 'Lost Pet Mode attivato' });
+                vaccinations?.forEach(v => events.push({ date: v.date, type: 'vaccino', icon: '💉', text: `Vaccino: ${v.name}`, status: v.status, color: 'bg-green-50 border-green-200' }));
+                documents?.forEach(d => events.push({ date: d.createdAt, type: 'documento', icon: '📄', text: `Documento: ${d.name || d.fileName || 'Senza nome'}`, color: 'bg-blue-50 border-blue-200' }));
+                travelPacks?.forEach(t => events.push({ date: t.createdAt, type: 'viaggio', icon: '✈️', text: `Viaggio programmato: ${t.destination}`, color: 'bg-sky-50 border-sky-200' }));
+                sharingLinks?.forEach(s => events.push({ date: s.createdAt, type: 'condivisione', icon: '🔗', text: `Condivisione temporanea con ${s.recipientName} (${s.accessLevel || 'base'})`, color: 'bg-indigo-50 border-indigo-200' }));
+                recentScans?.forEach(s => events.push({ date: s.scannedAt, type: 'scansione', icon: '📱', text: s.actionTaken === 'report_found' ? 'Segnalazione ritrovamento via QR' : 'Scansione QR emergenza', color: 'bg-amber-50 border-amber-200' }));
+                if (passport?.lostPetDate) events.push({ date: passport.lostPetDate, type: 'lost', icon: '🆘', text: 'Lost Pet Mode attivato — segnalazione smarrimento', color: 'bg-red-50 border-red-200' });
+                if (passport?.publicQrEnabled && passport?.publicQrGeneratedAt) events.push({ date: passport.publicQrGeneratedAt, type: 'qr', icon: '🔲', text: 'QR Emergenza generato e attivato', color: 'bg-purple-50 border-purple-200' });
+                if (insurance) events.push({ date: insurance.createdAt || insurance.startDate, type: 'assicurazione', icon: '🛡️', text: `Assicurazione registrata: ${insurance.providerName || 'Polizza'}`, color: 'bg-teal-50 border-teal-200' });
+                emergencyContacts?.forEach(c => events.push({ date: c.createdAt, type: 'emergenza', icon: '🚨', text: `Contatto emergenza aggiunto: ${c.name} (${c.relationship || 'contatto'})`, color: 'bg-orange-50 border-orange-200' }));
+                if (passport?.createdAt) events.push({ date: passport.createdAt, type: 'passport', icon: '🐾', text: 'Passport digitale creato', color: 'bg-coral-50 border-coral-200' });
                 events.sort((a, b) => new Date(b.date) - new Date(a.date));
 
                 return events.length > 0 ? (
-                  <div className="space-y-3">
-                    {events.slice(0, 30).map((e, i) => (
-                      <div key={i} className="flex items-start gap-3 text-sm">
-                        <div className="text-lg">{e.icon}</div>
-                        <div className="flex-1">
-                          <p className="text-gray-700">{e.text}</p>
-                          <p className="text-xs text-gray-400">{new Date(e.date).toLocaleString('it-IT')}</p>
+                  <div className="relative">
+                    <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
+                    <div className="space-y-3">
+                      {events.slice(0, 30).map((e, i) => (
+                        <div key={i} className={`relative flex items-start gap-3 text-sm ml-2 p-2 rounded-lg border ${e.color || 'bg-gray-50 border-gray-200'}`}>
+                          <div className="text-lg z-10 bg-white rounded-full w-7 h-7 flex items-center justify-center -ml-5 shadow-sm border">{e.icon}</div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-gray-700 text-sm font-medium">{e.text}</p>
+                            <p className="text-xs text-gray-400 mt-0.5">{e.date ? new Date(e.date).toLocaleString('it-IT', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</p>
+                          </div>
+                          {e.status && (
+                            <Badge variant="outline" className="text-xs shrink-0">{e.status}</Badge>
+                          )}
                         </div>
-                        {e.status && (
-                          <Badge variant="outline" className="text-xs">{e.status}</Badge>
-                        )}
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-400 italic text-center py-4">Nessun evento registrato.</p>
+                  <div className="text-center py-8">
+                    <Clock className="h-8 w-8 text-gray-300 mx-auto mb-2" />
+                    <p className="text-sm text-gray-400 italic">Nessun evento registrato nel Passport.</p>
+                    <p className="text-xs text-gray-300 mt-1">Aggiungi vaccini, documenti e contatti per popolare la timeline.</p>
+                  </div>
                 );
               })()}
             </CardContent>
