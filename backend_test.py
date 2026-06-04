@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-VetBuddy Automations Config + AI Assistant API Testing
-Tests: Automations Settings, Config, Log, Simulate, AI Tools (summarize_visit, draft_message, translate_notes)
+VetBuddy Passport Backend API Testing Script
+Tests all passport-related endpoints as specified in review request
 """
 
 import requests
@@ -10,447 +10,391 @@ import sys
 
 BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
 
-def print_test_result(test_name, passed, details=""):
-    """Print test result with formatting"""
-    status = "✅ PASSED" if passed else "❌ FAILED"
-    print(f"\n{status}: {test_name}")
-    if details:
-        print(f"  Details: {details}")
+# Test counters
+tests_passed = 0
+tests_failed = 0
 
-def test_automations_and_ai_api():
-    """Test Automations Config + AI Assistant API endpoints"""
-    print("=" * 80)
-    print("AUTOMATIONS CONFIG + AI ASSISTANT API TESTING")
-    print("=" * 80)
-    
-    token = None
-    tests_passed = 0
-    tests_total = 0
-    
-    # Test 1: Login
+def print_test(name, passed, details=""):
+    global tests_passed, tests_failed
+    if passed:
+        tests_passed += 1
+        print(f"✅ {name}")
+        if details:
+            print(f"   {details}")
+    else:
+        tests_failed += 1
+        print(f"❌ {name}")
+        if details:
+            print(f"   {details}")
+
+def test_login(email, password, expected_role):
+    """Test login and return token"""
+    print(f"\n🔐 Testing login: {email}")
     try:
-        tests_total += 1
-        print("\n[TEST 1] POST /api/auth/login - Clinic Authentication")
-        login_response = requests.post(
+        response = requests.post(
             f"{BASE_URL}/auth/login",
-            json={"email": "demo@vetbuddy.it", "password": "VetBuddy2025!Secure"},
+            json={"email": email, "password": password},
             timeout=10
         )
         
-        if login_response.status_code == 200:
-            login_data = login_response.json()
-            token = login_data.get('token')
-            
-            if token:
-                print_test_result(
-                    "Login Authentication",
-                    True,
-                    f"Successfully logged in as {login_data.get('user', {}).get('email')}. Token received."
-                )
-                tests_passed += 1
-            else:
-                print_test_result("Login Authentication", False, "No token in response")
-                return
-        else:
-            print_test_result(
-                "Login Authentication",
-                False,
-                f"Status: {login_response.status_code}, Response: {login_response.text[:200]}"
-            )
-            return
-    except Exception as e:
-        print_test_result("Login Authentication", False, f"Exception: {str(e)}")
-        return
-    
-    headers = {"Authorization": f"Bearer {token}"}
-    
-    # Test 2: Get Automations Settings
-    try:
-        tests_total += 1
-        print("\n[TEST 2] GET /api/automations/settings - Get Automation Settings")
-        settings_response = requests.get(
-            f"{BASE_URL}/automations/settings",
-            headers=headers,
-            timeout=10
-        )
-        
-        if settings_response.status_code == 200:
-            settings_data = settings_response.json()
-            
-            # Check for required fields
-            has_success = settings_data.get('success') == True
-            has_settings = 'settings' in settings_data
-            has_config = 'config' in settings_data
-            has_plan = 'plan' in settings_data
-            
-            if has_success and has_settings and has_config and has_plan:
-                print_test_result(
-                    "Get Automations Settings",
-                    True,
-                    f"Response contains all required fields: success={has_success}, settings={type(settings_data.get('settings'))}, config={type(settings_data.get('config'))}, plan={settings_data.get('plan')}"
-                )
-                tests_passed += 1
-            else:
-                print_test_result(
-                    "Get Automations Settings",
-                    False,
-                    f"Missing required fields. success={has_success}, has_settings={has_settings}, has_config={has_config}, has_plan={has_plan}"
-                )
-        else:
-            print_test_result(
-                "Get Automations Settings",
-                False,
-                f"Status: {settings_response.status_code}, Response: {settings_response.text[:200]}"
-            )
-    except Exception as e:
-        print_test_result("Get Automations Settings", False, f"Exception: {str(e)}")
-    
-    # Test 3: Save Automation Config
-    try:
-        tests_total += 1
-        print("\n[TEST 3] POST /api/automations/config - Save Automation Config")
-        config_data = {
-            "key": "postVisitFollowUp",
-            "timing": "48 ore dopo la visita",
-            "messageTemplate": "Gentile {nome_cliente}, come sta {nome_pet} dopo la visita?",
-            "channel": "email"
-        }
-        
-        config_response = requests.post(
-            f"{BASE_URL}/automations/config",
-            headers=headers,
-            json=config_data,
-            timeout=10
-        )
-        
-        if config_response.status_code == 200:
-            config_result = config_response.json()
-            
-            if config_result.get('success') == True:
-                print_test_result(
-                    "Save Automation Config",
-                    True,
-                    f"Config saved successfully for key: {config_result.get('key')}"
-                )
-                tests_passed += 1
-            else:
-                print_test_result(
-                    "Save Automation Config",
-                    False,
-                    f"Success field is not True: {config_result}"
-                )
-        else:
-            print_test_result(
-                "Save Automation Config",
-                False,
-                f"Status: {config_response.status_code}, Response: {config_response.text[:200]}"
-            )
-    except Exception as e:
-        print_test_result("Save Automation Config", False, f"Exception: {str(e)}")
-    
-    # Test 4: Verify Config Saved
-    try:
-        tests_total += 1
-        print("\n[TEST 4] GET /api/automations/settings - Verify Config Saved")
-        verify_response = requests.get(
-            f"{BASE_URL}/automations/settings",
-            headers=headers,
-            timeout=10
-        )
-        
-        if verify_response.status_code == 200:
-            verify_data = verify_response.json()
-            config = verify_data.get('config', {})
-            
-            if 'postVisitFollowUp' in config:
-                saved_config = config['postVisitFollowUp']
-                print_test_result(
-                    "Verify Config Saved",
-                    True,
-                    f"postVisitFollowUp config found: timing={saved_config.get('timing')}, channel={saved_config.get('channel')}"
-                )
-                tests_passed += 1
-            else:
-                print_test_result(
-                    "Verify Config Saved",
-                    False,
-                    f"postVisitFollowUp not found in config. Available keys: {list(config.keys())}"
-                )
-        else:
-            print_test_result(
-                "Verify Config Saved",
-                False,
-                f"Status: {verify_response.status_code}, Response: {verify_response.text[:200]}"
-            )
-    except Exception as e:
-        print_test_result("Verify Config Saved", False, f"Exception: {str(e)}")
-    
-    # Test 5: Get Automation Log (empty)
-    try:
-        tests_total += 1
-        print("\n[TEST 5] GET /api/automations/log - Get Automation Log (Initial)")
-        log_response = requests.get(
-            f"{BASE_URL}/automations/log",
-            headers=headers,
-            timeout=10
-        )
-        
-        if log_response.status_code == 200:
-            log_data = log_response.json()
-            
-            if 'logs' in log_data:
-                initial_log_count = len(log_data.get('logs', []))
-                print_test_result(
-                    "Get Automation Log (Initial)",
-                    True,
-                    f"Log endpoint working. Initial log count: {initial_log_count}"
-                )
-                tests_passed += 1
-            else:
-                print_test_result(
-                    "Get Automation Log (Initial)",
-                    False,
-                    f"'logs' field not found in response: {log_data}"
-                )
-        else:
-            print_test_result(
-                "Get Automation Log (Initial)",
-                False,
-                f"Status: {log_response.status_code}, Response: {log_response.text[:200]}"
-            )
-    except Exception as e:
-        print_test_result("Get Automation Log (Initial)", False, f"Exception: {str(e)}")
-    
-    # Test 6: Simulate Execution
-    try:
-        tests_total += 1
-        print("\n[TEST 6] POST /api/automations/simulate - Simulate Automation Execution")
-        simulate_data = {
-            "automationKey": "postVisitFollowUp",
-            "automationName": "Follow-up Post Visita",
-            "petName": "Luna",
-            "ownerName": "Marco Rossi",
-            "details": "Visita del 04/05/2026"
-        }
-        
-        simulate_response = requests.post(
-            f"{BASE_URL}/automations/simulate",
-            headers=headers,
-            json=simulate_data,
-            timeout=10
-        )
-        
-        if simulate_response.status_code == 200:
-            simulate_result = simulate_response.json()
-            
-            if simulate_result.get('success') == True and 'log' in simulate_result:
-                log_entry = simulate_result.get('log', {})
-                print_test_result(
-                    "Simulate Automation Execution",
-                    True,
-                    f"Simulation successful. Log ID: {log_entry.get('id')}, Status: {log_entry.get('status')}"
-                )
-                tests_passed += 1
-            else:
-                print_test_result(
-                    "Simulate Automation Execution",
-                    False,
-                    f"Unexpected response structure: {simulate_result}"
-                )
-        else:
-            print_test_result(
-                "Simulate Automation Execution",
-                False,
-                f"Status: {simulate_response.status_code}, Response: {simulate_response.text[:200]}"
-            )
-    except Exception as e:
-        print_test_result("Simulate Automation Execution", False, f"Exception: {str(e)}")
-    
-    # Test 7: Verify Log Entry
-    try:
-        tests_total += 1
-        print("\n[TEST 7] GET /api/automations/log - Verify Log Entry After Simulation")
-        verify_log_response = requests.get(
-            f"{BASE_URL}/automations/log",
-            headers=headers,
-            timeout=10
-        )
-        
-        if verify_log_response.status_code == 200:
-            verify_log_data = verify_log_response.json()
-            logs = verify_log_data.get('logs', [])
-            
-            if len(logs) >= 1:
-                # Check if the latest log entry matches our simulation
-                latest_log = logs[0] if logs else {}
-                if latest_log.get('automationKey') == 'postVisitFollowUp':
-                    print_test_result(
-                        "Verify Log Entry",
-                        True,
-                        f"Log entry found. Total logs: {len(logs)}, Latest: {latest_log.get('automationName')} for {latest_log.get('petName')}"
-                    )
-                    tests_passed += 1
+        if response.status_code == 200:
+            data = response.json()
+            if "token" in data and "user" in data:
+                if data["user"].get("role") == expected_role:
+                    print_test(f"Login {expected_role}", True, f"Token received, role: {expected_role}")
+                    return data["token"]
                 else:
-                    print_test_result(
-                        "Verify Log Entry",
-                        True,
-                        f"Log entries exist ({len(logs)} total), but latest may not be our simulation"
-                    )
-                    tests_passed += 1
+                    print_test(f"Login {expected_role}", False, f"Wrong role: {data['user'].get('role')}")
+                    return None
             else:
-                print_test_result(
-                    "Verify Log Entry",
-                    False,
-                    f"No log entries found after simulation. Logs: {logs}"
-                )
+                print_test(f"Login {expected_role}", False, "Missing token or user in response")
+                return None
         else:
-            print_test_result(
-                "Verify Log Entry",
-                False,
-                f"Status: {verify_log_response.status_code}, Response: {verify_log_response.text[:200]}"
-            )
+            print_test(f"Login {expected_role}", False, f"Status {response.status_code}: {response.text[:200]}")
+            return None
     except Exception as e:
-        print_test_result("Verify Log Entry", False, f"Exception: {str(e)}")
-    
-    # Test 8: AI - Summarize Visit (NO AUTH)
+        print_test(f"Login {expected_role}", False, f"Exception: {str(e)}")
+        return None
+
+def test_clinic_dashboard(token):
+    """Test GET /api/passport/clinic/dashboard"""
+    print(f"\n📊 Testing Clinic Dashboard")
     try:
-        tests_total += 1
-        print("\n[TEST 8] POST /api/ai - AI Summarize Visit (No Auth)")
-        ai_summarize_data = {
-            "tool": "summarize_visit",
-            "input": "Paziente: Luna, femmina, 5 anni, labrador. Vomito da 3 giorni. T 38.5. Terapia: Cerenia 1mg/kg SID."
-        }
-        
-        ai_summarize_response = requests.post(
-            f"{BASE_URL}/ai",
-            json=ai_summarize_data,
-            timeout=30
+        response = requests.get(
+            f"{BASE_URL}/passport/clinic/dashboard",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=10
         )
         
-        if ai_summarize_response.status_code == 200:
-            ai_result = ai_summarize_response.json()
-            
-            if ai_result.get('success') == True and 'result' in ai_result:
-                result_text = ai_result.get('result', '')
-                print_test_result(
-                    "AI Summarize Visit",
-                    True,
-                    f"AI summary generated successfully. Length: {len(result_text)} chars. Preview: {result_text[:100]}..."
-                )
-                tests_passed += 1
+        if response.status_code == 200:
+            data = response.json()
+            if "stats" in data and "lists" in data:
+                stats = data["stats"]
+                required_stats = ["totalPets", "passportActive", "passportIncomplete", "qrGenerated"]
+                missing_stats = [s for s in required_stats if s not in stats]
+                
+                if not missing_stats:
+                    print_test("Clinic Dashboard", True, 
+                              f"Stats: {stats['totalPets']} pets, {stats['passportActive']} active, {stats['qrGenerated']} QR generated")
+                    return True
+                else:
+                    print_test("Clinic Dashboard", False, f"Missing stats: {missing_stats}")
+                    return False
             else:
-                print_test_result(
-                    "AI Summarize Visit",
-                    False,
-                    f"Unexpected response structure: {ai_result}"
-                )
+                print_test("Clinic Dashboard", False, "Missing 'stats' or 'lists' in response")
+                return False
         else:
-            print_test_result(
-                "AI Summarize Visit",
-                False,
-                f"Status: {ai_summarize_response.status_code}, Response: {ai_summarize_response.text[:200]}"
-            )
+            print_test("Clinic Dashboard", False, f"Status {response.status_code}: {response.text[:200]}")
+            return False
     except Exception as e:
-        print_test_result("AI Summarize Visit", False, f"Exception: {str(e)}")
-    
-    # Test 9: AI - Draft Message (NO AUTH)
+        print_test("Clinic Dashboard", False, f"Exception: {str(e)}")
+        return False
+
+def test_get_pets(token):
+    """Test GET /api/pets and return first petId"""
+    print(f"\n🐾 Testing Get Pets")
     try:
-        tests_total += 1
-        print("\n[TEST 9] POST /api/ai - AI Draft Message (No Auth)")
-        ai_draft_data = {
-            "tool": "draft_message",
-            "input": "Scrivi messaggio per il proprietario Marco Rossi: i risultati degli esami del sangue di Luna sono nella norma."
-        }
-        
-        ai_draft_response = requests.post(
-            f"{BASE_URL}/ai",
-            json=ai_draft_data,
-            timeout=30
+        response = requests.get(
+            f"{BASE_URL}/pets",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=10
         )
         
-        if ai_draft_response.status_code == 200:
-            ai_result = ai_draft_response.json()
-            
-            if ai_result.get('success') == True and 'result' in ai_result:
-                result_text = ai_result.get('result', '')
-                print_test_result(
-                    "AI Draft Message",
-                    True,
-                    f"AI message drafted successfully. Length: {len(result_text)} chars. Preview: {result_text[:100]}..."
-                )
-                tests_passed += 1
+        if response.status_code == 200:
+            data = response.json()
+            if isinstance(data, list) and len(data) > 0:
+                pet_id = data[0].get("id")
+                pet_name = data[0].get("name", "Unknown")
+                if pet_id:
+                    print_test("Get Pets", True, f"Found {len(data)} pets, using {pet_name} (ID: {pet_id})")
+                    return pet_id
+                else:
+                    print_test("Get Pets", False, "Pet has no ID")
+                    return None
             else:
-                print_test_result(
-                    "AI Draft Message",
-                    False,
-                    f"Unexpected response structure: {ai_result}"
-                )
+                print_test("Get Pets", False, "No pets found or invalid response format")
+                return None
         else:
-            print_test_result(
-                "AI Draft Message",
-                False,
-                f"Status: {ai_draft_response.status_code}, Response: {ai_draft_response.text[:200]}"
-            )
+            print_test("Get Pets", False, f"Status {response.status_code}: {response.text[:200]}")
+            return None
     except Exception as e:
-        print_test_result("AI Draft Message", False, f"Exception: {str(e)}")
-    
-    # Test 10: AI - Translate Notes (NO AUTH)
+        print_test("Get Pets", False, f"Exception: {str(e)}")
+        return None
+
+def test_get_passport(token, pet_id):
+    """Test GET /api/passport/{petId}"""
+    print(f"\n📋 Testing Get Passport for pet {pet_id}")
     try:
-        tests_total += 1
-        print("\n[TEST 10] POST /api/ai - AI Translate Notes (No Auth)")
-        ai_translate_data = {
-            "tool": "translate_notes",
-            "input": "Eco addome: parenchima epatico omogeneo. Reni: corticale conservata bilateralmente. No versamento libero."
-        }
-        
-        ai_translate_response = requests.post(
-            f"{BASE_URL}/ai",
-            json=ai_translate_data,
-            timeout=30
+        response = requests.get(
+            f"{BASE_URL}/passport/{pet_id}",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=10
         )
         
-        if ai_translate_response.status_code == 200:
-            ai_result = ai_translate_response.json()
+        if response.status_code == 200:
+            data = response.json()
+            required_fields = ["pet", "passport", "completion", "emergencyContacts", "vaccinations"]
+            missing_fields = [f for f in required_fields if f not in data]
             
-            if ai_result.get('success') == True and 'result' in ai_result:
-                result_text = ai_result.get('result', '')
-                print_test_result(
-                    "AI Translate Notes",
-                    True,
-                    f"AI translation successful. Length: {len(result_text)} chars. Preview: {result_text[:100]}..."
-                )
-                tests_passed += 1
+            if not missing_fields:
+                completion = data.get("completion", {})
+                score = completion.get("score", 0)
+                print_test("Get Passport", True, 
+                          f"Completion score: {score}%, Emergency contacts: {len(data.get('emergencyContacts', []))}, Vaccinations: {len(data.get('vaccinations', []))}")
+                return True
             else:
-                print_test_result(
-                    "AI Translate Notes",
-                    False,
-                    f"Unexpected response structure: {ai_result}"
-                )
+                print_test("Get Passport", False, f"Missing fields: {missing_fields}")
+                return False
         else:
-            print_test_result(
-                "AI Translate Notes",
-                False,
-                f"Status: {ai_translate_response.status_code}, Response: {ai_translate_response.text[:200]}"
-            )
+            print_test("Get Passport", False, f"Status {response.status_code}: {response.text[:200]}")
+            return False
     except Exception as e:
-        print_test_result("AI Translate Notes", False, f"Exception: {str(e)}")
+        print_test("Get Passport", False, f"Exception: {str(e)}")
+        return False
+
+def test_add_emergency_contact(token, pet_id):
+    """Test POST /api/passport/emergency-contacts"""
+    print(f"\n🚨 Testing Add Emergency Contact")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/passport/emergency-contacts",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "petId": pet_id,
+                "name": "Contatto Test",
+                "relationship": "Familiare",
+                "phone": "+39 333 1234567"
+            },
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if "id" in data and data.get("name") == "Contatto Test":
+                print_test("Add Emergency Contact", True, f"Contact created with ID: {data['id']}")
+                return data["id"]
+            else:
+                print_test("Add Emergency Contact", False, "Missing ID or name mismatch")
+                return None
+        else:
+            print_test("Add Emergency Contact", False, f"Status {response.status_code}: {response.text[:200]}")
+            return None
+    except Exception as e:
+        print_test("Add Emergency Contact", False, f"Exception: {str(e)}")
+        return None
+
+def test_add_vaccination(token, pet_id):
+    """Test POST /api/passport/vaccinations"""
+    print(f"\n💉 Testing Add Vaccination")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/passport/vaccinations",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "petId": pet_id,
+                "name": "Rabbia",
+                "date": "2025-06-01",
+                "nextDueDate": "2026-06-01",
+                "type": "vaccino"
+            },
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if "id" in data and data.get("name") == "Rabbia":
+                print_test("Add Vaccination", True, f"Vaccination created with ID: {data['id']}, status: {data.get('status')}")
+                return data["id"]
+            else:
+                print_test("Add Vaccination", False, "Missing ID or name mismatch")
+                return None
+        else:
+            print_test("Add Vaccination", False, f"Status {response.status_code}: {response.text[:200]}")
+            return None
+    except Exception as e:
+        print_test("Add Vaccination", False, f"Exception: {str(e)}")
+        return None
+
+def test_generate_qr(token, pet_id):
+    """Test POST /api/passport/qr/generate"""
+    print(f"\n🔲 Testing Generate QR Code")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/passport/qr/generate",
+            headers={"Authorization": f"Bearer {token}"},
+            json={"petId": pet_id},
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if "qrToken" in data and "qrPageUrl" in data:
+                print_test("Generate QR", True, f"QR Token: {data['qrToken'][:20]}..., URL: {data['qrPageUrl']}")
+                return data["qrToken"]
+            else:
+                print_test("Generate QR", False, "Missing qrToken or qrPageUrl")
+                return None
+        else:
+            print_test("Generate QR", False, f"Status {response.status_code}: {response.text[:200]}")
+            return None
+    except Exception as e:
+        print_test("Generate QR", False, f"Exception: {str(e)}")
+        return None
+
+def test_public_passport(qr_token):
+    """Test GET /api/passport/public/{qrToken} - NO AUTH"""
+    print(f"\n🌐 Testing Public Passport Access (No Auth)")
+    try:
+        response = requests.get(
+            f"{BASE_URL}/passport/public/{qr_token}",
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if "publicData" in data and "petId" in data:
+                public_data = data["publicData"]
+                visible_fields = [k for k in public_data.keys() if public_data[k] is not None]
+                print_test("Public Passport", True, 
+                          f"Public data accessible, visible fields: {', '.join(visible_fields)}")
+                return True
+            else:
+                print_test("Public Passport", False, "Missing publicData or petId")
+                return False
+        else:
+            print_test("Public Passport", False, f"Status {response.status_code}: {response.text[:200]}")
+            return False
+    except Exception as e:
+        print_test("Public Passport", False, f"Exception: {str(e)}")
+        return False
+
+def test_create_sharing(token, pet_id):
+    """Test POST /api/passport/sharing"""
+    print(f"\n🔗 Testing Create Sharing Link")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/passport/sharing",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "petId": pet_id,
+                "recipientName": "Pet Sitter Test",
+                "recipientRole": "pet_sitter"
+            },
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if "id" in data and "accessToken" in data and "shareUrl" in data:
+                print_test("Create Sharing", True, 
+                          f"Share created for {data.get('recipientName')}, URL: {data.get('shareUrl')}")
+                return data["accessToken"]
+            else:
+                print_test("Create Sharing", False, "Missing id, accessToken or shareUrl")
+                return None
+        else:
+            print_test("Create Sharing", False, f"Status {response.status_code}: {response.text[:200]}")
+            return None
+    except Exception as e:
+        print_test("Create Sharing", False, f"Exception: {str(e)}")
+        return None
+
+def test_update_lost_pet_mode(token, pet_id):
+    """Test PUT /api/passport/{petId} - Lost Pet Mode"""
+    print(f"\n🚨 Testing Update Lost Pet Mode")
+    try:
+        response = requests.put(
+            f"{BASE_URL}/passport/{pet_id}",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "lostPetMode": True,
+                "lostPetZone": "Milano Centro",
+                "lostPetMessage": "Gatto smarrito"
+            },
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("lostPetMode") == True:
+                print_test("Update Lost Pet Mode", True, 
+                          f"Lost pet mode enabled, zone: {data.get('lostPetZone')}, message: {data.get('lostPetMessage')}")
+                return True
+            else:
+                print_test("Update Lost Pet Mode", False, "lostPetMode not set to true")
+                return False
+        else:
+            print_test("Update Lost Pet Mode", False, f"Status {response.status_code}: {response.text[:200]}")
+            return False
+    except Exception as e:
+        print_test("Update Lost Pet Mode", False, f"Exception: {str(e)}")
+        return False
+
+def main():
+    print("=" * 80)
+    print("VetBuddy Passport Backend API Testing")
+    print("=" * 80)
+    
+    # Step 1: Login as clinic
+    clinic_token = test_login("demo@vetbuddy.it", "VetBuddy2025!Secure", "clinic")
+    if not clinic_token:
+        print("\n❌ CRITICAL: Clinic login failed, cannot continue")
+        sys.exit(1)
+    
+    # Step 2: Test clinic dashboard
+    test_clinic_dashboard(clinic_token)
+    
+    # Step 3: Login as owner
+    owner_token = test_login("proprietario.demo@vetbuddy.it", "demo123", "owner")
+    if not owner_token:
+        print("\n❌ CRITICAL: Owner login failed, cannot continue")
+        sys.exit(1)
+    
+    # Step 4: Get pets
+    pet_id = test_get_pets(owner_token)
+    if not pet_id:
+        print("\n❌ CRITICAL: No pets found, cannot continue")
+        sys.exit(1)
+    
+    # Step 5: Get passport
+    test_get_passport(owner_token, pet_id)
+    
+    # Step 6: Add emergency contact
+    test_add_emergency_contact(owner_token, pet_id)
+    
+    # Step 7: Add vaccination
+    test_add_vaccination(owner_token, pet_id)
+    
+    # Step 8: Generate QR
+    qr_token = test_generate_qr(owner_token, pet_id)
+    
+    # Step 9: Test public passport (no auth)
+    if qr_token:
+        test_public_passport(qr_token)
+    else:
+        print_test("Public Passport", False, "Skipped - no QR token available")
+    
+    # Step 10: Create sharing link
+    test_create_sharing(owner_token, pet_id)
+    
+    # Step 11: Update lost pet mode
+    test_update_lost_pet_mode(owner_token, pet_id)
     
     # Summary
     print("\n" + "=" * 80)
-    print(f"TESTING COMPLETE: {tests_passed}/{tests_total} tests passed")
+    print("TEST SUMMARY")
+    print("=" * 80)
+    print(f"✅ Passed: {tests_passed}")
+    print(f"❌ Failed: {tests_failed}")
+    print(f"📊 Total: {tests_passed + tests_failed}")
+    print(f"📈 Success Rate: {(tests_passed / (tests_passed + tests_failed) * 100):.1f}%")
     print("=" * 80)
     
-    if tests_passed == tests_total:
-        print("\n✅ ALL TESTS PASSED - Automations Config + AI Assistant API fully functional!")
-        return 0
+    if tests_failed > 0:
+        sys.exit(1)
     else:
-        print(f"\n⚠️  {tests_total - tests_passed} test(s) failed")
-        return 1
+        print("\n🎉 All tests passed!")
+        sys.exit(0)
 
 if __name__ == "__main__":
-    try:
-        exit_code = test_automations_and_ai_api()
-        sys.exit(exit_code)
-    except Exception as e:
-        print(f"\n❌ CRITICAL ERROR: {str(e)}")
-        sys.exit(1)
+    main()

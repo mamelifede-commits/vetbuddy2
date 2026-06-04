@@ -12,6 +12,9 @@ import {
   FlaskConical, Clock, CheckCircle, PlayCircle, Bell, MessageCircle,
   ArrowRight, ListTodo, Mail, Phone, SendHorizontal
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const ClinicPassportWidget = dynamic(() => import('./ClinicPassportWidget'), { ssr: false });
 
 // Helper: Setup Step
 function SetupStep({ icon: Icon, label, desc, done, onClick }) {
@@ -96,7 +99,7 @@ function WorkflowCard({ step, title, icon: Icon, color, items, nextVideo, onClic
   );
 }
 
-function ClinicControlRoom({ appointments, documents, messages, owners, pets, rewards, setupProgress, onRefresh, onNavigate, onOpenPet }) {
+function ClinicControlRoom({ appointments, documents, messages, owners, pets, rewards, setupProgress, onRefresh, onNavigate, onOpenPet, token }) {
   const [selectedPetPopup, setSelectedPetPopup] = useState(null);
   
   const today = new Date().toISOString().split('T')[0];
@@ -409,6 +412,9 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, re
               </Button>
             </CardContent>
           </Card>
+
+          {/* Passport Widget */}
+          <ClinicPassportWidget token={token} onNavigate={onNavigate} onOpenPet={onOpenPet} />
         </div>
       </div>
 

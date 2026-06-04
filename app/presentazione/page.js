@@ -497,7 +497,82 @@ export default function BrochurePage() {
       </div>
 
       {/* ====================================================================
-          PAGINA 8 — COME FUNZIONA
+          PAGINA 8 — VETBUDDY PASSPORT
+      ==================================================================== */}
+      <div className="brochure-page bg-white px-12 py-14">
+        <PageHeader />
+
+        <div className="mt-6 mb-3">
+          <div className="inline-flex items-center gap-2 bg-indigo-100 text-indigo-700 px-4 py-1.5 rounded-full text-xs font-bold">
+            🛡️ NUOVO MODULO
+          </div>
+        </div>
+        <h2 className="text-3xl font-black text-gray-900 mb-1">VetBuddy Passport</h2>
+        <p className="text-gray-500 mb-6 text-sm">Il passaporto sanitario digitale per ogni animale. Vaccini, documenti, allergie, contatti di emergenza e QR personale sempre a portata di mano.</p>
+
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-5">
+            <h4 className="text-lg font-bold text-indigo-800 mb-3">Per il Proprietario</h4>
+            <p className="text-gray-500 text-xs mb-3">Tutto ciò che serve per gestire la salute del proprio animale, accessibile dal telefono.</p>
+            <ul className="space-y-1.5 text-xs text-gray-700">
+              {[
+                'QR emergenza stampabile con dati essenziali',
+                'Modalità smarrimento: allerta pubblica con geolocalizzazione',
+                'Condivisione temporanea con pet sitter e familiari',
+                'Travel Pack: checklist documenti viaggio',
+                'Timeline vaccini e trattamenti con scadenze',
+                'Assicurazione e documenti sempre consultabili',
+                'Promemoria richiami e scadenze vaccinali',
+              ].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-indigo-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-coral-50/50 border-2 border-coral-200 rounded-2xl p-5">
+            <h4 className="text-lg font-bold text-coral-800 mb-3">Per la Clinica</h4>
+            <p className="text-gray-500 text-xs mb-3">Meno domande, più autonomia del cliente, più occasioni di ricontatto.</p>
+            <ul className="space-y-1.5 text-xs text-gray-700">
+              {[
+                'Dashboard con passport incompleti e vaccini in scadenza',
+                'Invito automatico al proprietario per completare il Passport',
+                'Visibilità su condivisioni attive e QR generati',
+                'Meno richieste manuali di documenti e certificati',
+                'Richiami automatici per vaccini e trattamenti scaduti',
+                'Più visite ricorrenti grazie ai promemoria integrati',
+                'Fidelizzazione a lungo termine del cliente',
+              ].map((f, i) => (
+                <li key={i} className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-coral-500 mt-0.5 flex-shrink-0" />{f}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <h3 className="text-lg font-bold text-gray-900 mb-3">Come funziona il Passport</h3>
+        <div className="grid grid-cols-4 gap-3 mb-6">
+          {[
+            { num: '01', icon: '📋', title: 'Completa il profilo', desc: 'Il proprietario inserisce dati sanitari, allergie, farmaci e contatti di emergenza.' },
+            { num: '02', icon: '📱', title: 'Genera il QR', desc: 'Un QR code unico e stampabile con i dati essenziali per emergenze e smarrimento.' },
+            { num: '03', icon: '🔗', title: 'Condividi', desc: 'Link temporanei per pet sitter, familiari o pensioni con permessi personalizzati.' },
+            { num: '04', icon: '✈️', title: 'Parti tranquillo', desc: 'Travel Pack con checklist documenti, vaccini verificati e istruzioni per il viaggio.' },
+          ].map((step, i) => (
+            <div key={i} className="bg-gray-50 rounded-xl border border-gray-100 p-3 text-center">
+              <div className="text-xl mb-1">{step.icon}</div>
+              <div className="text-xs font-bold text-indigo-600 mb-0.5">STEP {step.num}</div>
+              <h4 className="font-bold text-gray-900 text-xs mb-0.5">{step.title}</h4>
+              <p className="text-gray-500 text-[10px] leading-snug">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
+          <p className="text-xs text-indigo-800 leading-relaxed text-center">
+            <strong>🛡️ Privacy e controllo:</strong> Il proprietario decide quali informazioni rendere visibili nel QR pubblico. Allergie, farmaci e condizioni croniche possono essere mostrati solo ai contatti autorizzati. La clinica mantiene visibilità completa tramite la propria dashboard.
+          </p>
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 9 — COME FUNZIONA
       ==================================================================== */}
       <div className="brochure-page bg-gray-50 px-12 py-14">
         <PageHeader />
@@ -568,7 +643,7 @@ export default function BrochurePage() {
             <div className="mb-2"><span className="text-3xl font-black text-gray-800">€29</span><span className="text-sm text-gray-400">/mese + IVA</span></div>
             <p className="text-xs text-gray-500 mb-4">Per veterinari freelance e micro-cliniche.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
-              {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Promemoria base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
+              {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Promemoria base', 'Passport base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
                 <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-green-500 flex-shrink-0" />{f}</li>
               ))}
             </ul>
@@ -581,7 +656,7 @@ export default function BrochurePage() {
             <div className="mb-1"><span className="text-3xl font-black text-gray-900">€69</span><span className="text-sm text-gray-500 ml-1">/mese + IVA</span></div>
             <p className="text-xs text-gray-500 mb-3">Piano consigliato per cliniche piccole e medie.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
-              {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio'].map((f, i) => (
+              {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Passport completo', 'QR emergenza', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio'].map((f, i) => (
                 <li key={i} className="flex items-center gap-1.5"><Check className="w-3 h-3 text-coral-500 flex-shrink-0" />{f}</li>
               ))}
             </ul>
@@ -596,7 +671,7 @@ export default function BrochurePage() {
             <div className="mb-1"><span className="text-3xl font-black text-gray-800">€99</span><span className="text-sm text-gray-500 ml-1">/mese + IVA</span></div>
             <p className="text-xs text-gray-500 mb-3">Per cliniche strutturate.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
-              {['Tutto Crescita più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente'].map((f, i) => (
+              {['Tutto Crescita più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Passport + QR brandizzato', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente'].map((f, i) => (
                 <li key={i} className={`flex items-center gap-1.5 ${i === 0 ? 'font-semibold' : ''}`}><Check className="w-3 h-3 text-green-500 flex-shrink-0" />{f}</li>
               ))}
             </ul>
@@ -644,6 +719,7 @@ export default function BrochurePage() {
             { q: 'Posso annullare l\'abbonamento?', a: 'Sì. L\'abbonamento è mensile, senza vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.' },
             { q: 'Devo cambiare tutti i miei strumenti?', a: 'No. VetBuddy può lavorare accanto agli strumenti già usati dalla clinica. Il progetto pilota serve proprio a misurare il valore senza stravolgere l\'organizzazione.' },
             { q: 'I dati e i referti sono visibili automaticamente al proprietario?', a: 'No. La clinica mantiene il controllo sui documenti e decide quali informazioni rendere visibili al proprietario tramite area riservata.' },
+            { q: 'Cos\'è il VetBuddy Passport?', a: 'È il passaporto sanitario digitale dell\'animale. Raccoglie vaccini, allergie, farmaci, contatti di emergenza e genera un QR stampabile per situazioni di emergenza o smarrimento. Il proprietario può condividerlo temporaneamente con pet sitter e familiari.' },
             { q: 'Serve una formazione tecnica?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile.' },
           ].map((item, i) => (
             <div key={i} className="pb-3 border-b border-gray-100 last:border-0">

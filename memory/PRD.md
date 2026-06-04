@@ -40,10 +40,22 @@ VetBuddy è un gestionale veterinario completo per cliniche, proprietari di anim
 - Endpoint: `/api/prescriptions`, `/api/prescriptions/:id/register-manual`, `/api/prescriptions/:id/publish`
 
 ### 6. Landing Page
-- Homepage con sezioni: Funzionalità, Automazioni, Fatturazione, **Ricette Elettroniche REV**, Premi, Lab Marketplace, Prezzi
+- Homepage con sezioni: Funzionalità, Automazioni, Fatturazione, **Ricette Elettroniche REV**, Premi, Lab Marketplace, **VetBuddy Passport**, Prezzi
 - Prezzi: Starter Clinica (Free), Pro Clinica (€49/mo, 90gg gratis), Lab Partner (€29/mo, 6 mesi gratis), Enterprise (Custom)
-- Brochure con Lab Marketplace, REV e prezzi aggiornati — PDF scaricabile a `/brochure-vetbuddy.pdf`
-- Tutorial: Clinica, Proprietario, Laboratorio
+- Brochure con Lab Marketplace, REV, **VetBuddy Passport** e prezzi aggiornati — PDF scaricabile a `/brochure-vetbuddy.pdf`
+- Tutorial: Clinica (con sezione Passport), Proprietario (con sezione Passport), Laboratorio
+
+### 7. VetBuddy Passport
+- **Passaporto sanitario digitale** per ogni animale
+- **QR Emergenza**: codice stampabile con dati essenziali, visibilità configurabile
+- **Lost Pet Mode**: avviso pubblico con zona smarrimento, segnalazione ritrovamento via email
+- **Condivisione temporanea**: link con scadenza per pet sitter, familiari, pensioni
+- **Travel Pack**: checklist documenti viaggio, vaccini verificati, istruzioni
+- **Timeline**: storico vaccini, trattamenti, documenti, scansioni QR
+- **Assicurazione**: registrazione polizza, scadenze, note copertura
+- **Clinic Dashboard Widget**: passport incompleti, vaccini in scadenza, pazienti senza microchip
+- API: `/api/passport/:petId`, `/api/passport/qr/generate`, `/api/passport/sharing`, `/api/passport/clinic/dashboard`
+- Pagina pubblica QR: `/passport/[token]/page.js`
 
 ## Key API Endpoints
 - `GET/POST /api/labs/marketplace` - Lab marketplace
@@ -62,6 +74,7 @@ VetBuddy è un gestionale veterinario completo per cliniche, proprietari di anim
 - `clinic_lab_connections`, `lab_invitations`
 - `prescriptions`, `prescription_items`, `prescription_audit_events`, `prescription_external_logs`
 - `payment_transactions` (Stripe)
+- `pet_passports`, `pet_emergency_contacts`, `pet_sharing_links`, `pet_travel_packs`, `pet_insurance`, `pet_qr_scan_logs`, `vaccinations`
 
 ## Tech Stack
 - Next.js 14, Tailwind CSS, Shadcn UI, MongoDB
