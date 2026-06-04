@@ -287,14 +287,13 @@ export default function TutorialCliniche() {
       title: 'VetBuddy Passport',
       color: 'bg-indigo-500',
       content: [
-        '1. Il Passport è il passaporto sanitario digitale di ogni animale',
-        '2. Il proprietario lo compila dall\'area personale: allergie, farmaci, contatti di emergenza',
-        '3. QR Emergenza: codice stampabile con dati essenziali per urgenze o smarrimento',
-        '4. Lost Pet Mode: attiva un avviso pubblico visibile da chi scansiona il QR',
-        '5. Condivisione temporanea: link per pet sitter, familiari o pensioni con scadenza automatica',
-        '6. Travel Pack: checklist documenti viaggio, vaccini verificati e istruzioni',
-        '7. La clinica vede nella sua dashboard i passport incompleti e i vaccini in scadenza',
-        '8. I promemoria vaccinali e i richiami si generano automaticamente dal Passport'
+        '1. Cos\'è: Il passaporto sanitario digitale dell\'animale con vaccini, documenti, allergie, contatti e QR',
+        '2. Come attivare: Apri la scheda del paziente → tab "Passport" → il Passport si attiva automaticamente',
+        '3. Come generare il QR: Tab Emergenza QR → "Genera QR emergenza" → scarica PNG/PDF o copia link',
+        '4. Come caricare documenti: Collega referti, vaccini e certificati al Passport dalla sezione documenti',
+        '5. Come gestire vaccini: Tab Vaccini → aggiungi vaccini e trattamenti con date scadenza → i promemoria si generano automaticamente',
+        '6. Dashboard Passport: Nella tua dashboard vedi passport incompleti, vaccini in scadenza e pazienti senza microchip',
+        '7. Come spiegare ai clienti: Invita i proprietari a completare il Passport dalla loro area riservata — si gestiscono in autonomia'
       ],
       tip: 'Invita i proprietari a completare il Passport: meno telefonate per te, più autonomia per loro, e più occasioni di ricontatto automatiche.'
     }
@@ -307,7 +306,7 @@ export default function TutorialCliniche() {
     { q: 'Come funziona il pagamento dei clienti?', a: 'I clienti pagano via Stripe. I fondi vanno direttamente sul tuo conto. Nessuna commissione vetbuddy.' },
     { q: 'Posso avere più utenti per la clinica?', a: 'Sì, nel Piano Pro Clinica puoi aggiungere fino a 10 collaboratori con ruoli diversi.' },
     { q: 'I dati dei miei pazienti sono al sicuro?', a: 'Assolutamente. Crittografia, backup automatici e conformità GDPR garantiti.' },
-    { q: 'Cos\'è il VetBuddy Passport?', a: 'È il passaporto sanitario digitale del tuo paziente. Raccoglie vaccini, allergie, farmaci, contatti di emergenza e genera un QR stampabile. Il proprietario lo gestisce in autonomia e la clinica mantiene visibilità completa.' },
+    { q: 'Cos\'è il VetBuddy Passport?', a: 'È il passaporto sanitario digitale del tuo paziente. Raccoglie vaccini, allergie, farmaci, contatti di emergenza e genera un QR stampabile. Il proprietario lo gestisce in autonomia e la clinica mantiene visibilità sui dati sanitari e sui documenti gestiti nel proprio rapporto con il paziente, nel rispetto dei permessi e delle autorizzazioni.' },
     { q: 'Il proprietario può condividere il Passport con terzi?', a: 'Sì, tramite link temporanei con scadenza configurabile e permessi personalizzati (pet sitter, familiari, pensioni). La clinica può vedere le condivisioni attive dalla dashboard.' },
     { q: 'Come funziona il QR Emergenza?', a: 'Il proprietario genera un QR code unico dal Passport. Chiunque lo scansiona vede solo i dati che il proprietario ha deciso di rendere pubblici (nome, allergie, contatti). In caso di smarrimento, chi trova l\'animale può inviare una segnalazione direttamente al proprietario.' }
   ];

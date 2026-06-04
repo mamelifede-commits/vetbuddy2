@@ -59,7 +59,7 @@ export async function POST(request) {
             </div>
           </div>
           <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-            <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
+            <p style="color: #999; margin: 0; font-size: 12px;">© 2026 vetbuddy - La piattaforma per la salute dei tuoi animali</p>
           </div>
         </div>
       `

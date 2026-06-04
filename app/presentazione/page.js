@@ -73,7 +73,7 @@ export default function BrochurePage() {
 
         <div className="inline-flex items-center gap-3 px-7 py-3 rounded-2xl mb-4" style={{ background: 'rgba(255,255,255,0.25)', border: '2px solid rgba(255,255,255,0.4)' }}>
           <div className="w-3 h-3 rounded-full" style={{ background: '#4ade80' }}></div>
-          <span className="text-lg font-bold" style={{ color: '#ffffff' }}>Progetto pilota Milano 2025</span>
+          <span className="text-lg font-bold" style={{ color: '#ffffff' }}>Progetto pilota per cliniche selezionate</span>
         </div>
 
         <p className="text-sm mb-8" style={{ color: '#ffffff', opacity: 0.8 }}>90 giorni per misurare il valore generato da VetBuddy nella tua clinica.</p>
@@ -517,7 +517,7 @@ export default function BrochurePage() {
             <ul className="space-y-1.5 text-xs text-gray-700">
               {[
                 'QR emergenza stampabile con dati essenziali',
-                'Modalità smarrimento: allerta pubblica con geolocalizzazione',
+                'Modalità smarrimento: segnalazione pubblica con posizione condivisa solo se autorizzata',
                 'Condivisione temporanea con pet sitter e familiari',
                 'Travel Pack: checklist documenti viaggio',
                 'Timeline vaccini e trattamenti con scadenze',
@@ -566,7 +566,7 @@ export default function BrochurePage() {
 
         <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
           <p className="text-xs text-indigo-800 leading-relaxed text-center">
-            <strong>🛡️ Privacy e controllo:</strong> Il proprietario decide quali informazioni rendere visibili nel QR pubblico. Allergie, farmaci e condizioni croniche possono essere mostrati solo ai contatti autorizzati. La clinica mantiene visibilità completa tramite la propria dashboard.
+            <strong>🛡️ Privacy e controllo:</strong> Il proprietario decide quali informazioni rendere visibili nel QR pubblico. Allergie, farmaci e condizioni croniche possono essere mostrati solo ai contatti autorizzati. La clinica mantiene visibilità sui dati sanitari e sui documenti gestiti nel proprio rapporto con il paziente, nel rispetto dei permessi e delle autorizzazioni.
           </p>
         </div>
       </div>
@@ -711,15 +711,15 @@ export default function BrochurePage() {
         
         <div className="space-y-4">
           {[
-            { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale veterinario completo. È un copilota operativo che lavora accanto agli strumenti già usati dalla clinica per automatizzare prenotazioni, promemoria, comunicazioni, documenti e ricontatti. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali.' },
+            { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale veterinario completo. È un copilota operativo che lavora accanto agli strumenti già usati dalla clinica per automatizzare prenotazioni, promemoria, comunicazioni, documenti e ricontatti.' },
             { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali e responsabilità professionale.' },
-            { q: 'Come funziona l\'invio dei referti?', a: 'Il laboratorio carica il referto. La clinica lo rivede, aggiunge eventuali note e decide se e quando renderlo visibile al proprietario tramite area riservata.' },
-            { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite restano gestiti dalla clinica. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma, salvo eventuali servizi aggiuntivi concordati.' },
+            { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite restano gestiti dalla clinica. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
             { q: 'Il proprietario paga VetBuddy?', a: 'No. L\'area proprietario è gratuita per il proprietario dell\'animale.' },
             { q: 'Posso annullare l\'abbonamento?', a: 'Sì. L\'abbonamento è mensile, senza vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.' },
-            { q: 'Devo cambiare tutti i miei strumenti?', a: 'No. VetBuddy può lavorare accanto agli strumenti già usati dalla clinica. Il progetto pilota serve proprio a misurare il valore senza stravolgere l\'organizzazione.' },
             { q: 'I dati e i referti sono visibili automaticamente al proprietario?', a: 'No. La clinica mantiene il controllo sui documenti e decide quali informazioni rendere visibili al proprietario tramite area riservata.' },
             { q: 'Cos\'è il VetBuddy Passport?', a: 'È il passaporto sanitario digitale dell\'animale. Raccoglie vaccini, allergie, farmaci, contatti di emergenza e genera un QR stampabile per situazioni di emergenza o smarrimento. Il proprietario può condividerlo temporaneamente con pet sitter e familiari.' },
+            { q: 'VetBuddy Passport sostituisce la cartella clinica?', a: 'No. VetBuddy Passport organizza le informazioni essenziali dell\'animale per proprietario, clinica, emergenze e condivisioni. La cartella clinica resta gestita dalla clinica.' },
+            { q: 'VetBuddy Passport fornisce diagnosi?', a: 'No. VetBuddy Passport aiuta a organizzare dati, documenti e promemoria. Non sostituisce diagnosi, prescrizioni o valutazioni del veterinario.' },
             { q: 'Serve una formazione tecnica?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile.' },
           ].map((item, i) => (
             <div key={i} className="pb-3 border-b border-gray-100 last:border-0">
@@ -779,7 +779,7 @@ export default function BrochurePage() {
         </div>
 
         <div className="text-center mt-auto">
-          <p className="text-white/50 text-xs">© 2025 VetBuddy — Tutti i diritti riservati</p>
+          <p className="text-white/50 text-xs">© 2026 VetBuddy — Tutti i diritti riservati</p>
         </div>
       </div>
     </div>

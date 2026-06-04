@@ -94,8 +94,8 @@ export async function GET(request) {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': forceDownload
-          ? 'attachment; filename="VetBuddy_Brochure_2025.pdf"'
-          : 'inline; filename="VetBuddy_Brochure_2025.pdf"',
+          ? 'attachment; filename="VetBuddy_Brochure_2026.pdf"'
+          : 'inline; filename="VetBuddy_Brochure_2026.pdf"',
         'Content-Length': pdfBuffer.length.toString(),
         'Cache-Control': 'no-cache, no-store',
       },

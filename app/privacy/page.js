@@ -22,7 +22,7 @@ export default function PrivacyPage() {
       {/* Content */}
       <main className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
-        <p className="text-gray-500 mb-8">Ultimo aggiornamento: Febbraio 2025</p>
+        <p className="text-gray-500 mb-8">Ultimo aggiornamento: Gennaio 2026</p>
 
         <div className="prose prose-gray max-w-none">
           <section className="mb-8">
@@ -160,7 +160,7 @@ export default function PrivacyPage() {
       {/* Footer */}
       <footer className="bg-white border-t py-8">
         <div className="max-w-4xl mx-auto px-4 text-center text-gray-500 text-sm">
-          <p>© 2025 vetbuddy. Tutti i diritti riservati.</p>
+          <p>© 2026 vetbuddy. Tutti i diritti riservati.</p>
           <div className="flex justify-center gap-4 mt-2">
             <Link href="/privacy" className="hover:text-coral-500">Privacy Policy</Link>
             <Link href="/termini" className="hover:text-coral-500">Termini e Condizioni</Link>

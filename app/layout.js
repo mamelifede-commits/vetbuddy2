@@ -4,7 +4,7 @@ import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 
 export const metadata = {
   title: 'vetbuddy - Gestionale Veterinario | Pilot Milano',
-  description: 'La piattaforma per cliniche veterinarie e proprietari di animali. Gestisci appuntamenti, documenti e comunicazione in un\'unica piattaforma. Pilot Milano 2025.',
+  description: 'La piattaforma per cliniche veterinarie e proprietari di animali. Gestisci appuntamenti, documenti e comunicazione in un\'unica piattaforma. Pilot Milano 2026.',
   keywords: ['veterinario', 'clinica veterinaria', 'gestionale', 'animali', 'Milano', 'prenotazioni', 'pet'],
   authors: [{ name: 'vetbuddy' }],
   manifest: '/manifest.json',

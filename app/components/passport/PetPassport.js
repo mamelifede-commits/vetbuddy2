@@ -292,6 +292,58 @@ export default function PetPassport({ pet, token, userRole }) {
                 )}
               </CardContent>
             </Card>
+
+            {/* Dati Essenziali Animale */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-semibold">Dati essenziali</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                  <div className="p-2 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500">Microchip</p>
+                    <p className="font-medium">{pet?.microchip || <span className="text-amber-500 italic">Mancante</span>}</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500">Peso</p>
+                    <p className="font-medium">{pet?.weight ? `${pet.weight} kg` : <span className="text-amber-500 italic">Non indicato</span>}</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500">Data di nascita</p>
+                    <p className="font-medium">{pet?.birthDate ? new Date(pet.birthDate).toLocaleDateString('it-IT') : <span className="text-amber-500 italic">Non indicata</span>}</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500">Allergie</p>
+                    <p className="font-medium">{pet?.allergies?.length > 0 ? pet.allergies.join(', ') : <span className="text-gray-400">Nessuna segnalata</span>}</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500">Farmaci ricorrenti</p>
+                    <p className="font-medium">{pet?.medications?.length > 0 ? pet.medications.join(', ') : <span className="text-gray-400">Nessuno</span>}</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500">Patologie croniche</p>
+                    <p className="font-medium">{pet?.chronicConditions?.length > 0 ? pet.chronicConditions.join(', ') : <span className="text-gray-400">Nessuna</span>}</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500">Alimentazione</p>
+                    <p className="font-medium">{pet?.diet || <span className="text-gray-400">Non indicata</span>}</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500">Note comportamentali</p>
+                    <p className="font-medium">{pet?.behavioralNotes || <span className="text-gray-400">Nessuna</span>}</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500">Segni particolari</p>
+                    <p className="font-medium">{pet?.distinguishingMarks || <span className="text-gray-400">Nessuno</span>}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Disclaimer Medico */}
+            <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-3 text-xs text-indigo-800 leading-relaxed">
+              <strong>⚕️ Nota importante:</strong> VetBuddy Passport aiuta a organizzare informazioni, documenti e promemoria dell&apos;animale. Non sostituisce diagnosi, prescrizioni o valutazioni del medico veterinario. Per qualsiasi questione medica, consulta sempre il tuo veterinario.
+            </div>
           </div>
         </TabsContent>
 

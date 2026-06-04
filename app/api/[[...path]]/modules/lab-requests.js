@@ -101,7 +101,7 @@ export async function handleLabRequestsPost(path, request, body) {
                   <p style="color: #6b7280; font-size: 14px; margin-top: 20px;">Accedi alla tua dashboard per gestire la richiesta.</p>
                 </div>
                 <div style="background: #1f2937; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-                  <p style="color: #9ca3af; margin: 0; font-size: 12px;">© 2025 vetbuddy - Sistema Analisi Laboratorio</p>
+                  <p style="color: #9ca3af; margin: 0; font-size: 12px;">© 2026 vetbuddy - Sistema Analisi Laboratorio</p>
                 </div>
               </div>
             `

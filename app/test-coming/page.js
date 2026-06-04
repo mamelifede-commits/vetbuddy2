@@ -57,7 +57,7 @@ export default function TestComingSoon() {
       {/* Footer */}
       <footer className="relative z-30 py-6 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-sm text-gray-400">© 2025 vetbuddy</p>
+          <p className="text-sm text-gray-400">© 2026 vetbuddy</p>
         </div>
       </footer>
     </div>

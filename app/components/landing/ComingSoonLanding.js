@@ -69,7 +69,7 @@ function ComingSoonLanding({ onLogin }) {
       {/* Footer */}
       <footer className="relative z-30 py-6 px-4">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-white/50">© 2025 vetbuddy</p>
+          <p className="text-sm text-white/50">© 2026 vetbuddy</p>
           <button 
             onClick={() => setShowTeamLogin(true)}
             className="text-xs text-white/40 hover:text-white transition-colors"

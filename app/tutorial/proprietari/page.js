@@ -251,14 +251,12 @@ export default function TutorialProprietari() {
       title: 'VetBuddy Passport',
       color: 'bg-indigo-500',
       content: [
-        '1. Apri il profilo del tuo animale e vai alla tab "Passport"',
-        '2. Completa il profilo: allergie, farmaci, contatti di emergenza',
-        '3. Genera il QR Emergenza: un codice stampabile con i dati essenziali',
-        '4. Attiva Lost Pet Mode se il tuo animale si perde: chi scansiona il QR vede l\'avviso',
-        '5. Condividi il Passport con pet sitter o familiari: crea un link temporaneo con scadenza',
-        '6. Prepara un Travel Pack prima di un viaggio: checklist documenti, vaccini e istruzioni',
-        '7. Consulta la Timeline per vedere lo storico di vaccini e trattamenti',
-        '8. Aggiungi l\'assicurazione per avere tutto in un unico posto'
+        '1. Come completare: Apri il profilo del tuo animale → tab "Passport" → compila allergie, farmaci, contatti emergenza',
+        '2. QR emergenza: Tab Emergenza QR → "Genera QR" → scarica PNG/PDF → stampa e attacca al collare o medaglietta',
+        '3. Condivisioni: Tab Condivisioni → crea link temporaneo per pet sitter, familiari o pensioni con permessi personalizzati',
+        '4. Travel Pack: Tab Viaggi → "Nuovo viaggio" → completa checklist documenti, vaccini, alimentazione e istruzioni',
+        '5. Lost Pet Mode: Se il tuo animale si perde, attiva dalla Panoramica → chi scansiona il QR vede l\'avviso di smarrimento',
+        '6. Privacy: Sei tu a scegliere cosa mostrare nel QR. I dati sensibili restano nascosti di default'
       ],
       tip: 'Stampa il QR e attaccalo al collare o alla medaglietta del tuo animale. In caso di emergenza, chi lo trova potrà contattarti immediatamente!'
     }
@@ -272,7 +270,9 @@ export default function TutorialProprietari() {
     { q: 'Come annullo un appuntamento?', a: 'Dalla dashboard, vai su "I Miei Appuntamenti", seleziona l\'appuntamento e clicca "Annulla".' },
     { q: 'Cos\'è il VetBuddy Passport?', a: 'È il passaporto sanitario digitale del tuo animale. Raccoglie vaccini, allergie, farmaci, contatti di emergenza e genera un QR stampabile per emergenze e smarrimento.' },
     { q: 'Chi può vedere il mio Passport?', a: 'Solo tu e la tua clinica. Se condividi un link temporaneo con un pet sitter o familiare, vedranno solo i dati che hai autorizzato. Il QR pubblico mostra solo le informazioni che hai scelto di rendere visibili.' },
-    { q: 'Come funziona il Lost Pet Mode?', a: 'Se il tuo animale si perde, attiva il Lost Pet Mode dal Passport. Chi scansiona il QR vedrà un avviso di smarrimento con la zona e un messaggio. Chi trova l\'animale può inviarti una segnalazione direttamente.' }
+    { q: 'Il QR mostra dati sensibili?', a: 'No. Il proprietario decide cosa rendere visibile. I dati sensibili sono nascosti di default.' },
+    { q: 'VetBuddy Passport sostituisce la cartella clinica?', a: 'No. VetBuddy Passport organizza le informazioni essenziali dell\'animale per proprietario, clinica, emergenze e condivisioni. La cartella clinica resta gestita dalla clinica.' },
+    { q: 'Lost Pet Mode pubblica il mio indirizzo?', a: 'No. Non mostra l\'indirizzo completo salvo scelta esplicita del proprietario. È consigliato mostrare solo città o zona.' }
   ];
 
   return (

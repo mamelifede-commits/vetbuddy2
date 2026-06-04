@@ -721,7 +721,7 @@ export default function FullLandingPage() {
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-            <p>© 2025 vetbuddy. Tutti i diritti riservati.</p>
+            <p>© 2026 vetbuddy. Tutti i diritti riservati.</p>
           </div>
         </div>
       </footer>

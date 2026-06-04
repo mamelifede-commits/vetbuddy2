@@ -10,7 +10,7 @@ function EcosystemToggle() {
     cliniche: {
       icon: Building2,
       title: 'Per le Cliniche',
-      subtitle: 'Pilot Milano 2025',
+      subtitle: 'Pilot Milano 2026',
       color: 'coral',
       features: [
         'Dashboard "cosa fare oggi" in 10 secondi',

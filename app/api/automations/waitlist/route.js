@@ -60,7 +60,7 @@ export async function POST(request) {
               <p style="color: #666;">Ti contatteremo appena si libera uno slot! 🔔</p>
             </div>
             <div style="background: #333; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
-              <p style="color: #999; margin: 0; font-size: 12px;">© 2025 vetbuddy</p>
+              <p style="color: #999; margin: 0; font-size: 12px;">© 2026 vetbuddy</p>
             </div>
           </div>
         `
