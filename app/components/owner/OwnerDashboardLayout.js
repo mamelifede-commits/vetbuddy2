@@ -29,6 +29,7 @@ const PetProfile = dynamic(() => import('@/app/components/owner/PetProfile'), { 
 const FindClinic = dynamic(() => import('@/app/components/owner/FindClinic'), { ssr: false });
 const InviteClinic = dynamic(() => import('@/app/components/owner/InviteClinic'), { ssr: false });
 const SubscriptionPlans = dynamic(() => import('@/app/components/shared/SubscriptionPlans'), { ssr: false });
+const OwnerPassportCards = dynamic(() => import('@/app/components/owner/OwnerPassportCards'), { ssr: false });
 
 function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   // Leggi parametro tab dall'URL per navigazione diretta
@@ -312,6 +313,11 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
             </div>
           </div>
         </div>
+
+        {/* Passport Cards - always visible */}
+        {activeTab === 'appointments' && pets.length > 0 && (
+          <OwnerPassportCards pets={pets} onOpenProfile={handleOpenPetProfile} />
+        )}
 
         {activeTab === 'appointments' && <OwnerAppointments appointments={appointments} pets={pets} />}
         {activeTab === 'documents' && <OwnerDocuments documents={documents.filter(d => d.type !== 'invoice' && d.category !== 'fattura')} pets={pets} onRefresh={loadData} user={user} />}
