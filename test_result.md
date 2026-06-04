@@ -1592,10 +1592,50 @@ agent_communication:
         comment: "COMPREHENSIVE VETBUDDY PASSPORT BACKEND API TESTING COMPLETED - ALL 11/11 TESTS PASSED ✅: Successfully tested complete VetBuddy Passport module as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. ✅ **Authentication**: Both clinic (demo@vetbuddy.it / VetBuddy2025!Secure) and owner (proprietario.demo@vetbuddy.it / demo123) login working correctly with proper JWT tokens and role verification. ✅ **GET /api/passport/clinic/dashboard**: Returns comprehensive stats (29 total pets, 1 passport active, 1 QR generated) and lists (petsWithoutMicrochip, petsWithoutEmergencyContact, vaccinesExpiring, docsExpiring). Clinic dashboard provides complete overview of passport status across all clinic pets. ✅ **GET /api/pets**: Returns owner's pets list (1 pet: 'Max Updated via API' with ID f1f3b7d9-01fe-4955-b6c8-bdf183a62d28). Pet data retrieval working correctly. ✅ **GET /api/passport/{petId}**: Returns complete passport data with 58% completion score, pet details, passport settings, completion breakdown, emergency contacts (0 initially), vaccinations (0 initially), documents, sharing links, travel packs, insurance, recent scans. Auto-creates passport record if not exists. ✅ **POST /api/passport/emergency-contacts**: Successfully creates emergency contact 'Contatto Test' with relationship 'Familiare' and phone '+39 333 1234567'. Contact ID: 20ed910b-3d1d-4d5d-a33e-5acb6e9a3221. ✅ **POST /api/passport/vaccinations**: Successfully creates vaccination 'Rabbia' with date 2025-06-01 and nextDueDate 2026-06-01. Vaccination ID: 06f1cd62-b1f0-45e0-9ae7-fa33cdc7a7f8. Status auto-calculated as 'scaduto' (past due date logic working). ✅ **POST /api/passport/qr/generate**: Successfully generates QR code with token 4350e4b7-c996-4f0a-9da7-a4d593a241bb and URL https://clinic-report-review.preview.emergentagent.com/passport/{token}. QR generation working correctly. ✅ **GET /api/passport/public/{qrToken}**: Public access working WITHOUT authentication. Returns publicData with visible fields: isLostPetMode, name, species, breed, allergies, medications, emergencyContacts. Visibility settings respected. QR scan logged. ✅ **POST /api/passport/sharing**: Successfully creates sharing link for 'Pet Sitter Test' with accessToken ec6c742b-fa4f-4538-82c2-b2bdcdddfc0b and shareUrl. Default permissions set (7 days expiry). ✅ **PUT /api/passport/{petId}**: Successfully enables lost pet mode with zone 'Milano Centro' and message 'Gatto smarrito'. Lost pet status set to 'active'. All passport endpoints fully functional and ready for production use. Complete workflow tested: clinic dashboard → owner login → get pets → get passport → add emergency contact → add vaccination → generate QR → public access → create sharing → enable lost pet mode. Success rate: 100% (11/11 tests passed)."
 
 
+  - task: "Admin Passport Stats API"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/admin.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ADMIN PASSPORT STATS API FULLY FUNCTIONAL: GET /api/admin/passport-stats successfully tested with admin authentication (admin@vetbuddy.it / Admin2025!). Returns comprehensive passport statistics with all required fields and correct data types: totalPets (29), passportActive (4 pets with at least 1 vaccine/contact/QR), qrGenerated (2 QR codes generated), activeShares (2 active sharing links), vaccinesExpiring (array of vaccines expiring in next 30 days - currently 0), petsWithoutMicrochip (25), petsWithoutEmergencyContact (27), petsWithoutVaccines (25), lostPetModeActive (0 pets in lost mode). API provides complete admin-level overview of passport adoption and completion across all pets in the system. All field types validated correctly (integers for counts, array for vaccinesExpiring). Admin authorization working correctly - requires admin role token."
+
+  - task: "Passport Vaccine Reminder Automation"
+    implemented: true
+    working: true
+    file: "/app/app/api/automations/passport-vaccine-reminder/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    - agent: "testing"
+      message: "✅ ADMIN PASSPORT STATS & AUTOMATIONS TESTING COMPLETE - ALL 4/4 TESTS PASSED (100% SUCCESS RATE): Successfully tested Admin Passport Stats API and both Passport Automation endpoints as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. ✅ **Admin Login**: admin@vetbuddy.it / Admin2025! working correctly, returns admin role token. ✅ **GET /api/admin/passport-stats** (admin auth required): Returns all 9 required fields with correct data types - totalPets: 29, passportActive: 4, qrGenerated: 2, activeShares: 2, vaccinesExpiring: [] (array), petsWithoutMicrochip: 25, petsWithoutEmergencyContact: 27, petsWithoutVaccines: 25, lostPetModeActive: 0. Admin authorization working correctly. ✅ **POST /api/automations/passport-vaccine-reminder** (NO auth required): DryRun mode working perfectly. Returns {success: true, reminders: 4, errors: 0, dryRun: true, details: [4 items]}. Correctly identifies 4 pets with expired vaccines. Details include petId, petName, ownerEmail, expired/expiring counts. ✅ **POST /api/automations/passport-completion-reminder** (NO auth required): DryRun mode working perfectly. Returns {success: true, reminders: 27, errors: 0, dryRun: true, details: [27 items]}. Correctly identifies 27 pets with completion < 60%. Details include petId, petName, ownerEmail, completionPercent, suggestionsCount. Note: This endpoint takes ~20 seconds to process all 29 pets due to completion calculation complexity. ALL ENDPOINTS PRODUCTION-READY. No issues found."
+
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSPORT VACCINE REMINDER AUTOMATION FULLY OPERATIONAL: POST /api/automations/passport-vaccine-reminder successfully tested WITHOUT authentication (public automation endpoint). Accepts parameters: daysAhead (default 30), dryRun (boolean). Returns proper structure: {success: true, reminders: 4, errors: 0, dryRun: true, details: []}. Automation correctly identifies vaccines that are expired or expiring within specified days. Test results: Found 4 pets with expired vaccines (2 expired for Max, 1 expired for Luna, 1 expired for Oscar, 1 expired for Max). Details array includes: petId, petName, ownerEmail, expired count, expiring count, sent status. DryRun mode working correctly - no actual emails sent when dryRun: true. Automation logs to automation_logs collection. Email templates include vaccine table with status colors (red for expired, amber for expiring soon). Prevents duplicate reminders within 72 hours via lastReminderSent tracking. Ready for production cron job integration."
+
+  - task: "Passport Completion Reminder Automation"
+    implemented: true
+    working: true
+    file: "/app/app/api/automations/passport-completion-reminder/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSPORT COMPLETION REMINDER AUTOMATION FULLY FUNCTIONAL: POST /api/automations/passport-completion-reminder successfully tested WITHOUT authentication (public automation endpoint). Accepts parameters: minCompletionThreshold (default 60%), dryRun (boolean). Returns proper structure: {success: true, reminders: 27, errors: 0, dryRun: true, details: []}. Automation correctly calculates passport completion score based on 10 criteria: name, species, breed, microchip (4 points), emergency contacts (1 point), vaccinations (1 point), allergies/medications (2 points), QR generated (1 point), insurance (1 point). Test results: Found 27 pets with completion < 60% (ranging from 20% to 50% completion). Details array includes: petId, petName, ownerEmail, completionPercent, suggestionsCount, sent status. Personalized suggestions generated based on missing fields (microchip, emergency contacts, vaccines, allergies, QR, insurance). DryRun mode working correctly - no actual emails sent when dryRun: true. Prevents duplicate reminders within 7 days via passportReminderSent tracking. Email includes progress bar and actionable suggestions. Automation logs to automation_logs collection. Ready for production cron job integration. Note: Processing 29 pets takes ~20 seconds due to completion calculation complexity."
+
+
 metadata:
   created_by: "testing_agent"
-  version: "2.9"
-  test_sequence: 11
+  version: "3.0"
+  test_sequence: 12
   run_ui: false
 
 test_plan:
@@ -1606,7 +1646,7 @@ test_plan:
 
 agent_communication:
     - agent: "main"
-      message: "NEW APIs to test - VetBuddy Passport module. 1) POST /api/auth/login with demo@vetbuddy.it / VetBuddy2025!Secure to get auth token. 2) GET /api/passport/clinic/dashboard (with clinic auth token) - should return stats (totalPets, passportActive, passportIncomplete, qrGenerated) and lists (vaccinesExpiring, petsWithoutMicrochip). 3) Login as owner: POST /api/auth/login with proprietario.demo@vetbuddy.it / demo123. 4) GET /api/pets (with owner auth token) to get a petId. 5) GET /api/passport/{petId} (with owner auth token) - should return passport data with completion score, emergencyContacts, vaccinations, travelPacks, sharingLinks. 6) POST /api/passport/emergency-contacts with body {petId, name:'Test Contact', relationship:'Familiare', phone:'+39 333 1234567'} (owner auth). 7) POST /api/passport/vaccinations with body {petId, name:'Rabbia', date:'2025-06-01', nextDueDate:'2026-06-01', type:'vaccino'} (owner auth). 8) POST /api/passport/qr/generate with body {petId} (owner auth) - should return qrToken and qrPageUrl. 9) GET /api/passport/public/{qrToken} (NO auth) - should return publicData with pet info based on visibility settings. 10) POST /api/passport/sharing with body {petId, recipientName:'Pet Sitter Test', recipientRole:'pet_sitter'} (owner auth). 11) PUT /api/passport/{petId} with body {lostPetMode: true, lostPetZone:'Milano Centro', lostPetMessage:'Gatto smarrito'} (owner auth)."
+      message: "NEW APIs to test - Admin Passport Stats + Passport Automations. 1) POST /api/auth/login with admin@vetbuddy.it / Admin2025! to get admin token. 2) GET /api/admin/passport-stats (admin token) - should return { totalPets, passportActive, qrGenerated, activeShares, vaccinesExpiring[], petsWithoutMicrochip, petsWithoutEmergencyContact, petsWithoutVaccines, lostPetModeActive }. 3) POST /api/automations/passport-vaccine-reminder (NO auth needed) with body { daysAhead: 30, dryRun: true } - should return { success: true, reminders, errors, dryRun: true, details[] }. 4) POST /api/automations/passport-completion-reminder (NO auth needed) with body { minCompletionThreshold: 60, dryRun: true } - should return { success: true, reminders, errors, dryRun: true, details[] }."
     - agent: "testing"
       message: "✅ TESTING COMPLETE - ALL 10/10 TESTS PASSED: Successfully tested Automations Config + AI Assistant API. All endpoints working perfectly: GET/POST /api/automations/settings, POST /api/automations/config, GET /api/automations/log, POST /api/automations/simulate, POST /api/ai (summarize_visit, draft_message, translate_notes). MINOR FIX APPLIED: Added missing 'config' field to GET /api/automations/settings response in /app/app/api/automations/settings/route.js (line 144). This was the only issue found - all other endpoints were already working correctly. Backend APIs are production-ready."
     - agent: "testing"

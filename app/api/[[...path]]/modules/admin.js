@@ -371,6 +371,69 @@ export async function handleAdminGet(path, request) {
       }, { headers: corsHeaders });
     }
 
+    // ========== PASSPORT STATS ==========
+    if (path === 'admin/passport-stats') {
+      const user = verifyAdmin(request);
+      if (!user) return NextResponse.json({ error: 'Accesso negato' }, { status: 403, headers: corsHeaders });
+
+      const pets = await getCollection('pets');
+      const vaccinations = await getCollection('vaccinations');
+      const passports = await getCollection('pet_passports');
+      const emergencyContacts = await getCollection('pet_emergency_contacts');
+      const sharingLinks = await getCollection('pet_sharing_links');
+
+      const allPets = await pets.find({}).toArray();
+      const totalPets = allPets.length;
+
+      // Passport con QR
+      const passportDocs = await passports.find({ publicQrUrl: { $exists: true, $ne: null } }).toArray();
+      const qrGenerated = passportDocs.length;
+
+      // Passport attivi (almeno 1 vaccino o 1 contatto o QR)
+      const petsWithVaccines = await vaccinations.distinct('petId');
+      const petsWithContacts = await emergencyContacts.distinct('petId');
+      const petsWithQr = passportDocs.map(p => p.petId);
+      const activePetIds = new Set([...petsWithVaccines, ...petsWithContacts, ...petsWithQr]);
+      const passportActive = activePetIds.size;
+
+      // Condivisioni attive
+      const activeShares = await sharingLinks.countDocuments({ status: 'active' });
+
+      // Vaccini in scadenza (prossimi 30 giorni)
+      const now = new Date();
+      const thirtyDays = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+      const expiringVaccines = await vaccinations.find({
+        nextDueDate: { $gte: now.toISOString(), $lte: thirtyDays.toISOString() }
+      }).toArray();
+
+      // Arricchisci con nomi pet
+      const vaccinesExpiring = [];
+      for (const v of expiringVaccines.slice(0, 20)) {
+        const pet = allPets.find(p => p.id === v.petId);
+        vaccinesExpiring.push({ ...v, petName: pet?.name || 'N/A' });
+      }
+
+      // Stats incompleti
+      const petsWithoutMicrochip = allPets.filter(p => !p.microchip).length;
+      const petsWithoutEmergencyContact = totalPets - petsWithContacts.length;
+      const petsWithoutVaccines = totalPets - petsWithVaccines.length;
+
+      // Lost pet mode
+      const lostPetModeActive = allPets.filter(p => p.lostPetMode === true).length;
+
+      return NextResponse.json({
+        totalPets,
+        passportActive,
+        qrGenerated,
+        activeShares,
+        vaccinesExpiring,
+        petsWithoutMicrochip,
+        petsWithoutEmergencyContact,
+        petsWithoutVaccines,
+        lostPetModeActive
+      }, { headers: corsHeaders });
+    }
+
   return null;
 }
 

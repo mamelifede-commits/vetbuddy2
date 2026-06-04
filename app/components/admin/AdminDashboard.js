@@ -10,8 +10,8 @@ import {
   ChevronRight, ClipboardList, Clock, CreditCard, Dog, Edit3, 
   Eye, FileCheck, FileText, FlaskConical, Hash, LayoutDashboard, 
   Link2, LogOut, MapPin, Menu, Package, PawPrint, Phone, 
-  RefreshCw, Search, ShieldAlert, ShieldCheck, 
-  Star, Trash2, User, Users, X, Zap
+  RefreshCw, Search, Shield, ShieldAlert, ShieldCheck, 
+  Star, Trash2, User, Users, X, Zap, QrCode, Syringe, Share2
 } from 'lucide-react';
 import api from '@/app/lib/api';
 import { NewBrandLogo } from '@/app/components/shared/utils';
@@ -82,6 +82,7 @@ export default function AdminDashboard({ user, onLogout }) {
   const [labs, setLabs] = useState([]);
   const [labRequestsData, setLabRequestsData] = useState({ requests: [], stats: { total: 0, pending: 0, reportReady: 0, completed: 0 } });
   const [labStats, setLabStats] = useState(null);
+  const [passportStats, setPassportStats] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -121,6 +122,11 @@ export default function AdminDashboard({ user, onLogout }) {
       setLabs(labsData || []);
       setLabRequestsData(labReqData || { requests: [], stats: {} });
       setLabStats(labStatsData);
+      // Load passport stats
+      try {
+        const passportData = await api.get('admin/passport-stats');
+        setPassportStats(passportData);
+      } catch (e) { setPassportStats(null); }
       const clinics = (usersData || []).filter(u => u.role === 'clinic');
       const owners = (usersData || []).filter(u => u.role === 'owner');
       const labUsers = (usersData || []).filter(u => u.role === 'lab');
@@ -424,6 +430,7 @@ export default function AdminDashboard({ user, onLogout }) {
               <NavItem icon={PawPrint} label="Animali" value="pets" badge={stats.pets} />
               <NavItem icon={FileText} label="Documenti" value="documents" badge={stats.documents} />
               <NavItem icon={FlaskConical} label="Laboratori" value="labs" badge={pendingLabs.length || stats.labs} />
+              <NavItem icon={Shield} label="Passport" value="passport" />
             </nav>
             <Button variant="ghost" onClick={onLogout} className="mt-6 text-gray-600 w-full justify-start"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
           </div>
@@ -446,6 +453,7 @@ export default function AdminDashboard({ user, onLogout }) {
           <NavItem icon={PawPrint} label="Animali" value="pets" badge={stats.pets} />
           <NavItem icon={FileText} label="Documenti" value="documents" badge={stats.documents} />
           <NavItem icon={FlaskConical} label="Laboratori" value="labs" badge={pendingLabs.length > 0 ? pendingLabs.length : stats.labs} />
+          <NavItem icon={Shield} label="Passport" value="passport" />
         </nav>
         <Button variant="ghost" onClick={onLogout} className="mt-auto text-gray-600"><LogOut className="h-4 w-4 mr-2" />Esci</Button>
       </aside>
@@ -697,6 +705,149 @@ export default function AdminDashboard({ user, onLogout }) {
                     </tbody></table></div></CardContent></Card>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* ===== PASSPORT TAB ===== */}
+            {activeTab === 'passport' && (
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h1 className="text-2xl font-bold flex items-center gap-2">
+                      <Shield className="h-6 w-6 text-indigo-600" /> VetBuddy Passport
+                    </h1>
+                    <p className="text-sm text-gray-500 mt-1">Statistiche e automazioni del passaporto sanitario digitale</p>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={loadAllData}><RefreshCw className="h-4 w-4 mr-1" /> Aggiorna</Button>
+                </div>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  <StatCard icon={PawPrint} label="Totale Animali" value={passportStats?.totalPets || pets.length} color="text-indigo-500" bgColor="bg-indigo-50" />
+                  <StatCard icon={Shield} label="Passport Attivi" value={passportStats?.passportActive || 0} color="text-green-500" bgColor="bg-green-50" />
+                  <StatCard icon={QrCode} label="QR Generati" value={passportStats?.qrGenerated || 0} color="text-purple-500" bgColor="bg-purple-50" />
+                  <StatCard icon={Share2} label="Condivisioni" value={passportStats?.activeShares || 0} color="text-blue-500" bgColor="bg-blue-50" />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  {/* Vaccini in scadenza */}
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Syringe className="h-4 w-4 text-amber-500" /> Vaccini in Scadenza
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {(passportStats?.vaccinesExpiring || []).length === 0 ? (
+                        <p className="text-sm text-gray-500 text-center py-4">✅ Nessun vaccino in scadenza</p>
+                      ) : (
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {(passportStats?.vaccinesExpiring || []).slice(0, 10).map((v, i) => (
+                            <div key={i} className="flex items-center justify-between p-2 bg-amber-50 rounded-lg">
+                              <div>
+                                <p className="text-sm font-medium">{v.name}</p>
+                                <p className="text-xs text-gray-500">{v.petName || 'N/A'}</p>
+                              </div>
+                              <Badge className="bg-amber-100 text-amber-700 text-xs">
+                                {v.nextDueDate ? new Date(v.nextDueDate).toLocaleDateString('it-IT') : '-'}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Passport incompleti */}
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4 text-orange-500" /> Passport Incompleti
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between p-3 bg-indigo-50 rounded-lg">
+                          <span className="text-sm text-gray-700">Senza microchip</span>
+                          <Badge variant="outline" className="font-bold">{passportStats?.petsWithoutMicrochip || 0}</Badge>
+                        </div>
+                        <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                          <span className="text-sm text-gray-700">Senza contatti emergenza</span>
+                          <Badge variant="outline" className="font-bold">{passportStats?.petsWithoutEmergencyContact || 0}</Badge>
+                        </div>
+                        <div className="flex items-center justify-between p-3 bg-amber-50 rounded-lg">
+                          <span className="text-sm text-gray-700">Senza vaccini registrati</span>
+                          <Badge variant="outline" className="font-bold">{passportStats?.petsWithoutVaccines || 0}</Badge>
+                        </div>
+                        <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                          <span className="text-sm text-gray-700">Lost Pet Mode attivo</span>
+                          <Badge variant="outline" className="font-bold text-red-600">{passportStats?.lostPetModeActive || 0}</Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Automazioni Passport */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Zap className="h-4 w-4 text-yellow-500" /> Automazioni Email Passport
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="border rounded-xl p-4 hover:shadow-sm transition">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="h-10 w-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                            <Syringe className="h-5 w-5 text-amber-600" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-sm">Promemoria Vaccini</p>
+                            <p className="text-xs text-gray-500">Invia reminder per vaccini in scadenza/scaduti</p>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="outline" className="w-full mt-2" onClick={async () => {
+                          try {
+                            const res = await fetch('/api/automations/passport-vaccine-reminder', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${api.getToken()}` },
+                              body: JSON.stringify({ daysAhead: 30, dryRun: false })
+                            });
+                            const data = await res.json();
+                            alert(`✅ Inviate ${data.reminders} email di promemoria vaccini. Errori: ${data.errors || 0}`);
+                          } catch (e) { alert('❌ Errore: ' + e.message); }
+                        }}>
+                          Esegui Promemoria Vaccini
+                        </Button>
+                      </div>
+                      <div className="border rounded-xl p-4 hover:shadow-sm transition">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="h-10 w-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <Shield className="h-5 w-5 text-indigo-600" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-sm">Completamento Passport</p>
+                            <p className="text-xs text-gray-500">Invia reminder per passport incompleti (&lt;60%)</p>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="outline" className="w-full mt-2" onClick={async () => {
+                          try {
+                            const res = await fetch('/api/automations/passport-completion-reminder', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${api.getToken()}` },
+                              body: JSON.stringify({ minCompletionThreshold: 60, dryRun: false })
+                            });
+                            const data = await res.json();
+                            alert(`✅ Inviate ${data.reminders} email di completamento Passport. Errori: ${data.errors || 0}`);
+                          } catch (e) { alert('❌ Errore: ' + e.message); }
+                        }}>
+                          Esegui Promemoria Completamento
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
           </>
