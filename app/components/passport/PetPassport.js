@@ -10,8 +10,14 @@ import {
   Shield, QrCode, FileText, Syringe, Plane, Share2, AlertTriangle, Heart,
   Clock, Plus, Download, Copy, Phone, Mail, MapPin, Eye, EyeOff, Trash2,
   CheckCircle, XCircle, Calendar, PawPrint, RefreshCw, ExternalLink, Send,
-  Edit, ChevronRight, Globe, Lock, Loader2, X
+  Edit, ChevronRight, Globe, Lock, Loader2, X, Brain
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const PassportAIAssistant = dynamic(() => import('./PassportAIAssistant'), { 
+  ssr: false,
+  loading: () => <div className="flex items-center justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-purple-500 mr-2" /><span className="text-gray-500">Caricamento Assistente AI...</span></div>
+});
 
 const api = {
   get: async (url, token) => {
@@ -145,6 +151,7 @@ export default function PetPassport({ pet, token, userRole }) {
           <TabsTrigger value="condivisioni">🔗 Condivisioni</TabsTrigger>
           <TabsTrigger value="assicurazione">🛡️ Assicurazione</TabsTrigger>
           <TabsTrigger value="timeline">📅 Timeline</TabsTrigger>
+          <TabsTrigger value="assistente">🤖 Assistente</TabsTrigger>
         </TabsList>
 
         {/* ============================================================ */}
@@ -695,6 +702,13 @@ export default function PetPassport({ pet, token, userRole }) {
               })()}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* ============================================================ */}
+        {/* ASSISTENTE INTELLIGENTE */}
+        {/* ============================================================ */}
+        <TabsContent value="assistente">
+          <PassportAIAssistant pet={pet} passportData={passportData} token={token} />
         </TabsContent>
       </Tabs>
 

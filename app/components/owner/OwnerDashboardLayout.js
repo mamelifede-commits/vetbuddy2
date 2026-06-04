@@ -30,6 +30,11 @@ const FindClinic = dynamic(() => import('@/app/components/owner/FindClinic'), { 
 const InviteClinic = dynamic(() => import('@/app/components/owner/InviteClinic'), { ssr: false });
 const SubscriptionPlans = dynamic(() => import('@/app/components/shared/SubscriptionPlans'), { ssr: false });
 const OwnerPassportCards = dynamic(() => import('@/app/components/owner/OwnerPassportCards'), { ssr: false });
+const OwnerPets = dynamic(() => import('@/app/components/owner/OwnerPets'), { ssr: false });
+const OwnerInvoices = dynamic(() => import('@/app/components/owner/OwnerInvoices'), { ssr: false });
+const OwnerEvents = dynamic(() => import('@/app/components/owner/OwnerEvents'), { ssr: false });
+const OwnerProfile = dynamic(() => import('@/app/components/owner/OwnerProfile'), { ssr: false });
+const OwnerPrescriptions = dynamic(() => import('@/app/components/owner/OwnerPrescriptions'), { ssr: false });
 
 function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   // Leggi parametro tab dall'URL per navigazione diretta

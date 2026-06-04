@@ -558,7 +558,7 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
 
         {/* Passport */}
         <TabsContent value="passport">
-          <PetPassport pet={pet} token={typeof window !== 'undefined' ? localStorage.getItem('token') : null} userRole="owner" />
+          <PetPassport pet={pet} token={typeof window !== 'undefined' ? localStorage.getItem('vetbuddy_token') : null} userRole="owner" />
         </TabsContent>
 
         {/* Dati & Spese */}
