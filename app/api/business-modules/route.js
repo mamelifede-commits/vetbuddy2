@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCollection } from '../../[[...path]]/modules/db';
+import { getCollection } from '@/lib/db';
 import { v4 as uuidv4 } from 'uuid';
 
 const corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization' };

@@ -361,3 +361,4 @@ credentials.json
 *.pem
 *.key
 .credentials
+.next/cache/webpack/client-production/0.pack
