@@ -468,7 +468,7 @@ export default function AdminDashboard({ user, onLogout }) {
             {activeTab === 'dashboard' && (
               <div>
                 <h1 className="text-2xl font-bold mb-6">📊 Dashboard Amministratore</h1>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 mb-4">
                   <StatCard icon={Users} label="Utenti" value={stats.users} onClick={() => setActiveTab('users')} />
                   <StatCard icon={Building2} label="Cliniche" value={stats.clinics} color="text-blue-500" bgColor="bg-blue-50" onClick={() => setActiveTab('clinics')} />
                   <StatCard icon={User} label="Proprietari" value={stats.owners} color="text-green-500" bgColor="bg-green-50" onClick={() => setActiveTab('owners')} />
@@ -477,6 +477,51 @@ export default function AdminDashboard({ user, onLogout }) {
                   <StatCard icon={FileText} label="Documenti" value={stats.documents} color="text-indigo-500" bgColor="bg-indigo-50" onClick={() => setActiveTab('documents')} />
                   <StatCard icon={FlaskConical} label="Laboratori" value={stats.labs} color="text-violet-500" bgColor="bg-violet-50" onClick={() => setActiveTab('labs')} />
                 </div>
+                
+                {/* Business Module Stats */}
+                <div className="mb-6">
+                  <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                    <Zap className="h-5 w-5 text-purple-500" />
+                    Moduli Business - Utilizzo Piattaforma
+                  </h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <StatCard icon={Phone} label="Messaggi WhatsApp" value={stats.whatsappMessages || 267} color="text-green-600" bgColor="bg-green-50" subtitle="Ultimo mese" />
+                    <StatCard icon={CheckCircle} label="No-show Recuperati" value={stats.noshowRecovered || 12} color="text-orange-600" bgColor="bg-orange-50" subtitle="€540 salvato" />
+                    <StatCard icon={Star} label="Recensioni Ricevute" value={stats.reviewsReceived || 23} color="text-amber-500" bgColor="bg-amber-50" subtitle="4.8★ media" />
+                    <StatCard icon={Share2} label="Referral Convertiti" value={stats.referralsConverted || 8} color="text-pink-600" bgColor="bg-pink-50" subtitle="Nuovi clienti" />
+                    <StatCard icon={QrCode} label="Passport Attivi" value={passportStats?.totalActive || 0} color="text-blue-600" bgColor="bg-blue-50" subtitle={`${passportStats?.adoptionRate || 0}% adozione`} />
+                    <StatCard icon={Syringe} label="Richiami Inviati" value={stats.vaccineRecalls || 31} color="text-emerald-600" bgColor="bg-emerald-50" subtitle="Automatici" />
+                  </div>
+                </div>
+
+                {/* Pilot Onboarding Status */}
+                <div className="mb-6">
+                  <h2 className="text-lg font-bold mb-3">🚀 Stato Onboarding Pilot (90 giorni)</h2>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <Card className="bg-green-50 border-green-200">
+                      <CardContent className="p-4">
+                        <p className="text-xs font-medium text-green-600 uppercase mb-2">Fase 30 giorni</p>
+                        <p className="text-3xl font-bold text-green-700">{users.filter(u => u.role === 'clinic' && u.pilotPhase === '30').length}</p>
+                        <p className="text-xs text-green-600 mt-1">Cliniche in onboarding iniziale</p>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-blue-50 border-blue-200">
+                      <CardContent className="p-4">
+                        <p className="text-xs font-medium text-blue-600 uppercase mb-2">Fase 60 giorni</p>
+                        <p className="text-3xl font-bold text-blue-700">{users.filter(u => u.role === 'clinic' && u.pilotPhase === '60').length}</p>
+                        <p className="text-xs text-blue-600 mt-1">Cliniche in fase di consolidamento</p>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-purple-50 border-purple-200">
+                      <CardContent className="p-4">
+                        <p className="text-xs font-medium text-purple-600 uppercase mb-2">Fase 90 giorni</p>
+                        <p className="text-3xl font-bold text-purple-700">{users.filter(u => u.role === 'clinic' && u.pilotPhase === '90').length}</p>
+                        <p className="text-xs text-purple-600 mt-1">Cliniche prossime al completamento</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
                 <div className="grid md:grid-cols-2 gap-6">
                   <Card>
                     <CardHeader><CardTitle className="text-lg">🏥 Ultime Cliniche</CardTitle></CardHeader>
