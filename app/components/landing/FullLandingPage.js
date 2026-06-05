@@ -122,10 +122,10 @@ function FullLandingPage({ onLogin }) {
             <span className="text-coral-500">Clienti sempre seguiti.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-4 max-w-3xl mx-auto leading-relaxed">
-            VetBuddy automatizza prenotazioni, promemoria, comunicazioni, referti e ricontatti tra cliniche veterinarie, proprietari e laboratori.
+            VetBuddy automatizza prenotazioni, promemoria, comunicazioni, referti e ricontatti tra cliniche veterinarie, proprietari e laboratori. <strong>Con WhatsApp Business, AI Reception, recovery no-show e programmi referral.</strong>
           </p>
           <p className="text-base text-gray-500 mb-8 max-w-2xl mx-auto italic">
-            Non sostituisce il tuo gestionale: lavora accanto alla clinica per ridurre il caos operativo e aumentare le visite ricorrenti.
+            Non sostituisce il tuo gestionale: lavora accanto alla clinica per ridurre il caos operativo, aumentare le visite ricorrenti e massimizzare il valore di ogni cliente.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
             <Button size="lg" className="bg-coral-500 hover:bg-coral-600 text-white px-8 py-6 text-lg" onClick={() => scrollToSection('pilot')}>
@@ -167,11 +167,14 @@ function FullLandingPage({ onLogin }) {
           <div className="grid md:grid-cols-3 gap-6">
             {[
               { icon: Phone, title: 'Telefonate continue', desc: 'La segreteria passa ore al telefono per conferme, disdette, richieste info e promemoria. Tempo sottratto alla cura dei pazienti.' },
-              { icon: Calendar, title: 'Appuntamenti dimenticati', desc: 'I no-show costano alla clinica. Senza promemoria automatici, i proprietari dimenticano le visite e i richiami.' },
-              { icon: MessageCircle, title: 'WhatsApp e caos comunicativo', desc: 'Referti via WhatsApp, richieste su canali diversi, informazioni perse. Nessun ordine, nessuno storico.' },
+              { icon: Calendar, title: 'Appuntamenti dimenticati e no-show', desc: 'I no-show costano alla clinica. Senza promemoria automatici e liste d\'attesa, si perde fatturato ogni settimana.' },
+              { icon: MessageCircle, title: 'WhatsApp e caos comunicativo', desc: 'Messaggi WhatsApp sparsi, richieste su canali diversi, nessuna classificazione priorità. Caos totale e risposte lente.' },
               { icon: FlaskConical, title: 'Referti sparsi e laboratori disconnessi', desc: 'I risultati delle analisi arrivano per email, telefono o fax. Nessun flusso strutturato per gestirli e condividerli.' },
-              { icon: Repeat, title: 'Clienti che non tornano', desc: 'Senza ricontatti e richiami automatici, i clienti si dimenticano delle visite di controllo e dei vaccini.' },
-              { icon: BarChart3, title: 'Nessuna visibilità sui risultati', desc: 'La clinica non sa quante prenotazioni genera, quanto tempo risparmia o quanto fatturato perde per disorganizzazione.' },
+              { icon: Repeat, title: 'Clienti che non tornano', desc: 'Senza ricontatti, richiami automatici e programmi fedeltà, i clienti si dimenticano delle visite di controllo.' },
+              { icon: Star, title: 'Nessuna recensione o passaparola', desc: 'Non chiedi mai recensioni. I clienti soddisfatti non portano amici. Perdi opportunità di crescita organica.' },
+              { icon: BarChart3, title: 'Nessuna visibilità sui risultati', desc: 'La clinica non sa quante prenotazioni genera, quanto tempo risparmia, quanti no-show recupera o quanto fatturato perde.' },
+              { icon: Database, title: 'Dati sparsi e migrazione impossibile', desc: 'Dati su Excel, fogli di carta, software vecchi. Impossibile importare/esportare o passare a nuovi sistemi.' },
+              { icon: Rocket, title: 'Nessun supporto nell\'onboarding', desc: 'Software complessi senza guide. Nessuno ti segue nei primi 90 giorni per garantire il successo dell\'adozione.' },
             ].map((p, i) => (
               <Card key={i} className="border-red-100 hover:shadow-md transition">
                 <CardContent className="p-6">
@@ -199,11 +202,17 @@ function FullLandingPage({ onLogin }) {
             <div className="space-y-6">
               {[
                 { icon: CalendarCheck, text: 'Prenotazioni online automatiche', desc: 'I proprietari prenotano dal link diretto. Tu confermi con un click.' },
+                { icon: Phone, text: 'WhatsApp Business integrato', desc: 'Gestisci tutti i messaggi WhatsApp in un\'unica inbox con template e stati di lettura.' },
+                { icon: Bot, text: 'Reception AI per messaggi', desc: 'L\'AI classifica messaggi, suggerisce risposte e assegna priorità automaticamente.' },
                 { icon: Bell, text: 'Promemoria e ricontatti automatici', desc: 'Niente più telefonate per ricordare appuntamenti, vaccini e controlli.' },
+                { icon: CalendarX, text: 'No-Show Recovery attivo', desc: 'Lista d\'attesa, recupero slot, etichette rischio cliente. Ogni no-show diventa un\'opportunità.' },
+                { icon: Star, text: 'Recensioni e Referral automatici', desc: 'Richieste recensioni post-visita e codici "Porta un Amico" per crescita organica.' },
                 { icon: MessageCircle, text: 'Comunicazione centralizzata', desc: 'Un\'unica casella messaggi per richieste e notifiche. Ordine al posto del caos.' },
                 { icon: FileText, text: 'Documenti e referti digitali', desc: 'Referti, certificati e prescrizioni inviati automaticamente al proprietario.' },
                 { icon: FlaskConical, text: 'Rete laboratori integrata', desc: 'Richiedi analisi, ricevi referti, rivedi e condividi con il proprietario. Tutto in un flusso ordinato.' },
-                { icon: TrendingUp, text: 'Cruscotto del valore generato', desc: 'Ogni mese sai esattamente quanto tempo hai risparmiato e quante visite sono state generate.' },
+                { icon: Rocket, text: 'Pilot Success Kit 90 giorni', desc: 'Checklist onboarding, report automatici e risorse stampabili per garantire il successo.' },
+                { icon: Database, text: 'Import/Export dati CSV', desc: 'Importa proprietari, animali, appuntamenti. Esporta tutto quando serve. Zero lock-in.' },
+                { icon: TrendingUp, text: 'Cruscotto valore + ROI', desc: 'Ogni mese vedi tempo risparmiato, visite generate, no-show recuperati e ROI calcolato.' },
               ].map((s, i) => (
                 <div key={i} className="flex items-start gap-4">
                   <div className="h-10 w-10 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0"><s.icon className="h-5 w-5 text-green-600" /></div>
@@ -218,12 +227,16 @@ function FullLandingPage({ onLogin }) {
               <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Il risultato per la tua clinica</h3>
               <div className="space-y-4">
                 {[
-                  { label: 'Telefonate evitate (obiettivo)', value: 'Fino a 120/mese', icon: PhoneOff, color: 'text-red-500' },
-                  { label: 'Ore risparmiate (obiettivo)', value: 'Fino a 15h/mese', icon: Timer, color: 'text-blue-500' },
-                  { label: 'Prenotazioni online (obiettivo)', value: 'Fino a 45/mese', icon: CalendarCheck, color: 'text-green-500' },
-                  { label: 'No-show ridotti (obiettivo)', value: 'Obiettivo progetto pilota', icon: Shield, color: 'text-purple-500' },
+                  { label: 'Telefonate evitate (obiettivo)', value: 'Fino a 200/mese', icon: PhoneOff, color: 'text-red-500' },
+                  { label: 'Ore risparmiate (obiettivo)', value: 'Fino a 28h/mese', icon: Timer, color: 'text-blue-500' },
+                  { label: 'Prenotazioni online (obiettivo)', value: 'Fino a 87/mese', icon: CalendarCheck, color: 'text-green-500' },
+                  { label: 'No-show recuperati (obiettivo)', value: 'Fino a 12/mese', icon: Shield, color: 'text-purple-500' },
+                  { label: 'WhatsApp gestiti (obiettivo)', value: 'Fino a 267/mese', icon: Phone, color: 'text-green-600' },
+                  { label: 'Recensioni ricevute (obiettivo)', value: 'Fino a 23/mese', icon: Star, color: 'text-amber-500' },
+                  { label: 'Referral convertiti (obiettivo)', value: 'Fino a 8/mese', icon: Users, color: 'text-pink-600' },
                   { label: 'Clienti riattivati (obiettivo)', value: 'Fino a 20/mese', icon: Repeat, color: 'text-orange-500' },
-                  { label: 'Valore stimato generato (obiettivo)', value: 'Fino a €2.800/mese', icon: Euro, color: 'text-emerald-600' },
+                  { label: 'ROI stimato (obiettivo)', value: 'Fino a 340%', icon: TrendingUp, color: 'text-emerald-600' },
+                  { label: 'Valore stimato generato (obiettivo)', value: 'Fino a €4.350/mese', icon: Euro, color: 'text-emerald-700' },
                 ].map((r, i) => (
                   <div key={i} className="flex items-center justify-between bg-white rounded-lg p-3 border">
                     <div className="flex items-center gap-3">
@@ -652,10 +665,17 @@ function FullLandingPage({ onLogin }) {
           <Accordion type="single" collapsible className="space-y-3">
             {[
               { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale veterinario completo. È un copilota operativo che lavora accanto agli strumenti già usati dalla clinica per automatizzare prenotazioni, promemoria, comunicazioni, documenti e ricontatti. Puoi iniziare senza migrare tutti i dati o cambiare i flussi principali.' },
+              { q: 'Come funziona WhatsApp Business su VetBuddy?', a: 'VetBuddy integra WhatsApp Business per gestire tutti i messaggi dei clienti in un\'unica inbox. Puoi usare template pre-impostati, vedere stati di lettura e classificare messaggi. L\'integrazione è simulata per demo, pronta per connessione API reale.' },
+              { q: 'Cos\'è la Reception AI e cosa fa?', a: 'La Reception AI classifica automaticamente i messaggi WhatsApp per categoria (urgenza, appuntamento, richiesta referto, ecc.), assegna priorità e suggerisce risposte. Include un DISCLAIMER MEDICO chiaro: l\'AI non sostituisce la diagnosi veterinaria. Ogni decisione clinica resta del veterinario.' },
+              { q: 'Come funziona il No-Show Recovery?', a: 'Il modulo traccia appuntamenti non confermati, assegna etichette rischio cliente (affidabile/attenzione/alto rischio), gestisce una lista d\'attesa e recupera slot cancellati. Ogni no-show diventa un\'opportunità per riempire l\'agenda e recuperare fatturato.' },
+              { q: 'Cosa sono le Recensioni e i Referral?', a: 'VetBuddy invia automaticamente richieste di recensioni via WhatsApp o email 24h dopo ogni visita. Il programma "Porta un Amico" genera codici referral unici per ogni cliente: chi porta un amico riceve uno sconto, così come il nuovo cliente. Crescita organica automatizzata.' },
+              { q: 'Cos\'è il Pilot Success Kit?', a: 'È il programma di onboarding strutturato a 90 giorni con checklist guidata (30/60/90 giorni), report automatici ai milestone, risorse stampabili (QR code, flyer) e tracking KPI completo. Garantisce il successo dell\'adozione della piattaforma nella tua clinica.' },
+              { q: 'Posso importare ed esportare i miei dati?', a: 'Sì! VetBuddy include Import/Export CSV per proprietari, animali e appuntamenti. Importi con validazione automatica (ti avvisa di errori riga per riga) ed esporti quando vuoi. Zero lock-in: i tuoi dati restano sempre accessibili.' },
+              { q: 'Come viene calcolato il ROI?', a: 'Il cruscotto valore calcola automaticamente: ore risparmiate × costo staff, prenotazioni online × valore medio visita, no-show recuperati × valore slot, WhatsApp gestiti, recensioni ricevute, referral convertiti. Il ROI è: (Valore generato - Costo piattaforma) / Costo piattaforma × 100. Vedi tutto in tempo reale con grafici e breakdown dettagliato.' },
               { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali e responsabilità professionale.' },
               { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite restano gestiti dalla clinica. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
               { q: 'Quanto costa per i proprietari di animali?', a: 'Zero. L\'area proprietario è completamente gratuita per il proprietario dell\'animale. Nessun costo nascosto, mai.' },
-              { q: 'Cos\'è il Progetto pilota Milano?', a: 'Progetto pilota Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Include onboarding, configurazione e supporto. Nessun vincolo. Alla fine del progetto pilota ricevi un riepilogo con prenotazioni generate, telefonate evitate, promemoria inviati, tempo risparmiato e clienti riattivati.' },
+              { q: 'Cos\'è il Progetto pilota Milano?', a: 'Progetto pilota Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Include onboarding guidato con Pilot Success Kit, configurazione personalizzata e supporto dedicato. Nessun vincolo. Alla fine ricevi un report completo con prenotazioni generate, telefonate evitate, no-show recuperati, recensioni ricevute, referral convertiti, tempo risparmiato e ROI calcolato.' },
               { q: 'Posso annullare in qualsiasi momento?', a: 'Sì. L\'abbonamento è mensile, senza vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.' },
               { q: 'Devo cambiare tutti i miei strumenti?', a: 'No. VetBuddy può lavorare accanto agli strumenti già usati dalla clinica. Il progetto pilota serve proprio a misurare il valore senza stravolgere l\'organizzazione.' },
               { q: 'Come funziona la Rete laboratori?', a: 'La clinica richiede un\'analisi dalla scheda del paziente, il laboratorio la riceve, la processa e carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando renderlo visibile al proprietario.' },
@@ -664,7 +684,7 @@ function FullLandingPage({ onLogin }) {
               { q: 'VetBuddy Passport sostituisce la cartella clinica?', a: 'No. VetBuddy Passport organizza le informazioni essenziali dell\'animale per proprietario, clinica, emergenze e condivisioni. La cartella clinica resta gestita dalla clinica.' },
               { q: 'Il QR del Passport mostra dati sensibili?', a: 'No. Il proprietario decide cosa rendere visibile. I dati sensibili sono nascosti di default.' },
               { q: 'Lost Pet Mode pubblica il mio indirizzo?', a: 'No. Non mostra l\'indirizzo completo salvo scelta esplicita del proprietario. È consigliato mostrare solo città o zona.' },
-              { q: 'Serve una formazione tecnica per usarlo?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile via email e chat.' },
+              { q: 'Serve una formazione tecnica per usarlo?', a: 'No. VetBuddy è progettato per essere intuitivo. Il Pilot Success Kit include onboarding guidato a 90 giorni con checklist e supporto dedicato sempre disponibile via email e chat.' },
             ].map((faq, i) => (
               <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-lg border px-4">
                 <AccordionTrigger className="text-left font-semibold text-gray-900 py-4">{faq.q}</AccordionTrigger>
@@ -680,8 +700,8 @@ function FullLandingPage({ onLogin }) {
       {/* ============================================================ */}
       <section className="py-12 px-4 bg-gradient-to-r from-coral-500 to-orange-500">
         <div className="max-w-3xl mx-auto text-center text-white">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Pronto a ridurre le telefonate e aumentare le prenotazioni?</h2>
-          <p className="text-white/80 mb-6">Ogni mese sai esattamente quanto tempo hai risparmiato e quante visite sono state generate.</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Pronto a ridurre le telefonate, recuperare i no-show e far crescere la tua clinica?</h2>
+          <p className="text-white/80 mb-6">Ogni mese vedi esattamente quanto tempo hai risparmiato, quanti no-show hai recuperato, quante recensioni hai ricevuto e quanto ROI hai generato. Con WhatsApp Business, AI Reception e programmi referral integrati.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button size="lg" className="bg-white text-coral-600 hover:bg-gray-100 px-8" onClick={() => scrollToSection('pilot')}>Candidati al Progetto pilota</Button>
             <Button size="lg" className="bg-transparent border-2 border-white text-white hover:bg-white/10 px-8" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Registrati gratis</Button>
