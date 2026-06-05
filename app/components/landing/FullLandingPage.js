@@ -18,6 +18,8 @@ import {
   Star, Check, Euro, Receipt, Activity,
   MapPin, Stethoscope, Mail, Clock, Gift, Loader2, FlaskConical, BarChart3,
   ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer, Video, Link2,
+  Bot, CalendarX, Rocket, Database
+} from 'lucide-react';
   QrCode, Syringe, Plane, Share2, AlertTriangle
 } from 'lucide-react';
 
@@ -255,11 +257,17 @@ function FullLandingPage({ onLogin }) {
               { icon: Calendar, title: 'Prenotazioni e Agenda', desc: 'Prenotazioni online, link diretto, calendario multi-vista, richieste da confermare.', color: 'bg-blue-500', tag: null },
               { icon: Bell, title: 'Promemoria e Ricontatti', desc: 'Promemoria automatici: 24h prima, 1h prima, post-visita, post-chirurgia, richiami vaccini.', color: 'bg-amber-500', tag: null },
               { icon: MessageCircle, title: 'Casella messaggi condivisa', desc: 'Messaggi, richieste, notifiche laboratorio, ricontatti da gestire. Tutto in un posto.', color: 'bg-cyan-500', tag: null },
+              { icon: Phone, title: 'WhatsApp Business', desc: 'Gestisci messaggi WhatsApp, template automatici, inbox unificata. Risposte rapide ai clienti.', color: 'bg-green-500', tag: 'Premium' },
+              { icon: Bot, title: 'Reception AI', desc: 'Classificazione intelligente messaggi, priorità automatica e risposte suggerite dall\'AI. Con disclaimer medico.', color: 'bg-purple-500', tag: 'Premium' },
               { icon: FileText, title: 'Referti e Documenti', desc: 'Prescrizioni, certificati, referti PDF. Generazione, invio automatico e archivio.', color: 'bg-teal-500', tag: null },
               { icon: FlaskConical, title: 'Rete laboratori', desc: 'Richieste analisi, vetrina laboratori, caricamento referti, revisione e invio al proprietario.', color: 'bg-purple-500', tag: 'Vantaggio competitivo' },
+              { icon: CalendarX, title: 'No-Show Recovery', desc: 'Traccia appuntamenti non confermati, etichette rischio cliente, lista d\'attesa e recupero slot.', color: 'bg-orange-500', tag: 'Business' },
+              { icon: Star, title: 'Recensioni & Referral', desc: 'Richieste recensioni automatiche post-visita. Programma "Porta un Amico" con codici referral.', color: 'bg-amber-500', tag: 'Business' },
               { icon: PawPrint, title: 'Area Proprietario', desc: 'Il canale digitale con cui la clinica segue il cliente anche dopo la visita: prenotazioni, promemoria, referti, comunicazioni.', color: 'bg-pink-500', tag: null },
-              { icon: BarChart3, title: 'Cruscotto del valore', desc: 'Prenotazioni generate, telefonate evitate, ore risparmiate, clienti riattivati e riepiloghi economici.', color: 'bg-emerald-500', tag: 'Esclusivo' },
+              { icon: BarChart3, title: 'Cruscotto del valore', desc: 'Prenotazioni generate, telefonate evitate, ore risparmiate, clienti riattivati e riepiloghi economici con ROI.', color: 'bg-emerald-500', tag: 'Esclusivo' },
+              { icon: Rocket, title: 'Pilot Success Kit', desc: 'Checklist onboarding 90 giorni, report automatici 30/60/90, risorse stampabili e QR code.', color: 'bg-blue-600', tag: 'Pilot' },
               { icon: Receipt, title: 'Listino e Riepiloghi', desc: 'Listino servizi, ricevute operative, esportazioni e riepiloghi economici.', color: 'bg-orange-500', tag: null },
+              { icon: Database, title: 'Import / Export Dati', desc: 'Importa ed esporta dati di proprietari, animali e appuntamenti in formato CSV con validazione.', color: 'bg-slate-600', tag: 'Business' },
               { icon: Stethoscope, title: 'Assistente REV', desc: 'Preparazione bozze, archiviazione ricette, storico prescrizioni. L\'emissione ufficiale resta al veterinario.', color: 'bg-emerald-600', tag: null },
               { icon: Gift, title: 'Programma Fedeltà', desc: 'Sistema a punti configurabile dalla clinica, con premi o vantaggi definiti secondo le proprie regole commerciali.', color: 'bg-yellow-500', tag: null },
               { icon: Users, title: 'Schede Animale e Storico', desc: 'Informazioni principali di ogni animale, documenti, referti e storico visite consultabile.', color: 'bg-slate-500', tag: null },
@@ -486,7 +494,7 @@ function FullLandingPage({ onLogin }) {
                 <p className="text-xs text-gray-500 mb-4">Per cliniche piccole e medie</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-coral-600">€69</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <div className="space-y-2 text-sm flex-1">
-                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Passport completo', 'QR emergenza', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio'].map((f, i) => (
+                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Passport completo', 'QR emergenza', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio', 'WhatsApp Business', 'Reception AI base', 'No-Show Recovery', 'Import/Export CSV'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-500" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
@@ -499,9 +507,9 @@ function FullLandingPage({ onLogin }) {
               <CardContent className="p-6 flex flex-col flex-1">
                 <h3 className="font-bold text-gray-900 text-lg mb-1">Pro</h3>
                 <p className="text-xs text-gray-500 mb-4">Per cliniche strutturate</p>
-                <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€99</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€149</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
                 <div className="space-y-2 text-sm flex-1">
-                  {['Tutto Crescita più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Passport + QR brandizzato', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente'].map((f, i) => (
+                  {['Tutto Crescita più:', 'Fino a 15 utenti', 'Reception AI avanzata', 'Recensioni automatiche', 'Referral "Porta un Amico"', 'Pilot Success Kit 90gg', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Passport + QR brandizzato', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente', 'Grafico ROI'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className={`text-gray-700 ${i === 0 ? 'font-semibold' : ''}`}>{f}</span></div>
                   ))}
                 </div>
