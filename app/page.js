@@ -12,7 +12,8 @@ import {
   Calendar, FileText, PawPrint, Gift, Star, MessageCircle, Users, User, Inbox,
   Settings, Zap, Menu, X, LogOut, AlertCircle, Video, Receipt, BarChart3,
   Link2, ClipboardList, Stethoscope, FlaskConical, Globe, BookOpen,
-  LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield, Heart, Brain
+  LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield, Heart, Brain,
+  CalendarX, Phone, Bot, Rocket, Database
 } from 'lucide-react';
 
 // ==================== DYNAMIC IMPORTS ====================
@@ -59,6 +60,14 @@ const ClinicPrescriptions = dynamic(() => import('@/app/components/clinic/Clinic
 const ClinicREVSettings = dynamic(() => import('@/app/components/clinic/ClinicREVSettings'), { ssr: false });
 const ClinicHealthPlans = dynamic(() => import('@/app/components/clinic/ClinicHealthPlans'), { ssr: false });
 const ClinicAIAssistant = dynamic(() => import('@/app/components/clinic/ClinicAIAssistant'), { ssr: false });
+
+// Business Modules
+const WhatsAppBusiness = dynamic(() => import('@/app/components/clinic/WhatsAppBusiness'), { ssr: false });
+const NoShowRecovery = dynamic(() => import('@/app/components/clinic/NoShowRecovery'), { ssr: false });
+const ReceptionAI = dynamic(() => import('@/app/components/clinic/ReceptionAI'), { ssr: false });
+const ReputationReferral = dynamic(() => import('@/app/components/clinic/ReputationReferral'), { ssr: false });
+const PilotSuccessKit = dynamic(() => import('@/app/components/clinic/PilotSuccessKit'), { ssr: false });
+const ImportExport = dynamic(() => import('@/app/components/clinic/ImportExport'), { ssr: false });
 
 // Owner Dashboard
 const OwnerDashboard = dynamic(() => import('@/app/components/owner/OwnerDashboardLayout'), { ssr: false });
@@ -196,6 +205,13 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     { icon: Zap, label: 'Automazioni', value: 'automations' },
     { icon: Brain, label: 'AI Assistant', value: 'ai-assistant' },
     'divider',
+    { icon: Phone, label: 'WhatsApp Business', value: 'whatsapp-business' },
+    { icon: Bot, label: 'Reception AI', value: 'reception-ai' },
+    { icon: CalendarX, label: 'No-Show Recovery', value: 'noshow-recovery' },
+    { icon: Star, label: 'Crescita & Recensioni', value: 'reputation-referral' },
+    { icon: Rocket, label: 'Pilot Success Kit', value: 'pilot-kit' },
+    { icon: Database, label: 'Import / Export', value: 'import-export' },
+    'divider',
     { icon: MessageCircle, label: 'Feedback', value: 'feedback' },
     { icon: Settings, label: 'Impostazioni', value: 'settings' },
     { icon: BookOpen, label: 'Tutorial', value: 'tutorial' },
@@ -277,6 +293,12 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} onNavigate={setActiveTab} />}
         {activeTab === 'automations' && <ClinicAutomations user={user} onNavigate={setActiveTab} />}
         {activeTab === 'ai-assistant' && <ClinicAIAssistant user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'whatsapp-business' && <WhatsAppBusiness user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'reception-ai' && <ReceptionAI user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'noshow-recovery' && <NoShowRecovery user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'reputation-referral' && <ReputationReferral user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'pilot-kit' && <PilotSuccessKit user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'import-export' && <ImportExport user={user} onNavigate={setActiveTab} />}
         {activeTab === 'archive' && <ClinicArchive user={user} />}
         {activeTab === 'events' && <ClinicEvents user={user} />}
         {activeTab === 'settings' && <ClinicSettings user={user} onNavigate={setActiveTab} />}
