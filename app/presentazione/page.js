@@ -68,7 +68,8 @@ export default function BrochurePage() {
           <strong className="font-black">Clienti sempre seguiti.</strong>
         </p>
         <p className="text-base mb-8" style={{ color: '#ffffff', opacity: 0.85 }}>
-          Il copilota operativo che automatizza prenotazioni, promemoria,<br/>comunicazioni, referti e ricontatti per la tua clinica.
+          Il copilota operativo che automatizza prenotazioni, promemoria,<br/>comunicazioni, referti e ricontatti per la tua clinica.<br/>
+          <strong>Con WhatsApp Business, AI Reception, Recovery No-Show e Programmi Referral.</strong>
         </p>
 
         <div className="inline-flex items-center gap-3 px-7 py-3 rounded-2xl mb-4" style={{ background: 'rgba(255,255,255,0.25)', border: '2px solid rgba(255,255,255,0.4)' }}>
@@ -80,9 +81,9 @@ export default function BrochurePage() {
 
         <div className="flex gap-10">
           {[
-            { n: 'Fino a -70%', l: 'Telefonate (obiettivo del progetto pilota)' },
-            { n: 'Fino a +40%', l: 'Prenotazioni online (obiettivo del progetto pilota)' },
-            { n: 'Fino a 15h', l: 'Risparmiate/mese (obiettivo del progetto pilota)' },
+            { n: 'Fino a 200', l: 'Messaggi WhatsApp gestiti/mese' },
+            { n: 'Fino a 28h', l: 'Risparmiate/mese' },
+            { n: 'Fino a 340%', l: 'ROI stimato' },
           ].map((s, i) => (
             <div key={i} className="text-center">
               <div className="text-3xl font-black mb-1" style={{ color: '#ffffff' }}>{s.n}</div>
@@ -199,6 +200,151 @@ export default function BrochurePage() {
             title="Programma Fedeltà"
             desc="Sistema a punti configurabile dalla clinica, con premi o vantaggi definiti secondo le proprie regole commerciali. La clinica decide in autonomia regole, vantaggi e condizioni del programma."
           />
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3.5 — MODULI BUSINESS (WhatsApp, AI, No-Show, Referral)
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">Moduli Business per Crescita e Automazione</h2>
+        <p className="text-gray-500 text-sm mb-6">Funzionalità avanzate per massimizzare ROI, recuperare no-show e far crescere la clinica</p>
+
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="bg-white rounded-2xl p-6 border-2 border-green-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">📱</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900">WhatsApp Business</h3>
+                <span className="inline-block bg-purple-500 text-white text-[10px] px-2 py-0.5 rounded">Premium</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed mb-3">
+              Gestisci tutti i messaggi WhatsApp in un'unica inbox. Template pre-impostati, stati di lettura, classificazione automatica. Pronto per integrazione API reale.
+            </p>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <Check className="w-3 h-3 text-green-500" />
+              <span>Inbox unificata + 9 template attivi</span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🤖</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900">Reception AI</h3>
+                <span className="bg-purple-500 text-white text-[10px] inline-block px-2 py-0.5 rounded">Premium</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed mb-3">
+              Classificazione automatica messaggi, priorità (alta/media/bassa) e risposte suggerite dall'AI. <strong>Con disclaimer medico obbligatorio.</strong>
+            </p>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <Check className="w-3 h-3 text-purple-500" />
+              <span>94% accuracy + Auto-assign staff</span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-orange-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">📅</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900">No-Show Recovery</h3>
+                <span className="bg-orange-500 text-white text-[10px] inline-block px-2 py-0.5 rounded">Business</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed mb-3">
+              Traccia appuntamenti non confermati, etichette rischio cliente, lista d'attesa e recupero slot. Ogni no-show diventa un'opportunità.
+            </p>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <Check className="w-3 h-3 text-orange-500" />
+              <span>€540 recuperato/mese (media demo)</span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-amber-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">⭐</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900">Recensioni & Referral</h3>
+                <span className="bg-amber-500 text-white text-[10px] inline-block px-2 py-0.5 rounded">Business</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed mb-3">
+              Richieste recensioni automatiche post-visita. Programma "Porta un Amico" con codici referral unici per crescita organica.
+            </p>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <Check className="w-3 h-3 text-amber-500" />
+              <span>23 recensioni + 8 referral/mese</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl p-6 border border-gray-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🚀</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900">Pilot Success Kit</h3>
+                <span className="bg-blue-500 text-white text-[10px] inline-block px-2 py-0.5 rounded">Pilot 90gg</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed mb-2">
+              Checklist onboarding 90 giorni (30/60/90), report automatici ai milestone, risorse stampabili (QR, flyer) e tracking KPI completo.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border border-gray-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">💾</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900">Import/Export CSV</h3>
+                <span className="bg-slate-500 text-white text-[10px] inline-block px-2 py-0.5 rounded">Business</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed mb-2">
+              Import/Export dati (proprietari, animali, appuntamenti) con validazione automatica. Zero lock-in: i tuoi dati sempre accessibili.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border-2 border-emerald-200">
+          <h4 className="font-black text-gray-900 mb-3">📊 Dashboard ROI in Tempo Reale</h4>
+          <div className="grid grid-cols-5 gap-4 text-center">
+            <div>
+              <div className="text-2xl font-black text-emerald-600">267</div>
+              <p className="text-[10px] text-gray-600">WhatsApp/mese</p>
+            </div>
+            <div>
+              <div className="text-2xl font-black text-blue-600">28h</div>
+              <p className="text-[10px] text-gray-600">Ore risparmiate</p>
+            </div>
+            <div>
+              <div className="text-2xl font-black text-orange-600">12</div>
+              <p className="text-[10px] text-gray-600">No-show recuperati</p>
+            </div>
+            <div>
+              <div className="text-2xl font-black text-amber-600">23</div>
+              <p className="text-[10px] text-gray-600">Recensioni ricevute</p>
+            </div>
+            <div>
+              <div className="text-2xl font-black text-emerald-700">340%</div>
+              <p className="text-[10px] text-gray-600">ROI stimato</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -711,16 +857,22 @@ export default function BrochurePage() {
         
         <div className="space-y-4">
           {[
-            { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un gestionale veterinario completo. È un copilota operativo che lavora accanto agli strumenti già usati dalla clinica per automatizzare prenotazioni, promemoria, comunicazioni, documenti e ricontatti.' },
-            { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali e responsabilità professionale.' },
-            { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite restano gestiti dalla clinica. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
+            { q: 'VetBuddy sostituisce il mio gestionale?', a: 'No. VetBuddy non è un copilota operativo che lavora accanto agli strumenti già usati dalla clinica per automatizzare prenotazioni, promemoria, comunicazioni, documenti e ricontatti.' },
+            { q: 'Come funziona WhatsApp Business su VetBuddy?', a: 'VetBuddy integra WhatsApp Business per gestire tutti i messaggi dei clienti in un\'unica inbox. Puoi usare template pre-impostati, vedere stati di lettura e classificare messaggi. L\'integrazione è pronta per connessione API reale.' },
+            { q: 'Cos\'è la Reception AI?', a: 'La Reception AI classifica automaticamente i messaggi WhatsApp per categoria (urgenza, appuntamento, referto), assegna priorità e suggerisce risposte. Include DISCLAIMER MEDICO: l\'AI non sostituisce la diagnosi veterinaria.' },
+            { q: 'Come funziona il No-Show Recovery?', a: 'Traccia appuntamenti non confermati, assegna etichette rischio cliente, gestisce lista d\'attesa e recupera slot cancellati. Ogni no-show diventa un\'opportunità per riempire l\'agenda.' },
+            { q: 'Cosa sono le Recensioni e i Referral?', a: 'VetBuddy invia richieste recensioni automatiche 24h dopo ogni visita. Il programma "Porta un Amico" genera codici referral unici: chi porta un amico riceve uno sconto, così come il nuovo cliente.' },
+            { q: 'Cos\'è il Pilot Success Kit?', a: 'Programma onboarding 90 giorni con checklist guidata (30/60/90 giorni), report automatici ai milestone, risorse stampabili (QR, flyer) e tracking KPI completo.' },
+            { q: 'Posso importare ed esportare i miei dati?', a: 'Sì! VetBuddy include Import/Export CSV per proprietari, animali e appuntamenti. Importi con validazione automatica ed esporti quando vuoi. Zero lock-in.' },
+            { q: 'Come viene calcolato il ROI?', a: 'Il cruscotto calcola: ore risparmiate × costo staff, prenotazioni online × valore visita, no-show recuperati × valore slot. ROI = (Valore generato - Costo) / Costo × 100. Vedi tutto in tempo reale.' },
+            { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta preparazione, gestione e archiviazione. L\'emissione resta al veterinario abilitato con proprie credenziali.' },
+            { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite restano gestiti dalla clinica. VetBuddy incassa solo l\'abbonamento piattaforma.' },
             { q: 'Il proprietario paga VetBuddy?', a: 'No. L\'area proprietario è gratuita per il proprietario dell\'animale.' },
-            { q: 'Posso annullare l\'abbonamento?', a: 'Sì. L\'abbonamento è mensile, senza vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.' },
-            { q: 'I dati e i referti sono visibili automaticamente al proprietario?', a: 'No. La clinica mantiene il controllo sui documenti e decide quali informazioni rendere visibili al proprietario tramite area riservata.' },
-            { q: 'Cos\'è il VetBuddy Passport?', a: 'È il passaporto sanitario digitale dell\'animale. Raccoglie vaccini, allergie, farmaci, contatti di emergenza e genera un QR stampabile per situazioni di emergenza o smarrimento. Il proprietario può condividerlo temporaneamente con pet sitter e familiari.' },
-            { q: 'VetBuddy Passport sostituisce la cartella clinica?', a: 'No. VetBuddy Passport organizza le informazioni essenziali dell\'animale per proprietario, clinica, emergenze e condivisioni. La cartella clinica resta gestita dalla clinica.' },
-            { q: 'VetBuddy Passport fornisce diagnosi?', a: 'No. VetBuddy Passport aiuta a organizzare dati, documenti e promemoria. Non sostituisce diagnosi, prescrizioni o valutazioni del veterinario.' },
-            { q: 'Serve una formazione tecnica?', a: 'No. VetBuddy è progettato per essere intuitivo. L\'onboarding è incluso e il supporto è sempre disponibile.' },
+            { q: 'Posso annullare l\'abbonamento?', a: 'Sì. Abbonamento mensile, senza vincolo annuale. Puoi annullare prima del rinnovo.' },
+            { q: 'I dati sono visibili automaticamente al proprietario?', a: 'No. La clinica mantiene controllo sui documenti e decide cosa rendere visibile.' },
+            { q: 'Cos\'è il VetBuddy Passport?', a: 'Passaporto sanitario digitale: vaccini, allergie, farmaci, contatti emergenza, QR stampabile per emergenze. Condivisibile temporaneamente con pet sitter.' },
+            { q: 'Passport sostituisce la cartella clinica?', a: 'No. Passport organizza info essenziali per proprietario, clinica, emergenze. La cartella resta gestita dalla clinica.' },
+            { q: 'Serve formazione tecnica?', a: 'No. Intuitivo. Il Pilot Success Kit include onboarding guidato 90 giorni con supporto dedicato.' },
           ].map((item, i) => (
             <div key={i} className="pb-3 border-b border-gray-100 last:border-0">
               <p className="font-semibold text-gray-900 text-sm mb-1">{item.q}</p>
