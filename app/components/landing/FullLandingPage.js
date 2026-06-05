@@ -18,9 +18,7 @@ import {
   Star, Check, Euro, Receipt, Activity,
   MapPin, Stethoscope, Mail, Clock, Gift, Loader2, FlaskConical, BarChart3,
   ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer, Video, Link2,
-  Bot, CalendarX, Rocket, Database
-} from 'lucide-react';
-  QrCode, Syringe, Plane, Share2, AlertTriangle
+  Bot, CalendarX, Rocket, Database, QrCode, Syringe, Plane, Share2, AlertTriangle
 } from 'lucide-react';
 
 function FullLandingPage({ onLogin }) {
