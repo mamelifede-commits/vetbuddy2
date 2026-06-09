@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertCircle, AlertTriangle, BarChart3, Bell, Building2, Calendar, Check, CheckCircle, Euro, FileCheck, FileText, Gift, Heart, History, Info, Lock, Mail, MessageCircle, PawPrint, RefreshCw, Scissors, Settings2, Shield, Star, Stethoscope, Syringe, Ticket, Timer, TrendingUp, Users, Weight, Zap } from 'lucide-react';
+import { AlertCircle, AlertTriangle, BarChart3, Bell, Building2, Calendar, Check, CheckCircle, Euro, FileCheck, FileText, Gift, Heart, History, Info, Lock, Mail, MessageCircle, PawPrint, RefreshCw, Scissors, Settings2, Shield, Star, Stethoscope, Syringe, Ticket, Timer, TrendingUp, Users, Weight, Zap, Send, Eye } from 'lucide-react';
 import api from '@/app/lib/api';
 import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
@@ -419,6 +419,190 @@ function ClinicAutomations({ user, onNavigate }) {
             </CardContent>
           </Card>
         </div>
+      )}
+
+      {/* ========== CAMPAGNE MIRATE (NUOVO - PHASE 2) ========== */}
+      {!automationLoading && (
+        <Card className="border-coral-300 bg-gradient-to-br from-coral-50 to-orange-50">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-xl flex items-center gap-2">
+              <MessageCircle className="h-6 w-6 text-coral-500" /> Campagne Mirate
+              <Badge className="bg-purple-100 text-purple-700 text-xs">✨ Nuovo</Badge>
+            </CardTitle>
+            <CardDescription>
+              Crea campagne di marketing mirate per coinvolgere i tuoi clienti su temi specifici (dentale, vaccini, sterilizzazione, prevenzione)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {/* Campagna Dentale */}
+              <Card className="border-blue-300 hover:shadow-md transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                      <span className="text-2xl">🦷</span>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-blue-900">Campagna Igiene Dentale</h4>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Invia promemoria per pulizia denti e controlli dentali ai proprietari di pet con più di 3 anni. 
+                        <span className="text-blue-600 font-medium"> Target: Pet 3+ anni senza visita dentale negli ultimi 12 mesi.</span>
+                      </p>
+                      <div className="flex items-center gap-2 mt-3">
+                        <Badge variant="outline" className="text-xs">📧 Email</Badge>
+                        <Badge variant="outline" className="text-xs">💬 WhatsApp (demo)</Badge>
+                        <Badge className="bg-blue-100 text-blue-700 text-xs">~120 clienti target</Badge>
+                      </div>
+                      <div className="flex gap-2 mt-3">
+                        <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
+                          <Send className="h-3 w-3 mr-1" /> Lancia Campagna
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Eye className="h-3 w-3 mr-1" /> Anteprima
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Campagna Vaccini */}
+              <Card className="border-purple-300 hover:shadow-md transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center shrink-0">
+                      <Syringe className="h-6 w-6 text-purple-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-purple-900">Campagna Richiami Vaccini</h4>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Contatta proprietari con vaccini in scadenza nei prossimi 30 giorni per confermare appuntamento.
+                        <span className="text-purple-600 font-medium"> Target: Vaccini scadenza entro 30gg.</span>
+                      </p>
+                      <div className="flex items-center gap-2 mt-3">
+                        <Badge variant="outline" className="text-xs">📧 Email</Badge>
+                        <Badge variant="outline" className="text-xs">💬 WhatsApp (demo)</Badge>
+                        <Badge className="bg-purple-100 text-purple-700 text-xs">~85 clienti target</Badge>
+                      </div>
+                      <div className="flex gap-2 mt-3">
+                        <Button size="sm" className="bg-purple-500 hover:bg-purple-600 text-white">
+                          <Send className="h-3 w-3 mr-1" /> Lancia Campagna
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Eye className="h-3 w-3 mr-1" /> Anteprima
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Campagna Sterilizzazione */}
+              <Card className="border-pink-300 hover:shadow-md transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 bg-pink-100 rounded-full flex items-center justify-center shrink-0">
+                      <span className="text-2xl">✂️</span>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-pink-900">Campagna Sterilizzazione</h4>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Offri consulenza gratuita su sterilizzazione per cuccioli tra 6-12 mesi non ancora sterilizzati.
+                        <span className="text-pink-600 font-medium"> Target: Cuccioli 6-12 mesi, non sterilizzati.</span>
+                      </p>
+                      <div className="flex items-center gap-2 mt-3">
+                        <Badge variant="outline" className="text-xs">📧 Email</Badge>
+                        <Badge variant="outline" className="text-xs">💬 WhatsApp (demo)</Badge>
+                        <Badge className="bg-pink-100 text-pink-700 text-xs">~42 clienti target</Badge>
+                      </div>
+                      <div className="flex gap-2 mt-3">
+                        <Button size="sm" className="bg-pink-500 hover:bg-pink-600 text-white">
+                          <Send className="h-3 w-3 mr-1" /> Lancia Campagna
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Eye className="h-3 w-3 mr-1" /> Anteprima
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Campagna Antiparassitari */}
+              <Card className="border-green-300 hover:shadow-md transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+                      <Shield className="h-6 w-6 text-green-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-green-900">Campagna Antiparassitari Stagionale</h4>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Promemoria stagionale (primavera/estate) per antiparassitari e protezione da zecche/pulci.
+                        <span className="text-green-600 font-medium"> Target: Tutti i clienti attivi.</span>
+                      </p>
+                      <div className="flex items-center gap-2 mt-3">
+                        <Badge variant="outline" className="text-xs">📧 Email</Badge>
+                        <Badge variant="outline" className="text-xs">💬 WhatsApp (demo)</Badge>
+                        <Badge className="bg-green-100 text-green-700 text-xs">~380 clienti target</Badge>
+                      </div>
+                      <div className="flex gap-2 mt-3">
+                        <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white">
+                          <Send className="h-3 w-3 mr-1" /> Lancia Campagna
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Eye className="h-3 w-3 mr-1" /> Anteprima
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Campagna Check-up Senior */}
+              <Card className="border-amber-300 hover:shadow-md transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 bg-amber-100 rounded-full flex items-center justify-center shrink-0">
+                      <Stethoscope className="h-6 w-6 text-amber-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-amber-900">Campagna Check-up Pet Senior</h4>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Invita proprietari di pet over 7 anni a controlli preventivi e esami del sangue.
+                        <span className="text-amber-600 font-medium"> Target: Pet 7+ anni senza check-up negli ultimi 12 mesi.</span>
+                      </p>
+                      <div className="flex items-center gap-2 mt-3">
+                        <Badge variant="outline" className="text-xs">📧 Email</Badge>
+                        <Badge variant="outline" className="text-xs">💬 WhatsApp (demo)</Badge>
+                        <Badge className="bg-amber-100 text-amber-700 text-xs">~95 clienti target</Badge>
+                      </div>
+                      <div className="flex gap-2 mt-3">
+                        <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-white">
+                          <Send className="h-3 w-3 mr-1" /> Lancia Campagna
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Eye className="h-3 w-3 mr-1" /> Anteprima
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Info box */}
+              <div className="mt-6 bg-purple-50 border border-purple-200 rounded-lg p-4">
+                <p className="text-sm text-purple-800 flex items-start gap-2">
+                  <MessageCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                  <span>
+                    <strong>Campagne Smart:</strong> VetBuddy analizza automaticamente il tuo database clienti e identifica i target più rilevanti per ogni campagna. 
+                    I messaggi sono personalizzati con nome pet/cliente. Le campagne WhatsApp sono simulate in modalità demo.
+                  </span>
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Cronologia Esecuzioni */}

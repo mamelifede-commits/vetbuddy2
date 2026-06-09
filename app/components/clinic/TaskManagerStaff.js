@@ -55,12 +55,12 @@ export default function TaskManagerStaff({ user, onNavigate }) {
   };
 
   const getPriorityBadge = (priority) => {
-    const map = {
+    const priorityMap = {
       alta: { label: 'Alta', cls: 'bg-red-500 text-white', icon: <Flag className="h-3 w-3" /> },
       media: { label: 'Media', cls: 'bg-amber-500 text-white', icon: <Flag className="h-3 w-3" /> },
       bassa: { label: 'Bassa', cls: 'bg-green-500 text-white', icon: <Flag className="h-3 w-3" /> },
     };
-    const p = map[priority] || map.media;
+    const p = priorityMap[priority] || priorityMap.media;
     return <Badge className={p.cls}>{p.icon} {p.label}</Badge>;
   };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,8 +11,27 @@ import { Label } from '@/components/ui/label';
 import BackToDashboard from '@/app/components/shared/BackToDashboard';
 import api from '@/app/lib/api';
 import {
-  User, Phone, Mail, PawPrint, Search, Plus, Eye, ChevronRight, UserPlus, Calendar
+  User, Phone, Mail, PawPrint, Search, Plus, Eye, ChevronRight, UserPlus, Calendar,
+  Dog, Cat, MapPin, MessageCircle, TrendingUp, AlertTriangle, Star, Award, Target, Euro
 } from 'lucide-react';
+
+// Mini CRM: Etichette e scoring clienti
+const CLIENT_LABELS = {
+  active: { label: 'Attivo', color: 'bg-green-100 text-green-700', icon: '✓' },
+  highrisk: { label: 'Alto Rischio', color: 'bg-red-100 text-red-700', icon: '⚠️' },
+  promoter: { label: 'Promoter', color: 'bg-purple-100 text-purple-700', icon: '⭐' },
+  vip: { label: 'VIP', color: 'bg-amber-100 text-amber-700', icon: '👑' },
+  inactive: { label: 'Inattivo', color: 'bg-gray-100 text-gray-600', icon: '○' },
+};
+
+// Funzione per calcolare il punteggio relazione (demo)
+const calculateRelationshipScore = (owner) => {
+  // Demo: score basato su visite recenti, pagamenti, recensioni
+  const baseScore = 50;
+  const visitBonus = Math.min((owner.totalVisits || 0) * 5, 30);
+  const spendingBonus = Math.min((owner.lifetimeValue || 0) / 100, 20);
+  return Math.min(baseScore + visitBonus + spendingBonus, 100);
+};
 
 function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet, initialOwner, onClearInitialOwner }) {
   const [showDialog, setShowDialog] = useState(false);
@@ -20,6 +39,18 @@ function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet, ini
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [labelFilter, setLabelFilter] = useState('all');
+  
+  // Demo data: Aggiungi etichette e metriche CRM ai proprietari (memoized)
+  const enrichedOwners = useMemo(() => {
+    return owners.map((owner, index) => ({
+      ...owner,
+      label: owner.label || (['active', 'promoter', 'highrisk', 'vip', 'inactive'][index % 5]),
+      totalVisits: owner.totalVisits || (index * 3 + 5),
+      lifetimeValue: owner.lifetimeValue || (index * 300 + 500),
+      lastVisit: owner.lastVisit || new Date(Date.now() - (index * 10 + 5) * 86400000).toISOString(),
+    }));
+  }, [owners]);
   
   // Apri automaticamente il proprietario se viene passato da un altro componente
   useEffect(() => {
@@ -36,12 +67,16 @@ function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet, ini
     setShowDetailDialog(true);
   };
   
-  const getOwnerPets = (ownerId) => {
+  const getOwnerPets = useCallback((ownerId) => {
     return pets.filter(p => p.ownerId === ownerId);
-  };
+  }, [pets]);
   
-  // Filtra i proprietari per la ricerca
-  const filteredOwners = owners.filter(owner => {
+  // Filtra i proprietari per la ricerca E per etichetta
+  const filteredOwners = enrichedOwners.filter(owner => {
+    // Filtro etichetta
+    if (labelFilter !== 'all' && owner.label !== labelFilter) return false;
+    
+    // Filtro ricerca
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
     const ownerPets = getOwnerPets(owner.id);
@@ -83,6 +118,43 @@ function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet, ini
         </Dialog>
       </div>
       
+      {/* ========== MINI CRM: Filtri Etichette (NUOVO - PHASE 2) ========== */}
+      <Card className="mb-6 border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Target className="h-5 w-5 text-purple-600" />
+              <h3 className="font-semibold text-purple-900">Mini CRM - Segmentazione Clienti</h3>
+              <Badge className="bg-purple-100 text-purple-700 text-xs">✨ Nuovo</Badge>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setLabelFilter('all')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                labelFilter === 'all' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Tutti ({enrichedOwners.length})
+            </button>
+            {Object.entries(CLIENT_LABELS).map(([key, conf]) => {
+              const count = enrichedOwners.filter(o => o.label === key).length;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setLabelFilter(labelFilter === key ? 'all' : key)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 ${
+                    labelFilter === key ? conf.color + ' ring-2 ring-purple-400' : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <span>{conf.icon}</span> {conf.label} ({count})
+                </button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+      
       {/* Barra di ricerca */}
       <div className="mb-6">
         <div className="relative">
@@ -96,7 +168,7 @@ function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet, ini
         </div>
         {searchQuery && (
           <p className="text-sm text-gray-500 mt-2">
-            {filteredOwners.length} risultat{filteredOwners.length === 1 ? 'o' : 'i'} per "{searchQuery}"
+            {filteredOwners.length} risultat{filteredOwners.length === 1 ? 'o' : 'i'} per &quot;{searchQuery}&quot;
           </p>
         )}
       </div>
@@ -106,19 +178,56 @@ function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet, ini
           <Card className="col-span-full"><CardContent className="p-12 text-center text-gray-500"><User className="h-12 w-12 mx-auto mb-4 text-gray-300" /><p>{searchQuery ? 'Nessun risultato trovato' : 'Nessun proprietario'}</p></CardContent></Card>
         ) : filteredOwners.map((owner) => {
           const ownerPets = getOwnerPets(owner.id);
+          const labelInfo = CLIENT_LABELS[owner.label] || CLIENT_LABELS.active;
+          const relationshipScore = calculateRelationshipScore(owner);
+          
           return (
-            <Card key={owner.id} className="cursor-pointer hover:shadow-lg hover:border-blue-300 transition-all group" onClick={() => openOwnerDetails(owner)}>
+            <Card key={owner.id} className="cursor-pointer hover:shadow-lg hover:border-purple-300 transition-all group" onClick={() => openOwnerDetails(owner)}>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors">
                     <User className="h-6 w-6 text-blue-600" />
                   </div>
-                  <div className="flex-1">
-                    <p className="font-medium">{owner.name}</p>
-                    <p className="text-sm text-gray-500">{owner.email}</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-medium truncate">{owner.name}</p>
+                      <Badge className={`${labelInfo.color} text-xs shrink-0`}>
+                        {labelInfo.icon} {labelInfo.label}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-gray-500 truncate">{owner.email}</p>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
+                  <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-purple-500 transition-colors" />
                 </div>
+                
+                {/* Mini CRM Metrics */}
+                <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 text-xs text-gray-500 mb-1">
+                      <TrendingUp className="h-3 w-3" />
+                      <span>Score</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-1">
+                      <div className={`h-2 w-2 rounded-full ${relationshipScore >= 70 ? 'bg-green-500' : relationshipScore >= 40 ? 'bg-amber-500' : 'bg-red-500'}`}></div>
+                      <p className="text-lg font-bold text-gray-700">{relationshipScore}</p>
+                    </div>
+                  </div>
+                  <div className="text-center border-l border-r">
+                    <div className="flex items-center justify-center gap-1 text-xs text-gray-500 mb-1">
+                      <Calendar className="h-3 w-3" />
+                      <span>Visite</span>
+                    </div>
+                    <p className="text-lg font-bold text-gray-700">{owner.totalVisits}</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 text-xs text-gray-500 mb-1">
+                      <Euro className="h-3 w-3" />
+                      <span>Valore</span>
+                    </div>
+                    <p className="text-lg font-bold text-gray-700">€{owner.lifetimeValue}</p>
+                  </div>
+                </div>
+                
                 {owner.phone && <p className="text-sm text-gray-500 mt-3 flex items-center gap-2"><Phone className="h-4 w-4" />{owner.phone}</p>}
                 {ownerPets.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-3">
@@ -144,13 +253,60 @@ function ClinicOwners({ owners, onRefresh, onNavigate, pets = [], onOpenPet, ini
               <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
                 <User className="h-5 w-5 text-blue-600" />
               </div>
-              {selectedOwner?.name || 'Dettagli Proprietario'}
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span>{selectedOwner?.name || 'Dettagli Proprietario'}</span>
+                  {selectedOwner && CLIENT_LABELS[selectedOwner.label] && (
+                    <Badge className={`${CLIENT_LABELS[selectedOwner.label].color} text-xs`}>
+                      {CLIENT_LABELS[selectedOwner.label].icon} {CLIENT_LABELS[selectedOwner.label].label}
+                    </Badge>
+                  )}
+                </div>
+              </div>
             </DialogTitle>
-            <DialogDescription>Scheda cliente</DialogDescription>
+            <DialogDescription>Scheda cliente completa</DialogDescription>
           </DialogHeader>
           
           {selectedOwner && (
             <div className="space-y-4 mt-4">
+              {/* Mini CRM Dashboard */}
+              <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Award className="h-4 w-4 text-purple-600" />
+                    <h4 className="font-semibold text-purple-900 text-sm">CRM Insights</h4>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-white rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <TrendingUp className="h-3 w-3 text-purple-600" />
+                        <p className="text-xs text-gray-600">Relazione</p>
+                      </div>
+                      <p className="text-2xl font-bold text-purple-700">{calculateRelationshipScore(selectedOwner)}</p>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+                        <div className={`h-1.5 rounded-full ${calculateRelationshipScore(selectedOwner) >= 70 ? 'bg-green-500' : calculateRelationshipScore(selectedOwner) >= 40 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${calculateRelationshipScore(selectedOwner)}%` }}></div>
+                      </div>
+                    </div>
+                    <div className="bg-white rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Calendar className="h-3 w-3 text-blue-600" />
+                        <p className="text-xs text-gray-600">Visite Tot.</p>
+                      </div>
+                      <p className="text-2xl font-bold text-blue-700">{selectedOwner.totalVisits || 0}</p>
+                      <p className="text-xs text-gray-500 mt-1">Ultima: {new Date(selectedOwner.lastVisit).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Euro className="h-3 w-3 text-green-600" />
+                        <p className="text-xs text-gray-600">Lifetime</p>
+                      </div>
+                      <p className="text-2xl font-bold text-green-700">€{selectedOwner.lifetimeValue || 0}</p>
+                      <p className="text-xs text-gray-500 mt-1">Medio: €{Math.round((selectedOwner.lifetimeValue || 0) / (selectedOwner.totalVisits || 1))}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
               {/* Contatti */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">

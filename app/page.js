@@ -13,7 +13,7 @@ import {
   Settings, Zap, Menu, X, LogOut, AlertCircle, Video, Receipt, BarChart3,
   Link2, ClipboardList, Stethoscope, FlaskConical, Globe, BookOpen,
   LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield, Heart, Brain,
-  CalendarX, Phone, Bot, Rocket, Database, PenTool, Activity, QrCode
+  CalendarX, Phone, Bot, Rocket, Database, PenTool, Activity, QrCode, CheckSquare, Home
 } from 'lucide-react';
 
 // ==================== DYNAMIC IMPORTS ====================
@@ -74,6 +74,10 @@ const ConsensiDigitali = dynamic(() => import('@/app/components/clinic/ConsensiD
 const QuestionariPreVisita = dynamic(() => import('@/app/components/clinic/QuestionariPreVisita'), { ssr: false });
 const FlowboardClinica = dynamic(() => import('@/app/components/clinic/FlowboardClinica'), { ssr: false });
 const CheckInDigitale = dynamic(() => import('@/app/components/clinic/CheckInDigitale'), { ssr: false });
+const TaskManagerStaff = dynamic(() => import('@/app/components/clinic/TaskManagerStaff'), { ssr: false });
+
+// FASE 2: Potenziamento Moduli Esistenti
+const DimissioniFollowUp = dynamic(() => import('@/app/components/clinic/DimissioniFollowUp'), { ssr: false });
 
 // Owner Dashboard
 const OwnerDashboard = dynamic(() => import('@/app/components/owner/OwnerDashboardLayout'), { ssr: false });
@@ -189,10 +193,12 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     { icon: Calendar, label: 'Agenda', value: 'agenda', badge: pendingAppointments },
     { icon: Activity, label: 'Flowboard', value: 'flowboard' },
     { icon: QrCode, label: 'Check-in Digitale', value: 'checkin' },
+    { icon: CheckSquare, label: 'Task Manager', value: 'tasks' },
     { icon: Inbox, label: 'Team Inbox', value: 'inbox', badge: unreadMessages },
     { icon: FileText, label: 'Documenti', value: 'documents' },
     { icon: PenTool, label: 'Consensi Digitali', value: 'consensi' },
     { icon: ClipboardList, label: 'Questionari Pre-Visita', value: 'questionari' },
+    { icon: Home, label: 'Dimissioni & Follow-up', value: 'dimissioni' },
     { icon: FolderArchive, label: 'Archivio Clinica', value: 'archive' },
     { icon: CalendarDays, label: 'Eventi', value: 'events' },
     { icon: Stethoscope, label: 'Servizi', value: 'services' },
@@ -285,10 +291,12 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'agenda' && <ClinicAgenda appointments={appointments} staff={staff} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'flowboard' && <FlowboardClinica user={user} onNavigate={setActiveTab} />}
         {activeTab === 'checkin' && <CheckInDigitale user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'tasks' && <TaskManagerStaff user={user} onNavigate={setActiveTab} />}
         {activeTab === 'inbox' && <ClinicInbox messages={messages} owners={owners} pets={pets} staff={staff} user={user} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'documents' && <ClinicDocuments documents={documents} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'consensi' && <ConsensiDigitali user={user} onNavigate={setActiveTab} />}
         {activeTab === 'questionari' && <QuestionariPreVisita user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'dimissioni' && <DimissioniFollowUp user={user} onNavigate={setActiveTab} pets={pets} owners={owners} />}
         {activeTab === 'services' && <ClinicServices onNavigate={setActiveTab} user={user} />}
         {activeTab === 'videoconsult' && <ClinicVideoConsult user={user} onNavigate={setActiveTab} />}
         {activeTab === 'patients' && <ClinicPatients pets={pets} owners={owners} onRefresh={loadData} onNavigate={setActiveTab} onOpenOwner={handleOpenOwnerFromPet} initialPet={selectedPetFromOwner} onClearInitialPet={() => setSelectedPetFromOwner(null)} />}
