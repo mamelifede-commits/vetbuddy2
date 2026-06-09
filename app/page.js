@@ -13,7 +13,7 @@ import {
   Settings, Zap, Menu, X, LogOut, AlertCircle, Video, Receipt, BarChart3,
   Link2, ClipboardList, Stethoscope, FlaskConical, Globe, BookOpen,
   LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield, Heart, Brain,
-  CalendarX, Phone, Bot, Rocket, Database
+  CalendarX, Phone, Bot, Rocket, Database, PenTool, Activity, QrCode
 } from 'lucide-react';
 
 // ==================== DYNAMIC IMPORTS ====================
@@ -68,6 +68,12 @@ const ReceptionAI = dynamic(() => import('@/app/components/clinic/ReceptionAI'),
 const ReputationReferral = dynamic(() => import('@/app/components/clinic/ReputationReferral'), { ssr: false });
 const PilotSuccessKit = dynamic(() => import('@/app/components/clinic/PilotSuccessKit'), { ssr: false });
 const ImportExport = dynamic(() => import('@/app/components/clinic/ImportExport'), { ssr: false });
+
+// FASE 1: Moduli Core Nuovi
+const ConsensiDigitali = dynamic(() => import('@/app/components/clinic/ConsensiDigitali'), { ssr: false });
+const QuestionariPreVisita = dynamic(() => import('@/app/components/clinic/QuestionariPreVisita'), { ssr: false });
+const FlowboardClinica = dynamic(() => import('@/app/components/clinic/FlowboardClinica'), { ssr: false });
+const CheckInDigitale = dynamic(() => import('@/app/components/clinic/CheckInDigitale'), { ssr: false });
 
 // Owner Dashboard
 const OwnerDashboard = dynamic(() => import('@/app/components/owner/OwnerDashboardLayout'), { ssr: false });
@@ -181,8 +187,12 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     { icon: LayoutDashboard, label: 'Dashboard', value: 'dashboard' },
     { icon: TrendingUp, label: 'Valore Generato', value: 'value-dashboard' },
     { icon: Calendar, label: 'Agenda', value: 'agenda', badge: pendingAppointments },
+    { icon: Activity, label: 'Flowboard', value: 'flowboard' },
+    { icon: QrCode, label: 'Check-in Digitale', value: 'checkin' },
     { icon: Inbox, label: 'Team Inbox', value: 'inbox', badge: unreadMessages },
     { icon: FileText, label: 'Documenti', value: 'documents' },
+    { icon: PenTool, label: 'Consensi Digitali', value: 'consensi' },
+    { icon: ClipboardList, label: 'Questionari Pre-Visita', value: 'questionari' },
     { icon: FolderArchive, label: 'Archivio Clinica', value: 'archive' },
     { icon: CalendarDays, label: 'Eventi', value: 'events' },
     { icon: Stethoscope, label: 'Servizi', value: 'services' },
@@ -273,8 +283,12 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
       <main className="flex-1 p-4 md:p-6 overflow-auto">
         {activeTab === 'dashboard' && <ClinicControlRoom appointments={appointments} documents={documents} messages={messages} owners={owners} pets={pets} rewards={rewards} setupProgress={setupProgress} onRefresh={loadData} onNavigate={setActiveTab} onOpenPet={handleOpenPetFromOwner} token={api.getToken()} />}
         {activeTab === 'agenda' && <ClinicAgenda appointments={appointments} staff={staff} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
+        {activeTab === 'flowboard' && <FlowboardClinica user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'checkin' && <CheckInDigitale user={user} onNavigate={setActiveTab} />}
         {activeTab === 'inbox' && <ClinicInbox messages={messages} owners={owners} pets={pets} staff={staff} user={user} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'documents' && <ClinicDocuments documents={documents} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
+        {activeTab === 'consensi' && <ConsensiDigitali user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'questionari' && <QuestionariPreVisita user={user} onNavigate={setActiveTab} />}
         {activeTab === 'services' && <ClinicServices onNavigate={setActiveTab} user={user} />}
         {activeTab === 'videoconsult' && <ClinicVideoConsult user={user} onNavigate={setActiveTab} />}
         {activeTab === 'patients' && <ClinicPatients pets={pets} owners={owners} onRefresh={loadData} onNavigate={setActiveTab} onOpenOwner={handleOpenOwnerFromPet} initialPet={selectedPetFromOwner} onClearInitialPet={() => setSelectedPetFromOwner(null)} />}
