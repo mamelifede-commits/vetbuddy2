@@ -9,12 +9,13 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Activity, Archive, BookOpen, CheckCircle, Clock, Download, Eye, FileText, Info, MoreHorizontal, Plus, Receipt, RefreshCw, Scissors, Search, Settings, Stethoscope, Syringe, X } from 'lucide-react';
+import { Activity, Archive, BookOpen, CheckCircle, Clock, Download, Eye, FileText, Info, MoreHorizontal, Plus, Receipt, RefreshCw, Scissors, Search, Settings, Stethoscope, Syringe, X, Send } from 'lucide-react';
 import api from '@/app/lib/api';
 
 function ClinicInvoicing({ user, owners = [], pets = [] }) {
-  const [activeTab, setActiveTab] = useState('invoices'); // invoices, services, settings
+  const [activeTab, setActiveTab] = useState('invoices'); // invoices, estimates, services, settings
   const [invoices, setInvoices] = useState([]);
+  const [estimates, setEstimates] = useState([]); // Preventivi
   const [services, setServices] = useState([]);
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
@@ -69,6 +70,16 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
       setInvoices(invoiceData?.invoices || []);
       setStats(invoiceData?.stats || {});
       setServices(serviceData?.services || []);
+      
+      // Demo data preventivi
+      const demoEstimates = [
+        { id: 'est1', number: 'PREV-2024-001', customerName: 'Maria Rossi', petName: 'Luna', total: 450, status: 'pending', items: [{ description: 'Sterilizzazione cagna', quantity: 1, unitPrice: 350 }, { description: 'Controllo post-operatorio', quantity: 1, unitPrice: 100 }], createdAt: new Date(Date.now() - 5 * 86400000).toISOString(), validUntil: new Date(Date.now() + 25 * 86400000).toISOString(), approvalLink: 'https://vetbuddy.it/approve/est1' },
+        { id: 'est2', number: 'PREV-2024-002', customerName: 'Paolo Bianchi', petName: 'Rex', total: 280, status: 'approved', items: [{ description: 'Pulizia dentale', quantity: 1, unitPrice: 250 }, { description: 'Anestesia', quantity: 1, unitPrice: 30 }], createdAt: new Date(Date.now() - 10 * 86400000).toISOString(), validUntil: new Date(Date.now() + 20 * 86400000).toISOString(), approvedAt: new Date(Date.now() - 3 * 86400000).toISOString(), approvalLink: 'https://vetbuddy.it/approve/est2' },
+        { id: 'est3', number: 'PREV-2024-003', customerName: 'Anna Verdi', petName: 'Micio', total: 650, status: 'pending', items: [{ description: 'Chirurgia rimozione calcoli', quantity: 1, unitPrice: 550 }, { description: 'Ricovero 2 giorni', quantity: 2, unitPrice: 50 }], createdAt: new Date(Date.now() - 2 * 86400000).toISOString(), validUntil: new Date(Date.now() + 28 * 86400000).toISOString(), approvalLink: 'https://vetbuddy.it/approve/est3' },
+        { id: 'est4', number: 'PREV-2024-004', customerName: 'Marco Neri', petName: 'Buddy', total: 120, status: 'rejected', items: [{ description: 'Visita ortopedica', quantity: 1, unitPrice: 80 }, { description: 'Radiografia zampa', quantity: 1, unitPrice: 40 }], createdAt: new Date(Date.now() - 15 * 86400000).toISOString(), validUntil: new Date(Date.now() + 15 * 86400000).toISOString(), rejectedAt: new Date(Date.now() - 13 * 86400000).toISOString(), approvalLink: 'https://vetbuddy.it/approve/est4' },
+        { id: 'est5', number: 'PREV-2024-005', customerName: 'Sara Colombo', petName: 'Birba', total: 890, status: 'converted', items: [{ description: 'Intervento frattura femore', quantity: 1, unitPrice: 800 }, { description: 'Materiali chirurgici', quantity: 1, unitPrice: 90 }], createdAt: new Date(Date.now() - 20 * 86400000).toISOString(), validUntil: new Date(Date.now() - 10 * 86400000).toISOString(), approvedAt: new Date(Date.now() - 18 * 86400000).toISOString(), convertedToInvoice: 'FATT-2024-089', approvalLink: 'https://vetbuddy.it/approve/est5' },
+      ];
+      setEstimates(demoEstimates);
     } catch (error) {
       console.error('Error loading invoicing data:', error);
     } finally {
@@ -268,6 +279,10 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
           <Receipt className="h-4 w-4 mr-2" />
           Fatture
         </Button>
+        <Button variant={activeTab === 'estimates' ? 'default' : 'ghost'} onClick={() => setActiveTab('estimates')}>
+          <FileText className="h-4 w-4 mr-2" />
+          Preventivi {estimates.filter(e => e.status === 'pending').length > 0 && <Badge className="ml-2 bg-amber-500">{estimates.filter(e => e.status === 'pending').length}</Badge>}
+        </Button>
         <Button variant={activeTab === 'services' ? 'default' : 'ghost'} onClick={() => setActiveTab('services')}>
           <Stethoscope className="h-4 w-4 mr-2" />
           Listino Prezzi
@@ -356,6 +371,124 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Estimates Tab */}
+      {activeTab === 'estimates' && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Preventivi Approvabili Online</h3>
+            <Button className="bg-purple-500 hover:bg-purple-600" onClick={() => alert('Crea nuovo preventivo (usa form fattura)')}>
+              <Plus className="h-4 w-4 mr-2" /> Nuovo Preventivo
+            </Button>
+          </div>
+          
+          {/* Stats preventivi */}
+          <div className="grid grid-cols-4 gap-4">
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="p-3 text-center">
+                <p className="text-xl font-bold text-blue-700">{estimates.filter(e => e.status === 'pending').length}</p>
+                <p className="text-xs text-blue-600">In attesa</p>
+              </CardContent>
+            </Card>
+            <Card className="bg-green-50 border-green-200">
+              <CardContent className="p-3 text-center">
+                <p className="text-xl font-bold text-green-700">{estimates.filter(e => e.status === 'approved').length}</p>
+                <p className="text-xs text-green-600">Approvati</p>
+              </CardContent>
+            </Card>
+            <Card className="bg-red-50 border-red-200">
+              <CardContent className="p-3 text-center">
+                <p className="text-xl font-bold text-red-700">{estimates.filter(e => e.status === 'rejected').length}</p>
+                <p className="text-xs text-red-600">Rifiutati</p>
+              </CardContent>
+            </Card>
+            <Card className="bg-purple-50 border-purple-200">
+              <CardContent className="p-3 text-center">
+                <p className="text-xl font-bold text-purple-700">{estimates.filter(e => e.status === 'converted').length}</p>
+                <p className="text-xs text-purple-600">Fatturati</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Lista preventivi */}
+          <div className="space-y-3">
+            {estimates.map(est => {
+              const statusMap = {
+                pending: { label: 'In attesa approvazione', cls: 'bg-amber-100 text-amber-700', icon: Clock },
+                approved: { label: 'Approvato', cls: 'bg-green-100 text-green-700', icon: CheckCircle },
+                rejected: { label: 'Rifiutato', cls: 'bg-red-100 text-red-700', icon: X },
+                converted: { label: 'Convertito in fattura', cls: 'bg-purple-100 text-purple-700', icon: Receipt },
+              };
+              const status = statusMap[est.status];
+              return (
+                <Card key={est.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold">{est.number}</h4>
+                          <Badge className={status.cls}>
+                            <status.icon className="h-3 w-3 mr-1" /> {status.label}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-1">{est.customerName} • {est.petName}</p>
+                        <p className="text-xs text-gray-500">Creato: {new Date(est.createdAt).toLocaleDateString('it-IT')} • Valido fino: {new Date(est.validUntil).toLocaleDateString('it-IT')}</p>
+                        <div className="mt-2">
+                          {est.items.map((item, i) => (
+                            <p key={i} className="text-xs text-gray-600">• {item.description} - €{item.unitPrice}</p>
+                          ))}
+                        </div>
+                        {est.status === 'pending' && (
+                          <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-sm">
+                            <strong>Link approvazione:</strong> <a href={est.approvalLink} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">{est.approvalLink}</a>
+                          </div>
+                        )}
+                        {est.status === 'approved' && (
+                          <p className="text-xs text-green-600 mt-2">✓ Approvato il {new Date(est.approvedAt).toLocaleDateString('it-IT')}</p>
+                        )}
+                        {est.status === 'converted' && (
+                          <p className="text-xs text-purple-600 mt-2">✓ Convertito in {est.convertedToInvoice}</p>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-gray-800">€{est.total}</p>
+                        <div className="flex gap-2 mt-2">
+                          {est.status === 'pending' && (
+                            <>
+                              <Button size="sm" variant="outline" onClick={() => alert('Invia promemoria via email (Demo)')}>
+                                <Send className="h-3 w-3" />
+                              </Button>
+                              <Button size="sm" className="bg-green-500 text-white" onClick={() => alert('Approva manualmente (Demo)')}>
+                                <CheckCircle className="h-3 w-3" />
+                              </Button>
+                            </>
+                          )}
+                          {est.status === 'approved' && (
+                            <Button size="sm" className="bg-purple-500 text-white" onClick={() => alert('Converti in Fattura (Demo)')}>
+                              <Receipt className="h-3 w-3 mr-1" /> Fattura
+                            </Button>
+                          )}
+                          <Button size="sm" variant="outline" onClick={() => alert('Download PDF preventivo (Demo)')}>
+                            <Download className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+          
+          <div className="mt-4 bg-purple-50 border border-purple-200 rounded-lg p-4">
+            <p className="text-sm text-purple-800">
+              <Info className="h-4 w-4 inline mr-1" />
+              <strong>Preventivi Online:</strong> Il proprietario riceve un link sicuro per approvare o rifiutare il preventivo con firma digitale. 
+              Dopo approvazione, puoi convertirlo automaticamente in fattura.
+            </p>
+          </div>
         </div>
       )}
 
