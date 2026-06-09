@@ -321,6 +321,115 @@ export default function BrochurePage() {
           </div>
         </div>
 
+        {/* NUOVI MODULI OPERATIVI - PHASE 2 & 3 */}
+        <h3 className="text-xl font-black text-gray-900 mt-8 mb-4">🚀 Nuovi Moduli Operativi 2025</h3>
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="bg-white rounded-2xl p-6 border-2 border-slate-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">✅</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Task Manager Staff</h3>
+                <span className="bg-slate-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Business</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Task operativi automatici (follow-up, preventivi, referti lab, passport) + task manuali. Tutto tracciato per priorità e scadenze.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-orange-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🎯</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Campagne Clienti</h3>
+                <span className="bg-orange-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Business</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              5 campagne mirate pronte: dentale, vaccini, sterilizzazione, antiparassitari, senior. Target automatico + invio Email/WhatsApp.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-cyan-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">📈</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Mini CRM Proprietari</h3>
+                <span className="bg-cyan-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Business</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Etichette clienti (Attivo, Alto Rischio, Promoter, VIP), relationship score, lifetime value, filtri segmentazione avanzati.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-green-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🏠</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Dimissioni & Follow-up</h3>
+                <span className="bg-green-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Business</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Gestione post-visita con istruzioni, terapie e follow-up automatici 24h/48h. PDF dimissione + template chiamata.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">💉</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Stock Leggero Vaccini</h3>
+                <span className="bg-purple-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Business</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Inventario vaccini e materiali critici. Alert scorte basse, scadenze 30/60gg, movimenti carico/scarico, tracking lotti.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">📄</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Preventivi Online</h3>
+                <span className="bg-blue-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Business</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Preventivi digitali con approvazione online. Link sicuro, firma digitale proprietario, conversione automatica in fattura.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-indigo-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">⚡</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Smart Visit Pack</h3>
+                <span className="bg-indigo-500 text-white text-[10px] inline-block px-2 py-0.5 rounded">Business</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Flusso visita unificato: Check-in → Questionario → Flowboard → Dimissioni. Timeline visiva, stati in tempo reale.
+            </p>
+          </div>
+        </div>
+
         <div className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border-2 border-emerald-200">
           <h4 className="font-black text-gray-900 mb-3">📊 Dashboard ROI in Tempo Reale</h4>
           <div className="grid grid-cols-5 gap-4 text-center">

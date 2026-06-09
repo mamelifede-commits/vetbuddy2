@@ -18,7 +18,7 @@ import {
   Star, Check, Euro, Receipt, Activity,
   MapPin, Stethoscope, Mail, Clock, Gift, Loader2, FlaskConical, BarChart3,
   ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer, Video, Link2,
-  Bot, CalendarX, Rocket, Database, QrCode, Syringe, Plane, Share2, AlertTriangle
+  Bot, CalendarX, Rocket, Database, QrCode, Syringe, Plane, Share2, AlertTriangle, CheckSquare, Home
 } from 'lucide-react';
 
 function FullLandingPage({ onLogin }) {
@@ -287,6 +287,13 @@ function FullLandingPage({ onLogin }) {
               { icon: Zap, title: 'Automazioni', desc: 'Oltre 40 automazioni operative: promemoria, ricontatti, richiami, cliente inattivo, compleanno animale.', color: 'bg-violet-500', tag: 'Pro' },
               { icon: Heart, title: 'Piani Salute', desc: 'Programmi di prevenzione strutturati: Cucciolo, Senior, Prevenzione. Monitora il progresso per ogni paziente.', color: 'bg-rose-500', tag: 'Nuovo' },
               { icon: Brain, title: 'Assistente intelligente', desc: 'Riassumi visite, scrivi messaggi, traduci note cliniche. Sempre validato dalla clinica.', color: 'bg-indigo-600', tag: 'Nuovo' },
+              { icon: CheckSquare, title: 'Task Manager Staff', desc: 'Task operativi automatici e manuali. Richiami, controlli, preventivi, follow-up. Tutto tracciato.', color: 'bg-slate-600', tag: 'Business' },
+              { icon: Target, title: 'Campagne Clienti', desc: 'Campagne mirate: dentale, vaccini, sterilizzazione, antiparassitari, senior check-up. Email + WhatsApp.', color: 'bg-orange-600', tag: 'Business' },
+              { icon: TrendingUp, title: 'Mini CRM Proprietari', desc: 'Etichette clienti, relationship score, lifetime value, filtri segmentazione e insight relazionali.', color: 'bg-cyan-600', tag: 'Business' },
+              { icon: Home, title: 'Dimissioni & Follow-up', desc: 'Gestione post-visita con istruzioni, terapie e follow-up automatici 24h/48h. PDF dimissione.', color: 'bg-green-600', tag: 'Business' },
+              { icon: Syringe, title: 'Stock Leggero Vaccini', desc: 'Inventario vaccini e materiali critici. Alert scorte basse, scadenze, movimenti carico/scarico.', color: 'bg-purple-600', tag: 'Business' },
+              { icon: FileText, title: 'Preventivi Online', desc: 'Preventivi digitali con approvazione online. Link sicuro, firma digitale, conversione in fattura.', color: 'bg-blue-600', tag: 'Business' },
+              { icon: Activity, title: 'Smart Visit Pack', desc: 'Flusso visita unificato: Check-in → Questionario → Flowboard → Dimissioni. Timeline in tempo reale.', color: 'bg-indigo-500', tag: 'Business' },
             ].map((m, i) => (
               <Card key={i} className="hover:shadow-lg transition group relative overflow-hidden">
                 {m.tag && <div className="absolute top-2 right-2"><Badge className="bg-coral-500 text-white text-[10px]">{m.tag}</Badge></div>}

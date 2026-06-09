@@ -13,7 +13,7 @@ import {
   Settings, Zap, Menu, X, LogOut, AlertCircle, Video, Receipt, BarChart3,
   Link2, ClipboardList, Stethoscope, FlaskConical, Globe, BookOpen,
   LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield, Heart, Brain,
-  CalendarX, Phone, Bot, Rocket, Database, PenTool, Activity, QrCode, CheckSquare, Home, Package
+  CalendarX, Phone, Bot, Rocket, Database, PenTool, Activity, QrCode, CheckSquare, Home, Package, PlayCircle
 } from 'lucide-react';
 
 // ==================== DYNAMIC IMPORTS ====================
@@ -81,6 +81,7 @@ const DimissioniFollowUp = dynamic(() => import('@/app/components/clinic/Dimissi
 
 // FASE 3: Moduli Gestionali Avanzati
 const StockVaccini = dynamic(() => import('@/app/components/clinic/StockVaccini'), { ssr: false });
+const SmartVisitPack = dynamic(() => import('@/app/components/clinic/SmartVisitPack'), { ssr: false });
 
 // Owner Dashboard
 const OwnerDashboard = dynamic(() => import('@/app/components/owner/OwnerDashboardLayout'), { ssr: false });
@@ -193,6 +194,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', value: 'dashboard' },
     { icon: TrendingUp, label: 'Valore Generato', value: 'value-dashboard' },
+    { icon: PlayCircle, label: 'Smart Visit Pack', value: 'smart-visit' },
     { icon: Calendar, label: 'Agenda', value: 'agenda', badge: pendingAppointments },
     { icon: Activity, label: 'Flowboard', value: 'flowboard' },
     { icon: QrCode, label: 'Check-in Digitale', value: 'checkin' },
@@ -292,6 +294,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-6 overflow-auto">
         {activeTab === 'dashboard' && <ClinicControlRoom appointments={appointments} documents={documents} messages={messages} owners={owners} pets={pets} rewards={rewards} setupProgress={setupProgress} onRefresh={loadData} onNavigate={setActiveTab} onOpenPet={handleOpenPetFromOwner} token={api.getToken()} />}
+        {activeTab === 'smart-visit' && <SmartVisitPack user={user} onNavigate={setActiveTab} />}
         {activeTab === 'agenda' && <ClinicAgenda appointments={appointments} staff={staff} owners={owners} pets={pets} onRefresh={loadData} onNavigate={setActiveTab} />}
         {activeTab === 'flowboard' && <FlowboardClinica user={user} onNavigate={setActiveTab} />}
         {activeTab === 'checkin' && <CheckInDigitale user={user} onNavigate={setActiveTab} />}

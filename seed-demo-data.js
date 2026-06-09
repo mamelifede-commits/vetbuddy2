@@ -267,6 +267,45 @@ async function seedDatabase() {
     console.log('   Password: Password123!\n');
     console.log('========================================\n');
     
+    // ========== DATI DEMO COMMERCIALI ==========
+    console.log('\n📊 Populating Commercial Demo Data...');
+    
+    // WhatsApp conversations (simulated)
+    const whatsappMessages = [
+      { clinicId: users[0]._id, from: '+39 340 1234567', fromName: 'Maria Rossi', message: 'Buongiorno, vorrei prenotare una visita per Luna', timestamp: new Date(Date.now() - 2 * 86400000), classified: true, classification: 'appointment', urgency: 'routine' },
+      { clinicId: users[0]._id, from: '+39 345 9876543', fromName: 'Paolo Bianchi', message: 'URGENTE: il mio cane non riesce a camminare!', timestamp: new Date(Date.now() - 1 * 86400000), classified: true, classification: 'emergency', urgency: 'high' },
+      { clinicId: users[0]._id, from: '+39 338 1122334', fromName: 'Anna Verdi', message: 'Quanto costa una sterilizzazione per gatta?', timestamp: new Date(Date.now() - 3 * 86400000), classified: true, classification: 'info', urgency: 'low' },
+    ];
+    await db.collection('whatsapp_messages').insertMany(whatsappMessages);
+    
+    // AI Reception classifications
+    const aiClassifications = [
+      { clinicId: users[0]._id, messageId: whatsappMessages[0]._id, classification: 'appointment', confidence: 0.95, urgency: 'routine', suggestedAction: 'book_appointment', timestamp: new Date(Date.now() - 2 * 86400000) },
+      { clinicId: users[0]._id, messageId: whatsappMessages[1]._id, classification: 'emergency', confidence: 0.98, urgency: 'high', suggestedAction: 'call_immediately', timestamp: new Date(Date.now() - 1 * 86400000) },
+    ];
+    await db.collection('ai_classifications').insertMany(aiClassifications);
+    
+    // No-shows
+    const noShows = [
+      { clinicId: users[0]._id, appointmentId: null, petName: 'Rex', ownerName: 'Marco Neri', scheduledDate: new Date(Date.now() - 5 * 86400000), recovered: false, contactAttempts: 1 },
+      { clinicId: users[0]._id, appointmentId: null, petName: 'Micio', ownerName: 'Sara Colombo', scheduledDate: new Date(Date.now() - 10 * 86400000), recovered: true, contactAttempts: 2, rescheduledDate: new Date(Date.now() + 3 * 86400000) },
+    ];
+    await db.collection('no_shows').insertMany(noShows);
+    
+    // Reviews/Recensioni
+    const reviews = [
+      { clinicId: users[0]._id, ownerName: 'Maria Rossi', rating: 5, text: 'Eccellente! Veterinari competenti e gentili', platform: 'Google', date: new Date(Date.now() - 15 * 86400000), responded: true },
+      { clinicId: users[0]._id, ownerName: 'Paolo Bianchi', rating: 4, text: 'Buon servizio ma tempi di attesa lunghi', platform: 'Facebook', date: new Date(Date.now() - 20 * 86400000), responded: false },
+      { clinicId: users[0]._id, ownerName: 'Anna Verdi', rating: 2, text: 'Prezzi troppo alti', platform: 'Google', date: new Date(Date.now() - 8 * 86400000), responded: true, sentiment: 'negative' },
+    ];
+    await db.collection('reviews').insertMany(reviews);
+    
+    console.log(`   ✓ ${whatsappMessages.length} WhatsApp messages`);
+    console.log(`   ✓ ${aiClassifications.length} AI classifications`);
+    console.log(`   ✓ ${noShows.length} No-shows tracked`);
+    console.log(`   ✓ ${reviews.length} Reviews`);
+    console.log('   ✓ Commercial demo data populated!\n');
+    
   } catch (error) {
     console.error('❌ Error seeding database:', error);
   } finally {
