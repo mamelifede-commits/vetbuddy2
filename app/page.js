@@ -13,7 +13,7 @@ import {
   Settings, Zap, Menu, X, LogOut, AlertCircle, Video, Receipt, BarChart3,
   Link2, ClipboardList, Stethoscope, FlaskConical, Globe, BookOpen,
   LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield, Heart, Brain,
-  CalendarX, Phone, Bot, Rocket, Database, PenTool, Activity, QrCode, CheckSquare, Home
+  CalendarX, Phone, Bot, Rocket, Database, PenTool, Activity, QrCode, CheckSquare, Home, Package
 } from 'lucide-react';
 
 // ==================== DYNAMIC IMPORTS ====================
@@ -78,6 +78,9 @@ const TaskManagerStaff = dynamic(() => import('@/app/components/clinic/TaskManag
 
 // FASE 2: Potenziamento Moduli Esistenti
 const DimissioniFollowUp = dynamic(() => import('@/app/components/clinic/DimissioniFollowUp'), { ssr: false });
+
+// FASE 3: Moduli Gestionali Avanzati
+const StockVaccini = dynamic(() => import('@/app/components/clinic/StockVaccini'), { ssr: false });
 
 // Owner Dashboard
 const OwnerDashboard = dynamic(() => import('@/app/components/owner/OwnerDashboardLayout'), { ssr: false });
@@ -208,6 +211,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
     { icon: FlaskConical, label: 'Analisi Lab', value: 'labanalysis', badge: labReportsReady },
     { icon: Pill, label: 'Prescrizioni REV', value: 'prescriptions' },
     { icon: Shield, label: 'Impostazioni REV', value: 'rev-settings' },
+    { icon: Package, label: 'Stock Vaccini', value: 'stock-vaccini' },
     { icon: Globe, label: 'Marketplace Lab', value: 'labmarketplace' },
     { icon: User, label: 'Proprietari', value: 'owners' },
     { icon: Users, label: 'Staff', value: 'staff' },
@@ -329,6 +333,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'labinvoices' && <ClinicLabInvoices />}
         {activeTab === 'prescriptions' && <ClinicPrescriptions user={user} pets={pets} owners={owners} />}
         {activeTab === 'rev-settings' && <ClinicREVSettings user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'stock-vaccini' && <StockVaccini user={user} onNavigate={setActiveTab} />}
       </main>
     </div>
   );
