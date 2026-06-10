@@ -772,6 +772,46 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center"><span className="text-2xl">❤️</span></div><div><h3 className="font-black text-gray-900 text-sm">Pet Adoption</h3><span className="bg-pink-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Canili/gattili. Prima visita gratis. Social responsibility + clienti.</p>
           </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-violet-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🧠</span></div><div><h3 className="font-black text-gray-900 text-sm">VetBuddy Brain</h3><span className="bg-violet-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Super-Assistente AI multimodale. Analizza testo, immagini, dati. Letteratura scientifica istantanea.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><span className="text-2xl">💊</span></div><div><h3 className="font-black text-gray-900 text-sm">Drug Interaction Checker</h3><span className="bg-red-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Database farmaci completo. Controllo interazioni automatico. Alert pre-prescrizione. Zero errori.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-cyan-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center"><span className="text-2xl">👁️</span></div><div><h3 className="font-black text-gray-900 text-sm">AI Vision Diagnostics</h3><span className="bg-cyan-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">AI per RX, Eco, TAC. Identifica anomalie, suggerisce diagnosi. Secondo parere istantaneo.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><span className="text-2xl">📡</span></div><div><h3 className="font-black text-gray-900 text-sm">Remote Patient Monitoring</h3><span className="bg-blue-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Monitoraggio vitali post-chirurgia. Collari smart + sensori medicali. Alert real-time.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-green-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center"><span className="text-2xl">💚</span></div><div><h3 className="font-black text-gray-900 text-sm">VetBuddy Pharmacy</h3><span className="bg-green-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Farmacia online 24/7. Prescrizioni → ordine → spedizione casa. Revenue ricorrente 30-40%.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-indigo-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎓</span></div><div><h3 className="font-black text-gray-900 text-sm">VetBuddy Academy</h3><span className="bg-indigo-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">LMS formazione staff. Video-corsi ECM accreditati, webinar live, tracking crediti automatico.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🔗</span></div><div><h3 className="font-black text-gray-900 text-sm">Blockchain Health Records</h3><span className="bg-purple-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Cartelle immutabili blockchain. Condivisione sicura inter-clinica. NFT passaporto sanitario.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-pink-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center"><span className="text-2xl">💬</span></div><div><h3 className="font-black text-gray-900 text-sm">VetBuddy Consult</h3><span className="bg-pink-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Marketplace consulenze specialistiche video. Accesso expertise mondiale on-demand.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-slate-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🏠</span></div><div><h3 className="font-black text-gray-900 text-sm">Smart Clinic Hub</h3><span className="bg-slate-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">IoT clinica intelligente. Sensori degenza, monitoraggio automatico, workflow connesso. Clinica 4.0.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-amber-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🧬</span></div><div><h3 className="font-black text-gray-900 text-sm">Genetic Precision Medicine</h3><span className="bg-amber-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Test genomici razze. Predisposizioni patologie, farmacogenetica, breeding. Medicina genomica.</p>
+          </div>
         </div>
 
         <div className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border-2 border-emerald-200">
