@@ -276,114 +276,26 @@ function FullLandingPage({ onLogin }) {
               { icon: DollarSign, title: 'Dynamic Appointment Pricing', desc: 'Prezzi dinamici domanda (Uber-style). Slot bassi: -30%. Alta domanda: +10%. AI ottimizza revenue. +15-20% revenue, agenda piena.', color: 'bg-amber-800', tag: 'Genius' },
               { icon: Activity, title: 'Fisioterapia & Riabilitazione', desc: 'Due modalità: In-House (video-esercizi, tracking) + Network (marketplace centri specializzati). Protocolli guidati. Recupero +40% più veloce.', color: 'bg-teal-800', tag: 'Genius' },
             ].map((m, i) => (
-              { icon: Bell, title: 'Promemoria e Ricontatti', desc: 'Promemoria automatici: 24h prima, 1h prima, post-visita, post-chirurgia, richiami vaccini.', color: 'bg-amber-500', tag: null },
-              { icon: MessageCircle, title: 'Casella messaggi condivisa', desc: 'Messaggi, richieste, notifiche laboratorio, ricontatti da gestire. Tutto in un posto.', color: 'bg-cyan-500', tag: null },
-              { icon: Phone, title: 'WhatsApp Business', desc: 'Gestisci messaggi WhatsApp, template automatici, inbox unificata. Risposte rapide ai clienti.', color: 'bg-green-500', tag: 'Premium' },
-              { icon: Bot, title: 'Reception AI', desc: 'Classificazione intelligente messaggi, priorità automatica e risposte suggerite dall\'AI. Con disclaimer medico.', color: 'bg-purple-500', tag: 'Premium' },
-              { icon: FileText, title: 'Referti e Documenti', desc: 'Prescrizioni, certificati, referti PDF. Generazione, invio automatico e archivio.', color: 'bg-teal-500', tag: null },
-              { icon: FlaskConical, title: 'Rete laboratori', desc: 'Richieste analisi, vetrina laboratori, caricamento referti, revisione e invio al proprietario.', color: 'bg-purple-500', tag: 'Vantaggio competitivo' },
-              { icon: CalendarX, title: 'No-Show Recovery', desc: 'Traccia appuntamenti non confermati, etichette rischio cliente, lista d\'attesa e recupero slot.', color: 'bg-orange-500', tag: 'Business' },
-              { icon: Star, title: 'Recensioni & Referral', desc: 'Richieste recensioni automatiche post-visita. Programma "Porta un Amico" con codici referral.', color: 'bg-amber-500', tag: 'Business' },
-              { icon: PawPrint, title: 'Area Proprietario', desc: 'Il canale digitale con cui la clinica segue il cliente anche dopo la visita: prenotazioni, promemoria, referti, comunicazioni.', color: 'bg-pink-500', tag: null },
-              { icon: BarChart3, title: 'Cruscotto del valore', desc: 'Prenotazioni generate, telefonate evitate, ore risparmiate, clienti riattivati e riepiloghi economici con ROI.', color: 'bg-emerald-500', tag: 'Esclusivo' },
-              { icon: Rocket, title: 'Pilot Success Kit', desc: 'Checklist onboarding 90 giorni, report automatici 30/60/90, risorse stampabili e QR code.', color: 'bg-blue-600', tag: 'Pilot' },
-              { icon: Receipt, title: 'Listino e Riepiloghi', desc: 'Listino servizi, ricevute operative, esportazioni e riepiloghi economici.', color: 'bg-orange-500', tag: null },
-              { icon: Database, title: 'Import / Export Dati', desc: 'Importa ed esporta dati di proprietari, animali e appuntamenti in formato CSV con validazione.', color: 'bg-slate-600', tag: 'Business' },
-              { icon: Stethoscope, title: 'Assistente REV', desc: 'Preparazione bozze, archiviazione ricette, storico prescrizioni. L\'emissione ufficiale resta al veterinario.', color: 'bg-emerald-600', tag: null },
-              { icon: Gift, title: 'Programma Fedeltà', desc: 'Sistema a punti configurabile dalla clinica, con premi o vantaggi definiti secondo le proprie regole commerciali.', color: 'bg-yellow-500', tag: null },
-              { icon: Users, title: 'Schede Animale e Storico', desc: 'Informazioni principali di ogni animale, documenti, referti e storico visite consultabile.', color: 'bg-slate-500', tag: null },
-              { icon: Link2, title: 'Google Calendar Sync', desc: 'Sincronizzazione bidirezionale con Google Calendar. Gli appuntamenti VetBuddy appaiono nel calendario del veterinario.', color: 'bg-blue-600', tag: null },
-              { icon: Video, title: 'Video-Consulti', desc: 'Consulenze veterinarie a distanza con videochiamata integrata. Ideale per ricontatti e controlli post-operatori.', color: 'bg-sky-500', tag: null },
-              { icon: Zap, title: 'Automazioni', desc: 'Oltre 40 automazioni operative: promemoria, ricontatti, richiami, cliente inattivo, compleanno animale.', color: 'bg-violet-500', tag: 'Pro' },
-              { icon: Heart, title: 'Piani Salute', desc: 'Programmi di prevenzione strutturati: Cucciolo, Senior, Prevenzione. Monitora il progresso per ogni paziente.', color: 'bg-rose-500', tag: 'Nuovo' },
-              { icon: Brain, title: 'Assistente intelligente', desc: 'Riassumi visite, scrivi messaggi, traduci note cliniche. Sempre validato dalla clinica.', color: 'bg-indigo-600', tag: 'Nuovo' },
-              { icon: CheckSquare, title: 'Task Manager Staff', desc: 'Task operativi automatici e manuali. Richiami, controlli, preventivi, follow-up. Tutto tracciato.', color: 'bg-slate-600', tag: 'Business' },
-              { icon: Target, title: 'Campagne Clienti', desc: 'Campagne mirate: dentale, vaccini, sterilizzazione, antiparassitari, senior check-up. Email + WhatsApp.', color: 'bg-orange-600', tag: 'Business' },
-              { icon: TrendingUp, title: 'Mini CRM Proprietari', desc: 'Etichette clienti, relationship score, lifetime value, filtri segmentazione e insight relazionali.', color: 'bg-cyan-600', tag: 'Business' },
-              { icon: Home, title: 'Dimissioni & Follow-up', desc: 'Gestione post-visita con istruzioni, terapie e follow-up automatici 24h/48h. PDF dimissione.', color: 'bg-green-600', tag: 'Business' },
-              { icon: Syringe, title: 'Stock Leggero Vaccini', desc: 'Inventario vaccini e materiali critici. Alert scorte basse, scadenze, movimenti carico/scarico.', color: 'bg-purple-600', tag: 'Business' },
-              { icon: FileText, title: 'Preventivi Online', desc: 'Preventivi digitali con approvazione online. Link sicuro, firma digitale, conversione in fattura.', color: 'bg-blue-600', tag: 'Business' },
-              { icon: Activity, title: 'Smart Visit Pack', desc: 'Flusso visita unificato: Check-in → Questionario → Flowboard → Dimissioni. Timeline in tempo reale.', color: 'bg-indigo-500', tag: 'Business' },
-              { icon: Receipt, title: 'Fatturazione Elettronica XML', desc: 'Generazione fatture XML conformi Sistema di Interscambio (SdI). Tracciamento stati, validazione automatica e archivio digitale.', color: 'bg-red-600', tag: 'Mercato IT' },
-              { icon: FileText, title: 'Ricette Elettroniche Veterinarie', desc: 'Assistente flusso REV: preparazione bozza, emissione su portale nazionale, archiviazione PIN. L\'emissione resta al veterinario abilitato.', color: 'bg-emerald-600', tag: 'Mercato IT' },
-              { icon: QrCode, title: 'Microchip & Anagrafe Canina', desc: 'Registrazione microchip, generazione certificati conformi, integrazione con anagrafi regionali. Tutto tracciato e certificato.', color: 'bg-blue-600', tag: 'Mercato IT' },
-              { icon: Share2, title: 'Network Specialisti', desc: 'Gestione referral tra clinica e specialisti. Tracking pazienti inviati, follow-up automatici, dashboard reciprocità e network di fiducia.', color: 'bg-violet-600', tag: 'Mercato IT' },
-              { icon: Gift, title: 'Piani Benessere', desc: 'Abbonamenti mensili/annuali con servizi inclusi. Cucciolo, Senior, Prevenzione. Monitoraggio utilizzo e rinnovi automatici.', color: 'bg-rose-600', tag: 'Mercato IT' },
-              { icon: FileText, title: 'Consensi Informati Digitali', desc: 'Template consensi con firma grafometrica. Archiviazione legale 10 anni conforme GDPR. Zero carta, massima sicurezza.', color: 'bg-blue-700', tag: 'Mercato IT' },
-              { icon: AlertTriangle, title: 'Malattie Denunciabili', desc: 'Alert automatici, generazione moduli ASL/Ministero. Conformità normativa, zero rischio multe, tutto tracciato.', color: 'bg-red-700', tag: 'Mercato IT' },
-              { icon: Shield, title: 'Integrazione Assicurazioni Pet', desc: 'Invio automatico documenti a UnipolSai, Allianz, Generali. Tracking rimborsi, clinica partner convenzionato.', color: 'bg-green-700', tag: 'Mercato IT' },
-              { icon: AlertCircle, title: 'Farmacovigilanza ADR', desc: 'Segnalazione reazioni avverse farmaci al Ministero Salute. Form guidato, invio automatico, archivio conforme.', color: 'bg-orange-700', tag: 'Mercato IT' },
-              { icon: Plane, title: 'Certificati Sanitari Viaggio', desc: 'Wizard certificati UE/Extra-UE. Passaporto Europeo, certificati export, checklist automatica per destinazione.', color: 'bg-sky-700', tag: 'Mercato IT' },
-              { icon: FlaskConical, title: 'Integrazione Laboratori IZS', desc: 'Connessione Istituti Zooprofilattici. Esami obbligatori (rabbia, brucellosi), richieste e referti digitali.', color: 'bg-purple-700', tag: 'Mercato IT' },
-              { icon: Clock, title: 'Gestione Turni Guardia H24', desc: 'Calendario turni pronto soccorso. Alert emergenze, handoff automatico, note consegna tra veterinari.', color: 'bg-indigo-700', tag: 'Mercato IT' },
-              { icon: Users, title: 'Tracking Crediti ECM', desc: 'Monitoraggio formazione obbligatoria continua. 50 crediti/anno, alert scadenze, corsi accreditati integrati.', color: 'bg-teal-700', tag: 'Mercato IT' },
-              { icon: Building2, title: 'Multi-Sede & Gestione Catene', desc: 'Dashboard consolidato catene veterinarie. Trasferimento pazienti, inventario condiviso, KPI comparativi sedi.', color: 'bg-blue-800', tag: 'Enterprise' },
-              { icon: Smartphone, title: 'App Mobile Nativa', desc: 'iOS & Android per proprietari e veterinari. Push notifications, offline mode, geolocalizzazione, fotocamera integrata.', color: 'bg-purple-800', tag: 'Enterprise' },
-              { icon: Scissors, title: 'Gestione Sala Operatoria', desc: 'Calendario chirurgie, checklist pre-op, tracking strumentario sterile, report post-op automatici.', color: 'bg-red-800', tag: 'Enterprise' },
-              { icon: Calculator, title: 'Integrazione Contabilità', desc: 'Sync Fatture in Cloud, TeamSystem, Aruba. Movimenti bancari, prima nota automatica, dashboard fiscale.', color: 'bg-green-800', tag: 'Enterprise' },
-              { icon: Package, title: 'Inventario Farmaci Completo', desc: 'Non solo vaccini. Farmaci, materiali, attrezzature. Alert scadenze, costo medio ponderato, report valore magazzino.', color: 'bg-orange-800', tag: 'Enterprise' },
-              { icon: CreditCard, title: 'POS/Cassa Integrata', desc: 'Nexi, SumUp, Stripe Terminal. Pagamenti immediati, scontrini automatici, chiusura cassa, riconciliazione contabile.', color: 'bg-indigo-800', tag: 'Enterprise' },
-              { icon: BarChart3, title: 'Analytics & BI Avanzati', desc: 'Dashboard drag-drop personalizzabili. Report custom, benchmark anonimo, previsioni AI fatturato, export automatici.', color: 'bg-cyan-800', tag: 'Enterprise' },
-              { icon: Zap, title: 'Marketing Automation Avanzato', desc: 'Funnel multi-step, email sequences, lead scoring, A/B testing. HubSpot-like per veterinari.', color: 'bg-yellow-700', tag: 'Enterprise' },
-              { icon: Users, title: 'Gestione HR/Personale', desc: 'Badge presenze, ferie/permessi, buste paga, formazione staff, valutazioni performance. Ideale 5+ dipendenti.', color: 'bg-slate-700', tag: 'Enterprise' },
-              { icon: ShoppingCart, title: 'E-commerce Prodotti Pet', desc: 'Vendita online cibo, antiparassitari, accessori. Revenue addizionale 10-15%. Spedizioni automatiche.', color: 'bg-pink-700', tag: 'Enterprise' },
-              { icon: Home, title: 'Visite Domiciliari', desc: 'Booking visite a casa, tragitto ottimizzato Google Maps, app mobile vet. Servizio premium margini alti.', color: 'bg-amber-700', tag: 'Enterprise' },
-              { icon: Apple, title: 'Nutrizione Personalizzata AI', desc: 'Piani alimentari custom per razza/età. Tracking peso, alert obesità. Previene patologie, riduce emergenze.', color: 'bg-lime-700', tag: 'Enterprise' },
-              { icon: Brain, title: 'AI Diagnostico Assistant', desc: 'Co-pilota veterinario: analisi sintomi con AI, diagnosi differenziali ordinate per probabilità, suggerimenti esami. GAME CHANGER.', color: 'bg-purple-700', tag: 'Innovation' },
-              { icon: Video, title: 'Telemedicina Conforme FNOVI', desc: 'Video-consulti HD per follow-up. Conforme normativa italiana. Registrazione automatica, prescrizioni digitali post-consulto.', color: 'bg-blue-700', tag: 'Innovation' },
-              { icon: Watch, title: 'Pet Wearables & IoT', desc: 'Integrazione FitBark, Whistle, Tractive. Dati attività 24/7 in cartella. Alert anomalie comportamentali. IoT futuro.', color: 'bg-cyan-700', tag: 'Innovation' },
-              { icon: ShieldCheck, title: 'Pet Insurance White-Label', desc: 'Vendi assicurazioni con tuo brand. Revenue share 20% clinica. 3 piani (Basic/Plus/Premium). Nuovo revenue stream enorme.', color: 'bg-emerald-700', tag: 'Innovation' },
-              { icon: Siren, title: 'Emergency Network 24/7', desc: 'Rete solidale emergenze tra cliniche. Sistema crediti equilibrato. Trasferimento pazienti tracciato. Nessuna clinica sola.', color: 'bg-red-700', tag: 'Innovation' },
-              { icon: Briefcase, title: 'Veterinary Marketplace', desc: 'Uber per veterinari: trova sostituti/freelance certificati. Rating, specializzazioni. Pagamento gestito. Risolve problema enorme.', color: 'bg-indigo-700', tag: 'Innovation' },
-              { icon: FlaskConical, title: 'Clinical Trials Platform', desc: 'Partecipa a ricerca clinica veterinaria. Compenso €300-500/trial, farmaci gratis. Contributo scienza + revenue.', color: 'bg-teal-700', tag: 'Innovation' },
-              { icon: Mic, title: 'Voice Assistant Multilingua', desc: 'Alexa & Google Assistant per prenotazioni vocali. IT/EN/ES/FR. Ideale proprietari anziani e turisti.', color: 'bg-purple-600', tag: 'Innovation' },
-              { icon: Heart, title: 'Pet Adoption Platform', desc: 'Integrazione canili/gattili. Prima visita gratis adozioni. Follow-up automatico. Social responsibility + clienti.', color: 'bg-pink-700', tag: 'Innovation' },
-              { icon: Brain, title: 'VetBuddy Brain', desc: 'Super-Assistente AI multimodale. Analizza testo, immagini, dati clinici. Suggerisce diagnosi, terapie, esami. Accesso istantaneo letteratura scientifica. Co-pilota intelligente.', color: 'bg-violet-900', tag: 'Genius' },
-              { icon: AlertTriangle, title: 'Drug Interaction Checker', desc: 'Database farmaci veterinari completo. Controllo automatico interazioni farmaco-farmaco, controindicazioni per razza/età/patologia. Alert real-time pre-prescrizione. Zero errori.', color: 'bg-red-900', tag: 'Genius' },
-              { icon: Brain, title: 'AI Vision Diagnostics', desc: 'Carica RX, Eco, TAC. AI identifica anomalie, suggerisce diagnosi, confronta con database casi simili. Secondo parere istantaneo. Supporto decisionale immagini mediche.', color: 'bg-cyan-900', tag: 'Genius' },
-              { icon: Watch, title: 'Remote Patient Monitoring', desc: 'Monitoraggio parametri vitali post-chirurgia. Collari smart + sensori medicali. Alert anomalie real-time. Dashboard clinica con grafici trend. Telemedicina avanzata.', color: 'bg-blue-900', tag: 'Genius' },
-              { icon: ShoppingCart, title: 'VetBuddy Pharmacy', desc: 'Farmacia online 24/7 integrata. Prescrizioni digitali → ordine automatico → spedizione casa cliente. Subscription antiparassitari. Revenue stream ricorrente. Margine 30-40%.', color: 'bg-green-900', tag: 'Genius' },
-              { icon: GraduationCap, title: 'VetBuddy Academy', desc: 'Piattaforma LMS formazione staff. Video-corsi accreditati ECM, certificazioni specialistiche, webinar live esperti. Tracking crediti automatico. Formazione continua interna.', color: 'bg-indigo-900', tag: 'Genius' },
-              { icon: Database, title: 'Blockchain Health Records', desc: 'Cartelle cliniche immutabili su blockchain. Condivisione sicura inter-clinica, portabilità garantita, audit trail certificato. Futuro: NFT passaporto sanitario.', color: 'bg-purple-900', tag: 'Genius' },
-              { icon: Users, title: 'VetBuddy Consult', desc: 'Marketplace consulenze specialistiche video. Dermatologo, cardiologo, oncologo disponibili on-demand. Revenue share 70% specialista, 20% clinica, 10% VetBuddy. Accesso expertise mondiale.', color: 'bg-pink-900', tag: 'Genius' },
-              { icon: Home, title: 'Smart Clinic Hub', desc: 'IoT clinica: sensori temperatura/umidità degenza, monitoraggio O₂/ECG automatico, alert attrezzature malfunzionanti, workflow automatizzato basato sensori. Clinica 4.0.', color: 'bg-slate-900', tag: 'Genius' },
-              { icon: Sparkles, title: 'Genetic Precision Medicine', desc: 'Test genomici razze. Predisposizioni patologie, farmacogenetica (dosaggi personalizzati), breeding responsabile. Partnership laboratori genetica. Medicina preventiva genomica.', color: 'bg-amber-900', tag: 'Genius' },
-              { icon: AlertTriangle, title: 'Predictive Hospitalization AI', desc: 'AI prevede rischio ospedalizzazione 48-72h analizzando cartella + esami. Intervento preemptivo salva vite. Previene emergenze costose. Accuratezza 87%.', color: 'bg-red-800', tag: 'Genius' },
-              { icon: Heart, title: 'Mental Wellness Hub for Vets', desc: 'Piattaforma benessere psicologico veterinari. Burnout altissimo (30% depressione). Supporto anonimo, terapia online, community. Retention staff +40%.', color: 'bg-pink-800', tag: 'Genius' },
-              { icon: Shield, title: 'Veterinary Litigation Shield', desc: 'Assicurazione professionale + AI analizza gap documentali rischiosi + supporto legale h24. Peace of mind. Massimale €500k. €650/anno.', color: 'bg-blue-800', tag: 'Genius' },
-              { icon: Brain, title: 'Pet Behavior AI Profiling', desc: 'AI prevede ansia/aggressività pre-visita. Protocollo gestione personalizzato. Sicurezza staff +60%, meno sedazioni inutili, clienti soddisfatti.', color: 'bg-purple-800', tag: 'Genius' },
-              { icon: Clock, title: 'VetBuddy Time Machine', desc: 'AI simula invecchiamento animale 5-10 anni CON/SENZA intervento. Mostra visivamente conseguenze obesità/patologie. Compliance terapie +80%. Effetto WOW virale.', color: 'bg-cyan-800', tag: 'Genius' },
-              { icon: Wrench, title: 'Predictive Equipment Maintenance', desc: 'Sensori IoT + AI prevedono guasti attrezzature 7-14gg prima (85% accuratezza). Zero downtime operatorio. Risparmio €10-15k/anno.', color: 'bg-orange-800', tag: 'Genius' },
-              { icon: Brain, title: 'Cross-Species Learning AI', desc: 'AI trained tutte specie. Transfer learning: \"Dermatite gatto simile a caso canino risolto con X\". Risolvi casi impossibili fuori comfort zone.', color: 'bg-indigo-800', tag: 'Genius' },
-              { icon: GraduationCap, title: 'VetBuddy Residency Program', desc: 'Mentorship 1-to-1 con vet senior. €200/mese vs €20-40k residenze tradizionali. Certificazione FNOVI. Democratizza formazione specialistica.', color: 'bg-slate-800', tag: 'Genius' },
-              { icon: Activity, title: 'Fisioterapia & Riabilitazione', desc: 'Due modalità: In-House (video-esercizi, tracking) + Network (marketplace centri specializzati). Protocolli guidati. Recupero +40% più veloce. Revenue ricorrente.', color: 'bg-teal-800', tag: 'Genius' },
-              { icon: Microscope, title: 'VetBuddy Autopsy AI', desc: 'AI analizza foto/video necroscopia, identifica lesioni, report 5 min. Patologo on-demand €150 vs €800. Risparmio 60%, risultati 10x più veloci.', color: 'bg-purple-800', tag: 'Genius' },
-              { icon: TrendingUp, title: 'Smart Referral Revenue Share', desc: 'Guadagna 15-20% su referral (specialista, lab, fisioterapia). Win-win-win. Nuovo revenue stream passivo €1-3k/mese per clinica.', color: 'bg-emerald-800', tag: 'Genius' },
-              { icon: Briefcase, title: 'Veterinary Talent Marketplace', desc: 'LinkedIn vet con skill verification. Match score AI, portfolio casi, hiring tracciato. Risolve problema #1 settore. Risparmio €5-10k headhunter.', color: 'bg-blue-800', tag: 'Genius' },
-              { icon: Heart, title: 'Pet Loss Grief Support', desc: 'Protocollo empatico post-eutanasia. Email, grief counselor, memorial digitale, albero memoria. Retention +25%, lifetime value protetto.', color: 'bg-rose-800', tag: 'Genius' },
-              { icon: Leaf, title: 'VetBuddy Carbon Offset', desc: 'Calcolo CO₂ automatico. Certificazione "Carbon Neutral Vet Clinic". Compensazione €30-50/mese. Gen Z preferisce business sostenibili.', color: 'bg-green-800', tag: 'Genius' },
-              { icon: DollarSign, title: 'Dynamic Appointment Pricing', desc: 'Prezzi dinamici domanda (Uber-style). Slot bassi: -30%. Alta domanda: +10%. AI ottimizza revenue. +15-20% revenue, agenda piena.', color: 'bg-amber-800', tag: 'Genius' },
-              { icon: Mic, title: 'Veterinary Podcast Platform', desc: 'Netflix educazione vet. Podcast 20-30 min accreditati ECM. Revenue share 70% creator. Formazione enjoyable + ECM risolti.', color: 'bg-indigo-800', tag: 'Genius' },
-              { icon: Camera, title: 'AI-Powered Medical Photography', desc: 'AI valuta qualità foto PRIMA. Suggerimenti real-time. Auto-enhance. Template guidati patologie. Annotazione automatica lesioni. Zero foto rifatte.', color: 'bg-cyan-800', tag: 'Genius' },
-              { icon: CreditCard, title: 'Veterinary Invoice Financing', desc: 'Buy Now Pay Later veterinario (Klarna). Proprietario 3-12 rate, clinica riceve subito. Approvazione 95%. +30-40% acceptance chirurgie.', color: 'bg-teal-700', tag: 'Genius' },
-              { icon: Users, title: 'Smart Queue Management', desc: 'Code virtuale Poste Italiane-style. Check-in app, attesa auto/bar, notifica "5 min". AI predice ritardi. Esperienza luxury, -70% stress.', color: 'bg-violet-800', tag: 'Genius' },
-            ].map((m, i) => (
-              <Card key={i} className="hover:shadow-lg transition group relative overflow-hidden">
-                {m.tag && <div className="absolute top-2 right-2"><Badge className="bg-coral-500 text-white text-[10px]">{m.tag}</Badge></div>}
-                <CardContent className="p-5">
-                  <div className={`h-10 w-10 ${m.color} rounded-lg flex items-center justify-center mb-3`}><m.icon className="h-5 w-5 text-white" /></div>
-                  <h3 className="font-bold text-gray-900 mb-1.5 text-sm">{m.title}</h3>
-                  <p className="text-xs text-gray-600 leading-relaxed">{m.desc}</p>
+              <Card key={i} className={`${m.color} text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1`}>
+                <CardContent className="p-6">
+                  {m.tag && <div className="absolute top-2 right-2"><Badge className="bg-white/20 text-white text-[10px]">{m.tag}</Badge></div>}
+                  <m.icon className="h-8 w-8 mb-3 opacity-90" />
+                  <h3 className="font-bold text-white mb-1.5 text-sm">{m.title}</h3>
+                  <p className="text-xs text-white/90 leading-relaxed">{m.desc}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
+          
+          <div className="text-center mt-12">
+            <a href="/moduli" className="inline-flex items-center gap-2 bg-coral-500 hover:bg-coral-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <span>Esplora tutti i 92 Moduli</span>
+              <ChevronRight className="h-5 w-5" />
+            </a>
+            <p className="text-sm text-gray-500 mt-4">Scopri Base, Mercato IT, Enterprise, Innovation e tutti i moduli Genius</p>
+          </div>
         </div>
       </section>
-
-      {/* ============================================================ */}
-      {/* RETE LABORATORI */}
-      {/* ============================================================ */}
       <section id="lab-network" className="py-16 px-4 bg-gradient-to-br from-purple-50 via-white to-indigo-50/30">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
