@@ -1,19 +1,43 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   FileText, Euro, Clock, CheckCircle, XCircle, AlertCircle, Send,
-  Eye, Calendar, TrendingUp, Users, Download
+  Eye, Calendar, TrendingUp, Users, Download, RefreshCw
 } from 'lucide-react';
 import BackToDashboard from '@/app/components/shared/BackToDashboard';
+import api from '@/app/lib/api';
 
 export default function PreventiviDigitali({ user, onNavigate }) {
   const [activeTab, setActiveTab] = useState('aperti');
+  const [preventivi, setPreventivi] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const preventivi = [
+  useEffect(() => {
+    loadPreventivi();
+  }, []);
+
+  const loadPreventivi = async () => {
+    setLoading(true);
+    try {
+      const data = await api.get('estimates');
+      setPreventivi(data.estimates || []);
+      setAnalytics(data.analytics || null);
+    } catch (error) {
+      console.error('Error loading preventivi:', error);
+      // Fallback to mock data
+      setPreventivi(getMockPreventivi());
+      setAnalytics(getMockAnalytics());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getMockPreventivi = () => [
     {
       id: 1,
       numero: 'PREV-2024-045',
@@ -91,36 +115,54 @@ export default function PreventiviDigitali({ user, onNavigate }) {
     },
   ];
 
-  const preventiviAccettati = [
-    { id: 6, numero: 'PREV-2024-040', cliente: 'Giuseppe Mancini', servizio: 'Chirurgia addominale', importo: 520, dataAccettazione: '2024-01-28', statoEsecuzione: 'completato' },
-    { id: 7, numero: 'PREV-2024-039', cliente: 'Francesca Ricci', servizio: 'Visita cardiologica + ECG', importo: 150, dataAccettazione: '2024-01-25', statoEsecuzione: 'completato' },
-  ];
+  const getMockAnalytics = () => ({
+    totalEstimates: 9,
+    statusCount: { draft: 0, sent: 4, accepted: 2, declined: 1, expired: 1 },
+    totalValue: 2290,
+    acceptedValue: 670,
+    pendingValue: 1070,
+    conversionRate: 67,
+    averageValue: 254,
+    estimatesNeedingFollowUp: 2
+  });
 
-  const preventiviRifiutati = [
-    { id: 8, numero: 'PREV-2024-038', cliente: 'Paolo Esposito', servizio: 'Intervento dermatologico', importo: 320, dataRifiuto: '2024-01-22', motivazione: 'Costo troppo elevato' },
-  ];
+  const preventiviAccettati = preventivi.filter(p => p.status === 'accepted');
+  const preventiviRifiutati = preventivi.filter(p => p.status === 'declined');
+  const preventiviAperti = preventivi.filter(p => p.status === 'sent' || p.status === 'draft');
 
-  const stats = [
-    { label: 'Preventivi Aperti', value: 4, icon: FileText, color: 'text-blue-600', bgColor: 'bg-blue-50' },
-    { label: 'Valore Totale Aperti', value: '€1.070', icon: Euro, color: 'text-green-600', bgColor: 'bg-green-50' },
-    { label: 'Da Follow-up Urgente', value: 2, icon: AlertCircle, color: 'text-orange-600', bgColor: 'bg-orange-50' },
-    { label: 'Tasso Accettazione', value: '67%', icon: TrendingUp, color: 'text-purple-600', bgColor: 'bg-purple-50' },
-  ];
+  const stats = analytics ? [
+    { label: 'Preventivi Aperti', value: analytics.statusCount.sent + analytics.statusCount.draft, icon: FileText, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+    { label: 'Valore Totale Aperti', value: `€${analytics.pendingValue.toLocaleString()}`, icon: Euro, color: 'text-green-600', bgColor: 'bg-green-50' },
+    { label: 'Da Follow-up Urgente', value: analytics.estimatesNeedingFollowUp, icon: AlertCircle, color: 'text-orange-600', bgColor: 'bg-orange-50' },
+    { label: 'Tasso Accettazione', value: `${analytics.conversionRate}%`, icon: TrendingUp, color: 'text-purple-600', bgColor: 'bg-purple-50' },
+  ] : [];
 
   const getStatoBadge = (stato) => {
-    if (stato === 'inviato') return <Badge className="bg-blue-600 text-white">📤 Inviato</Badge>;
+    if (stato === 'sent' || stato === 'inviato') return <Badge className="bg-blue-600 text-white">📤 Inviato</Badge>;
     if (stato === 'visualizzato') return <Badge className="bg-yellow-600 text-white">👁️ Visualizzato</Badge>;
-    if (stato === 'accettato') return <Badge className="bg-green-600 text-white">✅ Accettato</Badge>;
-    if (stato === 'rifiutato') return <Badge className="bg-red-600 text-white">❌ Rifiutato</Badge>;
-    if (stato === 'scaduto') return <Badge className="bg-gray-600 text-white">⏰ Scaduto</Badge>;
+    if (stato === 'accepted' || stato === 'accettato') return <Badge className="bg-green-600 text-white">✅ Accettato</Badge>;
+    if (stato === 'declined' || stato === 'rifiutato') return <Badge className="bg-red-600 text-white">❌ Rifiutato</Badge>;
+    if (stato === 'expired' || stato === 'scaduto') return <Badge className="bg-gray-600 text-white">⏰ Scaduto</Badge>;
     return <Badge variant="outline">📄 Draft</Badge>;
   };
 
   const getUrgenzaBadge = (giorni) => {
+    if (!giorni) return null;
     if (giorni > 14) return <Badge className="bg-red-100 text-red-700">🔴 Urgente ({giorni}gg)</Badge>;
     if (giorni > 7) return <Badge className="bg-yellow-100 text-yellow-700">🟡 Follow-up ({giorni}gg)</Badge>;
     return <Badge className="bg-green-100 text-green-700">🟢 Recente ({giorni}gg)</Badge>;
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-12 w-12 text-blue-600 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Caricamento preventivi...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
