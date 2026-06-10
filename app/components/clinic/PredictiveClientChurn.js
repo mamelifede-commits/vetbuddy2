@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { TrendingDown, AlertTriangle, Users, Target, Zap, MessageCircle, DollarSign } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function PredictiveClientChurn() {
   const [timeRange, setTimeRange] = useState('30');
