@@ -430,6 +430,85 @@ export default function BrochurePage() {
           </div>
         </div>
 
+        {/* MODULI MERCATO ITALIANO */}
+        <h3 className="text-xl font-black text-gray-900 mt-8 mb-4">🇮🇹 Moduli Mercato Italiano 2025</h3>
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🧾</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Fatturazione Elettronica XML</h3>
+                <span className="bg-red-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Generazione fatture XML conformi Sistema di Interscambio (SdI). Validazione automatica, tracciamento stati e archivio digitale completo.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-emerald-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">💊</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Ricette Elettroniche Veterinarie</h3>
+                <span className="bg-emerald-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Assistente flusso REV: preparazione bozza, wizard guidato, archiviazione PIN. L'emissione resta al veterinario abilitato.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🔖</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Microchip & Anagrafe Canina</h3>
+                <span className="bg-blue-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Registrazione microchip, certificati conformi normative regionali, integrazione anagrafi. Validazione automatica codici.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-violet-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🔗</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Network Specialisti</h3>
+                <span className="bg-violet-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Gestione referral tra clinica e specialisti. Tracking pazienti, follow-up automatici, dashboard reciprocità professionale.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-rose-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🎁</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Piani Benessere</h3>
+                <span className="bg-rose-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Abbonamenti mensili/annuali con servizi inclusi. Cucciolo, Senior, Prevenzione. Fatturato ricorrente prevedibile.
+            </p>
+          </div>
+        </div>
+
         <div className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border-2 border-emerald-200">
           <h4 className="font-black text-gray-900 mb-3">📊 Dashboard ROI in Tempo Reale</h4>
           <div className="grid grid-cols-5 gap-4 text-center">
