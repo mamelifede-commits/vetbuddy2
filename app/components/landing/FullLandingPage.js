@@ -18,7 +18,7 @@ import {
   Star, Check, Euro, Receipt, Activity,
   MapPin, Stethoscope, Mail, Clock, Gift, Loader2, FlaskConical, BarChart3,
   ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer, Video, Link2,
-  Bot, CalendarX, Rocket, Database, QrCode, Syringe, Plane, Share2, AlertTriangle, CheckSquare, Home
+  Bot, CalendarX, Rocket, Database, QrCode, Syringe, Plane, Share2, AlertTriangle, AlertCircle, CheckSquare, Home, GraduationCap
 } from 'lucide-react';
 
 function FullLandingPage({ onLogin }) {
@@ -299,6 +299,14 @@ function FullLandingPage({ onLogin }) {
               { icon: QrCode, title: 'Microchip & Anagrafe Canina', desc: 'Registrazione microchip, generazione certificati conformi, integrazione con anagrafi regionali. Tutto tracciato e certificato.', color: 'bg-blue-600', tag: 'Mercato IT' },
               { icon: Share2, title: 'Network Specialisti', desc: 'Gestione referral tra clinica e specialisti. Tracking pazienti inviati, follow-up automatici, dashboard reciprocità e network di fiducia.', color: 'bg-violet-600', tag: 'Mercato IT' },
               { icon: Gift, title: 'Piani Benessere', desc: 'Abbonamenti mensili/annuali con servizi inclusi. Cucciolo, Senior, Prevenzione. Monitoraggio utilizzo e rinnovi automatici.', color: 'bg-rose-600', tag: 'Mercato IT' },
+              { icon: FileText, title: 'Consensi Informati Digitali', desc: 'Template consensi con firma grafometrica. Archiviazione legale 10 anni conforme GDPR. Zero carta, massima sicurezza.', color: 'bg-blue-700', tag: 'Mercato IT' },
+              { icon: AlertTriangle, title: 'Malattie Denunciabili', desc: 'Alert automatici, generazione moduli ASL/Ministero. Conformità normativa, zero rischio multe, tutto tracciato.', color: 'bg-red-700', tag: 'Mercato IT' },
+              { icon: Shield, title: 'Integrazione Assicurazioni Pet', desc: 'Invio automatico documenti a UnipolSai, Allianz, Generali. Tracking rimborsi, clinica partner convenzionato.', color: 'bg-green-700', tag: 'Mercato IT' },
+              { icon: AlertCircle, title: 'Farmacovigilanza ADR', desc: 'Segnalazione reazioni avverse farmaci al Ministero Salute. Form guidato, invio automatico, archivio conforme.', color: 'bg-orange-700', tag: 'Mercato IT' },
+              { icon: Plane, title: 'Certificati Sanitari Viaggio', desc: 'Wizard certificati UE/Extra-UE. Passaporto Europeo, certificati export, checklist automatica per destinazione.', color: 'bg-sky-700', tag: 'Mercato IT' },
+              { icon: FlaskConical, title: 'Integrazione Laboratori IZS', desc: 'Connessione Istituti Zooprofilattici. Esami obbligatori (rabbia, brucellosi), richieste e referti digitali.', color: 'bg-purple-700', tag: 'Mercato IT' },
+              { icon: Clock, title: 'Gestione Turni Guardia H24', desc: 'Calendario turni pronto soccorso. Alert emergenze, handoff automatico, note consegna tra veterinari.', color: 'bg-indigo-700', tag: 'Mercato IT' },
+              { icon: Users, title: 'Tracking Crediti ECM', desc: 'Monitoraggio formazione obbligatoria continua. 50 crediti/anno, alert scadenze, corsi accreditati integrati.', color: 'bg-teal-700', tag: 'Mercato IT' },
             ].map((m, i) => (
               <Card key={i} className="hover:shadow-lg transition group relative overflow-hidden">
                 {m.tag && <div className="absolute top-2 right-2"><Badge className="bg-coral-500 text-white text-[10px]">{m.tag}</Badge></div>}
@@ -709,6 +717,14 @@ function FullLandingPage({ onLogin }) {
               { q: 'Come gestisco Microchip e Anagrafe Canina?', a: 'Registri il microchip direttamente in VetBuddy, generi certificati di iscrizione conformi alle normative regionali e prepari i dati per l\'invio alle anagrafi. Include validazione automatica dei codici microchip (15 cifre) e storico completo per ogni animale.' },
               { q: 'Cos\'è il Network Specialisti?', a: 'Un sistema di referral tracking tra clinica e specialisti. Invii pazienti a specialisti partner, segui lo stato del referral, ricevi aggiornamenti automatici e visualizzi dashboard di reciprocità. Aiuta a costruire un network professionale di fiducia e monitorare follow-up.' },
               { q: 'Come funzionano i Piani Benessere?', a: 'Sono abbonamenti mensili o annuali che includono un pacchetto di servizi (visite, vaccini, esami). Esempio: Piano Cucciolo €39/mese include 3 visite, 2 vaccini, esami base. Monitori l\'utilizzo servizi, gestisci rinnovi automatici e generi fatturato ricorrente prevedibile.' },
+              { q: 'Cosa sono i Consensi Informati Digitali?', a: 'Template consensi (chirurgia, anestesia, eutanasia, trattamenti) con firma digitale/grafometrica del proprietario. Archiviazione legale 10 anni conforme GDPR. Elimina completamente la carta, velocizza accettazioni, zero rischio legale per la clinica.' },
+              { q: 'Come funziona la gestione Malattie Denunciabili?', a: 'Alert automatici per malattie denunciabili (rabbia, tubercolosi, brucellosi, leishmaniosi). Generazione automatica moduli ufficiali ASL/Ministero Salute, tracking denunce e conferme. Obbligo legale, VetBuddy riduce burocrazia e rischio multe.' },
+              { q: 'Come funziona l\'integrazione con le Assicurazioni Pet?', a: 'Integrazione diretta con UnipolSai, Allianz, Generali, AXA. Invio automatico documenti e fatture, tracking stato rimborso per il cliente. La clinica diventa partner convenzionato, attrae clienti assicurati (segmento in crescita), aumenta fatturato.' },
+              { q: 'Cos\'è la Farmacovigilanza ADR?', a: 'Sistema di segnalazione Reazioni Avverse Farmaci veterinari al Ministero Salute (obbligo legale). Form guidato con gravità (lieve/moderata/grave), invio automatico entro 15 giorni per ADR gravi, archivio tracciabile conforme.' },
+              { q: 'Come funzionano i Certificati Sanitari Viaggio?', a: 'Wizard guidato per destinazione (UE, Extra-UE, UK, USA). Genera automaticamente certificati conformi: Passaporto Europeo, certificati export, checklist documenti richiesti. Velocizza un servizio che i clienti pagano bene.' },
+              { q: 'Cos\'è l\'integrazione con i Laboratori IZS?', a: 'Connessione digitale con Istituti Zooprofilattici Sperimentali (laboratori pubblici regionali). Per esami obbligatori (rabbia, brucellosi, tubercolosi, leishmaniosi). Richieste e referti gestiti automaticamente, riduce burocrazia con enti pubblici.' },
+              { q: 'Come funziona la Gestione Turni Guardia H24?', a: 'Calendario turni per cliniche con pronto soccorso. Organizzazione turni diurni/notturni, alert emergenze push al veterinario di guardia, handoff automatico tra turni con note di consegna. Ideale per cliniche premium con servizio H24.' },
+              { q: 'Cosa sono i Crediti ECM Veterinari?', a: 'Tracking formazione obbligatoria continua (50 crediti ECM/anno per veterinari). Monitoraggio crediti acquisiti, alert 60 giorni prima scadenza, integrazione corsi accreditati FNOVI/SCIVAC. Aiuta veterinari a restare in regola con l\'obbligo formativo.' },
             ].map((faq, i) => (
               <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-lg border px-4">
                 <AccordionTrigger className="text-left font-semibold text-gray-900 py-4">{faq.q}</AccordionTrigger>

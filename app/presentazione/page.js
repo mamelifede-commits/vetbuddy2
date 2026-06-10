@@ -509,6 +509,130 @@ export default function BrochurePage() {
           </div>
         </div>
 
+        {/* SECONDA WAVE MODULI ITALIANI */}
+        <h3 className="text-xl font-black text-gray-900 mt-8 mb-4">🇮🇹 Conformità e Operatività Avanzata 2025</h3>
+        <div className="grid grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">📝</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Consensi Informati Digitali</h3>
+                <span className="bg-blue-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Template consensi con firma grafometrica. Archiviazione 10 anni GDPR. Zero carta, massima sicurezza legale.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">⚠️</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Malattie Denunciabili</h3>
+                <span className="bg-red-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Alert automatici, moduli ASL/Ministero. Conformità normativa, zero rischio multe.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-green-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🛡️</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Integrazione Assicurazioni Pet</h3>
+                <span className="bg-green-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              UnipolSai, Allianz, Generali, AXA. Invio automatico documenti, tracking rimborsi.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-orange-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">💊</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Farmacovigilanza ADR</h3>
+                <span className="bg-orange-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Segnalazione reazioni avverse farmaci. Invio Ministero Salute, conformità automatica.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-sky-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">✈️</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Certificati Sanitari Viaggio</h3>
+                <span className="bg-sky-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Wizard UE/Extra-UE. Passaporto Europeo, certificati export, checklist destinazione.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🧪</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Integrazione Laboratori IZS</h3>
+                <span className="bg-purple-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Istituti Zooprofilattici. Esami obbligatori, richieste e referti digitali.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-indigo-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🕐</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Gestione Turni Guardia H24</h3>
+                <span className="bg-indigo-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Turni pronto soccorso, alert emergenze, handoff automatico tra veterinari.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-teal-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🎓</span>
+              </div>
+              <div>
+                <h3 className="font-black text-gray-900 text-sm">Tracking Crediti ECM</h3>
+                <span className="bg-teal-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Mercato IT</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              Formazione obbligatoria 50 crediti/anno. Alert scadenze, corsi accreditati integrati.
+            </p>
+          </div>
+        </div>
+
         <div className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border-2 border-emerald-200">
           <h4 className="font-black text-gray-900 mb-3">📊 Dashboard ROI in Tempo Reale</h4>
           <div className="grid grid-cols-5 gap-4 text-center">
