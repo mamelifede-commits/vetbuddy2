@@ -19,7 +19,8 @@ import {
   MapPin, Stethoscope, Mail, Clock, Gift, Loader2, FlaskConical, BarChart3,
   ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer, Video, Link2,
   Bot, CalendarX, Rocket, Database, QrCode, Syringe, Plane, Share2, AlertTriangle, AlertCircle, CheckSquare, Home, GraduationCap,
-  Scissors, Calculator, Package, CreditCard, Smartphone, ShoppingCart, Apple, Watch, Siren, ShieldCheck, Briefcase, Mic, Wrench
+  Scissors, Calculator, Package, CreditCard, Smartphone, ShoppingCart, Apple, Watch, Siren, ShieldCheck, Briefcase, Mic, Wrench,
+  Microscope, Leaf, DollarSign, Camera
 } from 'lucide-react';
 
 function FullLandingPage({ onLogin }) {
@@ -123,7 +124,7 @@ function FullLandingPage({ onLogin }) {
             <span className="text-coral-500">Clienti sempre seguiti.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            VetBuddy automatizza prenotazioni, promemoria, comunicazioni, referti e ricontatti tra cliniche veterinarie, proprietari e laboratori. <strong>Con WhatsApp Business, AI Reception, recovery no-show e programmi referral. Una piattaforma enterprise completa con 82 moduli integrati.</strong>
+            VetBuddy automatizza prenotazioni, promemoria, comunicazioni, referti e ricontatti tra cliniche veterinarie, proprietari e laboratori. <strong>Con WhatsApp Business, AI Reception, recovery no-show e programmi referral. Una piattaforma enterprise completa con 92 moduli integrati.</strong>
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
             <Button size="lg" className="bg-coral-500 hover:bg-coral-600 text-white px-8 py-6 text-lg" onClick={() => scrollToSection('pilot')}>
@@ -345,6 +346,16 @@ function FullLandingPage({ onLogin }) {
               { icon: Brain, title: 'Cross-Species Learning AI', desc: 'AI trained tutte specie. Transfer learning: \"Dermatite gatto simile a caso canino risolto con X\". Risolvi casi impossibili fuori comfort zone.', color: 'bg-indigo-800', tag: 'Genius' },
               { icon: GraduationCap, title: 'VetBuddy Residency Program', desc: 'Mentorship 1-to-1 con vet senior. €200/mese vs €20-40k residenze tradizionali. Certificazione FNOVI. Democratizza formazione specialistica.', color: 'bg-slate-800', tag: 'Genius' },
               { icon: Activity, title: 'Fisioterapia & Riabilitazione', desc: 'Due modalità: In-House (video-esercizi, tracking) + Network (marketplace centri specializzati). Protocolli guidati. Recupero +40% più veloce. Revenue ricorrente.', color: 'bg-teal-800', tag: 'Genius' },
+              { icon: Microscope, title: 'VetBuddy Autopsy AI', desc: 'AI analizza foto/video necroscopia, identifica lesioni, report 5 min. Patologo on-demand €150 vs €800. Risparmio 60%, risultati 10x più veloci.', color: 'bg-purple-800', tag: 'Genius' },
+              { icon: TrendingUp, title: 'Smart Referral Revenue Share', desc: 'Guadagna 15-20% su referral (specialista, lab, fisioterapia). Win-win-win. Nuovo revenue stream passivo €1-3k/mese per clinica.', color: 'bg-emerald-800', tag: 'Genius' },
+              { icon: Briefcase, title: 'Veterinary Talent Marketplace', desc: 'LinkedIn vet con skill verification. Match score AI, portfolio casi, hiring tracciato. Risolve problema #1 settore. Risparmio €5-10k headhunter.', color: 'bg-blue-800', tag: 'Genius' },
+              { icon: Heart, title: 'Pet Loss Grief Support', desc: 'Protocollo empatico post-eutanasia. Email, grief counselor, memorial digitale, albero memoria. Retention +25%, lifetime value protetto.', color: 'bg-rose-800', tag: 'Genius' },
+              { icon: Leaf, title: 'VetBuddy Carbon Offset', desc: 'Calcolo CO₂ automatico. Certificazione "Carbon Neutral Vet Clinic". Compensazione €30-50/mese. Gen Z preferisce business sostenibili.', color: 'bg-green-800', tag: 'Genius' },
+              { icon: DollarSign, title: 'Dynamic Appointment Pricing', desc: 'Prezzi dinamici domanda (Uber-style). Slot bassi: -30%. Alta domanda: +10%. AI ottimizza revenue. +15-20% revenue, agenda piena.', color: 'bg-amber-800', tag: 'Genius' },
+              { icon: Mic, title: 'Veterinary Podcast Platform', desc: 'Netflix educazione vet. Podcast 20-30 min accreditati ECM. Revenue share 70% creator. Formazione enjoyable + ECM risolti.', color: 'bg-indigo-800', tag: 'Genius' },
+              { icon: Camera, title: 'AI-Powered Medical Photography', desc: 'AI valuta qualità foto PRIMA. Suggerimenti real-time. Auto-enhance. Template guidati patologie. Annotazione automatica lesioni. Zero foto rifatte.', color: 'bg-cyan-800', tag: 'Genius' },
+              { icon: CreditCard, title: 'Veterinary Invoice Financing', desc: 'Buy Now Pay Later veterinario (Klarna). Proprietario 3-12 rate, clinica riceve subito. Approvazione 95%. +30-40% acceptance chirurgie.', color: 'bg-teal-700', tag: 'Genius' },
+              { icon: Users, title: 'Smart Queue Management', desc: 'Code virtuale Poste Italiane-style. Check-in app, attesa auto/bar, notifica "5 min". AI predice ritardi. Esperienza luxury, -70% stress.', color: 'bg-violet-800', tag: 'Genius' },
             ].map((m, i) => (
               <Card key={i} className="hover:shadow-lg transition group relative overflow-hidden">
                 {m.tag && <div className="absolute top-2 right-2"><Badge className="bg-coral-500 text-white text-[10px]">{m.tag}</Badge></div>}
