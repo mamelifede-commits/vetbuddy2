@@ -394,6 +394,189 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
         </div>
       )}
 
+      {/* Electronic Invoices Tab */}
+      {activeTab === 'electronic' && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Fatturazione Elettronica (XML SDI)</h3>
+            <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => alert('Crea nuova fattura elettronica partendo da una fattura esistente')}>
+              <Plus className="h-4 w-4 mr-2" /> Converti Fattura in FE
+            </Button>
+          </div>
+
+          {/* Stats FE */}
+          <div className="grid grid-cols-4 gap-4">
+            <Card className="bg-gray-50 border-gray-200">
+              <CardContent className="p-3 text-center">
+                <p className="text-xl font-bold text-gray-700">{electronicInvoices.filter(e => e.status === 'draft').length}</p>
+                <p className="text-xs text-gray-600">Bozze</p>
+              </CardContent>
+            </Card>
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="p-3 text-center">
+                <p className="text-xl font-bold text-blue-700">{electronicInvoices.filter(e => e.sdiStatus === 'pending').length}</p>
+                <p className="text-xs text-blue-600">In attesa SDI</p>
+              </CardContent>
+            </Card>
+            <Card className="bg-green-50 border-green-200">
+              <CardContent className="p-3 text-center">
+                <p className="text-xl font-bold text-green-700">{electronicInvoices.filter(e => e.sdiStatus === 'accepted').length}</p>
+                <p className="text-xs text-green-600">Accettate SDI</p>
+              </CardContent>
+            </Card>
+            <Card className="bg-red-50 border-red-200">
+              <CardContent className="p-3 text-center">
+                <p className="text-xl font-bold text-red-700">{electronicInvoices.filter(e => e.sdiStatus === 'rejected').length}</p>
+                <p className="text-xs text-red-600">Rifiutate SDI</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Lista Fatture Elettroniche */}
+          <div className="space-y-3">
+            {electronicInvoices.map(fe => {
+              const statusMap = {
+                draft: { label: 'Bozza', cls: 'bg-gray-100 text-gray-700', icon: FileText },
+                sent: { label: 'Inviata', cls: 'bg-blue-100 text-blue-700', icon: Send },
+              };
+              const sdiStatusMap = {
+                pending: { label: 'SDI: In attesa', cls: 'bg-blue-100 text-blue-700', icon: Clock },
+                accepted: { label: 'SDI: Accettata', cls: 'bg-green-100 text-green-700', icon: CheckCircle },
+                rejected: { label: 'SDI: Rifiutata', cls: 'bg-red-100 text-red-700', icon: X },
+              };
+              const status = statusMap[fe.status];
+              const sdiStatus = fe.sdiStatus ? sdiStatusMap[fe.sdiStatus] : null;
+              
+              return (
+                <Card key={fe.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold">{fe.invoiceNumber}</h4>
+                          <Badge className={status.cls}>
+                            <status.icon className="h-3 w-3 mr-1" /> {status.label}
+                          </Badge>
+                          {sdiStatus && (
+                            <Badge className={sdiStatus.cls}>
+                              <sdiStatus.icon className="h-3 w-3 mr-1" /> {sdiStatus.label}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-600 mb-1">{fe.customerName}</p>
+                        <div className="text-xs text-gray-500 space-y-1">
+                          <p>
+                            <strong>Tipo:</strong> {fe.fiscalData.type} • 
+                            {fe.fiscalData.piva && ` P.IVA: ${fe.fiscalData.piva}`}
+                            {fe.fiscalData.codiceFiscale && ` CF: ${fe.fiscalData.codiceFiscale}`}
+                          </p>
+                          {fe.fiscalData.pec && <p><strong>PEC:</strong> {fe.fiscalData.pec}</p>}
+                          {fe.fiscalData.sdi && <p><strong>Codice SDI:</strong> {fe.fiscalData.sdi}</p>}
+                          {fe.sentDate && (
+                            <p className="text-blue-600">
+                              Inviata: {new Date(fe.sentDate).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          )}
+                          {fe.sdiStatus === 'accepted' && fe.sdiAcceptedDate && (
+                            <p className="text-green-600">
+                              ✓ Accettata SDI: {new Date(fe.sdiAcceptedDate).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          )}
+                          {fe.sdiStatus === 'rejected' && fe.sdiRejectedReason && (
+                            <p className="text-red-600">
+                              ✗ Rifiutata SDI: {fe.sdiRejectedReason}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-gray-800">€{fe.amount}</p>
+                        <div className="flex flex-col gap-2 mt-2">
+                          {fe.status === 'draft' && (
+                            <Button size="sm" className="bg-blue-500 text-white" onClick={() => alert('Generazione XML FE in corso... (Demo)\n\nScarica: ' + fe.invoiceNumber + '.xml')}>
+                              <FileText className="h-3 w-3 mr-1" /> Genera XML
+                            </Button>
+                          )}
+                          {fe.xmlGenerated && (
+                            <>
+                              <Button size="sm" variant="outline" onClick={() => alert('Download XML: ' + fe.invoiceNumber + '.xml\n\n(In produzione: genera XML con libreria fatturazioneElettronica.js)')}>
+                                <Download className="h-3 w-3 mr-1" /> Download XML
+                              </Button>
+                              {fe.status === 'draft' && (
+                                <Button size="sm" className="bg-green-500 text-white" onClick={() => alert('Invio XML a Sistema di Interscambio (SDI) via provider (Fatture in Cloud, Aruba, etc.)')}>
+                                  <Send className="h-3 w-3 mr-1" /> Invia a SDI
+                                </Button>
+                              )}
+                            </>
+                          )}
+                          {fe.sdiStatus === 'rejected' && (
+                            <Button size="sm" className="bg-amber-500 text-white" onClick={() => alert('Correggi e reinvia')}>
+                              <RefreshCw className="h-3 w-3 mr-1" /> Correggi
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Info Box FE */}
+          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-blue-800 mb-2">
+              <Info className="h-4 w-4 inline mr-1" />
+              <strong>Fatturazione Elettronica Italiana (XML SDI):</strong>
+            </p>
+            <ul className="text-xs text-blue-700 space-y-1 ml-5 list-disc">
+              <li><strong>Obbligatoria</strong> per B2B (aziende, professionisti, enti pubblici)</li>
+              <li>Conforme formato <strong>FatturaPA v1.2</strong> Agenzia delle Entrate</li>
+              <li>Invio tramite <strong>Sistema di Interscambio (SDI)</strong> via PEC o API provider</li>
+              <li>Conservazione sostitutiva 10 anni (obbligo di legge)</li>
+              <li>Supporto B2C (Codice Fiscale), B2B (P.IVA + PEC/SDI), PA (Codice IPA)</li>
+              <li><strong>Provider consigliati:</strong> Fatture in Cloud, Aruba, InfoCert</li>
+            </ul>
+          </div>
+
+          {/* Setup dati fiscali clinica */}
+          <Card className="border-amber-200 bg-amber-50/30">
+            <CardHeader>
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Settings className="h-4 w-4 text-amber-600" />
+                Configurazione Dati Fiscali Clinica
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <label className="text-xs text-gray-600">P.IVA Clinica *</label>
+                  <Input placeholder="12345678901" className="mt-1" />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-600">Codice Fiscale</label>
+                  <Input placeholder="RSSMRA85M01H501Z" className="mt-1" />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-600">Regime Fiscale *</label>
+                  <select className="w-full border rounded px-3 py-2 mt-1 text-sm">
+                    <option value="RF01">RF01 - Regime ordinario</option>
+                    <option value="RF19">RF19 - Regime forfettario</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-gray-600">PEC Clinica</label>
+                  <Input placeholder="clinica@pec.it" className="mt-1" />
+                </div>
+              </div>
+              <Button size="sm" className="mt-3 bg-amber-500 hover:bg-amber-600 text-white">
+                Salva Configurazione
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Estimates Tab */}
       {activeTab === 'estimates' && (
         <div className="space-y-4">
