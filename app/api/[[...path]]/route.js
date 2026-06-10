@@ -19,6 +19,7 @@ import { handlePassportGet, handlePassportPost, handlePassportPut, handlePasspor
 import { handleAutopilotGet } from './modules/autopilot';
 import { handleFragilePatientsGet } from './modules/fragile-patients';
 import { handleEstimatesGet, handleEstimatesPost, handleEstimatesPut } from './modules/estimates';
+import { handleRoiDashboardGet } from './modules/roi-dashboard';
 
 // CORS preflight handler
 export async function OPTIONS() {
@@ -49,6 +50,7 @@ export async function GET(request, { params }) {
       handleAutopilotGet,
       handleFragilePatientsGet,
       handleEstimatesGet,
+      handleRoiDashboardGet,
       handleAdminGet,
       handlePassportGet,
     ];

@@ -216,51 +216,65 @@ export default function PreventiviDigitali({ user, onNavigate }) {
               </p>
             </div>
 
-            {preventivi.filter(p => ['inviato', 'visualizzato'].includes(p.stato)).map((prev) => (
+            {preventiviAperti.map((prev) => (
               <Card key={prev.id} className="border-2 border-blue-200 hover:shadow-lg transition">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-bold text-gray-900">{prev.numero}</h3>
-                        {getStatoBadge(prev.stato)}
-                        {getUrgenzaBadge(prev.giorniDaInvio)}
+                        <h3 className="text-xl font-bold text-gray-900">
+                          {prev.id?.substring(0, 8).toUpperCase() || prev.numero}
+                        </h3>
+                        {getStatoBadge(prev.status || prev.stato)}
+                        {getUrgenzaBadge(prev.daysSinceSent || prev.giorniDaInvio)}
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">Cliente: <strong>{prev.cliente}</strong> • Pet: <strong>{prev.pet}</strong></p>
-                      <p className="text-lg font-semibold text-gray-900 mb-2">{prev.servizio}</p>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Cliente: <strong>{prev.ownerName || prev.cliente}</strong> • Pet: <strong>{prev.petName || prev.pet}</strong>
+                      </p>
+                      <p className="text-lg font-semibold text-gray-900 mb-2">{prev.title || prev.servizio}</p>
 
                       <div className="grid grid-cols-4 gap-4 mb-3">
                         <div>
                           <p className="text-xs text-gray-600">Importo</p>
-                          <p className="text-xl font-bold text-green-600">€{prev.importo}</p>
+                          <p className="text-xl font-bold text-green-600">€{prev.totalAmount || prev.importo}</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-600">Data Invio</p>
-                          <p className="text-sm font-bold text-gray-900">{new Date(prev.dataInvio).toLocaleDateString('it-IT')}</p>
+                          <p className="text-sm font-bold text-gray-900">
+                            {prev.sentAt ? new Date(prev.sentAt).toLocaleDateString('it-IT') : 
+                             prev.dataInvio ? new Date(prev.dataInvio).toLocaleDateString('it-IT') : 'Non inviato'}
+                          </p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-600">Visualizzato</p>
                           <p className="text-sm font-bold text-gray-900">
-                            {prev.dataVisualizzazione ? new Date(prev.dataVisualizzazione).toLocaleDateString('it-IT') : '❌ No'}
+                            {prev.viewedAt ? new Date(prev.viewedAt).toLocaleDateString('it-IT') : 
+                             prev.dataVisualizzazione ? new Date(prev.dataVisualizzazione).toLocaleDateString('it-IT') : '❌ No'}
                           </p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-600">Scadenza</p>
-                          <p className="text-sm font-bold text-gray-900">{new Date(prev.validita).toLocaleDateString('it-IT')}</p>
+                          <p className="text-sm font-bold text-gray-900">
+                            {new Date(prev.validUntil || prev.validita).toLocaleDateString('it-IT')}
+                          </p>
                         </div>
                       </div>
 
-                      <div className="bg-gray-50 rounded-lg p-3">
-                        <p className="text-xs font-semibold text-gray-700 mb-1">Note:</p>
-                        <p className="text-xs text-gray-600">{prev.note}</p>
-                      </div>
+                      {(prev.notes || prev.note) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <p className="text-xs font-semibold text-gray-700 mb-1">Note:</p>
+                          <p className="text-xs text-gray-600">{prev.notes || prev.note}</p>
+                        </div>
+                      )}
                     </div>
 
                     <div className="ml-4 flex flex-col gap-2">
-                      <Button className="bg-purple-600 hover:bg-purple-700 text-white whitespace-nowrap">
-                        <Send className="h-4 w-4 mr-2" />
-                        Follow-up
-                      </Button>
+                      {(prev.needsFollowUp || (prev.daysSinceSent && prev.daysSinceSent > 14)) && (
+                        <Button className="bg-purple-600 hover:bg-purple-700 text-white whitespace-nowrap">
+                          <Send className="h-4 w-4 mr-2" />
+                          Follow-up
+                        </Button>
+                      )}
                       <Button variant="outline" size="sm" className="whitespace-nowrap">
                         <Download className="h-4 w-4 mr-2" />
                         PDF
