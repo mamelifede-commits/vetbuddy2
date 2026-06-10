@@ -19,7 +19,7 @@ import {
   MapPin, Stethoscope, Mail, Clock, Gift, Loader2, FlaskConical, BarChart3,
   ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer, Video, Link2,
   Bot, CalendarX, Rocket, Database, QrCode, Syringe, Plane, Share2, AlertTriangle, AlertCircle, CheckSquare, Home, GraduationCap,
-  Scissors, Calculator, Package, CreditCard, Smartphone, ShoppingCart, Apple, Watch, Siren, ShieldCheck, Briefcase, Mic
+  Scissors, Calculator, Package, CreditCard, Smartphone, ShoppingCart, Apple, Watch, Siren, ShieldCheck, Briefcase, Mic, Wrench
 } from 'lucide-react';
 
 function FullLandingPage({ onLogin }) {
@@ -123,7 +123,7 @@ function FullLandingPage({ onLogin }) {
             <span className="text-coral-500">Clienti sempre seguiti.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            VetBuddy automatizza prenotazioni, promemoria, comunicazioni, referti e ricontatti tra cliniche veterinarie, proprietari e laboratori. <strong>Con WhatsApp Business, AI Reception, recovery no-show e programmi referral. Una piattaforma enterprise completa con 73 moduli integrati.</strong>
+            VetBuddy automatizza prenotazioni, promemoria, comunicazioni, referti e ricontatti tra cliniche veterinarie, proprietari e laboratori. <strong>Con WhatsApp Business, AI Reception, recovery no-show e programmi referral. Una piattaforma enterprise completa con 82 moduli integrati.</strong>
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
             <Button size="lg" className="bg-coral-500 hover:bg-coral-600 text-white px-8 py-6 text-lg" onClick={() => scrollToSection('pilot')}>
@@ -336,6 +336,15 @@ function FullLandingPage({ onLogin }) {
               { icon: Users, title: 'VetBuddy Consult', desc: 'Marketplace consulenze specialistiche video. Dermatologo, cardiologo, oncologo disponibili on-demand. Revenue share 70% specialista, 20% clinica, 10% VetBuddy. Accesso expertise mondiale.', color: 'bg-pink-900', tag: 'Genius' },
               { icon: Home, title: 'Smart Clinic Hub', desc: 'IoT clinica: sensori temperatura/umidità degenza, monitoraggio O₂/ECG automatico, alert attrezzature malfunzionanti, workflow automatizzato basato sensori. Clinica 4.0.', color: 'bg-slate-900', tag: 'Genius' },
               { icon: Sparkles, title: 'Genetic Precision Medicine', desc: 'Test genomici razze. Predisposizioni patologie, farmacogenetica (dosaggi personalizzati), breeding responsabile. Partnership laboratori genetica. Medicina preventiva genomica.', color: 'bg-amber-900', tag: 'Genius' },
+              { icon: AlertTriangle, title: 'Predictive Hospitalization AI', desc: 'AI prevede rischio ospedalizzazione 48-72h analizzando cartella + esami. Intervento preemptivo salva vite. Previene emergenze costose. Accuratezza 87%.', color: 'bg-red-800', tag: 'Genius' },
+              { icon: Heart, title: 'Mental Wellness Hub for Vets', desc: 'Piattaforma benessere psicologico veterinari. Burnout altissimo (30% depressione). Supporto anonimo, terapia online, community. Retention staff +40%.', color: 'bg-pink-800', tag: 'Genius' },
+              { icon: Shield, title: 'Veterinary Litigation Shield', desc: 'Assicurazione professionale + AI analizza gap documentali rischiosi + supporto legale h24. Peace of mind. Massimale €500k. €650/anno.', color: 'bg-blue-800', tag: 'Genius' },
+              { icon: Brain, title: 'Pet Behavior AI Profiling', desc: 'AI prevede ansia/aggressività pre-visita. Protocollo gestione personalizzato. Sicurezza staff +60%, meno sedazioni inutili, clienti soddisfatti.', color: 'bg-purple-800', tag: 'Genius' },
+              { icon: Clock, title: 'VetBuddy Time Machine', desc: 'AI simula invecchiamento animale 5-10 anni CON/SENZA intervento. Mostra visivamente conseguenze obesità/patologie. Compliance terapie +80%. Effetto WOW virale.', color: 'bg-cyan-800', tag: 'Genius' },
+              { icon: Wrench, title: 'Predictive Equipment Maintenance', desc: 'Sensori IoT + AI prevedono guasti attrezzature 7-14gg prima (85% accuratezza). Zero downtime operatorio. Risparmio €10-15k/anno.', color: 'bg-orange-800', tag: 'Genius' },
+              { icon: Sparkles, title: 'Cross-Species Learning AI', desc: 'AI trained tutte specie. Transfer learning: \"Dermatite gatto simile a caso canino risolto con X\". Risolvi casi impossibili fuori comfort zone.', color: 'bg-indigo-800', tag: 'Genius' },
+              { icon: GraduationCap, title: 'VetBuddy Residency Program', desc: 'Mentorship 1-to-1 con vet senior. €200/mese vs €20-40k residenze tradizionali. Certificazione FNOVI. Democratizza formazione specialistica.', color: 'bg-slate-800', tag: 'Genius' },
+              { icon: Activity, title: 'Fisioterapia & Riabilitazione', desc: 'Due modalità: In-House (video-esercizi, tracking) + Network (marketplace centri specializzati). Protocolli guidati. Recupero +40% più veloce. Revenue ricorrente.', color: 'bg-teal-800', tag: 'Genius' },
             ].map((m, i) => (
               <Card key={i} className="hover:shadow-lg transition group relative overflow-hidden">
                 {m.tag && <div className="absolute top-2 right-2"><Badge className="bg-coral-500 text-white text-[10px]">{m.tag}</Badge></div>}
