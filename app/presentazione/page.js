@@ -733,6 +733,47 @@ export default function BrochurePage() {
           </div>
         </div>
 
+        {/* INNOVATION 2025 */}
+        <h3 className="text-xl font-black text-gray-900 mt-8 mb-4">🚀 Innovation Lab 2025 - AI & IoT</h3>
+        <div className="grid grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🤖</span></div><div><h3 className="font-black text-gray-900 text-sm">AI Diagnostico Assistant</h3><span className="bg-purple-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Co-pilota: diagnosi differenziali AI, probabilità, esami consigliati. NESSUNO lo ha.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><span className="text-2xl">📹</span></div><div><h3 className="font-black text-gray-900 text-sm">Telemedicina FNOVI</h3><span className="bg-blue-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Video-consulti follow-up. Conforme normativa italiana. Standard post-COVID.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-cyan-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center"><span className="text-2xl">⌚</span></div><div><h3 className="font-black text-gray-900 text-sm">Pet Wearables IoT</h3><span className="bg-cyan-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">FitBark, Whistle, Tractive. Dati 24/7 in cartella. Alert anomalie.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-emerald-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🛡️</span></div><div><h3 className="font-black text-gray-900 text-sm">Insurance White-Label</h3><span className="bg-emerald-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Vendi assicurazioni tuo brand. Revenue share 20%. Nuovo stream enorme.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🚨</span></div><div><h3 className="font-black text-gray-900 text-sm">Emergency Network</h3><span className="bg-red-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Rete solidale 24/7. Sistema crediti. Nessuna clinica sola.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-indigo-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">👨‍💼</span></div><div><h3 className="font-black text-gray-900 text-sm">Veterinary Marketplace</h3><span className="bg-indigo-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Uber veterinari. Sostituti certificati. Rating, pagamento gestito.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-teal-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🔬</span></div><div><h3 className="font-black text-gray-900 text-sm">Clinical Trials</h3><span className="bg-teal-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Ricerca clinica. Compenso €300-500, farmaci gratis. Revenue + scienza.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎤</span></div><div><h3 className="font-black text-gray-900 text-sm">Voice Assistant</h3><span className="bg-purple-600 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Alexa/Google. Prenotazioni vocali. IT/EN/ES/FR. Anziani lo adorano.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-pink-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center"><span className="text-2xl">❤️</span></div><div><h3 className="font-black text-gray-900 text-sm">Pet Adoption</h3><span className="bg-pink-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Canili/gattili. Prima visita gratis. Social responsibility + clienti.</p>
+          </div>
+        </div>
+
         <div className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border-2 border-emerald-200">
           <h4 className="font-black text-gray-900 mb-3">📊 Dashboard ROI in Tempo Reale</h4>
           <div className="grid grid-cols-5 gap-4 text-center">

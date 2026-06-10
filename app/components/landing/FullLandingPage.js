@@ -19,7 +19,7 @@ import {
   MapPin, Stethoscope, Mail, Clock, Gift, Loader2, FlaskConical, BarChart3,
   ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer, Video, Link2,
   Bot, CalendarX, Rocket, Database, QrCode, Syringe, Plane, Share2, AlertTriangle, AlertCircle, CheckSquare, Home, GraduationCap,
-  Scissors, Calculator, Package, CreditCard, Smartphone, ShoppingCart, Apple
+  Scissors, Calculator, Package, CreditCard, Smartphone, ShoppingCart, Apple, Watch, Siren, ShieldCheck, Briefcase, Mic
 } from 'lucide-react';
 
 function FullLandingPage({ onLogin }) {
@@ -320,6 +320,15 @@ function FullLandingPage({ onLogin }) {
               { icon: ShoppingCart, title: 'E-commerce Prodotti Pet', desc: 'Vendita online cibo, antiparassitari, accessori. Revenue addizionale 10-15%. Spedizioni automatiche.', color: 'bg-pink-700', tag: 'Enterprise' },
               { icon: Home, title: 'Visite Domiciliari', desc: 'Booking visite a casa, tragitto ottimizzato Google Maps, app mobile vet. Servizio premium margini alti.', color: 'bg-amber-700', tag: 'Enterprise' },
               { icon: Apple, title: 'Nutrizione Personalizzata AI', desc: 'Piani alimentari custom per razza/età. Tracking peso, alert obesità. Previene patologie, riduce emergenze.', color: 'bg-lime-700', tag: 'Enterprise' },
+              { icon: Brain, title: 'AI Diagnostico Assistant', desc: 'Co-pilota veterinario: analisi sintomi con AI, diagnosi differenziali ordinate per probabilità, suggerimenti esami. GAME CHANGER.', color: 'bg-purple-700', tag: 'Innovation' },
+              { icon: Video, title: 'Telemedicina Conforme FNOVI', desc: 'Video-consulti HD per follow-up. Conforme normativa italiana. Registrazione automatica, prescrizioni digitali post-consulto.', color: 'bg-blue-700', tag: 'Innovation' },
+              { icon: Watch, title: 'Pet Wearables & IoT', desc: 'Integrazione FitBark, Whistle, Tractive. Dati attività 24/7 in cartella. Alert anomalie comportamentali. IoT futuro.', color: 'bg-cyan-700', tag: 'Innovation' },
+              { icon: ShieldCheck, title: 'Pet Insurance White-Label', desc: 'Vendi assicurazioni con tuo brand. Revenue share 20% clinica. 3 piani (Basic/Plus/Premium). Nuovo revenue stream enorme.', color: 'bg-emerald-700', tag: 'Innovation' },
+              { icon: Siren, title: 'Emergency Network 24/7', desc: 'Rete solidale emergenze tra cliniche. Sistema crediti equilibrato. Trasferimento pazienti tracciato. Nessuna clinica sola.', color: 'bg-red-700', tag: 'Innovation' },
+              { icon: Briefcase, title: 'Veterinary Marketplace', desc: 'Uber per veterinari: trova sostituti/freelance certificati. Rating, specializzazioni. Pagamento gestito. Risolve problema enorme.', color: 'bg-indigo-700', tag: 'Innovation' },
+              { icon: FlaskConical, title: 'Clinical Trials Platform', desc: 'Partecipa a ricerca clinica veterinaria. Compenso €300-500/trial, farmaci gratis. Contributo scienza + revenue.', color: 'bg-teal-700', tag: 'Innovation' },
+              { icon: Mic, title: 'Voice Assistant Multilingua', desc: 'Alexa & Google Assistant per prenotazioni vocali. IT/EN/ES/FR. Ideale proprietari anziani e turisti.', color: 'bg-purple-600', tag: 'Innovation' },
+              { icon: Heart, title: 'Pet Adoption Platform', desc: 'Integrazione canili/gattili. Prima visita gratis adozioni. Follow-up automatico. Social responsibility + clienti.', color: 'bg-pink-700', tag: 'Innovation' },
             ].map((m, i) => (
               <Card key={i} className="hover:shadow-lg transition group relative overflow-hidden">
                 {m.tag && <div className="absolute top-2 right-2"><Badge className="bg-coral-500 text-white text-[10px]">{m.tag}</Badge></div>}
@@ -750,6 +759,15 @@ function FullLandingPage({ onLogin }) {
               { q: 'Cos\'è l\'E-commerce Prodotti Pet?', a: 'Vendita online cibo, antiparassitari, accessori dal sito della clinica. Integrazione inventario, spedizioni automatiche, marketing prodotti. Revenue addizionale 10-15% del fatturato. Clienti acquistano direttamente dalla clinica di fiducia.' },
               { q: 'Come funzionano le Visite Domiciliari?', a: 'Booking visite a casa dei clienti, calendario dedicato, tragitto ottimizzato Google Maps, app mobile veterinario con accesso cartelle offline. Servizio premium con margini alti (€150-200/visita). Ideale per anziani/disabili.' },
               { q: 'Cos\'è la Nutrizione Personalizzata AI?', a: 'Algoritmo AI suggerisce piano alimentare custom basato su razza, età, peso, patologie. Tracking peso, grafici progressione, alert obesità. Previene patologie croniche (diabete, obesità) e riduce visite emergenza. Medicina preventiva.' },
+              { q: 'Come funziona l\'AI Diagnostico Assistant?', a: 'Inserisci sintomi osservati (es: vomito, letargia). L\'AI suggerisce diagnosi differenziali ordinate per probabilità con esami consigliati. Basato su database migliaia di casi clinici. DISCLAIMER: supporto decisionale, NON sostituisce giudizio veterinario. NESSUN competitor lo ha.' },
+              { q: 'Cos\'è la Telemedicina Conforme FNOVI?', a: 'Video-consulti HD per follow-up su pazienti già visitati (NON prime visite - conforme FNOVI). Registrazione automatica, prescrizioni digitali post-consulto. Standard post-COVID. Comodo per controlli terapia, dimissioni, follow-up semplici.' },
+              { q: 'Come funzionano i Pet Wearables & IoT?', a: 'Integrazione collari smart: FitBark, Whistle, Tractive, Fi Collar. Dati attività, sonno, localizzazione GPS entrano automaticamente in cartella clinica. Alert anomalie comportamentali. Grafici trend salute long-term. IoT veterinario è il futuro.' },
+              { q: 'Cos\'è Pet Insurance White-Label?', a: 'VetBuddy vende assicurazioni pet con TUO brand (es: "Clinica Rossi Pet Insurance"). Backend: UnipolSai. Revenue share: 20% clinica, 10% VetBuddy, 70% assicuratore. Claims automatici già integrati. Nuovo revenue stream ricorrente enorme.' },
+              { q: 'Come funziona Emergency Network 24/7?', a: 'Rete solidale emergenze tra cliniche abbonate. Clinica con caso fuori competenza → Alert rete → Altre rispondono disponibilità → Trasferimento tracciato. Sistema crediti: chi aiuta accumula, chi chiede usa. Nessuna clinica può gestire ogni emergenza.' },
+              { q: 'Cos\'è il Veterinary Marketplace?', a: 'Uber per veterinari: trova sostituti/freelance certificati per ferie/malattia/picchi. Rating, certificazioni FNOVI, specializzazioni. Pagamento e contratto gestito da VetBuddy. Risolve problema enorme: trovare sostituti è difficilissimo.' },
+              { q: 'Come funzionano i Clinical Trials?', a: 'Università/pharma pubblicano trial su VetBuddy. Cliniche con pazienti idonei si candidano. Compenso €300-500/trial + farmaci gratis per paziente. Raccolta dati automatica. Democratizza accesso ricerca clinica veterinaria. Revenue extra + scienza.' },
+              { q: 'Cos\'è il Voice Assistant per VetBuddy?', a: 'Alexa & Google Assistant per prenotazioni vocali. "Alexa, prenota visita per Luna da VetBuddy". Multilingua: IT, EN, ES, FR (turisti). Conferma vocale + SMS. Comodità assoluta. Proprietari anziani lo adorano. Voice-first veterinario.' },
+              { q: 'Come funziona Pet Adoption Platform?', a: 'Integrazione canili/gattili: animali in adozione pubblicati su VetBuddy. Proprietari cercano e richiedono. Prima visita veterinaria gratis inclusa (clinica partner). Follow-up automatico post-adozione. Social responsibility + acquisizione nuovi clienti lifetime.' },
             ].map((faq, i) => (
               <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-lg border px-4">
                 <AccordionTrigger className="text-left font-semibold text-gray-900 py-4">{faq.q}</AccordionTrigger>
