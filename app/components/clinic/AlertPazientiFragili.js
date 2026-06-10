@@ -1,30 +1,59 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   AlertTriangle, Heart, Clock, Pill, Shield, Calendar, 
-  Bell, CheckCircle, Phone, MessageCircle, TrendingUp
+  Bell, CheckCircle, Phone, MessageCircle, TrendingUp, RefreshCw
 } from 'lucide-react';
 import BackToDashboard from '@/app/components/shared/BackToDashboard';
+import api from '@/app/lib/api';
 
 const PATIENT_CATEGORIES = [
-  { id: 'senior', name: 'Senior (+7 anni)', icon: '👴', color: 'amber', count: 23 },
-  { id: 'cronici', name: 'Patologie Croniche', icon: '💊', color: 'orange', count: 18 },
-  { id: 'allergici', name: 'Allergici', icon: '🤧', color: 'red', count: 12 },
-  { id: 'terapia', name: 'In Terapia Continuativa', icon: '💉', color: 'purple', count: 15 },
-  { id: 'postop', name: 'Post-Operatori', icon: '🩹', color: 'blue', count: 8 },
-  { id: 'critici', name: 'Documenti Critici', icon: '📋', color: 'pink', count: 6 },
+  { id: 'senior', name: 'Senior (+7 anni)', icon: '👴', color: 'amber' },
+  { id: 'cronici', name: 'Patologie Croniche', icon: '💊', color: 'orange' },
+  { id: 'allergici', name: 'Allergici', icon: '🤧', color: 'red' },
+  { id: 'terapia', name: 'In Terapia Continuativa', icon: '💉', color: 'purple' },
+  { id: 'postop', name: 'Post-Operatori', icon: '🩹', color: 'blue' },
+  { id: 'critici', name: 'Documenti Critici', icon: '📋', color: 'pink' },
 ];
 
 export default function AlertPazientiFragili({ user, onNavigate }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [activeTab, setActiveTab] = useState('patients');
+  const [fragilePatients, setFragilePatients] = useState([]);
+  const [categoryCount, setCategoryCount] = useState({});
+  const [totalCount, setTotalCount] = useState(0);
+  const [highUrgencyCount, setHighUrgencyCount] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data pazienti fragili
-  const fragilePatients = [
+  useEffect(() => {
+    loadFragilePatients();
+  }, []);
+
+  const loadFragilePatients = async () => {
+    setLoading(true);
+    try {
+      const data = await api.get('fragile-patients');
+      setFragilePatients(data.patients || []);
+      setCategoryCount(data.categoryCount || {});
+      setTotalCount(data.totalCount || 0);
+      setHighUrgencyCount(data.highUrgencyCount || 0);
+    } catch (error) {
+      console.error('Error loading fragile patients:', error);
+      // Fallback to mock data if API fails
+      setFragilePatients(getMockPatients());
+      setTotalCount(6);
+      setCategoryCount({ senior: 3, cronici: 4, allergici: 2, terapia: 2, postop: 1, critici: 1 });
+      setHighUrgencyCount(3);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getMockPatients = () => [
     { id: 1, name: 'Max', species: 'Cane', breed: 'Labrador', age: 11, owner: 'Maria Rossi', categories: ['senior', 'cronici'], conditions: ['Insufficienza renale cronica', 'Artrite'], medications: ['Benazepril 5mg', 'Meloxicam 1.5mg'], lastVisit: '2024-01-15', nextVisit: '2024-02-15', alerts: ['Controllo creatinina urgente', 'Promemoria farmaci'], urgency: 'high' },
     { id: 2, name: 'Luna', species: 'Gatto', breed: 'Persiano', age: 14, owner: 'Luca Bianchi', categories: ['senior', 'allergici'], conditions: ['Allergia alimentare', 'Ipertiroidismo'], medications: ['Dieta ipoallergenica', 'Metimazolo'], lastVisit: '2024-01-20', nextVisit: '2024-03-20', alerts: ['Dosaggio ormoni da ricontrollare'], urgency: 'medium' },
     { id: 3, name: 'Rocky', species: 'Cane', breed: 'Bulldog', age: 5, owner: 'Anna Verdi', categories: ['postop', 'terapia'], conditions: ['Post-chirurgia legamento crociato'], medications: ['Antibiotico', 'Antidolorifico'], lastVisit: '2024-02-01', nextVisit: '2024-02-14', alerts: ['Rimozione punti tra 3 giorni', 'Monitorare deambulazione'], urgency: 'high' },
@@ -38,19 +67,39 @@ export default function AlertPazientiFragili({ user, onNavigate }) {
     : fragilePatients.filter(p => p.categories.includes(selectedCategory));
 
   const automatedActions = [
-    { id: 1, type: 'promemoria', description: 'Promemoria automatico controllo 7 giorni prima', enabled: true, patients: 23 },
-    { id: 2, type: 'task', description: 'Task automatico per staff: "Preparare referti precedenti"', enabled: true, patients: 23 },
-    { id: 3, type: 'whatsapp', description: 'Messaggio WhatsApp personalizzato 24h prima', enabled: true, patients: 18 },
-    { id: 4, type: 'alert', description: 'Alert in agenda con badge rosso "PAZIENTE FRAGILE"', enabled: true, patients: 23 },
+    { id: 1, type: 'promemoria', description: 'Promemoria automatico controllo 7 giorni prima', enabled: true, patients: totalCount },
+    { id: 2, type: 'task', description: 'Task automatico per staff: "Preparare referti precedenti"', enabled: true, patients: totalCount },
+    { id: 3, type: 'whatsapp', description: 'Messaggio WhatsApp personalizzato 24h prima', enabled: true, patients: Math.floor(totalCount * 0.7) },
+    { id: 4, type: 'alert', description: 'Alert in agenda con badge rosso "PAZIENTE FRAGILE"', enabled: true, patients: totalCount },
     { id: 5, type: 'followup', description: 'Follow-up automatico 3 giorni post-visita', enabled: false, patients: 0 },
   ];
 
+  const patientsWithNextVisit = fragilePatients.filter(p => p.nextVisit).length;
+  const patientsWithAlerts = fragilePatients.filter(p => p.alerts && p.alerts.length > 0).length;
+
   const stats = [
-    { label: 'Pazienti Fragili Totali', value: 82, icon: Heart, color: 'text-red-600', bgColor: 'bg-red-50' },
-    { label: 'Con Controllo Imminente', value: 15, icon: Calendar, color: 'text-orange-600', bgColor: 'bg-orange-50' },
-    { label: 'Alert Attivi Oggi', value: 8, icon: Bell, color: 'text-purple-600', bgColor: 'bg-purple-50' },
-    { label: 'Compliance Terapie', value: '91%', icon: CheckCircle, color: 'text-green-600', bgColor: 'bg-green-50' },
+    { label: 'Pazienti Fragili Totali', value: totalCount, icon: Heart, color: 'text-red-600', bgColor: 'bg-red-50' },
+    { label: 'Con Controllo Imminente', value: patientsWithNextVisit, icon: Calendar, color: 'text-orange-600', bgColor: 'bg-orange-50' },
+    { label: 'Alert Attivi Oggi', value: patientsWithAlerts, icon: Bell, color: 'text-purple-600', bgColor: 'bg-purple-50' },
+    { label: 'Alta/Critica Urgenza', value: highUrgencyCount, icon: AlertTriangle, color: 'text-red-600', bgColor: 'bg-red-50' },
   ];
+
+  // Update PATIENT_CATEGORIES with real counts
+  const categoriesWithCounts = PATIENT_CATEGORIES.map(cat => ({
+    ...cat,
+    count: categoryCount[cat.id] || 0
+  }));
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-12 w-12 text-red-600 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Caricamento pazienti fragili...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -105,7 +154,7 @@ export default function AlertPazientiFragili({ user, onNavigate }) {
               >
                 Tutti ({fragilePatients.length})
               </Button>
-              {PATIENT_CATEGORIES.map(cat => (
+              {categoriesWithCounts.map(cat => (
                 <Button
                   key={cat.id}
                   variant={selectedCategory === cat.id ? 'default' : 'outline'}

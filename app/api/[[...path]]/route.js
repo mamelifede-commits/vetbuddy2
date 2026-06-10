@@ -17,6 +17,7 @@ import { handlePrescriptionsGet, handlePrescriptionsPost, handlePrescriptionsPut
 import { handleHealthPlansGet, handleHealthPlansPost, handleHealthPlansPut, handleHealthPlansDelete } from './modules/healthplans';
 import { handlePassportGet, handlePassportPost, handlePassportPut, handlePassportDelete } from './modules/passport';
 import { handleAutopilotGet } from './modules/autopilot';
+import { handleFragilePatientsGet } from './modules/fragile-patients';
 
 // CORS preflight handler
 export async function OPTIONS() {
@@ -45,6 +46,7 @@ export async function GET(request, { params }) {
       handleClinicGet,
       handleLabGet,
       handleAutopilotGet,
+      handleFragilePatientsGet,
       handleAdminGet,
       handlePassportGet,
     ];
