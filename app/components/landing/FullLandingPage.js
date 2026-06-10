@@ -124,7 +124,7 @@ function FullLandingPage({ onLogin }) {
             <span className="text-coral-500">Clienti sempre seguiti.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            VetBuddy automatizza prenotazioni, promemoria, comunicazioni, referti e ricontatti tra cliniche veterinarie, proprietari e laboratori. <strong>Con WhatsApp Business, AI Reception, recovery no-show e programmi referral. Una piattaforma enterprise completa con 102 moduli integrati.</strong>
+            VetBuddy automatizza prenotazioni, promemoria, comunicazioni, referti e ricontatti tra cliniche veterinarie, proprietari e laboratori. <strong>Con WhatsApp Business, AI Reception, recovery no-show e programmi referral. Una piattaforma enterprise completa con 103 moduli integrati.</strong>
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
             <Button size="lg" className="bg-coral-500 hover:bg-coral-600 text-white px-8 py-6 text-lg" onClick={() => scrollToSection('pilot')}>
@@ -415,7 +415,7 @@ function FullLandingPage({ onLogin }) {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">Moduli in Evidenza</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">I moduli più potenti e richiesti per trasformare la tua clinica veterinaria. <strong>Questi sono solo alcuni dei 102 moduli disponibili.</strong></p>
+            <p className="text-gray-600 max-w-2xl mx-auto">I moduli più potenti e richiesti per trasformare la tua clinica veterinaria. <strong>Questi sono solo alcuni dei 103 moduli disponibili.</strong></p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
             {[
@@ -445,7 +445,7 @@ function FullLandingPage({ onLogin }) {
           
           <div className="text-center mt-12">
             <a href="/moduli" className="inline-flex items-center gap-2 bg-coral-500 hover:bg-coral-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <span>Esplora tutti i 102 Moduli</span>
+              <span>Esplora tutti i 103 Moduli</span>
               <ChevronRight className="h-5 w-5" />
             </a>
             <p className="text-sm text-gray-500 mt-4">Scopri Base, Mercato IT, Enterprise, Innovation e tutti i moduli Genius</p>
@@ -930,6 +930,7 @@ function FullLandingPage({ onLogin }) {
               { q: 'Come funziona Smart Surgery Scheduling AI?', a: 'Pianificazione intelligente delle chirurgie. AI ottimizza calendario sala operatoria considerando: complessità intervento, durata stimata, tempi prep/recovery, disponibilità anestesista/strumentista. Suggerisce buffer automatici, prevede conflitti risorse, massimizza utilizzo sale. Dashboard real-time con stati chirurgie. Aumenta numero chirurgie/settimana +25%, riduce ritardi -60%, ottimizza utilizzo sale operatorie +40%.' },
               { q: 'Cos\'è Emergency Triage AI?', a: 'Sistema di triage automatico per emergenze veterinarie. AI analizza sintomi, parametri vitali, storia clinica e assegna priorità P1-P4 in 60 secondi. Protocolli standard internazionali. Riduce errori triage -90%, accelera presa in carico emergenze critiche, ottimizza code di attesa. Dashboard real-time con alert automatici per emergenze P1. Accuratezza AI 96.8%, validato su 50k+ casi emergenza.' },
               { q: 'Come funziona Veterinary Franchise Builder?', a: 'Sistema completo per creare e gestire rete di cliniche veterinarie franchising. AI analizza 150+ città italiane e suggerisce top location per espansione (densità popolazione, reddito, competizione, domanda servizi). Dashboard consolidato multi-sede, KPI comparativi, standard di servizio unificati, trasferimento pazienti tra sedi. Strumenti business plan automatici, ROI forecasting, investimento richiesto. Cresci da 1 a 10+ sedi con sistema replicabile.' },
+              { q: 'Cos\'è Alert Pazienti Fragili & Cronici?', a: 'Sistema di monitoraggio continuo per pazienti che richiedono attenzione particolare. Categorie: Senior, Cronici, Allergici, In Terapia Continuativa, Post-Operatori, Con Documenti Critici. Badge visibili nella scheda animale, alert automatici in agenda prima della visita, task automatici per lo staff, promemoria follow-up personalizzati. Aumenta continuità di cura +40%, riduce dimenticanze a zero, migliora compliance terapie +35%. Valore percepito dal proprietario molto più alto.' },
             ].map((faq, i) => (
               <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-lg border px-4">
                 <AccordionTrigger className="text-left font-semibold text-gray-900 py-4">{faq.q}</AccordionTrigger>

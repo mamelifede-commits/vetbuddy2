@@ -12,7 +12,7 @@ export default function ModuliPage() {
   const categories = {
     genius: {
       title: 'Genius',
-      count: 39,
+      count: 40,
       color: 'text-purple-600',
       modules: [
         'VetBuddy Brain - Super-Assistente AI multimodale',
@@ -54,6 +54,7 @@ export default function ModuliPage() {
         'Smart Surgery Scheduling AI - Scheduling chirurgie intelligente',
         'Emergency Triage AI - Triage automatico emergenze',
         'Veterinary Franchise Builder - Costruttore rete franchising veterinari',
+        'Alert Pazienti Fragili & Cronici - Monitoraggio continuo pazienti speciali',
       ]
     },
     base: {

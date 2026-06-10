@@ -144,6 +144,108 @@ export default function BrochurePage() {
       </div>
 
       {/* ====================================================================
+          PAGINA 2B — NON CAMBI GESTIONALE + 4 MACRO-AREE
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        
+        <div className="bg-white rounded-2xl p-8 mb-8 border-2 border-purple-200 shadow-lg">
+          <h2 className="text-3xl font-black text-gray-900 mb-3 text-center">Non cambi gestionale. Aggiungi uno strato operativo intelligente.</h2>
+          <p className="text-lg text-gray-700 text-center max-w-3xl mx-auto">
+            <strong>VetBuddy lavora accanto agli strumenti già usati dalla clinica.</strong> Non obbliga a migrare tutto, non sostituisce i flussi principali, ma <strong>automatizza prenotazioni, comunicazioni, promemoria, referti, richiami e follow-up.</strong>
+          </p>
+        </div>
+
+        <h2 className="text-3xl font-black text-gray-900 mb-6 text-center">4 Macro-Aree. Un ecosistema completo.</h2>
+
+        <div className="grid grid-cols-2 gap-5">
+          {/* AREA 1 */}
+          <div className="bg-white rounded-xl p-5 border-2 border-blue-200 shadow-md">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Phone className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-gray-900">Area 1 — Reception Intelligente</h3>
+                <p className="text-xs text-blue-600 font-semibold">Riduci il carico della reception</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+              {['Prenotazioni online', 'Agenda digitale', 'Google Calendar Sync', 'Link + QR code', 'WhatsApp Business', 'Inbox condivisa', 'AI Reception', 'Risposte suggerite', 'Priorità messaggi', 'Assegnazione staff', 'Task Manager'].map((item, i) => (
+                <div key={i} className="flex items-center gap-1">
+                  <Check className="w-3 h-3 text-blue-600 flex-shrink-0" />
+                  <span className="text-gray-700">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* AREA 2 */}
+          <div className="bg-white rounded-xl p-5 border-2 border-green-200 shadow-md">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <ArrowRight className="w-5 h-5 text-green-600" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-gray-900">Area 2 — Automazioni & Ritorni</h3>
+                <p className="text-xs text-green-600 font-semibold">Fai tornare i clienti al momento giusto</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+              {['Promemoria visite', 'Promemoria vaccini', 'Richiami annuali', 'Antiparassitari', 'Pulizia dentale', 'No-Show Recovery', 'Lista d\'attesa', 'Recensioni auto', 'Referral', 'Campagne clienti', 'Clienti dormienti', 'Piani salute', 'Programma fedeltà'].map((item, i) => (
+                <div key={i} className="flex items-center gap-1">
+                  <Check className="w-3 h-3 text-green-600 flex-shrink-0" />
+                  <span className="text-gray-700">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* AREA 3 */}
+          <div className="bg-white rounded-xl p-5 border-2 border-purple-200 shadow-md">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Mail className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-gray-900">Area 3 — Gestione Clinica & Staff</h3>
+                <p className="text-xs text-purple-600 font-semibold">Organizza documenti e valore economico</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+              {['Schede animale', 'Storico visite', 'Referti PDF', 'Ricetta elettronica', 'Laboratori', 'Task manager', 'Import/export', 'Riepiloghi economici', 'Cruscotto valore', 'Listino servizi', 'Consensi digitali', 'Preventivi digitali', 'Anamnesi pre-visita', 'Alert pazienti fragili'].map((item, i) => (
+                <div key={i} className="flex items-center gap-1">
+                  <Check className="w-3 h-3 text-purple-600 flex-shrink-0" />
+                  <span className="text-gray-700">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* AREA 4 */}
+          <div className="bg-white rounded-xl p-5 border-2 border-orange-200 shadow-md">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                <PawPrint className="w-5 h-5 text-orange-600" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-gray-900">Area 4 — Area Proprietario & Passport</h3>
+                <p className="text-xs text-orange-600 font-semibold">Esperienza digitale moderna</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+              {['Profilo animale', 'Documenti autorizzati', 'Passport digitale', 'QR emergenza', 'Modalità smarrimento', 'Condivisione temp.', 'Travel Pack', 'Assicurazione', 'Promemoria personali', 'Programma fedeltà', 'Storico visite'].map((item, i) => (
+                <div key={i} className="flex items-center gap-1">
+                  <Check className="w-3 h-3 text-orange-600 flex-shrink-0" />
+                  <span className="text-gray-700">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ====================================================================
           PAGINA 3 — FUNZIONALITÀ CLINICA
       ==================================================================== */}
       <div className="brochure-page bg-white px-12 py-14">
@@ -923,6 +1025,10 @@ export default function BrochurePage() {
           <div className="bg-white rounded-2xl p-6 border-2 border-amber-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🏢</span></div><div><h3 className="font-black text-gray-900 text-sm">Franchise Builder</h3><span className="bg-amber-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Sistema completo franchising. AI location, multi-sede. Scala 1→10+.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><span className="text-2xl">❤️</span></div><div><h3 className="font-black text-gray-900 text-sm">Alert Pazienti Fragili</h3><span className="bg-red-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Monitoraggio continuo pazienti speciali. Badge, alert, compliance +40%.</p>
           </div>
         </div>
 
