@@ -884,6 +884,46 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🚶</span></div><div><h3 className="font-black text-gray-900 text-sm">Smart Queue</h3><span className="bg-violet-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Code virtuale. Check-in app, attesa auto. -70% stress, luxury UX.</p>
           </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><span className="text-2xl">📦</span></div><div><h3 className="font-black text-gray-900 text-sm">Supply Chain AI</h3><span className="bg-purple-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">AI fornitori, prezzi, consegne. Ordini automatici. -18% costi.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-indigo-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">💎</span></div><div><h3 className="font-black text-gray-900 text-sm">LTV Predictor AI</h3><span className="bg-indigo-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Predice valore lifetime clienti. Segmenta VIP, upsell. +30% LTV.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎓</span></div><div><h3 className="font-black text-gray-900 text-sm">Knowledge Marketplace</h3><span className="bg-blue-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Vendi/acquista casi, protocolli. Revenue share 70%. Formazione.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-cyan-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center"><span className="text-2xl">⚡</span></div><div><h3 className="font-black text-gray-900 text-sm">Appointment Orchestration</h3><span className="bg-cyan-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">AI ottimizza agenda real-time. +32% efficienza, -45% no-show.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🚨</span></div><div><h3 className="font-black text-gray-900 text-sm">Crisis Communication</h3><span className="bg-red-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Allerte automatiche focolai, richiami. Messaggi automatici +95%.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-green-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🍽️</span></div><div><h3 className="font-black text-gray-900 text-sm">Nutrition AI Chef</h3><span className="bg-green-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Piani alimentari AI custom. Ricette, liste spesa. Compliance +80%.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-orange-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center"><span className="text-2xl">📉</span></div><div><h3 className="font-black text-gray-900 text-sm">Churn Predictor AI</h3><span className="bg-orange-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Predice abbandono clienti. Azioni retention automatiche. -38% churn.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-teal-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center"><span className="text-2xl">✂️</span></div><div><h3 className="font-black text-gray-900 text-sm">Surgery Scheduling AI</h3><span className="bg-teal-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Ottimizza chirurgie, buffer, risorse. +27% sale, -62% ritardi.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-rose-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🚑</span></div><div><h3 className="font-black text-gray-900 text-sm">Emergency Triage AI</h3><span className="bg-rose-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Triage automatico emergenze. Priorità P1-P4. Accuratezza 97%.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-amber-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🏢</span></div><div><h3 className="font-black text-gray-900 text-sm">Franchise Builder</h3><span className="bg-amber-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Sistema completo franchising. AI location, multi-sede. Scala 1→10+.</p>
+          </div>
         </div>
 
         <div className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border-2 border-emerald-200">
