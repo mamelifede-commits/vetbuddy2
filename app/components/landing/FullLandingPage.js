@@ -154,32 +154,59 @@ function FullLandingPage({ onLogin }) {
       </section>
 
       {/* ============================================================ */}
-      {/* PROBLEMA */}
+      {/* NON CAMBI GESTIONALE */}
+      {/* ============================================================ */}
+      <section className="py-12 px-4 bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-y border-purple-100">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Shield className="h-8 w-8 text-purple-600" />
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Non cambi gestionale. Aggiungi uno strato operativo intelligente.</h2>
+          </div>
+          <p className="text-lg text-gray-700 mb-6 max-w-3xl mx-auto">
+            <strong>VetBuddy lavora accanto agli strumenti già usati dalla clinica.</strong> Non obbliga a migrare tutto, non sostituisce i flussi principali, ma <strong>automatizza prenotazioni, comunicazioni, promemoria, referti, richiami e follow-up.</strong>
+          </p>
+          <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto mt-8">
+            {[
+              { icon: CheckCircle, text: 'Nessuna migrazione forzata', color: 'text-green-600' },
+              { icon: Zap, text: 'Si integra con i tuoi flussi', color: 'text-blue-600' },
+              { icon: TrendingUp, text: 'Risultati misurabili in 90 giorni', color: 'text-purple-600' }
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3 bg-white/80 backdrop-blur p-4 rounded-lg border border-gray-200 shadow-sm">
+                <item.icon className={`h-6 w-6 ${item.color} flex-shrink-0`} />
+                <p className="text-sm font-semibold text-gray-900 text-left">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* COSA RISOLVE OGNI GIORNO */}
       {/* ============================================================ */}
       <section className="py-16 px-4 bg-gray-50">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <Badge className="bg-red-100 text-red-700 mb-4">⚠️ Il problema</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Le cliniche perdono tempo e clienti ogni giorno</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Suona familiare? Ecco cosa succede nella maggior parte delle cliniche veterinarie italiane.</p>
+            <Badge className="bg-coral-100 text-coral-700 mb-4">💡 Cosa risolve VetBuddy</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Cosa risolve ogni giorno nella tua clinica</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Problemi quotidiani che VetBuddy automatizza e risolve per te.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { icon: Phone, title: 'Telefonate continue', desc: 'La segreteria passa ore al telefono per conferme, disdette, richieste info e promemoria. Tempo sottratto alla cura dei pazienti.' },
-              { icon: Calendar, title: 'Appuntamenti dimenticati e no-show', desc: 'I no-show costano alla clinica. Senza promemoria automatici e liste d\'attesa, si perde fatturato ogni settimana.' },
-              { icon: MessageCircle, title: 'WhatsApp e caos comunicativo', desc: 'Messaggi WhatsApp sparsi, richieste su canali diversi, nessuna classificazione priorità. Caos totale e risposte lente.' },
-              { icon: FlaskConical, title: 'Referti sparsi e laboratori disconnessi', desc: 'I risultati delle analisi arrivano per email, telefono o fax. Nessun flusso strutturato per gestirli e condividerli.' },
-              { icon: Repeat, title: 'Clienti che non tornano', desc: 'Senza ricontatti, richiami automatici e programmi fedeltà, i clienti si dimenticano delle visite di controllo.' },
-              { icon: Star, title: 'Nessuna recensione o passaparola', desc: 'Non chiedi mai recensioni. I clienti soddisfatti non portano amici. Perdi opportunità di crescita organica.' },
-              { icon: BarChart3, title: 'Nessuna visibilità sui risultati', desc: 'La clinica non sa quante prenotazioni genera, quanto tempo risparmia, quanti no-show recupera o quanto fatturato perde.' },
-              { icon: Database, title: 'Dati sparsi e migrazione impossibile', desc: 'Dati su Excel, fogli di carta, software vecchi. Impossibile importare/esportare o passare a nuovi sistemi.' },
-              { icon: Rocket, title: 'Nessun supporto nell\'onboarding', desc: 'Software complessi senza guide. Nessuno ti segue nei primi 90 giorni per garantire il successo dell\'adozione.' },
+              { icon: Phone, title: 'Troppe telefonate ripetitive', desc: 'La segreteria passa ore al telefono per conferme, disdette e info.', solution: '→ Prenotazioni online + Agenda digitale + Link booking' },
+              { icon: MessageCircle, title: 'WhatsApp dispersi tra più telefoni', desc: 'Messaggi sparsi, richieste su canali diversi, nessuna priorità.', solution: '→ WhatsApp Business + Inbox condivisa + AI Reception' },
+              { icon: Calendar, title: 'Appuntamenti non confermati', desc: 'I clienti dimenticano, non confermano, arrivano in ritardo.', solution: '→ Promemoria automatici (24h prima, 1h prima) + SMS/Email/WhatsApp' },
+              { icon: CalendarX, title: 'No-show difficili da recuperare', desc: 'Gli slot vuoti costano fatturato. Nessun sistema per recuperarli.', solution: '→ No-Show Recovery automatico + Lista d\'attesa intelligente' },
+              { icon: FileText, title: 'Referti e documenti inviati manualmente', desc: 'Ogni referto va inviato a mano. Tempo perso e ritardi.', solution: '→ Invio automatico PDF + Referti digitali + Area proprietario' },
+              { icon: Repeat, title: 'Clienti che non tornano per vaccini e richiami', desc: 'Senza ricontatti, i clienti si dimenticano dei controlli.', solution: '→ Richiami automatici vaccini + Antiparassitari + Check-up annuali' },
+              { icon: Users, title: 'Staff sovraccarico da attività amministrative', desc: 'Troppo tempo perso in attività ripetitive invece di curare i pazienti.', solution: '→ Automazioni avanzate + Task Manager + Reception AI' },
+              { icon: BarChart3, title: 'Nessun dato sul tempo risparmiato e valore generato', desc: 'La clinica non sa quante telefonate evita o quanto fatturato recupera.', solution: '→ Cruscotto Valore + Metriche ROI + Report mensili automatici' },
             ].map((p, i) => (
-              <Card key={i} className="border-red-100 hover:shadow-md transition">
+              <Card key={i} className="border-coral-100 hover:shadow-lg transition group">
                 <CardContent className="p-6">
-                  <div className="h-10 w-10 bg-red-50 rounded-lg flex items-center justify-center mb-4"><p.icon className="h-5 w-5 text-red-500" /></div>
+                  <div className="h-10 w-10 bg-coral-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-coral-100 transition"><p.icon className="h-5 w-5 text-coral-500" /></div>
                   <h3 className="font-bold text-gray-900 mb-2">{p.title}</h3>
-                  <p className="text-sm text-gray-600">{p.desc}</p>
+                  <p className="text-sm text-gray-600 mb-3">{p.desc}</p>
+                  <p className="text-xs font-semibold text-coral-600 bg-coral-50 px-3 py-2 rounded-lg">{p.solution}</p>
                 </CardContent>
               </Card>
             ))}
@@ -248,6 +275,135 @@ function FullLandingPage({ onLogin }) {
               </div>
               <p className="text-xs text-gray-400 mt-4 text-center italic">*Obiettivi del progetto pilota. L'impatto viene misurato durante i 90 giorni.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 4 MACRO-AREE */}
+      {/* ============================================================ */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="bg-purple-100 text-purple-700 mb-4">🎯 Organizzazione</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">4 Macro-Aree. Un ecosistema completo.</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">VetBuddy organizza tutte le funzioni in 4 aree chiare per rendere il prodotto ricco ma non caotico.</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* AREA 1 */}
+            <Card className="border-2 border-blue-200 hover:shadow-xl transition">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <Phone className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">Area 1 — Reception Intelligente</h3>
+                    <p className="text-sm text-blue-600 font-semibold">Riduci il carico della reception</p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    'Prenotazioni online', 'Agenda digitale', 'Google Calendar Sync', 
+                    'Link prenotazione + QR code', 'WhatsApp Business', 'Inbox condivisa',
+                    'AI Reception', 'Risposte suggerite', 'Priorità messaggi',
+                    'Assegnazione staff', 'Task Manager'
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                      <span className="text-sm text-gray-700">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* AREA 2 */}
+            <Card className="border-2 border-green-200 hover:shadow-xl transition">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-12 w-12 bg-green-100 rounded-xl flex items-center justify-center">
+                    <Repeat className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">Area 2 — Automazioni & Ritorni</h3>
+                    <p className="text-sm text-green-600 font-semibold">Fai tornare i clienti al momento giusto</p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    'Promemoria visite', 'Promemoria vaccini', 'Richiami annuali',
+                    'Antiparassitari', 'Pulizia dentale', 'No-Show Recovery',
+                    'Lista d\'attesa', 'Recensioni automatiche', 'Referral',
+                    'Campagne clienti', 'Clienti dormienti', 'Piani salute',
+                    'Programma fedeltà'
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                      <span className="text-sm text-gray-700">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* AREA 3 */}
+            <Card className="border-2 border-purple-200 hover:shadow-xl transition">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-12 w-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <FileText className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">Area 3 — Gestione Clinica & Staff</h3>
+                    <p className="text-sm text-purple-600 font-semibold">Organizza documenti e valore economico</p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    'Schede animale', 'Storico visite', 'Referti PDF',
+                    'Ricetta elettronica supporto', 'Laboratori', 'Task manager staff',
+                    'Import/export dati', 'Riepiloghi economici', 'Cruscotto valore',
+                    'Listino servizi', 'Ricevute operative', 'Consensi digitali',
+                    'Preventivi digitali', 'Anamnesi pre-visita'
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-purple-600 flex-shrink-0" />
+                      <span className="text-sm text-gray-700">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* AREA 4 */}
+            <Card className="border-2 border-orange-200 hover:shadow-xl transition">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-12 w-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                    <Heart className="h-6 w-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">Area 4 — Area Proprietario & Passport</h3>
+                    <p className="text-sm text-orange-600 font-semibold">Esperienza digitale moderna per il proprietario</p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    'Profilo animale', 'Documenti autorizzati', 'Passport digitale',
+                    'QR emergenza', 'Modalità smarrimento', 'Condivisione temporanea',
+                    'Travel Pack', 'Assicurazione', 'Promemoria personali',
+                    'Programma fedeltà', 'Storico visite', 'Documenti'
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-orange-600 flex-shrink-0" />
+                      <span className="text-sm text-gray-700">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -468,24 +624,35 @@ function FullLandingPage({ onLogin }) {
       {/* ============================================================ */}
       <section id="prezzi" className="py-16 px-4 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <Badge className="bg-coral-100 text-coral-700 mb-4">💰 Prezzi</Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Scegli il piano adatto alla tua clinica</h2>
-            <p className="text-gray-600">Tutti i prezzi sono IVA esclusa. Abbonamento mensile, nessun vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.</p>
+            <p className="text-gray-600 mb-2">Scegli il piano in base alla dimensione della clinica e al livello di automazione che vuoi attivare.</p>
+            <p className="text-sm text-gray-500">Tutti i prezzi sono IVA esclusa. Abbonamento mensile. Nessun vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.</p>
           </div>
+
+          {/* Value Proposition */}
+          <div className="bg-gradient-to-r from-coral-50 to-purple-50 border border-coral-200 rounded-xl p-6 mb-8 text-center">
+            <p className="text-gray-800 font-medium">
+              💡 <strong>Se VetBuddy recupera anche pochi appuntamenti al mese o riduce ore di lavoro ripetitivo, il costo del piano può essere ampiamente compensato dal valore generato.</strong>
+            </p>
+          </div>
+
           <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-5">
             {/* STARTER */}
             <Card className="border-gray-200 hover:shadow-lg transition flex flex-col">
               <CardContent className="p-6 flex flex-col flex-1">
                 <h3 className="font-bold text-gray-900 text-lg mb-1">Starter</h3>
-                <p className="text-xs text-gray-500 mb-4">Per veterinari freelance e micro-cliniche</p>
+                <p className="text-xs text-gray-500 mb-2">Per iniziare</p>
+                <p className="text-xs text-blue-600 font-medium mb-3">Veterinari freelance e professionisti singoli</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€29</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <p className="text-xs text-gray-600 mb-4 italic">Per iniziare a ricevere prenotazioni online e ridurre le telefonate di base.</p>
                 <div className="space-y-2 text-sm flex-1">
                   {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Promemoria base', 'Passport base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
-                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className="text-gray-700">{f}</span></div>
+                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
-                <Button variant="outline" className="w-full mt-6" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Inizia ora</Button>
+                <Button variant="outline" className="w-full mt-6" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Inizia con Starter</Button>
               </CardContent>
             </Card>
 
@@ -494,45 +661,51 @@ function FullLandingPage({ onLogin }) {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2"><Badge className="bg-coral-500 text-white px-3">⭐ Consigliato</Badge></div>
               <CardContent className="p-6 flex flex-col flex-1">
                 <h3 className="font-bold text-coral-600 text-lg mb-1">Crescita</h3>
-                <p className="text-xs text-gray-500 mb-4">Per cliniche piccole e medie</p>
+                <p className="text-xs text-gray-500 mb-2">Piano consigliato</p>
+                <p className="text-xs text-coral-600 font-medium mb-3">Per cliniche piccole e medie</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-coral-600">€69</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <p className="text-xs text-gray-600 mb-4 italic">Il piano consigliato per ridurre telefonate, automatizzare promemoria e seguire meglio i clienti.</p>
                 <div className="space-y-2 text-sm flex-1">
-                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Passport completo', 'QR emergenza', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio', 'WhatsApp Business', 'Reception AI base', 'No-Show Recovery', 'Import/Export CSV'].map((f, i) => (
-                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-500" /><span className="text-gray-700">{f}</span></div>
+                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Passport completo', 'QR emergenza', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio', 'WhatsApp Business', 'Reception AI base', 'No-Show Recovery', 'Import/Export CSV', '🎁 Progetto pilota 90gg gratis'].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-500 flex-shrink-0" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
-                <Button className="w-full mt-6 bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Scegli Crescita</Button>
+                <Button className="w-full mt-6 bg-coral-500 hover:bg-coral-600 text-white" onClick={() => scrollToSection('pilot')}>Candidati al Pilota 90gg</Button>
               </CardContent>
             </Card>
 
             {/* PRO */}
-            <Card className="border-gray-200 hover:shadow-lg transition flex flex-col">
+            <Card className="border-purple-200 hover:shadow-lg transition flex flex-col">
               <CardContent className="p-6 flex flex-col flex-1">
-                <h3 className="font-bold text-gray-900 text-lg mb-1">Pro</h3>
-                <p className="text-xs text-gray-500 mb-4">Per cliniche strutturate</p>
-                <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€149</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <h3 className="font-bold text-purple-700 text-lg mb-1">Pro</h3>
+                <p className="text-xs text-gray-500 mb-2">Per crescita avanzata</p>
+                <p className="text-xs text-purple-600 font-medium mb-3">Cliniche strutturate con team più grandi</p>
+                <div className="mb-4"><span className="text-3xl font-bold text-purple-700">€99</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <p className="text-xs text-gray-600 mb-4 italic">Per cliniche che vogliono automazioni avanzate, piani salute, laboratori e assistente intelligente.</p>
                 <div className="space-y-2 text-sm flex-1">
-                  {['Tutto Crescita più:', 'Fino a 15 utenti', 'Reception AI avanzata', 'Recensioni automatiche', 'Referral "Porta un Amico"', 'Pilot Success Kit 90gg', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Passport + QR brandizzato', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente', 'Grafico ROI'].map((f, i) => (
-                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /><span className={`text-gray-700 ${i === 0 ? 'font-semibold' : ''}`}>{f}</span></div>
+                  {['✅ Tutto il piano Crescita', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Passport + QR brandizzato', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente', 'Campagne clienti avanzate', 'Task manager staff', 'No-Show Recovery avanzato', 'Clienti dormienti', 'Alert pazienti critici'].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2"><Check className={`h-4 w-4 ${i === 0 ? 'text-purple-600' : 'text-green-500'} flex-shrink-0`} /><span className={`text-gray-700 ${i === 0 ? 'font-semibold' : ''}`}>{f}</span></div>
                   ))}
                 </div>
-                <Button variant="outline" className="w-full mt-6" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Scegli Pro</Button>
+                <Button variant="outline" className="w-full mt-6 border-purple-300 text-purple-700 hover:bg-purple-50" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi Demo Pro</Button>
               </CardContent>
             </Card>
 
             {/* LABORATORIO PARTNER */}
-            <Card className="border-purple-200 hover:shadow-lg transition flex flex-col">
+            <Card className="border-indigo-200 hover:shadow-lg transition flex flex-col">
               <CardContent className="p-6 flex flex-col flex-1">
-                <h3 className="font-bold text-purple-700 text-lg mb-1">Laboratorio partner</h3>
-                <p className="text-xs text-gray-500 mb-4">Per laboratori di analisi</p>
-                <div className="mb-4"><span className="text-3xl font-bold text-purple-700">€39</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
-                <p className="text-xs text-purple-600 mb-3 font-medium">Gratis per 6 mesi</p>
+                <h3 className="font-bold text-indigo-700 text-lg mb-1">Laboratorio Partner</h3>
+                <p className="text-xs text-gray-500 mb-2">Per laboratori analisi</p>
+                <p className="text-xs text-indigo-600 font-medium mb-3">Ricevi richieste dalle cliniche</p>
+                <div className="mb-4"><span className="text-3xl font-bold text-indigo-700">€39</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <p className="text-xs text-indigo-600 mb-3 font-bold">🎁 Gratis per 6 mesi</p>
+                <p className="text-xs text-gray-600 mb-4 italic">Per ricevere richieste dalle cliniche, gestire referti e aumentare la visibilità nella rete VetBuddy.</p>
                 <div className="space-y-2 text-sm flex-1">
-                  {['Pannello di gestione richieste', 'Profilo nella vetrina laboratori', 'Listino prezzi indicativo', 'Gestione richieste', 'Caricamento referti PDF', 'Notifiche automatiche', 'Disponibilità ritiro'].map((f, i) => (
-                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-purple-500" /><span className="text-gray-700">{f}</span></div>
+                  {['Pannello gestione richieste', 'Profilo vetrina laboratori', 'Listino prezzi indicativo', 'Gestione richieste', 'Caricamento referti PDF', 'Notifiche automatiche', 'Disponibilità ritiro', 'Storico richieste'].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-indigo-500 flex-shrink-0" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
-                <Button variant="outline" className="w-full mt-6 border-purple-300 text-purple-700 hover:bg-purple-50" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Registra il Lab</Button>
+                <Button variant="outline" className="w-full mt-6 border-indigo-300 text-indigo-700 hover:bg-indigo-50" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Diventa Partner</Button>
               </CardContent>
             </Card>
 
@@ -540,7 +713,8 @@ function FullLandingPage({ onLogin }) {
             <Card className="border-gray-300 bg-gradient-to-br from-gray-900 to-gray-800 hover:shadow-lg transition flex flex-col">
               <CardContent className="p-6 flex flex-col flex-1">
                 <h3 className="font-bold text-white text-lg mb-1">Enterprise</h3>
-                <p className="text-xs text-gray-400 mb-4">Per gruppi multi-sede e network</p>
+                <p className="text-xs text-gray-400 mb-2">Su misura</p>
+                <p className="text-xs text-gray-300 font-medium mb-3">Per gruppi multi-sede e network</p>
                 <div className="mb-4"><span className="text-3xl font-bold text-white">Custom</span></div>
                 <div className="space-y-2 text-sm flex-1">
                   {['Sedi illimitate', 'Utenti illimitati', 'Account manager dedicato', 'Onboarding personalizzato', 'API e integrazioni', 'SLA garantito', 'Reportistica centralizzata'].map((f, i) => (
