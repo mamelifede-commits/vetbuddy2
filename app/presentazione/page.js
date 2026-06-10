@@ -69,7 +69,8 @@ export default function BrochurePage() {
         </p>
         <p className="text-base mb-8" style={{ color: '#ffffff', opacity: 0.85 }}>
           Il copilota operativo che automatizza prenotazioni, promemoria,<br/>comunicazioni, referti e ricontatti per la tua clinica.<br/>
-          <strong>Con WhatsApp Business, AI Reception, Recovery No-Show e Programmi Referral.</strong>
+          <strong>Con WhatsApp Business, AI Reception, Recovery No-Show e Programmi Referral.</strong><br/>
+          <strong className="text-lg">103 moduli integrati per la clinica moderna.</strong>
         </p>
 
         <div className="inline-flex items-center gap-3 px-7 py-3 rounded-2xl mb-4" style={{ background: 'rgba(255,255,255,0.25)', border: '2px solid rgba(255,255,255,0.4)' }}>
