@@ -844,6 +844,46 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎓</span></div><div><h3 className="font-black text-gray-900 text-sm">Residency Program</h3><span className="bg-slate-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Mentorship 1-to-1. €200/mese vs €20-40k. Certificazione FNOVI. Democratico.</p>
           </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🔬</span></div><div><h3 className="font-black text-gray-900 text-sm">Autopsy AI</h3><span className="bg-purple-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">AI necroscopia, report 5 min. Patologo €150 vs €800. Risparmio 60%.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-emerald-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center"><span className="text-2xl">💰</span></div><div><h3 className="font-black text-gray-900 text-sm">Smart Referral Revenue</h3><span className="bg-emerald-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">15-20% su referral. Revenue passivo €1-3k/mese. Win-win-win.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎯</span></div><div><h3 className="font-black text-gray-900 text-sm">Talent Marketplace</h3><span className="bg-blue-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">LinkedIn vet. Match AI, hiring tracciato. Risparmio €10k headhunter.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-rose-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🕊️</span></div><div><h3 className="font-black text-gray-900 text-sm">Grief Support</h3><span className="bg-rose-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Post-eutanasia. Memorial digitale, albero. Retention +25%.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-green-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🌱</span></div><div><h3 className="font-black text-gray-900 text-sm">Carbon Offset</h3><span className="bg-green-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Carbon Neutral certification. €40/mese. Gen Z marketing edge.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-amber-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><span className="text-2xl">💵</span></div><div><h3 className="font-black text-gray-900 text-sm">Dynamic Pricing</h3><span className="bg-amber-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Prezzi Uber-style. Slot bassi -30%. +18% revenue, agenda piena.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-indigo-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎙️</span></div><div><h3 className="font-black text-gray-900 text-sm">Podcast Platform</h3><span className="bg-indigo-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Netflix educazione. ECM accreditati. Revenue share 70% creator.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-cyan-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center"><span className="text-2xl">📸</span></div><div><h3 className="font-black text-gray-900 text-sm">AI Photography</h3><span className="bg-cyan-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Valuta qualità foto. Suggerimenti real-time. Zero foto rifatte.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-teal-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center"><span className="text-2xl">💳</span></div><div><h3 className="font-black text-gray-900 text-sm">Invoice Financing</h3><span className="bg-teal-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">BNPL Klarna. Proprietario rate, clinica subito. +35% acceptance.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-violet-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🚶</span></div><div><h3 className="font-black text-gray-900 text-sm">Smart Queue</h3><span className="bg-violet-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Code virtuale. Check-in app, attesa auto. -70% stress, luxury UX.</p>
+          </div>
         </div>
 
         <div className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border-2 border-emerald-200">
