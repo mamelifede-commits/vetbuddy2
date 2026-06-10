@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import {
   TrendingUp, PhoneOff, CalendarCheck, Clock, Bell, Users, Shield,
   Euro, FileText, FlaskConical, Repeat, BarChart3, Download, RefreshCw,
-  ArrowUp, ArrowDown, Minus, MessageCircle, Bot, Star, Gift, CalendarX, Phone
+  ArrowUp, ArrowDown, Minus, MessageCircle, Bot, Star, Gift, CalendarX, Phone, AlertTriangle, Heart
 } from 'lucide-react';
 import api from '@/app/lib/api';
 
@@ -95,9 +95,9 @@ export default function ClinicValueDashboard() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <TrendingUp className="h-6 w-6 text-green-600" /> Valore Generato
+            <TrendingUp className="h-6 w-6 text-green-600" /> Motore Recupero Valore
           </h2>
-          <p className="text-gray-500 text-sm mt-1">Quanto tempo, prenotazioni e fatturato VetBuddy genera per la tua clinica.</p>
+          <p className="text-gray-500 text-sm mt-1">Il cuore di VetBuddy: trova il valore che la clinica perde ogni mese e lo recupera automaticamente.</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex bg-gray-100 rounded-lg p-0.5">
@@ -141,6 +141,54 @@ export default function ClinicValueDashboard() {
             </div>
           </div>
           <p className="text-center text-xs text-gray-500 mt-4 italic">{periodLabels[period]} • Le stime vengono aggiornate in tempo reale basandosi sull&apos;attività della clinica</p>
+        </CardContent>
+      </Card>
+
+      {/* VALORE RECUPERABILE QUESTA SETTIMANA */}
+      <Card className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-300">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <AlertTriangle className="h-6 w-6 text-orange-600" />
+            💰 Valore Recuperabile Questa Settimana
+          </CardTitle>
+          <p className="text-sm text-gray-600">Azioni prioritarie che VetBuddy può fare oggi per recuperare valore</p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-4">
+            {[
+              { icon: Users, label: 'Clienti dormienti da riattivare', count: 14, value: '€2.340', action: 'Avvia campagna', color: 'text-purple-600', bgColor: 'bg-purple-50' },
+              { icon: CalendarX, label: 'No-show a rischio oggi', count: 3, value: '€420', action: 'Invia conferme', color: 'text-red-600', bgColor: 'bg-red-50' },
+              { icon: Bell, label: 'Vaccini scaduti (richiami mancati)', count: 12, value: '€780', action: 'Invia promemoria', color: 'text-green-600', bgColor: 'bg-green-50' },
+              { icon: FileText, label: 'Preventivi in sospeso', count: 5, value: '€1.150', action: 'Follow-up', color: 'text-blue-600', bgColor: 'bg-blue-50' },
+              { icon: Heart, label: 'Pazienti fragili senza follow-up', count: 8, value: '€960', action: 'Contatta', color: 'text-pink-600', bgColor: 'bg-pink-50' },
+              { icon: Star, label: 'Recensioni da richiedere', count: 18, value: 'Valore reputazione', action: 'Invia richieste', color: 'text-amber-600', bgColor: 'bg-amber-50' },
+            ].map((item, idx) => (
+              <div key={idx} className={`${item.bgColor} rounded-lg p-4 border border-${item.color.replace('text-', 'border-')}`}>
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 ${item.bgColor} rounded-lg flex items-center justify-center border border-gray-200`}>
+                      <item.icon className={`w-5 h-5 ${item.color}`} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{item.label}</p>
+                      <p className="text-xs text-gray-600">{item.count} elementi • Valore: {item.value}</p>
+                    </div>
+                  </div>
+                </div>
+                <Button size="sm" className="w-full bg-gray-900 hover:bg-gray-800 text-white">
+                  {item.action} →
+                </Button>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 p-4 bg-gradient-to-r from-orange-100 to-yellow-100 rounded-lg border border-orange-300">
+            <p className="text-sm font-bold text-gray-900 text-center">
+              💡 <strong>Valore totale recuperabile questa settimana: €5.650+</strong>
+            </p>
+            <p className="text-xs text-gray-700 text-center mt-1">
+              Avviando queste azioni, VetBuddy può recuperare automaticamente il valore che la clinica sta perdendo.
+            </p>
+          </div>
         </CardContent>
       </Card>
 
