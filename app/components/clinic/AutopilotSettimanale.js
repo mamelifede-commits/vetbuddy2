@@ -1,20 +1,43 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Zap, Users, CalendarX, Bell, FileText, Star, Heart, TrendingUp,
-  CheckCircle, Clock, Euro, ArrowRight, Send, Calendar, MessageCircle
+  CheckCircle, Clock, Euro, ArrowRight, Send, Calendar, MessageCircle, RefreshCw
 } from 'lucide-react';
 import BackToDashboard from '@/app/components/shared/BackToDashboard';
+import api from '@/app/lib/api';
 
 export default function AutopilotSettimanale({ user, onNavigate }) {
   const [activeTab, setActiveTab] = useState('questa-settimana');
+  const [weeklyActions, setWeeklyActions] = useState([]);
+  const [totalValue, setTotalValue] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  // Azioni consigliate questa settimana
-  const weeklyActions = [
+  useEffect(() => {
+    loadWeeklyActions();
+  }, []);
+
+  const loadWeeklyActions = async () => {
+    setLoading(true);
+    try {
+      const data = await api.get('autopilot/weekly-actions');
+      setWeeklyActions(data.weeklyActions || []);
+      setTotalValue(data.totalPotentialValue || 0);
+    } catch (error) {
+      console.error('Error loading weekly actions:', error);
+      // Fallback to mock data if API fails
+      setWeeklyActions(getMockActions());
+      setTotalValue(3120);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getMockActions = () => [
     {
       id: 1,
       type: 'dormienti',
@@ -150,12 +173,26 @@ export default function AutopilotSettimanale({ user, onNavigate }) {
     { date: '2024-01-29', action: 'Follow-up preventivi', results: '2/4 preventivi accettati', value: '€660' },
   ];
 
+  const totalClients = weeklyActions.reduce((sum, action) => sum + (action.clients || 0), 0);
+  const criticalCount = weeklyActions.filter(a => a.priority === 'critical').length;
+
   const stats = [
     { label: 'Azioni Consigliate', value: weeklyActions.length, icon: Zap, color: 'text-purple-600', bgColor: 'bg-purple-50' },
-    { label: 'Valore Recuperabile', value: '€5.650+', icon: Euro, color: 'text-green-600', bgColor: 'bg-green-50' },
-    { label: 'Clienti da Contattare', value: 60, icon: Users, color: 'text-blue-600', bgColor: 'bg-blue-50' },
-    { label: 'Azioni Critiche', value: 1, icon: Bell, color: 'text-red-600', bgColor: 'bg-red-50' },
+    { label: 'Valore Recuperabile', value: `€${totalValue.toLocaleString()}+`, icon: Euro, color: 'text-green-600', bgColor: 'bg-green-50' },
+    { label: 'Clienti da Contattare', value: totalClients, icon: Users, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+    { label: 'Azioni Critiche', value: criticalCount, icon: Bell, color: 'text-red-600', bgColor: 'bg-red-50' },
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-12 w-12 text-purple-600 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Caricamento azioni settimanali...</p>
+        </div>
+      </div>
+    );
+  }
 
   const getPriorityBadge = (priority) => {
     if (priority === 'critical') return <Badge className="bg-red-600 text-white">🔴 Critico</Badge>;

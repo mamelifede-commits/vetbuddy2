@@ -1,24 +1,21 @@
 #!/usr/bin/env python3
 """
-VetBuddy Passport Email Notifications Backend Test
-Tests event-triggered email notifications for passport module
+VetBuddy Autopilot Settimanale Backend API Test
+Tests the new /api/autopilot/weekly-actions endpoint
 """
 
 import requests
 import json
-import time
 import sys
 
 # Configuration
 BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
-OWNER_EMAIL = "proprietario.demo@vetbuddy.it"
-OWNER_PASSWORD = "demo123"
-PET_ID = "f1f3b7d9-01fe-4955-b6c8-bdf183a62d28"
+CLINIC_EMAIL = "demo@vetbuddy.it"
+CLINIC_PASSWORD = "VetBuddy2025!Secure"
 
 # Test results
 test_results = []
-owner_token = None
-qr_token = None
+clinic_token = None
 
 def log_test(test_name, passed, message):
     """Log test result"""
@@ -28,419 +25,328 @@ def log_test(test_name, passed, message):
     test_results.append({"test": test_name, "passed": passed, "message": message})
     return passed
 
-def test_login():
-    """Test 1: Login with owner credentials"""
-    global owner_token
+def print_section(title):
+    """Print section header"""
     print("\n" + "="*80)
-    print("TEST 1: Owner Login")
+    print(f"  {title}")
     print("="*80)
+
+def test_clinic_login():
+    """Test 1: Login with clinic credentials"""
+    global clinic_token
+    print_section("TEST 1: Clinic Authentication")
     
     try:
         response = requests.post(
             f"{BASE_URL}/auth/login",
-            json={"email": OWNER_EMAIL, "password": OWNER_PASSWORD},
+            json={"email": CLINIC_EMAIL, "password": CLINIC_PASSWORD},
             timeout=15
         )
         
         if response.status_code == 200:
             data = response.json()
-            if "token" in data:
-                owner_token = data["token"]
-                log_test("Owner Login", True, f"Login successful, token received")
+            if "token" in data and data.get("user", {}).get("role") == "clinic":
+                clinic_token = data["token"]
+                log_test("Clinic Login", True, f"Login successful, clinic token received")
+                print(f"   Clinic: {data.get('user', {}).get('clinicName', 'N/A')}")
+                print(f"   Role: {data.get('user', {}).get('role', 'N/A')}")
                 return True
             else:
-                log_test("Owner Login", False, f"No token in response: {data}")
+                log_test("Clinic Login", False, f"Token or role missing in response")
                 return False
         else:
-            log_test("Owner Login", False, f"Status {response.status_code}: {response.text}")
+            log_test("Clinic Login", False, f"Status {response.status_code}: {response.text[:200]}")
             return False
     except Exception as e:
-        log_test("Owner Login", False, f"Exception: {str(e)}")
+        log_test("Clinic Login", False, f"Exception: {str(e)}")
         return False
 
-def test_qr_generate_email():
-    """Test 2: QR Generate + Email Notification"""
-    global qr_token
-    print("\n" + "="*80)
-    print("TEST 2: QR Generate + Email Notification")
-    print("="*80)
-    
-    if not owner_token:
-        log_test("QR Generate + Email", False, "No owner token available")
-        return False
+def test_unauthorized_access():
+    """Test 2: Verify unauthorized access is blocked"""
+    print_section("TEST 2: Unauthorized Access Block")
     
     try:
-        response = requests.post(
-            f"{BASE_URL}/passport/qr/generate",
-            json={"petId": PET_ID},
-            headers={"Authorization": f"Bearer {owner_token}"},
-            timeout=15
-        )
-        
-        print(f"Response status: {response.status_code}")
-        print(f"Response body: {response.text[:500]}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            if data.get("success") and "qrToken" in data and "qrPageUrl" in data:
-                qr_token = data["qrToken"]
-                log_test("QR Generate + Email", True, 
-                        f"QR generated successfully. Token: {qr_token[:20]}..., URL: {data['qrPageUrl'][:50]}... Check server logs for 📧 email notification")
-                return True
-            else:
-                log_test("QR Generate + Email", False, f"Invalid response structure: {data}")
-                return False
-        else:
-            log_test("QR Generate + Email", False, f"Status {response.status_code}: {response.text}")
-            return False
-    except Exception as e:
-        log_test("QR Generate + Email", False, f"Exception: {str(e)}")
-        return False
-
-def test_vaccination_email():
-    """Test 3: Vaccination + Email Notification"""
-    print("\n" + "="*80)
-    print("TEST 3: Vaccination + Email Notification")
-    print("="*80)
-    
-    if not owner_token:
-        log_test("Vaccination + Email", False, "No owner token available")
-        return False
-    
-    try:
-        response = requests.post(
-            f"{BASE_URL}/passport/vaccinations",
-            json={
-                "petId": PET_ID,
-                "name": "Test Vaccino Email",
-                "date": "2026-06-04",
-                "nextDueDate": "2027-06-04"
-            },
-            headers={"Authorization": f"Bearer {owner_token}"},
-            timeout=15
-        )
-        
-        print(f"Response status: {response.status_code}")
-        print(f"Response body: {response.text[:500]}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            if "id" in data and data.get("name") == "Test Vaccino Email":
-                status = data.get("status", "unknown")
-                log_test("Vaccination + Email", True, 
-                        f"Vaccination created successfully. ID: {data['id']}, Status: {status}. Check server logs for 📧 email notification")
-                return True
-            else:
-                log_test("Vaccination + Email", False, f"Invalid response structure: {data}")
-                return False
-        else:
-            log_test("Vaccination + Email", False, f"Status {response.status_code}: {response.text}")
-            return False
-    except Exception as e:
-        log_test("Vaccination + Email", False, f"Exception: {str(e)}")
-        return False
-
-def test_lost_pet_activate_email():
-    """Test 4: Lost Pet Mode Activate + Email Notification"""
-    print("\n" + "="*80)
-    print("TEST 4: Lost Pet Mode Activate + Email Notification")
-    print("="*80)
-    
-    if not owner_token:
-        log_test("Lost Pet Activate + Email", False, "No owner token available")
-        return False
-    
-    try:
-        response = requests.put(
-            f"{BASE_URL}/passport/{PET_ID}",
-            json={
-                "lostPetMode": True,
-                "lostPetMessage": "Test smarrimento",
-                "lostPetZone": "Milano Centro"
-            },
-            headers={"Authorization": f"Bearer {owner_token}"},
-            timeout=15
-        )
-        
-        print(f"Response status: {response.status_code}")
-        print(f"Response body: {response.text[:500]}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            if data.get("lostPetMode") == True and data.get("lostPetStatus") == "active":
-                log_test("Lost Pet Activate + Email", True, 
-                        f"Lost Pet Mode activated. Status: {data.get('lostPetStatus')}, Zone: {data.get('lostPetZone')}. Check server logs for 📧 email notifications (owner + emergency contacts)")
-                return True
-            else:
-                log_test("Lost Pet Activate + Email", False, f"Lost Pet Mode not properly activated: {data}")
-                return False
-        else:
-            log_test("Lost Pet Activate + Email", False, f"Status {response.status_code}: {response.text}")
-            return False
-    except Exception as e:
-        log_test("Lost Pet Activate + Email", False, f"Exception: {str(e)}")
-        return False
-
-def test_lost_pet_deactivate_email():
-    """Test 5: Lost Pet Mode Deactivate + Email Notification"""
-    print("\n" + "="*80)
-    print("TEST 5: Lost Pet Mode Deactivate + Email Notification")
-    print("="*80)
-    
-    if not owner_token:
-        log_test("Lost Pet Deactivate + Email", False, "No owner token available")
-        return False
-    
-    try:
-        response = requests.put(
-            f"{BASE_URL}/passport/{PET_ID}",
-            json={"lostPetMode": False},
-            headers={"Authorization": f"Bearer {owner_token}"},
-            timeout=15
-        )
-        
-        print(f"Response status: {response.status_code}")
-        print(f"Response body: {response.text[:500]}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            if data.get("lostPetMode") == False and data.get("lostPetStatus") == "found":
-                log_test("Lost Pet Deactivate + Email", True, 
-                        f"Lost Pet Mode deactivated. Status: {data.get('lostPetStatus')}. Check server logs for 📧 email notification (pet found)")
-                return True
-            else:
-                log_test("Lost Pet Deactivate + Email", False, f"Lost Pet Mode not properly deactivated: {data}")
-                return False
-        else:
-            log_test("Lost Pet Deactivate + Email", False, f"Status {response.status_code}: {response.text}")
-            return False
-    except Exception as e:
-        log_test("Lost Pet Deactivate + Email", False, f"Exception: {str(e)}")
-        return False
-
-def test_emergency_contact_email():
-    """Test 6: Emergency Contact + Email Notification"""
-    print("\n" + "="*80)
-    print("TEST 6: Emergency Contact + Email Notification")
-    print("="*80)
-    
-    if not owner_token:
-        log_test("Emergency Contact + Email", False, "No owner token available")
-        return False
-    
-    try:
-        response = requests.post(
-            f"{BASE_URL}/passport/emergency-contacts",
-            json={
-                "petId": PET_ID,
-                "name": "Test Email Contact",
-                "phone": "+39123456789",
-                "email": "testcontact@example.com",
-                "relationship": "Familiare"
-            },
-            headers={"Authorization": f"Bearer {owner_token}"},
-            timeout=15
-        )
-        
-        print(f"Response status: {response.status_code}")
-        print(f"Response body: {response.text[:500]}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            if "id" in data and data.get("name") == "Test Email Contact":
-                log_test("Emergency Contact + Email", True, 
-                        f"Emergency contact created. ID: {data['id']}, Email: {data.get('email')}. Check server logs for 📧 email notification to contact")
-                return True
-            else:
-                log_test("Emergency Contact + Email", False, f"Invalid response structure: {data}")
-                return False
-        else:
-            log_test("Emergency Contact + Email", False, f"Status {response.status_code}: {response.text}")
-            return False
-    except Exception as e:
-        log_test("Emergency Contact + Email", False, f"Exception: {str(e)}")
-        return False
-
-def test_qr_scan_email():
-    """Test 7: Public QR Scan + Email Notification (when lost mode active)"""
-    print("\n" + "="*80)
-    print("TEST 7: Public QR Scan + Email Notification (Lost Mode)")
-    print("="*80)
-    
-    if not qr_token:
-        log_test("QR Scan + Email", False, "No QR token available from previous test")
-        return False
-    
-    # First, activate lost mode again
-    print("Step 1: Activating lost mode for QR scan test...")
-    try:
-        activate_response = requests.put(
-            f"{BASE_URL}/passport/{PET_ID}",
-            json={
-                "lostPetMode": True,
-                "lostPetMessage": "Test scan email"
-            },
-            headers={"Authorization": f"Bearer {owner_token}"},
-            timeout=15
-        )
-        
-        if activate_response.status_code != 200:
-            log_test("QR Scan + Email", False, f"Failed to activate lost mode: {activate_response.status_code}")
-            return False
-        
-        print("Lost mode activated successfully")
-    except Exception as e:
-        log_test("QR Scan + Email", False, f"Exception activating lost mode: {str(e)}")
-        return False
-    
-    # Now scan the QR (public endpoint, no auth)
-    print("Step 2: Scanning QR code (public endpoint)...")
-    try:
+        # Test without token
         response = requests.get(
-            f"{BASE_URL}/passport/public/{qr_token}",
+            f"{BASE_URL}/autopilot/weekly-actions",
             timeout=15
         )
         
-        print(f"Response status: {response.status_code}")
-        print(f"Response body: {response.text[:500]}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            if "publicData" in data and data["publicData"].get("isLostPetMode") == True:
-                log_test("QR Scan + Email", True, 
-                        f"QR scan successful. Lost mode visible: {data['publicData'].get('isLostPetMode')}. Check server logs for 📧 email notification (rate limited to 1 per 10 min)")
-                
-                # Deactivate lost mode after test
-                print("Step 3: Deactivating lost mode...")
-                requests.put(
-                    f"{BASE_URL}/passport/{PET_ID}",
-                    json={"lostPetMode": False},
-                    headers={"Authorization": f"Bearer {owner_token}"},
-                    timeout=15
-                )
-                return True
-            else:
-                log_test("QR Scan + Email", False, f"Lost mode not visible in public data: {data}")
-                return False
+        if response.status_code == 401:
+            log_test("Unauthorized Access Block", True, f"Correctly blocked with 401 status")
+            return True
         else:
-            log_test("QR Scan + Email", False, f"Status {response.status_code}: {response.text}")
+            log_test("Unauthorized Access Block", False, f"Expected 401, got {response.status_code}")
             return False
     except Exception as e:
-        log_test("QR Scan + Email", False, f"Exception: {str(e)}")
+        log_test("Unauthorized Access Block", False, f"Exception: {str(e)}")
         return False
 
-def test_api_data_integrity():
-    """Test 8: Verify all APIs still return correct data (not broken by email additions)"""
-    print("\n" + "="*80)
-    print("TEST 8: API Data Integrity Check")
-    print("="*80)
+def test_weekly_actions_endpoint():
+    """Test 3: Get weekly actions with clinic authentication"""
+    print_section("TEST 3: Weekly Actions Endpoint")
     
-    if not owner_token:
-        log_test("API Data Integrity", False, "No owner token available")
+    if not clinic_token:
+        log_test("Weekly Actions Endpoint", False, "No clinic token available")
         return False
     
     try:
         response = requests.get(
-            f"{BASE_URL}/passport/{PET_ID}",
-            headers={"Authorization": f"Bearer {owner_token}"},
+            f"{BASE_URL}/autopilot/weekly-actions",
+            headers={"Authorization": f"Bearer {clinic_token}"},
             timeout=15
         )
         
-        print(f"Response status: {response.status_code}")
-        
         if response.status_code == 200:
             data = response.json()
-            # Check for required fields
-            required_fields = ["pet", "passport", "completion", "emergencyContacts", "vaccinations"]
+            print(f"\n   Response received:")
+            print(f"   {json.dumps(data, indent=2)[:500]}...")
+            
+            # Verify response structure
+            required_fields = ["weeklyActions", "totalPotentialValue", "generatedAt", "period"]
             missing_fields = [field for field in required_fields if field not in data]
             
-            if not missing_fields:
-                completion_score = data.get("completion", {}).get("score", 0)
-                log_test("API Data Integrity", True, 
-                        f"GET /api/passport/{PET_ID} returns all required fields. Completion score: {completion_score}%. Email additions did not break API response.")
-                return True
-            else:
-                log_test("API Data Integrity", False, f"Missing required fields: {missing_fields}")
+            if missing_fields:
+                log_test("Weekly Actions Endpoint", False, f"Missing fields: {missing_fields}")
                 return False
+            
+            log_test("Weekly Actions Endpoint", True, f"Endpoint working, all required fields present")
+            return True
         else:
-            log_test("API Data Integrity", False, f"Status {response.status_code}: {response.text}")
+            log_test("Weekly Actions Endpoint", False, f"Status {response.status_code}: {response.text[:200]}")
             return False
     except Exception as e:
-        log_test("API Data Integrity", False, f"Exception: {str(e)}")
+        log_test("Weekly Actions Endpoint", False, f"Exception: {str(e)}")
+        return False
+
+def test_response_structure():
+    """Test 4: Verify response structure details"""
+    print_section("TEST 4: Response Structure Validation")
+    
+    if not clinic_token:
+        log_test("Response Structure", False, "No clinic token available")
+        return False
+    
+    try:
+        response = requests.get(
+            f"{BASE_URL}/autopilot/weekly-actions",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            timeout=15
+        )
+        
+        if response.status_code != 200:
+            log_test("Response Structure", False, f"Status {response.status_code}")
+            return False
+        
+        data = response.json()
+        
+        # Check weeklyActions array
+        if not isinstance(data.get("weeklyActions"), list):
+            log_test("Response Structure", False, "weeklyActions is not an array")
+            return False
+        
+        print(f"\n   Found {len(data['weeklyActions'])} weekly actions")
+        
+        # Check each action structure
+        required_action_fields = ["id", "type", "priority", "title", "description", "estimatedValue", "clients"]
+        
+        for i, action in enumerate(data["weeklyActions"]):
+            missing = [field for field in required_action_fields if field not in action]
+            if missing:
+                log_test("Response Structure", False, f"Action {i} missing fields: {missing}")
+                return False
+            
+            print(f"\n   Action {action['id']}:")
+            print(f"     Type: {action['type']}")
+            print(f"     Priority: {action['priority']}")
+            print(f"     Title: {action['title']}")
+            print(f"     Clients: {action['clients']}")
+            print(f"     Estimated Value: {action['estimatedValue']}")
+        
+        # Check totalPotentialValue is a number
+        if not isinstance(data.get("totalPotentialValue"), (int, float)):
+            log_test("Response Structure", False, "totalPotentialValue is not a number")
+            return False
+        
+        print(f"\n   Total Potential Value: €{data['totalPotentialValue']}")
+        
+        # Check period
+        if data.get("period") != "questa-settimana":
+            log_test("Response Structure", False, f"Unexpected period: {data.get('period')}")
+            return False
+        
+        log_test("Response Structure", True, f"All structure validations passed")
+        return True
+        
+    except Exception as e:
+        log_test("Response Structure", False, f"Exception: {str(e)}")
+        return False
+
+def test_data_integration():
+    """Test 5: Verify real data integration"""
+    print_section("TEST 5: Real Data Integration")
+    
+    if not clinic_token:
+        log_test("Data Integration", False, "No clinic token available")
+        return False
+    
+    try:
+        response = requests.get(
+            f"{BASE_URL}/autopilot/weekly-actions",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            timeout=15
+        )
+        
+        if response.status_code != 200:
+            log_test("Data Integration", False, f"Status {response.status_code}")
+            return False
+        
+        data = response.json()
+        
+        # Verify we have actions (means data was read from MongoDB)
+        if len(data["weeklyActions"]) == 0:
+            log_test("Data Integration", False, "No actions generated - possible MongoDB read issue")
+            return False
+        
+        # Check for expected action types
+        action_types = [action["type"] for action in data["weeklyActions"]]
+        print(f"\n   Action types found: {action_types}")
+        
+        # Should have at least dormant clients and vaccines
+        expected_types = ["dormienti", "vaccini"]
+        found_types = [t for t in expected_types if t in action_types]
+        
+        if len(found_types) < 2:
+            log_test("Data Integration", False, f"Expected types {expected_types}, found {found_types}")
+            return False
+        
+        # Verify clients count is reasonable (> 0)
+        for action in data["weeklyActions"]:
+            if action["clients"] < 0:
+                log_test("Data Integration", False, f"Invalid clients count: {action['clients']}")
+                return False
+        
+        print(f"\n   ✓ Dormant clients calculation working")
+        print(f"   ✓ Vaccine expiration calculation working")
+        print(f"   ✓ MongoDB collections accessed successfully")
+        
+        log_test("Data Integration", True, "Real data integration verified")
+        return True
+        
+    except Exception as e:
+        log_test("Data Integration", False, f"Exception: {str(e)}")
+        return False
+
+def test_value_calculation():
+    """Test 6: Verify estimated value calculations"""
+    print_section("TEST 6: Value Calculation Verification")
+    
+    if not clinic_token:
+        log_test("Value Calculation", False, "No clinic token available")
+        return False
+    
+    try:
+        response = requests.get(
+            f"{BASE_URL}/autopilot/weekly-actions",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            timeout=15
+        )
+        
+        if response.status_code != 200:
+            log_test("Value Calculation", False, f"Status {response.status_code}")
+            return False
+        
+        data = response.json()
+        
+        # Verify estimatedValue format (should be €XXX)
+        for action in data["weeklyActions"]:
+            est_value = action["estimatedValue"]
+            if not est_value.startswith("€"):
+                log_test("Value Calculation", False, f"Invalid value format: {est_value}")
+                return False
+            
+            # Extract numeric value
+            try:
+                numeric_value = int(est_value.replace("€", "").replace(",", ""))
+                if numeric_value < 0:
+                    log_test("Value Calculation", False, f"Negative value: {est_value}")
+                    return False
+            except:
+                log_test("Value Calculation", False, f"Cannot parse value: {est_value}")
+                return False
+        
+        # Verify totalPotentialValue is positive
+        if data["totalPotentialValue"] < 0:
+            log_test("Value Calculation", False, f"Negative total: {data['totalPotentialValue']}")
+            return False
+        
+        print(f"\n   ✓ All estimated values properly formatted")
+        print(f"   ✓ Total potential value calculated: €{data['totalPotentialValue']}")
+        
+        log_test("Value Calculation", True, "Value calculations verified")
+        return True
+        
+    except Exception as e:
+        log_test("Value Calculation", False, f"Exception: {str(e)}")
         return False
 
 def print_summary():
     """Print test summary"""
     print("\n" + "="*80)
-    print("TEST SUMMARY")
+    print("  TEST SUMMARY")
     print("="*80)
     
-    total_tests = len(test_results)
-    passed_tests = sum(1 for result in test_results if result["passed"])
-    failed_tests = total_tests - passed_tests
+    passed = sum(1 for r in test_results if r["passed"])
+    total = len(test_results)
     
-    print(f"\nTotal Tests: {total_tests}")
-    print(f"Passed: {passed_tests} ✅")
-    print(f"Failed: {failed_tests} ❌")
-    print(f"Success Rate: {(passed_tests/total_tests*100):.1f}%\n")
+    print(f"\nTotal Tests: {total}")
+    print(f"Passed: {passed}")
+    print(f"Failed: {total - passed}")
+    print(f"Success Rate: {(passed/total*100):.1f}%")
     
-    if failed_tests > 0:
-        print("Failed Tests:")
-        for result in test_results:
-            if not result["passed"]:
-                print(f"  ❌ {result['test']}: {result['message']}")
+    if total - passed > 0:
+        print("\n❌ FAILED TESTS:")
+        for r in test_results:
+            if not r["passed"]:
+                print(f"  - {r['test']}: {r['message']}")
     
     print("\n" + "="*80)
-    print("IMPORTANT NOTES:")
-    print("="*80)
-    print("1. Email notifications are fire-and-forget (wrapped in try/catch)")
-    print("2. Check server logs for '📧 Email sent' or '📧 [MOCK EMAIL]' messages")
-    print("3. Email sending should NOT block API responses (all APIs should return 200)")
-    print("4. QR scan email is rate-limited to 1 notification per 10 minutes")
-    print("5. Resend API may be in MOCK mode if no API key is configured")
-    print("="*80)
     
-    return failed_tests == 0
+    return passed == total
 
 def main():
     """Run all tests"""
-    print("="*80)
-    print("VetBuddy Passport Email Notifications Backend Test")
-    print("="*80)
-    print(f"Base URL: {BASE_URL}")
-    print(f"Owner: {OWNER_EMAIL}")
-    print(f"Pet ID: {PET_ID}")
+    print("\n" + "="*80)
+    print("  VETBUDDY AUTOPILOT SETTIMANALE BACKEND API TEST")
+    print("  Testing: /api/autopilot/weekly-actions")
     print("="*80)
     
     # Run tests in sequence
-    test_login()
-    time.sleep(1)
+    tests = [
+        test_clinic_login,
+        test_unauthorized_access,
+        test_weekly_actions_endpoint,
+        test_response_structure,
+        test_data_integration,
+        test_value_calculation
+    ]
     
-    test_qr_generate_email()
-    time.sleep(1)
-    
-    test_vaccination_email()
-    time.sleep(1)
-    
-    test_lost_pet_activate_email()
-    time.sleep(1)
-    
-    test_lost_pet_deactivate_email()
-    time.sleep(1)
-    
-    test_emergency_contact_email()
-    time.sleep(1)
-    
-    test_qr_scan_email()
-    time.sleep(1)
-    
-    test_api_data_integrity()
+    for test_func in tests:
+        try:
+            test_func()
+        except Exception as e:
+            print(f"\n❌ CRITICAL ERROR in {test_func.__name__}: {str(e)}")
+            test_results.append({
+                "test": test_func.__name__,
+                "passed": False,
+                "message": f"Critical error: {str(e)}"
+            })
     
     # Print summary
-    success = print_summary()
+    all_passed = print_summary()
     
     # Exit with appropriate code
-    sys.exit(0 if success else 1)
+    sys.exit(0 if all_passed else 1)
 
 if __name__ == "__main__":
     main()

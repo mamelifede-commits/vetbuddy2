@@ -16,6 +16,7 @@ import { handleSettingsGet, handleSettingsPost, handleSettingsPut } from './modu
 import { handlePrescriptionsGet, handlePrescriptionsPost, handlePrescriptionsPut, handlePrescriptionsDelete } from './modules/prescriptions';
 import { handleHealthPlansGet, handleHealthPlansPost, handleHealthPlansPut, handleHealthPlansDelete } from './modules/healthplans';
 import { handlePassportGet, handlePassportPost, handlePassportPut, handlePassportDelete } from './modules/passport';
+import { handleAutopilotGet } from './modules/autopilot';
 
 // CORS preflight handler
 export async function OPTIONS() {
@@ -43,6 +44,7 @@ export async function GET(request, { params }) {
       handleRewardsGet,
       handleClinicGet,
       handleLabGet,
+      handleAutopilotGet,
       handleAdminGet,
       handlePassportGet,
     ];
