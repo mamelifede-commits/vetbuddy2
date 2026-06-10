@@ -13,9 +13,10 @@ import { Activity, Archive, BookOpen, CheckCircle, Clock, Download, Eye, FileTex
 import api from '@/app/lib/api';
 
 function ClinicInvoicing({ user, owners = [], pets = [] }) {
-  const [activeTab, setActiveTab] = useState('invoices'); // invoices, estimates, services, settings
+  const [activeTab, setActiveTab] = useState('invoices'); // invoices, estimates, electronic, services, settings
   const [invoices, setInvoices] = useState([]);
   const [estimates, setEstimates] = useState([]); // Preventivi
+  const [electronicInvoices, setElectronicInvoices] = useState([]); // Fatture Elettroniche
   const [services, setServices] = useState([]);
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
@@ -23,6 +24,8 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
   const [showNewService, setShowNewService] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showFEModal, setShowFEModal] = useState(false); // Modal Fattura Elettronica
+  const [selectedInvoiceForFE, setSelectedInvoiceForFE] = useState(null);
   
   // New invoice form
   const [invoiceForm, setInvoiceForm] = useState({
@@ -80,6 +83,16 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
         { id: 'est5', number: 'PREV-2024-005', customerName: 'Sara Colombo', petName: 'Birba', total: 890, status: 'converted', items: [{ description: 'Intervento frattura femore', quantity: 1, unitPrice: 800 }, { description: 'Materiali chirurgici', quantity: 1, unitPrice: 90 }], createdAt: new Date(Date.now() - 20 * 86400000).toISOString(), validUntil: new Date(Date.now() - 10 * 86400000).toISOString(), approvedAt: new Date(Date.now() - 18 * 86400000).toISOString(), convertedToInvoice: 'FATT-2024-089', approvalLink: 'https://vetbuddy.it/approve/est5' },
       ];
       setEstimates(demoEstimates);
+      
+      // Demo data fatture elettroniche
+      const demoElectronicInvoices = [
+        { id: 'fe1', invoiceNumber: 'FATT-2024-089', customerName: 'Sara Colombo', fiscalData: { type: 'B2C', codiceFiscale: 'CLMSRA85M45F205X', pec: null, sdi: '0000000' }, amount: 890, status: 'sent', sentDate: new Date(Date.now() - 3 * 86400000).toISOString(), xmlGenerated: true, sdiStatus: 'accepted', sdiAcceptedDate: new Date(Date.now() - 2.5 * 86400000).toISOString() },
+        { id: 'fe2', invoiceNumber: 'FATT-2024-088', customerName: 'Allevamento Rossi SRL', fiscalData: { type: 'B2B', piva: '12345678901', pec: 'allevamento@pec.it', sdi: null }, amount: 1250, status: 'sent', sentDate: new Date(Date.now() - 5 * 86400000).toISOString(), xmlGenerated: true, sdiStatus: 'accepted', sdiAcceptedDate: new Date(Date.now() - 4 * 86400000).toISOString() },
+        { id: 'fe3', invoiceNumber: 'FATT-2024-087', customerName: 'Marco Neri', fiscalData: { type: 'B2C', codiceFiscale: 'NREMRC80R15L219K', pec: null, sdi: '0000000' }, amount: 120, status: 'draft', sentDate: null, xmlGenerated: false },
+        { id: 'fe4', invoiceNumber: 'FATT-2024-086', customerName: 'Veterinaria Nord SPA', fiscalData: { type: 'B2B', piva: '09876543210', pec: 'amministrazione@vetnord.pec.it', sdi: 'ABCDEFG' }, amount: 2100, status: 'sent', sentDate: new Date(Date.now() - 8 * 86400000).toISOString(), xmlGenerated: true, sdiStatus: 'rejected', sdiRejectedDate: new Date(Date.now() - 7 * 86400000).toISOString(), sdiRejectedReason: 'Codice SDI errato' },
+        { id: 'fe5', invoiceNumber: 'FATT-2024-085', customerName: 'Anna Verdi', fiscalData: { type: 'B2C', codiceFiscale: 'VRDNNA75D50H501Z', pec: 'anna.verdi@pec.it', sdi: null }, amount: 650, status: 'sent', sentDate: new Date(Date.now() - 10 * 86400000).toISOString(), xmlGenerated: true, sdiStatus: 'pending' },
+      ];
+      setElectronicInvoices(demoElectronicInvoices);
     } catch (error) {
       console.error('Error loading invoicing data:', error);
     } finally {
@@ -274,10 +287,17 @@ function ClinicInvoicing({ user, owners = [], pets = [] }) {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b pb-2">
+      <div className="flex gap-2 border-b pb-2 overflow-x-auto">
         <Button variant={activeTab === 'invoices' ? 'default' : 'ghost'} onClick={() => setActiveTab('invoices')}>
           <Receipt className="h-4 w-4 mr-2" />
           Fatture
+        </Button>
+        <Button variant={activeTab === 'electronic' ? 'default' : 'ghost'} onClick={() => setActiveTab('electronic')}>
+          <FileText className="h-4 w-4 mr-2" />
+          Fatture Elettroniche
+          {electronicInvoices.filter(e => e.status === 'draft').length > 0 && (
+            <Badge className="ml-2 bg-amber-500">{electronicInvoices.filter(e => e.status === 'draft').length}</Badge>
+          )}
         </Button>
         <Button variant={activeTab === 'estimates' ? 'default' : 'ghost'} onClick={() => setActiveTab('estimates')}>
           <FileText className="h-4 w-4 mr-2" />
