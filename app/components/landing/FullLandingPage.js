@@ -256,15 +256,26 @@ function FullLandingPage({ onLogin }) {
       {/* MODULI PRINCIPALI */}
       {/* ============================================================ */}
       <section id="moduli" className="py-16 px-4 bg-gradient-to-br from-gray-50 via-white to-coral-50/20">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <Badge className="bg-coral-100 text-coral-700 mb-4">🛠️ I moduli</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Gli strumenti operativi per la tua clinica</h2>
-            <p className="text-gray-600">Ogni modulo è progettato per risolvere un problema concreto, senza sostituire i tuoi strumenti esistenti.</p>
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">Moduli in Evidenza</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">I moduli più potenti e richiesti per trasformare la tua clinica veterinaria. <strong>Questi sono solo alcuni dei 92 moduli disponibili.</strong></p>
           </div>
-          <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
             {[
-              { icon: Calendar, title: 'Prenotazioni e Agenda', desc: 'Prenotazioni online, link diretto, calendario multi-vista, richieste da confermare.', color: 'bg-blue-500', tag: null },
+              { icon: Calendar, title: 'Agenda Smart', desc: 'Prenotazioni online 24/7, sincronizzazione Google Calendar, conferme automatiche WhatsApp, recovery no-show AI.', color: 'bg-coral-500', tag: 'Base' },
+              { icon: MessageCircle, title: 'WhatsApp Business', desc: 'Inbox unificata messaggi clienti. Template pre-impostati. Stati lettura. Automazioni intelligenti per prenotazioni e promemoria.', color: 'bg-green-600', tag: 'Base' },
+              { icon: Receipt, title: 'Fatturazione Elettronica XML', desc: 'Genera fatture XML conformi. Invio automatico SDI. Archiviazione 10 anni. Integrazione Agenzia Entrate. Zero errori fiscali.', color: 'bg-red-600', tag: 'Mercato IT' },
+              { icon: Database, title: 'REV Registro Europeo', desc: 'Iscrizione automatica animali REV. Passaporto EU digitale. Notifiche viaggi esteri. Export certificati conformi normativa EU.', color: 'bg-blue-700', tag: 'Mercato IT' },
+              { icon: Building2, title: 'Multi-Sede & Gestione Catene', desc: 'Dashboard consolidata catene veterinarie. Trasferimento pazienti, inventario condiviso, KPI comparativi sedi.', color: 'bg-indigo-700', tag: 'Enterprise' },
+              { icon: Brain, title: 'VetBuddy Brain', desc: 'Super-Assistente AI multimodale. Analizza testo, immagini, dati clinici. Suggerisce diagnosi, terapie, esami. Accesso letteratura scientifica mondiale.', color: 'bg-violet-900', tag: 'Genius' },
+              { icon: TrendingUp, title: 'Smart Referral Revenue Share', desc: 'Guadagna 15-20% su ogni referral (specialista, lab, fisioterapia). Win-win-win. Nuovo revenue stream passivo €1-3k/mese.', color: 'bg-emerald-800', tag: 'Genius' },
+              { icon: Heart, title: 'Mental Wellness Hub for Vets', desc: 'Piattaforma benessere psicologico veterinari. Burnout altissimo (30% depressione). Supporto anonimo, terapia online, community. Retention staff +40%.', color: 'bg-pink-800', tag: 'Genius' },
+              { icon: Briefcase, title: 'Veterinary Talent Marketplace', desc: 'LinkedIn vet con skill verification. Match score AI, portfolio casi, hiring tracciato. Risolve problema #1 settore. Risparmio €5-10k headhunter.', color: 'bg-blue-800', tag: 'Genius' },
+              { icon: Heart, title: 'Pet Loss Grief Support', desc: 'Protocollo empatico post-eutanasia. Email, grief counselor, memorial digitale, albero memoria. Retention +25%, lifetime value protetto.', color: 'bg-rose-800', tag: 'Genius' },
+              { icon: DollarSign, title: 'Dynamic Appointment Pricing', desc: 'Prezzi dinamici domanda (Uber-style). Slot bassi: -30%. Alta domanda: +10%. AI ottimizza revenue. +15-20% revenue, agenda piena.', color: 'bg-amber-800', tag: 'Genius' },
+              { icon: Activity, title: 'Fisioterapia & Riabilitazione', desc: 'Due modalità: In-House (video-esercizi, tracking) + Network (marketplace centri specializzati). Protocolli guidati. Recupero +40% più veloce.', color: 'bg-teal-800', tag: 'Genius' },
+            ].map((m, i) => (
               { icon: Bell, title: 'Promemoria e Ricontatti', desc: 'Promemoria automatici: 24h prima, 1h prima, post-visita, post-chirurgia, richiami vaccini.', color: 'bg-amber-500', tag: null },
               { icon: MessageCircle, title: 'Casella messaggi condivisa', desc: 'Messaggi, richieste, notifiche laboratorio, ricontatti da gestire. Tutto in un posto.', color: 'bg-cyan-500', tag: null },
               { icon: Phone, title: 'WhatsApp Business', desc: 'Gestisci messaggi WhatsApp, template automatici, inbox unificata. Risposte rapide ai clienti.', color: 'bg-green-500', tag: 'Premium' },
