@@ -13,7 +13,7 @@ import {
   Settings, Zap, Menu, X, LogOut, AlertCircle, Video, Receipt, BarChart3,
   Link2, ClipboardList, Stethoscope, FlaskConical, Globe, BookOpen,
   LayoutDashboard, TrendingUp, CalendarDays, FolderArchive, Pill, Shield, Heart, Brain,
-  CalendarX, Phone, Bot, Rocket, Database, PenTool, Activity, QrCode, CheckSquare, Home, Package, PlayCircle
+  CalendarX, Phone, Bot, Rocket, Database, PenTool, Activity, QrCode, CheckSquare, Home, Package, PlayCircle, UserX
 } from 'lucide-react';
 
 // ==================== DYNAMIC IMPORTS ====================
@@ -47,6 +47,10 @@ const ClinicLabMarketplace = dynamic(() => import('@/app/components/clinic/Clini
 const ClinicInvoicing = dynamic(() => import('@/app/components/clinic/ClinicInvoicing'), { ssr: false });
 const ClinicMetrics = dynamic(() => import('@/app/components/clinic/ClinicMetrics'), { ssr: false });
 const ClinicValueDashboard = dynamic(() => import('@/app/components/clinic/ClinicValueDashboard'), { ssr: false });
+const AlertPazientiFragili = dynamic(() => import('@/app/components/clinic/AlertPazientiFragili'), { ssr: false });
+const AutopilotSettimanale = dynamic(() => import('@/app/components/clinic/AutopilotSettimanale'), { ssr: false });
+const PreventiviDigitali = dynamic(() => import('@/app/components/clinic/PreventiviDigitali'), { ssr: false });
+const PredictiveClientChurn = dynamic(() => import('@/app/components/clinic/PredictiveClientChurn'), { ssr: false });
 const ClinicBookingLink = dynamic(() => import('@/app/components/clinic/ClinicBookingLink'), { ssr: false });
 const ClinicTemplates = dynamic(() => import('@/app/components/clinic/ClinicTemplates'), { ssr: false });
 const ClinicAutomations = dynamic(() => import('@/app/components/clinic/ClinicAutomations'), { ssr: false });
@@ -198,6 +202,10 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', value: 'dashboard' },
     { icon: TrendingUp, label: 'Valore Generato', value: 'value-dashboard' },
+    { icon: Zap, label: 'Autopilot Settimanale', value: 'autopilot-settimanale' },
+    { icon: Heart, label: 'Alert Pazienti Fragili', value: 'alert-pazienti-fragili' },
+    { icon: UserX, label: 'Clienti Dormienti', value: 'predictive-client-churn' },
+    { icon: FileText, label: 'Preventivi Digitali', value: 'preventivi-digitali' },
     { icon: PlayCircle, label: 'Smart Visit Pack', value: 'smart-visit' },
     { icon: Calendar, label: 'Agenda', value: 'agenda', badge: pendingAppointments },
     { icon: Activity, label: 'Flowboard', value: 'flowboard' },
@@ -322,6 +330,10 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'invoicing' && <ClinicInvoicing user={user} owners={owners} pets={pets} />}
         {activeTab === 'metrics' && <ClinicMetrics user={user} onNavigate={setActiveTab} />}
         {activeTab === 'value-dashboard' && <ClinicValueDashboard />}
+        {activeTab === 'alert-pazienti-fragili' && <AlertPazientiFragili user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'autopilot-settimanale' && <AutopilotSettimanale user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'preventivi-digitali' && <PreventiviDigitali user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'predictive-client-churn' && <PredictiveClientChurn user={user} onNavigate={setActiveTab} />}
         {activeTab === 'bookinglink' && <ClinicBookingLink user={user} onNavigate={setActiveTab} />}
         {activeTab === 'templates' && <ClinicTemplates owners={owners} pets={pets} staff={staff} appointments={appointments} user={user} onNavigate={setActiveTab} />}
         {activeTab === 'automations' && <ClinicAutomations user={user} onNavigate={setActiveTab} />}

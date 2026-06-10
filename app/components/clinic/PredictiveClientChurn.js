@@ -55,7 +55,7 @@ export default function PredictiveClientChurn() {
             <div>
               <p className="text-red-600 text-sm font-medium">Clienti Alto Rischio</p>
               <p className="text-3xl font-bold text-red-900 mt-1">47</p>
-              <p className="text-xs text-red-700 mt-1">>70% probabilità churn</p>
+              <p className="text-xs text-red-700 mt-1">&gt;70% probabilità churn</p>
             </div>
             <AlertTriangle className="w-12 h-12 text-red-600 opacity-50" />
           </div>

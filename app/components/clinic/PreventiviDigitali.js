@@ -170,7 +170,7 @@ export default function PreventiviDigitali({ user, onNavigate }) {
               <h3 className="text-lg font-bold text-gray-900 mb-2">💡 Preventivi in attesa di risposta</h3>
               <p className="text-gray-700 text-sm">
                 <strong>4 preventivi</strong> per un valore totale di <strong>€1.070</strong> in attesa di accettazione. 
-                <strong className="text-orange-700"> 2 richiedono follow-up urgente</strong> (>14 giorni da invio).
+                <strong className="text-orange-700"> 2 richiedono follow-up urgente</strong> (&gt;14 giorni da invio).
               </p>
             </div>
 
