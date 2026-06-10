@@ -526,6 +526,56 @@ function ClinicRewardsManagement({ user, owners = [] }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* ========== PIANI BENESSERE (NUOVO - MERCATO IT) ========== */}
+      <div className="mt-8 p-6 bg-gradient-to-br from-emerald-50 to-green-50 rounded-lg border-2 border-emerald-200">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <Heart className="h-6 w-6 text-emerald-600" /> Piani Benessere Pre-pagati
+              <Badge className="bg-emerald-100 text-emerald-700 text-xs">🇮🇹 Mercato IT</Badge>
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">Pacchetti annuali che aumentano retention +40% e lifetime value +35%</p>
+          </div>
+          <Button className="bg-emerald-500 hover:bg-emerald-600 text-white">
+            <Plus className="h-4 w-4 mr-1" /> Nuovo Piano
+          </Button>
+        </div>
+
+        {/* Piani Predefiniti */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {[
+            { id: '1', name: 'Piano Cucciolo', price: 199, includes: ['3 visite', '3 vaccini', 'Microchip', 'Sterilizzazione -20%'], subscribers: 45, icon: '🐶', color: 'blue' },
+            { id: '2', name: 'Piano Senior', price: 249, includes: ['4 visite', '2 esami sangue', 'Dentale incluso'], subscribers: 28, icon: '👴', color: 'amber' },
+            { id: '3', name: 'Piano Prevenzione', price: 149, includes: ['2 visite', 'Vaccini', 'Antiparassitari -20%'], subscribers: 67, icon: '🛡️', color: 'green' },
+          ].map(plan => (
+            <Card key={plan.id} className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-5">
+                <div className="text-center mb-4">
+                  <div className="text-4xl mb-2">{plan.icon}</div>
+                  <h4 className="font-bold text-lg">{plan.name}</h4>
+                  <div className="mt-2">
+                    <span className="text-3xl font-black">€{plan.price}</span>
+                    <span className="text-sm text-gray-600">/anno</span>
+                  </div>
+                  <Badge className="mt-2 bg-emerald-500 text-white">{plan.subscribers} iscritti</Badge>
+                </div>
+                <ul className="space-y-2 mb-4">
+                  {plan.includes.map((item, i) => (
+                    <li key={i} className="text-xs flex items-start gap-2">
+                      <CheckCircle className="h-4 w-4 text-emerald-600 shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button size="sm" className="w-full bg-emerald-500 text-white">
+                  <UserPlus className="h-3 w-3 mr-1" /> Iscrivi Clienti
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

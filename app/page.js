@@ -85,6 +85,7 @@ const SmartVisitPack = dynamic(() => import('@/app/components/clinic/SmartVisitP
 
 // FUNZIONI MERCATO ITALIANO
 const RicetteElettroniche = dynamic(() => import('@/app/components/clinic/RicetteElettroniche'), { ssr: false });
+const MicrochipAnagrafe = dynamic(() => import('@/app/components/clinic/MicrochipAnagrafe'), { ssr: false });
 
 // Owner Dashboard
 const OwnerDashboard = dynamic(() => import('@/app/components/owner/OwnerDashboardLayout'), { ssr: false });
@@ -339,6 +340,7 @@ function ClinicDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'labinvoices' && <ClinicLabInvoices />}
         {activeTab === 'prescriptions' && <ClinicPrescriptions user={user} pets={pets} owners={owners} />}
         {activeTab === 'ricette-elettroniche' && <RicetteElettroniche user={user} onNavigate={setActiveTab} pets={pets} owners={owners} />}
+        {activeTab === 'microchip-anagrafe' && <MicrochipAnagrafe user={user} onNavigate={setActiveTab} pets={pets} owners={owners} />}
         {activeTab === 'rev-settings' && <ClinicREVSettings user={user} onNavigate={setActiveTab} />}
         {activeTab === 'stock-vaccini' && <StockVaccini user={user} onNavigate={setActiveTab} />}
       </main>

@@ -239,6 +239,57 @@ export default function ReputationReferral({ user, onNavigate }) {
         </TabsContent>
       </Tabs>
 
+      {/* ========== NETWORK SPECIALISTI (NUOVO - MERCATO IT) ========== */}
+      <Card className="mt-8 border-indigo-300 bg-gradient-to-br from-indigo-50 to-purple-50">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-xl flex items-center gap-2">
+            <Users className="h-6 w-6 text-indigo-500" /> Network Specialisti & Referral Tracking
+            <Badge className="bg-indigo-100 text-indigo-700 text-xs">🇮🇹 Mercato IT</Badge>
+          </CardTitle>
+          <CardDescription>
+            Invia pazienti agli specialisti e traccia il feedback loop bidirezionale. +60% visite specialistiche da referral in Italia.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {/* Directory Specialisti */}
+          <div className="mb-6">
+            <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <Users className="h-5 w-5 text-indigo-600" />
+              Directory Specialisti
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {[
+                { id: '1', name: 'Dr. Luca Ferrari', specialty: 'Ortopedia', location: 'Milano', rating: 4.8, referrals: 45 },
+                { id: '2', name: 'Dr.ssa Anna Martini', specialty: 'Dermatologia', location: 'Roma', rating: 4.9, referrals: 38 },
+                { id: '3', name: 'Dr. Marco Bianchi', specialty: 'Cardiologia', location: 'Milano', rating: 4.7, referrals: 52 },
+              ].map(spec => (
+                <Card key={spec.id} className="border-indigo-200 hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <h5 className="font-semibold text-gray-900">{spec.name}</h5>
+                        <p className="text-sm text-indigo-600">{spec.specialty}</p>
+                        <p className="text-xs text-gray-500 mt-1">{spec.location}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center gap-1 text-amber-500">
+                          <Star className="h-4 w-4 fill-current" />
+                          <span className="text-sm font-semibold">{spec.rating}</span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">{spec.referrals} referral</p>
+                      </div>
+                    </div>
+                    <Button size="sm" className="w-full bg-indigo-500 text-white mt-2">
+                      <Send className="h-3 w-3 mr-1" /> Invia Paziente
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Referral Send Modal */}
       {showReferralModal && (
         <Dialog open={showReferralModal} onOpenChange={setShowReferralModal}>
