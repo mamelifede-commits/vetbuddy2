@@ -12,7 +12,7 @@ export default function ModuliPage() {
   const categories = {
     genius: {
       title: 'Genius',
-      count: 40,
+      count: 47,
       color: 'text-purple-600',
       modules: [
         'VetBuddy Brain - Super-Assistente AI multimodale',
@@ -48,18 +48,25 @@ export default function ModuliPage() {
         'Client LTV Predictor AI - Previsione lifetime value clienti',
         'Vet-to-Vet Knowledge Marketplace - Marketplace conoscenze veterinarie',
         'Smart Appointment Orchestration AI - Orchestrazione intelligente appuntamenti',
-        'Veterinary Crisis Communication AI - Comunicazione crisi automatizzata',
-        'Pet Nutrition AI Chef - Piano nutrizionale AI personalizzato',
-        'Predictive Client Churn AI - Previsione abbandono clienti',
-        'Smart Surgery Scheduling AI - Scheduling chirurgie intelligente',
-        'Emergency Triage AI - Triage automatico emergenze',
-        'Veterinary Franchise Builder - Costruttore rete franchising veterinari',
-        'Alert Pazienti Fragili & Cronici - Monitoraggio continuo pazienti speciali',
+        'Emergency Triage AI - Triage emergenze con AI in 30 secondi',
+        'Pet Nutrition AI Chef - Diete personalizzate con AI nutrizionale',
+        'Smart Surgery Scheduling - Gestione intelligente sale operatorie',
+        'Veterinary Franchise Builder - Costruisci catena cliniche in franchising',
+        'Veterinary Crisis Communication - Gestione crisi comunicativa',
+        'Alert Pazienti Fragili - Monitoraggio automatico pazienti cronici/senior',
+        'Autopilot Settimanale - Azioni settimanali consigliate da AI',
+        'Preventivi Digitali - Creazione, invio e tracking preventivi digitali',
+        'Predictive Client Churn AI - Previsione abbandono clienti con ML',
+        'Motore Recupero Valore - Dashboard intelligente recupero revenue',
+        'No-Show Recovery System - Sistema completo prevenzione no-show',
+        'Clienti Dormienti Reactivation - Riattivazione automatica clienti inattivi',
+        'Lab Analysis Manager - Gestione completa richieste laboratorio',
+        'Digital Estimates System - Sistema preventivi digitali avanzato',
       ]
     },
     base: {
       title: 'Base',
-      count: 18,
+      count: 20,
       color: 'text-coral-600',
       modules: [
         'Agenda Smart - Prenotazioni online 24/7',
@@ -80,6 +87,8 @@ export default function ModuliPage() {
         'Stampa Rapida - Template stampa personalizzabili',
         'Backup Automatico - Backup giornaliero sicuro',
         'Dashboard Operativa - KPI clinica real-time',
+        'Lista d\'Attesa Intelligente - Gestione wait-list automatica',
+        'Notifiche Push - Sistema notifiche real-time multicanale',
       ]
     },
     marketit: {
@@ -151,7 +160,7 @@ export default function ModuliPage() {
 
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
-            Tutti i 92 Moduli VetBuddy
+            Tutti i 103 Moduli VetBuddy
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             La piattaforma veterinaria più completa al mondo. Organizzati per categoria per facilitare l'esplorazione.

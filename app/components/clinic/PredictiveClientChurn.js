@@ -164,6 +164,53 @@ export default function PredictiveClientChurn() {
         </div>
       </div>
 
+      {/* Clienti Dormienti Section */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <Users className="w-5 h-5 text-purple-600" />
+          Clienti Dormienti - Segmentazione Automatica
+        </h3>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          {[
+            { segment: 'Inattivi 6-9 mesi', count: 8, avgLTV: 167, value: '€1.336', recovery: '50%', color: 'yellow' },
+            { segment: 'Inattivi 9-12 mesi', count: 6, avgLTV: 189, value: '€1.134', recovery: '40%', color: 'orange' },
+            { segment: 'Vaccino scaduto >60gg', count: 12, avgLTV: 65, value: '€780', recovery: '65%', color: 'red' },
+            { segment: 'Piano antiparassitari interrotto', count: 9, avgLTV: 45, value: '€405', recovery: '70%', color: 'blue' },
+          ].map((seg, idx) => (
+            <div key={idx} className={`p-4 bg-${seg.color}-50 border border-${seg.color}-200 rounded-lg`}>
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-bold text-gray-900">{seg.segment}</h4>
+                <span className={`px-2 py-1 rounded-full text-xs font-bold bg-${seg.color}-200 text-${seg.color}-800`}>
+                  {seg.count} clienti
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div>
+                  <p className="text-gray-600">LTV Medio</p>
+                  <p className="font-bold text-gray-900">€{seg.avgLTV}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Valore Tot.</p>
+                  <p className="font-bold text-green-600">{seg.value}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Recovery</p>
+                  <p className="font-bold text-purple-600">{seg.recovery}</p>
+                </div>
+              </div>
+              <button className="w-full mt-3 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-xs font-medium">
+                Avvia Campagna Segmento
+              </button>
+            </div>
+          ))}
+        </div>
+        <div className="bg-gradient-to-r from-purple-100 to-blue-100 rounded-lg p-4 border border-purple-300">
+          <p className="text-sm font-bold text-gray-900 text-center">
+            💡 <strong>Valore totale recuperabile clienti dormienti: €3.655</strong> • Recovery stimato: 55% = €2.010/mese
+          </p>
+        </div>
+      </div>
+
       {/* Churn Factors Analysis */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
