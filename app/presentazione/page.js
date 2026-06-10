@@ -808,9 +808,41 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🏠</span></div><div><h3 className="font-black text-gray-900 text-sm">Smart Clinic Hub</h3><span className="bg-slate-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">IoT clinica intelligente. Sensori degenza, monitoraggio automatico, workflow connesso. Clinica 4.0.</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 border-2 border-amber-200">
-            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🧬</span></div><div><h3 className="font-black text-gray-900 text-sm">Genetic Precision Medicine</h3><span className="bg-amber-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
-            <p className="text-gray-600 text-xs leading-relaxed">Test genomici razze. Predisposizioni patologie, farmacogenetica, breeding. Medicina genomica.</p>
+          <div className="bg-white rounded-2xl p-6 border-2 border-teal-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🏥</span></div><div><h3 className="font-black text-gray-900 text-sm">Fisioterapia & Riabilitazione</h3><span className="bg-teal-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Due modalità: In-House (video, tracking) + Network marketplace centri. Recupero +40%.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><span className="text-2xl">⚠️</span></div><div><h3 className="font-black text-gray-900 text-sm">Predictive Hospitalization AI</h3><span className="bg-red-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">AI prevede rischio ospedalizzazione 48-72h. Intervento preemptivo. Accuratezza 87%.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-pink-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center"><span className="text-2xl">❤️</span></div><div><h3 className="font-black text-gray-900 text-sm">Mental Wellness Hub</h3><span className="bg-pink-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Benessere psicologico veterinari. Burnout tracking, terapia h24. Retention +40%.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🛡️</span></div><div><h3 className="font-black text-gray-900 text-sm">Litigation Shield</h3><span className="bg-blue-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Assicurazione + AI gap documentali + legale h24. Peace of mind. €650/anno.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🧠</span></div><div><h3 className="font-black text-gray-900 text-sm">Pet Behavior AI</h3><span className="bg-purple-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Predice ansia/aggressività pre-visita. Sicurezza staff +60%, meno sedazioni.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-cyan-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center"><span className="text-2xl">⏰</span></div><div><h3 className="font-black text-gray-900 text-sm">Time Machine</h3><span className="bg-cyan-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Simula invecchiamento 5-10 anni. Compliance +80%. Effetto WOW virale.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-orange-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🔧</span></div><div><h3 className="font-black text-gray-900 text-sm">Equipment Maintenance AI</h3><span className="bg-orange-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">IoT predice guasti 7-14gg prima. Zero downtime. Risparmio €10-15k/anno.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-indigo-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🌍</span></div><div><h3 className="font-black text-gray-900 text-sm">Cross-Species Learning</h3><span className="bg-indigo-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">AI tutte specie. Transfer learning. Risolvi casi impossibili fuori comfort zone.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border-2 border-slate-200">
+            <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎓</span></div><div><h3 className="font-black text-gray-900 text-sm">Residency Program</h3><span className="bg-slate-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
+            <p className="text-gray-600 text-xs leading-relaxed">Mentorship 1-to-1. €200/mese vs €20-40k. Certificazione FNOVI. Democratico.</p>
           </div>
         </div>
 
