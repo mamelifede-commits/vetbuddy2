@@ -633,6 +633,106 @@ export default function BrochurePage() {
           </div>
         </div>
 
+        {/* FUNZIONALITÀ ENTERPRISE */}
+        <h3 className="text-xl font-black text-gray-900 mt-8 mb-4">🚀 Funzionalità Enterprise 2025</h3>
+        <div className="grid grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🏢</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">Multi-Sede & Catene</h3><span className="bg-blue-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">Dashboard consolidato, trasferimento pazienti tra sedi, inventario condiviso, KPI comparativi.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><span className="text-2xl">📱</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">App Mobile Nativa</h3><span className="bg-purple-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">iOS & Android per proprietari e veterinari. Push notifications, offline mode, geolocalizzazione.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><span className="text-2xl">✂️</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">Gestione Sala Operatoria</h3><span className="bg-red-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">Calendario chirurgie, checklist pre-op, tracking strumentario, report post-op.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-green-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🧮</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">Integrazione Contabilità</h3><span className="bg-green-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">Fatture in Cloud, TeamSystem. Sync automatico, prima nota, dashboard fiscale.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-orange-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center"><span className="text-2xl">📦</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">Inventario Completo</h3><span className="bg-orange-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">Farmaci, materiali, attrezzature. Alert scadenze, costo medio, report magazzino.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-indigo-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">💳</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">POS/Cassa Integrata</h3><span className="bg-indigo-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">Nexi, SumUp, Stripe. Pagamenti, scontrini, chiusura cassa automatica.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-cyan-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center"><span className="text-2xl">📊</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">Analytics & BI Avanzati</h3><span className="bg-cyan-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">Dashboard personalizzabili, report custom, benchmark, previsioni AI fatturato.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-yellow-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center"><span className="text-2xl">⚡</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">Marketing Automation</h3><span className="bg-yellow-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">Funnel multi-step, email sequences, lead scoring, A/B testing.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-slate-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center"><span className="text-2xl">👥</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">Gestione HR/Personale</h3><span className="bg-slate-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">Badge presenze, ferie, buste paga, formazione staff, valutazioni.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-pink-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🛒</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">E-commerce Prodotti Pet</h3><span className="bg-pink-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">Vendita online cibo, antiparassitari. Revenue +10-15%. Spedizioni automatiche.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-amber-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🏠</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">Visite Domiciliari</h3><span className="bg-amber-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">Booking visite a casa, tragitto ottimizzato, app mobile vet. Margini alti.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-lime-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-lime-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🍎</span></div>
+              <div><h3 className="font-black text-gray-900 text-sm">Nutrizione AI</h3><span className="bg-lime-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Enterprise</span></div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed">Piani alimentari custom AI. Tracking peso, alert obesità, prevenzione patologie.</p>
+          </div>
+        </div>
+
         <div className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border-2 border-emerald-200">
           <h4 className="font-black text-gray-900 mb-3">📊 Dashboard ROI in Tempo Reale</h4>
           <div className="grid grid-cols-5 gap-4 text-center">

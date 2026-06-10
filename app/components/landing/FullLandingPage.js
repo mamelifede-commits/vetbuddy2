@@ -18,7 +18,8 @@ import {
   Star, Check, Euro, Receipt, Activity,
   MapPin, Stethoscope, Mail, Clock, Gift, Loader2, FlaskConical, BarChart3,
   ArrowRight, PhoneOff, CalendarCheck, Repeat, Brain, Sparkles, Target, Timer, Video, Link2,
-  Bot, CalendarX, Rocket, Database, QrCode, Syringe, Plane, Share2, AlertTriangle, AlertCircle, CheckSquare, Home, GraduationCap
+  Bot, CalendarX, Rocket, Database, QrCode, Syringe, Plane, Share2, AlertTriangle, AlertCircle, CheckSquare, Home, GraduationCap,
+  Scissors, Calculator, Package, CreditCard, Smartphone, ShoppingCart, Apple
 } from 'lucide-react';
 
 function FullLandingPage({ onLogin }) {
@@ -307,6 +308,18 @@ function FullLandingPage({ onLogin }) {
               { icon: FlaskConical, title: 'Integrazione Laboratori IZS', desc: 'Connessione Istituti Zooprofilattici. Esami obbligatori (rabbia, brucellosi), richieste e referti digitali.', color: 'bg-purple-700', tag: 'Mercato IT' },
               { icon: Clock, title: 'Gestione Turni Guardia H24', desc: 'Calendario turni pronto soccorso. Alert emergenze, handoff automatico, note consegna tra veterinari.', color: 'bg-indigo-700', tag: 'Mercato IT' },
               { icon: Users, title: 'Tracking Crediti ECM', desc: 'Monitoraggio formazione obbligatoria continua. 50 crediti/anno, alert scadenze, corsi accreditati integrati.', color: 'bg-teal-700', tag: 'Mercato IT' },
+              { icon: Building2, title: 'Multi-Sede & Gestione Catene', desc: 'Dashboard consolidato catene veterinarie. Trasferimento pazienti, inventario condiviso, KPI comparativi sedi.', color: 'bg-blue-800', tag: 'Enterprise' },
+              { icon: Smartphone, title: 'App Mobile Nativa', desc: 'iOS & Android per proprietari e veterinari. Push notifications, offline mode, geolocalizzazione, fotocamera integrata.', color: 'bg-purple-800', tag: 'Enterprise' },
+              { icon: Scissors, title: 'Gestione Sala Operatoria', desc: 'Calendario chirurgie, checklist pre-op, tracking strumentario sterile, report post-op automatici.', color: 'bg-red-800', tag: 'Enterprise' },
+              { icon: Calculator, title: 'Integrazione Contabilità', desc: 'Sync Fatture in Cloud, TeamSystem, Aruba. Movimenti bancari, prima nota automatica, dashboard fiscale.', color: 'bg-green-800', tag: 'Enterprise' },
+              { icon: Package, title: 'Inventario Farmaci Completo', desc: 'Non solo vaccini. Farmaci, materiali, attrezzature. Alert scadenze, costo medio ponderato, report valore magazzino.', color: 'bg-orange-800', tag: 'Enterprise' },
+              { icon: CreditCard, title: 'POS/Cassa Integrata', desc: 'Nexi, SumUp, Stripe Terminal. Pagamenti immediati, scontrini automatici, chiusura cassa, riconciliazione contabile.', color: 'bg-indigo-800', tag: 'Enterprise' },
+              { icon: BarChart3, title: 'Analytics & BI Avanzati', desc: 'Dashboard drag-drop personalizzabili. Report custom, benchmark anonimo, previsioni AI fatturato, export automatici.', color: 'bg-cyan-800', tag: 'Enterprise' },
+              { icon: Zap, title: 'Marketing Automation Avanzato', desc: 'Funnel multi-step, email sequences, lead scoring, A/B testing. HubSpot-like per veterinari.', color: 'bg-yellow-700', tag: 'Enterprise' },
+              { icon: Users, title: 'Gestione HR/Personale', desc: 'Badge presenze, ferie/permessi, buste paga, formazione staff, valutazioni performance. Ideale 5+ dipendenti.', color: 'bg-slate-700', tag: 'Enterprise' },
+              { icon: ShoppingCart, title: 'E-commerce Prodotti Pet', desc: 'Vendita online cibo, antiparassitari, accessori. Revenue addizionale 10-15%. Spedizioni automatiche.', color: 'bg-pink-700', tag: 'Enterprise' },
+              { icon: Home, title: 'Visite Domiciliari', desc: 'Booking visite a casa, tragitto ottimizzato Google Maps, app mobile vet. Servizio premium margini alti.', color: 'bg-amber-700', tag: 'Enterprise' },
+              { icon: Apple, title: 'Nutrizione Personalizzata AI', desc: 'Piani alimentari custom per razza/età. Tracking peso, alert obesità. Previene patologie, riduce emergenze.', color: 'bg-lime-700', tag: 'Enterprise' },
             ].map((m, i) => (
               <Card key={i} className="hover:shadow-lg transition group relative overflow-hidden">
                 {m.tag && <div className="absolute top-2 right-2"><Badge className="bg-coral-500 text-white text-[10px]">{m.tag}</Badge></div>}
@@ -725,6 +738,18 @@ function FullLandingPage({ onLogin }) {
               { q: 'Cos\'è l\'integrazione con i Laboratori IZS?', a: 'Connessione digitale con Istituti Zooprofilattici Sperimentali (laboratori pubblici regionali). Per esami obbligatori (rabbia, brucellosi, tubercolosi, leishmaniosi). Richieste e referti gestiti automaticamente, riduce burocrazia con enti pubblici.' },
               { q: 'Come funziona la Gestione Turni Guardia H24?', a: 'Calendario turni per cliniche con pronto soccorso. Organizzazione turni diurni/notturni, alert emergenze push al veterinario di guardia, handoff automatico tra turni con note di consegna. Ideale per cliniche premium con servizio H24.' },
               { q: 'Cosa sono i Crediti ECM Veterinari?', a: 'Tracking formazione obbligatoria continua (50 crediti ECM/anno per veterinari). Monitoraggio crediti acquisiti, alert 60 giorni prima scadenza, integrazione corsi accreditati FNOVI/SCIVAC. Aiuta veterinari a restare in regola con l\'obbligo formativo.' },
+              { q: 'Come funziona la gestione Multi-Sede per catene veterinarie?', a: 'Dashboard consolidato multi-sede: vedi KPI di tutte le sedi insieme. Trasferimento pazienti tra sedi, inventario condiviso, gestione staff centralizzata, report comparativi. Ideale per catene con 2+ cliniche.' },
+              { q: 'Cos\'è l\'App Mobile Nativa di VetBuddy?', a: 'App iOS & Android separata per proprietari (prenotazioni, documenti, chat) e veterinari (visite domiciliari, accesso cartelle). Push notifications native, modalità offline, fotocamera integrata, geolocalizzazione. Standard di mercato.' },
+              { q: 'Come funziona la Gestione Sala Operatoria?', a: 'Calendario chirurgie con stati real-time. Checklist pre-operatoria automatica (anestesia, consenso, preparazione), tracking strumentario sterile, report post-op strutturati. Le chirurgie sono il servizio più redditizio: organizzazione = fatturato.' },
+              { q: 'Quali software di contabilità si integrano con VetBuddy?', a: 'Integrazione diretta con Fatture in Cloud, TeamSystem, Aruba Fatturazione. Sync automatico fatture → commercialista, import movimenti bancari, prima nota automatica, dashboard fiscale. Risparmio 5-10h/mese.' },
+              { q: 'Cos\'è l\'Inventario Farmaci Completo?', a: 'Non solo vaccini: farmaci, materiali chirurgici, attrezzature. Alert scadenze 30/60gg, ricette automatiche da inventario, costo medio ponderato, report valore magazzino. Farmaci = 20-30% costi: gestione = risparmio.' },
+              { q: 'Come funziona l\'integrazione POS/Cassa?', a: 'Integrazione Nexi, SumUp, Stripe Terminal. Workflow completo: visita → pagamento (cash/card) → scontrino/fattura automatica → riconciliazione contabile. Cassa giornaliera, chiusura turno. Zero errori di quadratura.' },
+              { q: 'Cosa sono Analytics & BI Avanzati?', a: 'Dashboard drag-drop personalizzabili, report custom (fatturato per servizio/veterinario/trend), benchmark anonimo vs altre cliniche, previsioni AI fatturato, alert anomalie automatici. Data-driven decision making per cliniche premium.' },
+              { q: 'Cos\'è il Marketing Automation Avanzato?', a: 'Funnel multi-step (es: lead → prima visita → cliente fedele), email sequences automatiche, lead scoring (0-100), A/B testing messaggi, landing pages. HubSpot-like per veterinari. Upsell premium.' },
+              { q: 'Come funziona la Gestione HR/Personale?', a: 'Badge presenze automatico, richieste ferie/permessi digitali, generazione buste paga, piani formazione staff, valutazioni performance. Ideale per cliniche con 5+ dipendenti che vogliono professionalizzare gestione personale.' },
+              { q: 'Cos\'è l\'E-commerce Prodotti Pet?', a: 'Vendita online cibo, antiparassitari, accessori dal sito della clinica. Integrazione inventario, spedizioni automatiche, marketing prodotti. Revenue addizionale 10-15% del fatturato. Clienti acquistano direttamente dalla clinica di fiducia.' },
+              { q: 'Come funzionano le Visite Domiciliari?', a: 'Booking visite a casa dei clienti, calendario dedicato, tragitto ottimizzato Google Maps, app mobile veterinario con accesso cartelle offline. Servizio premium con margini alti (€150-200/visita). Ideale per anziani/disabili.' },
+              { q: 'Cos\'è la Nutrizione Personalizzata AI?', a: 'Algoritmo AI suggerisce piano alimentare custom basato su razza, età, peso, patologie. Tracking peso, grafici progressione, alert obesità. Previene patologie croniche (diabete, obesità) e riduce visite emergenza. Medicina preventiva.' },
             ].map((faq, i) => (
               <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-lg border px-4">
                 <AccordionTrigger className="text-left font-semibold text-gray-900 py-4">{faq.q}</AccordionTrigger>
