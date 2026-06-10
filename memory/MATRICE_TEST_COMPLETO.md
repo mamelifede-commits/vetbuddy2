@@ -23,13 +23,13 @@
 
 | Test ID | Area | Descrizione | Ruolo | Status | Risultato | Bug | Priorità | Azione |
 |---------|------|-------------|-------|--------|-----------|-----|----------|--------|
-| T001 | Auth | Login Admin | Admin | 🔄 In test | - | - | Alta | Test in corso |
-| T002 | Auth | Login Clinic | Clinic | 🔄 In test | - | - | Alta | Test in corso |
-| T003 | Auth | Login Owner | Owner | 🔄 In test | - | - | Alta | Test in corso |
-| T004 | Auth | Login Lab | Lab | 🔄 In test | - | - | Alta | Test in corso |
-| T005 | Auth | Login Staff | Staff | 🔄 In test | - | - | Alta | Test in corso |
-| T006 | Auth | Password recovery | Tutti | 🔄 In test | - | - | Media | Test in corso |
-| T007 | Auth | Logout | Tutti | 🔄 In test | - | - | Media | Test in corso |
+| T001 | Auth | Login Admin | Admin | ✅ | Login OK, role=admin | - | Alta | Funzionante |
+| T002 | Auth | Login Clinic | Clinic | ✅ | Login OK, role=clinic | - | Alta | Funzionante |
+| T003 | Auth | Login Owner | Owner | ✅ | Login OK, role=owner | - | Alta | Funzionante |
+| T004 | Auth | Login Lab | Lab | ✅ | Login OK, role=lab | - | Alta | Funzionante |
+| T005 | Auth | Login Staff | Staff | ⚠️ | No staff account | Nessun account staff di test | Media | Creare account |
+| T006 | Auth | Password recovery | Tutti | 📝 | - | - | Media | Da testare frontend |
+| T007 | Auth | Logout | Tutti | 📝 | - | - | Media | Da testare frontend |
 
 ---
 
