@@ -18,6 +18,7 @@ import { handleHealthPlansGet, handleHealthPlansPost, handleHealthPlansPut, hand
 import { handlePassportGet, handlePassportPost, handlePassportPut, handlePassportDelete } from './modules/passport';
 import { handleAutopilotGet } from './modules/autopilot';
 import { handleFragilePatientsGet } from './modules/fragile-patients';
+import { handleEstimatesGet, handleEstimatesPost, handleEstimatesPut } from './modules/estimates';
 
 // CORS preflight handler
 export async function OPTIONS() {
@@ -47,6 +48,7 @@ export async function GET(request, { params }) {
       handleLabGet,
       handleAutopilotGet,
       handleFragilePatientsGet,
+      handleEstimatesGet,
       handleAdminGet,
       handlePassportGet,
     ];
@@ -97,6 +99,7 @@ export async function POST(request, { params }) {
       handleRewardsPost,     // rewards types, assign, redeem, use
       handleClinicPost,      // clinic-specific routes
       handleLabPost,         // lab routes
+      handleEstimatesPost,   // estimates routes
       handleAdminPost,       // admin routes
       handlePassportPost,    // passport routes
     ];
@@ -131,6 +134,7 @@ export async function PUT(request, { params }) {
       handlePassportPut,
       handleDataPut,
       handleSettingsPut,
+      handleEstimatesPut,
     ];
 
     for (const handler of handlers) {
