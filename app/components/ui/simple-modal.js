@@ -37,13 +37,13 @@ export function SimpleModal({ isOpen, onClose, children, title, description, max
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
-        style={{ animation: 'fadeIn 0.2s ease-out' }}
+        style={{ animation: 'fadeIn 0.2s ease-out', pointerEvents: 'auto' }}
       />
       
       {/* Modal Content */}
       <div 
         className={`relative bg-white rounded-xl shadow-2xl ${maxWidth} w-full max-h-[90vh] overflow-y-auto`}
-        style={{ animation: 'slideUp 0.3s ease-out' }}
+        style={{ animation: 'slideUp 0.3s ease-out', pointerEvents: 'auto', zIndex: 1 }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
