@@ -30,7 +30,8 @@ export function SimpleModal({ isOpen, onClose, children, title, description, max
     <div 
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
       style={{ 
-        animation: isOpen ? 'fadeIn 0.2s ease-out' : 'fadeOut 0.2s ease-out'
+        animation: isOpen ? 'fadeIn 0.2s ease-out' : 'fadeOut 0.2s ease-out',
+        pointerEvents: 'none'
       }}
     >
       {/* Overlay */}
@@ -43,7 +44,7 @@ export function SimpleModal({ isOpen, onClose, children, title, description, max
       {/* Modal Content */}
       <div 
         className={`relative bg-white rounded-xl shadow-2xl ${maxWidth} w-full max-h-[90vh] overflow-y-auto`}
-        style={{ animation: 'slideUp 0.3s ease-out', pointerEvents: 'auto', zIndex: 1 }}
+        style={{ animation: 'slideUp 0.3s ease-out', pointerEvents: 'auto', zIndex: 10 }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
