@@ -7,9 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { AuthForm } from '@/app/components/auth';
+import { SimpleModal } from '@/components/ui/simple-modal';
 import NewBrandLogo from '@/app/components/shared/NewBrandLogo';
 import api from '@/app/lib/api';
 import {
@@ -34,11 +34,12 @@ function FullLandingPage({ onLogin }) {
   const scrollToSection = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMobileMenuOpen(false); };
 
   useEffect(() => {
-    // Check if user has token - if yes, don't show landing
+    // Check if user has token - if yes, don't show modal or landing
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('vetbuddy_token');
       if (token) {
-        // User is logged in, let page.js handle the redirect
+        // User is logged in, close any modals and let page.js handle the redirect
+        setShowAuth(false);
         return;
       }
       
@@ -1003,27 +1004,30 @@ function FullLandingPage({ onLogin }) {
         </div>
       </footer>
 
-      {/* AUTH DIALOG */}
-      <Dialog open={showAuth} onOpenChange={(open) => { setShowAuth(open); if (!open) setPendingAction(null); }}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>{authMode === 'login' ? 'Accedi a VetBuddy' : 'Registrati su VetBuddy'}</DialogTitle>
-            <DialogDescription>
-              {authMode === 'login' ? 'Inserisci le tue credenziali per accedere' : 'Crea il tuo account gratuito'}
-            </DialogDescription>
-          </DialogHeader>
-          {pendingAction && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-2">
-              <p className="text-sm text-amber-800">{getActionMessage()}</p>
-            </div>
-          )}
-          <AuthForm
-            mode={authMode}
-            setMode={setAuthMode}
-            onLogin={onLogin}
-          />
-        </DialogContent>
-      </Dialog>
+      {/* AUTH MODAL */}
+      <SimpleModal
+        isOpen={showAuth}
+        onClose={() => { setShowAuth(false); setPendingAction(null); }}
+        title={authMode === 'login' ? 'Accedi a VetBuddy' : 'Registrati su VetBuddy'}
+        description={authMode === 'login' ? 'Inserisci le tue credenziali per accedere' : 'Crea il tuo account gratuito'}
+      >
+        {pendingAction && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-2">
+            <p className="text-sm text-amber-800">{getActionMessage()}</p>
+          </div>
+        )}
+        <AuthForm
+          mode={authMode}
+          setMode={setAuthMode}
+          onLogin={(user) => {
+            console.log('[FullLandingPage] Login success, closing modal and calling onLogin', user);
+            setShowAuth(false);
+            setPendingAction(null);
+            // Call parent onLogin
+            onLogin(user);
+          }}
+        />
+      </SimpleModal>
     </div>
   );
 }

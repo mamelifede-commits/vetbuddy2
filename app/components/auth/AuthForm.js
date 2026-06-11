@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { CheckCircle, Mail, PawPrint, Stethoscope, FlaskConical, Truck, Clock, MapPin } from 'lucide-react';
@@ -88,16 +87,14 @@ function AuthForm({ mode, setMode, onLogin }) {
       if (mode === 'login') {
         const data = await api.post('auth/login', formData);
         api.setToken(data.token);
-        // Force close all dialogs and modals by manipulating DOM directly
-        if (typeof window !== 'undefined') {
-          // Remove all dialog overlays and content
-          const dialogs = document.querySelectorAll('[role="dialog"], [data-radix-dialog-content], [data-radix-dialog-overlay]');
-          dialogs.forEach(el => el.remove());
-          // Then reload to get clean state
-          setTimeout(() => {
+        // Close modal first, then reload
+        onLogin(data.user);
+        // Small delay to let modal close animation complete
+        setTimeout(() => {
+          if (typeof window !== 'undefined') {
             window.location.reload();
-          }, 100);
-        }
+          }
+        }, 200);
       } else if (formData.role === 'lab') {
         // Lab registration
         const labData = {
@@ -223,11 +220,11 @@ function AuthForm({ mode, setMode, onLogin }) {
   if (showForgotPassword) {
     return (
       <div>
-        <DialogHeader className="text-center">
+        <div className="text-center mb-6">
           <div className="flex justify-center mb-4"><VetBuddyLogo size={50} showText={true} /></div>
-          <DialogTitle className="text-2xl text-gray-700">Password dimenticata?</DialogTitle>
-          <DialogDescription>Inserisci la tua email per ricevere un link di reset</DialogDescription>
-        </DialogHeader>
+          <h3 className="text-2xl text-gray-700 font-bold">Password dimenticata?</h3>
+          <p className="text-sm text-gray-600 mt-1">Inserisci la tua email per ricevere un link di reset</p>
+        </div>
         <form onSubmit={handleForgotPassword} className="mt-6 space-y-4">
           <div><Label>Email</Label><Input type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} required placeholder="La tua email" /></div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -243,10 +240,10 @@ function AuthForm({ mode, setMode, onLogin }) {
 
   return (
     <div>
-      <DialogHeader className="text-center">
+      <div className="text-center mb-6">
         <div className="flex justify-center mb-4"><VetBuddyLogo size={50} showText={true} /></div>
-        <DialogDescription>{mode === 'login' ? 'Accedi al tuo account' : 'Crea un nuovo account'}</DialogDescription>
-      </DialogHeader>
+        <p className="text-sm text-gray-600">{mode === 'login' ? 'Accedi al tuo account' : 'Crea un nuovo account'}</p>
+      </div>
       <Tabs value={mode} onValueChange={setMode} className="mt-4">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="login">Accedi</TabsTrigger>
