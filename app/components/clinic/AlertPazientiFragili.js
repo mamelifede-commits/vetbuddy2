@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   AlertTriangle, Heart, Clock, Pill, Shield, Calendar, 
-  Bell, CheckCircle, Phone, MessageCircle, TrendingUp, RefreshCw
+  Bell, CheckCircle, Phone, MessageCircle, TrendingUp, RefreshCw, Zap
 } from 'lucide-react';
 import BackToDashboard from '@/app/components/shared/BackToDashboard';
 import api from '@/app/lib/api';
