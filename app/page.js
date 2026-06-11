@@ -421,6 +421,7 @@ export default function App() {
   };
 
   const handleLogin = (userData) => { 
+    console.log('[page.js] handleLogin called with userData:', userData);
     setUser(userData); 
     loadPendingEmailAction();
     if (!localStorage.getItem('vetbuddy_welcomed_' + userData.id)) setShowWelcome(true); 

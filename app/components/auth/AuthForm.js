@@ -87,14 +87,8 @@ function AuthForm({ mode, setMode, onLogin }) {
       if (mode === 'login') {
         const data = await api.post('auth/login', formData);
         api.setToken(data.token);
-        // Close modal first, then reload
+        // Call onLogin callback to trigger parent state update
         onLogin(data.user);
-        // Small delay to let modal close animation complete
-        setTimeout(() => {
-          if (typeof window !== 'undefined') {
-            window.location.reload();
-          }
-        }, 200);
       } else if (formData.role === 'lab') {
         // Lab registration
         const labData = {

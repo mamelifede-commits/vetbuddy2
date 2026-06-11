@@ -1020,10 +1020,10 @@ function FullLandingPage({ onLogin }) {
           mode={authMode}
           setMode={setAuthMode}
           onLogin={(user) => {
-            console.log('[FullLandingPage] Login success, closing modal and calling onLogin', user);
+            // Close modal immediately
             setShowAuth(false);
             setPendingAction(null);
-            // Call parent onLogin
+            // Then call parent onLogin to trigger page.js state update
             onLogin(user);
           }}
         />
