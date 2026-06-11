@@ -31,11 +31,17 @@ function FullLandingPage({ onLogin }) {
   const [pilotForm, setPilotForm] = useState({ clinicName: '', city: '', email: '', phone: '', message: '' });
   const [pilotSubmitting, setPilotSubmitting] = useState(false);
   const [pilotSubmitted, setPilotSubmitted] = useState(false);
-  const [loginSuccess, setLoginSuccess] = useState(false);
   const scrollToSection = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMobileMenuOpen(false); };
 
   useEffect(() => {
+    // Check if user has token - if yes, don't show landing
     if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('vetbuddy_token');
+      if (token) {
+        // User is logged in, let page.js handle the redirect
+        return;
+      }
+      
       const savedAction = sessionStorage.getItem('vetbuddy_email_action');
       if (savedAction) {
         try {
@@ -47,13 +53,6 @@ function FullLandingPage({ onLogin }) {
       }
     }
   }, []);
-
-  useEffect(() => {
-    if (loginSuccess) {
-      setShowAuth(false);
-      setPendingAction(null);
-    }
-  }, [loginSuccess]);
 
   const getActionMessage = () => {
     if (!pendingAction) return null;
@@ -1021,10 +1020,7 @@ function FullLandingPage({ onLogin }) {
           <AuthForm
             mode={authMode}
             setMode={setAuthMode}
-            onLogin={(user) => { 
-              setLoginSuccess(true);
-              onLogin(user);
-            }}
+            onLogin={onLogin}
           />
         </DialogContent>
       </Dialog>

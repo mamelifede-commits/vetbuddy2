@@ -88,10 +88,15 @@ function AuthForm({ mode, setMode, onLogin }) {
       if (mode === 'login') {
         const data = await api.post('auth/login', formData);
         api.setToken(data.token);
-        onLogin(data.user);
-        // Force page reload to ensure clean state transition
+        // Force close all dialogs and modals by manipulating DOM directly
         if (typeof window !== 'undefined') {
-          window.location.reload();
+          // Remove all dialog overlays and content
+          const dialogs = document.querySelectorAll('[role="dialog"], [data-radix-dialog-content], [data-radix-dialog-overlay]');
+          dialogs.forEach(el => el.remove());
+          // Then reload to get clean state
+          setTimeout(() => {
+            window.location.reload();
+          }, 100);
         }
       } else if (formData.role === 'lab') {
         // Lab registration
