@@ -214,11 +214,11 @@ function AuthForm({ mode, setMode, onLogin }) {
   if (showForgotPassword) {
     return (
       <div>
-        <div className="text-center mb-6">
+        <DialogHeader className="text-center">
           <div className="flex justify-center mb-4"><VetBuddyLogo size={50} showText={true} /></div>
-          <h3 className="text-2xl text-gray-700 font-bold">Password dimenticata?</h3>
-          <p className="text-sm text-gray-600 mt-1">Inserisci la tua email per ricevere un link di reset</p>
-        </div>
+          <DialogTitle className="text-2xl text-gray-700">Password dimenticata?</DialogTitle>
+          <DialogDescription>Inserisci la tua email per ricevere un link di reset</DialogDescription>
+        </DialogHeader>
         <form onSubmit={handleForgotPassword} className="mt-6 space-y-4">
           <div><Label>Email</Label><Input type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} required placeholder="La tua email" /></div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -234,10 +234,10 @@ function AuthForm({ mode, setMode, onLogin }) {
 
   return (
     <div>
-      <div className="text-center mb-6">
+      <DialogHeader className="text-center">
         <div className="flex justify-center mb-4"><VetBuddyLogo size={50} showText={true} /></div>
-        <p className="text-sm text-gray-600">{mode === 'login' ? 'Accedi al tuo account' : 'Crea un nuovo account'}</p>
-      </div>
+        <DialogDescription>{mode === 'login' ? 'Accedi al tuo account' : 'Crea un nuovo account'}</DialogDescription>
+      </DialogHeader>
       <Tabs value={mode} onValueChange={setMode} className="mt-4">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="login">Accedi</TabsTrigger>

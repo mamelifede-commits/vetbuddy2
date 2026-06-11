@@ -7,9 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { AuthForm } from '@/app/components/auth';
-import { SimpleModal } from '@/components/ui/simple-modal';
 import NewBrandLogo from '@/app/components/shared/NewBrandLogo';
 import api from '@/app/lib/api';
 import {
@@ -1004,30 +1004,31 @@ function FullLandingPage({ onLogin }) {
         </div>
       </footer>
 
-      {/* AUTH MODAL */}
-      <SimpleModal
-        isOpen={showAuth}
-        onClose={() => { setShowAuth(false); setPendingAction(null); }}
-        title={authMode === 'login' ? 'Accedi a VetBuddy' : 'Registrati su VetBuddy'}
-        description={authMode === 'login' ? 'Inserisci le tue credenziali per accedere' : 'Crea il tuo account gratuito'}
-      >
-        {pendingAction && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-2">
-            <p className="text-sm text-amber-800">{getActionMessage()}</p>
-          </div>
-        )}
-        <AuthForm
-          mode={authMode}
-          setMode={setAuthMode}
-          onLogin={(user) => {
-            // Close modal immediately
-            setShowAuth(false);
-            setPendingAction(null);
-            // Then call parent onLogin to trigger page.js state update
-            onLogin(user);
-          }}
-        />
-      </SimpleModal>
+      {/* AUTH DIALOG */}
+      <Dialog open={showAuth} onOpenChange={(open) => { setShowAuth(open); if (!open) setPendingAction(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{authMode === 'login' ? 'Accedi a VetBuddy' : 'Registrati su VetBuddy'}</DialogTitle>
+            <DialogDescription>
+              {authMode === 'login' ? 'Inserisci le tue credenziali per accedere' : 'Crea il tuo account gratuito'}
+            </DialogDescription>
+          </DialogHeader>
+          {pendingAction && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-2">
+              <p className="text-sm text-amber-800">{getActionMessage()}</p>
+            </div>
+          )}
+          <AuthForm
+            mode={authMode}
+            setMode={setAuthMode}
+            onLogin={(user) => {
+              setShowAuth(false);
+              setPendingAction(null);
+              onLogin(user);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
