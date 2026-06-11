@@ -89,6 +89,10 @@ function AuthForm({ mode, setMode, onLogin }) {
         const data = await api.post('auth/login', formData);
         api.setToken(data.token);
         onLogin(data.user);
+        // Force page reload to ensure clean state transition
+        if (typeof window !== 'undefined') {
+          window.location.reload();
+        }
       } else if (formData.role === 'lab') {
         // Lab registration
         const labData = {

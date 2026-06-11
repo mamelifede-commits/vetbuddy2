@@ -31,6 +31,7 @@ function FullLandingPage({ onLogin }) {
   const [pilotForm, setPilotForm] = useState({ clinicName: '', city: '', email: '', phone: '', message: '' });
   const [pilotSubmitting, setPilotSubmitting] = useState(false);
   const [pilotSubmitted, setPilotSubmitted] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const scrollToSection = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMobileMenuOpen(false); };
 
   useEffect(() => {
@@ -46,6 +47,13 @@ function FullLandingPage({ onLogin }) {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (loginSuccess) {
+      setShowAuth(false);
+      setPendingAction(null);
+    }
+  }, [loginSuccess]);
 
   const getActionMessage = () => {
     if (!pendingAction) return null;
@@ -1013,7 +1021,10 @@ function FullLandingPage({ onLogin }) {
           <AuthForm
             mode={authMode}
             setMode={setAuthMode}
-            onLogin={(user) => { setShowAuth(false); setPendingAction(null); onLogin(user); }}
+            onLogin={(user) => { 
+              setLoginSuccess(true);
+              onLogin(user);
+            }}
           />
         </DialogContent>
       </Dialog>
