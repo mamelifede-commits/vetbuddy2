@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -25,7 +25,12 @@ export default function AutopilotSettimanale({ user, onNavigate }) {
     setLoading(true);
     try {
       const data = await api.get('autopilot/weekly-actions');
-      setWeeklyActions(data.weeklyActions || []);
+      // Map API data to include icon components
+      const actionsWithIcons = (data.weeklyActions || []).map(action => ({
+        ...action,
+        icon: getIconForType(action.type)
+      }));
+      setWeeklyActions(actionsWithIcons);
       setTotalValue(data.totalPotentialValue || 0);
     } catch (error) {
       console.error('Error loading weekly actions:', error);
@@ -35,6 +40,19 @@ export default function AutopilotSettimanale({ user, onNavigate }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getIconForType = (type) => {
+    const iconMap = {
+      'dormienti': Users,
+      'vaccini': Bell,
+      'noshow': CalendarX,
+      'preventivi': FileText,
+      'fragili': Heart,
+      'recensioni': Star,
+      'default': Zap
+    };
+    return iconMap[type] || iconMap['default'];
   };
 
   const getMockActions = () => [
@@ -267,7 +285,7 @@ export default function AutopilotSettimanale({ user, onNavigate }) {
                         action.priority === 'medium' ? 'bg-yellow-200' :
                         'bg-gray-200'
                       } rounded-xl flex items-center justify-center flex-shrink-0`}>
-                        <action.icon className="h-7 w-7 text-gray-900" />
+                        {action.icon && React.createElement(action.icon, { className: "h-7 w-7 text-gray-900" })}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
@@ -303,7 +321,7 @@ export default function AutopilotSettimanale({ user, onNavigate }) {
                         <div className="bg-white/80 rounded-lg p-3 mb-3">
                           <p className="text-xs font-semibold text-gray-700 mb-2">Dettagli:</p>
                           <ul className="space-y-1">
-                            {action.details.map((detail, dIdx) => (
+                            {action.details && Array.isArray(action.details) && action.details.map((detail, dIdx) => (
                               <li key={dIdx} className="text-xs text-gray-600 flex items-start gap-2">
                                 <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0 mt-0.5" />
                                 <span>{detail}</span>
