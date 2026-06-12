@@ -343,8 +343,9 @@ function FullLandingPage({ onLogin }) {
                   {[
                     'Promemoria visite', 'Promemoria vaccini', 'Richiami annuali',
                     'Antiparassitari', 'Pulizia dentale', 'No-Show Recovery',
-                    'Lista d\'attesa', 'Recensioni automatiche', 'Referral',
-                    'Campagne clienti', 'Clienti dormienti', 'Piani salute',
+                    'Rischio no-show predittivo', 'Lista d\'attesa', 'Recensioni automatiche',
+                    'Referral', 'Campagne clienti', 'Clienti dormienti',
+                    'Alert variazione peso', 'Supporto lutto', 'Piani salute',
                     'Programma fedeltà'
                   ].map((item, i) => (
                     <div key={i} className="flex items-center gap-2">
@@ -372,9 +373,10 @@ function FullLandingPage({ onLogin }) {
                   {[
                     'Schede animale', 'Storico visite', 'Referti PDF',
                     'Ricetta elettronica supporto', 'Laboratori', 'Task manager staff',
-                    'Import/export dati', 'Riepiloghi economici', 'Cruscotto valore',
-                    'Listino servizi', 'Ricevute operative', 'Consensi digitali',
-                    'Preventivi digitali', 'Anamnesi pre-visita'
+                    'Task automatici da automazioni', 'Import/export dati', 'Riepiloghi economici',
+                    'Cruscotto valore', 'Listino servizi', 'Ricevute operative',
+                    'Consensi digitali con firma', 'Preventivi digitali',
+                    'Anamnesi pre-visita con foto/video', 'Magazzino & stock vaccini'
                   ].map((item, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <CheckCircle className="h-4 w-4 text-purple-600 flex-shrink-0" />
@@ -858,13 +860,14 @@ function FullLandingPage({ onLogin }) {
               { q: 'Il QR del Passport mostra dati sensibili?', a: 'No. Il proprietario decide cosa rendere visibile. I dati sensibili sono nascosti di default.' },
               { q: 'Lost Pet Mode pubblica il mio indirizzo?', a: 'No. Non mostra l\'indirizzo completo salvo scelta esplicita del proprietario. È consigliato mostrare solo città o zona.' },
               { q: 'Serve una formazione tecnica per usarlo?', a: 'No. VetBuddy è progettato per essere intuitivo. Il Pilot Success Kit include onboarding guidato a 90 giorni con checklist e supporto dedicato sempre disponibile via email e chat.' },
-              { q: 'Cos\'è il Task Manager Staff?', a: 'Il Task Manager traccia tutti i task operativi della clinica: richiami clienti, controlli referti, preventivi da inviare, follow-up post-visita. Include task automatici generati da VetBuddy (questionari da rivedere, referti lab in attesa, passport incompleti) e task manuali creati dallo staff. Tutto con priorità, scadenze e assegnazioni.' },
+              { q: 'Cos\'è il Task Manager Staff?', a: 'Il Task Manager traccia tutti i task operativi della clinica: richiami clienti, controlli referti, preventivi da inviare, follow-up post-visita. Include task generati automaticamente dalle automazioni VetBuddy (questionario pre-visita con urgenza alta, referto lab fermo da 48h, consenso mancante prima di una procedura, appuntamento a rischio no-show) e task manuali creati dallo staff. Tutto con priorità, scadenze e assegnazioni, salvato in tempo reale.' },
               { q: 'Come funzionano le Campagne Clienti?', a: 'Campagne mirate pronte all\'uso: igiene dentale (pet 3+ anni), richiami vaccini (scadenza 30gg), sterilizzazione (cuccioli 6-12 mesi), antiparassitari stagionali, check-up senior (7+ anni). VetBuddy identifica automaticamente i clienti target e invia messaggi personalizzati via Email o WhatsApp.' },
               { q: 'Cos\'è il Mini CRM Proprietari?', a: 'Estende la gestione proprietari con etichette cliente (Attivo, Alto Rischio, Promoter, VIP, Inattivo), relationship score (0-100), lifetime value (€), filtri segmentazione avanzati e dashboard CRM insights. Aiuta a identificare i clienti migliori e quelli a rischio abbandono.' },
               { q: 'Come funzionano Dimissioni & Follow-up?', a: 'Dopo ogni visita o chirurgia, crei un pacchetto dimissioni con istruzioni dettagliate, terapie e farmaci. VetBuddy programma automaticamente follow-up telefonici 24h o 48h dopo la dimissione, con template di domande chiave da porre al proprietario. Include generazione PDF dimissione.' },
               { q: 'Cos\'è lo Stock Leggero Vaccini?', a: 'Un inventario semplificato SOLO per vaccini e materiali critici (non è un gestionale magazzino completo). Traccia quantità, lotti, fornitori, ubicazione fisica, scadenze. Alert automatici per scorte sotto soglia o vaccini in scadenza 30/60 giorni. Include storico movimenti carico/scarico.' },
               { q: 'Come funzionano i Preventivi Online?', a: 'Crei un preventivo digitale per una procedura (es: sterilizzazione €450). VetBuddy genera un link sicuro che invii al proprietario. Il proprietario approva online con firma digitale. Una volta approvato, converti automaticamente il preventivo in fattura. Include tracking approvazioni e promemoria automatici.' },
               { q: 'Cos\'è lo Smart Visit Pack?', a: 'Un flusso visita unificato che combina Check-in Digitale → Questionario Pre-Visita → Flowboard Clinica → Dimissioni in un\'unica timeline. Vedi tutte le visite di oggi con stato real-time, naviga rapidamente tra le fasi e gestisci l\'intero patient journey da una schermata.' },
+              { q: 'Come funzionano i Questionari Pre-Visita con foto e video?', a: 'Quando viene prenotata una visita, il proprietario riceve via email un link al modulo pre-visita: motivo, sintomi, farmaci, alimentazione e urgenza percepita. Può anche allegare fino a 3 foto o video (es. la zona interessata o il comportamento dell\'animale) direttamente dallo smartphone. Se l\'urgenza è alta la clinica riceve un alert immediato e un task automatico. Il veterinario arriva in visita già preparato.' },
               { q: 'Come funziona la Fatturazione Elettronica XML?', a: 'VetBuddy genera fatture in formato XML conformi al Sistema di Interscambio (SdI). Include validazione automatica dei dati prima dell\'invio, tracciamento stati (Emessa, Inviata, Accettata, Rifiutata) e archivio digitale completo. Gli adempimenti fiscali restano in capo alla clinica.' },
               { q: 'VetBuddy emette Ricette Elettroniche Veterinarie?', a: 'VetBuddy supporta l\'intero flusso REV: preparazione bozza con wizard guidato, collegamento al portale nazionale (Vetinfo/RNV), archiviazione numero ricetta e PIN, audit trail completo. L\'emissione ufficiale resta in capo al medico veterinario abilitato con le proprie credenziali.' },
               { q: 'Come gestisco Microchip e Anagrafe Canina?', a: 'Registri il microchip direttamente in VetBuddy, generi certificati di iscrizione conformi alle normative regionali e prepari i dati per l\'invio alle anagrafi. Include validazione automatica dei codici microchip (15 cifre) e storico completo per ogni animale.' },

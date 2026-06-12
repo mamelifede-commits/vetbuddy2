@@ -60,6 +60,27 @@ export const ownerTutorial = {
       tip: 'Controlla regolarmente la sezione Agenda per eventuali aggiornamenti.'
     },
     {
+      title: 'MODULO PRE-VISITA CON FOTO E VIDEO',
+      content: [
+        'Quando prenoti una visita puoi ricevere via email il modulo pre-visita',
+        'Compila da smartphone: motivo della visita, sintomi, farmaci, alimentazione',
+        'Indica l\u2019urgenza percepita: se \u00E8 alta, la clinica viene avvisata subito',
+        'Allega fino a 3 foto o video (max 20MB ciascuno): la zona interessata o il comportamento del tuo animale',
+        'Il veterinario legge tutto prima della visita e arriva preparato'
+      ],
+      tip: 'Un breve video del sintomo (es. zoppia, tosse) vale pi\u00F9 di mille parole: caricalo nel modulo pre-visita.'
+    },
+    {
+      title: 'CONSENSI DIGITALI',
+      content: [
+        'Prima di una procedura (es. chirurgia o anestesia) la clinica pu\u00F2 inviarti un consenso da firmare',
+        'Ricevi il link via email e firmi direttamente dallo smartphone in 1 minuto',
+        'Niente carta, niente attese in accettazione il giorno della procedura',
+        'Se dimentichi di firmare, ricevi un promemoria automatico prima dell\u2019appuntamento'
+      ],
+      tip: 'Firma il consenso appena lo ricevi: risparmi tempo a te e alla clinica.'
+    },
+    {
       title: 'DOCUMENTI E REFERTI',
       content: [
         'Accedi a \u201CI Miei Documenti\u201D dalla dashboard',
@@ -323,17 +344,43 @@ export const clinicTutorial = {
     {
       title: 'AUTOMAZIONI CONFIGURABILI',
       content: [
-        'Promemoria automatici prima dell\u2019appuntamento via email',
-        'Follow-up post visita personalizzabili (timing e messaggio)',
-        'Reminder per vaccini e controlli periodici',
-        'Report settimanale automatico con riepilogo attivit\u00E0',
-        'Notifiche per nuove richieste dal Lab Marketplace',
-        'Configura il timing (es. 24h, 48h, 14gg prima) per ogni automazione',
-        'Scegli il canale: email, notifica app o entrambi',
-        'Personalizza il template del messaggio con variabili (nome_pet, nome_cliente, data)',
-        'Cronologia esecuzioni: vedi quando ogni automazione si \u00E8 attivata'
+        'Oltre 60 automazioni attive su email e notifiche: promemoria appuntamenti, richiami vaccini, follow-up post visita',
+        'Anti no-show: previsione rischio sui clienti con storico assenze, promemoria extra e task di conferma telefonica per lo staff',
+        'Recupero valore: clienti dormienti (6/9/12 mesi), slot liberati offerti alla lista d\u2019attesa, preventivi in scadenza',
+        'Cura del paziente: follow-up post-operatorio (24h/3gg/7gg), fine terapia, alert variazione peso, promemoria igiene dentale annuale',
+        'Magazzino: alert scorte minime e prodotti in scadenza dallo Stock Vaccini',
+        'Relazione: compleanni, programma referral \u201Cporta un amico\u201D, messaggio di vicinanza dopo la perdita di un animale',
+        'Morning Briefing: ogni mattina la giornata della clinica in 30 secondi via email',
+        'Attiva/disattiva ogni automazione singolarmente da \u201CAutomazioni\u201D',
+        'Cronologia esecuzioni: vedi quando ogni automazione si \u00E8 attivata e per chi'
       ],
-      tip: 'Le automazioni riducono il tempo dedicato alle attivit\u00E0 ripetitive e mantengono una comunicazione costante con i clienti.'
+      tip: 'Le automazioni lavorano ogni notte: trovi gli esiti nella Cronologia e i task generati nel Task Manager Staff.'
+    },
+    {
+      title: 'TASK MANAGER STAFF',
+      content: [
+        'Vai su \u201CTask Manager\u201D nel menu laterale',
+        'Crea task manuali per il team: richiami, preventivi da inviare, documenti da controllare',
+        'I task automatici arrivano dalle automazioni: questionario pre-visita con urgenza alta, referto lab fermo da 48h, consenso mancante prima di una procedura, appuntamento a rischio no-show',
+        'Ogni task ha categoria, priorit\u00E0, assegnatario e scadenza',
+        'Stati: Nuovo -> In lavorazione -> Completato (con tracking di chi completa)',
+        'Filtra per priorit\u00E0 o membro dello staff, tab dedicate per task di oggi e scaduti'
+      ],
+      tip: 'Controlla il Task Manager ogni mattina: i task automatici ti dicono esattamente dove intervenire per non perdere valore.'
+    },
+    {
+      title: 'QUESTIONARI PRE-VISITA E CONSENSI DIGITALI',
+      content: [
+        'Questionari: invia il modulo pre-visita al proprietario via email (manuale o automatico alla prenotazione)',
+        'Il proprietario compila da smartphone: motivo, sintomi, farmaci, urgenza percepita',
+        'Pu\u00F2 allegare fino a 3 foto o video (max 20MB) della zona interessata o del comportamento',
+        'Urgenza ALTA = alert immediato alla clinica + task automatico di verifica',
+        'Rivedi le risposte e gli allegati dal modulo \u201CQuestionari Pre-Visita\u201D prima della visita',
+        'Consensi: crea e invia consensi digitali (chirurgia, anestesia, privacy, ecc.) con link di firma',
+        'Il proprietario firma da smartphone in 1 minuto; scadenza automatica dopo 30 giorni',
+        'Se manca un consenso firmato prima di una procedura, VetBuddy avvisa clinica e proprietario'
+      ],
+      tip: 'Veterinario preparato + consensi gi\u00E0 firmati = visite pi\u00F9 rapide e zero carta in accettazione.'
     },
     {
       title: 'PIANI SALUTE',
@@ -405,6 +452,8 @@ export const clinicTutorial = {
         'Carica un documento di prova e verifica l\u2019invio al cliente',
         'Attiva il modulo REV da \u201CImpostazioni REV\u201D e scegli la modalit\u00E0',
         'Configura il team: aggiungi collaboratori con i rispettivi ruoli',
+        'Invia un questionario pre-visita di prova e verifica gli allegati foto/video',
+        'Controlla il Task Manager: completa i primi task automatici generati',
         'Verifica la dashboard metriche'
       ]
     },
@@ -432,6 +481,8 @@ export const clinicTutorial = {
     { q: 'Come funziona il Lab Marketplace?', a: 'Scegli un laboratorio partner, invia la richiesta di analisi, ricevi il referto e decidine la pubblicazione al proprietario dopo la tua revisione.' },
     { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione e l\u2019archiviazione del flusso. L\u2019emissione ufficiale \u00E8 responsabilit\u00E0 del medico veterinario al sistema nazionale.' },
     { q: 'Cosa sono i Piani Salute?', a: 'Pacchetti strutturati di servizi (visite, vaccini, esami) assegnabili ai pazienti con tracking del progresso. Ideali per cuccioli, senior e prevenzione.' },
+    { q: 'Come funziona il Task Manager Staff?', a: 'Raccoglie i task operativi del team con priorit\u00E0 e scadenze. Oltre ai task manuali, le automazioni creano task automatici: questionario urgente da verificare, referto fermo, consenso mancante, appuntamento a rischio no-show.' },
+    { q: 'Il proprietario pu\u00F2 inviare foto o video prima della visita?', a: 'S\u00EC. Nel modulo pre-visita pu\u00F2 allegare fino a 3 foto o video (max 20MB ciascuno) direttamente dallo smartphone. La clinica li vede nel dettaglio del questionario.' },
     { q: 'L\u2019AI Assistant \u00E8 affidabile?', a: 'L\u2019AI genera bozze e suggerimenti. Il risultato va sempre rivisto dal medico veterinario prima di qualsiasi utilizzo.' },
     { q: 'Posso annullare l\u2019abbonamento?', a: 'S\u00EC, in qualsiasi momento, senza vincoli o penali.' }
   ],
@@ -509,6 +560,7 @@ export const labTutorial = {
         'Puoi aggiungere note tecniche a corredo del referto',
         'La clinica riceve una notifica e il veterinario rivede il referto',
         'Solo dopo la revisione del veterinario il referto pu\u00F2 essere reso visibile al proprietario',
+        'Se un referto completato resta fermo oltre 48 ore, VetBuddy sollecita automaticamente la clinica',
         'Tutti i referti caricati restano archiviati nel sistema'
       ],
       tip: 'La condivisione del referto al proprietario \u00E8 gestita dalla clinica, non dal laboratorio. Il veterinario aggiunge note cliniche prima della pubblicazione.'

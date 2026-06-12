@@ -119,7 +119,7 @@ export default function BrochurePage() {
             <h4 className="text-xl font-bold mb-3">Per le Cliniche Veterinarie</h4>
             <p className="text-white/80 text-sm mb-4">Gli strumenti operativi per ridurre telefonate, automatizzare comunicazioni e seguire meglio i clienti.</p>
             <ul className="space-y-1.5 text-sm text-white/90">
-              {['Agenda digitale e prenotazioni online', 'Schede animale, documenti e storico visite', 'Listino servizi, ricevute operative ed esportazioni', 'Documenti PDF con invio automatico al proprietario', 'Assistente al flusso Ricetta Elettronica Veterinaria', 'Casella messaggi condivisa', 'Oltre 40 automazioni operative', 'Cruscotto del valore generato'].map((f, i) => (
+              {['Agenda digitale e prenotazioni online', 'Schede animale, documenti e storico visite', 'Listino servizi, ricevute operative ed esportazioni', 'Documenti PDF con invio automatico al proprietario', 'Assistente al flusso Ricetta Elettronica Veterinaria', 'Casella messaggi condivisa', 'Oltre 60 automazioni operative', 'Cruscotto del valore generato'].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
             </ul>
@@ -193,7 +193,7 @@ export default function BrochurePage() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-              {['Promemoria visite', 'Promemoria vaccini', 'Richiami annuali', 'Antiparassitari', 'Pulizia dentale', 'No-Show Recovery', 'Lista d\'attesa', 'Recensioni auto', 'Referral', 'Campagne clienti', 'Clienti dormienti', 'Piani salute', 'Programma fedeltà'].map((item, i) => (
+              {['Promemoria visite', 'Promemoria vaccini', 'Richiami annuali', 'Antiparassitari', 'Pulizia dentale', 'No-Show Recovery', 'Rischio no-show predittivo', 'Lista d\'attesa', 'Recensioni auto', 'Referral', 'Campagne clienti', 'Clienti dormienti', 'Alert variazione peso', 'Supporto lutto', 'Piani salute', 'Programma fedeltà'].map((item, i) => (
                 <div key={i} className="flex items-center gap-1">
                   <Check className="w-3 h-3 text-green-600 flex-shrink-0" />
                   <span className="text-gray-700">{item}</span>
@@ -214,7 +214,7 @@ export default function BrochurePage() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-              {['Schede animale', 'Storico visite', 'Referti PDF', 'Ricetta elettronica', 'Laboratori', 'Task manager', 'Import/export', 'Riepiloghi economici', 'Cruscotto valore', 'Listino servizi', 'Consensi digitali', 'Preventivi digitali', 'Anamnesi pre-visita', 'Alert pazienti fragili'].map((item, i) => (
+              {['Schede animale', 'Storico visite', 'Referti PDF', 'Ricetta elettronica', 'Laboratori', 'Task manager', 'Task automatici staff', 'Import/export', 'Riepiloghi economici', 'Cruscotto valore', 'Listino servizi', 'Consensi digitali', 'Preventivi digitali', 'Pre-visita con foto/video', 'Stock vaccini', 'Alert pazienti fragili'].map((item, i) => (
                 <div key={i} className="flex items-center gap-1">
                   <Check className="w-3 h-3 text-purple-600 flex-shrink-0" />
                   <span className="text-gray-700">{item}</span>
@@ -438,7 +438,7 @@ export default function BrochurePage() {
               </div>
             </div>
             <p className="text-gray-600 text-xs leading-relaxed">
-              Task operativi automatici (follow-up, preventivi, referti lab, passport) + task manuali. Tutto tracciato per priorità e scadenze.
+              Task manuali + task automatici dalle automazioni: questionario urgente, referto fermo 48h, consenso mancante, rischio no-show. Tutto tracciato per priorità e scadenze.
             </p>
           </div>
 
@@ -626,7 +626,7 @@ export default function BrochurePage() {
               </div>
             </div>
             <p className="text-gray-600 text-xs leading-relaxed">
-              Template consensi con firma grafometrica. Archiviazione 10 anni GDPR. Zero carta, massima sicurezza legale.
+              Consensi digitali con firma da smartphone via link. Alert automatico se manca la firma prima di una procedura. Zero carta.
             </p>
           </div>
 
@@ -1153,7 +1153,7 @@ export default function BrochurePage() {
           <span className="font-bold text-white/60 text-sm">VetBuddy</span>
         </div>
 
-        <h2 className="text-3xl font-black mb-1 mt-2">Oltre 40 automazioni operative</h2>
+        <h2 className="text-3xl font-black mb-1 mt-2">Oltre 60 automazioni operative</h2>
         <p className="text-white/60 mb-8">Mentre ti occupi dei pazienti, VetBuddy gestisce automaticamente comunicazioni, promemoria e ricontatti.</p>
 
         <div className="grid grid-cols-2 gap-x-10 gap-y-5 text-sm">
@@ -1166,7 +1166,8 @@ export default function BrochurePage() {
               'Promemoria richiamo annuale',
               'Promemoria trattamento antiparassitario',
               'Promemoria visita periodica',
-              'Promemoria pulizia dentale',
+              'Promemoria igiene dentale annuale',
+              'Alert variazione peso significativa',
               'Promemoria rinnovo prescrizione',
             ]} />
 
@@ -1176,7 +1177,8 @@ export default function BrochurePage() {
               'Notifica nuova prenotazione alla clinica',
               'Conferma cancellazione',
               'Notifica modifica appuntamento',
-              'Notifica posto libero',
+              'Notifica posto libero alla lista d\'attesa',
+              'Previsione rischio no-show con conferma extra',
               'Conferma pagamento ricevuto, se gestito dalla clinica',
             ]} />
           </div>
@@ -1188,7 +1190,9 @@ export default function BrochurePage() {
               'Richiesta recensione',
               'Messaggio di benvenuto nuovo cliente',
               'Auguri compleanno animale',
-              'Riepilogo visite periodico',
+              'Riattivazione clienti dormienti (6/9/12 mesi)',
+              'Invito referral "porta un amico"',
+              'Messaggio di vicinanza dopo una perdita',
               'Promemoria piano salute',
               'Notifica punti o vantaggi fedeltà',
             ]} />
@@ -1198,15 +1202,15 @@ export default function BrochurePage() {
               'Invio automatico documento PDF',
               'Notifica nuovo documento caricato',
               'Notifica referto pronto',
-              'Notifica nuova richiesta al laboratorio',
-              'Notifica stato richiesta aggiornato',
+              'Sollecito referto fermo da 48 ore',
+              'Consenso mancante prima della procedura',
+              'Task automatici per lo staff',
+              'Alert scorte e scadenze magazzino',
               'Riepilogo mensile prenotazioni',
-              'Riepilogo pazienti attivi',
-              'Avviso slot agenda disponibili',
             ]} />
           </div>
         </div>
-        <p className="text-white/40 text-xs mt-6">+ altre automazioni in arrivo. Le automazioni si attivano automaticamente con il piano Pro.</p>
+        <p className="text-white/40 text-xs mt-6">+ Morning Briefing giornaliero, percorso cucciolo, fine terapia, slot liberati offerti alla lista d'attesa e molto altro. Le automazioni si attivano automaticamente con il piano Pro.</p>
       </div>
 
       {/* ====================================================================
@@ -1342,10 +1346,10 @@ export default function BrochurePage() {
             <p className="text-gray-500 text-sm mb-4">Configurazione completa e registro di esecuzione.</p>
             <ul className="space-y-2 text-sm text-gray-700">
               {[
-                'Frequenza personalizzabile (24h, 48h, 7gg, 30gg...)',
                 'Registro di esecuzione per ogni automazione',
-                'Modelli con variabili dinamiche',
+                'Task automatici generati per lo staff',
                 'Attivazione/disattivazione singola',
+                'Previsione rischio no-show e recupero slot',
               ].map((f, i) => (
                 <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />{f}</li>
               ))}
