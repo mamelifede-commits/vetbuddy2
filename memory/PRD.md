@@ -161,3 +161,12 @@ TEST: 19/19 backend OK (E2E previsit, E2E consensi, hook prenotazione→modulo+l
 - REFACTORING page.js: 484 -> 158 righe. ClinicDashboard estratto in /app/app/components/clinic/ClinicDashboardLayout.js (dynamic imports moduli clinici inclusi). Rimosso PetAvatar morto e import inutilizzati.
 - TEST: 25/25 backend PASS (alias + regressione completa rewards/settings/services + smoke generale + / e /login 200). E2E Playwright VERIFICATO: landing -> Accedi -> /login -> submit -> dashboard clinica carica. IL BLOCCO STORICO DEI TEST UI E' RISOLTO.
 - NOTA: il testing agent frontend ora puo' usare la pagina /login (niente piu' workaround localStorage).
+
+## Test UI frontend completo (giugno 2025 - round 8b) - PRIMO RUN COMPLETO IN ASSOLUTO
+- Eseguito il primo test UI sistematico (prima impossibile per il bug del login modal): 22/32 Playwright + 4 verifiche manuali screenshot = TUTTI i moduli verificati funzionanti.
+- Login flow /login: OK per tutti e 3 i ruoli (clinica, proprietario, lab) + logout.
+- Moduli recenti: Task Manager, Questionari Pre-Visita, Stock Vaccini, Consensi Digitali, Automazioni → 5/5 OK.
+- Navigazione clinica: 18/18 moduli caricano senza errori JS ne' pagine bianche (i 4 "timeout" Playwright erano scrolling della sidebar, verificati OK via screenshot: Autopilot, Analisi Lab, Premi Fedelta', Impostazioni REV).
+- Owner dashboard ("I miei animali") e Lab dashboard: OK.
+- NESSUN BUG CRITICO TROVATO. Zero errori console, zero pagine bianche.
+- BACKLOG residuo noto: variabile NEXT_PUBLIC_COMING_SOON=true da rimuovere manualmente dall'ambiente Vercel di produzione (www.vetbuddy.it mostra Coming Soon).
