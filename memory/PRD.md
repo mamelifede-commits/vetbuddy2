@@ -114,3 +114,16 @@ Testato: backend 6/6 OK (cron 0 errori), UI verificata con screenshot.
 - `expiryStockAlert` ora pienamente operativa su dati reali
 - Auth: 401 senza token, 403 per ruolo owner; staff usa clinicId della clinica
 - Testato: backend 10/10 OK (cron lowStockAlert.sent=1, expiryStockAlert.sent=1, 0 errori), UI verificata con screenshot (8 item seed visibili, badge Scorta Bassa corretti)
+
+## Audit Automazioni + Batch 1 (giugno 2025 - round 4)
+AUDIT completo eseguito su 15 automazioni richieste dall'utente (tabella consegnata in chat).
+Batch 1 implementato e testato (6/6 test backend OK):
+1. LOG CENTRALIZZATO: `logAutomation(db, clinicId, type, title, details)` in cron-helpers.js → scrive su `automation_logs` (clinicId+executedAt, letto da GET /api/automations/log "Cronologia"). Chiamato in work-management (4 punti), advanced (briefing/calo/scadenze/scorte/digest), engagement (dormienti), waitlist-notify
+2. SLOT LIBERO: `/app/lib/waitlist-notify.js` → notifyWaitlistForSlot chiamata da appointments.js PUT (status→cancelled/cancellato/annullato/rescheduled, solo date future) e DELETE. Rispetta toggle waitlistNotification. Max 5 notifiche, marca notified:true
+3. PREVENTIVI: auto-expire (sent + validUntil<now → expired + report clinica valore recuperabile) + reminder cliente 3gg prima scadenza (flag expiryReminderSent) — in work-management.js sezioni 27a/27b, stessa chiave estimateFollowup
+4. DORMIENTI 6/9/12 MESI: engagement.js sezione 9 riscritta — segmenti con messaggi differenziati, flags reactivation6/9/12Sent (legacy reactivationSent = 6m), 1° del mese
+5. DIGEST FRAGILI: advanced.js sez. 38, lunedì, chiave NUOVA fragilePatientsDigest (57 chiavi clinica), usa getFragilePatients (ora EXPORTED da fragile-patients.js), top 10 urgency high/riskScore>=50 senza nextVisit
+6. NO-SHOW RECOVERY UI REALE: business-modules?module=noshow → getRealNoShowData(clinicId) per cliniche autenticate (unconfirmed/noshowHistory/waitlist/recoveredSlots/ownerLabels), demo fallback senza auth. NoShowRecovery.js usa api client (token)
+7. PASSPORT SCHEDULATO: advanced.js sez. 39, mercoledì, self-fetch POST a /api/automations/passport-completion-reminder (threshold 60%), flag globale giornaliero
+NOTA: testing agent ha spostato logAutomation fuori da wrapEmail (errore di inserimento mio) — fix già applicato.
+BATCH RIMANENTI: Batch 2 (Pre-visita intelligente + Consensi digitali: moduli UI mock da rendere reali), Batch 3 (referto fermo, recensione smart, post-operatorio postSurgeryFollowup MAI implementata, medicationRefill), Batch 4 (onboarding cliente nuovo, piano cucciolo). Chiavi dichiarate senza implementazione: weightAlert, dentalHygiene, referralProgram, griefFollowup.
