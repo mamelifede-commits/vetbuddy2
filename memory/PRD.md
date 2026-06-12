@@ -79,3 +79,16 @@ VetBuddy è un gestionale veterinario completo per cliniche, proprietari di anim
 ## Tech Stack
 - Next.js 14, Tailwind CSS, Shadcn UI, MongoDB
 - Components extracted to `/app/app/components/` with `next/dynamic`
+
+## Automazioni Intelligenti: Lavoro & Finanza (giugno 2025)
+6 nuove automazioni aggiunte (totale 50 chiavi in automationSettings):
+- `noShowRiskPrediction` — analizza storico no-show del cliente; appuntamenti di domani a rischio ricevono promemoria extra + alert riepilogativo alla clinica
+- `smartAgendaFiller` — se occupazione agenda <50% nei prossimi 3gg, invita (max 5/clinica) i clienti con vaccini scaduti/in scadenza entro 14gg
+- `noShowRecovery` — invito automatico a riprenotare dopo no-show (entro 7gg)
+- `estimateFollowup` — sollecito preventivi status 'sent' dopo 4gg (email cliente, fallback alert clinica)
+- `paymentEscalation` — 2° sollecito fatture unpaid a 14gg + avviso finale a 30gg + report crediti alla clinica
+- `labDelayAlert` — lab_requests non completate da +72h → alert a laboratorio e clinica
+File: `/app/app/api/cron/daily/automations/work-management.js` (collegato a GET /api/cron/daily)
+Settings: aggiunte a DEFAULT_SETTINGS + PRO_AUTOMATIONS in `/app/app/api/automations/settings/route.js` e a cron-helpers.js
+UI: nuova card "🧠 Intelligenti: Lavoro & Finanza" in `/app/app/components/clinic/ClinicAutomations.js`
+Testato: backend 100% OK (cron 0 errori, settings GET/PUT/POST OK), UI verificata con screenshot.
