@@ -98,7 +98,7 @@ function FullLandingPage({ onLogin }) {
             <button onClick={() => scrollToSection('faq')} className="text-gray-600 hover:text-coral-500 transition">FAQ</button>
           </div>
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={() => { setAuthMode('login'); setShowAuth(true); }}>Accedi</Button>
+            <Button variant="outline" size="sm" onClick={() => { window.location.href = '/login'; }}>Accedi</Button>
             <Button size="sm" className="bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Prova Gratis</Button>
           </div>
           <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>{mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}</button>
@@ -113,7 +113,7 @@ function FullLandingPage({ onLogin }) {
               <button onClick={() => { scrollToSection('pilot'); }} className="text-gray-600 text-left py-2 hover:text-coral-500">Progetto pilota</button>
               <a href="/presentazione" className="text-gray-600 text-left py-2 hover:text-coral-500 block">Brochure</a>
               <div className="flex gap-2 pt-2 border-t mt-2">
-                <Button variant="outline" size="sm" className="flex-1" onClick={() => { setAuthMode('login'); setShowAuth(true); setMobileMenuOpen(false); }}>Accedi</Button>
+                <Button variant="outline" size="sm" className="flex-1" onClick={() => { window.location.href = '/login'; }}>Accedi</Button>
                 <Button size="sm" className="flex-1 bg-coral-500 hover:bg-coral-600 text-white" onClick={() => { setAuthMode('register'); setShowAuth(true); setMobileMenuOpen(false); }}>Prova Gratis</Button>
               </div>
             </div>

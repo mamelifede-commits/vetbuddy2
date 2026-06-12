@@ -7,6 +7,30 @@ import { sendEmail } from '@/lib/email';
 import { VETERINARY_SERVICES, calculateDistance, corsHeaders } from './constants';
 
 export async function handleSettingsGet(path, request) {
+  // Alias impostazioni generali della clinica
+  if (path === 'settings') {
+    const user = getUserFromRequest(request);
+    if (!user || (user.role !== 'clinic' && user.role !== 'staff')) {
+      return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    }
+    const users = await getCollection('users');
+    const clinicId = user.role === 'staff' ? (user.clinicId || user.id) : user.id;
+    const clinic = await users.findOne({ id: clinicId }, { projection: { password: 0, _id: 0 } });
+    if (!clinic) return NextResponse.json({ error: 'Clinica non trovata' }, { status: 404, headers: corsHeaders });
+    return NextResponse.json({
+      success: true,
+      settings: {
+        clinicName: clinic.clinicName || clinic.name || '',
+        email: clinic.email || '',
+        phone: clinic.phone || '',
+        address: clinic.address || '',
+        whatsappNumber: clinic.whatsappNumber || '',
+        plan: clinic.plan || 'pilot',
+        automationSettings: clinic.automationSettings || {}
+      }
+    }, { headers: corsHeaders });
+  }
+
   // Services catalog
   if (path === 'services') {
     return NextResponse.json(VETERINARY_SERVICES, { headers: corsHeaders });

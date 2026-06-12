@@ -7,6 +7,27 @@ import { sendEmail } from '@/lib/email';
 import { corsHeaders } from './constants';
 
 export async function handleRewardsGet(path, request) {
+  // Alias riepilogo premi: clinica -> tipi + assegnati; proprietario -> i propri premi
+  if (path === 'rewards') {
+    const user = getUserFromRequest(request);
+    if (!user) return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const rewards = await getCollection('rewards');
+    if (user.role === 'clinic' || user.role === 'staff') {
+      const clinicId = user.role === 'staff' ? (user.clinicId || user.id) : user.id;
+      const [types, assigned] = await Promise.all([
+        rewards.find({ clinicId, type: 'definition' }).toArray(),
+        rewards.find({ clinicId, type: 'assigned' }).sort({ createdAt: -1 }).toArray()
+      ]);
+      return NextResponse.json({
+        success: true,
+        types: types.map(({ _id, ...r }) => r),
+        assigned: assigned.map(({ _id, ...r }) => r)
+      }, { headers: corsHeaders });
+    }
+    const myRewards = await rewards.find({ ownerId: user.id, type: 'assigned' }).sort({ createdAt: -1 }).toArray();
+    return NextResponse.json({ success: true, rewards: myRewards.map(({ _id, ...r }) => r) }, { headers: corsHeaders });
+  }
+
   if (path === 'rewards/types') {
     const user = getUserFromRequest(request);
     if (!user || user.role !== 'clinic') return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
