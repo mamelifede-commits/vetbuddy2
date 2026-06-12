@@ -343,13 +343,14 @@ export async function handleSettingsPut(path, request, user, body) {
   // Update owner profile
   if (path === 'owner/profile') {
     const users = await getCollection('users');
-    const { address, city, latitude, longitude, phone } = body;
+    const { address, city, latitude, longitude, phone, birthDate } = body;
     const updateData = { updatedAt: new Date().toISOString() };
     if (address !== undefined) updateData.address = address;
     if (city !== undefined) updateData.city = city;
     if (latitude !== undefined) updateData.latitude = latitude;
     if (longitude !== undefined) updateData.longitude = longitude;
     if (phone !== undefined) updateData.phone = phone;
+    if (birthDate !== undefined) updateData.birthDate = birthDate;
     await users.updateOne({ id: user.id }, { $set: updateData });
     const updated = await users.findOne({ id: user.id }, { projection: { password: 0 } });
     return NextResponse.json(updated, { headers: corsHeaders });

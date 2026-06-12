@@ -17,6 +17,7 @@ function OwnerProfile({ user, onRefresh }) {
     name: '',
     email: '',
     phone: '',
+    birthDate: '',
     whatsappEnabled: true,
     emailNotificationsEnabled: true,
     reminderDaysBefore: 1
@@ -36,6 +37,7 @@ function OwnerProfile({ user, onRefresh }) {
           name: response.name || user.name || '',
           email: response.email || user.email || '',
           phone: response.phone || '',
+          birthDate: response.birthDate || '',
           whatsappEnabled: response.whatsappEnabled !== false,
           emailNotificationsEnabled: response.emailNotificationsEnabled !== false,
           reminderDaysBefore: response.reminderDaysBefore || 1
@@ -150,6 +152,16 @@ function OwnerProfile({ user, onRefresh }) {
               placeholder="+39 333 1234567"
             />
             <p className="text-xs text-gray-500 mt-1">Inserisci il numero con prefisso internazionale (+39 per Italia)</p>
+          </div>
+          <div>
+            <Label htmlFor="birthDate">Data di nascita (opzionale)</Label>
+            <Input 
+              id="birthDate"
+              type="date"
+              value={profileData.birthDate} 
+              onChange={(e) => setProfileData({...profileData, birthDate: e.target.value})}
+            />
+            <p className="text-xs text-gray-500 mt-1">🎂 Riceverai gli auguri dalla tua clinica!</p>
           </div>
         </CardContent>
       </Card>

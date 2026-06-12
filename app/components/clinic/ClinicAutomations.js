@@ -295,6 +295,24 @@ function ClinicAutomations({ user, onNavigate }) {
             </CardContent>
           </Card>
 
+          {/* Anti-Spreco & Proattività */}
+          <Card className="border-emerald-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <span className="text-xl">♻️</span> Anti-Spreco & Proattività
+              </CardTitle>
+              <CardDescription>Briefing operativo, magazzino senza sprechi e clienti seguiti nel tempo</CardDescription>
+            </CardHeader>
+            <CardContent className="grid md:grid-cols-2 gap-3">
+              <AutomationItem settingKey="morningBriefing" icon={<span className="text-lg">☀️</span>} title="Briefing Mattutino" description="Agenda + priorità del giorno via email" gradient="bg-gradient-to-r from-amber-50 to-amber-100" />
+              <AutomationItem settingKey="bookingDropAlert" icon={<TrendingUp className="h-4 w-4 text-red-500" />} title="Alert Calo Prenotazioni" description="Avviso se -30% vs media (ogni lunedì)" gradient="bg-gradient-to-r from-red-50 to-red-100" />
+              <AutomationItem settingKey="expiryStockAlert" icon={<AlertTriangle className="h-4 w-4 text-orange-500" />} title="Scadenze Magazzino" description="Prodotti in scadenza entro 60gg" gradient="bg-gradient-to-r from-orange-50 to-orange-100" />
+              <AutomationItem settingKey="healthPlanRenewal" icon={<Shield className="h-4 w-4 text-blue-500" />} title="Rinnovo Piani Salute" description="Promemoria 30gg prima della scadenza" gradient="bg-gradient-to-r from-blue-50 to-blue-100" />
+              <AutomationItem settingKey="ownerBirthday" icon={<Gift className="h-4 w-4 text-pink-500" />} title="Compleanno Proprietario" description="Auguri automatici al cliente" gradient="bg-gradient-to-r from-pink-50 to-pink-100" />
+              <AutomationItem settingKey="therapyReminder" icon={<Syringe className="h-4 w-4 text-purple-500" />} title="Promemoria Terapie" description="Aderenza alle prescrizioni attive" gradient="bg-gradient-to-r from-purple-50 to-purple-100" />
+            </CardContent>
+          </Card>
+
           {/* Messaggi & Report */}
           <Card className="border-green-200">
             <CardHeader className="pb-3">

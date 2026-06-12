@@ -80,7 +80,15 @@ const DEFAULT_SETTINGS = {
   noShowRecovery: true,            // Invito automatico a riprenotare dopo un no-show
   estimateFollowup: true,          // Follow-up preventivi non accettati dopo 4 giorni
   paymentEscalation: true,         // Escalation solleciti pagamento (14gg e 30gg)
-  labDelayAlert: true              // Alert referti lab in attesa da +72h
+  labDelayAlert: true,             // Alert referti lab in attesa da +72h
+
+  // === PROATTIVITÀ & ANTI-SPRECO ===
+  morningBriefing: true,           // Briefing mattutino: agenda e priorità del giorno
+  bookingDropAlert: true,          // Alert calo prenotazioni (-30% vs media, lunedì)
+  expiryStockAlert: true,          // Prodotti magazzino in scadenza entro 60gg
+  healthPlanRenewal: true,         // Rinnovo piani salute 30gg prima della scadenza
+  ownerBirthday: true,             // Auguri compleanno proprietario
+  therapyReminder: true            // Promemoria aderenza terapie prescritte
 };
 
 // Automazioni incluse nel piano Starter (gratuite ma essenziali)
@@ -101,7 +109,9 @@ const PRO_AUTOMATIONS = [
   'annualCheckup', 'labResultsReady', 'paymentReminder', 'postSurgeryFollowup',
   'aiQuickReplies', 'medicationRefill', 'weightAlert', 'dentalHygiene',
   'noShowRiskPrediction', 'smartAgendaFiller', 'noShowRecovery',
-  'estimateFollowup', 'paymentEscalation', 'labDelayAlert'
+  'estimateFollowup', 'paymentEscalation', 'labDelayAlert',
+  'morningBriefing', 'bookingDropAlert', 'expiryStockAlert',
+  'healthPlanRenewal', 'ownerBirthday', 'therapyReminder'
 ];
 
 // GET - Retrieve automation settings for the authenticated clinic

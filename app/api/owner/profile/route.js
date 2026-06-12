@@ -30,6 +30,7 @@ export async function GET(request) {
       name: user.name || '',
       email: user.email || '',
       phone: user.phone || '',
+      birthDate: user.birthDate || null,
       whatsappEnabled: user.whatsappEnabled !== false,
       emailNotificationsEnabled: user.emailNotificationsEnabled !== false,
       reminderDaysBefore: user.reminderDaysBefore || 1
@@ -65,6 +66,7 @@ export async function PUT(request) {
     if (data.name !== undefined) updateData.name = data.name;
     if (data.email !== undefined) updateData.email = data.email;
     if (data.phone !== undefined) updateData.phone = data.phone;
+    if (data.birthDate !== undefined) updateData.birthDate = data.birthDate;
     if (data.whatsappEnabled !== undefined) updateData.whatsappEnabled = data.whatsappEnabled;
     if (data.emailNotificationsEnabled !== undefined) updateData.emailNotificationsEnabled = data.emailNotificationsEnabled;
     if (data.reminderDaysBefore !== undefined) updateData.reminderDaysBefore = data.reminderDaysBefore;

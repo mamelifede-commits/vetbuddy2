@@ -45,7 +45,14 @@ export const DEFAULT_AUTOMATION_SETTINGS = {
   noShowRecovery: true,
   estimateFollowup: true,
   paymentEscalation: true,
-  labDelayAlert: true
+  labDelayAlert: true,
+  morningBriefing: true,
+  bookingDropAlert: true,
+  expiryStockAlert: true,
+  healthPlanRenewal: true,
+  ownerBirthday: true,
+  therapyReminder: true,
+  labMonthlyReport: true
 };
 
 // Helper: Check if automation is enabled for a clinic

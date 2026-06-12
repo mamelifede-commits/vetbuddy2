@@ -1,494 +1,471 @@
 #!/usr/bin/env python3
 """
-VetBuddy Backend API Testing - 6 New Intelligent Automations
-Tests the new work-management automations module
+VetBuddy Backend API Testing - 7 New Advanced Automations
+Tests the new advanced automations module with 7 automations:
+morningBriefing, bookingDropAlert, expiryStockAlert, healthPlanRenewal, 
+ownerBirthday, therapyReminder, labMonthlyReport
 """
 
 import requests
 import json
 import sys
+import os
+from datetime import datetime
 
-# Base URL from .env
-BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
+# Get base URL from environment
+BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://clinic-report-review.preview.emergentagent.com')
+API_URL = f"{BASE_URL}/api"
 
-# Test credentials
+# Test credentials from /app/memory/test_credentials.md
 CLINIC_EMAIL = "demo@vetbuddy.it"
 CLINIC_PASSWORD = "VetBuddy2025!Secure"
+OWNER_EMAIL = "proprietario.demo@vetbuddy.it"
+OWNER_PASSWORD = "demo123"
 
-# Colors for output
+# Color codes for output
 GREEN = '\033[92m'
 RED = '\033[91m'
 YELLOW = '\033[93m'
 BLUE = '\033[94m'
 RESET = '\033[0m'
 
-def print_test(message):
+def log_success(message):
+    print(f"{GREEN}✅ {message}{RESET}")
+
+def log_error(message):
+    print(f"{RED}❌ {message}{RESET}")
+
+def log_info(message):
+    print(f"{BLUE}ℹ️  {message}{RESET}")
+
+def log_warning(message):
+    print(f"{YELLOW}⚠️  {message}{RESET}")
+
+def test_clinic_login():
+    """Test 1: POST /api/auth/login (clinic) → 200 + token"""
     print(f"\n{BLUE}{'='*80}{RESET}")
-    print(f"{BLUE}TEST: {message}{RESET}")
+    print(f"{BLUE}TEST 1: Clinic Authentication{RESET}")
     print(f"{BLUE}{'='*80}{RESET}")
-
-def print_success(message):
-    print(f"{GREEN}✅ SUCCESS: {message}{RESET}")
-
-def print_error(message):
-    print(f"{RED}❌ ERROR: {message}{RESET}")
-
-def print_info(message):
-    print(f"{YELLOW}ℹ️  INFO: {message}{RESET}")
-
-def test_1_clinic_login():
-    """Test 1: POST /api/auth/login with clinic credentials"""
-    print_test("Test 1: Clinic Login")
     
     try:
         response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={
-                "email": CLINIC_EMAIL,
-                "password": CLINIC_PASSWORD
-            },
+            f"{API_URL}/auth/login",
+            json={"email": CLINIC_EMAIL, "password": CLINIC_PASSWORD},
             timeout=10
         )
         
-        print_info(f"Status Code: {response.status_code}")
+        log_info(f"POST /api/auth/login - Status: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
             if 'token' in data:
-                print_success(f"Login successful! Token received.")
-                print_info(f"User: {data.get('user', {}).get('name', 'N/A')}")
-                print_info(f"Role: {data.get('user', {}).get('role', 'N/A')}")
+                log_success(f"Clinic login successful - Token received")
+                log_info(f"Clinic: {data.get('user', {}).get('clinicName', 'N/A')}")
+                log_info(f"Plan: {data.get('user', {}).get('subscriptionPlan', 'N/A')}")
                 return data['token']
             else:
-                print_error("Login response missing token")
+                log_error("Login response missing token")
                 return None
         else:
-            print_error(f"Login failed with status {response.status_code}")
-            print_error(f"Response: {response.text}")
+            log_error(f"Login failed with status {response.status_code}")
+            log_error(f"Response: {response.text}")
             return None
             
     except Exception as e:
-        print_error(f"Exception during login: {str(e)}")
+        log_error(f"Exception during clinic login: {str(e)}")
         return None
 
-def test_2_get_automation_settings(token):
-    """Test 2: GET /api/automations/settings - verify 6 new keys exist"""
-    print_test("Test 2: GET Automation Settings - Verify 6 New Keys")
+def test_automation_settings_get(token):
+    """Test 2: GET /api/automations/settings → verify 6 new keys present"""
+    print(f"\n{BLUE}{'='*80}{RESET}")
+    print(f"{BLUE}TEST 2: Get Automation Settings - Verify 6 New Keys{RESET}")
+    print(f"{BLUE}{'='*80}{RESET}")
     
     try:
         response = requests.get(
-            f"{BASE_URL}/automations/settings",
+            f"{API_URL}/automations/settings",
             headers={"Authorization": f"Bearer {token}"},
             timeout=10
         )
         
-        print_info(f"Status Code: {response.status_code}")
+        log_info(f"GET /api/automations/settings - Status: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
-            
-            if data.get('success') != True:
-                print_error(f"Response success field is not true: {data.get('success')}")
-                return None
-            
             settings = data.get('settings', {})
-            plan = data.get('plan', 'N/A')
-            automations_count = data.get('automationsCount', 0)
             
-            print_success(f"Settings retrieved successfully!")
-            print_info(f"Plan: {plan}")
-            print_info(f"Automations Count: {automations_count}")
-            
-            # Check for the 6 new keys
+            # Check for the 6 new clinic automation keys
             new_keys = [
-                'noShowRiskPrediction',
-                'smartAgendaFiller',
-                'noShowRecovery',
-                'estimateFollowup',
-                'paymentEscalation',
-                'labDelayAlert'
+                'morningBriefing',
+                'bookingDropAlert',
+                'expiryStockAlert',
+                'healthPlanRenewal',
+                'ownerBirthday',
+                'therapyReminder'
             ]
             
-            print_info("\nChecking for 6 new automation keys:")
             all_found = True
             for key in new_keys:
                 if key in settings:
-                    value = settings[key]
-                    print_success(f"  ✓ {key}: {value}")
+                    log_success(f"Key '{key}' found in settings: {settings[key]}")
                 else:
-                    print_error(f"  ✗ {key}: NOT FOUND")
+                    log_error(f"Key '{key}' NOT found in settings")
                     all_found = False
             
             if all_found:
-                print_success("\nAll 6 new automation keys found in settings!")
-                return settings
+                log_success("All 6 new automation keys present in settings")
+                log_info(f"Total settings keys: {len(settings)}")
+                log_info(f"Plan: {data.get('plan', 'N/A')}")
+                log_info(f"Automations count: {data.get('automationsCount', 'N/A')}")
+                return True
             else:
-                print_error("\nSome automation keys are missing!")
-                return None
-        else:
-            print_error(f"Failed to get settings with status {response.status_code}")
-            print_error(f"Response: {response.text}")
-            return None
-            
-    except Exception as e:
-        print_error(f"Exception during get settings: {str(e)}")
-        return None
-
-def test_3_toggle_automation(token, plan):
-    """Test 3: POST /api/automations/settings - toggle noShowRiskPrediction"""
-    print_test("Test 3: POST Toggle Single Automation (noShowRiskPrediction)")
-    
-    try:
-        # First, toggle to false
-        print_info("Toggling noShowRiskPrediction to FALSE...")
-        response = requests.post(
-            f"{BASE_URL}/automations/settings",
-            headers={"Authorization": f"Bearer {token}"},
-            json={
-                "key": "noShowRiskPrediction",
-                "enabled": False
-            },
-            timeout=10
-        )
-        
-        print_info(f"Status Code: {response.status_code}")
-        
-        # Check if plan allows this automation
-        if response.status_code == 403:
-            data = response.json()
-            print_info(f"Plan '{plan}' does not allow this automation (expected for 'starter' plan)")
-            print_info(f"Response: {data.get('error', 'N/A')}")
-            print_success("403 response is CORRECT behavior for starter plan!")
-            return True
-        elif response.status_code == 200:
-            data = response.json()
-            if data.get('success') == True:
-                print_success(f"Toggle to FALSE successful!")
-                print_info(f"Message: {data.get('message', 'N/A')}")
-                
-                # Now toggle back to true
-                print_info("\nToggling noShowRiskPrediction back to TRUE...")
-                response2 = requests.post(
-                    f"{BASE_URL}/automations/settings",
-                    headers={"Authorization": f"Bearer {token}"},
-                    json={
-                        "key": "noShowRiskPrediction",
-                        "enabled": True
-                    },
-                    timeout=10
-                )
-                
-                if response2.status_code == 200:
-                    data2 = response2.json()
-                    if data2.get('success') == True:
-                        print_success(f"Toggle back to TRUE successful!")
-                        return True
-                    else:
-                        print_error("Toggle back to TRUE failed")
-                        return False
-                else:
-                    print_error(f"Toggle back failed with status {response2.status_code}")
-                    return False
-            else:
-                print_error("Toggle response success field is not true")
+                log_error("Some automation keys are missing")
                 return False
         else:
-            print_error(f"Toggle failed with status {response.status_code}")
-            print_error(f"Response: {response.text}")
+            log_error(f"Failed to get settings with status {response.status_code}")
+            log_error(f"Response: {response.text}")
             return False
             
     except Exception as e:
-        print_error(f"Exception during toggle: {str(e)}")
+        log_error(f"Exception during get settings: {str(e)}")
         return False
 
-def test_4_put_full_settings(token, original_settings):
-    """Test 4: PUT /api/automations/settings - update full settings object"""
-    print_test("Test 4: PUT Full Settings Object")
+def test_toggle_automation(token):
+    """Test 3: POST /api/automations/settings - Toggle morningBriefing"""
+    print(f"\n{BLUE}{'='*80}{RESET}")
+    print(f"{BLUE}TEST 3: Toggle morningBriefing Automation{RESET}")
+    print(f"{BLUE}{'='*80}{RESET}")
     
     try:
-        print_info("Sending full settings object via PUT...")
-        response = requests.put(
-            f"{BASE_URL}/automations/settings",
+        # Toggle to false
+        log_info("Toggling morningBriefing to FALSE")
+        response = requests.post(
+            f"{API_URL}/automations/settings",
             headers={"Authorization": f"Bearer {token}"},
-            json={"settings": original_settings},
+            json={"key": "morningBriefing", "enabled": False},
             timeout=10
         )
         
-        print_info(f"Status Code: {response.status_code}")
+        log_info(f"POST /api/automations/settings (disable) - Status: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
-            if data.get('success') == True:
-                print_success("PUT full settings successful!")
-                print_info(f"Message: {data.get('message', 'N/A')}")
-                
-                # Verify via GET
-                print_info("\nVerifying settings persisted via GET...")
-                verify_response = requests.get(
-                    f"{BASE_URL}/automations/settings",
-                    headers={"Authorization": f"Bearer {token}"},
-                    timeout=10
-                )
-                
-                if verify_response.status_code == 200:
-                    verify_data = verify_response.json()
-                    new_settings = verify_data.get('settings', {})
-                    
-                    # Check if the 6 new keys still exist
-                    new_keys = [
-                        'noShowRiskPrediction',
-                        'smartAgendaFiller',
-                        'noShowRecovery',
-                        'estimateFollowup',
-                        'paymentEscalation',
-                        'labDelayAlert'
-                    ]
-                    
-                    all_persist = True
-                    for key in new_keys:
-                        if key not in new_settings:
-                            print_error(f"Key {key} not found after PUT!")
-                            all_persist = False
-                    
-                    if all_persist:
-                        print_success("All 6 new keys persisted after PUT!")
-                        return True
-                    else:
-                        print_error("Some keys did not persist after PUT")
-                        return False
-                else:
-                    print_error("Failed to verify settings after PUT")
-                    return False
-            else:
-                print_error("PUT response success field is not true")
-                return False
+            log_success(f"Disabled morningBriefing: {data.get('message', '')}")
         else:
-            print_error(f"PUT failed with status {response.status_code}")
-            print_error(f"Response: {response.text}")
+            log_error(f"Failed to disable with status {response.status_code}")
+            log_error(f"Response: {response.text}")
+            return False
+        
+        # Toggle back to true
+        log_info("Toggling morningBriefing back to TRUE")
+        response = requests.post(
+            f"{API_URL}/automations/settings",
+            headers={"Authorization": f"Bearer {token}"},
+            json={"key": "morningBriefing", "enabled": True},
+            timeout=10
+        )
+        
+        log_info(f"POST /api/automations/settings (enable) - Status: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            log_success(f"Enabled morningBriefing: {data.get('message', '')}")
+            return True
+        else:
+            log_error(f"Failed to enable with status {response.status_code}")
+            log_error(f"Response: {response.text}")
             return False
             
     except Exception as e:
-        print_error(f"Exception during PUT: {str(e)}")
+        log_error(f"Exception during toggle automation: {str(e)}")
         return False
 
-def test_5_cron_daily(token):
-    """Test 5: GET /api/cron/daily - verify 6 new keys in results (ONLY ONCE!)"""
-    print_test("Test 5: GET /api/cron/daily - Verify 6 New Result Keys")
+def test_cron_daily():
+    """Test 4: GET /api/cron/daily → verify all 7 automation results (ONLY ONCE)"""
+    print(f"\n{BLUE}{'='*80}{RESET}")
+    print(f"{BLUE}TEST 4: Daily Cron Job - Verify 7 New Automations{RESET}")
+    print(f"{BLUE}{'='*80}{RESET}")
     
-    print_info("⚠️  WARNING: This endpoint sends REAL EMAILS and sets idempotency flags!")
-    print_info("⚠️  Calling ONLY ONCE as per review request instructions!")
+    log_warning("IMPORTANT: This endpoint sends REAL emails via Resend - calling ONLY ONCE")
     
     try:
         response = requests.get(
-            f"{BASE_URL}/cron/daily",
-            timeout=30  # Longer timeout for cron job
+            f"{API_URL}/cron/daily",
+            timeout=60  # Longer timeout for cron job
         )
         
-        print_info(f"Status Code: {response.status_code}")
+        log_info(f"GET /api/cron/daily - Status: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
             
-            if data.get('success') != True:
-                print_error(f"Cron response success field is not true: {data.get('success')}")
+            if not data.get('success'):
+                log_error(f"Cron job returned success=false")
+                log_error(f"Response: {json.dumps(data, indent=2)}")
                 return False
             
             results = data.get('results', {})
             
-            print_success("Cron job executed successfully!")
-            print_info(f"Timestamp: {data.get('timestamp', 'N/A')}")
-            
-            # Check for the 6 new result keys
-            new_result_keys = [
-                'noShowRiskPrediction',
-                'smartAgendaFiller',
-                'noShowRecovery',
-                'estimateFollowup',
-                'paymentEscalation',
-                'labDelayAlert'
+            # Check for all 7 new automation keys
+            new_automation_keys = [
+                'morningBriefing',
+                'bookingDropAlert',
+                'expiryStockAlert',
+                'healthPlanRenewal',
+                'ownerBirthday',
+                'therapyReminder',
+                'labMonthlyReport'
             ]
             
-            print_info("\nChecking for 6 new automation result keys:")
             all_found = True
-            all_no_errors = True
+            all_errors_zero = True
             
-            for key in new_result_keys:
+            print(f"\n{BLUE}Checking 7 New Automation Results:{RESET}")
+            for key in new_automation_keys:
                 if key in results:
                     result = results[key]
                     sent = result.get('sent', 0)
                     errors = result.get('errors', 0)
                     skipped = result.get('skipped', 0)
                     
-                    print_success(f"  ✓ {key}: sent={sent}, errors={errors}, skipped={skipped}")
+                    status_icon = "✅" if errors == 0 else "❌"
+                    print(f"{status_icon} {key}: sent={sent}, errors={errors}, skipped={skipped}")
                     
                     if errors > 0:
-                        print_error(f"    ⚠️  {key} has {errors} errors!")
-                        all_no_errors = False
+                        all_errors_zero = False
+                        log_error(f"  {key} has {errors} errors!")
                 else:
-                    print_error(f"  ✗ {key}: NOT FOUND in results")
+                    log_error(f"Key '{key}' NOT found in results")
                     all_found = False
             
-            if all_found and all_no_errors:
-                print_success("\n✅ All 6 new automation results found with 0 errors!")
+            if all_found and all_errors_zero:
+                log_success("All 7 automation keys present in results with errors=0")
+                log_info(f"Timestamp: {data.get('timestamp', 'N/A')}")
                 return True
-            elif all_found:
-                print_error("\n⚠️  All keys found but some have errors")
+            elif all_found and not all_errors_zero:
+                log_error("All keys found but some have errors > 0")
                 return False
             else:
-                print_error("\n❌ Some automation result keys are missing!")
+                log_error("Some automation keys are missing from results")
                 return False
         else:
-            print_error(f"Cron job failed with status {response.status_code}")
-            print_error(f"Response: {response.text}")
+            log_error(f"Cron job failed with status {response.status_code}")
+            log_error(f"Response: {response.text}")
             
-            # Check supervisor logs for errors
-            print_info("\nChecking supervisor logs for errors...")
-            import subprocess
-            try:
-                log_output = subprocess.check_output(
-                    ["tail", "-n", "50", "/var/log/supervisor/nextjs.out.log"],
-                    stderr=subprocess.STDOUT,
-                    text=True
-                )
-                print_info("Last 50 lines of nextjs.out.log:")
-                print(log_output)
-            except Exception as log_err:
-                print_error(f"Could not read logs: {str(log_err)}")
-            
+            # Check supervisor logs for error details
+            log_info("Checking supervisor logs for error details...")
             return False
             
     except Exception as e:
-        print_error(f"Exception during cron job: {str(e)}")
+        log_error(f"Exception during cron job: {str(e)}")
         return False
 
-def test_6_regression_check(token):
-    """Test 6: Regression check - GET /api/auth/me and GET /api/automations/settings"""
-    print_test("Test 6: Regression Check After Cron Run")
+def test_owner_birthdate_flow():
+    """Test 5: Owner birthDate flow - login, update profile, verify persistence"""
+    print(f"\n{BLUE}{'='*80}{RESET}")
+    print(f"{BLUE}TEST 5: Owner birthDate Flow{RESET}")
+    print(f"{BLUE}{'='*80}{RESET}")
     
     try:
-        # Check /api/auth/me
-        print_info("Testing GET /api/auth/me...")
-        me_response = requests.get(
-            f"{BASE_URL}/auth/me",
-            headers={"Authorization": f"Bearer {token}"},
+        # Step 1: Owner login
+        log_info("Step 1: Owner login")
+        response = requests.post(
+            f"{API_URL}/auth/login",
+            json={"email": OWNER_EMAIL, "password": OWNER_PASSWORD},
             timeout=10
         )
         
-        print_info(f"Status Code: {me_response.status_code}")
+        log_info(f"POST /api/auth/login (owner) - Status: {response.status_code}")
         
-        if me_response.status_code == 200:
-            me_data = me_response.json()
-            print_success(f"GET /api/auth/me still working!")
-            print_info(f"User: {me_data.get('name', 'N/A')}")
-        else:
-            print_error(f"GET /api/auth/me failed with status {me_response.status_code}")
+        if response.status_code != 200:
+            log_error(f"Owner login failed with status {response.status_code}")
+            log_error(f"Response: {response.text}")
             return False
         
-        # Check /api/automations/settings
-        print_info("\nTesting GET /api/automations/settings...")
-        settings_response = requests.get(
-            f"{BASE_URL}/automations/settings",
-            headers={"Authorization": f"Bearer {token}"},
+        data = response.json()
+        owner_token = data.get('token')
+        if not owner_token:
+            log_error("Owner login response missing token")
+            return False
+        
+        log_success(f"Owner login successful - {data.get('user', {}).get('name', 'N/A')}")
+        
+        # Step 2: Update profile with birthDate
+        log_info("Step 2: Update profile with birthDate")
+        update_data = {
+            "birthDate": "1990-05-15",
+            "phone": "+39 333 0000000"
+        }
+        
+        response = requests.put(
+            f"{API_URL}/owner/profile",
+            headers={"Authorization": f"Bearer {owner_token}"},
+            json=update_data,
             timeout=10
         )
         
-        print_info(f"Status Code: {settings_response.status_code}")
+        log_info(f"PUT /api/owner/profile - Status: {response.status_code}")
         
-        if settings_response.status_code == 200:
-            settings_data = settings_response.json()
-            if settings_data.get('success') == True:
-                print_success("GET /api/automations/settings still working!")
-                return True
-            else:
-                print_error("Settings response success field is not true")
-                return False
-        else:
-            print_error(f"GET /api/automations/settings failed with status {settings_response.status_code}")
+        if response.status_code != 200:
+            log_error(f"Profile update failed with status {response.status_code}")
+            log_error(f"Response: {response.text}")
             return False
-            
+        
+        log_success("Profile updated with birthDate and phone")
+        
+        # Step 3: Verify persistence via GET /api/auth/me
+        log_info("Step 3: Verify birthDate persistence via GET /api/auth/me")
+        response = requests.get(
+            f"{API_URL}/auth/me",
+            headers={"Authorization": f"Bearer {owner_token}"},
+            timeout=10
+        )
+        
+        log_info(f"GET /api/auth/me - Status: {response.status_code}")
+        
+        if response.status_code != 200:
+            log_error(f"Get profile failed with status {response.status_code}")
+            return False
+        
+        data = response.json()
+        stored_birthdate = data.get('birthDate')
+        stored_phone = data.get('phone')
+        
+        if stored_birthdate == "1990-05-15":
+            log_success(f"birthDate persisted correctly: {stored_birthdate}")
+        else:
+            log_error(f"birthDate mismatch - Expected: 1990-05-15, Got: {stored_birthdate}")
+            return False
+        
+        if stored_phone == "+39 333 0000000":
+            log_success(f"phone persisted correctly: {stored_phone}")
+        else:
+            log_warning(f"phone value: {stored_phone}")
+        
+        return True
+        
     except Exception as e:
-        print_error(f"Exception during regression check: {str(e)}")
+        log_error(f"Exception during owner birthDate flow: {str(e)}")
+        return False
+
+def test_regression(clinic_token):
+    """Test 6: Regression - verify settings and auth/me still work after cron"""
+    print(f"\n{BLUE}{'='*80}{RESET}")
+    print(f"{BLUE}TEST 6: Regression Tests{RESET}")
+    print(f"{BLUE}{'='*80}{RESET}")
+    
+    try:
+        # Test GET /api/automations/settings
+        log_info("Testing GET /api/automations/settings after cron run")
+        response = requests.get(
+            f"{API_URL}/automations/settings",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            log_success("GET /api/automations/settings still working")
+        else:
+            log_error(f"Settings endpoint failed with status {response.status_code}")
+            return False
+        
+        # Test GET /api/auth/me
+        log_info("Testing GET /api/auth/me after cron run")
+        response = requests.get(
+            f"{API_URL}/auth/me",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            log_success(f"GET /api/auth/me still working - {data.get('clinicName', 'N/A')}")
+            return True
+        else:
+            log_error(f"Auth/me endpoint failed with status {response.status_code}")
+            return False
+        
+    except Exception as e:
+        log_error(f"Exception during regression tests: {str(e)}")
         return False
 
 def main():
+    """Run all tests"""
     print(f"\n{BLUE}{'='*80}{RESET}")
-    print(f"{BLUE}VetBuddy Backend API Testing - 6 New Intelligent Automations{RESET}")
+    print(f"{BLUE}VetBuddy Backend API Testing - 7 New Advanced Automations{RESET}")
     print(f"{BLUE}Base URL: {BASE_URL}{RESET}")
-    print(f"{BLUE}{'='*80}{RESET}\n")
+    print(f"{BLUE}{'='*80}{RESET}")
     
     results = {
-        "test_1_login": False,
-        "test_2_get_settings": False,
-        "test_3_toggle": False,
-        "test_4_put_settings": False,
-        "test_5_cron": False,
+        "test_1_clinic_login": False,
+        "test_2_settings_get": False,
+        "test_3_toggle_automation": False,
+        "test_4_cron_daily": False,
+        "test_5_owner_birthdate": False,
         "test_6_regression": False
     }
     
-    # Test 1: Login
-    token = test_1_clinic_login()
-    if token:
-        results["test_1_login"] = True
+    # Test 1: Clinic login
+    clinic_token = test_clinic_login()
+    if clinic_token:
+        results["test_1_clinic_login"] = True
     else:
-        print_error("\n❌ Login failed. Cannot proceed with other tests.")
+        log_error("Cannot proceed without clinic token")
+        print_summary(results)
         sys.exit(1)
     
     # Test 2: Get automation settings
-    settings = test_2_get_automation_settings(token)
-    if settings:
-        results["test_2_get_settings"] = True
-        
-        # Get plan info for test 3
-        plan_response = requests.get(
-            f"{BASE_URL}/automations/settings",
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=10
-        )
-        plan = plan_response.json().get('plan', 'starter') if plan_response.status_code == 200 else 'starter'
-    else:
-        print_error("\n❌ Get settings failed. Cannot proceed with other tests.")
-        sys.exit(1)
+    if test_automation_settings_get(clinic_token):
+        results["test_2_settings_get"] = True
     
     # Test 3: Toggle automation
-    if test_3_toggle_automation(token, plan):
-        results["test_3_toggle"] = True
+    if test_toggle_automation(clinic_token):
+        results["test_3_toggle_automation"] = True
     
-    # Test 4: PUT full settings
-    if test_4_put_full_settings(token, settings):
-        results["test_4_put_settings"] = True
+    # Test 4: Cron daily (ONLY ONCE - sends real emails)
+    if test_cron_daily():
+        results["test_4_cron_daily"] = True
     
-    # Test 5: Cron daily (ONLY ONCE!)
-    if test_5_cron_daily(token):
-        results["test_5_cron"] = True
+    # Test 5: Owner birthDate flow
+    if test_owner_birthdate_flow():
+        results["test_5_owner_birthdate"] = True
     
-    # Test 6: Regression check
-    if test_6_regression_check(token):
+    # Test 6: Regression
+    if test_regression(clinic_token):
         results["test_6_regression"] = True
     
-    # Summary
+    # Print summary
+    print_summary(results)
+    
+    # Exit with appropriate code
+    if all(results.values()):
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
+def print_summary(results):
+    """Print test summary"""
     print(f"\n{BLUE}{'='*80}{RESET}")
     print(f"{BLUE}TEST SUMMARY{RESET}")
-    print(f"{BLUE}{'='*80}{RESET}\n")
+    print(f"{BLUE}{'='*80}{RESET}")
     
     passed = sum(1 for v in results.values() if v)
     total = len(results)
     
     for test_name, passed_flag in results.items():
-        status = f"{GREEN}✅ PASSED{RESET}" if passed_flag else f"{RED}❌ FAILED{RESET}"
+        status = f"{GREEN}PASSED{RESET}" if passed_flag else f"{RED}FAILED{RESET}"
         print(f"{test_name}: {status}")
     
     print(f"\n{BLUE}Total: {passed}/{total} tests passed{RESET}")
     
     if passed == total:
-        print(f"\n{GREEN}{'='*80}{RESET}")
-        print(f"{GREEN}🎉 ALL TESTS PASSED! 🎉{RESET}")
-        print(f"{GREEN}{'='*80}{RESET}\n")
-        sys.exit(0)
+        print(f"{GREEN}{'='*80}{RESET}")
+        print(f"{GREEN}ALL TESTS PASSED ✅{RESET}")
+        print(f"{GREEN}{'='*80}{RESET}")
     else:
-        print(f"\n{RED}{'='*80}{RESET}")
-        print(f"{RED}❌ SOME TESTS FAILED{RESET}")
-        print(f"{RED}{'='*80}{RESET}\n")
-        sys.exit(1)
+        print(f"{RED}{'='*80}{RESET}")
+        print(f"{RED}SOME TESTS FAILED ❌{RESET}")
+        print(f"{RED}{'='*80}{RESET}")
 
 if __name__ == "__main__":
     main()
