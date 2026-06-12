@@ -65,7 +65,14 @@ export async function GET(request) {
     }
     const clinicId = user.role === 'staff' ? (user.clinicId || user.id) : user.id;
     const list = await forms.find({ clinicId }).sort({ createdAt: -1 }).limit(100).toArray();
-    return NextResponse.json({ success: true, questionnaires: list.map(toClientShape) });
+    // Conteggio allegati per modulo
+    const mediaCol = await getCollection('previsit_media');
+    const mediaAgg = await mediaCol.aggregate([
+      { $match: { clinicId, status: 'completo' } },
+      { $group: { _id: '$formId', count: { $sum: 1 } } }
+    ]).toArray();
+    const mediaMap = new Map(mediaAgg.map(m => [m._id, m.count]));
+    return NextResponse.json({ success: true, questionnaires: list.map(f => ({ ...toClientShape(f), mediaCount: mediaMap.get(f.id) || 0 })) });
   } catch (error) {
     console.error('Previsit GET error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });

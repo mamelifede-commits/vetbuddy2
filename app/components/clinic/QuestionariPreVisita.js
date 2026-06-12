@@ -33,6 +33,9 @@ export default function QuestionariPreVisita({ user, onNavigate }) {
   const [selectedType, setSelectedType] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [newForm, setNewForm] = useState({ ownerName: '', ownerEmail: '', petName: '', appointmentDate: '' });
+  const [detailQ, setDetailQ] = useState(null);
+  const [detailMedia, setDetailMedia] = useState([]);
+  const [mediaLoading, setMediaLoading] = useState(false);
 
   useEffect(() => {
     loadQuestionnaires();
@@ -79,11 +82,43 @@ export default function QuestionariPreVisita({ user, onNavigate }) {
   const markReviewed = async (q) => {
     try {
       await api.put('previsit', { id: q.id, status: 'compilato' });
+      setDetailQ(null);
       await loadQuestionnaires();
     } catch (error) {
       alert('❌ Errore nell\'aggiornamento');
     }
   };
+
+  const openDetail = async (q) => {
+    setDetailQ(q);
+    setDetailMedia([]);
+    if (q.mediaCount > 0) {
+      try {
+        setMediaLoading(true);
+        const res = await api.get(`previsit/upload?formId=${q.id}`);
+        setDetailMedia(res.media || []);
+      } catch (e) {
+        setDetailMedia([]);
+      } finally {
+        setMediaLoading(false);
+      }
+    }
+  };
+
+  const openMedia = async (m) => {
+    try {
+      const token = localStorage.getItem('vetbuddy_token');
+      const res = await fetch(`/api/previsit/upload?mediaId=${m.id}`, { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) throw new Error('Errore nell\'apertura dell\'allegato');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
+  const formatSize = (bytes) => bytes > 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : `${Math.ceil((bytes || 0) / 1024)} KB`;
 
   const getStatusBadge = (status) => {
     const map = {
@@ -265,7 +300,8 @@ export default function QuestionariPreVisita({ user, onNavigate }) {
                       </div>
                       <div className="flex items-center gap-2">
                         {q.urgency === 'Alta' && <Badge className="bg-red-500 text-white">Urgente</Badge>}
-                        <Button className="bg-amber-500 hover:bg-amber-600 text-white">
+                        {q.mediaCount > 0 && <Badge className="bg-purple-100 text-purple-700">📎 {q.mediaCount}</Badge>}
+                        <Button className="bg-amber-500 hover:bg-amber-600 text-white" onClick={() => openDetail(q)}>
                           <Eye className="h-4 w-4 mr-1" />Rivedi Prima della Visita
                         </Button>
                       </div>
@@ -318,8 +354,8 @@ export default function QuestionariPreVisita({ user, onNavigate }) {
                       </div>
                       <CheckCircle className="h-5 w-5 text-green-600" />
                     </div>
-                    <p className="text-xs text-green-600 mb-2">✓ Compilato il {new Date(q.completedAt).toLocaleDateString('it-IT')}</p>
-                    <Button size="sm" className="w-full bg-green-500 hover:bg-green-600 text-white">
+                    <p className="text-xs text-green-600 mb-2">✓ Compilato il {new Date(q.completedAt).toLocaleDateString('it-IT')} {q.mediaCount > 0 ? `• 📎 ${q.mediaCount} allegati` : ''}</p>
+                    <Button size="sm" className="w-full bg-green-500 hover:bg-green-600 text-white" onClick={() => openDetail(q)}>
                       <Eye className="h-3 w-3 mr-1" />Visualizza Dettagli
                     </Button>
                   </CardContent>
@@ -329,6 +365,88 @@ export default function QuestionariPreVisita({ user, onNavigate }) {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Detail Modal */}
+      {detailQ && (
+        <Dialog open={!!detailQ} onOpenChange={(o) => !o && setDetailQ(null)}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <ClipboardList className="h-5 w-5 text-purple-500" />
+                Questionario: {detailQ.petName || 'paziente'} ({detailQ.ownerName})
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 text-sm">
+              <div className="flex flex-wrap items-center gap-2">
+                {getStatusBadge(detailQ.status)}
+                {detailQ.urgency && (
+                  <Badge className={detailQ.urgency === 'Alta' ? 'bg-red-500 text-white' : detailQ.urgency === 'Media' ? 'bg-amber-500 text-white' : 'bg-green-500 text-white'}>
+                    Urgenza percepita: {detailQ.urgency}
+                  </Badge>
+                )}
+                {detailQ.appointmentDate && <Badge variant="outline">📅 {detailQ.appointmentDate}</Badge>}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 rounded-lg p-4">
+                {[
+                  ['Motivo della visita', detailQ.reason],
+                  ['Sintomi', detailQ.symptoms],
+                  ['Da quando', detailQ.duration],
+                  ['Farmaci assunti', detailQ.medications],
+                  ['Patologie note', detailQ.conditions],
+                  ['Allergie', detailQ.allergies],
+                  ['Alimentazione', detailQ.diet],
+                  ['Comportamento', detailQ.behavior],
+                ].map(([label, value]) => (
+                  <div key={label}>
+                    <p className="text-xs text-gray-400">{label}</p>
+                    <p className="font-medium text-gray-800">{value || '—'}</p>
+                  </div>
+                ))}
+              </div>
+              {detailQ.notes && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <p className="text-xs text-blue-500 mb-1">Note del proprietario</p>
+                  <p className="text-blue-900 whitespace-pre-wrap">{detailQ.notes}</p>
+                </div>
+              )}
+              <div>
+                <p className="text-xs text-gray-400 mb-2">📎 Allegati ({detailQ.mediaCount || 0})</p>
+                {mediaLoading ? (
+                  <p className="text-gray-400 text-sm">Caricamento allegati...</p>
+                ) : detailMedia.length > 0 ? (
+                  <div className="space-y-2">
+                    {detailMedia.map(m => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => openMedia(m)}
+                        className="w-full flex items-center justify-between bg-purple-50 border border-purple-200 rounded-lg px-3 py-2 hover:bg-purple-100 transition text-left"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          {m.mimeType?.startsWith('video/') ? <Video className="h-4 w-4 text-purple-500 shrink-0" /> : <Image className="h-4 w-4 text-purple-500 shrink-0" />}
+                          <span className="truncate text-gray-700">{m.fileName}</span>
+                          <span className="text-xs text-gray-400 shrink-0">{formatSize(m.size)}</span>
+                        </div>
+                        <Eye className="h-4 w-4 text-purple-400 shrink-0" />
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-400 text-sm">Nessun allegato</p>
+                )}
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDetailQ(null)}>Chiudi</Button>
+              {detailQ.status === 'da_revisionare' && (
+                <Button className="bg-green-500 hover:bg-green-600 text-white" onClick={() => markReviewed(detailQ)}>
+                  <CheckCircle className="h-4 w-4 mr-1" />Segna come Revisionato
+                </Button>
+              )}
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* New Questionnaire Modal */}
       {showNew && (
