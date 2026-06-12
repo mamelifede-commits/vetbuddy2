@@ -287,5 +287,36 @@ export async function runAdvancedAutomations({ db, clinicsMap, allClinics, allPe
     results.labMonthlyReport.skipped++;
   }
 
+  // ============================================================
+  // 37. ALERT SCORTE BASSE (magazzino reale)
+  // Articoli sotto soglia minima o esauriti → email alla clinica
+  // ============================================================
+  const lowStockItems = await db.collection('inventory').find({
+    $expr: { $lt: ['$quantity', '$minThreshold'] },
+    lowStockAlertSent: { $ne: true }
+  }).toArray();
+
+  const lowStockByClinic = new Map();
+  for (const item of lowStockItems) {
+    if (!lowStockByClinic.has(item.clinicId)) lowStockByClinic.set(item.clinicId, []);
+    lowStockByClinic.get(item.clinicId).push(item);
+  }
+  for (const [clinicId, stockItems] of lowStockByClinic) {
+    try {
+      const clinic = clinicsMap.get(clinicId);
+      if (!isAutomationEnabled(clinic, 'lowStockAlert') || !clinic?.email) { results.lowStockAlert.skipped++; continue; }
+      const rows = stockItems.map(i => `<tr><td style="padding:6px;border-bottom:1px solid #eee;">${i.name}</td><td style="padding:6px;border-bottom:1px solid #eee;color:${i.quantity === 0 ? '#E74C3C' : '#F39C12'};font-weight:bold;">${i.quantity === 0 ? 'ESAURITO' : i.quantity + ' pz'}</td><td style="padding:6px;border-bottom:1px solid #eee;">${i.minThreshold} pz</td><td style="padding:6px;border-bottom:1px solid #eee;">${i.supplier || '-'}</td></tr>`).join('');
+      await sendEmail({
+        to: clinic.email,
+        subject: `📦 ${stockItems.length} articoli sotto scorta minima${stockItems.some(i => i.quantity === 0) ? ' (alcuni ESAURITI)' : ''}`,
+        html: wrapEmail(`<h2 style="color:#333;">📦 Scorte da riordinare</h2><p style="color:#666;">Questi articoli del magazzino sono sotto la soglia minima:</p><table style="width:100%;border-collapse:collapse;margin:15px 0;"><tr style="background:#F9F9F9;"><th style="padding:6px;text-align:left;">Articolo</th><th style="padding:6px;text-align:left;">Disponibili</th><th style="padding:6px;text-align:left;">Soglia min.</th><th style="padding:6px;text-align:left;">Fornitore</th></tr>${rows}</table><p style="color:#999;font-size:13px;">💡 Riordina dal modulo Stock Vaccini: registrando il carico, l'alert si riattiva automaticamente.</p>`)
+      });
+      for (const item of stockItems) {
+        await db.collection('inventory').updateOne({ id: item.id }, { $set: { lowStockAlertSent: true, lowStockAlertSentAt: new Date() } });
+      }
+      results.lowStockAlert.sent++;
+    } catch (err) { console.error('Low stock alert error:', err); results.lowStockAlert.errors++; }
+  }
+
   return results;
 }

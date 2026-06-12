@@ -11,14 +11,19 @@ import {
   RefreshCw, Search, Filter, Download, BarChart3, Clock, CheckCircle, XCircle
 } from 'lucide-react';
 import BackToDashboard from '@/app/components/shared/BackToDashboard';
+import api from '@/app/lib/api';
 
 export default function StockVaccini({ user, onNavigate }) {
   const [items, setItems] = useState([]);
   const [movements, setMovements] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [showNewItem, setShowNewItem] = useState(false);
   const [showMovement, setShowMovement] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [movementType, setMovementType] = useState('in');
+  const [movementForm, setMovementForm] = useState({ quantity: 1, reason: '', notes: '' });
+  const [newItem, setNewItem] = useState({ name: '', category: 'vaccino', quantity: 0, minThreshold: 5, unitPrice: 0, supplier: '', lot: '', expiryDate: '', location: '' });
   const [filterCategory, setFilterCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -26,35 +31,96 @@ export default function StockVaccini({ user, onNavigate }) {
     loadStock();
   }, []);
 
-  const loadStock = () => {
-    // Demo data: stock vaccini e materiali critici
-    const demoItems = [
-      { id: '1', name: 'Vaccino Polivalente Cane', category: 'vaccino', quantity: 15, minThreshold: 10, unitPrice: 25, supplier: 'MSD Animal Health', lot: 'LOT2024A', expiryDate: new Date(Date.now() + 180 * 86400000).toISOString(), location: 'Frigo A - Ripiano 2', lastRestocked: new Date(Date.now() - 30 * 86400000).toISOString() },
-      { id: '2', name: 'Vaccino Antirabbica', category: 'vaccino', quantity: 8, minThreshold: 5, unitPrice: 18, supplier: 'Boehringer Ingelheim', lot: 'LOT2024B', expiryDate: new Date(Date.now() + 90 * 86400000).toISOString(), location: 'Frigo A - Ripiano 1', lastRestocked: new Date(Date.now() - 45 * 86400000).toISOString() },
-      { id: '3', name: 'Vaccino Trivalente Gatto', category: 'vaccino', quantity: 12, minThreshold: 8, unitPrice: 22, supplier: 'Zoetis', lot: 'LOT2024C', expiryDate: new Date(Date.now() + 150 * 86400000).toISOString(), location: 'Frigo B - Ripiano 1', lastRestocked: new Date(Date.now() - 20 * 86400000).toISOString() },
-      { id: '4', name: 'Vaccino Leucemia Felina', category: 'vaccino', quantity: 4, minThreshold: 5, unitPrice: 28, supplier: 'Boehringer Ingelheim', lot: 'LOT2024D', expiryDate: new Date(Date.now() + 60 * 86400000).toISOString(), location: 'Frigo B - Ripiano 2', lastRestocked: new Date(Date.now() - 60 * 86400000).toISOString() },
-      { id: '5', name: 'Siringhe 1ml Sterili', category: 'materiale', quantity: 250, minThreshold: 100, unitPrice: 0.3, supplier: 'BD Medical', lot: 'SYR2024', expiryDate: new Date(Date.now() + 365 * 86400000).toISOString(), location: 'Armadio C - Cassetto 3', lastRestocked: new Date(Date.now() - 15 * 86400000).toISOString() },
-      { id: '6', name: 'Aghi 23G', category: 'materiale', quantity: 180, minThreshold: 150, unitPrice: 0.15, supplier: 'Terumo', lot: 'NDL2024', expiryDate: new Date(Date.now() + 400 * 86400000).toISOString(), location: 'Armadio C - Cassetto 2', lastRestocked: new Date(Date.now() - 25 * 86400000).toISOString() },
-      { id: '7', name: 'Antiparassitario Spot-On Cane', category: 'farmaco', quantity: 35, minThreshold: 20, unitPrice: 12, supplier: 'Elanco', lot: 'SPOT2024', expiryDate: new Date(Date.now() + 240 * 86400000).toISOString(), location: 'Armadio A - Ripiano 4', lastRestocked: new Date(Date.now() - 10 * 86400000).toISOString() },
-      { id: '8', name: 'Antiparassitario Collare Gatto', category: 'farmaco', quantity: 18, minThreshold: 15, unitPrice: 15, supplier: 'Bayer', lot: 'COL2024', expiryDate: new Date(Date.now() + 200 * 86400000).toISOString(), location: 'Armadio A - Ripiano 3', lastRestocked: new Date(Date.now() - 35 * 86400000).toISOString() },
-      { id: '9', name: 'Test FeLV/FIV', category: 'diagnostico', quantity: 6, minThreshold: 10, unitPrice: 35, supplier: 'IDEXX', lot: 'TEST2024', expiryDate: new Date(Date.now() + 120 * 86400000).toISOString(), location: 'Frigo C - Cassetto Test', lastRestocked: new Date(Date.now() - 50 * 86400000).toISOString() },
-      { id: '10', name: 'Vaccino Bordetella', category: 'vaccino', quantity: 7, minThreshold: 5, unitPrice: 20, supplier: 'Zoetis', lot: 'LOT2024E', expiryDate: new Date(Date.now() + 45 * 86400000).toISOString(), location: 'Frigo A - Ripiano 3', lastRestocked: new Date(Date.now() - 70 * 86400000).toISOString() },
-    ];
+  const loadStock = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get('inventory');
+      setItems(response.items || []);
+      setMovements(response.movements || []);
+    } catch (error) {
+      console.error('Error loading inventory:', error);
+      setItems([]);
+      setMovements([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const demoMovements = [
-      { id: '1', itemId: '1', itemName: 'Vaccino Polivalente Cane', type: 'out', quantity: 2, date: new Date(Date.now() - 1 * 86400000).toISOString(), reason: 'Vaccinazione Luna (cane)', performedBy: 'Dr. Rossi', notes: 'Vaccino annuale' },
-      { id: '2', itemId: '3', itemName: 'Vaccino Trivalente Gatto', type: 'out', quantity: 1, date: new Date(Date.now() - 2 * 86400000).toISOString(), reason: 'Vaccinazione Micio (gatto)', performedBy: 'Dr. Bianchi', notes: 'Primo vaccino cucciolo' },
-      { id: '3', itemId: '5', itemName: 'Siringhe 1ml Sterili', type: 'in', quantity: 500, date: new Date(Date.now() - 15 * 86400000).toISOString(), reason: 'Rifornimento', performedBy: 'Receptionist', notes: 'Ordine fornitore BD Medical' },
-      { id: '4', itemId: '7', itemName: 'Antiparassitario Spot-On Cane', type: 'out', quantity: 5, date: new Date(Date.now() - 3 * 86400000).toISOString(), reason: 'Vendita diretta', performedBy: 'Receptionist', notes: 'Vendita a proprietari' },
-      { id: '5', itemId: '2', itemName: 'Vaccino Antirabbica', type: 'out', quantity: 1, date: new Date(Date.now() - 5 * 86400000).toISOString(), reason: 'Vaccinazione Rex (cane)', performedBy: 'Dr. Rossi', notes: 'Certificato per viaggio' },
-      { id: '6', itemId: '9', itemName: 'Test FeLV/FIV', type: 'out', quantity: 1, date: new Date(Date.now() - 7 * 86400000).toISOString(), reason: 'Test diagnostico', performedBy: 'Dr. Verdi', notes: 'Test su gatto randagio' },
-      { id: '7', itemId: '1', itemName: 'Vaccino Polivalente Cane', type: 'in', quantity: 20, date: new Date(Date.now() - 30 * 86400000).toISOString(), reason: 'Rifornimento', performedBy: 'Receptionist', notes: 'Ordine MSD' },
-      { id: '8', itemId: '4', itemName: 'Vaccino Leucemia Felina', type: 'expired', quantity: 2, date: new Date(Date.now() - 10 * 86400000).toISOString(), reason: 'Scadenza', performedBy: 'Dr. Bianchi', notes: 'Lotto scaduto smaltito' },
-    ];
+  const seedDemoData = async () => {
+    try {
+      setSaving(true);
+      await api.post('inventory', { seedDemo: true });
+      await loadStock();
+    } catch (error) {
+      alert('❌ Errore nel caricamento dei dati di esempio');
+    } finally {
+      setSaving(false);
+    }
+  };
 
-    setItems(demoItems);
-    setMovements(demoMovements);
-    setLoading(false);
+  const createItem = async () => {
+    if (!newItem.name || !newItem.expiryDate) {
+      alert('⚠️ Nome e data di scadenza sono obbligatori');
+      return;
+    }
+    try {
+      setSaving(true);
+      await api.post('inventory', newItem);
+      setShowNewItem(false);
+      setNewItem({ name: '', category: 'vaccino', quantity: 0, minThreshold: 5, unitPrice: 0, supplier: '', lot: '', expiryDate: '', location: '' });
+      await loadStock();
+    } catch (error) {
+      alert('❌ Errore nella creazione dell\'articolo');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const openMovement = (item, type) => {
+    setSelectedItem(item);
+    setMovementType(type);
+    setMovementForm({ quantity: 1, reason: type === 'in' ? 'Rifornimento' : '', notes: '' });
+    setShowMovement(true);
+  };
+
+  const saveMovement = async () => {
+    if (!movementForm.quantity || Number(movementForm.quantity) <= 0) {
+      alert('⚠️ Inserisci una quantità valida');
+      return;
+    }
+    try {
+      setSaving(true);
+      await api.put('inventory', {
+        itemId: selectedItem.id,
+        type: movementType,
+        quantity: Number(movementForm.quantity),
+        reason: movementForm.reason,
+        notes: movementForm.notes
+      });
+      setShowMovement(false);
+      await loadStock();
+    } catch (error) {
+      alert('❌ Errore nel salvataggio del movimento');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const exportCSV = () => {
+    const header = 'Nome;Categoria;Quantità;Soglia Minima;Prezzo Unitario;Fornitore;Lotto;Scadenza;Posizione\n';
+    const rows = items.map(i => [
+      i.name, i.category, i.quantity, i.minThreshold, i.unitPrice,
+      i.supplier || '', i.lot || '',
+      i.expiryDate ? new Date(i.expiryDate).toLocaleDateString('it-IT') : '',
+      i.location || ''
+    ].join(';')).join('\n');
+    const blob = new Blob(['\ufeff' + header + rows], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `inventario_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const getCategoryBadge = (category) => {
@@ -154,8 +220,8 @@ export default function StockVaccini({ user, onNavigate }) {
         <Button className="bg-purple-500 hover:bg-purple-600 text-white" onClick={() => setShowNewItem(true)}>
           <Plus className="h-4 w-4 mr-1" /> Nuovo Articolo
         </Button>
-        <Button variant="outline" onClick={() => alert('Generazione report Excel... (Demo)')}>
-          <Download className="h-4 w-4 mr-1" /> Esporta Excel
+        <Button variant="outline" onClick={exportCSV}>
+          <Download className="h-4 w-4 mr-1" /> Esporta CSV
         </Button>
         <div className="flex items-center gap-2 ml-auto">
           <Search className="h-4 w-4 text-gray-400" />
@@ -189,6 +255,32 @@ export default function StockVaccini({ user, onNavigate }) {
 
         <TabsContent value="stock">
           <div className="space-y-3">
+            {filteredItems.length === 0 && (
+              <Card className="border-dashed border-2">
+                <CardContent className="p-8 text-center">
+                  <Package className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                  <h4 className="font-semibold text-gray-700 mb-1">
+                    {items.length === 0 ? 'Inventario vuoto' : 'Nessun articolo trovato'}
+                  </h4>
+                  <p className="text-sm text-gray-500 mb-4">
+                    {items.length === 0
+                      ? 'Aggiungi i tuoi vaccini e materiali critici: riceverai alert automatici per scorte basse e scadenze.'
+                      : 'Prova a modificare i filtri di ricerca.'}
+                  </p>
+                  {items.length === 0 && (
+                    <div className="flex gap-3 justify-center">
+                      <Button className="bg-purple-500 hover:bg-purple-600 text-white" onClick={() => setShowNewItem(true)}>
+                        <Plus className="h-4 w-4 mr-1" /> Aggiungi Primo Articolo
+                      </Button>
+                      <Button variant="outline" onClick={seedDemoData} disabled={saving}>
+                        {saving ? <RefreshCw className="h-4 w-4 mr-1 animate-spin" /> : <Download className="h-4 w-4 mr-1" />}
+                        Carica Dati di Esempio
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
             {filteredItems.map(item => {
               const status = getStockStatus(item);
               const expiry = getExpiryWarning(item.expiryDate);
@@ -229,11 +321,14 @@ export default function StockVaccini({ user, onNavigate }) {
                           </div>
                         )}
                         <div className="flex gap-2 mt-3">
-                          <Button size="sm" variant="outline" className="text-green-600" onClick={() => { setSelectedItem(item); setShowMovement(true); }}>
+                          <Button size="sm" variant="outline" className="text-green-600" onClick={() => openMovement(item, 'in')}>
                             <Plus className="h-3 w-3 mr-1" /> Carico
                           </Button>
-                          <Button size="sm" variant="outline" className="text-red-600" onClick={() => { setSelectedItem(item); setShowMovement(true); }}>
+                          <Button size="sm" variant="outline" className="text-red-600" onClick={() => openMovement(item, 'out')}>
                             <Minus className="h-3 w-3 mr-1" /> Scarico
+                          </Button>
+                          <Button size="sm" variant="outline" className="text-gray-500" onClick={() => openMovement(item, 'expired')}>
+                            <XCircle className="h-3 w-3 mr-1" /> Smaltisci
                           </Button>
                         </div>
                       </div>
@@ -292,7 +387,7 @@ export default function StockVaccini({ user, onNavigate }) {
                         Scorta bassa: {item.quantity} unità (minimo: {item.minThreshold})
                       </p>
                     </div>
-                    <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-white">
+                    <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-white" onClick={() => openMovement(item, 'in')}>
                       Riordina
                     </Button>
                   </div>
@@ -316,7 +411,7 @@ export default function StockVaccini({ user, onNavigate }) {
                           Scade tra {days} giorni ({new Date(item.expiryDate).toLocaleDateString('it-IT')})
                         </p>
                       </div>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => openMovement(item, 'out')}>
                         Usa Prima
                       </Button>
                     </div>
@@ -337,28 +432,107 @@ export default function StockVaccini({ user, onNavigate }) {
         </p>
       </div>
 
-      {/* Modals placeholders */}
+      {/* Modal Nuovo Articolo */}
       {showNewItem && (
         <Dialog open={showNewItem} onOpenChange={setShowNewItem}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Nuovo Articolo Stock</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
-              <Input placeholder="Nome articolo..." />
-              <select className="w-full border rounded px-3 py-2">
-                <option value="vaccino">Vaccino</option>
-                <option value="farmaco">Farmaco</option>
-                <option value="materiale">Materiale</option>
-                <option value="diagnostico">Diagnostico</option>
-              </select>
-              <Input type="number" placeholder="Quantità iniziale..." />
-              <Input type="number" placeholder="Soglia minima..." />
+            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+              <div>
+                <label className="text-sm font-medium">Nome articolo *</label>
+                <Input placeholder="Es. Vaccino Polivalente Cane" value={newItem.name} onChange={(e) => setNewItem({...newItem, name: e.target.value})} />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Categoria</label>
+                <select className="w-full border rounded px-3 py-2" value={newItem.category} onChange={(e) => setNewItem({...newItem, category: e.target.value})}>
+                  <option value="vaccino">Vaccino</option>
+                  <option value="farmaco">Farmaco</option>
+                  <option value="materiale">Materiale</option>
+                  <option value="diagnostico">Diagnostico</option>
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium">Quantità iniziale</label>
+                  <Input type="number" min="0" value={newItem.quantity} onChange={(e) => setNewItem({...newItem, quantity: e.target.value})} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Soglia minima</label>
+                  <Input type="number" min="0" value={newItem.minThreshold} onChange={(e) => setNewItem({...newItem, minThreshold: e.target.value})} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium">Prezzo unitario (€)</label>
+                  <Input type="number" min="0" step="0.01" value={newItem.unitPrice} onChange={(e) => setNewItem({...newItem, unitPrice: e.target.value})} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Data scadenza *</label>
+                  <Input type="date" value={newItem.expiryDate} onChange={(e) => setNewItem({...newItem, expiryDate: e.target.value})} />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Fornitore</label>
+                <Input placeholder="Es. MSD Animal Health" value={newItem.supplier} onChange={(e) => setNewItem({...newItem, supplier: e.target.value})} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium">Lotto</label>
+                  <Input placeholder="Es. LOT2025A" value={newItem.lot} onChange={(e) => setNewItem({...newItem, lot: e.target.value})} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Posizione</label>
+                  <Input placeholder="Es. Frigo A - Ripiano 2" value={newItem.location} onChange={(e) => setNewItem({...newItem, location: e.target.value})} />
+                </div>
+              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowNewItem(false)}>Annulla</Button>
-              <Button className="bg-purple-500 hover:bg-purple-600 text-white" onClick={() => { alert('Articolo creato! (Demo)'); setShowNewItem(false); }}>
-                Crea
+              <Button className="bg-purple-500 hover:bg-purple-600 text-white" onClick={createItem} disabled={saving}>
+                {saving ? <RefreshCw className="h-4 w-4 mr-1 animate-spin" /> : <Plus className="h-4 w-4 mr-1" />} Crea
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Modal Movimento */}
+      {showMovement && selectedItem && (
+        <Dialog open={showMovement} onOpenChange={setShowMovement}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {movementType === 'in' ? '➕ Carico' : movementType === 'expired' ? '🗑️ Smaltimento' : '➖ Scarico'}: {selectedItem.name}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3">
+              <p className="text-sm text-gray-500">
+                Quantità attuale: <strong>{selectedItem.quantity}</strong>
+                {movementType !== 'in' && selectedItem.quantity === 0 && <span className="text-red-600 ml-2">⚠️ Articolo esaurito</span>}
+              </p>
+              <div>
+                <label className="text-sm font-medium">Quantità *</label>
+                <Input type="number" min="1" value={movementForm.quantity} onChange={(e) => setMovementForm({...movementForm, quantity: e.target.value})} />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Motivo</label>
+                <Input placeholder={movementType === 'in' ? 'Es. Rifornimento ordine fornitore' : movementType === 'expired' ? 'Es. Lotto scaduto' : 'Es. Vaccinazione paziente'} value={movementForm.reason} onChange={(e) => setMovementForm({...movementForm, reason: e.target.value})} />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Note</label>
+                <Input placeholder="Note opzionali..." value={movementForm.notes} onChange={(e) => setMovementForm({...movementForm, notes: e.target.value})} />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowMovement(false)}>Annulla</Button>
+              <Button
+                className={movementType === 'in' ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-red-500 hover:bg-red-600 text-white'}
+                onClick={saveMovement}
+                disabled={saving}
+              >
+                {saving ? <RefreshCw className="h-4 w-4 mr-1 animate-spin" /> : <CheckCircle className="h-4 w-4 mr-1" />} Conferma
               </Button>
             </DialogFooter>
           </DialogContent>

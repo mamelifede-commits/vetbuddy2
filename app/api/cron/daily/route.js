@@ -56,7 +56,8 @@ export async function GET(request) {
     healthPlanRenewal: { sent: 0, errors: 0, skipped: 0 },
     ownerBirthday: { sent: 0, errors: 0, skipped: 0 },
     therapyReminder: { sent: 0, errors: 0, skipped: 0 },
-    labMonthlyReport: { sent: 0, errors: 0, skipped: 0 }
+    labMonthlyReport: { sent: 0, errors: 0, skipped: 0 },
+    lowStockAlert: { sent: 0, errors: 0, skipped: 0 }
   };
 
   const today = new Date();
