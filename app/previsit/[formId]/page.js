@@ -7,7 +7,7 @@ const FIELDS = [
   { key: 'reason', label: 'Motivo della visita *', type: 'text', placeholder: 'Es. controllo, vaccino, zoppia...' },
   { key: 'symptoms', label: 'Sintomi principali', type: 'textarea', placeholder: 'Descrivi cosa hai notato (se nulla, scrivi "nessuno")' },
   { key: 'symptomsSince', label: 'Da quando sono presenti?', type: 'text', placeholder: 'Es. 3 giorni, 2 settimane...' },
-  { key: 'medications', label: 'Farmaci gi\u00e0 assunti', type: 'text', placeholder: 'Nome farmaci e dosaggio, se presenti' },
+  { key: 'medications', label: 'Farmaci già assunti', type: 'text', placeholder: 'Nome farmaci e dosaggio, se presenti' },
   { key: 'conditions', label: 'Patologie note', type: 'text', placeholder: 'Es. allergie cutanee, problemi renali...' },
   { key: 'allergies', label: 'Allergie', type: 'text', placeholder: 'Allergie note a farmaci o alimenti' },
   { key: 'diet', label: 'Alimentazione', type: 'text', placeholder: 'Cosa mangia abitualmente' },
@@ -69,9 +69,9 @@ export default function PrevisitFormPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-indigo-50 p-4">
         <div className="bg-white p-8 rounded-2xl shadow-lg text-center max-w-md">
-          <p className="text-5xl mb-4">\u2705</p>
+          <p className="text-5xl mb-4">✅</p>
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Grazie!</h1>
-          <p className="text-gray-600">Il modulo pre-visita {form?.petName ? `di ${form.petName}` : ''} \u00e8 stato inviato a {form?.clinicName || 'alla clinica'}. Il veterinario arriver\u00e0 preparato alla visita!</p>
+          <p className="text-gray-600">Il modulo pre-visita {form?.petName ? `di ${form.petName}` : ''} è stato inviato a {form?.clinicName || 'alla clinica'}. Il veterinario arriverà preparato alla visita!</p>
         </div>
       </div>
     );
@@ -110,7 +110,7 @@ export default function PrevisitFormPage() {
             </div>
             <p className="text-xs text-gray-400">Le informazioni raccolte servono solo a preparare la visita e non costituiscono diagnosi. In caso di emergenza contatta direttamente la clinica.</p>
             <button onClick={submit} disabled={saving} className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold py-3 rounded-xl hover:opacity-90 transition disabled:opacity-50">
-              {saving ? 'Invio in corso...' : '\u2709\uFE0F Invia alla Clinica'}
+              {saving ? 'Invio in corso...' : '✉️ Invia alla Clinica'}
             </button>
           </div>
         </div>

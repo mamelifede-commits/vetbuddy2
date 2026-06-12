@@ -53,15 +53,15 @@ export default function ConsentSignPage() {
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50"><p className="text-gray-500">Caricamento...</p></div>;
-  if (error) return <div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="bg-white p-8 rounded-2xl shadow text-center max-w-md"><p className="text-4xl mb-3">\u{1F615}</p><p className="text-gray-700 font-semibold">{error}</p></div></div>;
+  if (error) return <div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="bg-white p-8 rounded-2xl shadow text-center max-w-md"><p className="text-4xl mb-3">😕</p><p className="text-gray-700 font-semibold">{error}</p></div></div>;
 
   if (signed) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-50 p-4">
         <div className="bg-white p-8 rounded-2xl shadow-lg text-center max-w-md">
-          <p className="text-5xl mb-4">\u2705</p>
+          <p className="text-5xl mb-4">✅</p>
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Documento Firmato</h1>
-          <p className="text-gray-600">{consent?.title} {consent?.petName ? `per ${consent.petName}` : ''} \u00e8 stato firmato e archiviato. {consent?.clinicName || 'La clinica'} ha ricevuto conferma.</p>
+          <p className="text-gray-600">{consent?.title} {consent?.petName ? `per ${consent.petName}` : ''} è stato firmato e archiviato. {consent?.clinicName || 'La clinica'} ha ricevuto conferma.</p>
           {consent?.signedName && <p className="text-sm text-gray-400 mt-3">Firmato da {consent.signedName}{consent.signedAt ? ` il ${new Date(consent.signedAt).toLocaleString('it-IT')}` : ''}</p>}
         </div>
       </div>
@@ -73,8 +73,8 @@ export default function ConsentSignPage() {
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-cyan-500 p-6 text-white">
-            <h1 className="text-xl font-bold">\u270D\uFE0F {consent?.title}</h1>
-            <p className="text-blue-100 mt-1">{consent?.clinicName} {consent?.petName ? `\u2022 ${consent.petName}` : ''}</p>
+            <h1 className="text-xl font-bold">✍️ {consent?.title}</h1>
+            <p className="text-blue-100 mt-1">{consent?.clinicName} {consent?.petName ? `• ${consent.petName}` : ''}</p>
           </div>
           <div className="p-6 space-y-4">
             {consent?.detail && (
@@ -96,9 +96,9 @@ export default function ConsentSignPage() {
               <label className="block text-sm font-semibold text-gray-700 mb-1">Nome e cognome (firma) *</label>
               <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Es. Mario Rossi" value={signedName} onChange={e => setSignedName(e.target.value)} />
             </div>
-            <p className="text-xs text-gray-400">Firmando confermi la tua identit\u00e0 e accetti il documento (firma elettronica semplice con data e ora). Per qualsiasi dubbio contatta prima la clinica.</p>
+            <p className="text-xs text-gray-400">Firmando confermi la tua identità e accetti il documento (firma elettronica semplice con data e ora). Per qualsiasi dubbio contatta prima la clinica.</p>
             <button onClick={sign} disabled={saving} className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold py-3 rounded-xl hover:opacity-90 transition disabled:opacity-50">
-              {saving ? 'Firma in corso...' : '\u270D\uFE0F Firma il Documento'}
+              {saving ? 'Firma in corso...' : '✍️ Firma il Documento'}
             </button>
           </div>
         </div>
