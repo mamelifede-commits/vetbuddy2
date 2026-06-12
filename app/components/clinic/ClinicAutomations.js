@@ -277,6 +277,24 @@ function ClinicAutomations({ user, onNavigate }) {
             </CardContent>
           </Card>
 
+          {/* Intelligenti: Lavoro & Finanza */}
+          <Card className="border-indigo-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <span className="text-xl">🧠</span> Intelligenti: Lavoro & Finanza
+              </CardTitle>
+              <CardDescription>Automazioni predittive per ottimizzare agenda, incassi e laboratorio</CardDescription>
+            </CardHeader>
+            <CardContent className="grid md:grid-cols-2 gap-3">
+              <AutomationItem settingKey="noShowRiskPrediction" icon={<AlertTriangle className="h-4 w-4 text-orange-500" />} title="Previsione Rischio No-Show" description="Analisi storico cliente + promemoria extra" gradient="bg-gradient-to-r from-orange-50 to-orange-100" />
+              <AutomationItem settingKey="smartAgendaFiller" icon={<Calendar className="h-4 w-4 text-emerald-500" />} title="Riempi-Agenda Intelligente" description="Slot vuoti → invita richiami in sospeso" gradient="bg-gradient-to-r from-emerald-50 to-emerald-100" />
+              <AutomationItem settingKey="noShowRecovery" icon={<RefreshCw className="h-4 w-4 text-blue-500" />} title="Recupero No-Show" description="Invito automatico a riprenotare" gradient="bg-gradient-to-r from-blue-50 to-blue-100" />
+              <AutomationItem settingKey="estimateFollowup" icon={<FileText className="h-4 w-4 text-indigo-500" />} title="Follow-up Preventivi" description="Sollecito dopo 4 giorni senza risposta" gradient="bg-gradient-to-r from-indigo-50 to-indigo-100" />
+              <AutomationItem settingKey="paymentEscalation" icon={<Euro className="h-4 w-4 text-red-500" />} title="Escalation Solleciti" description="2° sollecito 14gg + avviso finale 30gg" gradient="bg-gradient-to-r from-red-50 to-red-100" />
+              <AutomationItem settingKey="labDelayAlert" icon={<Timer className="h-4 w-4 text-cyan-500" />} title="Referti in Ritardo" description="Alert se analisi in attesa da +72h" gradient="bg-gradient-to-r from-cyan-50 to-cyan-100" />
+            </CardContent>
+          </Card>
+
           {/* Messaggi & Report */}
           <Card className="border-green-200">
             <CardHeader className="pb-3">

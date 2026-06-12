@@ -72,7 +72,15 @@ const DEFAULT_SETTINGS = {
   // === PER LA CLINICA ===
   dailySummary: true,              // Riepilogo giornaliero serale
   lowStockAlert: true,             // Alert scorte basse
-  staffBirthday: true              // Ricorda compleanni staff
+  staffBirthday: true,             // Ricorda compleanni staff
+
+  // === INTELLIGENTI: LAVORO & FINANZA ===
+  noShowRiskPrediction: true,      // Previsione rischio no-show con storico cliente
+  smartAgendaFiller: true,         // Riempi slot vuoti invitando clienti con richiami in sospeso
+  noShowRecovery: true,            // Invito automatico a riprenotare dopo un no-show
+  estimateFollowup: true,          // Follow-up preventivi non accettati dopo 4 giorni
+  paymentEscalation: true,         // Escalation solleciti pagamento (14gg e 30gg)
+  labDelayAlert: true              // Alert referti lab in attesa da +72h
 };
 
 // Automazioni incluse nel piano Starter (gratuite ma essenziali)
@@ -91,7 +99,9 @@ const PRO_AUTOMATIONS = [
   'suggestedSlots', 'documentReminders', 'autoTicketAssignment', 'urgencyNotifications',
   'weeklyReport', 'reviewRequest', 'inactiveClientReactivation', 'antiparasiticReminder',
   'annualCheckup', 'labResultsReady', 'paymentReminder', 'postSurgeryFollowup',
-  'aiQuickReplies', 'medicationRefill', 'weightAlert', 'dentalHygiene'
+  'aiQuickReplies', 'medicationRefill', 'weightAlert', 'dentalHygiene',
+  'noShowRiskPrediction', 'smartAgendaFiller', 'noShowRecovery',
+  'estimateFollowup', 'paymentEscalation', 'labDelayAlert'
 ];
 
 // GET - Retrieve automation settings for the authenticated clinic
@@ -124,7 +134,7 @@ export async function GET(request) {
     
     if (plan === 'custom' || plan === 'enterprise') {
       allowedAutomations = 'all';
-      automationsCount = 44;
+      automationsCount = Object.keys(DEFAULT_SETTINGS).length;
     } else if (plan === 'pro') {
       // Pro plan: all Pro automations allowed
       allowedAutomations = PRO_AUTOMATIONS;

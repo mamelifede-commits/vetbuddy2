@@ -39,7 +39,13 @@ export const DEFAULT_AUTOMATION_SETTINGS = {
   griefFollowup: true,
   dailySummary: true,
   lowStockAlert: true,
-  staffBirthday: true
+  staffBirthday: true,
+  noShowRiskPrediction: true,
+  smartAgendaFiller: true,
+  noShowRecovery: true,
+  estimateFollowup: true,
+  paymentEscalation: true,
+  labDelayAlert: true
 };
 
 // Helper: Check if automation is enabled for a clinic

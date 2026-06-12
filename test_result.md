@@ -105,6 +105,21 @@
 user_problem_statement: "Test the VetBuddy frontend focusing on recent changes: Landing Page Fatturazione Section, Favicon, Clinic/Owner Dashboard Logout Button positioning, Animal Species Horse addition, and Invoicing Tab in Clinic Dashboard."
 
 backend:
+  - task: "Nuove Automazioni Intelligenti (6): noShowRiskPrediction, smartAgendaFiller, noShowRecovery, estimateFollowup, paymentEscalation, labDelayAlert"
+    implemented: true
+    working: true
+    file: "/app/app/api/cron/daily/automations/work-management.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implementate 6 nuove automazioni intelligenti: 1) Previsione rischio no-show (analizza storico cliente, invia promemoria extra + alert clinica), 2) Riempi-agenda intelligente (slot vuoti → invita clienti con vaccini in scadenza), 3) Recupero no-show (invito a riprenotare), 4) Follow-up preventivi (4gg senza risposta), 5) Escalation solleciti pagamento (14gg + 30gg), 6) Alert referti lab in ritardo (+72h). Nuovo modulo cron work-management.js collegato a GET /api/cron/daily. Nuove chiavi aggiunte a DEFAULT_SETTINGS in /api/automations/settings (ora 50 chiavi totali) e a PRO_AUTOMATIONS. UI aggiornata in ClinicAutomations.js con nuova sezione 'Intelligenti: Lavoro & Finanza'. Da testare: GET/PUT/POST /api/automations/settings con le nuove chiavi, GET /api/cron/daily ritorna i nuovi risultati senza errori."
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE 6 NEW INTELLIGENT AUTOMATIONS TESTING COMPLETED - ALL 6/6 TESTS PASSED ✅: Successfully tested all 6 new work-management automations as specified in review request. ✅ **Authentication**: Login with demo@vetbuddy.it / VetBuddy2025!Secure successful, JWT token received. Clinic plan: 'pro', automationsCount: 31. ✅ **GET /api/automations/settings**: All 6 new automation keys found in settings object with correct default values (all true): noShowRiskPrediction ✓, smartAgendaFiller ✓, noShowRecovery ✓, estimateFollowup ✓, paymentEscalation ✓, labDelayAlert ✓. Settings API returns success:true with plan and automationsCount fields. ✅ **POST /api/automations/settings**: Single automation toggle working perfectly. Successfully toggled noShowRiskPrediction from true→false→true. For 'pro' plan, returns 200 with success message 'Automazione noShowRiskPrediction disattivata/attivata'. For 'starter' plan, correctly returns 403 with upgrade message (expected behavior, not a bug). ✅ **PUT /api/automations/settings**: Full settings object update working. Successfully sent complete settings via PUT, received 200 with 'Impostazioni salvate con successo'. Verified via GET that all 6 new keys persisted correctly after PUT operation. ✅ **GET /api/cron/daily**: Cron job executed successfully with all 6 new result keys present in results object. CRITICAL: Called ONLY ONCE as instructed (sends real emails via Resend). Results: noShowRiskPrediction (sent=0, errors=0, skipped=0), smartAgendaFiller (sent=4, errors=0, skipped=2) - sent 4 real emails for vaccine recalls, noShowRecovery (sent=0, errors=0, skipped=13), estimateFollowup (sent=0, errors=0, skipped=0), paymentEscalation (sent=0, errors=0, skipped=0), labDelayAlert (sent=2, errors=0, skipped=0) - sent 2 real emails for delayed lab reports. ALL ERROR COUNTERS ARE 0 - no exceptions in new module. ✅ **Regression Check**: GET /api/auth/me returns 200 with user data, GET /api/automations/settings still working after cron run. ✅ **Bug Fix Applied**: Fixed missing import for runWorkManagementAutomations in /app/app/api/cron/daily/route.js (line 8) - this was preventing the new automations from being called. All 6 new intelligent automations fully functional and ready for production use. Base URL: https://clinic-report-review.preview.emergentagent.com/api working correctly."
+
   - task: "Health Check API"
     implemented: true
     working: true

@@ -5,6 +5,7 @@ import { runAppointmentAutomations } from './automations/appointments';
 import { runHealthAutomations } from './automations/health';
 import { runEngagementAutomations } from './automations/engagement';
 import { runOperationsAutomations } from './automations/operations';
+import { runWorkManagementAutomations } from './automations/work-management';
 
 // Force dynamic rendering to prevent static generation errors
 export const dynamic = 'force-dynamic';
@@ -41,7 +42,13 @@ export async function GET(request) {
     holidayClosures: { sent: 0, skipped: 0 },
     petCondolences: { sent: 0, errors: 0, skipped: 0 },
     dailySummary: { sent: 0, errors: 0, skipped: 0 },
-    staffBirthday: { sent: 0, errors: 0, skipped: 0 }
+    staffBirthday: { sent: 0, errors: 0, skipped: 0 },
+    noShowRiskPrediction: { sent: 0, errors: 0, skipped: 0, clinicAlerts: 0 },
+    smartAgendaFiller: { sent: 0, errors: 0, skipped: 0 },
+    noShowRecovery: { sent: 0, errors: 0, skipped: 0 },
+    estimateFollowup: { sent: 0, errors: 0, skipped: 0, clinicAlerts: 0 },
+    paymentEscalation: { sent: 0, errors: 0, skipped: 0, clinicAlerts: 0 },
+    labDelayAlert: { sent: 0, errors: 0, skipped: 0 }
   };
 
   const today = new Date();
@@ -64,6 +71,7 @@ export async function GET(request) {
     results = await runHealthAutomations({ ...ctx, results });
     results = await runEngagementAutomations({ ...ctx, results });
     results = await runOperationsAutomations({ ...ctx, results });
+    results = await runWorkManagementAutomations({ ...ctx, results });
 
     console.log('Daily cron completed:', results);
 

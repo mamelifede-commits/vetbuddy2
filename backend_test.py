@@ -1,411 +1,494 @@
 #!/usr/bin/env python3
 """
-VetBuddy Backend API Testing Script
-Tests the Preventivi Digitali (Estimates) API endpoints
+VetBuddy Backend API Testing - 6 New Intelligent Automations
+Tests the new work-management automations module
 """
 
 import requests
 import json
-import os
-from datetime import datetime, timedelta
+import sys
 
-# Configuration
-BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://clinic-report-review.preview.emergentagent.com')
-API_URL = f"{BASE_URL}/api"
+# Base URL from .env
+BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
 
 # Test credentials
 CLINIC_EMAIL = "demo@vetbuddy.it"
 CLINIC_PASSWORD = "VetBuddy2025!Secure"
 
-# Test data from database (created for estimates testing)
-OWNER_ID = "7c56fdac-2082-447d-a28a-1736d8a0f73c"
-PET_ID = "e5d6338e-e59e-49a4-abc8-26a1e5cb1b98"
+# Colors for output
+GREEN = '\033[92m'
+RED = '\033[91m'
+YELLOW = '\033[93m'
+BLUE = '\033[94m'
+RESET = '\033[0m'
 
-# Global variables
-clinic_token = None
-created_estimate_id = None
+def print_test(message):
+    print(f"\n{BLUE}{'='*80}{RESET}")
+    print(f"{BLUE}TEST: {message}{RESET}")
+    print(f"{BLUE}{'='*80}{RESET}")
 
-def print_test_header(test_name):
-    """Print a formatted test header"""
-    print(f"\n{'='*80}")
-    print(f"TEST: {test_name}")
-    print(f"{'='*80}")
+def print_success(message):
+    print(f"{GREEN}✅ SUCCESS: {message}{RESET}")
 
-def print_result(success, message):
-    """Print test result"""
-    status = "✅ PASS" if success else "❌ FAIL"
-    print(f"{status}: {message}")
+def print_error(message):
+    print(f"{RED}❌ ERROR: {message}{RESET}")
 
-def login_clinic():
-    """Login as clinic and get JWT token"""
-    global clinic_token
-    
-    print_test_header("Clinic Authentication")
+def print_info(message):
+    print(f"{YELLOW}ℹ️  INFO: {message}{RESET}")
+
+def test_1_clinic_login():
+    """Test 1: POST /api/auth/login with clinic credentials"""
+    print_test("Test 1: Clinic Login")
     
     try:
         response = requests.post(
-            f"{API_URL}/auth/login",
+            f"{BASE_URL}/auth/login",
             json={
                 "email": CLINIC_EMAIL,
                 "password": CLINIC_PASSWORD
             },
-            headers={"Content-Type": "application/json"}
+            timeout=10
         )
+        
+        print_info(f"Status Code: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
-            clinic_token = data.get('token')
-            print_result(True, f"Clinic login successful. Token: {clinic_token[:20]}...")
-            return True
+            if 'token' in data:
+                print_success(f"Login successful! Token received.")
+                print_info(f"User: {data.get('user', {}).get('name', 'N/A')}")
+                print_info(f"Role: {data.get('user', {}).get('role', 'N/A')}")
+                return data['token']
+            else:
+                print_error("Login response missing token")
+                return None
         else:
-            print_result(False, f"Login failed with status {response.status_code}: {response.text}")
-            return False
+            print_error(f"Login failed with status {response.status_code}")
+            print_error(f"Response: {response.text}")
+            return None
+            
     except Exception as e:
-        print_result(False, f"Login error: {str(e)}")
-        return False
+        print_error(f"Exception during login: {str(e)}")
+        return None
 
-def test_estimates_authentication():
-    """Test 1: Authentication Test - Verify clinic authentication required"""
-    print_test_header("Test 1: Authentication Required")
+def test_2_get_automation_settings(token):
+    """Test 2: GET /api/automations/settings - verify 6 new keys exist"""
+    print_test("Test 2: GET Automation Settings - Verify 6 New Keys")
     
     try:
-        # Test without authentication
-        response = requests.get(f"{API_URL}/estimates")
-        
-        if response.status_code == 401:
-            print_result(True, "Unauthorized access correctly blocked (401)")
-        else:
-            print_result(False, f"Expected 401, got {response.status_code}")
-            
-        # Test with clinic authentication
         response = requests.get(
-            f"{API_URL}/estimates",
-            headers={"Authorization": f"Bearer {clinic_token}"}
+            f"{BASE_URL}/automations/settings",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=10
         )
+        
+        print_info(f"Status Code: {response.status_code}")
         
         if response.status_code == 200:
-            print_result(True, "Clinic authentication successful (200)")
-            return True
-        else:
-            print_result(False, f"Clinic auth failed with status {response.status_code}: {response.text}")
-            return False
-            
-    except Exception as e:
-        print_result(False, f"Authentication test error: {str(e)}")
-        return False
-
-def test_create_estimate():
-    """Test 2: Create Estimate - POST /api/estimates"""
-    global created_estimate_id
-    
-    print_test_header("Test 2: Create Estimate")
-    
-    try:
-        # Prepare estimate data
-        valid_until = (datetime.now() + timedelta(days=30)).isoformat()
-        
-        estimate_data = {
-            "ownerId": OWNER_ID,
-            "petId": PET_ID,
-            "title": "Intervento Chirurgico",
-            "description": "Sterilizzazione gatto",
-            "items": [
-                {"name": "Visita pre-operatoria", "quantity": 1, "price": 50},
-                {"name": "Intervento chirurgico", "quantity": 1, "price": 180},
-                {"name": "Medicazioni post-op", "quantity": 3, "price": 20}
-            ],
-            "subtotal": 290,
-            "tax": 0,
-            "discount": 0,
-            "totalAmount": 290,
-            "notes": "Include controllo post-operatorio gratuito",
-            "validUntil": valid_until
-        }
-        
-        response = requests.post(
-            f"{API_URL}/estimates",
-            json=estimate_data,
-            headers={
-                "Authorization": f"Bearer {clinic_token}",
-                "Content-Type": "application/json"
-            }
-        )
-        
-        if response.status_code == 201:
             data = response.json()
-            created_estimate_id = data.get('id')
             
-            # Verify response structure
-            checks = [
-                ('id' in data, "Estimate ID present"),
-                (data.get('status') == 'draft', "Status is 'draft'"),
-                (data.get('ownerId') == OWNER_ID, "Owner ID matches"),
-                (data.get('petId') == PET_ID, "Pet ID matches"),
-                (data.get('totalAmount') == 290, "Total amount correct"),
-                (len(data.get('items', [])) == 3, "Items count correct"),
-                ('createdAt' in data, "Created timestamp present"),
+            if data.get('success') != True:
+                print_error(f"Response success field is not true: {data.get('success')}")
+                return None
+            
+            settings = data.get('settings', {})
+            plan = data.get('plan', 'N/A')
+            automations_count = data.get('automationsCount', 0)
+            
+            print_success(f"Settings retrieved successfully!")
+            print_info(f"Plan: {plan}")
+            print_info(f"Automations Count: {automations_count}")
+            
+            # Check for the 6 new keys
+            new_keys = [
+                'noShowRiskPrediction',
+                'smartAgendaFiller',
+                'noShowRecovery',
+                'estimateFollowup',
+                'paymentEscalation',
+                'labDelayAlert'
             ]
             
-            all_passed = True
-            for check, message in checks:
-                print_result(check, message)
-                if not check:
-                    all_passed = False
+            print_info("\nChecking for 6 new automation keys:")
+            all_found = True
+            for key in new_keys:
+                if key in settings:
+                    value = settings[key]
+                    print_success(f"  ✓ {key}: {value}")
+                else:
+                    print_error(f"  ✗ {key}: NOT FOUND")
+                    all_found = False
             
-            if all_passed:
-                print(f"\n📝 Created Estimate ID: {created_estimate_id}")
-                return True
+            if all_found:
+                print_success("\nAll 6 new automation keys found in settings!")
+                return settings
             else:
+                print_error("\nSome automation keys are missing!")
+                return None
+        else:
+            print_error(f"Failed to get settings with status {response.status_code}")
+            print_error(f"Response: {response.text}")
+            return None
+            
+    except Exception as e:
+        print_error(f"Exception during get settings: {str(e)}")
+        return None
+
+def test_3_toggle_automation(token, plan):
+    """Test 3: POST /api/automations/settings - toggle noShowRiskPrediction"""
+    print_test("Test 3: POST Toggle Single Automation (noShowRiskPrediction)")
+    
+    try:
+        # First, toggle to false
+        print_info("Toggling noShowRiskPrediction to FALSE...")
+        response = requests.post(
+            f"{BASE_URL}/automations/settings",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "key": "noShowRiskPrediction",
+                "enabled": False
+            },
+            timeout=10
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
+        
+        # Check if plan allows this automation
+        if response.status_code == 403:
+            data = response.json()
+            print_info(f"Plan '{plan}' does not allow this automation (expected for 'starter' plan)")
+            print_info(f"Response: {data.get('error', 'N/A')}")
+            print_success("403 response is CORRECT behavior for starter plan!")
+            return True
+        elif response.status_code == 200:
+            data = response.json()
+            if data.get('success') == True:
+                print_success(f"Toggle to FALSE successful!")
+                print_info(f"Message: {data.get('message', 'N/A')}")
+                
+                # Now toggle back to true
+                print_info("\nToggling noShowRiskPrediction back to TRUE...")
+                response2 = requests.post(
+                    f"{BASE_URL}/automations/settings",
+                    headers={"Authorization": f"Bearer {token}"},
+                    json={
+                        "key": "noShowRiskPrediction",
+                        "enabled": True
+                    },
+                    timeout=10
+                )
+                
+                if response2.status_code == 200:
+                    data2 = response2.json()
+                    if data2.get('success') == True:
+                        print_success(f"Toggle back to TRUE successful!")
+                        return True
+                    else:
+                        print_error("Toggle back to TRUE failed")
+                        return False
+                else:
+                    print_error(f"Toggle back failed with status {response2.status_code}")
+                    return False
+            else:
+                print_error("Toggle response success field is not true")
                 return False
         else:
-            print_result(False, f"Create failed with status {response.status_code}: {response.text}")
+            print_error(f"Toggle failed with status {response.status_code}")
+            print_error(f"Response: {response.text}")
             return False
             
     except Exception as e:
-        print_result(False, f"Create estimate error: {str(e)}")
+        print_error(f"Exception during toggle: {str(e)}")
         return False
 
-def test_get_estimates_list():
-    """Test 3: Get Estimates List - GET /api/estimates with analytics"""
-    print_test_header("Test 3: Get Estimates List with Analytics")
+def test_4_put_full_settings(token, original_settings):
+    """Test 4: PUT /api/automations/settings - update full settings object"""
+    print_test("Test 4: PUT Full Settings Object")
+    
+    try:
+        print_info("Sending full settings object via PUT...")
+        response = requests.put(
+            f"{BASE_URL}/automations/settings",
+            headers={"Authorization": f"Bearer {token}"},
+            json={"settings": original_settings},
+            timeout=10
+        )
+        
+        print_info(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success') == True:
+                print_success("PUT full settings successful!")
+                print_info(f"Message: {data.get('message', 'N/A')}")
+                
+                # Verify via GET
+                print_info("\nVerifying settings persisted via GET...")
+                verify_response = requests.get(
+                    f"{BASE_URL}/automations/settings",
+                    headers={"Authorization": f"Bearer {token}"},
+                    timeout=10
+                )
+                
+                if verify_response.status_code == 200:
+                    verify_data = verify_response.json()
+                    new_settings = verify_data.get('settings', {})
+                    
+                    # Check if the 6 new keys still exist
+                    new_keys = [
+                        'noShowRiskPrediction',
+                        'smartAgendaFiller',
+                        'noShowRecovery',
+                        'estimateFollowup',
+                        'paymentEscalation',
+                        'labDelayAlert'
+                    ]
+                    
+                    all_persist = True
+                    for key in new_keys:
+                        if key not in new_settings:
+                            print_error(f"Key {key} not found after PUT!")
+                            all_persist = False
+                    
+                    if all_persist:
+                        print_success("All 6 new keys persisted after PUT!")
+                        return True
+                    else:
+                        print_error("Some keys did not persist after PUT")
+                        return False
+                else:
+                    print_error("Failed to verify settings after PUT")
+                    return False
+            else:
+                print_error("PUT response success field is not true")
+                return False
+        else:
+            print_error(f"PUT failed with status {response.status_code}")
+            print_error(f"Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_error(f"Exception during PUT: {str(e)}")
+        return False
+
+def test_5_cron_daily(token):
+    """Test 5: GET /api/cron/daily - verify 6 new keys in results (ONLY ONCE!)"""
+    print_test("Test 5: GET /api/cron/daily - Verify 6 New Result Keys")
+    
+    print_info("⚠️  WARNING: This endpoint sends REAL EMAILS and sets idempotency flags!")
+    print_info("⚠️  Calling ONLY ONCE as per review request instructions!")
     
     try:
         response = requests.get(
-            f"{API_URL}/estimates",
-            headers={"Authorization": f"Bearer {clinic_token}"}
+            f"{BASE_URL}/cron/daily",
+            timeout=30  # Longer timeout for cron job
         )
+        
+        print_info(f"Status Code: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
             
-            # Verify response structure
-            checks = [
-                ('estimates' in data, "Estimates array present"),
-                ('analytics' in data, "Analytics object present"),
-                ('generatedAt' in data, "Generated timestamp present"),
+            if data.get('success') != True:
+                print_error(f"Cron response success field is not true: {data.get('success')}")
+                return False
+            
+            results = data.get('results', {})
+            
+            print_success("Cron job executed successfully!")
+            print_info(f"Timestamp: {data.get('timestamp', 'N/A')}")
+            
+            # Check for the 6 new result keys
+            new_result_keys = [
+                'noShowRiskPrediction',
+                'smartAgendaFiller',
+                'noShowRecovery',
+                'estimateFollowup',
+                'paymentEscalation',
+                'labDelayAlert'
             ]
             
-            # Verify analytics structure
-            analytics = data.get('analytics', {})
-            analytics_checks = [
-                ('totalEstimates' in analytics, "totalEstimates field present"),
-                ('statusCount' in analytics, "statusCount field present"),
-                ('totalValue' in analytics, "totalValue field present"),
-                ('acceptedValue' in analytics, "acceptedValue field present"),
-                ('pendingValue' in analytics, "pendingValue field present"),
-                ('conversionRate' in analytics, "conversionRate field present"),
-                ('averageValue' in analytics, "averageValue field present"),
-                ('estimatesNeedingFollowUp' in analytics, "estimatesNeedingFollowUp field present"),
-                ('last30DaysStats' in analytics, "last30DaysStats field present"),
-            ]
+            print_info("\nChecking for 6 new automation result keys:")
+            all_found = True
+            all_no_errors = True
             
-            # Verify statusCount structure
-            status_count = analytics.get('statusCount', {})
-            status_checks = [
-                ('draft' in status_count, "draft count present"),
-                ('sent' in status_count, "sent count present"),
-                ('accepted' in status_count, "accepted count present"),
-                ('declined' in status_count, "declined count present"),
-                ('expired' in status_count, "expired count present"),
-            ]
-            
-            all_passed = True
-            for check, message in checks + analytics_checks + status_checks:
-                print_result(check, message)
-                if not check:
-                    all_passed = False
-            
-            # Print analytics summary
-            print(f"\n📊 Analytics Summary:")
-            print(f"   Total Estimates: {analytics.get('totalEstimates', 0)}")
-            print(f"   Status Count: {status_count}")
-            print(f"   Total Value: €{analytics.get('totalValue', 0)}")
-            print(f"   Conversion Rate: {analytics.get('conversionRate', 0)}%")
-            print(f"   Estimates Needing Follow-up: {analytics.get('estimatesNeedingFollowUp', 0)}")
-            
-            return all_passed
-        else:
-            print_result(False, f"Get estimates failed with status {response.status_code}: {response.text}")
-            return False
-            
-    except Exception as e:
-        print_result(False, f"Get estimates error: {str(e)}")
-        return False
-
-def test_send_estimate():
-    """Test 4: Send Estimate - POST /api/estimates/{id}/send"""
-    print_test_header("Test 4: Send Estimate")
-    
-    if not created_estimate_id:
-        print_result(False, "No estimate ID available (create test may have failed)")
-        return False
-    
-    try:
-        response = requests.post(
-            f"{API_URL}/estimates/{created_estimate_id}/send",
-            headers={"Authorization": f"Bearer {clinic_token}"}
-        )
-        
-        if response.status_code == 200:
-            data = response.json()
-            
-            checks = [
-                (data.get('success') == True, "Success flag is true"),
-                ('message' in data, "Message present"),
-                (data.get('estimateId') == created_estimate_id, "Estimate ID matches"),
-                ('sentAt' in data, "SentAt timestamp present"),
-            ]
-            
-            all_passed = True
-            for check, message in checks:
-                print_result(check, message)
-                if not check:
-                    all_passed = False
-            
-            # Verify status changed to 'sent'
-            verify_response = requests.get(
-                f"{API_URL}/estimates",
-                headers={"Authorization": f"Bearer {clinic_token}"}
-            )
-            
-            if verify_response.status_code == 200:
-                estimates_data = verify_response.json()
-                estimates = estimates_data.get('estimates', [])
-                sent_estimate = next((e for e in estimates if e.get('id') == created_estimate_id), None)
-                
-                if sent_estimate:
-                    status_check = sent_estimate.get('status') == 'sent'
-                    print_result(status_check, f"Status changed to 'sent': {sent_estimate.get('status')}")
-                    all_passed = all_passed and status_check
+            for key in new_result_keys:
+                if key in results:
+                    result = results[key]
+                    sent = result.get('sent', 0)
+                    errors = result.get('errors', 0)
+                    skipped = result.get('skipped', 0)
+                    
+                    print_success(f"  ✓ {key}: sent={sent}, errors={errors}, skipped={skipped}")
+                    
+                    if errors > 0:
+                        print_error(f"    ⚠️  {key} has {errors} errors!")
+                        all_no_errors = False
                 else:
-                    print_result(False, "Could not find sent estimate in list")
-                    all_passed = False
+                    print_error(f"  ✗ {key}: NOT FOUND in results")
+                    all_found = False
             
-            return all_passed
+            if all_found and all_no_errors:
+                print_success("\n✅ All 6 new automation results found with 0 errors!")
+                return True
+            elif all_found:
+                print_error("\n⚠️  All keys found but some have errors")
+                return False
+            else:
+                print_error("\n❌ Some automation result keys are missing!")
+                return False
         else:
-            print_result(False, f"Send estimate failed with status {response.status_code}: {response.text}")
+            print_error(f"Cron job failed with status {response.status_code}")
+            print_error(f"Response: {response.text}")
+            
+            # Check supervisor logs for errors
+            print_info("\nChecking supervisor logs for errors...")
+            import subprocess
+            try:
+                log_output = subprocess.check_output(
+                    ["tail", "-n", "50", "/var/log/supervisor/nextjs.out.log"],
+                    stderr=subprocess.STDOUT,
+                    text=True
+                )
+                print_info("Last 50 lines of nextjs.out.log:")
+                print(log_output)
+            except Exception as log_err:
+                print_error(f"Could not read logs: {str(log_err)}")
+            
             return False
             
     except Exception as e:
-        print_result(False, f"Send estimate error: {str(e)}")
+        print_error(f"Exception during cron job: {str(e)}")
         return False
 
-def test_update_estimate():
-    """Test 5: Update Estimate - PUT /api/estimates/{id}"""
-    print_test_header("Test 5: Update Estimate")
-    
-    if not created_estimate_id:
-        print_result(False, "No estimate ID available (create test may have failed)")
-        return False
+def test_6_regression_check(token):
+    """Test 6: Regression check - GET /api/auth/me and GET /api/automations/settings"""
+    print_test("Test 6: Regression Check After Cron Run")
     
     try:
-        # Test updating various fields
-        update_data = {
-            "title": "Intervento Chirurgico - AGGIORNATO",
-            "notes": "Note aggiornate dal test",
-            "discount": 10,
-            "totalAmount": 280
-        }
-        
-        response = requests.put(
-            f"{API_URL}/estimates/{created_estimate_id}",
-            json=update_data,
-            headers={
-                "Authorization": f"Bearer {clinic_token}",
-                "Content-Type": "application/json"
-            }
+        # Check /api/auth/me
+        print_info("Testing GET /api/auth/me...")
+        me_response = requests.get(
+            f"{BASE_URL}/auth/me",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=10
         )
         
-        if response.status_code == 200:
-            data = response.json()
-            
-            checks = [
-                (data.get('title') == update_data['title'], "Title updated correctly"),
-                (data.get('notes') == update_data['notes'], "Notes updated correctly"),
-                (data.get('discount') == update_data['discount'], "Discount updated correctly"),
-                (data.get('totalAmount') == update_data['totalAmount'], "Total amount updated correctly"),
-                ('updatedAt' in data, "Updated timestamp present"),
-            ]
-            
-            all_passed = True
-            for check, message in checks:
-                print_result(check, message)
-                if not check:
-                    all_passed = False
-            
-            # Test status change to 'accepted'
-            status_update = {"status": "accepted"}
-            status_response = requests.put(
-                f"{API_URL}/estimates/{created_estimate_id}",
-                json=status_update,
-                headers={
-                    "Authorization": f"Bearer {clinic_token}",
-                    "Content-Type": "application/json"
-                }
-            )
-            
-            if status_response.status_code == 200:
-                status_data = status_response.json()
-                status_check = status_data.get('status') == 'accepted'
-                print_result(status_check, f"Status changed to 'accepted': {status_data.get('status')}")
-                all_passed = all_passed and status_check
-            else:
-                print_result(False, f"Status update failed: {status_response.status_code}")
-                all_passed = False
-            
-            return all_passed
+        print_info(f"Status Code: {me_response.status_code}")
+        
+        if me_response.status_code == 200:
+            me_data = me_response.json()
+            print_success(f"GET /api/auth/me still working!")
+            print_info(f"User: {me_data.get('name', 'N/A')}")
         else:
-            print_result(False, f"Update estimate failed with status {response.status_code}: {response.text}")
+            print_error(f"GET /api/auth/me failed with status {me_response.status_code}")
+            return False
+        
+        # Check /api/automations/settings
+        print_info("\nTesting GET /api/automations/settings...")
+        settings_response = requests.get(
+            f"{BASE_URL}/automations/settings",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=10
+        )
+        
+        print_info(f"Status Code: {settings_response.status_code}")
+        
+        if settings_response.status_code == 200:
+            settings_data = settings_response.json()
+            if settings_data.get('success') == True:
+                print_success("GET /api/automations/settings still working!")
+                return True
+            else:
+                print_error("Settings response success field is not true")
+                return False
+        else:
+            print_error(f"GET /api/automations/settings failed with status {settings_response.status_code}")
             return False
             
     except Exception as e:
-        print_result(False, f"Update estimate error: {str(e)}")
+        print_error(f"Exception during regression check: {str(e)}")
         return False
 
-def run_all_tests():
-    """Run all estimate API tests"""
-    print("\n" + "="*80)
-    print("VETBUDDY PREVENTIVI DIGITALI (ESTIMATES) API TEST SUITE")
-    print("="*80)
-    print(f"Base URL: {BASE_URL}")
-    print(f"API URL: {API_URL}")
-    print(f"Test Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("="*80)
+def main():
+    print(f"\n{BLUE}{'='*80}{RESET}")
+    print(f"{BLUE}VetBuddy Backend API Testing - 6 New Intelligent Automations{RESET}")
+    print(f"{BLUE}Base URL: {BASE_URL}{RESET}")
+    print(f"{BLUE}{'='*80}{RESET}\n")
     
-    # Login first
-    if not login_clinic():
-        print("\n❌ CRITICAL: Clinic login failed. Cannot proceed with tests.")
-        return
+    results = {
+        "test_1_login": False,
+        "test_2_get_settings": False,
+        "test_3_toggle": False,
+        "test_4_put_settings": False,
+        "test_5_cron": False,
+        "test_6_regression": False
+    }
     
-    # Run tests
-    results = []
+    # Test 1: Login
+    token = test_1_clinic_login()
+    if token:
+        results["test_1_login"] = True
+    else:
+        print_error("\n❌ Login failed. Cannot proceed with other tests.")
+        sys.exit(1)
     
-    results.append(("Authentication Test", test_estimates_authentication()))
-    results.append(("Create Estimate Test", test_create_estimate()))
-    results.append(("Get Estimates List Test", test_get_estimates_list()))
-    results.append(("Send Estimate Test", test_send_estimate()))
-    results.append(("Update Estimate Test", test_update_estimate()))
+    # Test 2: Get automation settings
+    settings = test_2_get_automation_settings(token)
+    if settings:
+        results["test_2_get_settings"] = True
+        
+        # Get plan info for test 3
+        plan_response = requests.get(
+            f"{BASE_URL}/automations/settings",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=10
+        )
+        plan = plan_response.json().get('plan', 'starter') if plan_response.status_code == 200 else 'starter'
+    else:
+        print_error("\n❌ Get settings failed. Cannot proceed with other tests.")
+        sys.exit(1)
     
-    # Print summary
-    print("\n" + "="*80)
-    print("TEST SUMMARY")
-    print("="*80)
+    # Test 3: Toggle automation
+    if test_3_toggle_automation(token, plan):
+        results["test_3_toggle"] = True
     
-    passed = sum(1 for _, result in results if result)
+    # Test 4: PUT full settings
+    if test_4_put_full_settings(token, settings):
+        results["test_4_put_settings"] = True
+    
+    # Test 5: Cron daily (ONLY ONCE!)
+    if test_5_cron_daily(token):
+        results["test_5_cron"] = True
+    
+    # Test 6: Regression check
+    if test_6_regression_check(token):
+        results["test_6_regression"] = True
+    
+    # Summary
+    print(f"\n{BLUE}{'='*80}{RESET}")
+    print(f"{BLUE}TEST SUMMARY{RESET}")
+    print(f"{BLUE}{'='*80}{RESET}\n")
+    
+    passed = sum(1 for v in results.values() if v)
     total = len(results)
     
-    for test_name, result in results:
-        status = "✅ PASS" if result else "❌ FAIL"
-        print(f"{status}: {test_name}")
+    for test_name, passed_flag in results.items():
+        status = f"{GREEN}✅ PASSED{RESET}" if passed_flag else f"{RED}❌ FAILED{RESET}"
+        print(f"{test_name}: {status}")
     
-    print(f"\n{'='*80}")
-    print(f"TOTAL: {passed}/{total} tests passed ({(passed/total)*100:.1f}%)")
-    print(f"{'='*80}\n")
+    print(f"\n{BLUE}Total: {passed}/{total} tests passed{RESET}")
     
     if passed == total:
-        print("🎉 ALL TESTS PASSED! Estimates API is fully functional.")
+        print(f"\n{GREEN}{'='*80}{RESET}")
+        print(f"{GREEN}🎉 ALL TESTS PASSED! 🎉{RESET}")
+        print(f"{GREEN}{'='*80}{RESET}\n")
+        sys.exit(0)
     else:
-        print(f"⚠️  {total - passed} test(s) failed. Review the output above for details.")
+        print(f"\n{RED}{'='*80}{RESET}")
+        print(f"{RED}❌ SOME TESTS FAILED{RESET}")
+        print(f"{RED}{'='*80}{RESET}\n")
+        sys.exit(1)
 
 if __name__ == "__main__":
-    run_all_tests()
+    main()
