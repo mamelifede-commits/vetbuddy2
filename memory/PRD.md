@@ -137,3 +137,11 @@ BATCH 4 — in care-followup.js: onboarding step2 Passport (owner createdAt 5-7g
 WIRING: 60 chiavi clinica nelle settings (nuove: previsitForm, missingConsentCheck, puppyProgram), card UI "📋 Pre-Visita, Consensi & Percorsi" (3 toggle, postSurgeryFollowup già presente in card Operatività - evitato doppione).
 BUG FIX: escape unicode \u{...} nelle pagine pubbliche JSX → sostituiti con emoji reali (crash compilazione Next). Testing agent ha pulito .next cache.
 TEST: 19/19 backend OK (E2E previsit, E2E consensi, hook prenotazione→modulo+log, cron 0 errori, auth 401, regressioni OK).
+
+## Task Manager Staff reale (giugno 2025 - round 6)
+- NUOVA collection `staff_tasks` + API /api/tasks (route dedicata /app/app/api/tasks/route.js): GET lista clinica (auth clinic/staff), POST crea manuale (title+dueDate obbligatori, category/priority normalizzate) o seedDemo (10 task, solo se vuoto), PUT cambio stato (nuovo/in_lavorazione/completato + completedAt/completedBy) e modifica campi, DELETE ?id=.
+- NUOVO helper /app/lib/tasks.js: createAutoTask() idempotente via dedupeKey (param db opzionale per i cron).
+- 4 HOOK AUTOMAZIONI che creano task reali per lo staff: 1) previsit/route.js urgenza ALTA → category questionnaire, dedupeKey previsit_urgent_<formId>; 2) care-followup.js referto fermo → category document, dedupeKey stuckreport_<labReqId>; 3) care-followup.js consenso mancante → category send priority alta, dedupeKey consent_missing_<aptId> (creato anche senza email clinica); 4) work-management.js rischio no-show → category confirm priority alta, dedupeKey noshowrisk_<aptId>. Counter results.<chiave>.tasksCreated nel cron.
+- FRONTEND TaskManagerStaff.js: convertito da mock a api.get/post/put/delete('tasks'). Empty state con seed demo, modal Nuovo Task controllato (categoria toggle, datalist staff da /api/staff best-effort), dialog Dettagli (Completa/In lavorazione/Elimina), badge 'scaduto' derivato da dueDate, banner errori. Box info aggiornato con i 4 trigger reali.
+- TEST: 36/36 backend OK (auth 401/403, CRUD completo, seed idempotente, hook previsit E2E con dedupe verificato, cron errors=0, regressioni OK, cleanup DB eseguito).
+- RIMANENTI dopo questo round: upload foto/video questionario pre-visita, automazioni minori (petWeightAlert, dentalHygiene, referralProgram, griefFollowup), refactoring page.js monolitico + login page dedicata.

@@ -537,7 +537,7 @@ export default function TaskManagerStaff({ user, onNavigate }) {
       <div className="mt-6 bg-purple-50 border border-purple-200 rounded-lg p-4">
         <p className="text-sm text-purple-800">
           <RefreshCw className="h-4 w-4 inline mr-1" />
-          <strong>Task Automatici:</strong> VetBuddy crea automaticamente task quando: questionario non compilato, referto lab ricevuto, Passport incompleto da 7+ giorni, recensione negativa, appuntamento non confermato a 24h, follow-up post-operatorio.
+          <strong>Task Automatici:</strong> VetBuddy crea automaticamente task quando: questionario pre-visita compilato con urgenza ALTA, referto laboratorio fermo da +48h, consenso mancante per procedura imminente, appuntamento a rischio no-show domani.
         </p>
       </div>
     </div>
