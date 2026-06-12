@@ -92,3 +92,16 @@ File: `/app/app/api/cron/daily/automations/work-management.js` (collegato a GET 
 Settings: aggiunte a DEFAULT_SETTINGS + PRO_AUTOMATIONS in `/app/app/api/automations/settings/route.js` e a cron-helpers.js
 UI: nuova card "🧠 Intelligenti: Lavoro & Finanza" in `/app/app/components/clinic/ClinicAutomations.js`
 Testato: backend 100% OK (cron 0 errori, settings GET/PUT/POST OK), UI verificata con screenshot.
+
+## Automazioni Avanzate: Anti-Spreco & Proattività (giugno 2025 - round 2)
+7 ulteriori automazioni (totale 56 chiavi clinica + 1 lab-side):
+- `morningBriefing` — email mattutina alla clinica: agenda del giorno, appuntamenti a rischio, preventivi/fatture pendenti, vaccini in scadenza 7gg (idempotente via collection `automation_daily_flags`)
+- `bookingDropAlert` — lunedì: se settimana chiusa < 70% della media 4 settimane (min 3/sett) → alert con suggerimenti
+- `expiryStockAlert` — collection `inventory` {clinicId,name,quantity,unitPrice,expiryDate,lot}: prodotti in scadenza 60gg → email anti-spreco. NOTA: modulo UI Stock Vaccini è ancora MOCKED (dati demo, non scrive su `inventory`)
+- `healthPlanRenewal` — health_plan_assignments active: scadenza = startDate + plan.durationMonths; reminder 30gg prima
+- `ownerBirthday` — users.birthDate (campo nuovo: input "Data di nascita" in OwnerProfile.js, salvato via PUT /api/owner/profile — route dedicata app/api/owner/profile/route.js + catch-all settings.js)
+- `therapyReminder` — prescriptions EMITTED/REGISTERED_MANUALLY visibleToOwner, 2gg dopo issueDate, items da prescription_items
+- `labMonthlyReport` — 1° del mese, per ogni user role lab: volumi, completate, tempo medio risposta, top 3 cliniche
+File: `/app/app/api/cron/daily/automations/advanced.js` (collegato a /api/cron/daily)
+UI: nuova card "♻️ Anti-Spreco & Proattività" in ClinicAutomations.js
+Testato: backend 6/6 OK (cron 0 errori), UI verificata con screenshot.
