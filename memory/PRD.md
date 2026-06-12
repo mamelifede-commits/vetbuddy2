@@ -105,3 +105,12 @@ Testato: backend 100% OK (cron 0 errori, settings GET/PUT/POST OK), UI verificat
 File: `/app/app/api/cron/daily/automations/advanced.js` (collegato a /api/cron/daily)
 UI: nuova card "♻️ Anti-Spreco & Proattività" in ClinicAutomations.js
 Testato: backend 6/6 OK (cron 0 errori), UI verificata con screenshot.
+
+## Stock Vaccini collegato al DB reale (giugno 2025 - round 3)
+- Nuova API `/app/app/api/inventory/route.js`: GET (items+movimenti), POST (crea articolo / {seedDemo:true} se vuoto), PUT (movimento in/out/expired o modifica campi), DELETE (?id=)
+- Collections: `inventory` {id, clinicId, name, category, quantity, minThreshold, unitPrice, supplier, lot, expiryDate(ISO), location, lastRestocked, lowStockAlertSent, expiryAlertSent}, `inventory_movements` {id, clinicId, itemId, itemName, type, quantity, reason, performedBy, notes, date}
+- `StockVaccini.js` NON è più mocked: caricamento da API, form nuovo articolo controllato, dialog movimenti (carico/scarico/smaltisci), stato vuoto con "Carica Dati di Esempio", export CSV reale
+- Implementata automazione `lowStockAlert` (prima solo dichiarata, MAI implementata) in advanced.js: quantity < minThreshold → email clinica; flag resettato al carico (PUT type:in)
+- `expiryStockAlert` ora pienamente operativa su dati reali
+- Auth: 401 senza token, 403 per ruolo owner; staff usa clinicId della clinica
+- Testato: backend 10/10 OK (cron lowStockAlert.sent=1, expiryStockAlert.sent=1, 0 errori), UI verificata con screenshot (8 item seed visibili, badge Scorta Bassa corretti)
