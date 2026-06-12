@@ -314,6 +314,21 @@ function ClinicAutomations({ user, onNavigate }) {
             </CardContent>
           </Card>
 
+          {/* Pre-Visita, Consensi & Percorsi */}
+          <Card className="border-violet-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <span className="text-xl">📋</span> Pre-Visita, Consensi & Percorsi
+              </CardTitle>
+              <CardDescription>Preparazione visite, tutela medico-legale e percorsi guidati</CardDescription>
+            </CardHeader>
+            <CardContent className="grid md:grid-cols-2 gap-3">
+              <AutomationItem settingKey="previsitForm" icon={<FileText className="h-4 w-4 text-violet-500" />} title="Modulo Pre-Visita" description="Inviato automaticamente dopo la prenotazione" gradient="bg-gradient-to-r from-violet-50 to-violet-100" />
+              <AutomationItem settingKey="missingConsentCheck" icon={<FileCheck className="h-4 w-4 text-blue-500" />} title="Check Consensi Mancanti" description="Alert procedure imminenti senza firma" gradient="bg-gradient-to-r from-blue-50 to-blue-100" />
+              <AutomationItem settingKey="puppyProgram" icon={<PawPrint className="h-4 w-4 text-amber-500" />} title="Percorso Cucciolo" description="Guida automatica per pet sotto i 12 mesi" gradient="bg-gradient-to-r from-amber-50 to-amber-100" />
+            </CardContent>
+          </Card>
+
           {/* Messaggi & Report */}
           <Card className="border-green-200">
             <CardHeader className="pb-3">

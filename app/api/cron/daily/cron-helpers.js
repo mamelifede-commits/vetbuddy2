@@ -53,7 +53,10 @@ export const DEFAULT_AUTOMATION_SETTINGS = {
   ownerBirthday: true,
   therapyReminder: true,
   labMonthlyReport: true,
-  fragilePatientsDigest: true
+  fragilePatientsDigest: true,
+  previsitForm: true,
+  missingConsentCheck: true,
+  puppyProgram: true
 };
 
 // Helper: Check if automation is enabled for a clinic

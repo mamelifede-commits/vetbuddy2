@@ -33,12 +33,50 @@ export async function runEngagementAutomations({ db, clinicsMap, allClinics, all
     if (!isAutomationEnabled(clinic, 'reviewRequest')) { results.reviewRequest.skipped++; continue; }
     const owner = await db.collection('users').findOne({ id: apt.ownerId });
     const pet = await db.collection('pets').findOne({ id: apt.petId });
+
+    // === CONDIZIONI INTELLIGENTI: non chiedere recensioni "alla cieca" ===
+    if (owner) {
+      try {
+        // 1. Appuntamento marcato come problematico → escludi
+        if (apt.problematic === true) {
+          await db.collection('appointments').updateOne({ id: apt.id }, { $set: { reviewRequestSent: true, reviewSkippedReason: 'appuntamento-problematico' } });
+          results.reviewRequest.skipped++; continue;
+        }
+        // 2. Cooldown: già sollecitato negli ultimi 90 giorni → escludi
+        if (owner.lastReviewRequestAt && (Date.now() - new Date(owner.lastReviewRequestAt).getTime()) < 90 * 86400000) {
+          await db.collection('appointments').updateOne({ id: apt.id }, { $set: { reviewRequestSent: true, reviewSkippedReason: 'cooldown-90gg' } });
+          results.reviewRequest.skipped++; continue;
+        }
+        // 3. No-show recente (30gg) → momento sbagliato per chiedere
+        const thirtyAgoStr = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+        const recentNoShow = await db.collection('appointments').findOne({ ownerId: apt.ownerId, status: 'no-show', date: { $gte: thirtyAgoStr } });
+        if (recentNoShow) {
+          await db.collection('appointments').updateOne({ id: apt.id }, { $set: { reviewRequestSent: true, reviewSkippedReason: 'no-show-recente' } });
+          results.reviewRequest.skipped++; continue;
+        }
+        // 4. Reclamo/ticket aperto → escludi
+        const openTicket = await db.collection('tickets').findOne({ ownerId: apt.ownerId, status: { $in: ['open', 'aperto', 'pending', 'in_progress'] } });
+        if (openTicket) {
+          await db.collection('appointments').updateOne({ id: apt.id }, { $set: { reviewRequestSent: true, reviewSkippedReason: 'reclamo-aperto' } });
+          results.reviewRequest.skipped++; continue;
+        }
+        // 5. Sollecito pagamento in corso (fattura non pagata da 30+ gg) → escludi
+        const thirtyAgoISO = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+        const overdueInvoice = await db.collection('invoices').findOne({ ownerId: apt.ownerId, status: 'unpaid', createdAt: { $lte: thirtyAgoISO } });
+        if (overdueInvoice) {
+          await db.collection('appointments').updateOne({ id: apt.id }, { $set: { reviewRequestSent: true, reviewSkippedReason: 'pagamento-in-sospeso' } });
+          results.reviewRequest.skipped++; continue;
+        }
+      } catch (condErr) { console.error('Review smart conditions error:', condErr); }
+    }
+
     if (owner?.email && clinic) {
       const reviewUrl = clinic.googlePlaceId ? `https://g.page/r/${clinic.googlePlaceId}` : `${baseUrl}?action=review&clinicId=${clinic.id}`;
       const bookUrl = `${baseUrl}?action=book&clinicId=${clinic.id}`;
       try {
         await sendEmail({ to: owner.email, subject: `⭐ Come è andata la visita di ${pet?.name || 'il tuo animale'}?`, html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;"><div style="background:linear-gradient(135deg,#FFD700,#FFA500);padding:20px;border-radius:10px 10px 0 0;"><h1 style="color:white;margin:0;">⭐ La tua opinione conta!</h1></div><div style="padding:30px;background:#f9f9f9;"><p style="color:#666;">Ciao ${owner.name || ''},</p><p style="color:#666;">Come è andata la visita di <strong>${pet?.name || 'il tuo animale'}</strong> presso <strong>${clinic.clinicName}</strong>?</p><div style="text-align:center;margin:30px 0;"><a href="${reviewUrl}" style="display:inline-block;background:#4285F4;color:white;padding:14px 28px;border-radius:25px;text-decoration:none;font-weight:bold;margin:5px;">⭐ Lascia una Recensione</a><a href="${bookUrl}" style="display:inline-block;background:#FF6B6B;color:white;padding:14px 28px;border-radius:25px;text-decoration:none;font-weight:bold;margin:5px;">📅 Prenota Prossima Visita</a></div></div><div style="background:#333;padding:15px;text-align:center;border-radius:0 0 10px 10px;"><p style="color:#999;margin:0;font-size:12px;">© 2026 vetbuddy</p></div></div>` });
         await db.collection('appointments').updateOne({ id: apt.id }, { $set: { reviewRequestSent: true } });
+        await db.collection('users').updateOne({ id: apt.ownerId }, { $set: { lastReviewRequestAt: new Date().toISOString() } });
         results.reviewRequest.sent++;
       } catch (err) { results.reviewRequest.errors++; }
     }

@@ -7,6 +7,7 @@ import { runEngagementAutomations } from './automations/engagement';
 import { runOperationsAutomations } from './automations/operations';
 import { runWorkManagementAutomations } from './automations/work-management';
 import { runAdvancedAutomations } from './automations/advanced';
+import { runCareFollowupAutomations } from './automations/care-followup';
 
 // Force dynamic rendering to prevent static generation errors
 export const dynamic = 'force-dynamic';
@@ -59,7 +60,11 @@ export async function GET(request) {
     labMonthlyReport: { sent: 0, errors: 0, skipped: 0 },
     lowStockAlert: { sent: 0, errors: 0, skipped: 0 },
     fragilePatientsDigest: { sent: 0, errors: 0, skipped: 0 },
-    passportReminder: { sent: 0, errors: 0, skipped: 0 }
+    passportReminder: { sent: 0, errors: 0, skipped: 0 },
+    postSurgeryFollowup: { sent: 0, errors: 0, skipped: 0 },
+    medicationRefill: { sent: 0, errors: 0, skipped: 0 },
+    missingConsentCheck: { sent: 0, errors: 0, skipped: 0, clinicAlerts: 0 },
+    puppyProgram: { sent: 0, errors: 0, skipped: 0 }
   };
 
   const today = new Date();
@@ -84,6 +89,7 @@ export async function GET(request) {
     results = await runOperationsAutomations({ ...ctx, results });
     results = await runWorkManagementAutomations({ ...ctx, results });
     results = await runAdvancedAutomations({ ...ctx, results });
+    results = await runCareFollowupAutomations({ ...ctx, results });
 
     console.log('Daily cron completed:', results);
 

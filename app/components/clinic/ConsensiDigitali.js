@@ -26,6 +26,7 @@ const CONSENT_TEMPLATES = [
 export default function ConsensiDigitali({ user, onNavigate }) {
   const [consents, setConsents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [showNewConsent, setShowNewConsent] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [formData, setFormData] = useState({});
@@ -35,20 +36,17 @@ export default function ConsensiDigitali({ user, onNavigate }) {
     loadConsents();
   }, []);
 
-  const loadConsents = () => {
-    // Demo data
-    const demoConsents = [
-      { id: '1', type: 'chirurgia', petName: 'Luna', ownerName: 'Maria Rossi', status: 'firmato', sentAt: new Date(Date.now() - 5 * 86400000).toISOString(), signedAt: new Date(Date.now() - 4 * 86400000).toISOString(), procedure: 'Sterilizzazione' },
-      { id: '2', type: 'anestesia', petName: 'Rex', ownerName: 'Luca Bianchi', status: 'inviato', sentAt: new Date(Date.now() - 2 * 86400000).toISOString(), anesthesiaType: 'Generale' },
-      { id: '3', type: 'trattamento', petName: 'Micio', ownerName: 'Anna Verdi', status: 'firmato', sentAt: new Date(Date.now() - 10 * 86400000).toISOString(), signedAt: new Date(Date.now() - 9 * 86400000).toISOString(), treatment: 'Terapia antibiotica prolungata' },
-      { id: '4', type: 'preventivo', petName: 'Buddy', ownerName: 'Carlo Neri', status: 'visto', sentAt: new Date(Date.now() - 1 * 86400000).toISOString(), viewedAt: new Date(Date.now() - 12 * 3600000).toISOString(), services: 'Pulizia dentale + Detartrasi', total: '€280' },
-      { id: '5', type: 'privacy', petName: null, ownerName: 'Giulia Romano', status: 'firmato', sentAt: new Date(Date.now() - 30 * 86400000).toISOString(), signedAt: new Date(Date.now() - 30 * 86400000).toISOString() },
-      { id: '6', type: 'chirurgia', petName: 'Thor', ownerName: 'Marco Ferrara', status: 'scaduto', sentAt: new Date(Date.now() - 20 * 86400000).toISOString(), procedure: 'Intervento ortopedico' },
-      { id: '7', type: 'pubblicazione', petName: 'Nala', ownerName: 'Sara Colombo', status: 'firmato', sentAt: new Date(Date.now() - 15 * 86400000).toISOString(), signedAt: new Date(Date.now() - 14 * 86400000).toISOString(), purpose: 'Social media clinica' },
-      { id: '8', type: 'passport', petName: 'Birba', ownerName: 'Paolo Ricci', status: 'inviato', sentAt: new Date(Date.now() - 3 * 3600000).toISOString(), sharedWith: 'Pet sitter' },
-    ];
-    setConsents(demoConsents);
-    setLoading(false);
+  const loadConsents = async () => {
+    try {
+      setLoading(true);
+      const response = await import('@/app/lib/api').then(({ default: api }) => api.get('consents'));
+      setConsents(response.consents || []);
+    } catch (error) {
+      console.error('Error loading consents:', error);
+      setConsents([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getStatusBadge = (status) => {
@@ -62,11 +60,32 @@ export default function ConsensiDigitali({ user, onNavigate }) {
     return <Badge className={s.cls}>{s.icon} {s.label}</Badge>;
   };
 
-  const createConsent = () => {
-    alert('Consenso creato e inviato al proprietario! (Demo)');
-    setShowNewConsent(false);
-    setSelectedTemplate(null);
-    setFormData({});
+  const createConsent = async () => {
+    if (!formData.ownerName || !formData.ownerEmail) {
+      alert('⚠️ Nome ed email del proprietario sono obbligatori');
+      return;
+    }
+    try {
+      setSaving(true);
+      const api = (await import('@/app/lib/api')).default;
+      await api.post('consents', {
+        type: selectedTemplate?.id,
+        ownerName: formData.ownerName,
+        ownerEmail: formData.ownerEmail,
+        petName: formData.petName || null,
+        detail: formData.detail || '',
+        notes: formData.notes || '',
+        total: formData.total || null
+      });
+      setShowNewConsent(false);
+      setSelectedTemplate(null);
+      setFormData({});
+      await loadConsents();
+    } catch (error) {
+      alert('❌ Errore nell\'invio del consenso');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const filteredConsents = consents.filter(c => 
@@ -321,45 +340,67 @@ export default function ConsensiDigitali({ user, onNavigate }) {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium">Proprietario *</label>
-                    <Input placeholder="Nome proprietario" />
+                    <Input placeholder="Nome proprietario" value={formData.ownerName || ''} onChange={(e) => setFormData({...formData, ownerName: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Email proprietario *</label>
+                    <Input type="email" placeholder="email@esempio.it" value={formData.ownerEmail || ''} onChange={(e) => setFormData({...formData, ownerEmail: e.target.value})} />
                   </div>
                   {selectedTemplate.required.includes('petName') && (
                     <div>
                       <label className="text-sm font-medium">Animale *</label>
-                      <Input placeholder="Nome animale" />
-                    </div>
-                  )}
-                  {selectedTemplate.required.includes('email') && (
-                    <div>
-                      <label className="text-sm font-medium">Email *</label>
-                      <Input type="email" placeholder="email@example.com" />
+                      <Input placeholder="Nome animale" value={formData.petName || ''} onChange={(e) => setFormData({...formData, petName: e.target.value})} />
                     </div>
                   )}
                   {selectedTemplate.required.includes('procedure') && (
                     <div className="md:col-span-2">
                       <label className="text-sm font-medium">Procedura *</label>
-                      <Input placeholder="Es: Sterilizzazione" />
+                      <Input placeholder="Es: Sterilizzazione" value={formData.detail || ''} onChange={(e) => setFormData({...formData, detail: e.target.value})} />
+                    </div>
+                  )}
+                  {selectedTemplate.required.includes('anesthesiaType') && (
+                    <div className="md:col-span-2">
+                      <label className="text-sm font-medium">Tipo anestesia *</label>
+                      <Input placeholder="Es: Generale" value={formData.detail || ''} onChange={(e) => setFormData({...formData, detail: e.target.value})} />
                     </div>
                   )}
                   {selectedTemplate.required.includes('treatment') && (
                     <div className="md:col-span-2">
                       <label className="text-sm font-medium">Trattamento *</label>
-                      <Input placeholder="Es: Terapia antibiotica" />
+                      <Input placeholder="Es: Terapia antibiotica" value={formData.detail || ''} onChange={(e) => setFormData({...formData, detail: e.target.value})} />
                     </div>
                   )}
                   {selectedTemplate.required.includes('services') && (
                     <div className="md:col-span-2">
                       <label className="text-sm font-medium">Servizi *</label>
-                      <Input placeholder="Es: Pulizia dentale + Detartrasi" />
+                      <Input placeholder="Es: Pulizia dentale + Detartrasi" value={formData.detail || ''} onChange={(e) => setFormData({...formData, detail: e.target.value})} />
+                    </div>
+                  )}
+                  {selectedTemplate.required.includes('purpose') && (
+                    <div className="md:col-span-2">
+                      <label className="text-sm font-medium">Finalità *</label>
+                      <Input placeholder="Es: Social media clinica" value={formData.detail || ''} onChange={(e) => setFormData({...formData, detail: e.target.value})} />
+                    </div>
+                  )}
+                  {selectedTemplate.required.includes('sharedWith') && (
+                    <div className="md:col-span-2">
+                      <label className="text-sm font-medium">Condiviso con *</label>
+                      <Input placeholder="Es: Pet sitter, familiare" value={formData.detail || ''} onChange={(e) => setFormData({...formData, detail: e.target.value})} />
+                    </div>
+                  )}
+                  {selectedTemplate.required.includes('total') && (
+                    <div>
+                      <label className="text-sm font-medium">Totale (€)</label>
+                      <Input placeholder="Es: 280" value={formData.total || ''} onChange={(e) => setFormData({...formData, total: e.target.value})} />
                     </div>
                   )}
                 </div>
                 <div>
                   <label className="text-sm font-medium">Note aggiuntive</label>
-                  <Textarea placeholder="Aggiungi note o istruzioni specifiche..." rows={3} />
+                  <Textarea placeholder="Aggiungi note o istruzioni specifiche..." rows={3} value={formData.notes || ''} onChange={(e) => setFormData({...formData, notes: e.target.value})} />
                 </div>
                 <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-xs text-gray-600"><strong>Invio:</strong> Il proprietario riceverà una email con link per visualizzare e firmare digitalmente il consenso da smartphone.</p>
+                  <p className="text-xs text-gray-600"><strong>Invio:</strong> Il proprietario riceverà una email con link per visualizzare e firmare digitalmente il consenso da smartphone (firma elettronica semplice con nome, data e ora).</p>
                 </div>
               </div>
             )}
@@ -368,8 +409,8 @@ export default function ConsensiDigitali({ user, onNavigate }) {
                 Annulla
               </Button>
               {selectedTemplate && (
-                <Button className="bg-blue-500 hover:bg-blue-600 text-white" onClick={createConsent}>
-                  <Send className="h-4 w-4 mr-1" />Invia Consenso
+                <Button className="bg-blue-500 hover:bg-blue-600 text-white" onClick={createConsent} disabled={saving}>
+                  <Send className="h-4 w-4 mr-1" />{saving ? 'Invio...' : 'Invia Consenso'}
                 </Button>
               )}
             </DialogFooter>

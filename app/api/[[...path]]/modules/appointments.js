@@ -6,6 +6,7 @@ import { getUserFromRequest } from '@/lib/auth';
 import { sendEmail } from '@/lib/email';
 import { stripe, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, corsHeaders } from './constants';
 import { notifyWaitlistForSlot } from '@/lib/waitlist-notify';
+import { createAndSendPrevisitForm } from '@/lib/previsit';
 
 export async function handleAppointmentsGet(path, request) {
   // Get appointments for clinic or owner
@@ -105,6 +106,9 @@ export async function handleAppointmentsPost(path, request, body) {
       createdAt: new Date().toISOString()
     };
     await appointments.insertOne(appointment);
+
+    // Automazione: invia modulo pre-visita al proprietario (fire-and-forget)
+    createAndSendPrevisitForm(appointment).catch(err => console.error('Previsit auto-send error:', err));
     
     try {
       const clinic = await users.findOne({ id: clinicId });
@@ -145,6 +149,9 @@ export async function handleAppointmentsPost(path, request, body) {
       status: 'scheduled', createdAt: new Date().toISOString()
     };
     await appointments.insertOne(appointment);
+
+    // Automazione: invia modulo pre-visita al proprietario (fire-and-forget)
+    createAndSendPrevisitForm(appointment).catch(err => console.error('Previsit auto-send error:', err));
     
     // Send confirmation email
     try {

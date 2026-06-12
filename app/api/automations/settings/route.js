@@ -89,7 +89,12 @@ const DEFAULT_SETTINGS = {
   healthPlanRenewal: true,         // Rinnovo piani salute 30gg prima della scadenza
   ownerBirthday: true,             // Auguri compleanno proprietario
   therapyReminder: true,           // Promemoria aderenza terapie prescritte
-  fragilePatientsDigest: true      // Digest settimanale pazienti fragili senza follow-up (lunedì)
+  fragilePatientsDigest: true,     // Digest settimanale pazienti fragili senza follow-up (lunedì)
+
+  // === PRE-VISITA, CONSENSI & PERCORSI ===
+  previsitForm: true,              // Modulo pre-visita automatico dopo la prenotazione
+  missingConsentCheck: true,       // Check consensi mancanti prima di procedure
+  puppyProgram: true               // Percorso cucciolo per pet sotto i 12 mesi
 };
 
 // Automazioni incluse nel piano Starter (gratuite ma essenziali)
@@ -112,7 +117,8 @@ const PRO_AUTOMATIONS = [
   'noShowRiskPrediction', 'smartAgendaFiller', 'noShowRecovery',
   'estimateFollowup', 'paymentEscalation', 'labDelayAlert',
   'morningBriefing', 'bookingDropAlert', 'expiryStockAlert',
-  'healthPlanRenewal', 'ownerBirthday', 'therapyReminder', 'fragilePatientsDigest'
+  'healthPlanRenewal', 'ownerBirthday', 'therapyReminder', 'fragilePatientsDigest',
+  'previsitForm', 'missingConsentCheck', 'puppyProgram'
 ];
 
 // GET - Retrieve automation settings for the authenticated clinic

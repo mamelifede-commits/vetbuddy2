@@ -13,6 +13,7 @@ import {
   PawPrint, User, Calendar, FileText, Edit3, Image, Video, Shield, Info
 } from 'lucide-react';
 import BackToDashboard from '@/app/components/shared/BackToDashboard';
+import api from '@/app/lib/api';
 
 const QUESTIONNAIRE_TYPES = [
   { id: 'generale', name: 'Visita Generale', icon: '🏥', color: 'blue' },
@@ -27,28 +28,61 @@ const QUESTIONNAIRE_TYPES = [
 export default function QuestionariPreVisita({ user, onNavigate }) {
   const [questionnaires, setQuestionnaires] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [newForm, setNewForm] = useState({ ownerName: '', ownerEmail: '', petName: '', appointmentDate: '' });
 
   useEffect(() => {
     loadQuestionnaires();
   }, []);
 
-  const loadQuestionnaires = () => {
-    // Demo data
-    const demo = [
-      { id: '1', type: 'generale', petName: 'Luna', ownerName: 'Maria Rossi', appointmentDate: new Date(Date.now() + 2 * 86400000).toISOString(), status: 'compilato', sentAt: new Date(Date.now() - 1 * 86400000).toISOString(), completedAt: new Date(Date.now() - 12 * 3600000).toISOString(), reason: 'Controllo routine', symptoms: 'Nessuno', duration: 'N/A', urgency: 'Bassa' },
-      { id: '2', type: 'dermatologia', petName: 'Rex', ownerName: 'Luca Bianchi', appointmentDate: new Date(Date.now() + 1 * 86400000).toISOString(), status: 'inviato', sentAt: new Date(Date.now() - 6 * 3600000).toISOString(), reason: 'Prurito persistente', symptoms: 'Si gratta continuamente le orecchie', duration: '2 settimane' },
-      { id: '3', type: 'vaccino', petName: 'Micio', ownerName: 'Anna Verdi', appointmentDate: new Date(Date.now() + 3 * 86400000).toISOString(), status: 'compilato', sentAt: new Date(Date.now() - 2 * 86400000).toISOString(), completedAt: new Date(Date.now() - 1 * 86400000).toISOString(), reason: 'Vaccino annuale' },
-      { id: '4', type: 'gastrointestinale', petName: 'Buddy', ownerName: 'Carlo Neri', appointmentDate: new Date(Date.now() + 4 * 3600000).toISOString(), status: 'da_revisionare', sentAt: new Date(Date.now() - 8 * 3600000).toISOString(), completedAt: new Date(Date.now() - 6 * 3600000).toISOString(), reason: 'Vomito e diarrea', symptoms: 'Vomito 3 volte, diarrea da ieri', duration: '24 ore', urgency: 'Alta', diet: 'Crocchette normali' },
-      { id: '5', type: 'postoperatorio', petName: 'Nala', ownerName: 'Sara Colombo', appointmentDate: new Date(Date.now() + 1 * 86400000).toISOString(), status: 'compilato', sentAt: new Date(Date.now() - 3 * 86400000).toISOString(), completedAt: new Date(Date.now() - 2 * 86400000).toISOString(), reason: 'Controllo post sterilizzazione', symptoms: 'Nessuno, tutto bene', behavior: 'Vivace come sempre' },
-      { id: '6', type: 'comportamento', petName: 'Thor', ownerName: 'Marco Ferrara', appointmentDate: new Date(Date.now() + 5 * 86400000).toISOString(), status: 'inviato', sentAt: new Date(Date.now() - 1 * 3600000).toISOString(), reason: 'Aggressività verso altri cani' },
-      { id: '7', type: 'senior', petName: 'Birba', ownerName: 'Paolo Ricci', appointmentDate: new Date(Date.now() + 7 * 86400000).toISOString(), status: 'non_inviato', reason: 'Check-up annuale senior' },
-      { id: '8', type: 'generale', petName: 'Oscar', ownerName: 'Elena Conti', appointmentDate: new Date(Date.now() + 2 * 3600000).toISOString(), status: 'da_revisionare', sentAt: new Date(Date.now() - 4 * 3600000).toISOString(), completedAt: new Date(Date.now() - 2 * 3600000).toISOString(), reason: 'Visita di controllo', symptoms: 'Zoppica leggermente', duration: '3 giorni', urgency: 'Media' },
-    ];
-    setQuestionnaires(demo);
-    setLoading(false);
+  const loadQuestionnaires = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get('previsit');
+      setQuestionnaires(response.questionnaires || []);
+    } catch (error) {
+      console.error('Error loading questionnaires:', error);
+      setQuestionnaires([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendQuestionnaire = async () => {
+    if (!newForm.ownerName || !newForm.ownerEmail) {
+      alert('⚠️ Nome ed email del proprietario sono obbligatori');
+      return;
+    }
+    try {
+      setSaving(true);
+      await api.post('previsit', {
+        ownerName: newForm.ownerName,
+        ownerEmail: newForm.ownerEmail,
+        petName: newForm.petName,
+        appointmentDate: newForm.appointmentDate || null,
+        type: selectedType?.id || 'generale'
+      });
+      setShowNew(false);
+      setNewForm({ ownerName: '', ownerEmail: '', petName: '', appointmentDate: '' });
+      setSelectedType(null);
+      await loadQuestionnaires();
+    } catch (error) {
+      alert('❌ Errore nell\'invio del questionario');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const markReviewed = async (q) => {
+    try {
+      await api.put('previsit', { id: q.id, status: 'compilato' });
+      await loadQuestionnaires();
+    } catch (error) {
+      alert('❌ Errore nell\'aggiornamento');
+    }
   };
 
   const getStatusBadge = (status) => {
@@ -329,21 +363,25 @@ export default function QuestionariPreVisita({ user, onNavigate }) {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium">Proprietario *</label>
-                    <Input placeholder="Seleziona proprietario" />
+                    <Input placeholder="Nome del proprietario" value={newForm.ownerName} onChange={(e) => setNewForm({...newForm, ownerName: e.target.value})} />
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Animale *</label>
-                    <Input placeholder="Seleziona animale" />
+                    <label className="text-sm font-medium">Email proprietario *</label>
+                    <Input type="email" placeholder="email@esempio.it" value={newForm.ownerEmail} onChange={(e) => setNewForm({...newForm, ownerEmail: e.target.value})} />
                   </div>
-                  <div className="md:col-span-2">
-                    <label className="text-sm font-medium">Data Appuntamento *</label>
-                    <Input type="date" />
+                  <div>
+                    <label className="text-sm font-medium">Animale</label>
+                    <Input placeholder="Nome dell'animale" value={newForm.petName} onChange={(e) => setNewForm({...newForm, petName: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Data Appuntamento</label>
+                    <Input type="date" value={newForm.appointmentDate} onChange={(e) => setNewForm({...newForm, appointmentDate: e.target.value})} />
                   </div>
                 </div>
                 <div className="bg-blue-50 p-3 rounded-lg">
                   <p className="text-xs text-gray-700">
                     <Info className="h-4 w-4 inline mr-1" />
-                    Il questionario verrà inviato automaticamente 48h prima dell'appuntamento via email. Il proprietario potrà compilarlo da smartphone.
+                    Il proprietario riceverà subito un'email con il link per compilare il questionario da smartphone. I nuovi appuntamenti ricevono il modulo automaticamente.
                   </p>
                 </div>
               </div>
@@ -353,8 +391,8 @@ export default function QuestionariPreVisita({ user, onNavigate }) {
                 Annulla
               </Button>
               {selectedType && (
-                <Button className="bg-purple-500 hover:bg-purple-600 text-white" onClick={() => { alert('Questionario programmato! (Demo)'); setShowNew(false); setSelectedType(null); }}>
-                  <Send className="h-4 w-4 mr-1" />Programma Invio
+                <Button className="bg-purple-500 hover:bg-purple-600 text-white" onClick={sendQuestionnaire} disabled={saving}>
+                  <Send className="h-4 w-4 mr-1" />{saving ? 'Invio...' : 'Invia Ora'}
                 </Button>
               )}
             </DialogFooter>
