@@ -54,7 +54,7 @@ export async function handleFragilePatientsGet(path, request) {
 }
 
 // Get all fragile patients with categorization
-async function getFragilePatients(clinicId) {
+export async function getFragilePatients(clinicId) {
   const pets = await getCollection('pets');
   const owners = await getCollection('owners');
   const appointments = await getCollection('appointments');

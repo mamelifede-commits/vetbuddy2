@@ -5,6 +5,7 @@ import { getCollection } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { sendEmail } from '@/lib/email';
 import { stripe, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, corsHeaders } from './constants';
+import { notifyWaitlistForSlot } from '@/lib/waitlist-notify';
 
 export async function handleAppointmentsGet(path, request) {
   // Get appointments for clinic or owner
@@ -301,8 +302,18 @@ export async function handleAppointmentsPut(path, request, user, body) {
   if (path.startsWith('appointments/')) {
     const id = path.split('/')[1];
     const appointments = await getCollection('appointments');
+    const before = await appointments.findOne({ id });
     await appointments.updateOne({ id }, { $set: { ...body, updatedAt: new Date().toISOString() } });
     const updated = await appointments.findOne({ id });
+
+    // Slot liberato (cancellazione/spostamento) → notifica automatica lista d'attesa
+    const cancelStatuses = ['cancelled', 'cancellato', 'annullato', 'rescheduled'];
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (before && body.status && cancelStatuses.includes(body.status) && !cancelStatuses.includes(before.status) && before.date >= todayStr) {
+      notifyWaitlistForSlot({ clinicId: before.clinicId, date: before.date, time: before.time })
+        .catch(err => console.error('Waitlist notify error:', err));
+    }
+
     return NextResponse.json(updated, { headers: corsHeaders });
   }
   return null;
@@ -312,7 +323,16 @@ export async function handleAppointmentsDelete(path, request, user) {
   if (path.startsWith('appointments/')) {
     const id = path.split('/')[1];
     const appointments = await getCollection('appointments');
+    const apt = await appointments.findOne({ id });
     await appointments.deleteOne({ id });
+
+    // Slot liberato (eliminazione) → notifica automatica lista d'attesa
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (apt && apt.date >= todayStr) {
+      notifyWaitlistForSlot({ clinicId: apt.clinicId, date: apt.date, time: apt.time })
+        .catch(err => console.error('Waitlist notify error:', err));
+    }
+
     return NextResponse.json({ success: true }, { headers: corsHeaders });
   }
   return null;

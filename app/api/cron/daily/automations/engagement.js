@@ -1,4 +1,4 @@
-import { isAutomationEnabled, getContactButton } from '../cron-helpers';
+import { isAutomationEnabled, getContactButton, logAutomation } from '../cron-helpers';
 
 export async function runEngagementAutomations({ db, clinicsMap, allClinics, allPets, today, todayStr, results, sendEmail }) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vetbuddy.it';
@@ -44,26 +44,62 @@ export async function runEngagementAutomations({ db, clinicsMap, allClinics, all
     }
   }
 
-  // 9. RIATTIVAZIONE CLIENTI INATTIVI (1° del mese)
+  // 9. RIATTIVAZIONE CLIENTI INATTIVI (1° del mese) — segmenti 6/9/12 mesi
   if (today.getDate() === 1) {
-    const sixMonthsAgo = new Date(); sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-    const sixMonthsAgoStr = sixMonthsAgo.toISOString().split('T')[0];
+    const monthsAgoStr = (m) => { const d = new Date(); d.setMonth(d.getMonth() - m); return d.toISOString().split('T')[0]; };
+    const sixMonthsAgoStr = monthsAgoStr(6);
+    const nineMonthsAgoStr = monthsAgoStr(9);
+    const twelveMonthsAgoStr = monthsAgoStr(12);
+
+    // Messaggi differenziati per segmento
+    const SEGMENTS = [
+      { months: 12, flag: 'reactivation12Sent', minDateExcl: twelveMonthsAgoStr, subject: '🐾 È passato un anno... ci pensiamo noi a ricordartelo!', headline: 'Un anno senza vederci!', body: 'È passato più di un anno dall\'ultima visita. Un controllo completo è il modo migliore per assicurarti che il tuo amico stia bene: molte patologie si prevengono con una visita annuale.' },
+      { months: 9, flag: 'reactivation9Sent', minDateExcl: nineMonthsAgoStr, subject: '🐾 Il tuo amico merita un controllo: sono passati 9 mesi', headline: 'Ci manchi da un po\'!', body: 'Sono passati 9 mesi dall\'ultima visita. È un buon momento per un controllo di salute e per verificare vaccini e antiparassitari.' },
+      { months: 6, flag: 'reactivation6Sent', minDateExcl: sixMonthsAgoStr, subject: '🐾 Ci manchi! È tempo di un controllo?', headline: 'Ci manchi!', body: 'È passato un po\' di tempo dalla tua ultima visita. Un rapido controllo mantiene il tuo amico in salute!' }
+    ];
+
     for (const clinic of allClinics) {
       if (!isAutomationEnabled(clinic, 'inactiveClientReactivation')) { results.inactiveClients.skipped++; continue; }
-      const recentApts = await db.collection('appointments').find({ clinicId: clinic.id, date: { $gte: sixMonthsAgoStr } }).toArray();
-      const activeOwnerIds = new Set(recentApts.map(a => a.ownerId));
       const allClinicApts = await db.collection('appointments').find({ clinicId: clinic.id }).toArray();
-      const allOwnerIds = new Set(allClinicApts.map(a => a.ownerId));
-      for (const ownerId of allOwnerIds) {
-        if (activeOwnerIds.has(ownerId)) continue;
-        const owner = await db.collection('users').findOne({ id: ownerId, reactivationSent: { $ne: true } });
+
+      // Ultima visita per proprietario
+      const lastVisitByOwner = new Map();
+      for (const apt of allClinicApts) {
+        if (!apt.ownerId || !apt.date) continue;
+        const prev = lastVisitByOwner.get(apt.ownerId);
+        if (!prev || apt.date > prev) lastVisitByOwner.set(apt.ownerId, apt.date);
+      }
+
+      let reactivatedThisClinic = 0;
+      for (const [ownerId, lastDate] of lastVisitByOwner) {
+        if (lastDate >= sixMonthsAgoStr) continue; // attivo
+
+        // Determina il segmento più alto applicabile
+        const segment = SEGMENTS.find(s => lastDate < s.minDateExcl);
+        if (!segment) continue;
+
+        // Backward compat: il vecchio flag unico vale come segmento 6 mesi
+        const legacyCondition = segment.months === 6 ? { reactivationSent: { $ne: true } } : {};
+        const owner = await db.collection('users').findOne({ id: ownerId, [segment.flag]: { $ne: true }, ...legacyCondition });
         if (!owner?.email) continue;
+
         const bookUrl = `${baseUrl}?action=book&clinicId=${clinic.id}`;
         try {
-          await sendEmail({ to: owner.email, subject: `🐾 Ci manchi! È tempo di un controllo?`, html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;"><div style="background:linear-gradient(135deg,#9B59B6,#E74C3C);padding:20px;border-radius:10px 10px 0 0;"><h1 style="color:white;margin:0;">🐾 Ci manchi!</h1></div><div style="padding:30px;background:#f9f9f9;"><p>Ciao ${owner.name || ''},</p><p>È passato un po' di tempo dalla tua ultima visita presso <strong>${clinic.clinicName}</strong>.</p><div style="text-align:center;margin:30px 0;"><a href="${bookUrl}" style="display:inline-block;background:#FF6B6B;color:white;padding:14px 28px;border-radius:25px;text-decoration:none;font-weight:bold;">📅 Prenota Ora</a></div></div><div style="background:#333;padding:15px;text-align:center;border-radius:0 0 10px 10px;"><p style="color:#999;margin:0;font-size:12px;">© 2026 vetbuddy</p></div></div>` });
-          await db.collection('users').updateOne({ id: ownerId }, { $set: { reactivationSent: true, reactivationSentAt: new Date() } });
+          await sendEmail({
+            to: owner.email,
+            subject: segment.subject,
+            html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;"><div style="background:linear-gradient(135deg,#9B59B6,#E74C3C);padding:20px;border-radius:10px 10px 0 0;"><h1 style="color:white;margin:0;">🐾 ${segment.headline}</h1></div><div style="padding:30px;background:#f9f9f9;"><p>Ciao ${owner.name || ''},</p><p>${segment.body}</p><p style="color:#999;font-size:13px;">Ultima visita registrata presso <strong>${clinic.clinicName}</strong>: ${new Date(lastDate).toLocaleDateString('it-IT')}</p><div style="text-align:center;margin:30px 0;"><a href="${bookUrl}" style="display:inline-block;background:#FF6B6B;color:white;padding:14px 28px;border-radius:25px;text-decoration:none;font-weight:bold;">📅 Prenota Ora</a></div></div><div style="background:#333;padding:15px;text-align:center;border-radius:0 0 10px 10px;"><p style="color:#999;margin:0;font-size:12px;">© 2026 vetbuddy</p></div></div>`
+          });
+          const setFlags = { [segment.flag]: true, [`${segment.flag}At`]: new Date() };
+          if (segment.months === 6) setFlags.reactivationSent = true; // legacy
+          await db.collection('users').updateOne({ id: ownerId }, { $set: setFlags });
           results.inactiveClients.sent++;
+          reactivatedThisClinic++;
         } catch (err) { results.inactiveClients.errors++; }
+      }
+
+      if (reactivatedThisClinic > 0) {
+        await logAutomation(db, clinic.id, 'inactiveClientReactivation', 'Campagna clienti dormienti', `${reactivatedThisClinic} clienti inattivi ricontattati (segmenti 6/9/12 mesi)`);
       }
     }
   }

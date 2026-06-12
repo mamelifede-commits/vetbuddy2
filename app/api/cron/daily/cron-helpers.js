@@ -52,7 +52,8 @@ export const DEFAULT_AUTOMATION_SETTINGS = {
   healthPlanRenewal: true,
   ownerBirthday: true,
   therapyReminder: true,
-  labMonthlyReport: true
+  labMonthlyReport: true,
+  fragilePatientsDigest: true
 };
 
 // Helper: Check if automation is enabled for a clinic
@@ -124,4 +125,21 @@ export function wrapEmail(bodyHtml) {
   </div>
 </body>
 </html>`;
+}
+
+// Registra l'esecuzione di un'automazione (visibile nella Cronologia della clinica)
+export async function logAutomation(db, clinicId, type, title, details) {
+  try {
+    await db.collection('automation_logs').insertOne({
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+      clinicId,
+      type,
+      title,
+      details,
+      executedAt: new Date().toISOString(),
+      source: 'cron'
+    });
+  } catch (err) {
+    console.error('logAutomation error:', err);
+  }
 }

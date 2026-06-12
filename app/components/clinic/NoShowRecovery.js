@@ -18,7 +18,13 @@ export default function NoShowRecovery({ user, onNavigate }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/business-modules?module=noshow').then(r => r.json()).then(d => { setData(d); setLoading(false); }).catch(() => setLoading(false));
+    import('@/app/lib/api').then(({ default: api }) => {
+      api.get('business-modules?module=noshow')
+        .then(d => { setData(d); setLoading(false); })
+        .catch(() => {
+          fetch('/api/business-modules?module=noshow').then(r => r.json()).then(d => { setData(d); setLoading(false); }).catch(() => setLoading(false));
+        });
+    });
   }, []);
 
   if (loading) return <div className="flex items-center justify-center h-64"><RefreshCw className="h-8 w-8 animate-spin text-coral-500" /></div>;

@@ -1,4 +1,4 @@
-import { isAutomationEnabled, getContactButton, wrapEmail } from '../cron-helpers';
+import { isAutomationEnabled, getContactButton, wrapEmail, logAutomation } from '../cron-helpers';
 
 // Automazioni Intelligenti: Gestione Lavoro, Finanza e Laboratorio
 export async function runWorkManagementAutomations({ db, clinicsMap, allClinics, today, todayStr, results, sendEmail }) {
@@ -68,6 +68,7 @@ export async function runWorkManagementAutomations({ db, clinicsMap, allClinics,
           html: wrapEmail(`<h2 style="color:#333;">⚠️ Appuntamenti a rischio domani</h2><p style="color:#666;">Questi clienti hanno uno storico di assenze. Abbiamo già inviato loro un promemoria extra, ma una <strong>telefonata di conferma</strong> può fare la differenza:</p><table style="width:100%;border-collapse:collapse;margin:15px 0;"><tr style="background:#F9F9F9;"><th style="padding:8px;text-align:left;">Ora</th><th style="padding:8px;text-align:left;">Paziente</th><th style="padding:8px;text-align:left;">Cliente</th><th style="padding:8px;text-align:left;">Rischio</th></tr>${rows}</table><p style="color:#999;font-size:13px;">💡 Suggerimento: tieni una lista d'attesa pronta per coprire eventuali assenze.</p>`)
         });
         results.noShowRiskPrediction.clinicAlerts++;
+        await logAutomation(db, clinicId, 'noShowRiskPrediction', 'Alert rischio no-show', `${list.length} appuntamenti a rischio domani — promemoria extra inviati ai clienti`);
       } catch (err) { console.error('Risk clinic alert error:', err); }
     }
   }
@@ -161,6 +162,63 @@ export async function runWorkManagementAutomations({ db, clinicsMap, allClinics,
   // ============================================================
   // 27. FOLLOW-UP PREVENTIVI (4 giorni senza risposta)
   // ============================================================
+  // 27a. AUTO-SCADENZA: preventivi oltre validUntil → status 'expired' + report clinica
+  const nowISO = new Date().toISOString();
+  const expiredNow = await db.collection('estimates').find({ status: 'sent', validUntil: { $lt: nowISO } }).toArray();
+  const expiredByClinic = new Map();
+  for (const est of expiredNow) {
+    try {
+      await db.collection('estimates').updateOne({ id: est.id }, { $set: { status: 'expired', expiredAt: new Date() } });
+      if (!expiredByClinic.has(est.clinicId)) expiredByClinic.set(est.clinicId, []);
+      expiredByClinic.get(est.clinicId).push(est);
+    } catch (err) { console.error('Estimate auto-expire error:', err); }
+  }
+  for (const [clinicId, list] of expiredByClinic) {
+    const clinic = clinicsMap.get(clinicId);
+    if (!isAutomationEnabled(clinic, 'estimateFollowup')) continue;
+    const totalValue = list.reduce((s, e) => s + (Number(e.totalAmount) || 0), 0);
+    results.estimateFollowup.expired = (results.estimateFollowup.expired || 0) + list.length;
+    if (clinic?.email) {
+      try {
+        const rows = list.map(e => `<li><strong>${e.title || 'Preventivo'}</strong> — ${e.ownerName || 'Cliente'} ${e.petName ? `(${e.petName})` : ''} ${e.totalAmount ? `— €${Number(e.totalAmount).toFixed(2)}` : ''}</li>`).join('');
+        await sendEmail({
+          to: clinic.email,
+          subject: `⏳ ${list.length} preventivi scaduti senza risposta (€${totalValue.toFixed(2)} recuperabili)`,
+          html: wrapEmail(`<h2 style="color:#333;">⏳ Preventivi scaduti</h2><p style="color:#666;">Questi preventivi hanno superato la data di validità senza risposta. Sono stati marcati come <strong>scaduti</strong>, ma il valore è ancora recuperabile con un contatto diretto:</p><ul style="color:#666;">${rows}</ul><p style="color:#333;font-weight:bold;">Valore recuperabile: €${totalValue.toFixed(2)}</p><p style="color:#999;font-size:13px;">💡 Suggerimento: una telefonata con una proposta aggiornata riattiva fino al 30% dei preventivi scaduti.</p>`)
+        });
+      } catch (err) { console.error('Expired estimates alert error:', err); }
+    }
+    await logAutomation(db, clinicId, 'estimateFollowup', 'Preventivi scaduti', `${list.length} preventivi scaduti — €${totalValue.toFixed(2)} recuperabili`);
+  }
+
+  // 27b. REMINDER "IN SCADENZA": preventivo a 3 giorni dalla scadenza → email al cliente
+  const in3DaysISO = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
+  const expiringSoon = await db.collection('estimates').find({
+    status: 'sent',
+    validUntil: { $gte: nowISO, $lte: in3DaysISO },
+    expiryReminderSent: { $ne: true }
+  }).toArray();
+  for (const est of expiringSoon) {
+    try {
+      const clinic = clinicsMap.get(est.clinicId);
+      if (!isAutomationEnabled(clinic, 'estimateFollowup')) continue;
+      const owner = est.ownerId ? await db.collection('users').findOne({ id: est.ownerId }) : null;
+      if (owner?.email && clinic) {
+        const expiryStr = new Date(est.validUntil).toLocaleDateString('it-IT');
+        await sendEmail({
+          to: owner.email,
+          subject: `⏰ Il preventivo per ${est.petName || 'il tuo animale'} scade il ${expiryStr}`,
+          html: wrapEmail(`<h2 style="color:#333;">⏰ Preventivo in scadenza</h2><p style="color:#666;">Ciao ${owner.name || est.ownerName || ''},</p><p style="color:#666;">Il preventivo che <strong>${clinic.clinicName || clinic.name}</strong> ti ha inviato scadrà il <strong>${expiryStr}</strong>:</p><div style="background:#FFF7ED;padding:20px;border-radius:10px;margin:20px 0;border-left:4px solid #F97316;"><p style="margin:5px 0;"><strong>📋</strong> ${est.title || 'Preventivo'}</p>${est.petName ? `<p style="margin:5px 0;"><strong>🐾</strong> ${est.petName}</p>` : ''}${est.totalAmount ? `<p style="margin:5px 0;"><strong>💶</strong> €${Number(est.totalAmount).toFixed(2)}</p>` : ''}</div><p style="color:#666;">Se vuoi confermarlo o hai domande, contatta la clinica prima della scadenza!</p><div style="text-align:center;margin:25px 0;">${getContactButton(clinic, baseUrl, 'Rispondi al Preventivo', `Ciao, vi contatto riguardo il preventivo "${est.title || ''}" in scadenza...`)}</div>`)
+        });
+        await db.collection('estimates').updateOne({ id: est.id }, { $set: { expiryReminderSent: true, expiryReminderSentAt: new Date() } });
+        results.estimateFollowup.sent++;
+      } else {
+        await db.collection('estimates').updateOne({ id: est.id }, { $set: { expiryReminderSent: true } });
+      }
+    } catch (err) { console.error('Estimate expiry reminder error:', err); results.estimateFollowup.errors++; }
+  }
+
+  // 27c. FOLLOW-UP a 4 giorni senza risposta
   const fourDaysAgo = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000);
   const staleEstimates = await db.collection('estimates').find({ status: 'sent', followupSent: { $ne: true } }).toArray();
   const staleByClinic = new Map();
@@ -202,6 +260,7 @@ export async function runWorkManagementAutomations({ db, clinicsMap, allClinics,
           html: wrapEmail(`<h2 style="color:#333;">💰 Preventivi da ricontattare</h2><p style="color:#666;">Questi preventivi sono stati inviati da più di 4 giorni e non hanno ancora ricevuto risposta. Un follow-up telefonico aumenta il tasso di accettazione fino al 35%:</p><ul style="color:#666;">${rows}</ul>`)
         });
         results.estimateFollowup.clinicAlerts++;
+        await logAutomation(db, clinicId, 'estimateFollowup', 'Preventivi da ricontattare', `${list.length} preventivi senza risposta da 4+ giorni`);
       } catch (err) { console.error('Estimate clinic alert error:', err); }
     }
   }
@@ -277,6 +336,7 @@ export async function runWorkManagementAutomations({ db, clinicsMap, allClinics,
           html: wrapEmail(`<h2 style="color:#C0392B;">🚨 Crediti in sofferenza</h2><p style="color:#666;">Queste fatture risultano non pagate da oltre 30 giorni nonostante i solleciti automatici. Valuta un contatto diretto:</p><ul style="color:#666;">${rows}</ul><p style="color:#333;font-weight:bold;">Totale da recuperare: €${totalOverdue.toFixed(2)}</p>`)
         });
         results.paymentEscalation.clinicAlerts++;
+        await logAutomation(db, clinicId, 'paymentEscalation', 'Crediti in sofferenza', `${list.length} fatture non pagate da 30+ giorni — €${totalOverdue.toFixed(2)}`);
       } catch (err) { console.error('Overdue clinic alert error:', err); }
     }
   }
@@ -319,6 +379,7 @@ export async function runWorkManagementAutomations({ db, clinicsMap, allClinics,
       }
 
       await db.collection('lab_requests').updateOne({ id: req.id }, { $set: { delayAlertSent: true, delayAlertSentAt: new Date() } });
+      await logAutomation(db, req.clinicId, 'labDelayAlert', 'Referto in ritardo', `Sollecito inviato per ${req.examName || req.examType || 'analisi'} di ${req.petName || 'paziente'} (in attesa da ${hoursWaiting}h)`);
       results.labDelayAlert.sent++;
     } catch (err) { console.error('Lab delay alert error:', err); results.labDelayAlert.errors++; }
   }

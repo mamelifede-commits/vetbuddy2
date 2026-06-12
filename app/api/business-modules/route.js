@@ -1,8 +1,119 @@
 import { NextResponse } from 'next/server';
 import { getCollection } from '@/lib/db';
 import { v4 as uuidv4 } from 'uuid';
+import { getUserFromRequest } from '@/lib/auth';
 
 const corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization' };
+
+// Dati REALI No-Show Recovery per la clinica autenticata
+async function getRealNoShowData(clinicId) {
+  const appointments = await getCollection('appointments');
+  const waitlistCol = await getCollection('waitlist');
+  const usersCol = await getCollection('users');
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const in7Str = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+  const ninetyAgoStr = new Date(Date.now() - 90 * 86400000).toISOString().split('T')[0];
+
+  // Appuntamenti futuri non confermati (prossimi 7 giorni)
+  const upcoming = await appointments.find({
+    clinicId,
+    date: { $gte: todayStr, $lte: in7Str },
+    status: 'pending'
+  }).sort({ date: 1, time: 1 }).limit(30).toArray();
+
+  const unconfirmed = upcoming.map(a => ({
+    id: a.id,
+    ownerName: a.ownerName || 'Cliente',
+    petName: a.petName || '',
+    date: a.date,
+    time: a.time || '',
+    reason: a.reason || 'Visita',
+    risk: a.noShowRisk === 'high' ? 'alto' : ((a.noShowRiskRate || 0) >= 15 ? 'medio' : 'basso'),
+    confirmStatus: a.riskReminderSent ? 'no_response' : 'pending',
+    remindersSent: (a.reminderSent ? 1 : 0) + (a.confirmationRequestSent ? 1 : 0) + (a.riskReminderSent ? 1 : 0)
+  }));
+
+  // Storico no-show (ultimi 90 giorni)
+  const noshowApts = await appointments.find({
+    clinicId,
+    status: 'no-show',
+    date: { $gte: ninetyAgoStr }
+  }).sort({ date: -1 }).limit(50).toArray();
+
+  const noshowHistory = noshowApts.map(a => ({
+    ownerName: a.ownerName || 'Cliente',
+    petName: a.petName || '',
+    date: a.date,
+    reason: a.reason || 'Visita',
+    lostRevenue: Number(a.totalCost || a.price || 40)
+  }));
+
+  // Lista d'attesa reale
+  const waitingEntries = await waitlistCol.find({ clinicId, status: 'waiting' }).sort({ createdAt: 1 }).limit(30).toArray();
+  const waitlist = [];
+  for (const w of waitingEntries) {
+    const owner = w.ownerId ? await usersCol.findOne({ id: w.ownerId }) : null;
+    waitlist.push({
+      ownerName: owner?.name || w.ownerName || 'Cliente',
+      petName: w.petName || '',
+      requestedDate: (w.preferredDates && w.preferredDates.length > 0) ? w.preferredDates.join(', ') : 'Prima possibile',
+      reason: w.reason || 'Visita',
+      priority: w.priority || 'media',
+      addedAt: w.createdAt || new Date().toISOString()
+    });
+  }
+
+  // Slot recuperati: no-show con email di recupero + nuova prenotazione successiva
+  const recoveredSlots = [];
+  for (const a of noshowApts.filter(x => x.recoverySent && x.recoverySentAt)) {
+    const sentAtISO = a.recoverySentAt instanceof Date ? a.recoverySentAt.toISOString() : new Date(a.recoverySentAt).toISOString();
+    const rebooked = await appointments.findOne({
+      clinicId,
+      ownerId: a.ownerId,
+      id: { $ne: a.id },
+      status: { $in: ['pending', 'confirmed', 'completed'] },
+      createdAt: { $gte: sentAtISO }
+    });
+    if (rebooked) {
+      recoveredSlots.push({
+        originalOwner: a.ownerName || 'Cliente',
+        newOwner: a.ownerName || 'Cliente',
+        date: rebooked.date,
+        time: rebooked.time || '',
+        reason: rebooked.reason || 'Visita',
+        recoveredValue: Number(rebooked.totalCost || rebooked.price || 40)
+      });
+    }
+  }
+  // + slot riempiti tramite lista d'attesa
+  const bookedFromWaitlist = await waitlistCol.find({ clinicId, status: 'booked' }).limit(20).toArray();
+  for (const w of bookedFromWaitlist) {
+    const owner = w.ownerId ? await usersCol.findOne({ id: w.ownerId }) : null;
+    recoveredSlots.push({
+      originalOwner: 'Slot cancellato',
+      newOwner: owner?.name || 'Cliente',
+      date: w.bookedDate || w.notifiedForDate || '',
+      time: w.notifiedForTime || '',
+      reason: w.reason || 'Visita',
+      recoveredValue: 40
+    });
+  }
+
+  // Etichette affidabilità per proprietario (in base allo storico no-show)
+  const ownerLabels = {};
+  const noShowCountByOwner = {};
+  noshowApts.forEach(a => {
+    const k = a.ownerName || 'Cliente';
+    noShowCountByOwner[k] = (noShowCountByOwner[k] || 0) + 1;
+  });
+  [...unconfirmed, ...noshowHistory].forEach(x => {
+    const c = noShowCountByOwner[x.ownerName] || 0;
+    ownerLabels[x.ownerName] = c >= 2 ? 'alto_rischio' : c === 1 ? 'attenzione' : 'affidabile';
+  });
+
+  return { unconfirmed, noshowHistory, waitlist, recoveredSlots, ownerLabels };
+}
 
 // Demo WhatsApp messages
 const DEMO_WA_MESSAGES = [
@@ -165,6 +276,17 @@ export async function GET(request) {
     return NextResponse.json({ templates: DEMO_WA_TEMPLATES }, { headers: corsHeaders });
   }
   if (module === 'noshow') {
+    // Dati REALI per le cliniche autenticate, demo come fallback
+    const user = getUserFromRequest(request);
+    if (user && (user.role === 'clinic' || user.role === 'staff')) {
+      try {
+        const clinicId = user.role === 'staff' ? (user.clinicId || user.id) : user.id;
+        const realData = await getRealNoShowData(clinicId);
+        return NextResponse.json(realData, { headers: corsHeaders });
+      } catch (err) {
+        console.error('Real noshow data error:', err);
+      }
+    }
     return NextResponse.json(DEMO_NOSHOW, { headers: corsHeaders });
   }
   if (module === 'reviews') {

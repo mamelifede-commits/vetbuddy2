@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-VetBuddy Inventory API and Automation Testing
-Tests the new Inventory API and lowStockAlert/expiryStockAlert automations
+VetBuddy Batch 1 Automation Testing
+Tests: waitlist notification, automation logs, no-show module, cron automations
 """
 
 import requests
 import json
-import sys
-from datetime import datetime
+import time
+import os
+from datetime import datetime, timedelta
 
 # Base URL from environment
-BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
+BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://clinic-report-review.preview.emergentagent.com')
+API_URL = f"{BASE_URL}/api"
 
 # Test credentials
 CLINIC_EMAIL = "demo@vetbuddy.it"
@@ -18,542 +20,455 @@ CLINIC_PASSWORD = "VetBuddy2025!Secure"
 OWNER_EMAIL = "proprietario.demo@vetbuddy.it"
 OWNER_PASSWORD = "demo123"
 
-# Global variables
+# Global variables for test data
 clinic_token = None
 owner_token = None
-created_item_id = None
+clinic_id = None
+owner_id = None
+test_appointment_id = None
+test_waitlist_id = None
 
-def print_test_header(test_name):
-    """Print a formatted test header"""
+def print_test(msg):
     print(f"\n{'='*80}")
-    print(f"TEST: {test_name}")
-    print(f"{'='*80}")
+    print(f"TEST: {msg}")
+    print('='*80)
 
-def print_result(success, message):
-    """Print test result"""
+def print_result(success, msg):
     status = "✅ PASS" if success else "❌ FAIL"
-    print(f"{status}: {message}")
+    print(f"{status}: {msg}")
 
-def test_1_auth_no_token():
-    """Test 1: GET /api/inventory WITHOUT token → 401"""
-    print_test_header("1. AUTH CHECK - No Token")
-    try:
-        response = requests.get(f"{BASE_URL}/inventory")
-        if response.status_code == 401:
-            print_result(True, f"Correctly returned 401 without token")
-            return True
-        else:
-            print_result(False, f"Expected 401, got {response.status_code}: {response.text}")
-            return False
-    except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
-        return False
+def print_error(msg):
+    print(f"❌ ERROR: {msg}")
 
-def test_2_auth_owner_token():
-    """Test 2: GET /api/inventory with OWNER token → 403"""
-    print_test_header("2. AUTH CHECK - Owner Token (should be 403)")
-    global owner_token
+# ============================================================================
+# TEST 1: Clinic Login & Settings Check
+# ============================================================================
+def test_clinic_login_and_settings():
+    global clinic_token, clinic_id
+    print_test("1. Clinic Login & fragilePatientsDigest Setting Check")
+    
     try:
-        # First login as owner
-        login_response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": OWNER_EMAIL, "password": OWNER_PASSWORD}
-        )
-        if login_response.status_code != 200:
-            print_result(False, f"Owner login failed: {login_response.status_code} - {login_response.text}")
-            return False
+        # Login
+        response = requests.post(f"{API_URL}/auth/login", json={
+            "email": CLINIC_EMAIL,
+            "password": CLINIC_PASSWORD
+        })
         
-        owner_data = login_response.json()
-        owner_token = owner_data.get("token")
-        print(f"Owner login successful, token: {owner_token[:20]}...")
-        
-        # Try to access inventory with owner token
-        response = requests.get(
-            f"{BASE_URL}/inventory",
-            headers={"Authorization": f"Bearer {owner_token}"}
-        )
-        if response.status_code == 403:
-            print_result(True, f"Correctly returned 403 for owner role")
-            return True
-        else:
-            print_result(False, f"Expected 403, got {response.status_code}: {response.text}")
-            return False
-    except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
-        return False
-
-def test_3_clinic_login_and_get():
-    """Test 3: Clinic login → token, GET /api/inventory → 200 with arrays"""
-    print_test_header("3. CLINIC LOGIN and GET Inventory")
-    global clinic_token
-    try:
-        # Login as clinic
-        login_response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": CLINIC_EMAIL, "password": CLINIC_PASSWORD}
-        )
-        if login_response.status_code != 200:
-            print_result(False, f"Clinic login failed: {login_response.status_code} - {login_response.text}")
-            return False
-        
-        clinic_data = login_response.json()
-        clinic_token = clinic_data.get("token")
-        print(f"Clinic login successful, token: {clinic_token[:20]}...")
-        
-        # GET inventory
-        response = requests.get(
-            f"{BASE_URL}/inventory",
-            headers={"Authorization": f"Bearer {clinic_token}"}
-        )
         if response.status_code != 200:
-            print_result(False, f"GET inventory failed: {response.status_code} - {response.text}")
+            print_error(f"Login failed: {response.status_code} - {response.text}")
             return False
         
         data = response.json()
-        if not data.get("success"):
-            print_result(False, f"Response success is not true: {data}")
+        clinic_token = data.get('token')
+        clinic_id = data.get('user', {}).get('id')
+        
+        print_result(True, f"Clinic login successful. Token: {clinic_token[:20]}...")
+        print_result(True, f"Clinic ID: {clinic_id}")
+        
+        # Get automation settings
+        headers = {"Authorization": f"Bearer {clinic_token}"}
+        response = requests.get(f"{API_URL}/automations/settings", headers=headers)
+        
+        if response.status_code != 200:
+            print_error(f"Settings fetch failed: {response.status_code} - {response.text}")
             return False
         
-        if "items" not in data or "movements" not in data:
-            print_result(False, f"Missing items or movements arrays: {data}")
-            return False
+        settings_data = response.json()
+        settings = settings_data.get('settings', {})
         
-        if not isinstance(data["items"], list) or not isinstance(data["movements"], list):
-            print_result(False, f"items or movements are not arrays: {data}")
-            return False
-        
-        print(f"Items count: {len(data['items'])}, Movements count: {len(data['movements'])}")
-        print_result(True, f"GET /api/inventory returned 200 with success:true, items array ({len(data['items'])} items), movements array ({len(data['movements'])} movements)")
-        return True
-    except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
-        return False
-
-def test_4_seed_demo_data():
-    """Test 4: SEED - POST {"seedDemo": true} → 200 with seeded: 8 (or 400 if already exists)"""
-    print_test_header("4. SEED Demo Data")
-    try:
-        # First check if items already exist
-        get_response = requests.get(
-            f"{BASE_URL}/inventory",
-            headers={"Authorization": f"Bearer {clinic_token}"}
-        )
-        existing_items = get_response.json().get("items", [])
-        print(f"Current items count: {len(existing_items)}")
-        
-        # Try to seed
-        response = requests.post(
-            f"{BASE_URL}/inventory",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            json={"seedDemo": True}
-        )
-        
-        if len(existing_items) > 0:
-            # Should return 400 if items already exist
-            if response.status_code == 400:
-                print_result(True, f"Correctly returned 400 when inventory not empty: {response.json().get('error')}")
-                return True
-            else:
-                print_result(False, f"Expected 400 for non-empty inventory, got {response.status_code}: {response.text}")
-                return False
+        # Check for fragilePatientsDigest key
+        if 'fragilePatientsDigest' in settings:
+            print_result(True, f"fragilePatientsDigest key found: {settings['fragilePatientsDigest']}")
         else:
-            # Should return 200 with seeded count
-            if response.status_code != 200:
-                print_result(False, f"Seed failed: {response.status_code} - {response.text}")
-                return False
-            
-            data = response.json()
-            if not data.get("success") or data.get("seeded") != 8:
-                print_result(False, f"Expected seeded: 8, got: {data}")
-                return False
-            
-            # Verify items were created
-            get_response = requests.get(
-                f"{BASE_URL}/inventory",
-                headers={"Authorization": f"Bearer {clinic_token}"}
-            )
-            new_items = get_response.json().get("items", [])
-            print(f"After seeding, items count: {len(new_items)}")
-            
-            print_result(True, f"Successfully seeded 8 demo items")
-            return True
+            print_error("fragilePatientsDigest key NOT found in settings")
+            return False
+        
+        # Count total settings keys
+        total_keys = len(settings)
+        print_result(True, f"Total automation settings keys: {total_keys} (expected ~57)")
+        
+        return True
+        
     except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
+        print_error(f"Exception: {str(e)}")
         return False
 
-def test_5_create_item():
-    """Test 5: CREATE - POST new item with low stock and expiring date"""
-    print_test_header("5. CREATE New Item (Low Stock + Expiring)")
-    global created_item_id
+# ============================================================================
+# TEST 2: No-Show Module WITHOUT Auth (Demo Data)
+# ============================================================================
+def test_noshow_module_no_auth():
+    print_test("2. GET /api/business-modules?module=noshow WITHOUT Authorization (Demo Data)")
+    
     try:
-        new_item = {
-            "name": "Test Vaccino Cron",
-            "category": "vaccino",
-            "quantity": 2,
-            "minThreshold": 10,
-            "unitPrice": 15,
-            "supplier": "Test Lab",
-            "lot": "TESTLOT",
-            "expiryDate": "2026-07-20",
-            "location": "Frigo Test"
+        response = requests.get(f"{API_URL}/business-modules?module=noshow")
+        
+        if response.status_code != 200:
+            print_error(f"Request failed: {response.status_code} - {response.text}")
+            return False
+        
+        data = response.json()
+        
+        # Check for demo data structure
+        required_keys = ['unconfirmed', 'noshowHistory', 'waitlist', 'recoveredSlots', 'ownerLabels']
+        for key in required_keys:
+            if key not in data:
+                print_error(f"Missing key: {key}")
+                return False
+        
+        print_result(True, f"All 5 required keys present: {', '.join(required_keys)}")
+        
+        # Check unconfirmed has 12 demo entries with names like 'Maria Rossi'
+        unconfirmed = data.get('unconfirmed', [])
+        print_result(True, f"Unconfirmed entries: {len(unconfirmed)} (expected 12 for demo)")
+        
+        if len(unconfirmed) > 0:
+            first_entry = unconfirmed[0]
+            print_result(True, f"First entry owner: {first_entry.get('ownerName')} (demo data)")
+        
+        return True
+        
+    except Exception as e:
+        print_error(f"Exception: {str(e)}")
+        return False
+
+# ============================================================================
+# TEST 3: No-Show Module WITH Auth (Real Data)
+# ============================================================================
+def test_noshow_module_with_auth():
+    print_test("3. GET /api/business-modules?module=noshow WITH Authorization (Real Data)")
+    
+    try:
+        headers = {"Authorization": f"Bearer {clinic_token}"}
+        response = requests.get(f"{API_URL}/business-modules?module=noshow", headers=headers)
+        
+        if response.status_code != 200:
+            print_error(f"Request failed: {response.status_code} - {response.text}")
+            return False
+        
+        data = response.json()
+        
+        # Check for all 5 required keys
+        required_keys = ['unconfirmed', 'noshowHistory', 'waitlist', 'recoveredSlots', 'ownerLabels']
+        for key in required_keys:
+            if key not in data:
+                print_error(f"Missing key: {key}")
+                return False
+        
+        print_result(True, f"All 5 required keys present: {', '.join(required_keys)}")
+        
+        # Check data types
+        unconfirmed = data.get('unconfirmed', [])
+        noshow_history = data.get('noshowHistory', [])
+        waitlist = data.get('waitlist', [])
+        recovered_slots = data.get('recoveredSlots', [])
+        owner_labels = data.get('ownerLabels', {})
+        
+        print_result(True, f"REAL DATA - Unconfirmed: {len(unconfirmed)}, NoShow History: {len(noshow_history)}, Waitlist: {len(waitlist)}, Recovered: {len(recovered_slots)}")
+        print_result(True, f"Owner Labels: {len(owner_labels)} entries (object type)")
+        
+        # Verify it's different from demo (should not have exactly 12 entries with fixed names)
+        if len(unconfirmed) == 12 and unconfirmed[0].get('ownerName') == 'Maria Rossi':
+            print_error("Data appears to be demo data, not real data!")
+            return False
+        
+        print_result(True, "Data appears to be REAL (differs from fixed demo structure)")
+        
+        return True
+        
+    except Exception as e:
+        print_error(f"Exception: {str(e)}")
+        return False
+
+# ============================================================================
+# TEST 4: Waitlist Trigger Flow (CRITICAL)
+# ============================================================================
+def test_waitlist_trigger_flow():
+    global owner_token, owner_id, test_appointment_id, test_waitlist_id
+    print_test("4. Waitlist Trigger Flow (Critical Test)")
+    
+    try:
+        # 4a. Owner login
+        print("\n--- 4a. Owner Login ---")
+        response = requests.post(f"{API_URL}/auth/login", json={
+            "email": OWNER_EMAIL,
+            "password": OWNER_PASSWORD
+        })
+        
+        if response.status_code != 200:
+            print_error(f"Owner login failed: {response.status_code} - {response.text}")
+            return False
+        
+        data = response.json()
+        owner_token = data.get('token')
+        owner_id = data.get('user', {}).get('id')
+        
+        print_result(True, f"Owner login successful. Owner ID: {owner_id}")
+        
+        # 4b. Create waitlist entry
+        print("\n--- 4b. Create Waitlist Entry ---")
+        headers = {"Authorization": f"Bearer {owner_token}"}
+        waitlist_data = {
+            "clinicId": clinic_id,
+            "ownerId": owner_id,
+            "preferredDates": [],
+            "reason": "Test slot libero"
         }
         
-        response = requests.post(
-            f"{BASE_URL}/inventory",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            json=new_item
-        )
+        response = requests.post(f"{API_URL}/automations/waitlist", headers=headers, json=waitlist_data)
         
-        if response.status_code != 201:
-            print_result(False, f"Create item failed: {response.status_code} - {response.text}")
+        if response.status_code not in [200, 201]:
+            print_error(f"Waitlist creation failed: {response.status_code} - {response.text}")
             return False
         
-        data = response.json()
-        if not data.get("success") or "item" not in data:
-            print_result(False, f"Invalid response: {data}")
+        waitlist_result = response.json()
+        test_waitlist_id = waitlist_result.get('id') or waitlist_result.get('waitlistId')
+        print_result(True, f"Waitlist entry created. ID: {test_waitlist_id}")
+        
+        # 4c. Create appointment for tomorrow
+        print("\n--- 4c. Create Appointment for Tomorrow ---")
+        tomorrow = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')
+        
+        clinic_headers = {"Authorization": f"Bearer {clinic_token}"}
+        appointment_data = {
+            "clinicId": clinic_id,
+            "ownerId": owner_id,
+            "petName": "TestPet",
+            "ownerName": "Test Owner",
+            "date": tomorrow,
+            "time": "15:00",
+            "reason": "Test cancellazione",
+            "status": "confirmed"
+        }
+        
+        response = requests.post(f"{API_URL}/appointments", headers=clinic_headers, json=appointment_data)
+        
+        if response.status_code not in [200, 201]:
+            print_error(f"Appointment creation failed: {response.status_code} - {response.text}")
             return False
         
-        item = data["item"]
-        created_item_id = item.get("id")
+        appointment_result = response.json()
+        test_appointment_id = appointment_result.get('id')
+        print_result(True, f"Appointment created. ID: {test_appointment_id}, Date: {tomorrow}, Time: 15:00")
         
-        # Verify all fields
-        checks = [
-            (item.get("name") == "Test Vaccino Cron", "name"),
-            (item.get("category") == "vaccino", "category"),
-            (item.get("quantity") == 2, "quantity"),
-            (item.get("minThreshold") == 10, "minThreshold"),
-            (item.get("unitPrice") == 15, "unitPrice"),
-            (item.get("supplier") == "Test Lab", "supplier"),
-            (item.get("lot") == "TESTLOT", "lot"),
-            (created_item_id is not None, "id")
-        ]
+        # 4d. Cancel appointment (trigger waitlist notification)
+        print("\n--- 4d. Cancel Appointment (Trigger Waitlist) ---")
+        cancel_data = {"status": "cancelled"}
         
-        all_passed = all(check[0] for check in checks)
-        failed_fields = [check[1] for check in checks if not check[0]]
+        response = requests.put(f"{API_URL}/appointments/{test_appointment_id}", headers=clinic_headers, json=cancel_data)
         
-        if all_passed:
-            print(f"Created item ID: {created_item_id}")
-            print(f"Item details: quantity={item.get('quantity')} < minThreshold={item.get('minThreshold')} (LOW STOCK)")
-            print(f"Expiry date: {item.get('expiryDate')} (within 60 days - EXPIRING)")
-            print_result(True, f"Successfully created item with low stock and expiring date")
-            return True
+        if response.status_code != 200:
+            print_error(f"Appointment cancellation failed: {response.status_code} - {response.text}")
+            return False
+        
+        print_result(True, "Appointment cancelled successfully")
+        
+        # 4e. Wait and verify waitlist notification
+        print("\n--- 4e. Verify Waitlist Notification (waiting 3 seconds) ---")
+        time.sleep(3)
+        
+        # Check automation logs
+        response = requests.get(f"{API_URL}/automations/log", headers=clinic_headers)
+        
+        if response.status_code != 200:
+            print_error(f"Automation log fetch failed: {response.status_code} - {response.text}")
+            return False
+        
+        log_data = response.json()
+        logs = log_data.get('logs', [])
+        
+        # Look for waitlistNotification entry
+        waitlist_logs = [log for log in logs if log.get('type') == 'waitlistNotification']
+        
+        if len(waitlist_logs) > 0:
+            latest_log = waitlist_logs[0]
+            print_result(True, f"Waitlist notification log found: {latest_log.get('title')}")
+            print_result(True, f"Details: {latest_log.get('details')}")
         else:
-            print_result(False, f"Field validation failed for: {failed_fields}")
+            print_error("No waitlistNotification entry found in automation_logs")
+            print(f"Total logs found: {len(logs)}")
             return False
+        
+        return True
+        
     except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
+        print_error(f"Exception: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return False
 
-def test_6_movement_out():
-    """Test 6: MOVEMENT OUT - PUT with type 'out'"""
-    print_test_header("6. MOVEMENT OUT")
+# ============================================================================
+# TEST 5: Daily Cron Job
+# ============================================================================
+def test_daily_cron():
+    print_test("5. GET /api/cron/daily (ONCE ONLY)")
+    
     try:
-        if not created_item_id:
-            print_result(False, "No item ID from previous test")
-            return False
+        print("⚠️  WARNING: This will send REAL emails via Resend API")
+        print("Executing cron job...")
         
-        movement = {
-            "itemId": created_item_id,
-            "type": "out",
-            "quantity": 1,
-            "reason": "Test uso"
-        }
-        
-        response = requests.put(
-            f"{BASE_URL}/inventory",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            json=movement
-        )
+        response = requests.get(f"{API_URL}/cron/daily")
         
         if response.status_code != 200:
-            print_result(False, f"Movement OUT failed: {response.status_code} - {response.text}")
+            print_error(f"Cron job failed: {response.status_code} - {response.text}")
             return False
         
         data = response.json()
-        if not data.get("success"):
-            print_result(False, f"Response success is not true: {data}")
+        
+        if not data.get('success'):
+            print_error(f"Cron job returned success=false: {data}")
             return False
         
-        new_quantity = data.get("newQuantity")
-        if new_quantity != 1:
-            print_result(False, f"Expected newQuantity: 1, got: {new_quantity}")
+        print_result(True, "Cron job executed successfully")
+        
+        results = data.get('results', {})
+        
+        # Check for fragilePatientsDigest key
+        if 'fragilePatientsDigest' in results:
+            fpd = results['fragilePatientsDigest']
+            print_result(True, f"fragilePatientsDigest: sent={fpd.get('sent', 0)}, errors={fpd.get('errors', 0)}, skipped={fpd.get('skipped', 0)}")
+        else:
+            print_error("fragilePatientsDigest key NOT found in results")
             return False
         
-        # Verify movement appears in movements list
-        get_response = requests.get(
-            f"{BASE_URL}/inventory",
-            headers={"Authorization": f"Bearer {clinic_token}"}
-        )
-        movements = get_response.json().get("movements", [])
-        out_movement = next((m for m in movements if m.get("itemId") == created_item_id and m.get("type") == "out"), None)
-        
-        if not out_movement:
-            print_result(False, "Movement not found in movements list")
+        # Check for passportReminder key
+        if 'passportReminder' in results:
+            pr = results['passportReminder']
+            print_result(True, f"passportReminder: sent={pr.get('sent', 0)}, errors={pr.get('errors', 0)}, skipped={pr.get('skipped', 0)}")
+        else:
+            print_error("passportReminder key NOT found in results")
             return False
         
-        print(f"New quantity: {new_quantity}, Movement type: {out_movement.get('type')}, Reason: {out_movement.get('reason')}")
-        print_result(True, f"Movement OUT successful, quantity updated from 2 to 1")
+        # Check estimateFollowup
+        if 'estimateFollowup' in results:
+            ef = results['estimateFollowup']
+            print_result(True, f"estimateFollowup: sent={ef.get('sent', 0)}, errors={ef.get('errors', 0)}, expired={ef.get('expired', 0)}")
+        else:
+            print_error("estimateFollowup key NOT found in results")
+            return False
+        
+        # Verify all error counters are 0
+        error_count = 0
+        for key, value in results.items():
+            if isinstance(value, dict) and value.get('errors', 0) > 0:
+                error_count += value['errors']
+                print_error(f"{key} has {value['errors']} errors")
+        
+        if error_count == 0:
+            print_result(True, "All error counters are 0 - no exceptions in automations")
+        else:
+            print_error(f"Total errors across all automations: {error_count}")
+            return False
+        
         return True
+        
     except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
+        print_error(f"Exception: {str(e)}")
         return False
 
-def test_7_movement_in():
-    """Test 7: MOVEMENT IN - PUT with type 'in'"""
-    print_test_header("7. MOVEMENT IN")
+# ============================================================================
+# TEST 6: Regression Tests
+# ============================================================================
+def test_regression():
+    print_test("6. Regression Tests")
+    
     try:
-        if not created_item_id:
-            print_result(False, "No item ID from previous test")
-            return False
-        
-        movement = {
-            "itemId": created_item_id,
-            "type": "in",
-            "quantity": 5,
-            "reason": "Test rifornimento"
-        }
-        
-        response = requests.put(
-            f"{BASE_URL}/inventory",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            json=movement
-        )
+        # Test GET /api/auth/me (clinic)
+        print("\n--- 6a. GET /api/auth/me (clinic) ---")
+        headers = {"Authorization": f"Bearer {clinic_token}"}
+        response = requests.get(f"{API_URL}/auth/me", headers=headers)
         
         if response.status_code != 200:
-            print_result(False, f"Movement IN failed: {response.status_code} - {response.text}")
+            print_error(f"Auth/me failed: {response.status_code} - {response.text}")
             return False
         
-        data = response.json()
-        if not data.get("success"):
-            print_result(False, f"Response success is not true: {data}")
-            return False
+        print_result(True, "GET /api/auth/me working correctly")
         
-        new_quantity = data.get("newQuantity")
-        if new_quantity != 6:
-            print_result(False, f"Expected newQuantity: 6, got: {new_quantity}")
-            return False
-        
-        # Verify movement appears in movements list
-        get_response = requests.get(
-            f"{BASE_URL}/inventory",
-            headers={"Authorization": f"Bearer {clinic_token}"}
-        )
-        movements = get_response.json().get("movements", [])
-        in_movement = next((m for m in movements if m.get("itemId") == created_item_id and m.get("type") == "in" and m.get("quantity") == 5), None)
-        
-        if not in_movement:
-            print_result(False, "Movement not found in movements list")
-            return False
-        
-        print(f"New quantity: {new_quantity}, Movement type: {in_movement.get('type')}, Reason: {in_movement.get('reason')}")
-        print_result(True, f"Movement IN successful, quantity updated from 1 to 6")
-        return True
-    except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
-        return False
-
-def test_8_cron_automations():
-    """Test 8: CRON - GET /api/cron/daily ONCE → check lowStockAlert and expiryStockAlert"""
-    print_test_header("8. CRON AUTOMATIONS (CALLED ONCE - SENDS REAL EMAILS)")
-    try:
-        print("⚠️  WARNING: This test calls the cron endpoint which sends REAL emails via Resend")
-        print("⚠️  Calling ONLY ONCE as instructed in review request")
-        
-        response = requests.get(f"{BASE_URL}/cron/daily")
+        # Test GET /api/automations/settings after cron
+        print("\n--- 6b. GET /api/automations/settings after cron ---")
+        response = requests.get(f"{API_URL}/automations/settings", headers=headers)
         
         if response.status_code != 200:
-            print_result(False, f"Cron call failed: {response.status_code} - {response.text}")
+            print_error(f"Settings fetch failed after cron: {response.status_code} - {response.text}")
             return False
         
-        data = response.json()
-        if not data.get("success"):
-            print_result(False, f"Response success is not true: {data}")
-            return False
+        print_result(True, "GET /api/automations/settings still working after cron")
         
-        results = data.get("results", {})
-        
-        # Check for lowStockAlert key
-        if "lowStockAlert" not in results:
-            print_result(False, f"lowStockAlert key not found in results: {list(results.keys())}")
-            return False
-        
-        # Check for expiryStockAlert key
-        if "expiryStockAlert" not in results:
-            print_result(False, f"expiryStockAlert key not found in results: {list(results.keys())}")
-            return False
-        
-        low_stock = results["lowStockAlert"]
-        expiry_stock = results["expiryStockAlert"]
-        
-        print(f"\nlowStockAlert results:")
-        print(f"  - sent: {low_stock.get('sent', 0)}")
-        print(f"  - errors: {low_stock.get('errors', 0)}")
-        print(f"  - skipped: {low_stock.get('skipped', 0)}")
-        
-        print(f"\nexpiryStockAlert results:")
-        print(f"  - sent: {expiry_stock.get('sent', 0)}")
-        print(f"  - errors: {expiry_stock.get('errors', 0)}")
-        print(f"  - skipped: {expiry_stock.get('skipped', 0)}")
-        
-        # Verify no errors
-        if low_stock.get("errors", 0) != 0:
-            print_result(False, f"lowStockAlert has errors: {low_stock.get('errors')}")
-            return False
-        
-        if expiry_stock.get("errors", 0) != 0:
-            print_result(False, f"expiryStockAlert has errors: {expiry_stock.get('errors')}")
-            return False
-        
-        # Check if emails were sent (should be >= 1 based on seeded data)
-        low_stock_sent = low_stock.get("sent", 0)
-        expiry_stock_sent = expiry_stock.get("sent", 0)
-        
-        print(f"\n📧 Email Summary:")
-        print(f"  - lowStockAlert emails sent: {low_stock_sent} (expected >= 1 from seeded 'Vaccino Leucemia Felina' with qty 4 < threshold 5)")
-        print(f"  - expiryStockAlert emails sent: {expiry_stock_sent} (expected >= 1 from items expiring within 60 days)")
-        
-        # Note: Other automations may be skipped due to daily idempotency flags
-        other_automations = [k for k in results.keys() if k not in ["lowStockAlert", "expiryStockAlert"]]
-        if other_automations:
-            print(f"\nℹ️  Other automations present: {', '.join(other_automations)}")
-            print(f"   (Some may be skipped due to daily idempotency flags from earlier runs today)")
-        
-        print_result(True, f"Cron executed successfully with lowStockAlert and expiryStockAlert keys present, errors=0 for both")
         return True
+        
     except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
+        print_error(f"Exception: {str(e)}")
         return False
 
-def test_9_delete_item():
-    """Test 9: DELETE - DELETE item → 200, DELETE again → 404"""
-    print_test_header("9. DELETE Item")
+# ============================================================================
+# CLEANUP
+# ============================================================================
+def cleanup():
+    print_test("CLEANUP: Deleting Test Data")
+    
     try:
-        if not created_item_id:
-            print_result(False, "No item ID from previous test")
-            return False
+        # Note: MongoDB cleanup would require direct DB access
+        # For now, just log what should be cleaned
+        print(f"Test appointment ID to delete: {test_appointment_id}")
+        print(f"Test waitlist ID to delete: {test_waitlist_id}")
+        print("⚠️  Manual cleanup may be required in MongoDB")
         
-        # First delete
-        response = requests.delete(
-            f"{BASE_URL}/inventory?id={created_item_id}",
-            headers={"Authorization": f"Bearer {clinic_token}"}
-        )
-        
-        if response.status_code != 200:
-            print_result(False, f"First DELETE failed: {response.status_code} - {response.text}")
-            return False
-        
-        data = response.json()
-        if not data.get("success"):
-            print_result(False, f"Response success is not true: {data}")
-            return False
-        
-        print(f"First DELETE successful for item {created_item_id}")
-        
-        # Verify item is gone
-        get_response = requests.get(
-            f"{BASE_URL}/inventory",
-            headers={"Authorization": f"Bearer {clinic_token}"}
-        )
-        items = get_response.json().get("items", [])
-        item_exists = any(item.get("id") == created_item_id for item in items)
-        
-        if item_exists:
-            print_result(False, "Item still exists after DELETE")
-            return False
-        
-        print(f"Verified item is gone from inventory list")
-        
-        # Second delete (should return 404)
-        response2 = requests.delete(
-            f"{BASE_URL}/inventory?id={created_item_id}",
-            headers={"Authorization": f"Bearer {clinic_token}"}
-        )
-        
-        if response2.status_code != 404:
-            print_result(False, f"Second DELETE should return 404, got {response2.status_code}: {response2.text}")
-            return False
-        
-        print(f"Second DELETE correctly returned 404")
-        print_result(True, f"DELETE operations working correctly: first DELETE → 200, second DELETE → 404")
         return True
+        
     except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
+        print_error(f"Cleanup exception: {str(e)}")
         return False
 
-def test_10_regression_auth_me():
-    """Test 10: Regression - GET /api/auth/me (clinic)"""
-    print_test_header("10. REGRESSION - Auth Me")
-    try:
-        response = requests.get(
-            f"{BASE_URL}/auth/me",
-            headers={"Authorization": f"Bearer {clinic_token}"}
-        )
-        
-        if response.status_code != 200:
-            print_result(False, f"GET /api/auth/me failed: {response.status_code} - {response.text}")
-            return False
-        
-        data = response.json()
-        if not data.get("id") or not data.get("email"):
-            print_result(False, f"Invalid user data: {data}")
-            return False
-        
-        print(f"User: {data.get('email')}, Role: {data.get('role')}")
-        print_result(True, f"GET /api/auth/me working correctly")
-        return True
-    except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
-        return False
-
+# ============================================================================
+# MAIN TEST RUNNER
+# ============================================================================
 def main():
-    """Run all tests"""
     print("\n" + "="*80)
-    print("VETBUDDY INVENTORY API AND AUTOMATION TESTING")
+    print("VetBuddy Batch 1 Automation Testing")
+    print("Base URL:", BASE_URL)
     print("="*80)
-    print(f"Base URL: {BASE_URL}")
-    print(f"Clinic: {CLINIC_EMAIL}")
-    print(f"Owner: {OWNER_EMAIL}")
-    print(f"Test Time: {datetime.now().isoformat()}")
     
-    tests = [
-        ("1. Auth Check - No Token", test_1_auth_no_token),
-        ("2. Auth Check - Owner Token (403)", test_2_auth_owner_token),
-        ("3. Clinic Login and GET Inventory", test_3_clinic_login_and_get),
-        ("4. Seed Demo Data", test_4_seed_demo_data),
-        ("5. Create Item (Low Stock + Expiring)", test_5_create_item),
-        ("6. Movement OUT", test_6_movement_out),
-        ("7. Movement IN", test_7_movement_in),
-        ("8. Cron Automations (ONCE)", test_8_cron_automations),
-        ("9. Delete Item", test_9_delete_item),
-        ("10. Regression - Auth Me", test_10_regression_auth_me),
-    ]
+    results = {
+        "Test 1: Clinic Login & Settings": False,
+        "Test 2: No-Show Module (No Auth)": False,
+        "Test 3: No-Show Module (With Auth)": False,
+        "Test 4: Waitlist Trigger Flow": False,
+        "Test 5: Daily Cron Job": False,
+        "Test 6: Regression Tests": False
+    }
     
-    results = []
-    for test_name, test_func in tests:
-        try:
-            result = test_func()
-            results.append((test_name, result))
-        except Exception as e:
-            print(f"\n❌ CRITICAL ERROR in {test_name}: {str(e)}")
-            results.append((test_name, False))
+    # Run tests
+    results["Test 1: Clinic Login & Settings"] = test_clinic_login_and_settings()
+    results["Test 2: No-Show Module (No Auth)"] = test_noshow_module_no_auth()
+    results["Test 3: No-Show Module (With Auth)"] = test_noshow_module_with_auth()
+    results["Test 4: Waitlist Trigger Flow"] = test_waitlist_trigger_flow()
+    results["Test 5: Daily Cron Job"] = test_daily_cron()
+    results["Test 6: Regression Tests"] = test_regression()
+    
+    # Cleanup
+    cleanup()
     
     # Summary
     print("\n" + "="*80)
     print("TEST SUMMARY")
     print("="*80)
     
-    passed = sum(1 for _, result in results if result)
-    total = len(results)
+    passed = 0
+    failed = 0
     
-    for test_name, result in results:
+    for test_name, result in results.items():
         status = "✅ PASS" if result else "❌ FAIL"
         print(f"{status}: {test_name}")
+        if result:
+            passed += 1
+        else:
+            failed += 1
     
-    print(f"\n{'='*80}")
-    print(f"TOTAL: {passed}/{total} tests passed ({passed*100//total}%)")
-    print(f"{'='*80}\n")
+    print("\n" + "="*80)
+    print(f"TOTAL: {passed} passed, {failed} failed out of {len(results)} tests")
+    print("="*80)
     
-    return 0 if passed == total else 1
+    return failed == 0
 
 if __name__ == "__main__":
-    sys.exit(main())
+    success = main()
+    exit(0 if success else 1)

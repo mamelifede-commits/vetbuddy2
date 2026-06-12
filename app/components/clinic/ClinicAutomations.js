@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertCircle, AlertTriangle, BarChart3, Bell, Building2, Calendar, Check, CheckCircle, Euro, FileCheck, FileText, Gift, Heart, History, Info, Lock, Mail, MessageCircle, PawPrint, RefreshCw, Scissors, Settings2, Shield, Star, Stethoscope, Syringe, Ticket, Timer, TrendingUp, Users, Weight, Zap, Send, Eye } from 'lucide-react';
+import { Activity, AlertCircle, AlertTriangle, BarChart3, Bell, Building2, Calendar, Check, CheckCircle, Euro, FileCheck, FileText, Gift, Heart, History, Info, Lock, Mail, MessageCircle, PawPrint, RefreshCw, Scissors, Settings2, Shield, Star, Stethoscope, Syringe, Ticket, Timer, TrendingUp, Users, Weight, Zap, Send, Eye } from 'lucide-react';
 import api from '@/app/lib/api';
 import BackToDashboard from '@/app/components/shared/BackToDashboard';
 
@@ -310,6 +310,7 @@ function ClinicAutomations({ user, onNavigate }) {
               <AutomationItem settingKey="healthPlanRenewal" icon={<Shield className="h-4 w-4 text-blue-500" />} title="Rinnovo Piani Salute" description="Promemoria 30gg prima della scadenza" gradient="bg-gradient-to-r from-blue-50 to-blue-100" />
               <AutomationItem settingKey="ownerBirthday" icon={<Gift className="h-4 w-4 text-pink-500" />} title="Compleanno Proprietario" description="Auguri automatici al cliente" gradient="bg-gradient-to-r from-pink-50 to-pink-100" />
               <AutomationItem settingKey="therapyReminder" icon={<Syringe className="h-4 w-4 text-purple-500" />} title="Promemoria Terapie" description="Aderenza alle prescrizioni attive" gradient="bg-gradient-to-r from-purple-50 to-purple-100" />
+              <AutomationItem settingKey="fragilePatientsDigest" icon={<Activity className="h-4 w-4 text-rose-500" />} title="Digest Pazienti Fragili" description="Report lunedì: fragili senza follow-up" gradient="bg-gradient-to-r from-rose-50 to-rose-100" />
             </CardContent>
           </Card>
 

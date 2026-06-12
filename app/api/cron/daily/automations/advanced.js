@@ -1,4 +1,5 @@
-import { isAutomationEnabled, getContactButton, wrapEmail } from '../cron-helpers';
+import { isAutomationEnabled, getContactButton, wrapEmail, logAutomation } from '../cron-helpers';
+import { getFragilePatients } from '../../../[[...path]]/modules/fragile-patients';
 
 // Automazioni Avanzate: Briefing, Anti-Spreco, Piani Salute, Fidelizzazione, Terapie, Report Lab
 export async function runAdvancedAutomations({ db, clinicsMap, allClinics, allPets, today, todayStr, results, sendEmail }) {
@@ -57,6 +58,7 @@ export async function runAdvancedAutomations({ db, clinicsMap, allClinics, allPe
         html: wrapEmail(`<h2 style="color:#333;">☀️ Buongiorno ${clinic.clinicName || 'Team'}!</h2><p style="color:#666;">Ecco la tua giornata in 30 secondi:</p>${todayApts.length > 0 ? `<h3 style="color:#333;">📅 Appuntamenti di oggi (${todayApts.length})</h3><table style="width:100%;border-collapse:collapse;margin:10px 0;">${aptRows}</table>${todayApts.length > 12 ? `<p style="color:#999;font-size:13px;">...e altri ${todayApts.length - 12}</p>` : ''}` : '<p style="color:#666;">📅 Nessun appuntamento oggi: ottima giornata per i richiami!</p>'}<h3 style="color:#333;">📌 Priorità</h3><ul style="color:#666;">${riskyToday.length > 0 ? `<li>⚠️ <strong>${riskyToday.length} appuntamenti a rischio no-show</strong>: valuta una chiamata di conferma</li>` : ''}${staleEstimates.length > 0 ? `<li>💰 <strong>${staleEstimates.length} preventivi</strong> senza risposta da 4+ giorni</li>` : ''}${unpaidInvoices.length > 0 ? `<li>💳 <strong>${unpaidInvoices.length} fatture non pagate</strong> (€${unpaidTotal.toFixed(2)})</li>` : ''}${vaccinesDue > 0 ? `<li>💉 <strong>${vaccinesDue} vaccini in scadenza</strong> entro 7 giorni tra i tuoi pazienti</li>` : ''}${riskyToday.length === 0 && staleEstimates.length === 0 && unpaidInvoices.length === 0 && vaccinesDue === 0 ? '<li>✅ Nessuna priorità critica. Buon lavoro!</li>' : ''}</ul>`)
       });
       await setFlag(clinic.id, 'morningBriefing', todayStr);
+      await logAutomation(db, clinic.id, 'morningBriefing', 'Briefing mattutino', `Inviato: ${todayApts.length} appuntamenti, ${riskyToday.length} a rischio, ${staleEstimates.length} preventivi pendenti`);
       results.morningBriefing.sent++;
     } catch (err) { console.error('Morning briefing error:', err); results.morningBriefing.errors++; }
   }
@@ -88,6 +90,7 @@ export async function runAdvancedAutomations({ db, clinicsMap, allClinics, allPe
             html: wrapEmail(`<h2 style="color:#C0392B;">📉 Calo prenotazioni rilevato</h2><p style="color:#666;">La scorsa settimana hai avuto <strong>${currentWeek} appuntamenti</strong>, contro una media di <strong>${avgWeek.toFixed(1)}/settimana</strong> nelle 4 settimane precedenti (<strong>-${dropPct}%</strong>).</p><h3 style="color:#333;">💡 Azioni consigliate</h3><ul style="color:#666;"><li>✅ Verifica che il <strong>Riempi-Agenda Intelligente</strong> sia attivo (invita automaticamente i clienti con richiami in sospeso)</li><li>📲 Lancia una campagna di riattivazione clienti dormienti dall'Autopilot Settimanale</li><li>⭐ Chiedi recensioni ai clienti recenti per aumentare la visibilità</li></ul>`)
           });
           await setFlag(clinic.id, 'bookingDropAlert', todayStr);
+          await logAutomation(db, clinic.id, 'bookingDropAlert', 'Calo prenotazioni', `Settimana a ${currentWeek} appuntamenti vs media ${avgWeek.toFixed(1)} (-${dropPct}%)`);
           results.bookingDropAlert.sent++;
         } else {
           results.bookingDropAlert.skipped++;
@@ -133,6 +136,7 @@ export async function runAdvancedAutomations({ db, clinicsMap, allClinics, allPe
       for (const item of items) {
         await db.collection('inventory').updateOne({ id: item.id }, { $set: { expiryAlertSent: true, expiryAlertSentAt: new Date() } });
       }
+      await logAutomation(db, clinicId, 'expiryStockAlert', 'Prodotti in scadenza', `${items.length} articoli in scadenza entro 60gg — €${totalValue.toFixed(2)} a rischio spreco`);
       results.expiryStockAlert.sent++;
     } catch (err) { console.error('Expiry stock alert error:', err); results.expiryStockAlert.errors++; }
   }
@@ -314,8 +318,62 @@ export async function runAdvancedAutomations({ db, clinicsMap, allClinics, allPe
       for (const item of stockItems) {
         await db.collection('inventory').updateOne({ id: item.id }, { $set: { lowStockAlertSent: true, lowStockAlertSentAt: new Date() } });
       }
+      await logAutomation(db, clinicId, 'lowStockAlert', 'Scorte basse', `${stockItems.length} articoli sotto soglia minima segnalati`);
       results.lowStockAlert.sent++;
     } catch (err) { console.error('Low stock alert error:', err); results.lowStockAlert.errors++; }
+  }
+
+  // ============================================================
+  // 38. DIGEST PAZIENTI FRAGILI (lunedì)
+  // Report settimanale alla clinica con i pazienti fragili senza follow-up programmato
+  // ============================================================
+  if (today.getDay() === 1) {
+    for (const clinic of allClinics) {
+      try {
+        if (!isAutomationEnabled(clinic, 'fragilePatientsDigest') || !clinic.email) { results.fragilePatientsDigest.skipped++; continue; }
+        if (await flagExists(clinic.id, 'fragilePatientsDigest', todayStr)) { results.fragilePatientsDigest.skipped++; continue; }
+
+        const fragile = await getFragilePatients(clinic.id);
+        // Solo pazienti ad alta urgenza/rischio SENZA visita programmata
+        const critical = (fragile || []).filter(p => (p.urgency === 'high' || (p.riskScore || 0) >= 50) && !p.nextVisit).slice(0, 10);
+        if (critical.length === 0) { results.fragilePatientsDigest.skipped++; continue; }
+
+        const rows = critical.map(p => `<tr><td style="padding:6px;border-bottom:1px solid #eee;"><strong>${p.name}</strong> (${p.species || ''})</td><td style="padding:6px;border-bottom:1px solid #eee;">${p.owner || 'N/A'}</td><td style="padding:6px;border-bottom:1px solid #eee;color:#E74C3C;font-weight:bold;">${p.riskScore || 0}</td><td style="padding:6px;border-bottom:1px solid #eee;">${(p.alerts && p.alerts[0]) ? (p.alerts[0].message || p.alerts[0]) : (p.categories && p.categories[0]) || 'Da ricontattare'}</td></tr>`).join('');
+
+        await sendEmail({
+          to: clinic.email,
+          subject: `🩺 ${critical.length} pazienti fragili senza follow-up programmato`,
+          html: wrapEmail(`<h2 style="color:#333;">🩺 Digest settimanale pazienti fragili</h2><p style="color:#666;">Questi pazienti fragili non hanno una visita programmata. Un follow-up proattivo previene peggioramenti e fidelizza il cliente:</p><table style="width:100%;border-collapse:collapse;margin:15px 0;"><tr style="background:#F9F9F9;"><th style="padding:6px;text-align:left;">Paziente</th><th style="padding:6px;text-align:left;">Proprietario</th><th style="padding:6px;text-align:left;">Rischio</th><th style="padding:6px;text-align:left;">Motivo</th></tr>${rows}</table><p style="color:#999;font-size:13px;">💡 Trovi l'elenco completo con le azioni consigliate nel modulo <strong>Alert Pazienti Fragili</strong>.</p>`)
+        });
+        await setFlag(clinic.id, 'fragilePatientsDigest', todayStr);
+        await logAutomation(db, clinic.id, 'fragilePatientsDigest', 'Digest pazienti fragili', `${critical.length} pazienti fragili senza follow-up segnalati`);
+        results.fragilePatientsDigest.sent++;
+      } catch (err) { console.error('Fragile digest error:', err); results.fragilePatientsDigest.errors++; }
+    }
+  } else {
+    results.fragilePatientsDigest.skipped += allClinics.length;
+  }
+
+  // ============================================================
+  // 39. PASSPORT INCOMPLETI (mercoledì) — schedula la route esistente
+  // ============================================================
+  if (today.getDay() === 3) {
+    try {
+      if (!(await flagExists('global', 'passportReminder', todayStr))) {
+        const res = await fetch(`${baseUrl}/api/automations/passport-completion-reminder`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ minCompletionThreshold: 60 })
+        });
+        const data = await res.json().catch(() => ({}));
+        results.passportReminder.sent = data.reminders || 0;
+        await setFlag('global', 'passportReminder', todayStr);
+      } else {
+        results.passportReminder.skipped++;
+      }
+    } catch (err) { console.error('Passport reminder scheduling error:', err); results.passportReminder.errors++; }
+  } else {
+    results.passportReminder.skipped++;
   }
 
   return results;

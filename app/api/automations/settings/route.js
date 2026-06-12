@@ -88,7 +88,8 @@ const DEFAULT_SETTINGS = {
   expiryStockAlert: true,          // Prodotti magazzino in scadenza entro 60gg
   healthPlanRenewal: true,         // Rinnovo piani salute 30gg prima della scadenza
   ownerBirthday: true,             // Auguri compleanno proprietario
-  therapyReminder: true            // Promemoria aderenza terapie prescritte
+  therapyReminder: true,           // Promemoria aderenza terapie prescritte
+  fragilePatientsDigest: true      // Digest settimanale pazienti fragili senza follow-up (lunedì)
 };
 
 // Automazioni incluse nel piano Starter (gratuite ma essenziali)
@@ -111,7 +112,7 @@ const PRO_AUTOMATIONS = [
   'noShowRiskPrediction', 'smartAgendaFiller', 'noShowRecovery',
   'estimateFollowup', 'paymentEscalation', 'labDelayAlert',
   'morningBriefing', 'bookingDropAlert', 'expiryStockAlert',
-  'healthPlanRenewal', 'ownerBirthday', 'therapyReminder'
+  'healthPlanRenewal', 'ownerBirthday', 'therapyReminder', 'fragilePatientsDigest'
 ];
 
 // GET - Retrieve automation settings for the authenticated clinic
