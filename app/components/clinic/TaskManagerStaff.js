@@ -12,6 +12,7 @@ import {
   Phone, FileText, Send, Eye, RefreshCw, Filter, CheckCircle, X
 } from 'lucide-react';
 import BackToDashboard from '@/app/components/shared/BackToDashboard';
+import api from '@/app/lib/api';
 
 const TASK_CATEGORIES = [
   { id: 'call', label: 'Richiamare cliente', icon: <Phone className="h-4 w-4" />, color: 'blue' },
@@ -27,31 +28,79 @@ const TASK_CATEGORIES = [
 export default function TaskManagerStaff({ user, onNavigate }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
   const [showNew, setShowNew] = useState(false);
+  const [detailTask, setDetailTask] = useState(null);
   const [filterPriority, setFilterPriority] = useState('all');
   const [filterStaff, setFilterStaff] = useState('all');
+  const [staffList, setStaffList] = useState([]);
+  const [form, setForm] = useState({ title: '', category: 'call', priority: 'media', assignedTo: '', dueDate: '', notes: '' });
 
   useEffect(() => {
     loadTasks();
+    loadStaff();
   }, []);
 
-  const loadTasks = () => {
-    // Demo data con task automatici + manuali
-    const demo = [
-      // Task automatici generati da VetBuddy
-      { id: '1', title: 'Richiamare Maria Rossi per Luna', category: 'call', priority: 'alta', assignedTo: 'Dr. Rossi', dueDate: new Date(Date.now() + 2 * 3600000).toISOString(), status: 'nuovo', source: 'auto', reason: 'Questionario pre-visita non compilato', createdAt: new Date(Date.now() - 1 * 86400000).toISOString() },
-      { id: '2', title: 'Controllare referto Rex - analisi sangue', category: 'document', priority: 'media', assignedTo: 'Dr. Bianchi', dueDate: new Date(Date.now() + 4 * 3600000).toISOString(), status: 'in_lavorazione', source: 'auto', reason: 'Referto lab ricevuto da laboratorio', createdAt: new Date(Date.now() - 2 * 86400000).toISOString() },
-      { id: '3', title: 'Inviare preventivo sterilizzazione a Marco Ferrara', category: 'estimate', priority: 'media', assignedTo: 'Receptionist', dueDate: new Date(Date.now() + 1 * 86400000).toISOString(), status: 'nuovo', source: 'manual', createdAt: new Date(Date.now() - 6 * 3600000).toISOString() },
-      { id: '4', title: 'Sollecitare completamento Passport Birba', category: 'passport', priority: 'bassa', assignedTo: 'Receptionist', dueDate: new Date(Date.now() + 3 * 86400000).toISOString(), status: 'nuovo', source: 'auto', reason: 'Passport creato ma incompleto da 7 giorni', createdAt: new Date(Date.now() - 7 * 86400000).toISOString() },
-      { id: '5', title: 'Recuperare cliente insoddisfatto: Carlo Neri', category: 'review', priority: 'alta', assignedTo: 'Dr. Verdi', dueDate: new Date(Date.now() + 1 * 3600000).toISOString(), status: 'nuovo', source: 'auto', reason: 'Recensione negativa ricevuta', createdAt: new Date(Date.now() - 4 * 3600000).toISOString() },
-      { id: '6', title: 'Confermare appuntamento Oscar domani mattina', category: 'confirm', priority: 'media', assignedTo: 'Receptionist', dueDate: new Date(Date.now() + 6 * 3600000).toISOString(), status: 'nuovo', source: 'auto', reason: 'Appuntamento non confermato a 24h', createdAt: new Date(Date.now() - 12 * 3600000).toISOString() },
-      { id: '7', title: 'Verificare questionario urgenza Buddy', category: 'questionnaire', priority: 'alta', assignedTo: 'Dr. Rossi', dueDate: new Date(Date.now() + 30 * 60000).toISOString(), status: 'nuovo', source: 'auto', reason: 'Questionario compilato con urgenza ALTA', createdAt: new Date(Date.now() - 2 * 3600000).toISOString() },
-      { id: '8', title: 'Inviare certificato vaccinazione a Sara Colombo', category: 'send', priority: 'media', assignedTo: 'Receptionist', dueDate: new Date(Date.now() + 2 * 86400000).toISOString(), status: 'completato', source: 'manual', createdAt: new Date(Date.now() - 3 * 86400000).toISOString(), completedAt: new Date(Date.now() - 1 * 86400000).toISOString() },
-      { id: '9', title: 'Richiamare Paolo Ricci per follow-up post-chirurgia', category: 'call', priority: 'media', assignedTo: 'Dr. Bianchi', dueDate: new Date(Date.now() - 2 * 3600000).toISOString(), status: 'scaduto', source: 'auto', reason: 'Follow-up 48h post-operatorio', createdAt: new Date(Date.now() - 3 * 86400000).toISOString() },
-      { id: '10', title: 'Inviare preventivo pulizia dentale a Giulia Romano', category: 'estimate', priority: 'bassa', assignedTo: 'Receptionist', dueDate: new Date(Date.now() + 5 * 86400000).toISOString(), status: 'nuovo', source: 'manual', createdAt: new Date(Date.now() - 1 * 86400000).toISOString() },
-    ];
-    setTasks(demo);
-    setLoading(false);
+  const loadTasks = async () => {
+    try {
+      setError('');
+      const res = await api.get('tasks');
+      setTasks(res.tasks || []);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadStaff = async () => {
+    try {
+      const res = await api.get('staff');
+      if (Array.isArray(res)) setStaffList(res.map(s => s.name).filter(Boolean));
+    } catch (e) { /* staff list opzionale (es. account staff) */ }
+  };
+
+  const seedDemo = async () => {
+    try {
+      setSaving(true);
+      setError('');
+      await api.post('tasks', { seedDemo: true });
+      await loadTasks();
+    } catch (e) { setError(e.message); } finally { setSaving(false); }
+  };
+
+  const createTask = async () => {
+    if (!form.title.trim() || !form.dueDate) {
+      setError('Titolo e scadenza sono obbligatori');
+      return;
+    }
+    try {
+      setSaving(true);
+      setError('');
+      await api.post('tasks', { ...form, dueDate: new Date(form.dueDate).toISOString() });
+      setShowNew(false);
+      setForm({ title: '', category: 'call', priority: 'media', assignedTo: '', dueDate: '', notes: '' });
+      await loadTasks();
+    } catch (e) { setError(e.message); } finally { setSaving(false); }
+  };
+
+  const updateStatus = async (taskId, status) => {
+    try {
+      setError('');
+      await api.put('tasks', { taskId, status });
+      setDetailTask(null);
+      await loadTasks();
+    } catch (e) { setError(e.message); }
+  };
+
+  const deleteTask = async (taskId) => {
+    try {
+      setError('');
+      await api.delete(`tasks?id=${taskId}`);
+      setDetailTask(null);
+      await loadTasks();
+    } catch (e) { setError(e.message); }
   };
 
   const getPriorityBadge = (priority) => {
@@ -92,7 +141,7 @@ export default function TaskManagerStaff({ user, onNavigate }) {
     auto: tasks.filter(t => t.source === 'auto').length,
   };
 
-  const staffMembers = ['all', ...new Set(tasks.map(t => t.assignedTo))];
+  const staffMembers = ['all', ...new Set([...staffList, ...tasks.map(t => t.assignedTo)].filter(Boolean))];
 
   if (loading) return <div className="flex items-center justify-center h-64"><RefreshCw className="h-8 w-8 animate-spin text-blue-500" /></div>;
 
@@ -106,6 +155,13 @@ export default function TaskManagerStaff({ user, onNavigate }) {
         </h2>
         <p className="text-gray-500 text-sm">Gestisci attività operative dello staff con task manuali e automatici</p>
       </div>
+
+      {error && (
+        <div className="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg p-3 flex items-center justify-between">
+          <span>{error}</span>
+          <button onClick={() => setError('')} className="text-red-500 hover:text-red-700"><X className="h-4 w-4" /></button>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -179,6 +235,18 @@ export default function TaskManagerStaff({ user, onNavigate }) {
 
         <TabsContent value="active">
           <div className="space-y-3">
+            {tasks.length === 0 && (
+              <Card className="border-dashed">
+                <CardContent className="p-8 text-center">
+                  <CheckSquare className="h-10 w-10 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-600 font-medium mb-1">Nessun task presente</p>
+                  <p className="text-sm text-gray-400 mb-4">I task vengono creati automaticamente dalle automazioni VetBuddy oppure manualmente con "Nuovo Task".</p>
+                  <Button variant="outline" onClick={seedDemo} disabled={saving}>
+                    {saving ? <RefreshCw className="h-4 w-4 mr-1 animate-spin" /> : <Plus className="h-4 w-4 mr-1" />} Carica dati di esempio
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
             {filtered.filter(t => t.status !== 'completato').map((task) => {
               const cat = TASK_CATEGORIES.find(c => c.id === task.category);
               const isOverdue = new Date(task.dueDate) < new Date();
@@ -196,7 +264,7 @@ export default function TaskManagerStaff({ user, onNavigate }) {
                         <div className="flex items-center gap-2 mb-2">
                           <h4 className="font-semibold">{task.title}</h4>
                           {getPriorityBadge(task.priority)}
-                          {getStatusBadge(task.status)}
+                          {getStatusBadge(isOverdue && task.status !== 'completato' ? 'scaduto' : task.status)}
                           {task.source === 'auto' && <Badge className="bg-purple-100 text-purple-700 text-xs"><RefreshCw className="h-3 w-3 mr-1" />Auto</Badge>}
                         </div>
                         {task.reason && <p className="text-sm text-gray-600 mb-2">🤖 Motivo: {task.reason}</p>}
@@ -213,10 +281,10 @@ export default function TaskManagerStaff({ user, onNavigate }) {
                         </div>
                       </div>
                       <div className="flex flex-col gap-2">
-                        <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white" onClick={() => alert('Task completato! (Demo)')}>
+                        <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white" onClick={() => updateStatus(task.id, 'completato')}>
                           <CheckCircle className="h-3 w-3 mr-1" />Completa
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" onClick={() => setDetailTask(task)}>
                           <Eye className="h-3 w-3 mr-1" />Dettagli
                         </Button>
                       </div>
@@ -251,7 +319,7 @@ export default function TaskManagerStaff({ user, onNavigate }) {
                       </div>
                       <div className="flex items-center gap-2">
                         {getPriorityBadge(task.priority)}
-                        <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white">
+                        <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white" onClick={() => updateStatus(task.id, 'completato')}>
                           Completa
                         </Button>
                       </div>
@@ -278,7 +346,7 @@ export default function TaskManagerStaff({ user, onNavigate }) {
                           <p className="text-xs text-red-600">Scaduto: {new Date(task.dueDate).toLocaleDateString('it-IT')}</p>
                         </div>
                       </div>
-                      <Button size="sm" className="bg-red-500 hover:bg-red-600 text-white">
+                      <Button size="sm" className="bg-red-500 hover:bg-red-600 text-white" onClick={() => setDetailTask(task)}>
                         Gestisci Ora
                       </Button>
                     </div>
@@ -314,7 +382,7 @@ export default function TaskManagerStaff({ user, onNavigate }) {
       {/* New Task Modal */}
       {showNew && (
         <Dialog open={showNew} onOpenChange={setShowNew}>
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Nuovo Task Manuale</DialogTitle>
             </DialogHeader>
@@ -323,7 +391,14 @@ export default function TaskManagerStaff({ user, onNavigate }) {
                 <label className="text-sm font-medium">Categoria</label>
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   {TASK_CATEGORIES.map(cat => (
-                    <Button key={cat.id} variant="outline" size="sm" className="justify-start">
+                    <Button
+                      key={cat.id}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className={`justify-start ${form.category === cat.id ? 'bg-blue-500 text-white hover:bg-blue-600 hover:text-white border-blue-500' : ''}`}
+                      onClick={() => setForm({ ...form, category: cat.id })}
+                    >
                       {cat.icon} <span className="ml-2">{cat.label}</span>
                     </Button>
                   ))}
@@ -331,20 +406,34 @@ export default function TaskManagerStaff({ user, onNavigate }) {
               </div>
               <div>
                 <label className="text-sm font-medium">Titolo task *</label>
-                <Input placeholder="Es: Richiamare Mario Rossi" />
+                <Input
+                  placeholder="Es: Richiamare Mario Rossi"
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium">Assegna a *</label>
-                  <select className="w-full border rounded px-3 py-2">
+                  <label className="text-sm font-medium">Assegna a</label>
+                  <Input
+                    list="staff-suggestions"
+                    placeholder="Es: Dr. Rossi"
+                    value={form.assignedTo}
+                    onChange={(e) => setForm({ ...form, assignedTo: e.target.value })}
+                  />
+                  <datalist id="staff-suggestions">
                     {staffMembers.filter(s => s !== 'all').map(s => (
-                      <option key={s} value={s}>{s}</option>
+                      <option key={s} value={s} />
                     ))}
-                  </select>
+                  </datalist>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Priorità *</label>
-                  <select className="w-full border rounded px-3 py-2">
+                  <select
+                    className="w-full border rounded px-3 py-2"
+                    value={form.priority}
+                    onChange={(e) => setForm({ ...form, priority: e.target.value })}
+                  >
                     <option value="alta">Alta</option>
                     <option value="media">Media</option>
                     <option value="bassa">Bassa</option>
@@ -353,18 +442,93 @@ export default function TaskManagerStaff({ user, onNavigate }) {
               </div>
               <div>
                 <label className="text-sm font-medium">Scadenza *</label>
-                <Input type="datetime-local" />
+                <Input
+                  type="datetime-local"
+                  value={form.dueDate}
+                  onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
+                />
               </div>
               <div>
                 <label className="text-sm font-medium">Note</label>
-                <Textarea placeholder="Aggiungi note o istruzioni..." rows={3} />
+                <Textarea
+                  placeholder="Aggiungi note o istruzioni..."
+                  rows={3}
+                  value={form.notes}
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                />
               </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowNew(false)}>Annulla</Button>
-              <Button className="bg-blue-500 hover:bg-blue-600 text-white" onClick={() => { alert('Task creato! (Demo)'); setShowNew(false); }}>
-                <Plus className="h-4 w-4 mr-1" />Crea Task
+              <Button className="bg-blue-500 hover:bg-blue-600 text-white" onClick={createTask} disabled={saving}>
+                {saving ? <RefreshCw className="h-4 w-4 mr-1 animate-spin" /> : <Plus className="h-4 w-4 mr-1" />}Crea Task
               </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Detail Modal */}
+      {detailTask && (
+        <Dialog open={!!detailTask} onOpenChange={(o) => !o && setDetailTask(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="pr-6">{detailTask.title}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 text-sm">
+              <div className="flex flex-wrap items-center gap-2">
+                {getPriorityBadge(detailTask.priority)}
+                {getStatusBadge(new Date(detailTask.dueDate) < new Date() && detailTask.status !== 'completato' ? 'scaduto' : detailTask.status)}
+                {detailTask.source === 'auto' && <Badge className="bg-purple-100 text-purple-700 text-xs"><RefreshCw className="h-3 w-3 mr-1" />Auto</Badge>}
+              </div>
+              <div className="grid grid-cols-2 gap-3 bg-gray-50 rounded-lg p-3">
+                <div>
+                  <p className="text-xs text-gray-400">Categoria</p>
+                  <p className="font-medium">{TASK_CATEGORIES.find(c => c.id === detailTask.category)?.label || detailTask.category}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Assegnato a</p>
+                  <p className="font-medium">{detailTask.assignedTo}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Scadenza</p>
+                  <p className="font-medium">{new Date(detailTask.dueDate).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Creato il</p>
+                  <p className="font-medium">{new Date(detailTask.createdAt).toLocaleDateString('it-IT')}</p>
+                </div>
+              </div>
+              {detailTask.reason && (
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                  <p className="text-xs text-purple-500 mb-1">🤖 Motivo (automazione)</p>
+                  <p className="text-purple-800">{detailTask.reason}</p>
+                </div>
+              )}
+              {detailTask.notes && (
+                <div>
+                  <p className="text-xs text-gray-400 mb-1">Note</p>
+                  <p className="text-gray-700 whitespace-pre-wrap">{detailTask.notes}</p>
+                </div>
+              )}
+              {detailTask.completedAt && (
+                <p className="text-green-600 text-xs">✓ Completato il {new Date(detailTask.completedAt).toLocaleString('it-IT')}{detailTask.completedBy ? ` da ${detailTask.completedBy}` : ''}</p>
+              )}
+            </div>
+            <DialogFooter className="flex-wrap gap-2">
+              <Button variant="outline" className="text-red-600 border-red-300 hover:bg-red-50" onClick={() => deleteTask(detailTask.id)}>
+                <X className="h-4 w-4 mr-1" />Elimina
+              </Button>
+              {detailTask.status === 'nuovo' && (
+                <Button variant="outline" onClick={() => updateStatus(detailTask.id, 'in_lavorazione')}>
+                  <Clock className="h-4 w-4 mr-1" />In lavorazione
+                </Button>
+              )}
+              {detailTask.status !== 'completato' && (
+                <Button className="bg-green-500 hover:bg-green-600 text-white" onClick={() => updateStatus(detailTask.id, 'completato')}>
+                  <CheckCircle className="h-4 w-4 mr-1" />Completa
+                </Button>
+              )}
             </DialogFooter>
           </DialogContent>
         </Dialog>

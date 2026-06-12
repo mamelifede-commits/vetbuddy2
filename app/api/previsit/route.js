@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCollection } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { sendEmail } from '@/lib/email';
+import { createAutoTask } from '@/lib/tasks';
 import { createAndSendPrevisitForm } from '@/lib/previsit';
 
 export const dynamic = 'force-dynamic';
@@ -121,6 +122,17 @@ export async function POST(request) {
             details: `${form.ownerName} (${form.petName || 'paziente'}): ${answers.reason || 'vedi modulo'}`,
             executedAt: new Date().toISOString(),
             source: 'compilazione-proprietario'
+          });
+          // Task automatico per lo staff: verificare il questionario urgente
+          await createAutoTask({
+            clinicId: form.clinicId,
+            title: `Verificare questionario urgenza ${form.petName || form.ownerName}`,
+            category: 'questionnaire',
+            priority: 'alta',
+            dueDate: new Date(Date.now() + 2 * 3600000).toISOString(),
+            reason: `Questionario pre-visita compilato da ${form.ownerName} con urgenza ALTA`,
+            relatedId: form.id,
+            dedupeKey: `previsit_urgent_${form.id}`
           });
         } catch (e) { console.error('Urgent previsit alert error:', e); }
       }

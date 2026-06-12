@@ -1,4 +1,5 @@
 import { isAutomationEnabled, getContactButton, wrapEmail, logAutomation } from '../cron-helpers';
+import { createAutoTask } from '@/lib/tasks';
 
 const SURGICAL_KEYWORDS = ['chirurg', 'steriliz', 'castraz', 'anestes', 'intervento', 'operaz', 'estrazion', 'detartrasi', 'odontoiatr', 'biopsia'];
 
@@ -120,6 +121,19 @@ export async function runCareFollowupAutomations({ db, clinicsMap, allClinics, a
       }
       for (const r of reqs) {
         await db.collection('lab_requests').updateOne({ id: r.id }, { $set: { stuckReportAlertSent: true, stuckReportAlertSentAt: new Date() } });
+        // Task automatico per lo staff: gestire il referto fermo
+        const taskRes = await createAutoTask({
+          db,
+          clinicId,
+          title: `Controllare referto ${r.examName || r.examType || 'analisi'} - ${r.petName || 'paziente'}`,
+          category: 'document',
+          priority: 'media',
+          dueDate: new Date(Date.now() + 24 * 3600000).toISOString(),
+          reason: 'Referto completato dal laboratorio da +48h non ancora revisionato/inviato',
+          relatedId: r.id,
+          dedupeKey: `stuckreport_${r.id}`
+        });
+        if (taskRes.created) results.labDelayAlert.tasksCreated = (results.labDelayAlert.tasksCreated || 0) + 1;
       }
       results.labDelayAlert.stuckReports = (results.labDelayAlert.stuckReports || 0) + reqs.length;
     } catch (err) { console.error('Stuck report alert error:', err); results.labDelayAlert.errors++; }
@@ -174,6 +188,21 @@ export async function runCareFollowupAutomations({ db, clinicsMap, allClinics, a
   for (const [clinicId, list] of missingByClinic) {
     try {
       const clinic = clinicsMap.get(clinicId);
+      // Task automatici per lo staff: gestire i consensi mancanti (anche senza email clinica)
+      for (const x of list) {
+        const taskRes = await createAutoTask({
+          db,
+          clinicId,
+          title: `Consenso mancante: ${x.apt.petName || 'paziente'} (${x.apt.ownerName || 'cliente'}) - procedura ${x.apt.date}`,
+          category: 'send',
+          priority: 'alta',
+          dueDate: new Date(Date.now() + 12 * 3600000).toISOString(),
+          reason: x.hasPending ? 'Consenso inviato ma non ancora firmato (promemoria gi\u00e0 inviato al proprietario)' : 'Nessun consenso creato per la procedura imminente: crearlo e inviarlo dal modulo Consensi Digitali',
+          relatedId: x.apt.id,
+          dedupeKey: `consent_missing_${x.apt.id}`
+        });
+        if (taskRes.created) results.missingConsentCheck.tasksCreated = (results.missingConsentCheck.tasksCreated || 0) + 1;
+      }
       if (!clinic?.email) continue;
       const rows = list.map(x => `<li><strong>${x.apt.petName || 'Paziente'}</strong> — ${x.apt.ownerName || 'Cliente'} (${x.apt.date}${x.apt.time ? ' ' + x.apt.time : ''}) — ${x.apt.reason || 'procedura'} ${x.hasPending ? '→ <em>consenso inviato, in attesa di firma (promemoria inviato)</em>' : '→ <strong style="color:#E74C3C;">nessun consenso creato</strong>'}</li>`).join('');
       await sendEmail({

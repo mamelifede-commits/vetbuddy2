@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-VetBuddy Backend Testing Script - Batch 2-3-4 Features
-Tests: Pre-visita, Consensi Digitali, Appointment Hook, Daily Cron, Settings
+VetBuddy Task Manager Staff API Testing
+Tests the new /api/tasks endpoint and automation hooks
 """
 
 import requests
@@ -12,10 +12,9 @@ from pymongo import MongoClient
 import os
 
 # Configuration
-BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://clinic-report-review.preview.emergentagent.com')
-API_URL = f"{BASE_URL}/api"
-MONGO_URL = os.getenv('MONGO_URL', 'mongodb+srv://mamelifede_db_user:8XjA0yK3dnnyxy0M@cluster0.kk2vrpt.mongodb.net/vetbuddy')
-DB_NAME = os.getenv('DB_NAME', 'vetbuddy')
+BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
+MONGO_URL = os.getenv("MONGO_URL", "mongodb+srv://mamelifede_db_user:8XjA0yK3dnnyxy0M@cluster0.kk2vrpt.mongodb.net/vetbuddy")
+DB_NAME = "vetbuddy"
 
 # Credentials
 CLINIC_EMAIL = "demo@vetbuddy.it"
@@ -23,761 +22,823 @@ CLINIC_PASSWORD = "VetBuddy2025!Secure"
 OWNER_EMAIL = "proprietario.demo@vetbuddy.it"
 OWNER_PASSWORD = "demo123"
 
-# Global variables
+# Global variables to store test data
 clinic_token = None
 owner_token = None
-clinic_id = None
-owner_id = None
-mongo_client = None
-db = None
+test_task_ids = []
+test_previsit_form_id = None
+test_previsit_token = None
 
-# Test tracking
-test_results = []
+def print_test(test_name):
+    print(f"\n{'='*80}")
+    print(f"TEST: {test_name}")
+    print('='*80)
 
-def log_test(test_name, passed, message=""):
-    """Log test result"""
-    status = "✅ PASS" if passed else "❌ FAIL"
-    result = f"{status}: {test_name}"
-    if message:
-        result += f" - {message}"
-    print(result)
-    test_results.append({"test": test_name, "passed": passed, "message": message})
+def print_success(message):
+    print(f"✅ SUCCESS: {message}")
 
-def setup_mongo():
-    """Setup MongoDB connection"""
-    global mongo_client, db
+def print_error(message):
+    print(f"❌ ERROR: {message}")
+
+def print_info(message):
+    print(f"ℹ️  INFO: {message}")
+
+# ============================================================================
+# TEST 1: AUTHENTICATION
+# ============================================================================
+def test_auth():
+    global clinic_token, owner_token
+    
+    print_test("1. AUTHENTICATION")
+    
+    # Test 1a: GET /api/tasks without token → 401
     try:
-        mongo_client = MongoClient(MONGO_URL)
-        db = mongo_client[DB_NAME]
-        print(f"✅ MongoDB connected to {DB_NAME}")
-        return True
+        print_info("Test 1a: GET /api/tasks without token → 401")
+        response = requests.get(f"{BASE_URL}/tasks")
+        if response.status_code == 401:
+            print_success(f"Unauthorized access correctly blocked: {response.status_code}")
+        else:
+            print_error(f"Expected 401, got {response.status_code}: {response.text}")
     except Exception as e:
-        print(f"❌ MongoDB connection failed: {e}")
-        return False
-
-def cleanup_mongo():
-    """Close MongoDB connection"""
-    if mongo_client:
-        mongo_client.close()
-        print("✅ MongoDB connection closed")
-
-def login_clinic():
-    """Login as clinic and get token"""
-    global clinic_token, clinic_id
+        print_error(f"Test 1a failed: {str(e)}")
+    
+    # Test 1b: Clinic login
     try:
-        response = requests.post(f"{API_URL}/auth/login", json={
+        print_info("Test 1b: Clinic login")
+        response = requests.post(f"{BASE_URL}/auth/login", json={
             "email": CLINIC_EMAIL,
             "password": CLINIC_PASSWORD
         })
         if response.status_code == 200:
             data = response.json()
-            clinic_token = data.get('token')
-            clinic_id = data.get('user', {}).get('id')
-            print(f"✅ Clinic login successful - ID: {clinic_id}")
-            return True
+            clinic_token = data.get("token")
+            print_success(f"Clinic login successful, token: {clinic_token[:20]}...")
         else:
-            print(f"❌ Clinic login failed: {response.status_code} - {response.text}")
+            print_error(f"Clinic login failed: {response.status_code} - {response.text}")
             return False
     except Exception as e:
-        print(f"❌ Clinic login error: {e}")
+        print_error(f"Test 1b failed: {str(e)}")
         return False
-
-def login_owner():
-    """Login as owner and get token"""
-    global owner_token, owner_id
+    
+    # Test 1c: Owner login
     try:
-        response = requests.post(f"{API_URL}/auth/login", json={
+        print_info("Test 1c: Owner login")
+        response = requests.post(f"{BASE_URL}/auth/login", json={
             "email": OWNER_EMAIL,
             "password": OWNER_PASSWORD
         })
         if response.status_code == 200:
             data = response.json()
-            owner_token = data.get('token')
-            owner_id = data.get('user', {}).get('id')
-            print(f"✅ Owner login successful - ID: {owner_id}")
-            return True
+            owner_token = data.get("token")
+            print_success(f"Owner login successful, token: {owner_token[:20]}...")
         else:
-            print(f"❌ Owner login failed: {response.status_code} - {response.text}")
-            return False
+            print_error(f"Owner login failed: {response.status_code} - {response.text}")
     except Exception as e:
-        print(f"❌ Owner login error: {e}")
-        return False
+        print_error(f"Test 1c failed: {str(e)}")
+    
+    # Test 1d: GET /api/tasks with owner token → 403
+    try:
+        print_info("Test 1d: GET /api/tasks with owner token → 403")
+        response = requests.get(f"{BASE_URL}/tasks", headers={
+            "Authorization": f"Bearer {owner_token}"
+        })
+        if response.status_code == 403:
+            print_success(f"Owner access correctly blocked: {response.status_code}")
+        else:
+            print_error(f"Expected 403, got {response.status_code}: {response.text}")
+    except Exception as e:
+        print_error(f"Test 1d failed: {str(e)}")
+    
+    return True
 
-def test_1_settings_keys():
-    """Test 1: Clinic login → GET /api/automations/settings → contains previsitForm, missingConsentCheck, puppyProgram"""
-    print("\n" + "="*80)
-    print("TEST 1: Automation Settings - New Keys")
-    print("="*80)
+# ============================================================================
+# TEST 2: GET /api/tasks (clinic)
+# ============================================================================
+def test_get_tasks():
+    print_test("2. GET /api/tasks (clinic)")
     
     try:
-        headers = {"Authorization": f"Bearer {clinic_token}"}
-        response = requests.get(f"{API_URL}/automations/settings", headers=headers)
-        
-        if response.status_code != 200:
-            log_test("Test 1 - Settings GET", False, f"Status {response.status_code}")
-            return False
-        
-        data = response.json()
-        settings = data.get('settings', {})
-        
-        # Check for new keys
-        required_keys = ['previsitForm', 'missingConsentCheck', 'puppyProgram']
-        missing_keys = [key for key in required_keys if key not in settings]
-        
-        if missing_keys:
-            log_test("Test 1 - Settings Keys", False, f"Missing keys: {missing_keys}")
-            return False
-        
-        # Verify all are true
-        all_true = all(settings.get(key) == True for key in required_keys)
-        if not all_true:
-            log_test("Test 1 - Settings Values", False, f"Not all keys are true: {[(k, settings.get(k)) for k in required_keys]}")
-            return False
-        
-        log_test("Test 1 - Settings Keys", True, f"All 3 new keys present and true: {required_keys}")
-        return True
-        
-    except Exception as e:
-        log_test("Test 1 - Settings", False, f"Exception: {e}")
-        return False
-
-def test_2_previsita_e2e():
-    """Test 2: Pre-visita E2E flow"""
-    print("\n" + "="*80)
-    print("TEST 2: Pre-visita E2E Flow")
-    print("="*80)
-    
-    form_id = None
-    token = None
-    
-    try:
-        # 2a. POST /api/previsit (clinic token) - Manual send
-        print("\n2a. Creating pre-visita form (manual send)...")
-        headers = {"Authorization": f"Bearer {clinic_token}"}
-        response = requests.post(f"{API_URL}/previsit", headers=headers, json={
-            "ownerName": "Test Owner",
-            "ownerEmail": OWNER_EMAIL,
-            "petName": "TestPet",
-            "type": "generale"
+        print_info("GET /api/tasks with clinic token")
+        response = requests.get(f"{BASE_URL}/tasks", headers={
+            "Authorization": f"Bearer {clinic_token}"
         })
-        
-        if response.status_code != 201:
-            log_test("Test 2a - Create Form", False, f"Status {response.status_code}: {response.text}")
-            return False
-        
-        data = response.json()
-        form_id = data.get('formId')
-        if not form_id:
-            log_test("Test 2a - Create Form", False, "No formId returned")
-            return False
-        
-        log_test("Test 2a - Create Form", True, f"Form created: {form_id}")
-        
-        # 2b. Read token from MongoDB
-        print("\n2b. Reading token from MongoDB...")
-        form_doc = db.previsit_forms.find_one({"id": form_id})
-        if not form_doc:
-            log_test("Test 2b - Read Token", False, "Form not found in DB")
-            return False
-        
-        token = form_doc.get('token')
-        if not token:
-            log_test("Test 2b - Read Token", False, "Token not found in form")
-            return False
-        
-        log_test("Test 2b - Read Token", True, f"Token retrieved: {token[:20]}...")
-        
-        # 2c. GET /api/previsit?id=<formId>&t=<token> (no auth) - Public access
-        print("\n2c. Public GET with valid token...")
-        response = requests.get(f"{API_URL}/previsit?id={form_id}&t={token}")
-        
-        if response.status_code != 200:
-            log_test("Test 2c - Public GET Valid", False, f"Status {response.status_code}")
-            return False
-        
-        data = response.json()
-        if not data.get('success') or not data.get('form'):
-            log_test("Test 2c - Public GET Valid", False, "Invalid response structure")
-            return False
-        
-        log_test("Test 2c - Public GET Valid", True, "Form data retrieved successfully")
-        
-        # 2d. GET /api/previsit?id=<formId>&t=WRONGTOKEN - Should fail
-        print("\n2d. Public GET with wrong token...")
-        response = requests.get(f"{API_URL}/previsit?id={form_id}&t=WRONGTOKEN")
-        
-        if response.status_code != 404:
-            log_test("Test 2d - Public GET Invalid", False, f"Expected 404, got {response.status_code}")
-            return False
-        
-        log_test("Test 2d - Public GET Invalid", True, "Correctly rejected wrong token")
-        
-        # 2e. POST /api/previsit - Submit with urgency Alta
-        print("\n2e. Submitting form with urgency Alta...")
-        response = requests.post(f"{API_URL}/previsit", json={
-            "id": form_id,
-            "token": token,
-            "answers": {
-                "reason": "Vomito",
-                "symptoms": "vomita da ieri",
-                "urgency": "Alta"
-            }
-        })
-        
-        if response.status_code != 200:
-            log_test("Test 2e - Submit Form", False, f"Status {response.status_code}: {response.text}")
-            return False
-        
-        data = response.json()
-        if data.get('status') != 'da_revisionare':
-            log_test("Test 2e - Submit Form", False, f"Expected status 'da_revisionare', got {data.get('status')}")
-            return False
-        
-        log_test("Test 2e - Submit Form", True, "Form submitted with urgency Alta → status 'da_revisionare'")
-        
-        # 2f. GET /api/previsit (clinic) - List forms
-        print("\n2f. Clinic GET - List forms...")
-        headers = {"Authorization": f"Bearer {clinic_token}"}
-        response = requests.get(f"{API_URL}/previsit", headers=headers)
-        
-        if response.status_code != 200:
-            log_test("Test 2f - Clinic List", False, f"Status {response.status_code}")
-            return False
-        
-        data = response.json()
-        questionnaires = data.get('questionnaires', [])
-        
-        # Find our form
-        our_form = next((q for q in questionnaires if q.get('id') == form_id), None)
-        if not our_form:
-            log_test("Test 2f - Clinic List", False, "Form not found in list")
-            return False
-        
-        if our_form.get('status') != 'da_revisionare':
-            log_test("Test 2f - Clinic List", False, f"Wrong status: {our_form.get('status')}")
-            return False
-        
-        if our_form.get('reason') != 'Vomito':
-            log_test("Test 2f - Clinic List", False, f"Wrong reason: {our_form.get('reason')}")
-            return False
-        
-        log_test("Test 2f - Clinic List", True, "Form listed with correct status and reason")
-        
-        # 2g. PUT /api/previsit - Mark as reviewed
-        print("\n2g. Marking form as reviewed...")
-        headers = {"Authorization": f"Bearer {clinic_token}"}
-        response = requests.put(f"{API_URL}/previsit", headers=headers, json={
-            "id": form_id,
-            "status": "compilato"
-        })
-        
-        if response.status_code != 200:
-            log_test("Test 2g - Review Form", False, f"Status {response.status_code}")
-            return False
-        
-        log_test("Test 2g - Review Form", True, "Form marked as reviewed")
-        
-        # 2h. GET page /previsit/<formId>?t=<token> - Check page exists
-        print("\n2h. Checking public page exists...")
-        response = requests.get(f"{BASE_URL}/previsit/{form_id}?t={token}")
-        
-        if response.status_code != 200:
-            log_test("Test 2h - Public Page", False, f"Status {response.status_code}")
-            return False
-        
-        log_test("Test 2h - Public Page", True, "Public page accessible")
-        
-        print("\n✅ TEST 2 COMPLETE - All pre-visita tests passed")
-        return True
-        
-    except Exception as e:
-        log_test("Test 2 - Pre-visita E2E", False, f"Exception: {e}")
-        return False
-
-def test_3_appointment_hook():
-    """Test 3: Appointment creation hook"""
-    print("\n" + "="*80)
-    print("TEST 3: Appointment Hook - Auto Pre-visita Creation")
-    print("="*80)
-    
-    appointment_id = None
-    
-    try:
-        # Create appointment
-        print("\n3a. Creating appointment...")
-        headers = {"Authorization": f"Bearer {clinic_token}"}
-        
-        tomorrow = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')
-        
-        response = requests.post(f"{API_URL}/appointments", headers=headers, json={
-            "clinicId": clinic_id,
-            "ownerId": owner_id,
-            "petName": "TestPet Hook",
-            "ownerName": "Test Owner Hook",
-            "date": tomorrow,
-            "time": "16:00",
-            "reason": "Visita test hook",
-            "status": "confirmed"
-        })
-        
-        if response.status_code != 200:
-            log_test("Test 3a - Create Appointment", False, f"Status {response.status_code}: {response.text}")
-            return False
-        
-        data = response.json()
-        appointment_id = data.get('id')
-        if not appointment_id:
-            log_test("Test 3a - Create Appointment", False, "No appointment ID returned")
-            return False
-        
-        log_test("Test 3a - Create Appointment", True, f"Appointment created: {appointment_id}")
-        
-        # Wait for async hook to complete
-        print("\n3b. Waiting 3 seconds for hook to complete...")
-        time.sleep(3)
-        
-        # Check previsit_forms collection
-        print("\n3c. Checking previsit_forms collection...")
-        previsit_form = db.previsit_forms.find_one({"appointmentId": appointment_id})
-        
-        if not previsit_form:
-            log_test("Test 3c - Previsit Created", False, "No previsit form found for appointment")
-            return False
-        
-        log_test("Test 3c - Previsit Created", True, f"Previsit form created: {previsit_form.get('id')}")
-        
-        # Check automation_logs collection
-        print("\n3d. Checking automation_logs collection...")
-        log_entry = db.automation_logs.find_one({
-            "type": "previsitForm",
-            "clinicId": clinic_id
-        }, sort=[("executedAt", -1)])
-        
-        if not log_entry:
-            log_test("Test 3d - Automation Log", False, "No automation log found")
-            return False
-        
-        log_test("Test 3d - Automation Log", True, f"Automation log created: {log_entry.get('title')}")
-        
-        # Cleanup: Delete appointment
-        print("\n3e. Cleaning up - deleting appointment...")
-        response = requests.delete(f"{API_URL}/appointments/{appointment_id}", headers=headers)
         
         if response.status_code == 200:
-            log_test("Test 3e - Cleanup", True, "Appointment deleted")
+            data = response.json()
+            if data.get("success") and "tasks" in data:
+                tasks = data["tasks"]
+                print_success(f"GET /api/tasks successful, found {len(tasks)} tasks")
+                
+                # Verify no MongoDB _id in results
+                if tasks:
+                    if "_id" in tasks[0]:
+                        print_error("MongoDB _id found in task results (should be removed)")
+                    else:
+                        print_success("No MongoDB _id in results (correct)")
+                
+                return True
+            else:
+                print_error(f"Invalid response structure: {data}")
         else:
-            log_test("Test 3e - Cleanup", False, f"Failed to delete: {response.status_code}")
-        
-        print("\n✅ TEST 3 COMPLETE - Appointment hook working")
-        return True
-        
+            print_error(f"GET /api/tasks failed: {response.status_code} - {response.text}")
     except Exception as e:
-        log_test("Test 3 - Appointment Hook", False, f"Exception: {e}")
-        return False
-
-def test_4_consents_e2e():
-    """Test 4: Consensi Digitali E2E flow"""
-    print("\n" + "="*80)
-    print("TEST 4: Consensi Digitali E2E Flow")
-    print("="*80)
+        print_error(f"Test 2 failed: {str(e)}")
     
-    consent_id = None
-    token = None
+    return False
+
+# ============================================================================
+# TEST 3: SEED DEMO DATA
+# ============================================================================
+def test_seed_demo():
+    global test_task_ids
+    
+    print_test("3. SEED DEMO DATA")
+    
+    # First, check if tasks already exist
+    try:
+        print_info("Checking if tasks already exist")
+        response = requests.get(f"{BASE_URL}/tasks", headers={
+            "Authorization": f"Bearer {clinic_token}"
+        })
+        if response.status_code == 200:
+            data = response.json()
+            existing_count = len(data.get("tasks", []))
+            print_info(f"Found {existing_count} existing tasks")
+            
+            if existing_count > 0:
+                print_info("⚠️  Tasks already exist, skipping seed test (as per instructions)")
+                print_info("Note: If you want to test seed, manually delete tasks from MongoDB first")
+                return True
+    except Exception as e:
+        print_error(f"Failed to check existing tasks: {str(e)}")
+    
+    # Test 3a: POST /api/tasks with seedDemo: true
+    try:
+        print_info("Test 3a: POST /api/tasks with seedDemo: true")
+        response = requests.post(f"{BASE_URL}/tasks", 
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={"seedDemo": True}
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("success") and data.get("seeded") == 10:
+                print_success(f"Seed demo successful: {data.get('seeded')} tasks created")
+            else:
+                print_error(f"Unexpected seed response: {data}")
+        elif response.status_code == 400:
+            print_info(f"Seed rejected (tasks already exist): {response.json()}")
+            return True
+        else:
+            print_error(f"Seed demo failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_error(f"Test 3a failed: {str(e)}")
+    
+    # Test 3b: Second seed call should return 400
+    try:
+        print_info("Test 3b: Second POST seedDemo should return 400")
+        response = requests.post(f"{BASE_URL}/tasks", 
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={"seedDemo": True}
+        )
+        
+        if response.status_code == 400:
+            print_success(f"Second seed correctly rejected: {response.status_code}")
+        else:
+            print_error(f"Expected 400, got {response.status_code}: {response.text}")
+    except Exception as e:
+        print_error(f"Test 3b failed: {str(e)}")
+    
+    # Test 3c: Verify 10 tasks with correct fields
+    try:
+        print_info("Test 3c: Verify 10 tasks with correct fields")
+        response = requests.get(f"{BASE_URL}/tasks", headers={
+            "Authorization": f"Bearer {clinic_token}"
+        })
+        
+        if response.status_code == 200:
+            data = response.json()
+            tasks = data.get("tasks", [])
+            
+            if len(tasks) >= 10:
+                print_success(f"Found {len(tasks)} tasks (at least 10)")
+                
+                # Check first task has all required fields
+                task = tasks[0]
+                required_fields = ["id", "clinicId", "title", "category", "priority", 
+                                 "assignedTo", "dueDate", "status", "source", "reason", "createdAt"]
+                missing_fields = [f for f in required_fields if f not in task]
+                
+                if not missing_fields:
+                    print_success(f"All required fields present: {', '.join(required_fields)}")
+                else:
+                    print_error(f"Missing fields: {missing_fields}")
+                
+                # Find completed task
+                completed_tasks = [t for t in tasks if t.get("status") == "completato"]
+                if completed_tasks:
+                    if completed_tasks[0].get("completedAt"):
+                        print_success("Found completed task with completedAt field")
+                    else:
+                        print_error("Completed task missing completedAt field")
+                
+                # Store task IDs for cleanup
+                test_task_ids = [t["id"] for t in tasks]
+            else:
+                print_error(f"Expected at least 10 tasks, found {len(tasks)}")
+        else:
+            print_error(f"Failed to verify tasks: {response.status_code}")
+    except Exception as e:
+        print_error(f"Test 3c failed: {str(e)}")
+    
+    # Test 3d: CLEANUP - Delete seeded tasks from MongoDB
+    try:
+        print_info("Test 3d: CLEANUP - Deleting seeded tasks from MongoDB")
+        client = MongoClient(MONGO_URL)
+        db = client[DB_NAME]
+        
+        # Get clinic ID from token
+        response = requests.get(f"{BASE_URL}/auth/me", headers={
+            "Authorization": f"Bearer {clinic_token}"
+        })
+        clinic_id = response.json().get("id")
+        
+        # Delete all tasks for this clinic
+        result = db.staff_tasks.delete_many({"clinicId": clinic_id})
+        print_success(f"Deleted {result.deleted_count} seeded tasks from MongoDB")
+        
+        client.close()
+        test_task_ids = []
+    except Exception as e:
+        print_error(f"Test 3d cleanup failed: {str(e)}")
+    
+    return True
+
+# ============================================================================
+# TEST 4: CRUD MANUAL TASKS
+# ============================================================================
+def test_crud_manual():
+    global test_task_ids
+    
+    print_test("4. CRUD MANUAL TASKS")
+    
+    created_task_id = None
+    
+    # Test 4a: POST create task
+    try:
+        print_info("Test 4a: POST create task")
+        tomorrow = (datetime.now() + timedelta(days=1)).isoformat()
+        response = requests.post(f"{BASE_URL}/tasks",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={
+                "title": "TEST Richiamare cliente X",
+                "category": "call",
+                "priority": "alta",
+                "assignedTo": "Dr. Test",
+                "dueDate": tomorrow,
+                "notes": "test note"
+            }
+        )
+        
+        if response.status_code == 201:
+            data = response.json()
+            if data.get("success") and data.get("task"):
+                task = data["task"]
+                created_task_id = task["id"]
+                test_task_ids.append(created_task_id)
+                
+                if task.get("status") == "nuovo" and task.get("source") == "manual":
+                    print_success(f"Task created: {created_task_id}, status={task['status']}, source={task['source']}")
+                else:
+                    print_error(f"Task created but wrong status/source: {task}")
+            else:
+                print_error(f"Invalid response: {data}")
+        else:
+            print_error(f"Create task failed: {response.status_code} - {response.text}")
+            return False
+    except Exception as e:
+        print_error(f"Test 4a failed: {str(e)}")
+        return False
+    
+    # Test 4b: POST without title → 400
+    try:
+        print_info("Test 4b: POST without title → 400")
+        tomorrow = (datetime.now() + timedelta(days=1)).isoformat()
+        response = requests.post(f"{BASE_URL}/tasks",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={"dueDate": tomorrow}
+        )
+        
+        if response.status_code == 400:
+            print_success(f"Missing title correctly rejected: {response.status_code}")
+        else:
+            print_error(f"Expected 400, got {response.status_code}")
+    except Exception as e:
+        print_error(f"Test 4b failed: {str(e)}")
+    
+    # Test 4c: POST without dueDate → 400
+    try:
+        print_info("Test 4c: POST without dueDate → 400")
+        response = requests.post(f"{BASE_URL}/tasks",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={"title": "Test task"}
+        )
+        
+        if response.status_code == 400:
+            print_success(f"Missing dueDate correctly rejected: {response.status_code}")
+        else:
+            print_error(f"Expected 400, got {response.status_code}")
+    except Exception as e:
+        print_error(f"Test 4c failed: {str(e)}")
+    
+    # Test 4d: POST with invalid category → 201 but normalized
+    try:
+        print_info("Test 4d: POST with invalid category → normalized to 'call'")
+        tomorrow = (datetime.now() + timedelta(days=1)).isoformat()
+        response = requests.post(f"{BASE_URL}/tasks",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={
+                "title": "TEST Invalid category",
+                "category": "invalid_category",
+                "dueDate": tomorrow
+            }
+        )
+        
+        if response.status_code == 201:
+            data = response.json()
+            task = data.get("task", {})
+            if task.get("category") == "call":
+                print_success(f"Invalid category normalized to 'call'")
+                test_task_ids.append(task["id"])
+            else:
+                print_error(f"Category not normalized: {task.get('category')}")
+        else:
+            print_error(f"Expected 201, got {response.status_code}")
+    except Exception as e:
+        print_error(f"Test 4d failed: {str(e)}")
+    
+    # Test 4e: PUT update status to in_lavorazione
+    try:
+        print_info("Test 4e: PUT update status to 'in_lavorazione'")
+        response = requests.put(f"{BASE_URL}/tasks",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={
+                "taskId": created_task_id,
+                "status": "in_lavorazione"
+            }
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            task = data.get("task", {})
+            if task.get("status") == "in_lavorazione":
+                print_success(f"Status updated to 'in_lavorazione'")
+            else:
+                print_error(f"Status not updated: {task.get('status')}")
+        else:
+            print_error(f"Update failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_error(f"Test 4e failed: {str(e)}")
+    
+    # Test 4f: PUT update status to completato
+    try:
+        print_info("Test 4f: PUT update status to 'completato'")
+        response = requests.put(f"{BASE_URL}/tasks",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={
+                "taskId": created_task_id,
+                "status": "completato"
+            }
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            task = data.get("task", {})
+            if task.get("status") == "completato" and task.get("completedAt") and task.get("completedBy"):
+                print_success(f"Status updated to 'completato', completedAt={task['completedAt']}, completedBy={task['completedBy']}")
+            else:
+                print_error(f"Completed task missing fields: {task}")
+        else:
+            print_error(f"Update failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_error(f"Test 4f failed: {str(e)}")
+    
+    # Test 4g: PUT with invalid status → 400
+    try:
+        print_info("Test 4g: PUT with invalid status → 400")
+        response = requests.put(f"{BASE_URL}/tasks",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={
+                "taskId": created_task_id,
+                "status": "stato_invalido"
+            }
+        )
+        
+        if response.status_code == 400:
+            print_success(f"Invalid status correctly rejected: {response.status_code}")
+        else:
+            print_error(f"Expected 400, got {response.status_code}")
+    except Exception as e:
+        print_error(f"Test 4g failed: {str(e)}")
+    
+    # Test 4h: PUT with non-existent taskId → 404
+    try:
+        print_info("Test 4h: PUT with non-existent taskId → 404")
+        response = requests.put(f"{BASE_URL}/tasks",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={
+                "taskId": "inesistente-task-id-12345",
+                "status": "completato"
+            }
+        )
+        
+        if response.status_code == 404:
+            print_success(f"Non-existent task correctly rejected: {response.status_code}")
+        else:
+            print_error(f"Expected 404, got {response.status_code}")
+    except Exception as e:
+        print_error(f"Test 4h failed: {str(e)}")
+    
+    # Test 4i: PUT modify fields
+    try:
+        print_info("Test 4i: PUT modify fields (title, priority, notes)")
+        response = requests.put(f"{BASE_URL}/tasks",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={
+                "taskId": created_task_id,
+                "title": "TEST modificato",
+                "priority": "bassa",
+                "notes": "nuove note"
+            }
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            task = data.get("task", {})
+            if (task.get("title") == "TEST modificato" and 
+                task.get("priority") == "bassa" and 
+                task.get("notes") == "nuove note"):
+                print_success(f"Fields updated correctly")
+            else:
+                print_error(f"Fields not updated: {task}")
+        else:
+            print_error(f"Update failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_error(f"Test 4i failed: {str(e)}")
+    
+    # Test 4j: DELETE task
+    try:
+        print_info("Test 4j: DELETE task")
+        response = requests.delete(f"{BASE_URL}/tasks?id={created_task_id}",
+            headers={"Authorization": f"Bearer {clinic_token}"}
+        )
+        
+        if response.status_code == 200:
+            print_success(f"Task deleted successfully")
+            test_task_ids.remove(created_task_id)
+        else:
+            print_error(f"Delete failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_error(f"Test 4j failed: {str(e)}")
+    
+    # Test 4k: Second DELETE same id → 404
+    try:
+        print_info("Test 4k: Second DELETE same id → 404")
+        response = requests.delete(f"{BASE_URL}/tasks?id={created_task_id}",
+            headers={"Authorization": f"Bearer {clinic_token}"}
+        )
+        
+        if response.status_code == 404:
+            print_success(f"Second delete correctly rejected: {response.status_code}")
+        else:
+            print_error(f"Expected 404, got {response.status_code}")
+    except Exception as e:
+        print_error(f"Test 4k failed: {str(e)}")
+    
+    return True
+
+# ============================================================================
+# TEST 5: HOOK PREVISIT URGENTE (E2E)
+# ============================================================================
+def test_hook_previsit_urgent():
+    global test_previsit_form_id, test_previsit_token
+    
+    print_test("5. HOOK PREVISIT URGENTE (E2E)")
+    
+    # Test 5a: Create previsit form
+    try:
+        print_info("Test 5a: POST /api/previsit (clinic) - create form")
+        response = requests.post(f"{BASE_URL}/previsit",
+            headers={"Authorization": f"Bearer {clinic_token}"},
+            json={
+                "ownerName": "Test Owner Task",
+                "ownerEmail": "test-task@example.com",
+                "petName": "TestPet",
+                "type": "generale"
+            }
+        )
+        
+        if response.status_code == 201:
+            data = response.json()
+            if data.get("success") and data.get("formId"):
+                test_previsit_form_id = data["formId"]
+                print_success(f"Previsit form created: {test_previsit_form_id}")
+            else:
+                print_error(f"Invalid response: {data}")
+                return False
+        else:
+            print_error(f"Create form failed: {response.status_code} - {response.text}")
+            return False
+    except Exception as e:
+        print_error(f"Test 5a failed: {str(e)}")
+        return False
+    
+    # Test 5b: Retrieve token from MongoDB
+    try:
+        print_info("Test 5b: Retrieve token from MongoDB")
+        client = MongoClient(MONGO_URL)
+        db = client[DB_NAME]
+        
+        form = db.previsit_forms.find_one({"id": test_previsit_form_id})
+        if form and "token" in form:
+            test_previsit_token = form["token"]
+            print_success(f"Token retrieved: {test_previsit_token[:20]}...")
+        else:
+            print_error("Form not found in MongoDB or missing token")
+            client.close()
+            return False
+        
+        client.close()
+    except Exception as e:
+        print_error(f"Test 5b failed: {str(e)}")
+        return False
+    
+    # Test 5c: Submit form with urgency Alta
+    try:
+        print_info("Test 5c: POST /api/previsit - submit with urgency Alta")
+        response = requests.post(f"{BASE_URL}/previsit",
+            json={
+                "id": test_previsit_form_id,
+                "token": test_previsit_token,
+                "answers": {
+                    "reason": "Test",
+                    "symptoms": "Vomito",
+                    "urgency": "Alta"
+                }
+            }
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("success") and data.get("status") == "da_revisionare":
+                print_success(f"Form submitted with urgency Alta, status: {data['status']}")
+                print_info("⚠️  Real email sent to clinic (expected once)")
+            else:
+                print_error(f"Unexpected response: {data}")
+        else:
+            print_error(f"Submit failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_error(f"Test 5c failed: {str(e)}")
+    
+    # Test 5d: Verify task created with dedupeKey
+    try:
+        print_info("Test 5d: GET /api/tasks - verify task created")
+        time.sleep(2)  # Wait for task creation
+        
+        response = requests.get(f"{BASE_URL}/tasks", headers={
+            "Authorization": f"Bearer {clinic_token}"
+        })
+        
+        if response.status_code == 200:
+            data = response.json()
+            tasks = data.get("tasks", [])
+            
+            # Find task with dedupeKey
+            dedupe_key = f"previsit_urgent_{test_previsit_form_id}"
+            urgent_task = None
+            for task in tasks:
+                if task.get("dedupeKey") == dedupe_key:
+                    urgent_task = task
+                    break
+            
+            if urgent_task:
+                print_success(f"Task created with dedupeKey: {dedupe_key}")
+                
+                # Verify task fields
+                if (urgent_task.get("category") == "questionnaire" and
+                    urgent_task.get("priority") == "alta" and
+                    urgent_task.get("source") == "auto" and
+                    "TestPet" in urgent_task.get("title", "")):
+                    print_success(f"Task fields correct: category={urgent_task['category']}, priority={urgent_task['priority']}, source={urgent_task['source']}")
+                else:
+                    print_error(f"Task fields incorrect: {urgent_task}")
+                
+                test_task_ids.append(urgent_task["id"])
+                
+                # Test 5e: Verify idempotency - task should NOT be duplicated
+                print_info("Test 5e: Verify idempotency - no duplicate tasks")
+                duplicate_tasks = [t for t in tasks if t.get("dedupeKey") == dedupe_key]
+                if len(duplicate_tasks) == 1:
+                    print_success(f"Idempotency verified: only 1 task with dedupeKey {dedupe_key}")
+                else:
+                    print_error(f"Idempotency failed: found {len(duplicate_tasks)} tasks with same dedupeKey")
+            else:
+                print_error(f"Task with dedupeKey {dedupe_key} not found")
+        else:
+            print_error(f"Failed to get tasks: {response.status_code}")
+    except Exception as e:
+        print_error(f"Test 5d failed: {str(e)}")
+    
+    return True
+
+# ============================================================================
+# TEST 6: CRON (call ONCE - sends real emails!)
+# ============================================================================
+def test_cron():
+    print_test("6. CRON (calling ONCE - sends real emails!)")
     
     try:
-        # 4a. POST /api/consents (clinic) - Create consent
-        print("\n4a. Creating consent...")
-        headers = {"Authorization": f"Bearer {clinic_token}"}
-        response = requests.post(f"{API_URL}/consents", headers=headers, json={
-            "type": "chirurgia",
-            "ownerName": "Test Owner",
-            "ownerEmail": OWNER_EMAIL,
-            "petName": "TestPet",
-            "detail": "Sterilizzazione test"
-        })
+        print_info("⚠️  Calling GET /api/cron/daily ONCE (sends real emails via Resend)")
+        response = requests.get(f"{BASE_URL}/cron/daily")
         
-        if response.status_code != 201:
-            log_test("Test 4a - Create Consent", False, f"Status {response.status_code}: {response.text}")
-            return False
-        
-        data = response.json()
-        consent_id = data.get('consent', {}).get('id')
-        if not consent_id:
-            log_test("Test 4a - Create Consent", False, "No consent ID returned")
-            return False
-        
-        log_test("Test 4a - Create Consent", True, f"Consent created: {consent_id}")
-        
-        # 4b. Read token from MongoDB
-        print("\n4b. Reading token from MongoDB...")
-        consent_doc = db.consents.find_one({"id": consent_id})
-        if not consent_doc:
-            log_test("Test 4b - Read Token", False, "Consent not found in DB")
-            return False
-        
-        token = consent_doc.get('token')
-        if not token:
-            log_test("Test 4b - Read Token", False, "Token not found in consent")
-            return False
-        
-        log_test("Test 4b - Read Token", True, f"Token retrieved: {token[:20]}...")
-        
-        # 4c. GET /api/consents?id=<id>&t=<token> (no auth) - Public access
-        print("\n4c. Public GET with valid token...")
-        response = requests.get(f"{API_URL}/consents?id={consent_id}&t={token}")
-        
-        if response.status_code != 200:
-            log_test("Test 4c - Public GET", False, f"Status {response.status_code}")
-            return False
-        
-        data = response.json()
-        consent = data.get('consent', {})
-        
-        # Check status changed to 'visto'
-        if consent.get('status') != 'visto':
-            log_test("Test 4c - Status Visto", False, f"Expected 'visto', got {consent.get('status')}")
-            return False
-        
-        log_test("Test 4c - Public GET", True, "Consent retrieved and marked as 'visto'")
-        
-        # 4d. POST /api/consents - Sign consent
-        print("\n4d. Signing consent...")
-        response = requests.post(f"{API_URL}/consents", json={
-            "id": consent_id,
-            "token": token,
-            "sign": True,
-            "signedName": "Mario Rossi Test"
-        })
-        
-        if response.status_code != 200:
-            log_test("Test 4d - Sign Consent", False, f"Status {response.status_code}: {response.text}")
-            return False
-        
-        data = response.json()
-        if data.get('status') != 'firmato':
-            log_test("Test 4d - Sign Consent", False, f"Expected status 'firmato', got {data.get('status')}")
-            return False
-        
-        log_test("Test 4d - Sign Consent", True, "Consent signed successfully")
-        
-        # 4e. POST same sign again - Should fail
-        print("\n4e. Trying to sign again (should fail)...")
-        response = requests.post(f"{API_URL}/consents", json={
-            "id": consent_id,
-            "token": token,
-            "sign": True,
-            "signedName": "Mario Rossi Test"
-        })
-        
-        if response.status_code != 400:
-            log_test("Test 4e - Double Sign", False, f"Expected 400, got {response.status_code}")
-            return False
-        
-        log_test("Test 4e - Double Sign", True, "Correctly rejected double signing")
-        
-        # 4f. GET /api/consents (clinic) - List consents
-        print("\n4f. Clinic GET - List consents...")
-        headers = {"Authorization": f"Bearer {clinic_token}"}
-        response = requests.get(f"{API_URL}/consents", headers=headers)
-        
-        if response.status_code != 200:
-            log_test("Test 4f - Clinic List", False, f"Status {response.status_code}")
-            return False
-        
-        data = response.json()
-        consents = data.get('consents', [])
-        
-        # Find our consent
-        our_consent = next((c for c in consents if c.get('id') == consent_id), None)
-        if not our_consent:
-            log_test("Test 4f - Clinic List", False, "Consent not found in list")
-            return False
-        
-        if our_consent.get('status') != 'firmato':
-            log_test("Test 4f - Clinic List", False, f"Wrong status: {our_consent.get('status')}")
-            return False
-        
-        if not our_consent.get('signedName'):
-            log_test("Test 4f - Clinic List", False, "signedName not present")
-            return False
-        
-        log_test("Test 4f - Clinic List", True, "Consent listed with status 'firmato' and signedName")
-        
-        # 4g. GET page /consent/<id>?t=<token> - Check page exists
-        print("\n4g. Checking public page exists...")
-        response = requests.get(f"{BASE_URL}/consent/{consent_id}?t={token}")
-        
-        if response.status_code != 200:
-            log_test("Test 4g - Public Page", False, f"Status {response.status_code}")
-            return False
-        
-        log_test("Test 4g - Public Page", True, "Public page accessible")
-        
-        print("\n✅ TEST 4 COMPLETE - All consents tests passed")
-        return True
-        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("success"):
+                print_success("Cron job executed successfully")
+                
+                results = data.get("results", {})
+                
+                # Check for required automation results
+                required_keys = ["labDelayAlert", "missingConsentCheck", "noShowRiskPrediction"]
+                
+                for key in required_keys:
+                    if key in results:
+                        result = results[key]
+                        errors = result.get("errors", 0)
+                        
+                        if errors == 0:
+                            print_success(f"{key}: errors=0 ✓ (sent={result.get('sent', 0)}, skipped={result.get('skipped', 0)})")
+                        else:
+                            print_error(f"{key}: errors={errors} (should be 0)")
+                    else:
+                        print_error(f"{key}: NOT FOUND in results")
+                
+                # Check if tasksCreated field exists in any automation
+                tasks_created_found = False
+                for key, result in results.items():
+                    if "tasksCreated" in result:
+                        tasks_created_found = True
+                        print_info(f"{key}: tasksCreated={result['tasksCreated']}")
+                
+                if not tasks_created_found:
+                    print_info("Note: No tasksCreated field in results (may be 0 or no matches)")
+            else:
+                print_error(f"Cron job failed: {data}")
+        else:
+            print_error(f"Cron job failed: {response.status_code} - {response.text}")
     except Exception as e:
-        log_test("Test 4 - Consents E2E", False, f"Exception: {e}")
-        return False
+        print_error(f"Test 6 failed: {str(e)}")
+    
+    return True
 
-def test_5_cron_daily():
-    """Test 5: Daily cron job"""
-    print("\n" + "="*80)
-    print("TEST 5: Daily Cron Job - New Result Keys")
-    print("="*80)
+# ============================================================================
+# TEST 7: REGRESSION
+# ============================================================================
+def test_regression():
+    print_test("7. REGRESSION")
+    
+    # Test 7a: GET /api/auth/me
+    try:
+        print_info("Test 7a: GET /api/auth/me (clinic)")
+        response = requests.get(f"{BASE_URL}/auth/me", headers={
+            "Authorization": f"Bearer {clinic_token}"
+        })
+        
+        if response.status_code == 200:
+            print_success("GET /api/auth/me working")
+        else:
+            print_error(f"GET /api/auth/me failed: {response.status_code}")
+    except Exception as e:
+        print_error(f"Test 7a failed: {str(e)}")
+    
+    # Test 7b: GET /api/inventory
+    try:
+        print_info("Test 7b: GET /api/inventory (clinic)")
+        response = requests.get(f"{BASE_URL}/inventory", headers={
+            "Authorization": f"Bearer {clinic_token}"
+        })
+        
+        if response.status_code == 200:
+            print_success("GET /api/inventory working")
+        else:
+            print_error(f"GET /api/inventory failed: {response.status_code}")
+    except Exception as e:
+        print_error(f"Test 7b failed: {str(e)}")
+    
+    # Test 7c: GET /api/previsit
+    try:
+        print_info("Test 7c: GET /api/previsit (clinic)")
+        response = requests.get(f"{BASE_URL}/previsit", headers={
+            "Authorization": f"Bearer {clinic_token}"
+        })
+        
+        if response.status_code == 200:
+            print_success("GET /api/previsit working")
+        else:
+            print_error(f"GET /api/previsit failed: {response.status_code}")
+    except Exception as e:
+        print_error(f"Test 7c failed: {str(e)}")
+    
+    return True
+
+# ============================================================================
+# TEST 8: CLEANUP FINALE
+# ============================================================================
+def test_cleanup():
+    print_test("8. CLEANUP FINALE")
     
     try:
-        print("\n5a. Calling GET /api/cron/daily ONCE...")
-        response = requests.get(f"{API_URL}/cron/daily")
+        print_info("Connecting to MongoDB for cleanup")
+        client = MongoClient(MONGO_URL)
+        db = client[DB_NAME]
         
-        if response.status_code != 200:
-            log_test("Test 5a - Cron Call", False, f"Status {response.status_code}: {response.text}")
-            return False
-        
-        data = response.json()
-        results = data.get('results', {})
-        
-        # Check for new keys
-        required_keys = ['postSurgeryFollowup', 'medicationRefill', 'missingConsentCheck', 'puppyProgram']
-        missing_keys = [key for key in required_keys if key not in results]
-        
-        if missing_keys:
-            log_test("Test 5a - Cron Keys", False, f"Missing keys: {missing_keys}")
-            return False
-        
-        log_test("Test 5a - Cron Call", True, f"All 4 new keys present: {required_keys}")
-        
-        # Check error counters are 0
-        print("\n5b. Checking error counters...")
-        errors_found = []
-        for key in required_keys:
-            result = results.get(key, {})
-            errors = result.get('errors', 0)
-            if errors > 0:
-                errors_found.append(f"{key}: {errors} errors")
-        
-        if errors_found:
-            log_test("Test 5b - Error Counters", False, f"Errors found: {errors_found}")
-            return False
-        
-        log_test("Test 5b - Error Counters", True, "All error counters are 0")
-        
-        # Log results for visibility
-        print("\n5c. Cron results summary:")
-        for key in required_keys:
-            result = results.get(key, {})
-            print(f"  - {key}: sent={result.get('sent', 0)}, errors={result.get('errors', 0)}, skipped={result.get('skipped', 0)}")
-        
-        print("\n✅ TEST 5 COMPLETE - Cron job working correctly")
-        return True
-        
-    except Exception as e:
-        log_test("Test 5 - Cron Daily", False, f"Exception: {e}")
-        return False
-
-def test_6_auth_checks():
-    """Test 6: Authentication checks"""
-    print("\n" + "="*80)
-    print("TEST 6: Authentication Checks")
-    print("="*80)
-    
-    try:
-        # 6a. GET /api/previsit without token
-        print("\n6a. GET /api/previsit without token...")
-        response = requests.get(f"{API_URL}/previsit")
-        
-        if response.status_code != 401:
-            log_test("Test 6a - Previsit No Auth", False, f"Expected 401, got {response.status_code}")
-            return False
-        
-        log_test("Test 6a - Previsit No Auth", True, "Correctly rejected")
-        
-        # 6b. GET /api/consents without token (no id/t params)
-        print("\n6b. GET /api/consents without token...")
-        response = requests.get(f"{API_URL}/consents")
-        
-        if response.status_code != 401:
-            log_test("Test 6b - Consents No Auth", False, f"Expected 401, got {response.status_code}")
-            return False
-        
-        log_test("Test 6b - Consents No Auth", True, "Correctly rejected")
-        
-        # 6c. POST /api/consents with owner token
-        print("\n6c. POST /api/consents with owner token...")
-        headers = {"Authorization": f"Bearer {owner_token}"}
-        response = requests.post(f"{API_URL}/consents", headers=headers, json={
-            "type": "chirurgia",
-            "ownerName": "Test",
-            "ownerEmail": "test@test.com",
-            "petName": "Test"
+        # Get clinic ID
+        response = requests.get(f"{BASE_URL}/auth/me", headers={
+            "Authorization": f"Bearer {clinic_token}"
         })
+        clinic_id = response.json().get("id")
         
-        if response.status_code != 401:
-            log_test("Test 6c - Consents Owner Auth", False, f"Expected 401, got {response.status_code}")
-            return False
+        # Delete all test tasks
+        print_info("Deleting test tasks from staff_tasks collection")
         
-        log_test("Test 6c - Consents Owner Auth", True, "Correctly rejected owner token")
-        
-        print("\n✅ TEST 6 COMPLETE - All auth checks passed")
-        return True
-        
-    except Exception as e:
-        log_test("Test 6 - Auth Checks", False, f"Exception: {e}")
-        return False
-
-def test_7_regression():
-    """Test 7: Regression checks"""
-    print("\n" + "="*80)
-    print("TEST 7: Regression Checks")
-    print("="*80)
-    
-    try:
-        # 7a. GET /api/auth/me (clinic)
-        print("\n7a. GET /api/auth/me (clinic)...")
-        headers = {"Authorization": f"Bearer {clinic_token}"}
-        response = requests.get(f"{API_URL}/auth/me", headers=headers)
-        
-        if response.status_code != 200:
-            log_test("Test 7a - Auth Me", False, f"Status {response.status_code}")
-            return False
-        
-        log_test("Test 7a - Auth Me", True, "Working correctly")
-        
-        # 7b. GET /api/automations/log (clinic)
-        print("\n7b. GET /api/automations/log (clinic)...")
-        response = requests.get(f"{API_URL}/automations/log", headers=headers)
-        
-        if response.status_code != 200:
-            log_test("Test 7b - Automation Log", False, f"Status {response.status_code}")
-            return False
-        
-        data = response.json()
-        logs = data.get('logs', [])
-        
-        if not isinstance(logs, list):
-            log_test("Test 7b - Automation Log", False, "Logs is not a list")
-            return False
-        
-        log_test("Test 7b - Automation Log", True, f"Working correctly - {len(logs)} entries")
-        
-        print("\n✅ TEST 7 COMPLETE - Regression checks passed")
-        return True
-        
-    except Exception as e:
-        log_test("Test 7 - Regression", False, f"Exception: {e}")
-        return False
-
-def cleanup_test_data():
-    """Cleanup test data from database"""
-    print("\n" + "="*80)
-    print("CLEANUP: Removing test data")
-    print("="*80)
-    
-    try:
-        # Delete test previsit forms
-        result = db.previsit_forms.delete_many({
-            "$or": [
-                {"ownerName": "Test Owner"},
-                {"ownerName": "Test Owner Hook"},
-                {"petName": "TestPet"},
-                {"petName": "TestPet Hook"}
-            ]
+        # Delete tasks with TEST in title
+        result1 = db.staff_tasks.delete_many({
+            "clinicId": clinic_id,
+            "title": {"$regex": "^TEST", "$options": "i"}
         })
-        print(f"✅ Deleted {result.deleted_count} test previsit forms")
+        print_success(f"Deleted {result1.deleted_count} tasks with 'TEST' in title")
         
-        # Delete test consents
-        result = db.consents.delete_many({
-            "$or": [
-                {"ownerName": "Test Owner"},
-                {"petName": "TestPet"},
-                {"detail": "Sterilizzazione test"}
-            ]
+        # Delete task with previsit_urgent dedupeKey
+        if test_previsit_form_id:
+            result2 = db.staff_tasks.delete_many({
+                "clinicId": clinic_id,
+                "dedupeKey": f"previsit_urgent_{test_previsit_form_id}"
+            })
+            print_success(f"Deleted {result2.deleted_count} previsit urgent task")
+        
+        # Delete any remaining tasks created during this test session
+        if test_task_ids:
+            result3 = db.staff_tasks.delete_many({
+                "clinicId": clinic_id,
+                "id": {"$in": test_task_ids}
+            })
+            print_success(f"Deleted {result3.deleted_count} tasks by ID")
+        
+        # Delete test previsit form
+        if test_previsit_form_id:
+            result4 = db.previsit_forms.delete_one({
+                "id": test_previsit_form_id
+            })
+            print_success(f"Deleted {result4.deleted_count} test previsit form")
+        
+        # Also delete any previsit forms with test email
+        result5 = db.previsit_forms.delete_many({
+            "ownerEmail": "test-task@example.com"
         })
-        print(f"✅ Deleted {result.deleted_count} test consents")
+        print_success(f"Deleted {result5.deleted_count} previsit forms with test email")
         
-        # Delete test appointments (if any remain)
-        result = db.appointments.delete_many({
-            "$or": [
-                {"ownerName": "Test Owner Hook"},
-                {"petName": "TestPet Hook"},
-                {"reason": "Visita test hook"}
-            ]
-        })
-        print(f"✅ Deleted {result.deleted_count} test appointments")
-        
-        print("\n✅ CLEANUP COMPLETE")
-        return True
-        
+        client.close()
+        print_success("Cleanup completed successfully")
     except Exception as e:
-        print(f"❌ Cleanup error: {e}")
-        return False
+        print_error(f"Cleanup failed: {str(e)}")
+    
+    return True
 
-def print_summary():
-    """Print test summary"""
-    print("\n" + "="*80)
-    print("TEST SUMMARY")
-    print("="*80)
-    
-    passed = sum(1 for r in test_results if r['passed'])
-    total = len(test_results)
-    
-    print(f"\nTotal Tests: {total}")
-    print(f"Passed: {passed}")
-    print(f"Failed: {total - passed}")
-    print(f"Success Rate: {(passed/total*100):.1f}%")
-    
-    if total - passed > 0:
-        print("\n❌ FAILED TESTS:")
-        for r in test_results:
-            if not r['passed']:
-                print(f"  - {r['test']}: {r['message']}")
-    
-    print("\n" + "="*80)
-
+# ============================================================================
+# MAIN
+# ============================================================================
 def main():
-    """Main test execution"""
-    print("="*80)
-    print("VetBuddy Backend Testing - Batch 2-3-4 Features")
+    print("\n" + "="*80)
+    print("VetBuddy Task Manager Staff API Testing")
     print("="*80)
     print(f"Base URL: {BASE_URL}")
-    print(f"API URL: {API_URL}")
-    print(f"MongoDB: {DB_NAME}")
+    print(f"Clinic: {CLINIC_EMAIL}")
+    print(f"Owner: {OWNER_EMAIL}")
     print("="*80)
     
-    # Setup
-    if not setup_mongo():
-        print("❌ Cannot proceed without MongoDB connection")
-        return
-    
-    if not login_clinic():
-        print("❌ Cannot proceed without clinic login")
-        cleanup_mongo()
-        return
-    
-    if not login_owner():
-        print("❌ Cannot proceed without owner login")
-        cleanup_mongo()
-        return
-    
     # Run tests
-    test_1_settings_keys()
-    test_2_previsita_e2e()
-    test_3_appointment_hook()
-    test_4_consents_e2e()
-    test_5_cron_daily()
-    test_6_auth_checks()
-    test_7_regression()
+    test_auth()
+    test_get_tasks()
+    test_seed_demo()
+    test_crud_manual()
+    test_hook_previsit_urgent()
+    test_cron()
+    test_regression()
+    test_cleanup()
     
-    # Cleanup
-    cleanup_test_data()
-    
-    # Summary
-    print_summary()
-    
-    # Cleanup MongoDB
-    cleanup_mongo()
-    
-    print("\n✅ ALL TESTS COMPLETE")
+    print("\n" + "="*80)
+    print("TESTING COMPLETED")
+    print("="*80)
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,5 @@
 import { isAutomationEnabled, getContactButton, wrapEmail, logAutomation } from '../cron-helpers';
+import { createAutoTask } from '@/lib/tasks';
 
 // Automazioni Intelligenti: Gestione Lavoro, Finanza e Laboratorio
 export async function runWorkManagementAutomations({ db, clinicsMap, allClinics, today, todayStr, results, sendEmail }) {
@@ -59,6 +60,23 @@ export async function runWorkManagementAutomations({ db, clinicsMap, allClinics,
   // Avvisa la clinica con la lista degli appuntamenti a rischio di domani
   for (const [clinicId, list] of riskyByClinic) {
     const clinic = clinicsMap.get(clinicId);
+    // Task automatici per lo staff: telefonata di conferma per ogni appuntamento a rischio
+    for (const r of list) {
+      try {
+        const taskRes = await createAutoTask({
+          db,
+          clinicId,
+          title: `Confermare appuntamento ${r.petName || 'paziente'} domani${r.apt.time ? ' ore ' + r.apt.time : ''}`,
+          category: 'confirm',
+          priority: 'alta',
+          dueDate: new Date(Date.now() + 8 * 3600000).toISOString(),
+          reason: `Cliente ${r.ownerName} con storico assenze (rischio no-show ${r.riskRate}%): telefonata di conferma consigliata`,
+          relatedId: r.apt.id,
+          dedupeKey: `noshowrisk_${r.apt.id}`
+        });
+        if (taskRes.created) results.noShowRiskPrediction.tasksCreated = (results.noShowRiskPrediction.tasksCreated || 0) + 1;
+      } catch (err) { console.error('No-show risk task error:', err); }
+    }
     if (clinic?.email && list.length > 0) {
       try {
         const rows = list.map(r => `<tr><td style="padding:8px;border-bottom:1px solid #eee;">${r.apt.time}</td><td style="padding:8px;border-bottom:1px solid #eee;">${r.petName}</td><td style="padding:8px;border-bottom:1px solid #eee;">${r.ownerName}</td><td style="padding:8px;border-bottom:1px solid #eee;color:#E74C3C;font-weight:bold;">${r.riskRate}%</td></tr>`).join('');
