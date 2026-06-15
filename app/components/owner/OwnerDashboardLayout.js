@@ -53,6 +53,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   
   const [activeTab, setActiveTab] = useState(getInitialTab);
   const [selectedPetId, setSelectedPetId] = useState(null);
+  const [petProfileInitialTab, setPetProfileInitialTab] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -214,8 +215,9 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
   const upcomingAppointments = appointments.filter(a => a.status === 'confirmed' && new Date(a.date) > new Date()).length;
   const unreadMessages = messages.filter(m => !m.read && m.senderId !== user.id).length;
 
-  const handleOpenPetProfile = (petId) => {
+  const handleOpenPetProfile = (petId, initialTab = null) => {
     setSelectedPetId(petId);
+    setPetProfileInitialTab(initialTab);
     setActiveTab('petProfile');
   };
 
@@ -343,7 +345,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'rewards' && <OwnerRewardsSection user={user} />}
         {activeTab === 'reviews' && <OwnerReviews user={user} />}
         {activeTab === 'events' && <OwnerEvents user={user} onNavigate={setActiveTab} />}
-        {activeTab === 'petProfile' && selectedPetId && <PetProfile petId={selectedPetId} onBack={() => setActiveTab('pets')} onNavigate={setActiveTab} appointments={appointments} documents={documents} />}
+        {activeTab === 'petProfile' && selectedPetId && <PetProfile petId={selectedPetId} initialTab={petProfileInitialTab} onBack={() => setActiveTab('pets')} onNavigate={setActiveTab} appointments={appointments} documents={documents} />}
         {activeTab === 'findClinic' && <FindClinic user={user} />}
         {activeTab === 'inviteClinic' && <InviteClinic user={user} />}
         {activeTab === 'vetbuddy-connect' && <VetBuddyConnect user={user} onNavigate={setActiveTab} />}

@@ -233,10 +233,20 @@ export default function OwnerPassportCards({ pets, onOpenProfile }) {
                 )}
               </div>
 
-              {/* CTA */}
-              <div className="mt-2 pt-2 border-t border-gray-100">
-                <button className="w-full text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center justify-center gap-1">
-                  Apri Passport <ChevronRight className="h-3 w-3" />
+              {/* CTA - Apri + Condividi */}
+              <div className="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between gap-1">
+                <button
+                  onClick={() => onOpenProfile && onOpenProfile(pet.id)}
+                  className="flex-1 text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center justify-center gap-1 py-1"
+                >
+                  Apri <ChevronRight className="h-3 w-3" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); onOpenProfile && onOpenProfile(pet.id, 'share'); }}
+                  className="flex-1 text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 font-medium flex items-center justify-center gap-1 py-1 rounded transition-colors"
+                  title="Condividi Passport con pet sitter o familiari"
+                >
+                  <Share2 className="h-3 w-3" /> Condividi
                 </button>
               </div>
             </CardContent>

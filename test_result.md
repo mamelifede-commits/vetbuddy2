@@ -2265,3 +2265,34 @@ agent_communication:
     message: "Test rapido dell'integrazione Twilio WhatsApp nel modulo /api/connect/* (appena aggiunta). BASE URL: https://clinic-report-review.preview.emergentagent.com/api. CREDENZIALI: Clinic: demo@vetbuddy.it / VetBuddy2025!Secure, Lab: laboratorio1@vetbuddy.it / Lab2025!, Owner: proprietario.demo@vetbuddy.it / demo123. NON chiamare /api/cron/daily. TEST 1 - INVITE CON TELEFONO (WhatsApp + Email): 1.1) POST /api/connect/invite come clinic con toPhone, verifica 200 success=true. 1.2) Verifica nel DB (collection invitations): emailSent=true E whatsappSent esiste (può essere true se Twilio sandbox accetta, oppure false con whatsappError valorizzato — entrambi sono OK). TEST 2 - INVITE SENZA TELEFONO: POST /api/connect/invite come clinic SENZA toPhone, verifica emailSent=true, whatsappSent NON deve esistere (o essere null/undefined) → NO chiamata Twilio se phone mancante. TEST 3 - BULK INVITE CON MIX TELEFONI: POST /api/connect/bulk-invite con 2 recipients (1 con phone, 1 senza), verifica results.sent=2. TEST 4 - RESEND: Crea invito con telefono, poi POST /api/connect/resend, verifica 200 success=true e lastResentAt aggiornato. TEST 5 - REGRESSION COMPLETO: GET /api/connect/completion-score, GET /api/connect/stats, GET /api/connect/invitations, GET /api/auth/me. CLEANUP: Rimuovi dalla collection invitations tutti i record con toEmail contenente 'test_wa', 'test_no_wa', 'bulk_wa', 'bulk_no_wa'. Rimuovi dalla collection provisional_profiles i record corrispondenti. NOTA: Twilio probabilmente fallirà l'invio reale a numeri non verificati (sandbox), ma deve gestire il fallimento gracefully SENZA bloccare l'email o l'inserimento dell'invito nel DB. Il successo di questo test è che: L'invito viene SEMPRE inserito nel DB (anche se WhatsApp fallisce), L'email viene SEMPRE inviata (anche se WhatsApp fallisce), whatsappError viene salvato se Twilio fallisce. Aggiorna /app/test_result.md."
   - agent: "testing"
     message: "✅ TWILIO WHATSAPP INTEGRATION TESTING COMPLETE - ALL 6/6 TESTS PASSED (100%): Comprehensive testing completed for Twilio WhatsApp integration in VetBuddy Connect module. ALL TESTS PASSED including: 1) Invite with phone (WhatsApp + Email) - invitation created successfully, verified in MongoDB with emailSent=true and whatsappSent field present (handled Twilio sandbox limit gracefully with whatsappError), 2) Invite without phone (Email only) - emailSent=true, whatsappSent=null (WhatsApp NOT called when phone missing), 3) Bulk invite mix - 2 invitations sent (1 with phone, 1 without), 4) Resend - lastResentAt updated, status='sent', both email and WhatsApp resent, 5) Regression - completion-score (score=56, 5/9 completed), stats (sentTotal=5), invitations list, auth/me all working, 6) Cleanup - removed 5 test invitations and 5 provisional profiles. CRITICAL SUCCESS CRITERIA MET: Invitation ALWAYS inserted in DB (even if WhatsApp fails), Email ALWAYS sent (even if WhatsApp fails), whatsappError saved when Twilio fails, WhatsApp NOT called when phone missing. Twilio sandbox limitations (5 messages/day) handled gracefully. Integration fully functional and ready for production use. Main agent should summarize and finish."
+
+
+backend:
+  - task: "VetBuddy Connect: Integrazione Twilio WhatsApp per inviti (singolo + bulk + resend)"
+    implemented: true
+    working: true
+    file: "/app/lib/whatsapp.js, /app/app/api/[[...path]]/modules/connect.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "NUOVO helper /app/lib/whatsapp.js (sendWhatsApp + buildInviteWhatsAppText). Integrato in connect.js: POST /api/connect/invite invia WhatsApp se toPhone presente, POST /api/connect/bulk-invite invia WhatsApp per ogni recipient con phone, POST /api/connect/resend ripete WhatsApp. Gestione graceful failure: errori Twilio salvati in invitation.whatsappError, NO blocco email/insert. UI: VetBuddyConnect.js form indica '💬 Se inserisci telefono, riceverà anche WhatsApp via Twilio'."
+      - working: true
+        agent: "testing"
+        comment: "ALL 6/6 TESTS PASSED ✅ - Twilio integration fully functional. TEST 1.1 invite con phone: ok WhatsApp tentato + email inviato. TEST 1.2 invite senza phone: ok whatsappSent undefined. TEST 2 bulk: 2/2 con/senza phone. TEST 3 resend con phone: ok. TEST 4 regression: completion-score, stats, invitations, /api/auth/me OK. CRITICAL: invito sempre salvato in DB, email sempre inviata, whatsappError gestito gracefully (Twilio sandbox limit 5/day catturato correttamente)."
+
+frontend:
+  - task: "UI: Bottone 'Condividi Passport' visibile in OwnerPassportCards + initialTab support"
+    implemented: true
+    working: "NA"
+    file: "/app/app/components/owner/OwnerPassportCards.js, /app/app/components/owner/OwnerDashboardLayout.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Aggiunto bottone secondario '📲 Condividi' in ogni pet card di OwnerPassportCards (oltre al primario 'Apri'). Click chiama onOpenProfile(petId, 'share'). OwnerDashboardLayout: handleOpenPetProfile ora accetta initialTab parameter, salvato in state petProfileInitialTab e passato a PetProfile via prop. Backlog: PetPassport non ancora usa initialTab (Backlog: auto-open sezione 'sharing' invece dello scroll manuale)."
+
