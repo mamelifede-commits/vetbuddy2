@@ -25,6 +25,31 @@ export default function BrochurePage() {
           page-break-after: auto;
           break-after: auto;
         }
+        /* Compatta le card nelle sezioni con grid-cols-3 (Enterprise/Innovation/Genius) */
+        .brochure-page .grid.grid-cols-3 > div {
+          padding: 1rem !important;
+        }
+        .brochure-page .grid.grid-cols-3 .w-12.h-12 {
+          width: 2.25rem !important;
+          height: 2.25rem !important;
+        }
+        .brochure-page .grid.grid-cols-3 .text-2xl {
+          font-size: 1.125rem !important;
+        }
+        .brochure-page .grid.grid-cols-3 h3 {
+          font-size: 0.75rem !important;
+          line-height: 1rem !important;
+        }
+        .brochure-page .grid.grid-cols-3 p {
+          font-size: 0.7rem !important;
+          line-height: 1rem !important;
+        }
+        .brochure-page .grid.grid-cols-3 .mb-3 {
+          margin-bottom: 0.4rem !important;
+        }
+        .brochure-page .grid.grid-cols-3 .gap-3 {
+          gap: 0.4rem !important;
+        }
         /* Prevent cards from being split across pages */
         .brochure-page .grid > div,
         .brochure-page [class*="rounded-2xl"],
@@ -108,81 +133,81 @@ export default function BrochurePage() {
       {/* ====================================================================
           PAGINA 2 — PERCHÉ VETBUDDY + PROPOSTA DI VALORE
       ==================================================================== */}
-      <div className="brochure-page bg-white px-12 py-14">
+      <div className="brochure-page bg-white px-12 py-10">
         <PageHeader />
         
-        <h2 className="text-4xl font-black text-gray-900 mb-2 mt-6">Perché VetBuddy?</h2>
-        <p className="text-gray-500 text-lg mb-10 max-w-2xl">Non è l&apos;ennesimo gestionale. È il copilota operativo che riduce il caos quotidiano e aumenta le visite ricorrenti.</p>
+        <h2 className="text-3xl font-black text-gray-900 mb-2 mt-4">Perché VetBuddy?</h2>
+        <p className="text-gray-500 text-base mb-6 max-w-2xl">Non è l&apos;ennesimo gestionale. È il copilota operativo che riduce il caos quotidiano e aumenta le visite ricorrenti.</p>
 
-        <div className="grid grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-3 gap-4 mb-6">
           <StatBox number="Fino a -70%" label="telefonate evitate grazie a prenotazioni online e promemoria automatici (obiettivo del progetto pilota)" />
           <StatBox number="Fino a 15h" label="risparmiate ogni mese dallo staff della clinica (obiettivo del progetto pilota)" />
           <StatBox number="Fino a +25%" label="clienti che tornano grazie a ricontatti e richiami automatici (obiettivo del progetto pilota)" />
         </div>
 
-        <h3 className="text-2xl font-bold text-gray-900 mb-6">Tre attori, un solo ecosistema</h3>
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="rounded-2xl p-5 text-white" style={{ background: 'linear-gradient(135deg, #FF6B6B, #f97316)' }}>
-            <h4 className="text-lg font-bold mb-2">🏥 Cliniche</h4>
-            <p className="text-white/85 text-xs mb-3">Riduci telefonate, automatizza promemoria, recupera no-show, invia referti e fai tornare i clienti.</p>
-            <ul className="space-y-1 text-xs text-white/90">
-              {['Agenda digitale + prenotazioni online', 'WhatsApp Business + Reception AI', 'Documenti e referti via email', 'Assistente al flusso REV', '60+ automazioni operative', 'Cruscotto valore generato'].map((f, i) => (
-                <li key={i} className="flex items-start gap-1.5"><Check className="w-3 h-3 mt-0.5 flex-shrink-0" /><span>{f}</span></li>
+        <h3 className="text-xl font-bold text-gray-900 mb-3">Tre attori, un solo ecosistema</h3>
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(135deg, #FF6B6B, #f97316)' }}>
+            <h4 className="text-base font-bold mb-1.5">🏥 Cliniche</h4>
+            <p className="text-white/85 text-[11px] mb-2">Riduci telefonate, automatizza promemoria, recupera no-show, invia referti.</p>
+            <ul className="space-y-0.5 text-[11px] text-white/90">
+              {['Agenda + prenotazioni online', 'WhatsApp + Reception AI', 'Documenti e referti via email', 'Assistente flusso REV', '60+ automazioni', 'Cruscotto valore'].map((f, i) => (
+                <li key={i} className="flex items-start gap-1"><Check className="w-2.5 h-2.5 mt-0.5 flex-shrink-0" /><span>{f}</span></li>
               ))}
             </ul>
-            <div className="mt-3 pt-2 border-t border-white/20">
-              <p className="font-bold text-xs">Da €29/mese + IVA</p>
+            <div className="mt-2 pt-1.5 border-t border-white/20">
+              <p className="font-bold text-[11px]">Da €29/mese + IVA</p>
               <p className="text-white/75 text-[10px]">Prova gratis 14 giorni</p>
             </div>
           </div>
-          <div className="rounded-2xl p-5 text-white" style={{ background: 'linear-gradient(135deg, #10b981, #14b8a6)' }}>
-            <h4 className="text-lg font-bold mb-2">🐾 Proprietari</h4>
-            <p className="text-white/85 text-xs mb-3">Prenota online, gestisci il Passport del tuo animale, ricevi documenti e promemoria.</p>
-            <ul className="space-y-1 text-xs text-white/90">
-              {['Prenotazione online', 'Passport sanitario + QR emergenza', 'Documenti autorizzati', 'Promemoria visite e vaccini', 'Travel Pack viaggi', 'Condivisione con pet sitter'].map((f, i) => (
-                <li key={i} className="flex items-start gap-1.5"><Check className="w-3 h-3 mt-0.5 flex-shrink-0" /><span>{f}</span></li>
+          <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(135deg, #10b981, #14b8a6)' }}>
+            <h4 className="text-base font-bold mb-1.5">🐾 Proprietari</h4>
+            <p className="text-white/85 text-[11px] mb-2">Prenota online, gestisci il Passport, ricevi documenti e promemoria.</p>
+            <ul className="space-y-0.5 text-[11px] text-white/90">
+              {['Prenotazione online', 'Passport + QR emergenza', 'Documenti autorizzati', 'Promemoria vaccini', 'Travel Pack viaggi', 'Condivisione pet sitter'].map((f, i) => (
+                <li key={i} className="flex items-start gap-1"><Check className="w-2.5 h-2.5 mt-0.5 flex-shrink-0" /><span>{f}</span></li>
               ))}
             </ul>
-            <div className="mt-3 pt-2 border-t border-white/20">
-              <p className="font-bold text-xs">100% Gratis</p>
+            <div className="mt-2 pt-1.5 border-t border-white/20">
+              <p className="font-bold text-[11px]">100% Gratis</p>
               <p className="text-white/75 text-[10px]">Per sempre, nessun costo</p>
             </div>
           </div>
-          <div className="rounded-2xl p-5 text-white" style={{ background: 'linear-gradient(135deg, #2563EB, #4F46E5)' }}>
-            <h4 className="text-lg font-bold mb-2">🔬 Laboratori</h4>
-            <p className="text-white/85 text-xs mb-3">Ricevi richieste dalle cliniche, aggiorna gli stati e carica referti PDF in modo ordinato.</p>
-            <ul className="space-y-1 text-xs text-white/90">
-              {['Profilo nel marketplace', 'Listino prezzi indicativo', 'Tempi medi e ritiro campioni', 'Richieste digitali da cliniche', 'Upload referti PDF', 'Invito cliniche partner'].map((f, i) => (
-                <li key={i} className="flex items-start gap-1.5"><Check className="w-3 h-3 mt-0.5 flex-shrink-0" /><span>{f}</span></li>
+          <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(135deg, #2563EB, #4F46E5)' }}>
+            <h4 className="text-base font-bold mb-1.5">🔬 Laboratori</h4>
+            <p className="text-white/85 text-[11px] mb-2">Ricevi richieste dalle cliniche, aggiorna stati e carica referti PDF.</p>
+            <ul className="space-y-0.5 text-[11px] text-white/90">
+              {['Profilo marketplace', 'Listino prezzi', 'Tempi e ritiro campioni', 'Richieste digitali', 'Upload referti PDF', 'Invito cliniche partner'].map((f, i) => (
+                <li key={i} className="flex items-start gap-1"><Check className="w-2.5 h-2.5 mt-0.5 flex-shrink-0" /><span>{f}</span></li>
               ))}
             </ul>
-            <div className="mt-3 pt-2 border-t border-white/20">
-              <p className="font-bold text-xs">€39/mese + IVA</p>
+            <div className="mt-2 pt-1.5 border-t border-white/20">
+              <p className="font-bold text-[11px]">€39/mese + IVA</p>
               <p className="text-white/75 text-[10px]">Pilot 6 mesi gratis</p>
             </div>
           </div>
         </div>
 
         {/* VetBuddy Connect - Inviti reciproci */}
-        <div className="bg-gradient-to-r from-purple-50 via-pink-50 to-amber-50 rounded-2xl p-4 border border-purple-200 mt-4">
-          <h4 className="text-base font-bold text-gray-900 mb-2 text-center">🔗 VetBuddy Connect — Chi invita chi</h4>
-          <p className="text-xs text-gray-600 text-center mb-3">Una rete che cresce con te. Ogni attore può portare un altro nella piattaforma.</p>
+        <div className="bg-gradient-to-r from-purple-50 via-pink-50 to-amber-50 rounded-xl p-3 border border-purple-200">
+          <h4 className="text-sm font-bold text-gray-900 mb-1 text-center">🔗 VetBuddy Connect — Chi invita chi</h4>
+          <p className="text-[11px] text-gray-600 text-center mb-2">Una rete che cresce con te. Ogni attore può portare un altro nella piattaforma.</p>
           <div className="grid grid-cols-4 gap-2 text-xs">
-            <div className="bg-white rounded-lg p-2 text-center border border-purple-100">
-              <p className="font-semibold text-purple-700 text-xs">🐾 → 🏥</p>
-              <p className="text-gray-600 text-[10px] mt-1">Proprietari invitano cliniche</p>
+            <div className="bg-white rounded-lg p-1.5 text-center border border-purple-100">
+              <p className="font-semibold text-purple-700 text-[11px]">🐾 → 🏥</p>
+              <p className="text-gray-600 text-[10px]">Proprietari → Cliniche</p>
             </div>
-            <div className="bg-white rounded-lg p-2 text-center border border-purple-100">
-              <p className="font-semibold text-purple-700 text-xs">🏥 → 🐾</p>
-              <p className="text-gray-600 text-[10px] mt-1">Cliniche invitano proprietari</p>
+            <div className="bg-white rounded-lg p-1.5 text-center border border-purple-100">
+              <p className="font-semibold text-purple-700 text-[11px]">🏥 → 🐾</p>
+              <p className="text-gray-600 text-[10px]">Cliniche → Proprietari</p>
             </div>
-            <div className="bg-white rounded-lg p-2 text-center border border-purple-100">
-              <p className="font-semibold text-purple-700 text-xs">🏥 → 🔬</p>
-              <p className="text-gray-600 text-[10px] mt-1">Cliniche invitano laboratori</p>
+            <div className="bg-white rounded-lg p-1.5 text-center border border-purple-100">
+              <p className="font-semibold text-purple-700 text-[11px]">🏥 → 🔬</p>
+              <p className="text-gray-600 text-[10px]">Cliniche → Laboratori</p>
             </div>
-            <div className="bg-white rounded-lg p-2 text-center border border-purple-100">
-              <p className="font-semibold text-purple-700 text-xs">🔬 → 🏥</p>
-              <p className="text-gray-600 text-[10px] mt-1">Laboratori invitano cliniche</p>
+            <div className="bg-white rounded-lg p-1.5 text-center border border-purple-100">
+              <p className="font-semibold text-purple-700 text-[11px]">🔬 → 🏥</p>
+              <p className="text-gray-600 text-[10px]">Laboratori → Cliniche</p>
             </div>
           </div>
         </div>
@@ -814,7 +839,7 @@ export default function BrochurePage() {
         <p className="text-gray-500 text-sm mb-6">Multi-sede, app mobile, sala operatoria, contabilità, POS e analytics avanzati</p>
 
         {/* FUNZIONALITÀ ENTERPRISE */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-3 gap-4">
           <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🏢</span></div>
@@ -862,18 +887,7 @@ export default function BrochurePage() {
             </div>
             <p className="text-gray-600 text-xs leading-relaxed">Nexi, SumUp, Stripe. Pagamenti, scontrini, chiusura cassa automatica.</p>
           </div>
-        </div>
-      </div>
 
-      {/* ====================================================================
-          PAGINA 3E2 — FUNZIONALITÀ ENTERPRISE 2026 (Parte 2)
-      ==================================================================== */}
-      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
-        <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Funzionalità Enterprise 2026 (continua)</h2>
-        <p className="text-gray-500 text-sm mb-6">Analytics, marketing automation, HR, e-commerce, visite domiciliari e nutrizione AI</p>
-
-        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-cyan-200">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center"><span className="text-2xl">📊</span></div>
@@ -933,7 +947,7 @@ export default function BrochurePage() {
         <p className="text-gray-500 text-sm mb-6">Telemedicina, wearables, marketplace, AI diagnostico e moduli innovativi</p>
 
         {/* INNOVATION 2026 - PARTE 1 */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-3 gap-4">
           <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🤖</span></div><div><h3 className="font-black text-gray-900 text-sm">AI Diagnostico Assistant</h3><span className="bg-purple-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Co-pilota: diagnosi differenziali AI, probabilità, esami consigliati. NESSUNO lo ha.</p>
@@ -958,18 +972,7 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">👨‍💼</span></div><div><h3 className="font-black text-gray-900 text-sm">Veterinary Marketplace</h3><span className="bg-indigo-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Uber veterinari. Sostituti certificati. Rating, pagamento gestito.</p>
           </div>
-        </div>
-      </div>
 
-      {/* ====================================================================
-          PAGINA 3F2 — INNOVATION LAB 2026 (Parte 2)
-      ==================================================================== */}
-      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
-        <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Innovation Lab 2026 (continua)</h2>
-        <p className="text-gray-500 text-sm mb-6">Trials, voice assistant, adopt program</p>
-
-        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-teal-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🔬</span></div><div><h3 className="font-black text-gray-900 text-sm">Clinical Trials</h3><span className="bg-teal-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Ricerca clinica. Compenso €300-500, farmaci gratis. Revenue + scienza.</p>
@@ -993,7 +996,7 @@ export default function BrochurePage() {
         <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 1</h2>
         <p className="text-gray-500 text-sm mb-6">Super-AI multimodale, database farmaci, diagnostica visiva e monitoring remoto</p>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-3 gap-4">
           <div className="bg-white rounded-2xl p-6 border-2 border-violet-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🧠</span></div><div><h3 className="font-black text-gray-900 text-sm">VetBuddy Brain</h3><span className="bg-violet-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Super-Assistente AI multimodale. Analizza testo, immagini, dati. Letteratura scientifica istantanea.</p>
@@ -1014,18 +1017,7 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center"><span className="text-2xl">💚</span></div><div><h3 className="font-black text-gray-900 text-sm">VetBuddy Pharmacy</h3><span className="bg-green-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Farmacia online 24/7. Prescrizioni → ordine → spedizione casa. Revenue ricorrente 30-40%.</p>
           </div>
-        </div>
-      </div>
 
-      {/* ====================================================================
-          PAGINA 3G2 — GENIUS SUITE (Parte 1B) — Academy, Blockchain, Smart Clinic
-      ==================================================================== */}
-      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
-        <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 1 (continua)</h2>
-        <p className="text-gray-500 text-sm mb-6">Academy, blockchain, consulti specialistici, smart clinic e riabilitazione</p>
-
-        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-indigo-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎓</span></div><div><h3 className="font-black text-gray-900 text-sm">VetBuddy Academy</h3><span className="bg-indigo-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">LMS formazione staff. Video-corsi ECM accreditati, webinar live, tracking crediti automatico.</p>
@@ -1061,7 +1053,7 @@ export default function BrochurePage() {
         <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 2</h2>
         <p className="text-gray-500 text-sm mb-6">Mental wellness, litigation, behavior AI, dynamic pricing, podcast e photography</p>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-3 gap-4">
           <div className="bg-white rounded-2xl p-6 border-2 border-pink-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center"><span className="text-2xl">❤️</span></div><div><h3 className="font-black text-gray-900 text-sm">Mental Wellness Hub</h3><span className="bg-pink-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Benessere psicologico veterinari. Burnout tracking, terapia h24. Retention +40%.</p>
@@ -1086,18 +1078,7 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🌍</span></div><div><h3 className="font-black text-gray-900 text-sm">Cross-Species Learning</h3><span className="bg-indigo-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">AI tutte specie. Transfer learning. Risolvi casi impossibili fuori comfort zone.</p>
           </div>
-        </div>
-      </div>
 
-      {/* ====================================================================
-          PAGINA 3H2 — GENIUS SUITE (Parte 2B) — Residency, Autopsy, Referral, Talent
-      ==================================================================== */}
-      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
-        <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 2 (continua)</h2>
-        <p className="text-gray-500 text-sm mb-6">Residency program, autopsy AI, smart referral revenue e talent marketplace</p>
-
-        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-slate-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎓</span></div><div><h3 className="font-black text-gray-900 text-sm">Residency Program</h3><span className="bg-slate-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Mentorship 1-to-1. €200/mese vs €20-40k. Certificazione FNOVI. Democratico.</p>
@@ -1114,18 +1095,7 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎯</span></div><div><h3 className="font-black text-gray-900 text-sm">Talent Marketplace</h3><span className="bg-blue-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">LinkedIn vet. Match AI, hiring tracciato. Risparmio €10k headhunter.</p>
           </div>
-        </div>
-      </div>
 
-      {/* ====================================================================
-          PAGINA 3H3 — GENIUS SUITE (Parte 2C) — Grief, Carbon, Dynamic Pricing, Podcast
-      ==================================================================== */}
-      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
-        <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 2 (fine)</h2>
-        <p className="text-gray-500 text-sm mb-6">Grief support, carbon offset, dynamic pricing, podcast platform e AI photography</p>
-
-        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-rose-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🕊️</span></div><div><h3 className="font-black text-gray-900 text-sm">Grief Support</h3><span className="bg-rose-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Post-eutanasia. Memorial digitale, albero. Retention +25%.</p>
@@ -1193,7 +1163,7 @@ export default function BrochurePage() {
         <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 4</h2>
         <p className="text-gray-500 text-sm mb-6">Emergency triage, churn predictor, nutrition AI, surgery scheduling, franchise builder</p>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-3 gap-4">
           <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🚨</span></div><div><h3 className="font-black text-gray-900 text-sm">Crisis Communication</h3><span className="bg-red-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Allerte automatiche focolai, richiami. Messaggi automatici +95%.</p>
@@ -1218,18 +1188,7 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🏢</span></div><div><h3 className="font-black text-gray-900 text-sm">Franchise Builder</h3><span className="bg-amber-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Sistema completo franchising. AI location, multi-sede. Scala 1→10+.</p>
           </div>
-        </div>
-      </div>
 
-      {/* ====================================================================
-          PAGINA 3L2 — Alert Pazienti + Dashboard ROI
-      ==================================================================== */}
-      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
-        <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 4 (fine)</h2>
-        <p className="text-gray-500 text-sm mb-6">Alert pazienti fragili e Dashboard ROI in tempo reale</p>
-
-        <div className="grid grid-cols-2 gap-6 mb-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><span className="text-2xl">❤️</span></div><div><h3 className="font-black text-gray-900 text-sm">Alert Pazienti Fragili</h3><span className="bg-red-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Monitoraggio continuo pazienti speciali. Badge, alert, compliance +40%.</p>
