@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import {
   ArrowLeft, ArrowRight, CheckCircle, ChevronDown, ChevronRight, Clock, Euro,
   FileCheck, FileText, FlaskConical, Home, Info, Link2, Loader2, LogOut,
-  Package, Phone, Settings, Truck, Upload, Building2, MapPin, Plus, Save, Trash2
+  Package, Phone, Settings, Truck, Upload, Building2, MapPin, Plus, Save, Trash2, Send
 } from 'lucide-react';
 
 export default function TutorialLaboratorio() {
@@ -182,7 +182,42 @@ export default function TutorialLaboratorio() {
           </p>
         </div>
       )
+    },
+    {
+      icon: Send,
+      title: 'VetBuddy Connect — Invita le tue cliniche partner',
+      content: (
+        <div className="space-y-3">
+          <p className="text-gray-700 leading-relaxed">
+            Estendi la tua rete: porta le cliniche con cui collabori già dentro VetBuddy. Ricevi richieste digitali tracciate e organizzate.
+          </p>
+          <ol className="space-y-2 text-sm text-gray-700 list-decimal list-inside">
+            <li>Apri il modulo &ldquo;VetBuddy Connect&rdquo; dalla sidebar laboratorio</li>
+            <li>Clicca su &ldquo;Invita cliniche&rdquo; (singolo o massivo CSV)</li>
+            <li>Inserisci nome, email e telefono della clinica</li>
+            <li>La clinica riceve email + WhatsApp automatici con link di accettazione</li>
+            <li>Tracking automatico: inviato → aperto → accettato</li>
+            <li>Una volta accettato, la clinica può inviarti richieste digitali</li>
+            <li>Carichi referti PDF tramite la dashboard, la clinica riceve notifiche</li>
+          </ol>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-900">
+            💡 <strong>Listino indicativo + tempi medi</strong>: cliniche cercheranno il tuo profilo nel Marketplace. Mantieni listino e disponibilità ritiro aggiornati.
+          </div>
+          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-sm text-emerald-900">
+            🎁 <strong>Pilot gratuito 6 mesi</strong>: durante questo periodo puoi testare gratis la piattaforma e ricevere richieste. Poi €39/mese + IVA.
+          </div>
+        </div>
+      )
     }
+  ];
+
+  const faqs = [
+    { q: 'Quanto costa essere Lab Partner?', a: 'Pilot 6 mesi gratuito, poi €39/mese + IVA. Mensile senza vincolo annuale.' },
+    { q: 'Cosa vedono le cliniche del mio laboratorio?', a: 'Profilo (nome, indirizzo, contatti), listino indicativo, tempi medi referti, disponibilità ritiro campioni, specializzazioni. Niente dati sensibili degli altri clienti.' },
+    { q: 'Posso invitare le mie cliniche clienti?', a: 'Sì! Dal modulo VetBuddy Connect → "Invita cliniche". Email + WhatsApp automatici con tracking stato invito.' },
+    { q: 'Come carico i referti?', a: 'Dalla dashboard "Richieste" → seleziona la richiesta → "Carica referto PDF". La clinica riceve notifica automatica.' },
+    { q: 'I dati sono al sicuro?', a: 'Sì. Vedi solo le richieste fatte a te dalle cliniche collegate. Nessun accesso ad altri laboratori o cliniche.' },
+    { q: 'Posso aggiornare il listino prezzi?', a: 'Sì, dalla tab "Listino Prezzi" puoi aggiungere/modificare/rimuovere esami e prezzi indicativi.' }
   ];
 
   return (

@@ -2296,3 +2296,38 @@ frontend:
         agent: "main"
         comment: "Aggiunto bottone secondario '📲 Condividi' in ogni pet card di OwnerPassportCards (oltre al primario 'Apri'). Click chiama onOpenProfile(petId, 'share'). OwnerDashboardLayout: handleOpenPetProfile ora accetta initialTab parameter, salvato in state petProfileInitialTab e passato a PetProfile via prop. Backlog: PetPassport non ancora usa initialTab (Backlog: auto-open sezione 'sharing' invece dello scroll manuale)."
 
+
+
+backend:
+  - task: "Directory Pubblica + Morning Briefing API (Fase backlog)"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/connect.js, /app/app/api/[[...path]]/modules/clinic.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implementati 2 nuovi endpoint backend per Fase backlog: 1) GET /api/directory/clinics (pubblico, no auth) - ritorna cliniche verificate con filtri city/service, struttura {clinics: [...], total: number}, ogni clinic ha id/name/city/address/phone/services/hasOnlineBooking/photo/slug/verified. 2) GET /api/directory/labs (pubblico, no auth) - ritorna laboratori verificati con filtri city/examType, struttura {labs: [...], total: number}, ogni lab ha id/name/city/address/phone/pickupAvailable/averageReportTime/examTypesCount/specializations/photo/verified. 3) GET /api/clinic/morning-briefing (auth clinic/staff) - riepilogo operativo giornaliero con summary (11 campi numerici: appointmentsToday, unconfirmedToday, consentsMissing, staleLabReports, pendingInvites, expiredInvites, previsitIncomplete, cancelledSlots, dormantClients, urgentTasks, unreadMessages) e details (5 array max 10 items: todayAppointments, unconfirmed, consentsMissing, staleLab, pendingInvites). Endpoint directory filtrano solo cliniche/lab con publishInDirectory !== false. Morning briefing calcola metriche in tempo reale da collections appointments/tasks/consents/previsit/invitations/labRequests/users/messages."
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE DIRECTORY + MORNING BRIEFING TESTING COMPLETED - ALL 13/13 TESTS PASSED ✅ (100% SUCCESS RATE): Successfully tested 2 nuovi endpoint backend (Fase backlog) as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. ✅ **TEST 1 - DIRECTORY PUBBLICA (6/6 tests passed, no auth required)**: 1.1) GET /api/directory/clinics returns 200 with correct structure {clinics: [], total: 0} - all required fields verified (id, name, city, address, phone, services, hasOnlineBooking, photo, slug, verified=true). 1.2) GET /api/directory/clinics?city=milano returns 200 with city filter working (0 clinics found). 1.3) GET /api/directory/clinics?service=vaccini returns 200 with service filter working (0 clinics found). 1.4) GET /api/directory/labs returns 200 with correct structure {labs: [6 items], total: 6} - all required fields verified (id, name, city, address, phone, pickupAvailable, averageReportTime, examTypesCount, specializations, photo, verified=true). Sample lab: VetLab Milano with 2 exam types, pickup available. 1.5) GET /api/directory/labs?city=roma returns 200 with city filter working (0 labs found). 1.6) GET /api/directory/labs?examType=sangue returns 200 with exam type filter working (0 labs found). ✅ **TEST 2 - MORNING BRIEFING (3/3 tests passed)**: 2.1) GET /api/clinic/morning-briefing with clinic token (demo@vetbuddy.it / VetBuddy2025!Secure) returns 200 with complete structure: date='2026-06-15', summary with ALL 11 required numeric fields (appointmentsToday=0, unconfirmedToday=0, consentsMissing=0, staleLabReports=0, pendingInvites=0, expiredInvites=0, previsitIncomplete=0, cancelledSlots=0, dormantClients=0, urgentTasks=0, unreadMessages=0), details with ALL 5 required arrays (todayAppointments, unconfirmed, consentsMissing, staleLab, pendingInvites) all max 10 items. 2.2) GET /api/clinic/morning-briefing with owner token (proprietario.demo@vetbuddy.it / demo123) correctly returns 403 'Non autorizzato' - authorization check working. 2.3) GET /api/clinic/morning-briefing without auth correctly returns 403 - authentication check working. ✅ **TEST 3 - REGRESSION (4/4 tests passed)**: 3.1) GET /api/connect/stats with clinic token returns 200. 3.2) GET /api/connect/invitations with clinic token returns 200. 3.3) GET /api/connect/completion-score with clinic token returns 200. 3.4) GET /api/stripe/plans (no auth) returns 200 with correct structure (object with 5 plans) and correct pricing: Starter €29, Growth €69, Pro €99, Laboratorio Partner €39, Enterprise €0. All directory and morning briefing endpoints fully functional with proper authentication, authorization, response structure, and filtering. No regressions detected. Ready for production use."
+
+test_plan:
+  current_focus: []
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Test rapido di 2 nuovi endpoint backend (Fase backlog): 1) Directory Pubblica (GET /api/directory/clinics e GET /api/directory/labs, no auth required) con filtri city/service/examType. 2) Morning Briefing (GET /api/clinic/morning-briefing, auth clinic/staff) con summary (11 campi numerici) e details (5 array max 10 items). 3) Regression: GET /api/connect/stats, GET /api/connect/invitations, GET /api/connect/completion-score, GET /api/stripe/plans. ATTENZIONE: NON chiamare /api/cron/daily. Credenziali: Clinic demo@vetbuddy.it / VetBuddy2025!Secure, Lab laboratorio1@vetbuddy.it / Lab2025!, Owner proprietario.demo@vetbuddy.it / demo123."
+  - agent: "testing"
+    message: "✅ BACKEND TESTING COMPLETE - ALL 13/13 TESTS PASSED (100% SUCCESS RATE): Comprehensive testing completed for Directory Pubblica + Morning Briefing API (Fase backlog). ALL TESTS PASSED including: 1) Directory Pubblica (6/6 tests) - GET /api/directory/clinics with city/service filters working correctly (0 clinics found, correct structure verified), GET /api/directory/labs with city/examType filters working correctly (6 labs found including VetLab Milano with 2 exam types). All required fields present and verified=true for both clinics and labs. 2) Morning Briefing (3/3 tests) - GET /api/clinic/morning-briefing with clinic auth returns 200 with complete structure (date, summary with 11 numeric fields, details with 5 arrays max 10 items), owner auth correctly returns 403, no auth correctly returns 403. 3) Regression (4/4 tests) - GET /api/connect/stats, GET /api/connect/invitations, GET /api/connect/completion-score all return 200, GET /api/stripe/plans returns correct structure with 5 plans (Starter €29, Growth €69, Pro €99, Lab Partner €39, Enterprise €0). All endpoints fully functional with proper authentication, authorization, response structure, and filtering. No regressions detected. Ready for main agent to summarize and finish."
+
+metadata:
+  created_by: "main_agent"
+  version: "2.1"
+  test_sequence: 11
+  run_ui: false

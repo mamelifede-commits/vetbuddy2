@@ -20,6 +20,125 @@ function generateSlug(name) {
 // ==================== CLINIC GET HANDLERS ====================
 export async function handleClinicGet(path, request) {
 
+  // GET /api/clinic/morning-briefing — Riepilogo operativo del giorno per la clinica
+  if (path === 'clinic/morning-briefing') {
+    const user = getUserFromRequest(request);
+    if (!user || (user.role !== 'clinic' && user.role !== 'staff')) {
+      return NextResponse.json({ error: 'Non autorizzato' }, { status: 403, headers: corsHeaders });
+    }
+    const clinicId = user.role === 'staff' ? (user.clinicId || user.id) : user.id;
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const startOfDay = new Date(today.setHours(0,0,0,0)).toISOString();
+    const endOfDay = new Date(today.setHours(23,59,59,999)).toISOString();
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+    const appointments = await getCollection('appointments');
+    const tasks = await getCollection('tasks');
+    const consents = await getCollection('consents');
+    const previsits = await getCollection('previsit');
+    const invitations = await getCollection('invitations');
+    const labRequests = await getCollection('lab_requests');
+    const users = await getCollection('users');
+    const messages = await getCollection('messages');
+
+    // 1) Appuntamenti di oggi
+    const todayApts = await appointments.find({
+      clinicId,
+      $or: [
+        { date: { $gte: startOfDay, $lte: endOfDay } },
+        { startsAt: { $gte: startOfDay, $lte: endOfDay } }
+      ]
+    }).toArray();
+
+    // 2) Appuntamenti non confermati di oggi
+    const unconfirmedToday = todayApts.filter(a => !['confirmed', 'completed', 'cancelled'].includes(a.status));
+
+    // 3) Consensi mancanti (appuntamenti chirurgici/anestesia oggi senza consenso firmato)
+    const surgeryApts = todayApts.filter(a => /chirurg|anestesi|operazi|eutanasi/i.test(`${a.serviceType || ''} ${a.notes || ''}`));
+    const signedConsents = await consents.find({ clinicId, ownerId: { $in: surgeryApts.map(a => a.ownerId) }, status: 'signed' }).toArray();
+    const consentsMissing = surgeryApts.filter(a => !signedConsents.some(c => c.ownerId === a.ownerId));
+
+    // 4) Referti laboratorio fermi (>3gg in pending/processing)
+    const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
+    const staleLabRequests = await labRequests.find({
+      clinicId,
+      status: { $in: ['pending', 'processing', 'in_progress'] },
+      createdAt: { $lt: threeDaysAgo }
+    }).limit(20).toArray();
+
+    // 5) Inviti pendenti (Connect)
+    const pendingInvites = await invitations.find({
+      fromUserId: clinicId,
+      status: { $in: ['sent', 'opened'] },
+      expiresAt: { $gte: new Date().toISOString() }
+    }).toArray();
+    const expiredInvites = await invitations.find({
+      fromUserId: clinicId,
+      status: { $in: ['sent', 'opened'] },
+      expiresAt: { $lt: new Date().toISOString() }
+    }).toArray();
+
+    // 6) Pre-visite incomplete (form non compilato per appuntamenti di oggi)
+    const previsitToday = await previsits.find({ clinicId, appointmentId: { $in: todayApts.map(a => a.id) } }).toArray();
+    const previsitIncomplete = todayApts.filter(a => {
+      const pv = previsitToday.find(p => p.appointmentId === a.id);
+      return !pv || pv.status !== 'completed';
+    }).length;
+
+    // 7) Slot liberi: appuntamenti cancellati oggi
+    const cancelledToday = todayApts.filter(a => a.status === 'cancelled').length;
+
+    // 8) Clienti dormienti (no appuntamenti negli ultimi 30 gg ma attivi prima)
+    const owners = await users.find({ role: 'owner', clinicIds: clinicId }).toArray();
+    const dormantOwners = [];
+    for (const owner of owners.slice(0, 50)) {
+      const lastApt = await appointments.findOne({ clinicId, ownerId: owner.id }, { sort: { date: -1, startsAt: -1 } });
+      if (lastApt) {
+        const lastDate = new Date(lastApt.date || lastApt.startsAt);
+        if (lastDate < new Date(thirtyDaysAgo)) dormantOwners.push(owner.id);
+      }
+    }
+
+    // 9) Task pendenti urgenti
+    const urgentTasks = await tasks.countDocuments({
+      clinicId, status: { $in: ['pending', 'in_progress'] }, priority: { $in: ['high', 'urgent'] }
+    });
+
+    // 10) Messaggi WhatsApp non letti (ultime 24h)
+    const unreadMessages = await messages.countDocuments({ clinicId, isRead: { $ne: true }, createdAt: { $gte: yesterday } });
+
+    return NextResponse.json({
+      date: todayStr,
+      summary: {
+        appointmentsToday: todayApts.length,
+        unconfirmedToday: unconfirmedToday.length,
+        consentsMissing: consentsMissing.length,
+        staleLabReports: staleLabRequests.length,
+        pendingInvites: pendingInvites.length,
+        expiredInvites: expiredInvites.length,
+        previsitIncomplete,
+        cancelledSlots: cancelledToday,
+        dormantClients: dormantOwners.length,
+        urgentTasks,
+        unreadMessages
+      },
+      details: {
+        todayAppointments: todayApts.slice(0, 10).map(a => ({
+          id: a.id, time: a.time || a.startsAt, ownerName: a.ownerName, petName: a.petName,
+          serviceType: a.serviceType, status: a.status
+        })),
+        unconfirmed: unconfirmedToday.slice(0, 5).map(a => ({ id: a.id, time: a.time, ownerName: a.ownerName, petName: a.petName })),
+        consentsMissing: consentsMissing.slice(0, 5).map(a => ({ id: a.id, ownerName: a.ownerName, petName: a.petName, service: a.serviceType })),
+        staleLab: staleLabRequests.slice(0, 5).map(r => ({ id: r.id, petName: r.petName, examType: r.examType, createdAt: r.createdAt })),
+        pendingInvites: pendingInvites.slice(0, 5).map(i => ({ id: i.id, type: i.type, toEmail: i.toEmail, toName: i.toName, createdAt: i.createdAt }))
+      }
+    }, { headers: corsHeaders });
+  }
+
+
   // Get clinic booking link info
   if (path === 'clinic/booking-link') {
     const user = getUserFromRequest(request);

@@ -16,6 +16,7 @@ import dynamic from 'next/dynamic';
 
 const ClinicPassportWidget = dynamic(() => import('./ClinicPassportWidget'), { ssr: false });
 const ConnectStatusCard = dynamic(() => import('../connect/ConnectStatusCard'), { ssr: false });
+const MorningBriefingWidget = dynamic(() => import('./MorningBriefingWidget'), { ssr: false });
 
 // Helper: Setup Step
 function SetupStep({ icon: Icon, label, desc, done, onClick }) {
@@ -191,6 +192,12 @@ function ClinicControlRoom({ appointments, documents, messages, owners, pets, re
           </CardContent>
         </Card>
       )}
+
+      {/* Morning Briefing — centro operativo quotidiano */}
+      <MorningBriefingWidget onNavigate={onNavigate} />
+
+      {/* VetBuddy Connect Status (Ecosistema + Completamento Rete) */}
+      <ConnectStatusCard user={{ role: 'clinic' }} onNavigate={onNavigate} />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">

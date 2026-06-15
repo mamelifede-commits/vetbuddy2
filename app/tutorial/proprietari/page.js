@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Download, ArrowLeft, PawPrint, Calendar, FileText, MessageSquare, Heart, Bell, Shield, Star, MapPin, Phone, Clock, CheckCircle, ChevronRight, HelpCircle, Smartphone, Lock, AlertCircle } from 'lucide-react';
+import { Download, ArrowLeft, PawPrint, Calendar, FileText, MessageSquare, Heart, Bell, Shield, Star, MapPin, Phone, Clock, CheckCircle, ChevronRight, HelpCircle, Smartphone, Lock, AlertCircle, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -259,20 +259,37 @@ export default function TutorialProprietari() {
         '6. Privacy: Sei tu a scegliere cosa mostrare nel QR. I dati sensibili restano nascosti di default'
       ],
       tip: 'Stampa il QR e attaccalo al collare o alla medaglietta del tuo animale. In caso di emergenza, chi lo trova potrà contattarti immediatamente!'
+    },
+    {
+      icon: Send,
+      title: 'VetBuddy Connect — Collega la tua clinica',
+      color: 'bg-purple-500',
+      content: [
+        '1. Apri "Invita la tua clinica" o "VetBuddy Connect" dalla sidebar',
+        '2. Inserisci: nome clinica, email, telefono (riceverà email + WhatsApp automatici)',
+        '3. Aggiungi un messaggio personale facoltativo',
+        '4. La clinica riceve l\'invito e può accettare con un click',
+        '5. Una volta collegata, il Passport del tuo animale è connesso alla clinica',
+        '6. Ricevi automaticamente promemoria, documenti e referti via VetBuddy',
+        '7. Condividi temporaneamente il Passport con pet sitter o familiari (link revocabile)'
+      ],
+      tip: 'Tre attori, un solo ecosistema: tu, la tua clinica e i laboratori. Più sono collegati, più semplice e completa è la gestione della salute del tuo animale.'
     }
   ];
 
   const faqs = [
-    { q: 'Quanto costa usare vetbuddy?', a: 'vetbuddy è completamente gratuito per i proprietari di animali. Nessun costo nascosto!' },
-    { q: 'Posso usare vetbuddy con qualsiasi clinica?', a: 'Puoi prenotare solo presso le cliniche registrate su vetbuddy. Invita la tua clinica di fiducia!' },
-    { q: 'I miei dati sono al sicuro?', a: 'Assolutamente sì! Utilizziamo crittografia avanzata e rispettiamo il GDPR.' },
+    { q: 'Quanto costa usare VetBuddy?', a: 'Per i proprietari di animali è 100% gratuito. Per sempre, nessun costo nascosto.' },
+    { q: 'Posso usare VetBuddy con qualsiasi clinica?', a: 'Puoi prenotare solo presso le cliniche registrate su VetBuddy. Se la tua clinica non c\'è ancora, usa "VetBuddy Connect" → "Invita la tua clinica" per invitarla in pochi click.' },
+    { q: 'Come invito la mia clinica?', a: 'Dalla sidebar, clicca "Invita la tua clinica" o "VetBuddy Connect". Inserisci nome clinica, email e telefono. Riceverà un\'email + WhatsApp con il link per accettare. Tracking automatico stato invito.' },
+    { q: 'I miei dati sono al sicuro?', a: 'Sì. Crittografia avanzata e conformità GDPR. Tu vedi solo i tuoi animali, la clinica solo i suoi pazienti.' },
     { q: 'Posso gestire più animali?', a: 'Sì, puoi aggiungere tutti gli animali che desideri al tuo profilo.' },
-    { q: 'Come annullo un appuntamento?', a: 'Dalla dashboard, vai su "I Miei Appuntamenti", seleziona l\'appuntamento e clicca "Annulla".' },
+    { q: 'Come annullo un appuntamento?', a: 'Dalla dashboard, "I Miei Appuntamenti" → seleziona l\'appuntamento e clicca "Annulla".' },
     { q: 'Cos\'è il VetBuddy Passport?', a: 'È il passaporto sanitario digitale del tuo animale. Raccoglie vaccini, allergie, farmaci, contatti di emergenza e genera un QR stampabile per emergenze e smarrimento.' },
+    { q: 'Posso condividere il Passport con un pet sitter?', a: 'Sì. Vai sul profilo dell\'animale → "Condividi" → crea un link temporaneo con scadenza configurabile e permessi personalizzati. Puoi revocare in qualsiasi momento.' },
     { q: 'Chi può vedere il mio Passport?', a: 'Solo tu e la tua clinica. Se condividi un link temporaneo con un pet sitter o familiare, vedranno solo i dati che hai autorizzato. Il QR pubblico mostra solo le informazioni che hai scelto di rendere visibili.' },
     { q: 'Il QR mostra dati sensibili?', a: 'No. Il proprietario decide cosa rendere visibile. I dati sensibili sono nascosti di default.' },
-    { q: 'VetBuddy Passport sostituisce la cartella clinica?', a: 'No. VetBuddy Passport organizza le informazioni essenziali dell\'animale per proprietario, clinica, emergenze e condivisioni. La cartella clinica resta gestita dalla clinica.' },
-    { q: 'Lost Pet Mode pubblica il mio indirizzo?', a: 'No. Non mostra l\'indirizzo completo salvo scelta esplicita del proprietario. È consigliato mostrare solo città o zona.' }
+    { q: 'VetBuddy Passport sostituisce la cartella clinica?', a: 'No. VetBuddy Passport organizza le informazioni essenziali per proprietario, clinica ed emergenze. La cartella clinica resta gestita dalla clinica.' },
+    { q: 'Lost Pet Mode pubblica il mio indirizzo?', a: 'No. Non mostra l\'indirizzo completo salvo scelta esplicita del proprietario. Consigliato: solo città o zona.' }
   ];
 
   return (

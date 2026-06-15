@@ -94,6 +94,7 @@ function FullLandingPage({ onLogin }) {
             <button onClick={() => scrollToSection('soluzione')} className="text-gray-600 hover:text-coral-500 transition">Soluzione</button>
             <button onClick={() => scrollToSection('moduli')} className="text-gray-600 hover:text-coral-500 transition">Moduli</button>
             <button onClick={() => scrollToSection('lab-network')} className="text-purple-600 hover:text-purple-700 font-medium transition">🧪 Rete laboratori</button>
+            <a href="/directory" className="text-emerald-600 hover:text-emerald-700 font-medium transition">🌐 Directory</a>
             <button onClick={() => scrollToSection('prezzi')} className="text-gray-600 hover:text-coral-500 transition">Prezzi</button>
             <button onClick={() => scrollToSection('pilot')} className="text-gray-600 hover:text-coral-500 transition">Progetto pilota</button>
             <button onClick={() => scrollToSection('faq')} className="text-gray-600 hover:text-coral-500 transition">FAQ</button>

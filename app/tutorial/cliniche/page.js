@@ -118,14 +118,14 @@ export default function TutorialCliniche() {
       title: 'Configurazione Iniziale',
       color: 'bg-coral-500',
       content: [
-        '1. Registrati come clinica su vetbuddy.it',
+        '1. Registrati come clinica su vetbuddy.it (prova gratis 14 giorni)',
         '2. Completa il profilo: nome clinica, indirizzo, P.IVA, orari',
         '3. Aggiungi logo e foto della struttura',
         '4. Configura i servizi offerti e i relativi prezzi',
         '5. Imposta la posizione sulla mappa (indirizzo o coordinate)',
-        '6. Attiva il piano desiderato (Starter €0/mese o Pro Clinica)'
+        '6. Attiva il piano: Starter €29, Growth €69 (consigliato), Pro €99 — IVA escl.'
       ],
-      tip: 'Il Piano Starter è perfetto per veterinari freelance. Il Pro Clinica sblocca tutte le funzionalità avanzate, gratis per 90 giorni nel Pilot Milano.'
+      tip: 'Prova gratis 14 giorni su Starter/Growth, oppure candidati al Pilot 90 giorni gratis su Pro Clinica. VetBuddy non sostituisce il tuo gestionale: lo potenzia con uno strato operativo intelligente.'
     },
     {
       icon: Package,
@@ -296,19 +296,37 @@ export default function TutorialCliniche() {
         '7. Come spiegare ai clienti: Invita i proprietari a completare il Passport dalla loro area riservata — si gestiscono in autonomia'
       ],
       tip: 'Invita i proprietari a completare il Passport: meno telefonate per te, più autonomia per loro, e più occasioni di ricontatto automatiche.'
+    },
+    {
+      icon: Send,
+      title: 'VetBuddy Connect — La tua rete operativa',
+      color: 'bg-purple-500',
+      content: [
+        '1. Apri il modulo "VetBuddy Connect" dalla sidebar — vedrai KPI inviti e Quick Actions',
+        '2. Invita i tuoi proprietari: singolo, massivo (incolla email con virgola) o link condivisibile QR',
+        '3. Collega un laboratorio partner per inviare richieste e ricevere referti digitali',
+        '4. Tracking automatico: stato inviato/aperto/accettato/scaduto per ogni invito',
+        '5. WhatsApp + email automatici se inserisci il telefono del destinatario',
+        '6. Profili provvisori (interni) per chi non è ancora registrato — può rivendicare dopo',
+        '7. Reinvio invito e revoca disponibili con un click'
+      ],
+      tip: 'Tre attori, un solo ecosistema: cliniche, proprietari e laboratori. Più sono collegati alla tua rete, più valore generi: meno telefonate, più prenotazioni online, più referral.'
     }
   ];
 
   const faqs = [
-    { q: 'Quanto costa vetbuddy per le cliniche?', a: 'Piano Starter Clinica: €0/mese (1 sede, 1 utente). Piano Pro Clinica: €0 per 90 giorni, poi €79/mese + IVA (early adopter €49/mese + IVA). Pilot Milano: accesso su invito.' },
-    { q: 'Posso importare i dati dal mio gestionale attuale?', a: 'Sì! Supportiamo import da CSV. Contattaci per assistenza nella migrazione.' },
-    { q: 'vetbuddy sostituisce il mio software di fatturazione?', a: 'No, vetbuddy genera PROFORMA. Per la fatturazione elettronica usa il tuo gestionale fiscale.' },
-    { q: 'Come funziona il pagamento dei clienti?', a: 'I clienti pagano via Stripe. I fondi vanno direttamente sul tuo conto. Nessuna commissione vetbuddy.' },
-    { q: 'Posso avere più utenti per la clinica?', a: 'Sì, nel Piano Pro Clinica puoi aggiungere fino a 10 collaboratori con ruoli diversi.' },
-    { q: 'I dati dei miei pazienti sono al sicuro?', a: 'Assolutamente. Crittografia, backup automatici e conformità GDPR garantiti.' },
-    { q: 'Cos\'è il VetBuddy Passport?', a: 'È il passaporto sanitario digitale del tuo paziente. Raccoglie vaccini, allergie, farmaci, contatti di emergenza e genera un QR stampabile. Il proprietario lo gestisce in autonomia e la clinica mantiene visibilità sui dati sanitari e sui documenti gestiti nel proprio rapporto con il paziente, nel rispetto dei permessi e delle autorizzazioni.' },
+    { q: 'Quanto costa VetBuddy per le cliniche?', a: 'Starter €29/mese (freelance e micro-cliniche), Growth €69/mese (consigliato per cliniche piccole/medie), Pro €99/mese (cliniche strutturate, automazioni avanzate, Pilot 90gg gratis). Tutti +IVA, mensili, nessun vincolo annuale.' },
+    { q: 'Posso provare gratis?', a: 'Sì. Hai 14 giorni di prova gratuita sui piani Starter e Growth. Per misurare il valore in modo strutturato puoi candidarti al Pilot 90 giorni con onboarding guidato, checklist 30/60/90gg e report ROI finale.' },
+    { q: 'Devo cambiare il mio gestionale?', a: 'No. VetBuddy non sostituisce il gestionale. Lo potenzia con uno strato operativo intelligente: prenotazioni online, WhatsApp, promemoria, referti, richiami, no-show, follow-up.' },
+    { q: 'Come funziona VetBuddy Connect?', a: 'È il modulo unificato per gli inviti reciproci tra cliniche, proprietari e laboratori. Puoi invitare proprietari (singolo o massivo) o laboratori partner. Email + WhatsApp automatici.' },
+    { q: 'Posso importare i dati dal mio gestionale?', a: 'Sì! Supportiamo import da CSV per proprietari, animali e appuntamenti. Contattaci per assistenza nella migrazione.' },
+    { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta preparazione, gestione e archiviazione del flusso prescrittivo. L\'emissione resta al veterinario abilitato.' },
+    { q: 'Come funziona il pagamento dei clienti?', a: 'I clienti pagano via Stripe. I fondi vanno direttamente sul tuo conto. Nessuna commissione VetBuddy sulle visite.' },
+    { q: 'Posso avere più utenti per la clinica?', a: 'Starter: 1 utente. Growth: fino a 3. Pro: fino a 10 staff.' },
+    { q: 'I dati dei miei pazienti sono al sicuro?', a: 'Sì. Crittografia, backup automatici e conformità GDPR. Il proprietario vede solo i suoi animali, tu vedi solo i tuoi clienti, il laboratorio solo le sue richieste.' },
+    { q: 'Cos\'è il VetBuddy Passport?', a: 'È il passaporto sanitario digitale del paziente. Raccoglie vaccini, allergie, farmaci, contatti di emergenza e genera un QR stampabile. Il proprietario lo gestisce in autonomia, la clinica mantiene visibilità sui dati sanitari.' },
     { q: 'Il proprietario può condividere il Passport con terzi?', a: 'Sì, tramite link temporanei con scadenza configurabile e permessi personalizzati (pet sitter, familiari, pensioni). La clinica può vedere le condivisioni attive dalla dashboard.' },
-    { q: 'Come funziona il QR Emergenza?', a: 'Il proprietario genera un QR code unico dal Passport. Chiunque lo scansiona vede solo i dati che il proprietario ha deciso di rendere pubblici (nome, allergie, contatti). In caso di smarrimento, chi trova l\'animale può inviare una segnalazione direttamente al proprietario.' }
+    { q: 'Come funziona il QR Emergenza?', a: 'Il proprietario genera un QR code unico dal Passport. Chiunque lo scansiona vede solo i dati che il proprietario ha deciso di rendere pubblici. In caso di smarrimento, chi trova l\'animale può inviare una segnalazione direttamente al proprietario.' }
   ];
 
   return (

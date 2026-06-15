@@ -221,6 +221,102 @@ export async function handleConnectGet(path, request) {
       level: score >= 80 ? 'excellent' : score >= 60 ? 'good' : score >= 40 ? 'progress' : 'starter'
     }, { headers: corsHeaders });
   }
+  // GET /api/directory/clinics — Directory pubblica cliniche verificate (no auth)
+  if (path === 'directory/clinics' || path.startsWith('directory/clinics?')) {
+    const url = new URL(request.url);
+    const city = url.searchParams.get('city')?.toLowerCase().trim();
+    const service = url.searchParams.get('service')?.toLowerCase().trim();
+    const users = await getCollection('users');
+    const query = {
+      role: 'clinic',
+      $and: [
+        { $or: [
+          { 'clinicSettings.clinicName': { $exists: true, $ne: '' } },
+          { name: { $exists: true, $ne: '' } }
+        ]},
+        { $or: [
+          { 'clinicSettings.address': { $exists: true, $ne: '' } },
+          { 'clinicSettings.city': { $exists: true, $ne: '' } }
+        ]},
+        { publishInDirectory: { $ne: false } }
+      ]
+    };
+    if (city) {
+      query.$and.push({ $or: [
+        { 'clinicSettings.city': { $regex: city, $options: 'i' } },
+        { 'clinicSettings.address': { $regex: city, $options: 'i' } }
+      ]});
+    }
+    const clinics = await users.find(query).limit(100).toArray();
+    const list = clinics
+      .filter(c => !service || (c.clinicSettings?.services || []).some(s => (s.name || s).toString().toLowerCase().includes(service)))
+      .map(c => ({
+        id: c.id,
+        name: c.clinicSettings?.clinicName || c.name,
+        city: c.clinicSettings?.city || '',
+        address: c.clinicSettings?.address || '',
+        phone: c.clinicSettings?.phone || c.phone || '',
+        services: (c.clinicSettings?.services || []).slice(0, 6),
+        hasOnlineBooking: !!c.bookingLinkActive || !!c.clinicSettings?.bookingActive,
+        photo: c.clinicSettings?.logo || c.avatar || null,
+        slug: c.clinicSettings?.slug || c.slug || c.id,
+        verified: true
+      }));
+    return NextResponse.json({ clinics: list, total: list.length }, { headers: corsHeaders });
+  }
+
+  // GET /api/directory/labs — Directory pubblica laboratori verificati (no auth)
+  if (path === 'directory/labs' || path.startsWith('directory/labs?')) {
+    const url = new URL(request.url);
+    const city = url.searchParams.get('city')?.toLowerCase().trim();
+    const examType = url.searchParams.get('examType')?.toLowerCase().trim();
+    const users = await getCollection('users');
+    const labPriceList = await getCollection('lab_price_list');
+    const query = {
+      role: 'lab',
+      $and: [
+        { $or: [
+          { labName: { $exists: true, $ne: '' } },
+          { 'labProfile.labName': { $exists: true, $ne: '' } }
+        ]},
+        { publishInDirectory: { $ne: false } }
+      ]
+    };
+    if (city) {
+      query.$and.push({ $or: [
+        { 'labProfile.city': { $regex: city, $options: 'i' } },
+        { 'labProfile.address': { $regex: city, $options: 'i' } }
+      ]});
+    }
+    const labs = await users.find(query).limit(100).toArray();
+    const list = await Promise.all(labs.map(async (l) => {
+      const examCount = await labPriceList.countDocuments({ labId: l.id });
+      let hasExamMatch = !examType;
+      if (examType) {
+        const match = await labPriceList.findOne({ labId: l.id, $or: [
+          { examName: { $regex: examType, $options: 'i' } },
+          { name: { $regex: examType, $options: 'i' } }
+        ]});
+        hasExamMatch = !!match;
+      }
+      return hasExamMatch ? {
+        id: l.id,
+        name: l.labName || l.labProfile?.labName || l.name,
+        city: l.labProfile?.city || '',
+        address: l.labProfile?.address || '',
+        phone: l.labProfile?.phone || l.phone || '',
+        pickupAvailable: !!l.labProfile?.pickupAvailable || !!l.pickupAvailable,
+        averageReportTime: l.labProfile?.averageReportTime || l.averageReportTime || '',
+        examTypesCount: examCount,
+        specializations: l.labProfile?.specializations || [],
+        photo: l.labProfile?.logo || l.avatar || null,
+        verified: true
+      } : null;
+    }));
+    const filtered = list.filter(Boolean);
+    return NextResponse.json({ labs: filtered, total: filtered.length }, { headers: corsHeaders });
+  }
+
 
   return null;
 }

@@ -153,11 +153,21 @@ export const ownerTutorial = {
         'I piani aiutano a non dimenticare nessun controllo importante'
       ],
       tip: 'Chiedi al tuo veterinario se c\u2019\u00E8 un piano salute adatto al tuo animale.'
+    },
+    {
+      title: 'VETBUDDY CONNECT \u2014 INVITA LA TUA CLINICA',
+      content: [
+        'VetBuddy Connect collega proprietari, cliniche e laboratori in un\u2019unica rete',
+        'Vai su "Invita la tua clinica" o "VetBuddy Connect" dalla sidebar',
+        'Inserisci nome clinica, email, telefono (riceve email + WhatsApp automatici)',
+        'La clinica accetta con un click e si collega al Passport del tuo animale',
+        'Tracking automatico stato invito: inviato \u2192 aperto \u2192 accettato',
+        'Una volta collegata, ricevi promemoria, documenti e referti automaticamente',
+        'Puoi anche condividere temporaneamente il Passport con pet sitter o familiari'
+      ],
+      tip: 'Tre attori, un solo ecosistema: tu, la tua clinica e i laboratori. Pi\u00F9 sono collegati, pi\u00F9 semplice la gestione della salute del tuo animale.'
     }
   ],
-
-  onboarding: {
-    title: 'COME USARE VETBUDDY AL MEGLIO',
     subtitle: 'Suggerimenti per sfruttare tutte le funzionalit\u00E0 della piattaforma.',
     first10: {
       title: 'Cosa fare nei primi 10 minuti',
@@ -428,6 +438,20 @@ export const clinicTutorial = {
         'Dati aggiornati in tempo reale'
       ],
       tip: 'La Dashboard Valore ti aiuta a capire il ritorno sull\u2019investimento di VetBuddy.'
+    },
+    {
+      title: 'VETBUDDY CONNECT \u2014 LA TUA RETE OPERATIVA',
+      content: [
+        'Modulo unificato per inviti reciproci: proprietari, cliniche e laboratori',
+        'Apri "VetBuddy Connect" dalla sidebar \u2014 KPI inviti e azioni rapide',
+        'Invita i proprietari: singolo, massivo (incolla email CSV) o link QR condivisibile',
+        'Invita un laboratorio partner per inviare richieste e ricevere referti',
+        'Tracking automatico: inviato \u2192 aperto \u2192 accettato \u2192 scaduto',
+        'WhatsApp + email automatici se inserisci il telefono del destinatario',
+        'Reinvio invito e revoca disponibili con un click',
+        'Profili provvisori interni per chi non \u00E8 ancora registrato'
+      ],
+      tip: 'Tre attori, un solo ecosistema. Pi\u00F9 sono collegati alla tua rete, pi\u00F9 valore generi: meno telefonate, pi\u00F9 prenotazioni online, pi\u00F9 referral.'
     }
   ],
 
@@ -597,6 +621,19 @@ export const labTutorial = {
         'Puoi annullare in qualsiasi momento senza vincoli'
       ],
       tip: 'Tutti i prezzi indicati sono IVA esclusa.'
+    },
+    {
+      title: 'VETBUDDY CONNECT \u2014 INVITA LE TUE CLINICHE PARTNER',
+      content: [
+        'Modulo per inviti reciproci tra cliniche e laboratori',
+        'Apri "VetBuddy Connect" dalla sidebar laboratorio',
+        'Invita cliniche: singolo o massivo (CSV con nome, email, telefono)',
+        'Email + WhatsApp automatici con link di accettazione',
+        'Tracking stato invito: inviato \u2192 aperto \u2192 accettato',
+        'Una volta accettato, la clinica pu\u00F2 inviarti richieste digitali',
+        'Carichi referti PDF, la clinica riceve notifiche automatiche'
+      ],
+      tip: 'Pilot 6 mesi gratuito + Marketplace VetBuddy: pi\u00F9 cliniche colleghi, pi\u00F9 richieste digitali ricevi.'
     }
   ],
 
