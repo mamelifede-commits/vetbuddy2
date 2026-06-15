@@ -53,24 +53,36 @@ export async function GET(request) {
       const noprint = document.querySelectorAll('.no-print');
       noprint.forEach(el => el.style.display = 'none');
       
-      // Force exact A4 page dimensions on each brochure page
+      // Apply page break rules to brochure pages WITHOUT forcing fixed height
+      // This allows content to flow naturally across multiple A4 pages if needed
       const pages = document.querySelectorAll('.brochure-page');
       pages.forEach(p => {
-        p.style.height = '297mm';
-        p.style.maxHeight = '297mm';
-        p.style.minHeight = '297mm';
-        p.style.overflow = 'hidden';
         p.style.pageBreakAfter = 'always';
         p.style.breakAfter = 'page';
-        p.style.pageBreakInside = 'avoid';
-        p.style.breakInside = 'avoid';
+        p.style.pageBreakInside = 'auto';
+        p.style.breakInside = 'auto';
         p.style.boxSizing = 'border-box';
+        p.style.width = '210mm';
+        p.style.padding = '12mm';
+        p.style.overflow = 'visible';
       });
       // Remove page-break on last page
       if (pages.length > 0) {
         pages[pages.length - 1].style.pageBreakAfter = 'auto';
         pages[pages.length - 1].style.breakAfter = 'auto';
       }
+      
+      // Prevent cards, FAQ items and grids from being split across pages
+      const grids = document.querySelectorAll('.brochure-page .grid');
+      grids.forEach(g => {
+        g.style.pageBreakInside = 'auto';
+        g.style.breakInside = 'auto';
+      });
+      const cards = document.querySelectorAll('.brochure-page .grid > div, .brochure-page .bg-white.rounded-2xl, .brochure-page [class*="rounded-2xl"], .brochure-page [class*="rounded-3xl"]');
+      cards.forEach(c => {
+        c.style.pageBreakInside = 'avoid';
+        c.style.breakInside = 'avoid';
+      });
     });
 
     // Wait for renders to complete

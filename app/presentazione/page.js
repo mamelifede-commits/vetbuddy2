@@ -17,26 +17,27 @@ export default function BrochurePage() {
         .brochure-page { 
           min-height: 100vh; 
           position: relative; 
-          overflow: hidden;
           page-break-after: always;
           break-after: page;
-          page-break-inside: avoid;
-          break-inside: avoid;
           box-sizing: border-box;
         }
         .brochure-page:last-child {
           page-break-after: auto;
           break-after: auto;
         }
+        /* Prevent cards from being split across pages */
+        .brochure-page .grid > div,
+        .brochure-page [class*="rounded-2xl"],
+        .brochure-page [class*="rounded-3xl"] {
+          page-break-inside: avoid;
+          break-inside: avoid;
+        }
         @media print {
           .brochure-page {
-            height: 297mm !important;
-            max-height: 297mm !important;
-            min-height: auto !important;
             width: 210mm !important;
-            overflow: hidden !important;
             padding: 12mm !important;
             box-sizing: border-box !important;
+            overflow: visible !important;
           }
           h1 { font-size: 24pt !important; }
           h2 { font-size: 18pt !important; }
@@ -47,7 +48,7 @@ export default function BrochurePage() {
 
       {/* ====== DOWNLOAD BUTTON (screen only) ====== */}
       <div className="no-print fixed top-4 right-4 z-50 flex gap-3">
-        <a href="/api/brochure/download?download=1" download="VetBuddy_Brochure_2025.pdf" className="bg-coral-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-coral-600 transition text-sm inline-flex items-center gap-2">
+        <a href="/api/brochure/download?download=1" download="VetBuddy_Brochure_2026.pdf" className="bg-coral-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-coral-600 transition text-sm inline-flex items-center gap-2">
           Scarica PDF
         </a>
         <Link href="/" className="bg-white text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 transition text-sm border">
@@ -469,11 +470,11 @@ export default function BrochurePage() {
       </div>
 
       {/* ====================================================================
-          PAGINA 3B — NUOVI MODULI OPERATIVI 2025
+          PAGINA 3B — NUOVI MODULI OPERATIVI 2026
       ==================================================================== */}
       <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
         <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Nuovi Moduli Operativi 2025</h2>
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Nuovi Moduli Operativi 2026</h2>
         <p className="text-gray-500 text-sm mb-6">Task manager, campagne, CRM e altri strumenti operativi avanzati</p>
 
         {/* NUOVI MODULI OPERATIVI - PHASE 2 & 3 */}
@@ -586,11 +587,11 @@ export default function BrochurePage() {
       </div>
 
       {/* ====================================================================
-          PAGINA 3C — MODULI MERCATO ITALIANO 2025
+          PAGINA 3C — MODULI MERCATO ITALIANO 2026
       ==================================================================== */}
       <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
         <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🇮🇹 Moduli Mercato Italiano 2025</h2>
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🇮🇹 Moduli Mercato Italiano 2026</h2>
         <p className="text-gray-500 text-sm mb-6">Fatturazione XML, ricette REV, microchip, network specialisti e piani benessere</p>
 
         {/* MODULI MERCATO ITALIANO */}
@@ -673,11 +674,11 @@ export default function BrochurePage() {
       </div>
 
       {/* ====================================================================
-          PAGINA 3D — CONFORMITÀ E OPERATIVITÀ AVANZATA 2025
+          PAGINA 3D — CONFORMITÀ E OPERATIVITÀ AVANZATA 2026
       ==================================================================== */}
       <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
         <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🇮🇹 Conformità e Operatività Avanzata 2025</h2>
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🇮🇹 Conformità e Operatività Avanzata 2026</h2>
         <p className="text-gray-500 text-sm mb-6">Consensi, denuncia malattie, assicurazioni, farmacovigilanza, certificati viaggio</p>
 
         {/* SECONDA WAVE MODULI ITALIANI */}
@@ -805,11 +806,11 @@ export default function BrochurePage() {
       </div>
 
       {/* ====================================================================
-          PAGINA 3E — FUNZIONALITÀ ENTERPRISE 2025
+          PAGINA 3E — FUNZIONALITÀ ENTERPRISE 2026
       ==================================================================== */}
       <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
         <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Funzionalità Enterprise 2025</h2>
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Funzionalità Enterprise 2026</h2>
         <p className="text-gray-500 text-sm mb-6">Multi-sede, app mobile, sala operatoria, contabilità, POS e analytics avanzati</p>
 
         {/* FUNZIONALITÀ ENTERPRISE */}
@@ -861,7 +862,18 @@ export default function BrochurePage() {
             </div>
             <p className="text-gray-600 text-xs leading-relaxed">Nexi, SumUp, Stripe. Pagamenti, scontrini, chiusura cassa automatica.</p>
           </div>
+        </div>
+      </div>
 
+      {/* ====================================================================
+          PAGINA 3E2 — FUNZIONALITÀ ENTERPRISE 2026 (Parte 2)
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Funzionalità Enterprise 2026 (continua)</h2>
+        <p className="text-gray-500 text-sm mb-6">Analytics, marketing automation, HR, e-commerce, visite domiciliari e nutrizione AI</p>
+
+        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-cyan-200">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center"><span className="text-2xl">📊</span></div>
@@ -913,14 +925,14 @@ export default function BrochurePage() {
       </div>
 
       {/* ====================================================================
-          PAGINA 3F — INNOVATION LAB 2025 (Parte 1)
+          PAGINA 3F — INNOVATION LAB 2026 (Parte 1)
       ==================================================================== */}
       <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
         <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Innovation Lab 2025 — AI & IoT</h2>
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Innovation Lab 2026 — AI & IoT</h2>
         <p className="text-gray-500 text-sm mb-6">Telemedicina, wearables, marketplace, AI diagnostico e moduli innovativi</p>
 
-        {/* INNOVATION 2025 - PARTE 1 */}
+        {/* INNOVATION 2026 - PARTE 1 */}
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🤖</span></div><div><h3 className="font-black text-gray-900 text-sm">AI Diagnostico Assistant</h3><span className="bg-purple-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
@@ -946,6 +958,18 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">👨‍💼</span></div><div><h3 className="font-black text-gray-900 text-sm">Veterinary Marketplace</h3><span className="bg-indigo-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Uber veterinari. Sostituti certificati. Rating, pagamento gestito.</p>
           </div>
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3F2 — INNOVATION LAB 2026 (Parte 2)
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Innovation Lab 2026 (continua)</h2>
+        <p className="text-gray-500 text-sm mb-6">Trials, voice assistant, adopt program</p>
+
+        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-teal-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🔬</span></div><div><h3 className="font-black text-gray-900 text-sm">Clinical Trials</h3><span className="bg-teal-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Ricerca clinica. Compenso €300-500, farmaci gratis. Revenue + scienza.</p>
@@ -966,7 +990,7 @@ export default function BrochurePage() {
       ==================================================================== */}
       <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
         <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2025 — Parte 1</h2>
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 1</h2>
         <p className="text-gray-500 text-sm mb-6">Super-AI multimodale, database farmaci, diagnostica visiva e monitoring remoto</p>
 
         <div className="grid grid-cols-2 gap-6">
@@ -990,6 +1014,18 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center"><span className="text-2xl">💚</span></div><div><h3 className="font-black text-gray-900 text-sm">VetBuddy Pharmacy</h3><span className="bg-green-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Farmacia online 24/7. Prescrizioni → ordine → spedizione casa. Revenue ricorrente 30-40%.</p>
           </div>
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3G2 — GENIUS SUITE (Parte 1B) — Academy, Blockchain, Smart Clinic
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 1 (continua)</h2>
+        <p className="text-gray-500 text-sm mb-6">Academy, blockchain, consulti specialistici, smart clinic e riabilitazione</p>
+
+        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-indigo-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎓</span></div><div><h3 className="font-black text-gray-900 text-sm">VetBuddy Academy</h3><span className="bg-indigo-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">LMS formazione staff. Video-corsi ECM accreditati, webinar live, tracking crediti automatico.</p>
@@ -1022,7 +1058,7 @@ export default function BrochurePage() {
       ==================================================================== */}
       <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
         <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2025 — Parte 2</h2>
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 2</h2>
         <p className="text-gray-500 text-sm mb-6">Mental wellness, litigation, behavior AI, dynamic pricing, podcast e photography</p>
 
         <div className="grid grid-cols-2 gap-6">
@@ -1050,6 +1086,18 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🌍</span></div><div><h3 className="font-black text-gray-900 text-sm">Cross-Species Learning</h3><span className="bg-indigo-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">AI tutte specie. Transfer learning. Risolvi casi impossibili fuori comfort zone.</p>
           </div>
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3H2 — GENIUS SUITE (Parte 2B) — Residency, Autopsy, Referral, Talent
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 2 (continua)</h2>
+        <p className="text-gray-500 text-sm mb-6">Residency program, autopsy AI, smart referral revenue e talent marketplace</p>
+
+        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-slate-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎓</span></div><div><h3 className="font-black text-gray-900 text-sm">Residency Program</h3><span className="bg-slate-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Mentorship 1-to-1. €200/mese vs €20-40k. Certificazione FNOVI. Democratico.</p>
@@ -1066,6 +1114,18 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🎯</span></div><div><h3 className="font-black text-gray-900 text-sm">Talent Marketplace</h3><span className="bg-blue-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">LinkedIn vet. Match AI, hiring tracciato. Risparmio €10k headhunter.</p>
           </div>
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3H3 — GENIUS SUITE (Parte 2C) — Grief, Carbon, Dynamic Pricing, Podcast
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 2 (fine)</h2>
+        <p className="text-gray-500 text-sm mb-6">Grief support, carbon offset, dynamic pricing, podcast platform e AI photography</p>
+
+        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-rose-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🕊️</span></div><div><h3 className="font-black text-gray-900 text-sm">Grief Support</h3><span className="bg-rose-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Post-eutanasia. Memorial digitale, albero. Retention +25%.</p>
@@ -1094,7 +1154,7 @@ export default function BrochurePage() {
       ==================================================================== */}
       <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
         <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2025 — Parte 3</h2>
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 3</h2>
         <p className="text-gray-500 text-sm mb-6">BNPL, smart queue, supply chain, LTV, knowledge marketplace e orchestration</p>
 
         <div className="grid grid-cols-2 gap-6">
@@ -1130,7 +1190,7 @@ export default function BrochurePage() {
       ==================================================================== */}
       <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
         <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2025 — Parte 4</h2>
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 4</h2>
         <p className="text-gray-500 text-sm mb-6">Emergency triage, churn predictor, nutrition AI, surgery scheduling, franchise builder</p>
 
         <div className="grid grid-cols-2 gap-6">
@@ -1158,6 +1218,18 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🏢</span></div><div><h3 className="font-black text-gray-900 text-sm">Franchise Builder</h3><span className="bg-amber-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Sistema completo franchising. AI location, multi-sede. Scala 1→10+.</p>
           </div>
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3L2 — Alert Pazienti + Dashboard ROI
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2026 — Parte 4 (fine)</h2>
+        <p className="text-gray-500 text-sm mb-6">Alert pazienti fragili e Dashboard ROI in tempo reale</p>
+
+        <div className="grid grid-cols-2 gap-6 mb-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><span className="text-2xl">❤️</span></div><div><h3 className="font-black text-gray-900 text-sm">Alert Pazienti Fragili</h3><span className="bg-red-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Monitoraggio continuo pazienti speciali. Badge, alert, compliance +40%.</p>
