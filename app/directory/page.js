@@ -256,9 +256,16 @@ export default function DirectoryPage() {
                           ))}
                         </div>
                       )}
-                      <div className="mt-3 pt-3 border-t border-gray-100">
+                      <div className="mt-3 pt-3 border-t border-gray-100 flex flex-col gap-1.5">
+                        <Button
+                          size="sm"
+                          className="bg-blue-500 hover:bg-blue-600 text-white w-full"
+                          onClick={() => window.location.href = `/laboratorio/${l.id}`}
+                        >
+                          <ExternalLink className="h-3 w-3 mr-1" />Profilo completo
+                        </Button>
                         <p className="text-xs text-gray-500 text-center">
-                          Disponibile su VetBuddy. Le cliniche partner possono contattarlo via piattaforma.
+                          Cliniche partner: contattatelo via piattaforma
                         </p>
                       </div>
                     </CardContent>

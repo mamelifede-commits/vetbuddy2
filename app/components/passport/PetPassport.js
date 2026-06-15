@@ -41,10 +41,10 @@ const api = {
 // ============================================================
 // MAIN COMPONENT
 // ============================================================
-export default function PetPassport({ pet, token, userRole }) {
+export default function PetPassport({ pet, token, userRole, initialTab }) {
   const [passportData, setPassportData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('panoramica');
+  const [activeTab, setActiveTab] = useState(initialTab === 'share' ? 'condivisioni' : (initialTab || 'panoramica'));
   const [showModal, setShowModal] = useState(null);
   const [modalData, setModalData] = useState({});
   const [saving, setSaving] = useState(false);

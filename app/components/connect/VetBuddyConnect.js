@@ -67,6 +67,7 @@ function getAllowedTypesForRole(role) {
 
 function VetBuddyConnect({ user, onNavigate }) {
   const [stats, setStats] = useState(null);
+  const [credits, setCredits] = useState(null);
   const [sent, setSent] = useState([]);
   const [received, setReceived] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -86,13 +87,15 @@ function VetBuddyConnect({ user, onNavigate }) {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [statsRes, invsRes] = await Promise.all([
+      const [statsRes, invsRes, creditsRes] = await Promise.all([
         api.get('connect/stats').catch(() => ({})),
-        api.get('connect/invitations').catch(() => ({ sent: [], received: [] }))
+        api.get('connect/invitations').catch(() => ({ sent: [], received: [] })),
+        api.get('connect/referral-credits').catch(() => null)
       ]);
       setStats(statsRes || {});
       setSent(invsRes.sent || []);
       setReceived(invsRes.received || []);
+      setCredits(creditsRes);
     } catch (e) {
       console.error('Connect load error:', e);
     } finally {
@@ -256,6 +259,44 @@ function VetBuddyConnect({ user, onNavigate }) {
           </CardContent>
         </Card>
       </div>
+
+      {/* Crediti Referral - mostrato solo se ne ha */}
+      {credits && credits.totals && (credits.totals.pending.count + credits.totals.available.count > 0) && (
+        <Card className="bg-gradient-to-r from-amber-50 via-yellow-50 to-emerald-50 border-2 border-amber-300 mb-6">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-gradient-to-br from-amber-400 to-orange-400 rounded-xl flex items-center justify-center">
+                  <span className="text-white text-lg">💰</span>
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900 text-sm">Crediti Referral accumulati</h4>
+                  <p className="text-xs text-gray-600">Sblocca crediti invitando altri attori nella rete</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                {credits.totals.pending.count > 0 && (
+                  <div className="text-center">
+                    <p className="text-xs text-amber-600 font-medium">In attesa</p>
+                    <p className="text-lg font-bold text-amber-700">€{credits.totals.pending.amount}</p>
+                    <p className="text-xs text-gray-500">{credits.totals.pending.count} crediti</p>
+                  </div>
+                )}
+                {credits.totals.available.count > 0 && (
+                  <div className="text-center">
+                    <p className="text-xs text-emerald-600 font-medium">Disponibili</p>
+                    <p className="text-lg font-bold text-emerald-700">€{credits.totals.available.amount}</p>
+                    <p className="text-xs text-gray-500">{credits.totals.available.count} crediti</p>
+                  </div>
+                )}
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-2 italic">
+              💡 I crediti diventano disponibili dopo il primo pagamento del referred. Applicabili automaticamente sul prossimo billing.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Quick Invite Actions */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">

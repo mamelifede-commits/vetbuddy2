@@ -39,9 +39,9 @@ const api = {
   },
 };
 
-function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
+function PetProfile({ petId, initialTab, onBack, onNavigate, appointments, documents }) {
   const [pet, setPet] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState(initialTab === 'share' ? 'passport' : 'overview');
   const [loading, setLoading] = useState(true);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showBookingDialog, setShowBookingDialog] = useState(false);
@@ -198,7 +198,7 @@ function PetProfile({ petId, onBack, onNavigate, appointments, documents }) {
         </TabsContent>
 
         <TabsContent value="passport">
-          <PetPassport pet={pet} token={typeof window !== 'undefined' ? localStorage.getItem('vetbuddy_token') : null} userRole="owner" />
+          <PetPassport pet={pet} token={typeof window !== 'undefined' ? localStorage.getItem('vetbuddy_token') : null} userRole="owner" initialTab={initialTab} />
         </TabsContent>
 
         <TabsContent value="data">

@@ -221,6 +221,37 @@ export async function handleConnectGet(path, request) {
       level: score >= 80 ? 'excellent' : score >= 60 ? 'good' : score >= 40 ? 'progress' : 'starter'
     }, { headers: corsHeaders });
   }
+
+  // GET /api/connect/referral-credits — Crediti referral accumulati dall'utente
+  if (path === 'connect/referral-credits') {
+    const user = getUserFromRequest(request);
+    if (!user) return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const users = await getCollection('users');
+    const u = await users.findOne({ id: user.id });
+    const credits = u?.referralCredits || [];
+    const stats = u?.referralStats || { acceptedTotal: 0 };
+
+    // Calcola totali
+    const now = new Date().toISOString();
+    const pending = credits.filter(c => c.status === 'pending' && (!c.expiresAt || c.expiresAt > now));
+    const available = credits.filter(c => c.status === 'available' && (!c.expiresAt || c.expiresAt > now));
+    const redeemed = credits.filter(c => c.status === 'redeemed');
+    const expired = credits.filter(c => c.expiresAt && c.expiresAt <= now && c.status !== 'redeemed');
+
+    const sum = (arr) => arr.reduce((acc, c) => acc + (c.amount || 0), 0);
+
+    return NextResponse.json({
+      credits: credits.slice(-50).reverse(),
+      totals: {
+        pending: { count: pending.length, amount: sum(pending) },
+        available: { count: available.length, amount: sum(available) },
+        redeemed: { count: redeemed.length, amount: sum(redeemed) },
+        expired: { count: expired.length, amount: sum(expired) }
+      },
+      stats
+    }, { headers: corsHeaders });
+  }
+
   // GET /api/directory/clinics — Directory pubblica cliniche verificate (no auth)
   if (path === 'directory/clinics' || path.startsWith('directory/clinics?')) {
     const url = new URL(request.url);
@@ -614,6 +645,30 @@ export async function handleConnectPost(path, request, body) {
       } else {
         await connections.updateOne({ id: existing.id }, { $set: { status: 'active' } });
       }
+    }
+
+    // 💰 REFERRAL ECOSYSTEM CREDITS: assegna credito al mittente quando invito clinic↔lab viene accettato
+    if (invite.type === 'clinic_to_lab' || invite.type === 'lab_to_clinic' ||
+        invite.type === 'clinic_to_owner' || invite.type === 'owner_to_clinic') {
+      // Solo per inviti chiusi (non già accettati)
+      const credit = {
+        id: uuidv4(),
+        type: invite.type,
+        amount: ['clinic_to_lab', 'lab_to_clinic'].includes(invite.type) ? 30 : 5, // €30 per network biz, €5 per owner
+        currency: 'EUR',
+        reason: `Referral: ${user.name || user.email} ha accettato il tuo invito`,
+        sourceInvitationId: invite.id,
+        status: 'pending', // diventa 'available' dopo primo pagamento del referred, scade 'redeemed' quando applicato
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+      };
+      await users.updateOne(
+        { id: invite.fromUserId },
+        {
+          $push: { referralCredits: credit },
+          $inc: { 'referralStats.acceptedTotal': 1 }
+        }
+      );
     }
 
     // Notify inviter

@@ -8,6 +8,47 @@ import { LAB_EXAM_TYPES, LAB_REQUEST_STATUSES, corsHeaders } from './constants';
 
 // ==================== LAB GET HANDLERS ====================
 export async function handleLabProfileGet(path, request) {
+    // GET /api/laboratorio/:slug — Profilo pubblico laboratorio (no auth)
+    if (path.startsWith('laboratorio/')) {
+      const slug = path.split('/')[1];
+      if (!slug) return NextResponse.json({ error: 'Slug mancante' }, { status: 400, headers: corsHeaders });
+      const users = await getCollection('users');
+      const labPriceList = await getCollection('lab_price_list');
+      // Cerca per slug oppure per id
+      const lab = await users.findOne({
+        role: 'lab',
+        $or: [
+          { 'labProfile.slug': slug },
+          { slug: slug },
+          { id: slug }
+        ],
+        publishInDirectory: { $ne: false }
+      });
+      if (!lab) return NextResponse.json({ error: 'Laboratorio non trovato' }, { status: 404, headers: corsHeaders });
+      const priceList = await labPriceList.find({ labId: lab.id }).limit(50).toArray();
+      return NextResponse.json({
+        id: lab.id,
+        name: lab.labName || lab.labProfile?.labName || lab.name,
+        city: lab.labProfile?.city || '',
+        address: lab.labProfile?.address || '',
+        phone: lab.labProfile?.phone || lab.phone || '',
+        email: lab.labProfile?.publicEmail || '',
+        website: lab.labProfile?.website || '',
+        description: lab.labProfile?.description || '',
+        specializations: lab.labProfile?.specializations || [],
+        averageReportTime: lab.labProfile?.averageReportTime || lab.averageReportTime || '',
+        pickupAvailable: !!lab.labProfile?.pickupAvailable || !!lab.pickupAvailable,
+        pickupDays: lab.labProfile?.pickupDays || [],
+        photo: lab.labProfile?.logo || lab.avatar || null,
+        priceList: priceList.map(p => ({
+          id: p.id, examName: p.examName || p.name, price: p.price, currency: p.currency || 'EUR',
+          turnaroundDays: p.turnaroundDays, category: p.category
+        })),
+        verified: true
+      }, { headers: corsHeaders });
+    }
+
+
     if (path === 'lab/exam-types') {
       return NextResponse.json(LAB_EXAM_TYPES, { headers: corsHeaders });
     }
