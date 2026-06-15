@@ -15,6 +15,7 @@ import {
 import dynamic from 'next/dynamic';
 
 const ClinicPassportWidget = dynamic(() => import('./ClinicPassportWidget'), { ssr: false });
+const ConnectStatusCard = dynamic(() => import('../connect/ConnectStatusCard'), { ssr: false });
 
 // Helper: Setup Step
 function SetupStep({ icon: Icon, label, desc, done, onClick }) {

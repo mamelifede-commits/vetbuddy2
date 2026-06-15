@@ -29,6 +29,7 @@ const PetProfile = dynamic(() => import('@/app/components/owner/PetProfile'), { 
 const FindClinic = dynamic(() => import('@/app/components/owner/FindClinic'), { ssr: false });
 const InviteClinic = dynamic(() => import('@/app/components/owner/InviteClinic'), { ssr: false });
 const VetBuddyConnect = dynamic(() => import('@/app/components/connect/VetBuddyConnect'), { ssr: false });
+const ConnectStatusCard = dynamic(() => import('@/app/components/connect/ConnectStatusCard'), { ssr: false });
 const SubscriptionPlans = dynamic(() => import('@/app/components/shared/SubscriptionPlans'), { ssr: false });
 const OwnerPassportCards = dynamic(() => import('@/app/components/owner/OwnerPassportCards'), { ssr: false });
 const OwnerPets = dynamic(() => import('@/app/components/owner/OwnerPets'), { ssr: false });
@@ -325,6 +326,13 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {/* Passport Cards - always visible */}
         {activeTab === 'appointments' && pets.length > 0 && (
           <OwnerPassportCards pets={pets} onOpenProfile={handleOpenPetProfile} />
+        )}
+
+        {/* VetBuddy Connect Status (Network + Completamento Passport) */}
+        {activeTab === 'appointments' && (
+          <div className="mb-6">
+            <ConnectStatusCard user={{ role: 'owner' }} onNavigate={setActiveTab} />
+          </div>
         )}
 
         {activeTab === 'appointments' && <OwnerAppointments appointments={appointments} pets={pets} />}

@@ -22,6 +22,7 @@ const LabProfileEditor = dynamic(() => import('@/app/components/lab/LabProfileEd
 const LabInvoicesSection = dynamic(() => import('@/app/components/lab/LabInvoicesSection'), { ssr: false });
 const LabIntegrationTab = dynamic(() => import('@/app/components/lab/LabIntegrationTab'), { ssr: false });
 const VetBuddyConnect = dynamic(() => import('@/app/components/connect/VetBuddyConnect'), { ssr: false });
+const ConnectStatusCard = dynamic(() => import('@/app/components/connect/ConnectStatusCard'), { ssr: false });
 
 const EXAM_TYPES_LIST = [
   { id: 'sangue', label: '🩸 Sangue' },
@@ -436,6 +437,11 @@ function LabDashboard({ user, onLogout }) {
         {/* REQUESTS TAB */}
         {activeTab === 'requests' && (
           <>
+            {/* VetBuddy Connect Status (Network + Completamento) */}
+            <div className="mb-6">
+              <ConnectStatusCard user={{ role: 'lab' }} onNavigate={setActiveTab} />
+            </div>
+
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div className="bg-white rounded-xl p-4 shadow-sm border border-yellow-100">

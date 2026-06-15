@@ -652,6 +652,19 @@ backend:
         agent: "testing"
         comment: "COMPREHENSIVE VETBUDDY CONNECT MODULE + UPDATED PRICING PLANS TESTING COMPLETED - ALL 48/48 TESTS PASSED ✅: Successfully tested complete VetBuddy Connect module and updated pricing plans as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. Credentials: Clinic (demo@vetbuddy.it / VetBuddy2025!Secure), Lab (laboratorio1@vetbuddy.it / Lab2025!), Owner (proprietario.demo@vetbuddy.it / demo123). ✅ **TEST 1 - PRICING PLANS (1/1)**: GET /api/stripe/plans verified all 5 plans with correct pricing: starter (€29, 14d trial), growth (€69, 14d trial) NEW PLAN, pro (€99, 90d trial), lab_partner (€39, 180d trial), enterprise (€0). ✅ **TEST 2 - SINGLE INVITES (9/9)**: All 4 invitation directions working (clinic→owner, clinic→lab, lab→clinic, owner→clinic). Negative tests passed: wrong direction (403), duplicate (400), missing email (400), invalid type (400), no auth (401). ✅ **TEST 3 - BULK INVITE (4/4)**: Bulk invite clinic→owners sent 3 invitations successfully. Negative tests: 201 recipients rejected (400), empty list rejected (400), owner bulk rejected (403). ✅ **TEST 4 - INVITATIONS LIST (3/3)**: Clinic sent 5 invitations, owner sent 1 invitation, unauthorized access blocked (401). ✅ **TEST 5 - PUBLIC INVITE VERIFICATION (2/2)**: GET /api/connect/invite/:token retrieves invitation and changes status from 'sent' to 'opened' in DB. Invalid token returns 404. ✅ **TEST 6 - INVITE ACTIONS (3/3)**: Revoke sets status to 'revoked' in DB. Resend increments resendCount. Resending revoked invitation rejected (400). ✅ **TEST 7 - STATS (3/3)**: Clinic stats (sentTotal=5, ownersConnected=0, petsLinked=29, labsConnected=1), Owner stats (sentTotal=1, petsOwned=1, clinicsLinked=0), Lab stats (sentTotal=1, clinicsConnected=1). ✅ **TEST 8 - PROVISIONAL PROFILES (1/1)**: Found 4 provisional profiles in DB for test emails, all with public=false (internal only). ✅ **TEST 9 - REGRESSION (5/5)**: All existing endpoints working: /auth/me, /appointments, /tasks, /previsit, /invite-clinic (legacy). ✅ **CLEANUP**: Removed 7 test invitations, 7 provisional profiles, 0 clinic_lab_connections (14 total records). All VetBuddy Connect features fully functional and ready for production use."
 
+  - task: "VetBuddy Connect Completion Score Endpoint (Fase 4 Ecosistema)"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/connect.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE COMPLETION SCORE ENDPOINT TESTING COMPLETED - ALL 8/8 TESTS PASSED ✅: Successfully tested new GET /api/connect/completion-score endpoint (Fase 4 del riposizionamento Ecosistema) as specified in review request. Base URL: https://clinic-report-review.preview.emergentagent.com/api. Credentials: Clinic (demo@vetbuddy.it / VetBuddy2025!Secure), Lab (laboratorio1@vetbuddy.it / Lab2025!), Owner (proprietario.demo@vetbuddy.it / demo123). ✅ **TEST 1.1 - CLINIC COMPLETION SCORE**: Returns 200 with score:56%, completed:5/9, total:9, level:'progress'. All 9 expected checklist keys present: profile, services, whatsapp, qr, invite_owners, lab_connect, first_doc, automations, passport. Each item has required fields (key, label, done, action). Response structure correct with score (0-100), completed (int), total (int), checklist (array), level (excellent/good/progress/starter). ✅ **TEST 1.2 - OWNER COMPLETION SCORE**: Returns 200 with score:43%, completed:3/7, total:7, level:'progress'. All 7 expected checklist keys present: add_pet, microchip, emergency, allergies, invite_clinic, qr_emergency, documents_viaggio. documents_viaggio correctly has optional:true field. ✅ **TEST 1.3 - LAB COMPLETION SCORE**: Returns 200 with score:67%, completed:4/6, total:6, level:'good'. All 6 expected checklist keys present: profile, price_list, pickup, avg_time, invite_clinics, clinic_connected. ✅ **TEST 1.4 - NO AUTH (NEGATIVE)**: Correctly returns 401 for unauthenticated request. ✅ **TEST 2.1 - REGRESSION /connect/stats**: Returns 200 with all required fields (sentTotal, sentAccepted, sentPending, conversionRate) and clinic-specific fields (ownersConnected:0, petsLinked:29, labsConnected:1). ✅ **TEST 2.2 - REGRESSION /connect/invitations**: Returns 200 with sent and received arrays (both empty for owner). ✅ **TEST 2.3 - REGRESSION /connect/invite**: POST clinic→owner invitation successful, returns success:true with invitation object. ✅ **TEST 2.4 - CLEANUP**: Successfully deleted test invitation and provisional profile from MongoDB. All completion-score endpoint features fully functional and ready for production use. Endpoint correctly calculates completion percentage based on role-specific checklists and provides actionable guidance for ecosystem onboarding."
+
+
 frontend:
   - task: "Landing Page Fatturazione Section"
     implemented: true
@@ -2144,15 +2157,18 @@ agent_communication:
 backend:
   - task: "VetBuddy Connect: modulo unificato inviti ecosistema (owner↔clinic↔lab) + profili provvisori + claim"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/app/api/[[...path]]/modules/connect.js, /app/app/api/[[...path]]/route.js, /app/app/api/[[...path]]/modules/constants.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "NUOVO modulo /api/connect/* con 4 tipi di invito (owner_to_clinic, clinic_to_owner, clinic_to_lab, lab_to_clinic). Endpoints: POST /api/connect/invite (singolo, valida direzione/ruolo, crea token 7gg, crea provisional_profiles se destinatario non registrato, invia email via Resend); POST /api/connect/bulk-invite (max 200 destinatari, skip duplicati); GET /api/connect/invitations (lista sent+received per utente); GET /api/connect/invite/:token (pubblico, marca opened); POST /api/connect/accept (accetta invito - crea clinic_lab_connections se applicabile, aggiorna user.clinicIds se owner/clinic); POST /api/connect/revoke (revoca invito mittente); POST /api/connect/resend (re-send email + estende scadenza 7gg); POST /api/connect/claim (rivendica profilo provvisorio); GET /api/connect/stats (KPI rete per ruolo); GET /api/connect/provisional/:token (verifica profilo provvisorio). Provisional profiles sono SOLO INTERNI (public:false). Mantenuti endpoint legacy compatibili (invite-clinic, lab-invitations). PREZZI PIANI AGGIORNATI: SUBSCRIPTION_PLANS in constants.js → Starter €29 (14gg trial), Growth €69 NUOVO (14gg trial), Pro €99 (90gg trial pilot), Lab Partner €39 (180gg trial). Stripe usa price_data dinamici, no nuovi price_id richiesti."
+      - working: true
+        agent: "testing"
+        comment: "ALL 48/48 TESTS PASSED ✅ - VetBuddy Connect module fully functional. TEST 1 (prezzi): 5 piani verificati (Starter €29/Growth €69 NEW/Pro €99/Lab €39/Enterprise). TEST 2 (single invites): tutti 4 tipi funzionanti + 5 validazioni negative. TEST 3 (bulk): 3 invii batch + validazioni. TEST 4 (list): liste per ruolo. TEST 5 (public verify + status='opened'). TEST 6 (revoke + resend + reject su revoked). TEST 7 (stats per ruolo). TEST 8 (provisional_profiles solo interni, public=false). TEST 9 (regression endpoint esistenti + alias legacy invite-clinic). CLEANUP: 14 record di test rimossi (7 invitations + 7 provisional profiles)."
 
 frontend:
   - task: "VetBuddy Connect UI: componente unificato + pagina pubblica /connect/accept/[token]"
@@ -2185,3 +2201,35 @@ agent_communication:
     message: "Implementato VetBuddy Connect (Fase 3 del riposizionamento ecosistema). Da testare backend: 1) POST /api/connect/invite con i 4 tipi di invito + verifica direction/role enforcement + creazione provisional_profiles (per destinatari non registrati). 2) POST /api/connect/bulk-invite (max 200, skip duplicati, parser CSV). 3) GET /api/connect/invitations (lista sent+received corretti per utente). 4) GET /api/connect/invite/:token (pubblico, marca opened). 5) POST /api/connect/accept (verifica role match, creazione clinic_lab_connections, aggiornamento clinicIds). 6) POST /api/connect/revoke + POST /api/connect/resend. 7) POST /api/connect/claim. 8) GET /api/connect/stats (KPI per ruolo). 9) GET /api/stripe/plans deve ora ritornare Starter €29 / Growth €69 / Pro €99 / Lab €39 / Enterprise. ATTENZIONE: NON chiamare /api/cron/daily (email reali). Cleanup: rimuovere inviti e provisional_profiles creati nei test. Credenziali in /app/memory/test_credentials.md."
   - agent: "testing"
     message: "✅ VETBUDDY CONNECT MODULE + UPDATED PRICING PLANS TESTING COMPLETED - ALL 48/48 TESTS PASSED. Comprehensive testing executed successfully covering: ✅ Pricing plans verification (5 plans with correct pricing including NEW Growth €69 plan), ✅ Single invitations (9 tests: 4 directions + 5 negative cases), ✅ Bulk invitations (4 tests including negative cases), ✅ Invitations list (3 tests), ✅ Public invite verification (2 tests with status change to 'opened'), ✅ Invite actions - revoke/resend (3 tests), ✅ Stats for all roles (3 tests), ✅ Provisional profiles verification (1 test - all profiles have public=false), ✅ Regression tests (5 tests including legacy /invite-clinic endpoint). All endpoints working correctly with proper authentication, authorization, validation, and error handling. Provisional profiles created correctly for non-registered recipients. Email notifications sent via Resend. Cleanup completed: removed 7 test invitations, 7 provisional profiles, 0 clinic_lab_connections (14 total records). NO CRITICAL ISSUES FOUND. Backend fully functional and ready for production. Main agent should now summarize and finish."
+
+
+backend:
+  - task: "VetBuddy Connect: endpoint /api/connect/completion-score (Punteggio Completamento Ecosistema per ruolo)"
+    implemented: true
+    working: "NA"
+    file: "/app/app/api/[[...path]]/modules/connect.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "NUOVO endpoint GET /api/connect/completion-score. Calcola checklist personalizzata per ruolo: CLINIC (9 step), OWNER (7 step), LAB (6 step). Ritorna { score, completed, total, checklist, level }. Componente ConnectStatusCard usa questo endpoint."
+
+frontend:
+  - task: "Fase 4-5-6: ConnectStatusCard + Onboarding wizard + Homepage/Brochure aggiornati"
+    implemented: true
+    working: "NA"
+    file: "/app/app/components/connect/ConnectStatusCard.js, /app/app/components/onboarding/WelcomeScreen.js, /app/app/components/landing/FullLandingPage.js, /app/app/presentazione/page.js, /app/app/components/clinic/ClinicControlRoom.js, /app/app/components/owner/OwnerDashboardLayout.js, /app/app/components/lab/LabDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "FASE 4: ConnectStatusCard riusabile integrato in 3 dashboard (clinica/owner/lab) - mostra KPI ecosistema + punteggio completamento + checklist azioni cliccabili. FASE 5: WelcomeScreen rifatto con onboarding wizard step-per-ruolo (Clinica 7step / Proprietario 7step / Lab 7step). FASE 6: FullLandingPage Hero 'Tre attori un solo ecosistema' + 4 CTA + sezione 3 attori card + Chi invita chi + FAQ compattata (8 top + toggle). Brochure A4 (/presentazione): sostituito 'Due ecosistemi' → 'Tre attori', 3 card colorate, VetBuddy Connect viz, prezzi titolo 'Prova gratis. Poi scegli', CSS @media print fix padding 12mm + h sizing."
+
+agent_communication:
+  - agent: "main"
+    message: "Riposizionamento Ecosistema COMPLETATO (Fasi 1-2-3-4-5-6). VetBuddy ora si presenta come ecosistema 'Tre attori, un solo ecosistema' (cliniche, proprietari, laboratori). Implementazioni: 1) AUDIT documento in /app/memory/AUDIT_VETBUDDY_CONNECT.md 2) Backend Connect /api/connect/* (testato 48/48 ✅) + completion-score (NEW da testare). 3) Frontend VetBuddyConnect (UI inviti + KPI) integrato in 3 dashboard. 4) ConnectStatusCard (entry dashboard ogni ruolo). 5) Onboarding wizard step-per-ruolo. 6) Prezzi piani Starter €29 / Growth €69 NUOVO / Pro €99 / Lab €39. 7) Homepage Hero ecosistema + FAQ compattate (8 top + toggle). 8) Brochure A4 fix + sezione VetBuddy Connect. NO TEST AGENTI ESEGUITI per: completion-score endpoint, ConnectStatusCard rendering, onboarding wizard, homepage/brochure visuali. Test backend del nuovo endpoint completion-score raccomandato. PROFILI PROVVISORI: solo interni (public:false). LAB→CLINIC invito ora supportato. ENDPOINT LEGACY COMPATIBILI: invite-clinic, lab-invitations restano funzionanti."
+

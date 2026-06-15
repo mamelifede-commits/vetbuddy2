@@ -30,12 +30,18 @@ export default function BrochurePage() {
         }
         @media print {
           .brochure-page {
-            height: 297mm;
-            max-height: 297mm;
-            min-height: 297mm;
-            width: 210mm;
-            overflow: hidden;
+            height: 297mm !important;
+            max-height: 297mm !important;
+            min-height: auto !important;
+            width: 210mm !important;
+            overflow: hidden !important;
+            padding: 12mm !important;
+            box-sizing: border-box !important;
           }
+          h1 { font-size: 24pt !important; }
+          h2 { font-size: 18pt !important; }
+          h3 { font-size: 14pt !important; }
+          h4 { font-size: 12pt !important; }
         }
       `}</style>
 
@@ -113,32 +119,69 @@ export default function BrochurePage() {
           <StatBox number="Fino a +25%" label="clienti che tornano grazie a ricontatti e richiami automatici (obiettivo del progetto pilota)" />
         </div>
 
-        <h3 className="text-2xl font-bold text-gray-900 mb-6">Due ecosistemi, una piattaforma</h3>
-        <div className="grid grid-cols-2 gap-6 mb-8">
-          <div className="rounded-2xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #FF6B6B, #f97316)' }}>
-            <h4 className="text-xl font-bold mb-3">Per le Cliniche Veterinarie</h4>
-            <p className="text-white/80 text-sm mb-4">Gli strumenti operativi per ridurre telefonate, automatizzare comunicazioni e seguire meglio i clienti.</p>
-            <ul className="space-y-1.5 text-sm text-white/90">
-              {['Agenda digitale e prenotazioni online', 'Schede animale, documenti e storico visite', 'Listino servizi, ricevute operative ed esportazioni', 'Documenti PDF con invio automatico al proprietario', 'Assistente al flusso Ricetta Elettronica Veterinaria', 'Casella messaggi condivisa', 'Oltre 60 automazioni operative', 'Cruscotto del valore generato'].map((f, i) => (
-                <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5 flex-shrink-0" />{f}</li>
+        <h3 className="text-2xl font-bold text-gray-900 mb-6">Tre attori, un solo ecosistema</h3>
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="rounded-2xl p-5 text-white" style={{ background: 'linear-gradient(135deg, #FF6B6B, #f97316)' }}>
+            <h4 className="text-lg font-bold mb-2">🏥 Cliniche</h4>
+            <p className="text-white/85 text-xs mb-3">Riduci telefonate, automatizza promemoria, recupera no-show, invia referti e fai tornare i clienti.</p>
+            <ul className="space-y-1 text-xs text-white/90">
+              {['Agenda digitale + prenotazioni online', 'WhatsApp Business + Reception AI', 'Documenti e referti via email', 'Assistente al flusso REV', '60+ automazioni operative', 'Cruscotto valore generato'].map((f, i) => (
+                <li key={i} className="flex items-start gap-1.5"><Check className="w-3 h-3 mt-0.5 flex-shrink-0" /><span>{f}</span></li>
               ))}
             </ul>
-            <div className="mt-4 pt-3 border-t border-white/20">
-              <p className="font-bold">Piano Crescita: consigliato</p>
-              <p className="text-white/70 text-xs">€69/mese + IVA • Progetto pilota: gratis 90 giorni</p>
+            <div className="mt-3 pt-2 border-t border-white/20">
+              <p className="font-bold text-xs">Da €29/mese + IVA</p>
+              <p className="text-white/75 text-[10px]">Prova gratis 14 giorni</p>
             </div>
           </div>
-          <div className="rounded-2xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #2563EB, #4F46E5)' }}>
-            <h4 className="text-xl font-bold mb-3">Per i Proprietari di Animali</h4>
-            <p className="text-white/80 text-sm mb-4">L&apos;area proprietario è il canale digitale con cui la clinica segue il cliente anche dopo la visita.</p>
-            <ul className="space-y-1.5 text-sm text-white/90">
-              {['Prenotazione online in pochi click', 'Profilo animale completo', 'Documenti e referti autorizzati dalla clinica', 'Promemoria visite e vaccini', 'Comunicazioni dalla clinica', 'Programma fedeltà configurabile', 'Storico visite e documenti', 'Accesso tramite area riservata'].map((f, i) => (
-                <li key={i} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5 flex-shrink-0" />{f}</li>
+          <div className="rounded-2xl p-5 text-white" style={{ background: 'linear-gradient(135deg, #10b981, #14b8a6)' }}>
+            <h4 className="text-lg font-bold mb-2">🐾 Proprietari</h4>
+            <p className="text-white/85 text-xs mb-3">Prenota online, gestisci il Passport del tuo animale, ricevi documenti e promemoria.</p>
+            <ul className="space-y-1 text-xs text-white/90">
+              {['Prenotazione online', 'Passport sanitario + QR emergenza', 'Documenti autorizzati', 'Promemoria visite e vaccini', 'Travel Pack viaggi', 'Condivisione con pet sitter'].map((f, i) => (
+                <li key={i} className="flex items-start gap-1.5"><Check className="w-3 h-3 mt-0.5 flex-shrink-0" /><span>{f}</span></li>
               ))}
             </ul>
-            <div className="mt-4 pt-3 border-t border-white/20">
-              <p className="font-bold">100% Gratuito per il proprietario</p>
-              <p className="text-white/70 text-xs">Per sempre, nessun costo nascosto</p>
+            <div className="mt-3 pt-2 border-t border-white/20">
+              <p className="font-bold text-xs">100% Gratis</p>
+              <p className="text-white/75 text-[10px]">Per sempre, nessun costo</p>
+            </div>
+          </div>
+          <div className="rounded-2xl p-5 text-white" style={{ background: 'linear-gradient(135deg, #2563EB, #4F46E5)' }}>
+            <h4 className="text-lg font-bold mb-2">🔬 Laboratori</h4>
+            <p className="text-white/85 text-xs mb-3">Ricevi richieste dalle cliniche, aggiorna gli stati e carica referti PDF in modo ordinato.</p>
+            <ul className="space-y-1 text-xs text-white/90">
+              {['Profilo nel marketplace', 'Listino prezzi indicativo', 'Tempi medi e ritiro campioni', 'Richieste digitali da cliniche', 'Upload referti PDF', 'Invito cliniche partner'].map((f, i) => (
+                <li key={i} className="flex items-start gap-1.5"><Check className="w-3 h-3 mt-0.5 flex-shrink-0" /><span>{f}</span></li>
+              ))}
+            </ul>
+            <div className="mt-3 pt-2 border-t border-white/20">
+              <p className="font-bold text-xs">€39/mese + IVA</p>
+              <p className="text-white/75 text-[10px]">Pilot 6 mesi gratis</p>
+            </div>
+          </div>
+        </div>
+
+        {/* VetBuddy Connect - Inviti reciproci */}
+        <div className="bg-gradient-to-r from-purple-50 via-pink-50 to-amber-50 rounded-2xl p-4 border border-purple-200 mt-4">
+          <h4 className="text-base font-bold text-gray-900 mb-2 text-center">🔗 VetBuddy Connect — Chi invita chi</h4>
+          <p className="text-xs text-gray-600 text-center mb-3">Una rete che cresce con te. Ogni attore può portare un altro nella piattaforma.</p>
+          <div className="grid grid-cols-4 gap-2 text-xs">
+            <div className="bg-white rounded-lg p-2 text-center border border-purple-100">
+              <p className="font-semibold text-purple-700 text-xs">🐾 → 🏥</p>
+              <p className="text-gray-600 text-[10px] mt-1">Proprietari invitano cliniche</p>
+            </div>
+            <div className="bg-white rounded-lg p-2 text-center border border-purple-100">
+              <p className="font-semibold text-purple-700 text-xs">🏥 → 🐾</p>
+              <p className="text-gray-600 text-[10px] mt-1">Cliniche invitano proprietari</p>
+            </div>
+            <div className="bg-white rounded-lg p-2 text-center border border-purple-100">
+              <p className="font-semibold text-purple-700 text-xs">🏥 → 🔬</p>
+              <p className="text-gray-600 text-[10px] mt-1">Cliniche invitano laboratori</p>
+            </div>
+            <div className="bg-white rounded-lg p-2 text-center border border-purple-100">
+              <p className="font-semibold text-purple-700 text-xs">🔬 → 🏥</p>
+              <p className="text-gray-600 text-[10px] mt-1">Laboratori invitano cliniche</p>
             </div>
           </div>
         </div>
@@ -1493,9 +1536,9 @@ export default function BrochurePage() {
       <div className="brochure-page bg-white px-12 py-14">
         <PageHeader />
 
-        <div className="text-center mb-8 mt-4">
-          <h2 className="text-3xl font-black text-gray-900 mb-2">Scegli il piano adatto alla tua clinica</h2>
-          <p className="text-gray-500 max-w-xl mx-auto text-sm">Tutti i prezzi sono IVA esclusa. Abbonamento mensile, nessun vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.</p>
+        <div className="text-center mb-6 mt-2">
+          <h2 className="text-3xl font-black text-gray-900 mb-2">Prova gratis. Poi scegli il piano più adatto.</h2>
+          <p className="text-gray-500 max-w-2xl mx-auto text-sm">Puoi provare VetBuddy gratuitamente. Quando inizi a generare valore reale per la tua clinica, scegli il piano più adatto al tuo team. Tutti i prezzi sono IVA esclusa. Abbonamento mensile, nessun vincolo annuale obbligatorio.</p>
         </div>
 
         <div className="grid grid-cols-4 gap-4 mb-6">

@@ -148,10 +148,81 @@ export async function handleConnectGet(path, request) {
     }, { headers: corsHeaders });
   }
 
+  // GET /api/connect/completion-score — punteggio completamento ecosistema per ruolo
+  if (path === 'connect/completion-score') {
+    const user = getUserFromRequest(request);
+    if (!user) return NextResponse.json({ error: 'Non autorizzato' }, { status: 401, headers: corsHeaders });
+    const users = await getCollection('users');
+    const pets = await getCollection('pets');
+    const invitations = await getCollection('invitations');
+    const connections = await getCollection('clinic_lab_connections');
+    const labPriceList = await getCollection('lab_price_list');
+
+    let checklist = [];
+    let total = 0;
+    let completed = 0;
+
+    if (user.role === 'clinic' || user.role === 'staff') {
+      const clinicId = user.role === 'staff' ? (user.clinicId || user.id) : user.id;
+      const clinic = await users.findOne({ id: clinicId });
+      const ownerCount = await users.countDocuments({ role: 'owner', clinicIds: clinicId });
+      const labConnCount = await connections.countDocuments({ clinicId, status: 'active' });
+      const ownersInvited = await invitations.countDocuments({ fromUserId: clinicId, type: 'clinic_to_owner' });
+      const docs = await getCollection('documents');
+      const hasDoc = await docs.findOne({ clinicId });
+      checklist = [
+        { key: 'profile', label: 'Profilo clinica completato', done: !!(clinic?.clinicName && clinic?.address && clinic?.phone), action: 'settings' },
+        { key: 'services', label: 'Servizi configurati', done: !!(clinic?.services && clinic.services.length > 0), action: 'services' },
+        { key: 'whatsapp', label: 'WhatsApp configurato', done: !!clinic?.whatsappNumber, action: 'whatsapp-business' },
+        { key: 'qr', label: 'QR prenotazione generato', done: !!clinic?.bookingLinkActive || ownerCount > 0, action: 'bookinglink' },
+        { key: 'invite_owners', label: 'Invitati almeno 20 proprietari', done: ownersInvited >= 20, current: ownersInvited, target: 20, action: 'vetbuddy-connect' },
+        { key: 'lab_connect', label: 'Collegato almeno 1 laboratorio', done: labConnCount >= 1, action: 'labmarketplace' },
+        { key: 'first_doc', label: 'Caricato primo documento', done: !!hasDoc, action: 'documents' },
+        { key: 'automations', label: 'Promemoria vaccini attivati', done: !!(clinic?.automationSettings?.vaccineReminder), action: 'automations' },
+        { key: 'passport', label: 'Passport Pet configurato', done: !!clinic?.passportEnabled || ownerCount > 5, action: 'patients' },
+      ];
+    } else if (user.role === 'owner') {
+      const ownerPets = await pets.find({ ownerId: user.id }).toArray();
+      const hasPet = ownerPets.length > 0;
+      const firstPet = ownerPets[0];
+      const clinicLinked = (user.clinicIds || []).length > 0;
+      const invitedClinic = await invitations.countDocuments({ fromUserId: user.id, type: 'owner_to_clinic' });
+      checklist = [
+        { key: 'add_pet', label: 'Aggiungi animale', done: hasPet, action: 'pets' },
+        { key: 'microchip', label: 'Aggiungi microchip', done: !!firstPet?.microchip, action: 'pets' },
+        { key: 'emergency', label: 'Contatto emergenza', done: !!firstPet?.emergencyContact || !!user.emergencyContact, action: 'pets' },
+        { key: 'allergies', label: 'Allergie / patologie', done: !!firstPet?.allergies, action: 'pets' },
+        { key: 'invite_clinic', label: 'Invita la tua clinica', done: invitedClinic > 0 || clinicLinked, action: 'inviteClinic' },
+        { key: 'qr_emergency', label: 'Genera QR emergenza', done: !!firstPet?.passportEnabled, action: 'pets' },
+        { key: 'documents_viaggio', label: 'Documenti viaggio (opzionale)', done: !!firstPet?.travelDocs, optional: true, action: 'documents' },
+      ];
+    } else if (user.role === 'lab') {
+      const lab = await users.findOne({ id: user.id });
+      const priceCount = await labPriceList.countDocuments({ labId: user.id });
+      const clinicsInvited = await invitations.countDocuments({ fromUserId: user.id, type: 'lab_to_clinic' });
+      const clinicsConnected = await connections.countDocuments({ labId: user.id, status: 'active' });
+      checklist = [
+        { key: 'profile', label: 'Profilo laboratorio completato', done: !!(lab?.labName && lab?.address && lab?.phone), action: 'settings' },
+        { key: 'price_list', label: 'Listino prezzi configurato', done: priceCount >= 3, current: priceCount, target: 3, action: 'prices' },
+        { key: 'pickup', label: 'Disponibilità ritiro campioni', done: !!lab?.pickupAvailable, action: 'settings' },
+        { key: 'avg_time', label: 'Tempi medi referti', done: !!lab?.averageReportTime, action: 'settings' },
+        { key: 'invite_clinics', label: 'Invitate almeno 3 cliniche', done: clinicsInvited >= 3, current: clinicsInvited, target: 3, action: 'connect' },
+        { key: 'clinic_connected', label: 'Collegato almeno 1 clinica', done: clinicsConnected >= 1, action: 'connections' },
+      ];
+    }
+
+    total = checklist.length;
+    completed = checklist.filter(c => c.done).length;
+    const score = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    return NextResponse.json({
+      score, completed, total, checklist,
+      level: score >= 80 ? 'excellent' : score >= 60 ? 'good' : score >= 40 ? 'progress' : 'starter'
+    }, { headers: corsHeaders });
+  }
+
   return null;
 }
-
-// ==================== POST HANDLERS ====================
 export async function handleConnectPost(path, request, body) {
   // POST /api/connect/invite — universale (con type)
   if (path === 'connect/invite') {

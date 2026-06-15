@@ -31,6 +31,7 @@ function FullLandingPage({ onLogin }) {
   const [pilotForm, setPilotForm] = useState({ clinicName: '', city: '', email: '', phone: '', message: '' });
   const [pilotSubmitting, setPilotSubmitting] = useState(false);
   const [pilotSubmitted, setPilotSubmitted] = useState(false);
+  const [showAllFaqs, setShowAllFaqs] = useState(false);
   const scrollToSection = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMobileMenuOpen(false); };
 
   useEffect(() => {
@@ -122,34 +123,43 @@ function FullLandingPage({ onLogin }) {
       </nav>
 
       {/* ============================================================ */}
-      {/* HERO — Nuovo posizionamento */}
+      {/* HERO — Nuovo posizionamento Ecosistema */}
       {/* ============================================================ */}
       <section className="pt-16 pb-16 px-4 bg-gradient-to-br from-white via-coral-50/30 to-blue-50/30 relative overflow-hidden">
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <Badge className="bg-coral-100 text-coral-700 mb-6 text-sm px-4 py-1.5">🚀 Il copilota operativo per cliniche veterinarie</Badge>
+          <Badge className="bg-coral-100 text-coral-700 mb-6 text-sm px-4 py-1.5">🌐 Tre attori, un solo ecosistema</Badge>
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Più prenotazioni. Meno telefonate.<br className="hidden md:block" />
-            <span className="text-coral-500">Clienti sempre seguiti.</span>
+            <span className="text-coral-500">Tutto il tuo ecosistema veterinario collegato.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            VetBuddy automatizza prenotazioni, promemoria, comunicazioni, referti e ricontatti tra cliniche veterinarie, proprietari e laboratori. <strong>Con WhatsApp Business, AI Reception, recovery no-show e programmi referral. Una piattaforma enterprise completa con 103 moduli integrati.</strong>
+            VetBuddy collega <strong>cliniche, proprietari e laboratori</strong> in un&apos;unica piattaforma operativa: prenotazioni, promemoria, WhatsApp, referti, Passport, richiami, no-show, follow-up e valore misurabile.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
-            <Button size="lg" className="bg-coral-500 hover:bg-coral-600 text-white px-8 py-6 text-lg" onClick={() => scrollToSection('pilot')}>
-              Candidati al Progetto pilota Milano <ArrowRight className="ml-2 h-5 w-5" />
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6 flex-wrap">
+            <Button size="lg" className="bg-coral-500 hover:bg-coral-600 text-white px-6 py-6 text-base" onClick={() => window.location.href = '/login?mode=register&role=clinic'}>
+              Prova gratis <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button variant="outline" size="lg" className="px-8 py-6 text-lg" onClick={() => scrollToSection('soluzione')}>
-              Scopri come funziona
+            <Button variant="outline" size="lg" className="px-6 py-6 text-base border-coral-300 text-coral-700 hover:bg-coral-50" onClick={() => scrollToSection('pilot')}>
+              Candidati al Pilot 90 giorni
+            </Button>
+            <Button variant="outline" size="lg" className="px-6 py-6 text-base" onClick={() => window.location.href = '/login?mode=register&role=owner'}>
+              Invita la tua clinica
+            </Button>
+            <Button variant="outline" size="lg" className="px-6 py-6 text-base" onClick={() => window.location.href = '/login?mode=register&role=lab'}>
+              Diventa laboratorio partner
             </Button>
           </div>
+          <p className="text-sm text-gray-500 mb-12 italic">
+            VetBuddy non sostituisce il gestionale della clinica. Lo potenzia con uno strato operativo intelligente.
+          </p>
 
           {/* Risultati chiave — numeri impatto */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
-              { icon: PhoneOff, value: 'Fino a -70%', label: 'Telefonate (obiettivo progetto pilota)', color: 'text-red-500' },
-              { icon: CalendarCheck, value: 'Fino a +40%', label: 'Prenotazioni online (obiettivo progetto pilota)', color: 'text-green-500' },
-              { icon: Timer, value: 'Fino a 15h', label: 'Risparmiate/mese (obiettivo progetto pilota)', color: 'text-blue-500' },
-              { icon: Repeat, value: 'Fino a +25%', label: 'Clienti che tornano (obiettivo progetto pilota)', color: 'text-purple-500' },
+              { icon: PhoneOff, value: 'Fino a -70%', label: 'Telefonate (obiettivo pilot)', color: 'text-red-500' },
+              { icon: CalendarCheck, value: 'Fino a +40%', label: 'Prenotazioni online (obiettivo pilot)', color: 'text-green-500' },
+              { icon: Timer, value: 'Fino a 15h', label: 'Risparmiate/mese (obiettivo pilot)', color: 'text-blue-500' },
+              { icon: Repeat, value: 'Fino a +25%', label: 'Clienti che tornano (obiettivo pilot)', color: 'text-purple-500' },
             ].map((stat, i) => (
               <div key={i} className="bg-white/80 backdrop-blur rounded-xl p-4 border border-gray-100 shadow-sm">
                 <stat.icon className={`h-6 w-6 ${stat.color} mx-auto mb-2`} />
@@ -157,6 +167,88 @@ function FullLandingPage({ onLogin }) {
                 <p className="text-xs text-gray-500">{stat.label}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* TRE ATTORI - UN SOLO ECOSISTEMA */}
+      {/* ============================================================ */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="bg-emerald-100 text-emerald-700 mb-4">🌐 Una sola rete</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Tre attori, un solo ecosistema</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Cliniche, proprietari e laboratori in un&apos;unica rete operativa. Tutti collegati. Meno caos, più valore.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-br from-coral-50 to-orange-50 border-2 border-coral-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+              <div className="h-12 w-12 bg-coral-500 rounded-xl flex items-center justify-center mb-4">
+                <Stethoscope className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="font-bold text-xl text-gray-900 mb-2">Cliniche</h3>
+              <p className="text-sm text-gray-600 mb-4">Riduci telefonate, automatizza promemoria, recupera no-show, invia referti e fai tornare i clienti.</p>
+              <ul className="text-sm space-y-2 mb-4">
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-coral-500 mt-0.5 flex-shrink-0" /><span>Prenotazioni online + QR reception</span></li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-coral-500 mt-0.5 flex-shrink-0" /><span>Automazioni + WhatsApp + referti</span></li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-coral-500 mt-0.5 flex-shrink-0" /><span>Lab Marketplace + Cruscotto valore</span></li>
+              </ul>
+              <Badge className="bg-coral-500 text-white">Prova gratis 14gg → da €29/mese</Badge>
+            </div>
+
+            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+              <div className="h-12 w-12 bg-emerald-500 rounded-xl flex items-center justify-center mb-4">
+                <Heart className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="font-bold text-xl text-gray-900 mb-2">Proprietari</h3>
+              <p className="text-sm text-gray-600 mb-4">Prenota online, gestisci il Passport del tuo animale, ricevi documenti autorizzati e promemoria.</p>
+              <ul className="text-sm space-y-2 mb-4">
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" /><span>Passport sanitario + QR emergenza</span></li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" /><span>Prenotazioni e documenti unificati</span></li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" /><span>Condivisione con pet sitter / familiari</span></li>
+              </ul>
+              <Badge className="bg-emerald-500 text-white">Gratis per sempre</Badge>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+              <div className="h-12 w-12 bg-blue-500 rounded-xl flex items-center justify-center mb-4">
+                <FlaskConical className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="font-bold text-xl text-gray-900 mb-2">Laboratori</h3>
+              <p className="text-sm text-gray-600 mb-4">Ricevi richieste dalle cliniche, aggiorna gli stati e carica referti PDF in modo ordinato.</p>
+              <ul className="text-sm space-y-2 mb-4">
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" /><span>Marketplace + listini indicativi</span></li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" /><span>Richieste e referti digitali</span></li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" /><span>Invito cliniche partner</span></li>
+              </ul>
+              <Badge className="bg-blue-500 text-white">Pilot 6 mesi gratis → poi €39/mese</Badge>
+            </div>
+          </div>
+
+          {/* Chi invita chi */}
+          <div className="mt-12 bg-gradient-to-r from-purple-50 via-pink-50 to-amber-50 rounded-2xl p-6 border border-purple-200">
+            <div className="text-center mb-4">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">🔗 Chi invita chi — VetBuddy Connect</h3>
+              <p className="text-sm text-gray-600">Una rete che cresce con te. Ogni attore può portare un altro nella piattaforma.</p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+              <div className="bg-white rounded-lg p-3 border border-purple-100">
+                <p className="font-semibold text-purple-700 mb-1">🐾 → 🏥</p>
+                <p className="text-gray-600 text-xs">Proprietari invitano cliniche</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-purple-100">
+                <p className="font-semibold text-purple-700 mb-1">🏥 → 🐾</p>
+                <p className="text-gray-600 text-xs">Cliniche invitano proprietari</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-purple-100">
+                <p className="font-semibold text-purple-700 mb-1">🏥 → 🔬</p>
+                <p className="text-gray-600 text-xs">Cliniche invitano laboratori</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-purple-100">
+                <p className="font-semibold text-purple-700 mb-1">🔬 → 🏥</p>
+                <p className="text-gray-600 text-xs">Laboratori invitano cliniche</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -831,117 +923,60 @@ function FullLandingPage({ onLogin }) {
       </section>
 
       {/* ============================================================ */}
-      {/* FAQ */}
+      {/* FAQ — compattata: 8 top + toggle "mostra tutte" */}
       {/* ============================================================ */}
       <section id="faq" className="py-16 px-4 bg-gray-50">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Domande frequenti</h2>
+            <Badge className="bg-coral-100 text-coral-700 mb-3">❓ FAQ</Badge>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Domande frequenti</h2>
+            <p className="text-gray-600 text-sm">Le risposte più richieste su VetBuddy. Espandi per vedere tutte.</p>
           </div>
           <Accordion type="single" collapsible className="space-y-3">
             {[
+              // TOP 8 FAQ — Ecosistema, Prezzi, Prova gratis, Sicurezza, ROI
+              { q: 'Come funziona VetBuddy come ecosistema?', a: 'VetBuddy collega tre attori in una sola rete operativa: cliniche, proprietari e laboratori. Le cliniche invitano proprietari e laboratori, i proprietari invitano la loro clinica, i laboratori invitano cliniche partner. Tutti collegati. Meno caos, più valore.' },
+              { q: 'Quanto costa per i proprietari di animali?', a: 'Zero. L\'area proprietario è completamente gratuita per il proprietario dell\'animale. Nessun costo nascosto, mai.' },
+              { q: 'Posso provare VetBuddy gratis come clinica?', a: 'Sì. Hai 14 giorni di prova gratuita sui piani Starter e Growth. Se vuoi misurare il valore in modo strutturato, puoi candidarti al Pilot 90 giorni con onboarding guidato, checklist e report ROI finale.' },
+              { q: 'Quali sono i piani e i prezzi?', a: 'Starter €29/mese (freelance e micro-cliniche), Growth €69/mese (cliniche piccole/medie, consigliato), Pro €99/mese (cliniche strutturate con automazioni avanzate), Laboratorio Partner €39/mese (pilot 6 mesi gratis). Tutti +IVA. Mensile, senza vincolo annuale.' },
+              { q: 'Devo cambiare il mio gestionale?', a: 'No. VetBuddy non sostituisce il gestionale della clinica. Lo potenzia con uno strato operativo intelligente: prenotazioni online, WhatsApp, promemoria, referti, richiami, no-show, follow-up, Passport e cruscotto valore.' },
+              { q: 'Come funziona il Pilot 90 giorni?', a: 'Pilot 90 giorni per misurare il valore reale generato dalla clinica. Include onboarding guidato con Pilot Success Kit, checklist 30/60/90 giorni, configurazione personalizzata, supporto dedicato. Alla fine ricevi un report completo con prenotazioni generate, telefonate evitate, no-show recuperati, ROI calcolato.' },
+              { q: 'I dati sono al sicuro? Compliance GDPR?', a: 'Sì. VetBuddy è conforme al GDPR: il proprietario vede solo i suoi animali, la clinica solo i suoi clienti, il laboratorio solo le sue richieste. Le condivisioni Passport sono temporanee e revocabili. I dati sensibili non sono mai pubblici.' },
+              { q: 'Come funziona VetBuddy Connect?', a: 'È il modulo unificato per gli inviti reciproci tra cliniche, proprietari e laboratori. Ogni attore può invitare un altro: il proprietario invita la clinica, la clinica invita proprietari e laboratori, il laboratorio invita le cliniche partner. Con tracking stato, profili provvisori e claim profile per chi non è ancora registrato.' },
+              ...(!showAllFaqs ? [] : [
               { q: 'Come funziona WhatsApp Business su VetBuddy?', a: 'VetBuddy integra WhatsApp Business per gestire tutti i messaggi dei clienti in un\'unica inbox. Puoi usare template pre-impostati, vedere stati di lettura e classificare messaggi. L\'integrazione è simulata per demo, pronta per connessione API reale.' },
               { q: 'Cos\'è la Reception AI e cosa fa?', a: 'La Reception AI classifica automaticamente i messaggi WhatsApp per categoria (urgenza, appuntamento, richiesta referto, ecc.), assegna priorità e suggerisce risposte. Include un DISCLAIMER MEDICO chiaro: l\'AI non sostituisce la diagnosi veterinaria. Ogni decisione clinica resta del veterinario.' },
               { q: 'Come funziona il No-Show Recovery?', a: 'Il modulo traccia appuntamenti non confermati, assegna etichette rischio cliente (affidabile/attenzione/alto rischio), gestisce una lista d\'attesa e recupera slot cancellati. Ogni no-show diventa un\'opportunità per riempire l\'agenda e recuperare fatturato.' },
               { q: 'Cosa sono le Recensioni e i Referral?', a: 'VetBuddy invia automaticamente richieste di recensioni via WhatsApp o email 24h dopo ogni visita. Il programma "Porta un Amico" genera codici referral unici per ogni cliente: chi porta un amico riceve uno sconto, così come il nuovo cliente. Crescita organica automatizzata.' },
               { q: 'Cos\'è il Pilot Success Kit?', a: 'È il programma di onboarding strutturato a 90 giorni con checklist guidata (30/60/90 giorni), report automatici ai milestone, risorse stampabili (QR code, flyer) e tracking KPI completo. Garantisce il successo dell\'adozione della piattaforma nella tua clinica.' },
               { q: 'Posso importare ed esportare i miei dati?', a: 'Sì! VetBuddy include Import/Export CSV per proprietari, animali e appuntamenti. Importi con validazione automatica (ti avvisa di errori riga per riga) ed esporti quando vuoi. Zero lock-in: i tuoi dati restano sempre accessibili.' },
-              { q: 'Come viene calcolato il ROI?', a: 'Il cruscotto valore calcola automaticamente: ore risparmiate × costo staff, prenotazioni online × valore medio visita, no-show recuperati × valore slot, WhatsApp gestiti, recensioni ricevute, referral convertiti. Il ROI è: (Valore generato - Costo piattaforma) / Costo piattaforma × 100. Vedi tutto in tempo reale con grafici e breakdown dettagliato.' },
+              { q: 'Come viene calcolato il ROI?', a: 'Il cruscotto valore calcola automaticamente: ore risparmiate × costo staff, prenotazioni online × valore medio visita, no-show recuperati × valore slot, WhatsApp gestiti, recensioni ricevute, referral convertiti. Il ROI è: (Valore generato - Costo piattaforma) / Costo piattaforma × 100.' },
               { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta la preparazione, la gestione e l\'archiviazione del flusso prescrittivo. L\'emissione ufficiale resta in capo al medico veterinario abilitato, che opera con le proprie credenziali e responsabilità professionale.' },
               { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite restano gestiti dalla clinica. VetBuddy incassa esclusivamente l\'abbonamento della piattaforma.' },
-              { q: 'Quanto costa per i proprietari di animali?', a: 'Zero. L\'area proprietario è completamente gratuita per il proprietario dell\'animale. Nessun costo nascosto, mai.' },
-              { q: 'Cos\'è il Progetto pilota Milano?', a: 'Progetto pilota Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica. Include onboarding guidato con Pilot Success Kit, configurazione personalizzata e supporto dedicato. Nessun vincolo. Alla fine ricevi un report completo con prenotazioni generate, telefonate evitate, no-show recuperati, recensioni ricevute, referral convertiti, tempo risparmiato e ROI calcolato.' },
               { q: 'Posso annullare in qualsiasi momento?', a: 'Sì. L\'abbonamento è mensile, senza vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.' },
-              { q: 'Devo cambiare tutti i miei strumenti?', a: 'No. VetBuddy può lavorare accanto agli strumenti già usati dalla clinica. Il progetto pilota serve proprio a misurare il valore senza stravolgere l\'organizzazione.' },
               { q: 'Come funziona la Rete laboratori?', a: 'La clinica richiede un\'analisi dalla scheda del paziente, il laboratorio la riceve, la processa e carica il referto. Il veterinario lo rivede, aggiunge note cliniche e decide quando renderlo visibile al proprietario.' },
               { q: 'I dati e i referti sono visibili automaticamente al proprietario?', a: 'No. La clinica mantiene il controllo sui documenti e decide quali informazioni rendere visibili al proprietario tramite area riservata.' },
-              { q: 'Cos\'è il VetBuddy Passport?', a: 'È il passaporto sanitario digitale dell\'animale. Raccoglie vaccini, allergie, farmaci, contatti di emergenza e genera un QR stampabile per situazioni di emergenza o smarrimento. Il proprietario lo gestisce in autonomia, la clinica mantiene visibilità sui dati sanitari e documenti gestiti nel proprio rapporto con il paziente. Include anche Travel Pack per i viaggi e condivisione temporanea con pet sitter e familiari.' },
-              { q: 'VetBuddy Passport sostituisce la cartella clinica?', a: 'No. VetBuddy Passport organizza le informazioni essenziali dell\'animale per proprietario, clinica, emergenze e condivisioni. La cartella clinica resta gestita dalla clinica.' },
+              { q: 'Cos\'è il VetBuddy Passport?', a: 'È il passaporto sanitario digitale dell\'animale. Raccoglie vaccini, allergie, farmaci, contatti di emergenza e genera un QR stampabile per situazioni di emergenza o smarrimento. Il proprietario lo gestisce in autonomia, la clinica mantiene visibilità sui dati sanitari. Include Travel Pack e condivisione temporanea con pet sitter.' },
               { q: 'Il QR del Passport mostra dati sensibili?', a: 'No. Il proprietario decide cosa rendere visibile. I dati sensibili sono nascosti di default.' },
               { q: 'Lost Pet Mode pubblica il mio indirizzo?', a: 'No. Non mostra l\'indirizzo completo salvo scelta esplicita del proprietario. È consigliato mostrare solo città o zona.' },
               { q: 'Serve una formazione tecnica per usarlo?', a: 'No. VetBuddy è progettato per essere intuitivo. Il Pilot Success Kit include onboarding guidato a 90 giorni con checklist e supporto dedicato sempre disponibile via email e chat.' },
-              { q: 'Cos\'è il Task Manager Staff?', a: 'Il Task Manager traccia tutti i task operativi della clinica: richiami clienti, controlli referti, preventivi da inviare, follow-up post-visita. Include task generati automaticamente dalle automazioni VetBuddy (questionario pre-visita con urgenza alta, referto lab fermo da 48h, consenso mancante prima di una procedura, appuntamento a rischio no-show) e task manuali creati dallo staff. Tutto con priorità, scadenze e assegnazioni, salvato in tempo reale.' },
+              { q: 'Cos\'è il Task Manager Staff?', a: 'Il Task Manager traccia tutti i task operativi della clinica: richiami clienti, controlli referti, preventivi da inviare, follow-up post-visita. Include task generati automaticamente dalle automazioni VetBuddy e task manuali creati dallo staff. Tutto con priorità, scadenze e assegnazioni.' },
               { q: 'Come funzionano le Campagne Clienti?', a: 'Campagne mirate pronte all\'uso: igiene dentale (pet 3+ anni), richiami vaccini (scadenza 30gg), sterilizzazione (cuccioli 6-12 mesi), antiparassitari stagionali, check-up senior (7+ anni). VetBuddy identifica automaticamente i clienti target e invia messaggi personalizzati via Email o WhatsApp.' },
-              { q: 'Cos\'è il Mini CRM Proprietari?', a: 'Estende la gestione proprietari con etichette cliente (Attivo, Alto Rischio, Promoter, VIP, Inattivo), relationship score (0-100), lifetime value (€), filtri segmentazione avanzati e dashboard CRM insights. Aiuta a identificare i clienti migliori e quelli a rischio abbandono.' },
-              { q: 'Come funzionano Dimissioni & Follow-up?', a: 'Dopo ogni visita o chirurgia, crei un pacchetto dimissioni con istruzioni dettagliate, terapie e farmaci. VetBuddy programma automaticamente follow-up telefonici 24h o 48h dopo la dimissione, con template di domande chiave da porre al proprietario. Include generazione PDF dimissione.' },
-              { q: 'Cos\'è lo Stock Leggero Vaccini?', a: 'Un inventario semplificato SOLO per vaccini e materiali critici (non è un gestionale magazzino completo). Traccia quantità, lotti, fornitori, ubicazione fisica, scadenze. Alert automatici per scorte sotto soglia o vaccini in scadenza 30/60 giorni. Include storico movimenti carico/scarico.' },
-              { q: 'Come funzionano i Preventivi Online?', a: 'Crei un preventivo digitale per una procedura (es: sterilizzazione €450). VetBuddy genera un link sicuro che invii al proprietario. Il proprietario approva online con firma digitale. Una volta approvato, converti automaticamente il preventivo in fattura. Include tracking approvazioni e promemoria automatici.' },
-              { q: 'Cos\'è lo Smart Visit Pack?', a: 'Un flusso visita unificato che combina Check-in Digitale → Questionario Pre-Visita → Flowboard Clinica → Dimissioni in un\'unica timeline. Vedi tutte le visite di oggi con stato real-time, naviga rapidamente tra le fasi e gestisci l\'intero patient journey da una schermata.' },
-              { q: 'Come funzionano i Questionari Pre-Visita con foto e video?', a: 'Quando viene prenotata una visita, il proprietario riceve via email un link al modulo pre-visita: motivo, sintomi, farmaci, alimentazione e urgenza percepita. Può anche allegare fino a 3 foto o video (es. la zona interessata o il comportamento dell\'animale) direttamente dallo smartphone. Se l\'urgenza è alta la clinica riceve un alert immediato e un task automatico. Il veterinario arriva in visita già preparato.' },
+              { q: 'Cos\'è il Mini CRM Proprietari?', a: 'Estende la gestione proprietari con etichette cliente (Attivo, Alto Rischio, Promoter, VIP, Inattivo), relationship score (0-100), lifetime value (€), filtri segmentazione avanzati. Aiuta a identificare i clienti migliori e quelli a rischio abbandono.' },
+              { q: 'Come funzionano i Questionari Pre-Visita con foto e video?', a: 'Quando viene prenotata una visita, il proprietario riceve via email un link al modulo pre-visita: motivo, sintomi, farmaci, alimentazione e urgenza percepita. Può anche allegare fino a 3 foto o video direttamente dallo smartphone. Se l\'urgenza è alta la clinica riceve un alert immediato e un task automatico.' },
               { q: 'Come funziona la Fatturazione Elettronica XML?', a: 'VetBuddy genera fatture in formato XML conformi al Sistema di Interscambio (SdI). Include validazione automatica dei dati prima dell\'invio, tracciamento stati (Emessa, Inviata, Accettata, Rifiutata) e archivio digitale completo. Gli adempimenti fiscali restano in capo alla clinica.' },
-              { q: 'VetBuddy emette Ricette Elettroniche Veterinarie?', a: 'VetBuddy supporta l\'intero flusso REV: preparazione bozza con wizard guidato, collegamento al portale nazionale (Vetinfo/RNV), archiviazione numero ricetta e PIN, audit trail completo. L\'emissione ufficiale resta in capo al medico veterinario abilitato con le proprie credenziali.' },
-              { q: 'Come gestisco Microchip e Anagrafe Canina?', a: 'Registri il microchip direttamente in VetBuddy, generi certificati di iscrizione conformi alle normative regionali e prepari i dati per l\'invio alle anagrafi. Include validazione automatica dei codici microchip (15 cifre) e storico completo per ogni animale.' },
-              { q: 'Cos\'è il Network Specialisti?', a: 'Un sistema di referral tracking tra clinica e specialisti. Invii pazienti a specialisti partner, segui lo stato del referral, ricevi aggiornamenti automatici e visualizzi dashboard di reciprocità. Aiuta a costruire un network professionale di fiducia e monitorare follow-up.' },
+              { q: 'Cosa sono i Consensi Informati Digitali?', a: 'Template consensi (chirurgia, anestesia, eutanasia, trattamenti) con firma digitale/grafometrica del proprietario. Archiviazione legale 10 anni conforme GDPR. Elimina la carta, velocizza accettazioni.' },
+              { q: 'Come gestisco Microchip e Anagrafe Canina?', a: 'Registri il microchip direttamente in VetBuddy, generi certificati di iscrizione conformi alle normative regionali e prepari i dati per l\'invio alle anagrafi. Include validazione automatica dei codici microchip (15 cifre).' },
+              { q: 'Cos\'è il Network Specialisti?', a: 'Un sistema di referral tracking tra clinica e specialisti. Invii pazienti a specialisti partner, segui lo stato del referral, ricevi aggiornamenti automatici e visualizzi dashboard di reciprocità.' },
               { q: 'Come funzionano i Piani Benessere?', a: 'Sono abbonamenti mensili o annuali che includono un pacchetto di servizi (visite, vaccini, esami). Esempio: Piano Cucciolo €39/mese include 3 visite, 2 vaccini, esami base. Monitori l\'utilizzo servizi, gestisci rinnovi automatici e generi fatturato ricorrente prevedibile.' },
-              { q: 'Cosa sono i Consensi Informati Digitali?', a: 'Template consensi (chirurgia, anestesia, eutanasia, trattamenti) con firma digitale/grafometrica del proprietario. Archiviazione legale 10 anni conforme GDPR. Elimina completamente la carta, velocizza accettazioni, zero rischio legale per la clinica.' },
-              { q: 'Come funziona la gestione Malattie Denunciabili?', a: 'Alert automatici per malattie denunciabili (rabbia, tubercolosi, brucellosi, leishmaniosi). Generazione automatica moduli ufficiali ASL/Ministero Salute, tracking denunce e conferme. Obbligo legale, VetBuddy riduce burocrazia e rischio multe.' },
-              { q: 'Come funziona l\'integrazione con le Assicurazioni Pet?', a: 'Integrazione diretta con UnipolSai, Allianz, Generali, AXA. Invio automatico documenti e fatture, tracking stato rimborso per il cliente. La clinica diventa partner convenzionato, attrae clienti assicurati (segmento in crescita), aumenta fatturato.' },
-              { q: 'Cos\'è la Farmacovigilanza ADR?', a: 'Sistema di segnalazione Reazioni Avverse Farmaci veterinari al Ministero Salute (obbligo legale). Form guidato con gravità (lieve/moderata/grave), invio automatico entro 15 giorni per ADR gravi, archivio tracciabile conforme.' },
-              { q: 'Come funzionano i Certificati Sanitari Viaggio?', a: 'Wizard guidato per destinazione (UE, Extra-UE, UK, USA). Genera automaticamente certificati conformi: Passaporto Europeo, certificati export, checklist documenti richiesti. Velocizza un servizio che i clienti pagano bene.' },
-              { q: 'Cos\'è l\'integrazione con i Laboratori IZS?', a: 'Connessione digitale con Istituti Zooprofilattici Sperimentali (laboratori pubblici regionali). Per esami obbligatori (rabbia, brucellosi, tubercolosi, leishmaniosi). Richieste e referti gestiti automaticamente, riduce burocrazia con enti pubblici.' },
-              { q: 'Come funziona la Gestione Turni Guardia H24?', a: 'Calendario turni per cliniche con pronto soccorso. Organizzazione turni diurni/notturni, alert emergenze push al veterinario di guardia, handoff automatico tra turni con note di consegna. Ideale per cliniche premium con servizio H24.' },
-              { q: 'Cosa sono i Crediti ECM Veterinari?', a: 'Tracking formazione obbligatoria continua (50 crediti ECM/anno per veterinari). Monitoraggio crediti acquisiti, alert 60 giorni prima scadenza, integrazione corsi accreditati FNOVI/SCIVAC. Aiuta veterinari a restare in regola con l\'obbligo formativo.' },
-              { q: 'Come funziona la gestione Multi-Sede per catene veterinarie?', a: 'Dashboard consolidato multi-sede: vedi KPI di tutte le sedi insieme. Trasferimento pazienti tra sedi, inventario condiviso, gestione staff centralizzata, report comparativi. Ideale per catene con 2+ cliniche.' },
-              { q: 'Cos\'è l\'App Mobile Nativa di VetBuddy?', a: 'App iOS & Android separata per proprietari (prenotazioni, documenti, chat) e veterinari (visite domiciliari, accesso cartelle). Push notifications native, modalità offline, fotocamera integrata, geolocalizzazione. Standard di mercato.' },
-              { q: 'Come funziona la Gestione Sala Operatoria?', a: 'Calendario chirurgie con stati real-time. Checklist pre-operatoria automatica (anestesia, consenso, preparazione), tracking strumentario sterile, report post-op strutturati. Le chirurgie sono il servizio più redditizio: organizzazione = fatturato.' },
-              { q: 'Quali software di contabilità si integrano con VetBuddy?', a: 'Integrazione diretta con Fatture in Cloud, TeamSystem, Aruba Fatturazione. Sync automatico fatture → commercialista, import movimenti bancari, prima nota automatica, dashboard fiscale. Risparmio 5-10h/mese.' },
-              { q: 'Cos\'è l\'Inventario Farmaci Completo?', a: 'Non solo vaccini: farmaci, materiali chirurgici, attrezzature. Alert scadenze 30/60gg, ricette automatiche da inventario, costo medio ponderato, report valore magazzino. Farmaci = 20-30% costi: gestione = risparmio.' },
-              { q: 'Come funziona l\'integrazione POS/Cassa?', a: 'Integrazione Nexi, SumUp, Stripe Terminal. Workflow completo: visita → pagamento (cash/card) → scontrino/fattura automatica → riconciliazione contabile. Cassa giornaliera, chiusura turno. Zero errori di quadratura.' },
-              { q: 'Cosa sono Analytics & BI Avanzati?', a: 'Dashboard drag-drop personalizzabili, report custom (fatturato per servizio/veterinario/trend), benchmark anonimo vs altre cliniche, previsioni AI fatturato, alert anomalie automatici. Data-driven decision making per cliniche premium.' },
-              { q: 'Cos\'è il Marketing Automation Avanzato?', a: 'Funnel multi-step (es: lead → prima visita → cliente fedele), email sequences automatiche, lead scoring (0-100), A/B testing messaggi, landing pages. HubSpot-like per veterinari. Upsell premium.' },
-              { q: 'Come funziona la Gestione HR/Personale?', a: 'Badge presenze automatico, richieste ferie/permessi digitali, generazione buste paga, piani formazione staff, valutazioni performance. Ideale per cliniche con 5+ dipendenti che vogliono professionalizzare gestione personale.' },
-              { q: 'Cos\'è l\'E-commerce Prodotti Pet?', a: 'Vendita online cibo, antiparassitari, accessori dal sito della clinica. Integrazione inventario, spedizioni automatiche, marketing prodotti. Revenue addizionale 10-15% del fatturato. Clienti acquistano direttamente dalla clinica di fiducia.' },
-              { q: 'Come funzionano le Visite Domiciliari?', a: 'Booking visite a casa dei clienti, calendario dedicato, tragitto ottimizzato Google Maps, app mobile veterinario con accesso cartelle offline. Servizio premium con margini alti (€150-200/visita). Ideale per anziani/disabili.' },
-              { q: 'Cos\'è la Nutrizione Personalizzata AI?', a: 'Algoritmo AI suggerisce piano alimentare custom basato su razza, età, peso, patologie. Tracking peso, grafici progressione, alert obesità. Previene patologie croniche (diabete, obesità) e riduce visite emergenza. Medicina preventiva.' },
-              { q: 'Come funziona l\'AI Diagnostico Assistant?', a: 'Inserisci sintomi osservati (es: vomito, letargia). L\'AI suggerisce diagnosi differenziali ordinate per probabilità con esami consigliati. Basato su database migliaia di casi clinici. DISCLAIMER: supporto decisionale, NON sostituisce giudizio veterinario. NESSUN competitor lo ha.' },
-              { q: 'Cos\'è la Telemedicina Conforme FNOVI?', a: 'Video-consulti HD per follow-up su pazienti già visitati (NON prime visite - conforme FNOVI). Registrazione automatica, prescrizioni digitali post-consulto. Standard post-COVID. Comodo per controlli terapia, dimissioni, follow-up semplici.' },
-              { q: 'Come funzionano i Pet Wearables & IoT?', a: 'Integrazione collari smart: FitBark, Whistle, Tractive, Fi Collar. Dati attività, sonno, localizzazione GPS entrano automaticamente in cartella clinica. Alert anomalie comportamentali. Grafici trend salute long-term. IoT veterinario è il futuro.' },
-              { q: 'Cos\'è Pet Insurance White-Label?', a: 'VetBuddy vende assicurazioni pet con TUO brand (es: "Clinica Rossi Pet Insurance"). Backend: UnipolSai. Revenue share: 20% clinica, 10% VetBuddy, 70% assicuratore. Claims automatici già integrati. Nuovo revenue stream ricorrente enorme.' },
-              { q: 'Come funziona Emergency Network 24/7?', a: 'Rete solidale emergenze tra cliniche abbonate. Clinica con caso fuori competenza → Alert rete → Altre rispondono disponibilità → Trasferimento tracciato. Sistema crediti: chi aiuta accumula, chi chiede usa. Nessuna clinica può gestire ogni emergenza.' },
-              { q: 'Cos\'è il Veterinary Marketplace?', a: 'Uber per veterinari: trova sostituti/freelance certificati per ferie/malattia/picchi. Rating, certificazioni FNOVI, specializzazioni. Pagamento e contratto gestito da VetBuddy. Risolve problema enorme: trovare sostituti è difficilissimo.' },
-              { q: 'Come funzionano i Clinical Trials?', a: 'Università/pharma pubblicano trial su VetBuddy. Cliniche con pazienti idonei si candidano. Compenso €300-500/trial + farmaci gratis per paziente. Raccolta dati automatica. Democratizza accesso ricerca clinica veterinaria. Revenue extra + scienza.' },
-              { q: 'Cos\'è il Voice Assistant per VetBuddy?', a: 'Alexa & Google Assistant per prenotazioni vocali. "Alexa, prenota visita per Luna da VetBuddy". Multilingua: IT, EN, ES, FR (turisti). Conferma vocale + SMS. Comodità assoluta. Proprietari anziani lo adorano. Voice-first veterinario.' },
-              { q: 'Come funziona Pet Adoption Platform?', a: 'Integrazione canili/gattili: animali in adozione pubblicati su VetBuddy. Proprietari cercano e richiedono. Prima visita veterinaria gratis inclusa (clinica partner). Follow-up automatico post-adozione. Social responsibility + acquisizione nuovi clienti lifetime.' },
-              { q: 'Cos\'è VetBuddy Brain?', a: 'Super-Assistente AI multimodale che analizza testo, immagini e dati clinici. Suggerisce diagnosi, terapie ed esami pertinenti. Accesso istantaneo alla letteratura scientifica mondiale. Co-pilota intelligente che integra conoscenza veterinaria globale in tempo reale. GAME CHANGER assoluto.' },
-              { q: 'Come funziona il Drug Interaction Checker?', a: 'Database completo farmaci veterinari con controllo automatico interazioni farmaco-farmaco, controindicazioni per razza/età/patologia. Alert real-time pre-prescrizione. Riduce errori farmacologici a zero e previene reazioni avverse gravi. Sicurezza farmacologica totale.' },
-              { q: 'Cos\'è AI Vision Diagnostics?', a: 'Carica RX, Ecografie, TAC: l\'AI identifica anomalie, suggerisce diagnosi differenziali e confronta con database di migliaia di casi simili. Secondo parere istantaneo 24/7. Supporto decisionale per imaging medico. Riduce errori diagnostici e accelera decisioni cliniche.' },
-              { q: 'Come funziona Remote Patient Monitoring?', a: 'Monitoraggio parametri vitali (FC, FR, Temp, SpO₂) post-chirurgia o pazienti cronici. Collari smart + sensori medicali integrati. Alert anomalie real-time al veterinario. Dashboard clinica con grafici trend. Telemedicina avanzata di livello ospedaliero.' },
-              { q: 'Cos\'è VetBuddy Pharmacy?', a: 'Farmacia online 24/7 integrata in piattaforma. Prescrizioni digitali → ordine automatico → spedizione casa cliente. Subscription antiparassitari mensili. Nuovo revenue stream ricorrente con margine 30-40%. Clinica vende direttamente farmaci senza intermediari.' },
-              { q: 'Come funziona VetBuddy Academy?', a: 'Piattaforma LMS (Learning Management System) formazione staff. Video-corsi accreditati ECM, certificazioni specialistiche, webinar live con esperti internazionali. Tracking automatico crediti ECM. Formazione continua interna per tutto il team. Crescita professionale costante.' },
-              { q: 'Cosa sono le Blockchain Health Records?', a: 'Cartelle cliniche immutabili registrate su blockchain. Condivisione sicura inter-clinica, portabilità dati garantita, audit trail certificato e immutabile. Massima sicurezza dati. Futuro: NFT passaporto sanitario per ogni animale. Tecnologia cutting-edge.' },
-              { q: 'Cos\'è VetBuddy Consult?', a: 'Marketplace consulenze specialistiche video on-demand. Dermatologo, cardiologo, oncologo, neurologo disponibili in 24h. Revenue share: 70% specialista, 20% clinica, 10% VetBuddy. Accesso expertise mondiale per ogni clinica. Risolvi casi complessi senza inviare paziente.' },
-              { q: 'Come funziona Smart Clinic Hub?', a: 'IoT clinica intelligente: sensori temperatura/umidità degenza, monitoraggio automatico O₂/ECG pazienti ricoverati, alert attrezzature malfunzionanti, workflow automatizzato basato su sensori. Clinica 4.0 completamente connessa. Standard ospedaliero veterinario.' },
-              { q: 'Cos\'è Genetic Precision Medicine?', a: 'Partnership laboratori genetica veterinaria per test genomici di razza. Identifica predisposizioni patologie ereditarie, farmacogenetica (dosaggi farmaci personalizzati su DNA), consulenza breeding responsabile. Medicina preventiva genomica. Futuro della veterinaria personalizzata.' },
-              { q: 'Come funziona Predictive Hospitalization AI?', a: 'AI analizza cartella clinica + esami recenti + età + razza per predire rischio ospedalizzazione nelle prossime 48-72h. Accuratezza 87%. Alert automatico al veterinario con finestra intervento preemptivo. Previene emergenze costose e salva vite. Risparmio medio €4.2k/anno per clinica.' },
-              { q: 'Cos\'è Mental Wellness Hub for Vets?', a: 'Piattaforma benessere psicologico per veterinari. Burnout nel settore è altissimo (30% depressione, 10% ideazione suicidaria). Offre: test burnout anonimi settimanali, terapia online h24 con psicologi specializzati settore veterinario, community support peer-to-peer. Retention staff +40%. Differenziatore etico enorme.' },
-              { q: 'Come funziona Veterinary Litigation Shield?', a: 'Tre componenti integrate: 1) Assicurazione professionale €650/anno (massimale €500k, franchigia €500), 2) AI analizza cartelle cliniche e avvisa su gap documentali rischiosi prima che diventino problemi, 3) Supporto legale h24 con avvocati specializzati diritto veterinario + mediazione automatica pre-causa. Peace of mind totale.' },
-              { q: 'Cos\'è Pet Behavior AI Profiling?', a: 'Questionario comportamentale proprietario pre-visita + AI analizza storico visite + razza + età → genera score ansia/aggressività 0-100. Suggerisce protocollo gestione personalizzato (feromoni, sedazione leggera, Low Stress Handling). Badge "Paziente ansioso" visibile prima che entri. Sicurezza staff +60%, meno sedazioni inutili (costo + rischio), clienti più soddisfatti.' },
-              { q: 'Come funziona VetBuddy Time Machine?', a: 'Carica foto animale oggi. AI simula invecchiamento a 5-10 anni in DUE scenari: A) SENZA intervento (obesità → diabete + artrosi + aspettativa vita -4 anni), B) CON intervento (peso ideale + parametri normali). Mostra visivamente al proprietario conseguenze obesità/patologie. Shock emotivo → compliance terapie +80%. Effetto WOW virale sui social.' },
-              { q: 'Cos\'è Predictive Equipment Maintenance?', a: 'Sensori IoT su attrezzature critiche (RX, ecografo, autoclave). AI analizza pattern utilizzo + età + vibrazioni → predice guasto 7-14 giorni prima con 85% accuratezza. Ordina pezzo ricambio automaticamente. Zero downtime operatorio (chirurgie mai cancellate). Risparmio €10-15k/anno. Standard ospedaliero veterinario.' },
-              { q: 'Come funziona Cross-Species Learning AI?', a: 'AI trained su database TUTTE le specie (2.4M casi: cane, gatto, cavallo, rettili, uccelli, esotici). Transfer learning: "Questa dermatite felina è simile a 23 casi canini risolti con ciclosporina + 12 casi felini con allergene acari stoccaggio". Accesso letteratura cross-species in 2 secondi. Risolvi casi impossibili fuori comfort zone. Veterinario diventa "supervet" anche su specie rare.' },
-              { q: 'Cos\'è VetBuddy Residency Program?', a: 'Alternativa democratica alle residenze tradizionali. Mentorship 1-to-1 con veterinari senior (€200/mese vs €20-40k/anno residenze classiche). Video-call settimanale 1h + revisione casi clinici anonimizzati. Al termine 12 mesi: Certificazione "VetBuddy Certified Resident" riconosciuta FNOVI. Revenue share: 70% mentor, 20% VetBuddy, 10% borsa studio. Democratizza formazione specialistica.' },
-              { q: 'Come funziona Fisioterapia & Riabilitazione?', a: 'Due modalità integrate: 1) IN-HOUSE: gestisci internamente con protocolli guidati (post-chirurgia LCA, displasia, artrosi, obesità), video-esercizi 150+ per proprietari, tracking progressi con grafici, tecniche avanzate (idroterapia, TENS, laser). 2) NETWORK: marketplace centri fisioterapia specializzati, referral workflow completo, cartella clinica condivisa, tracking pazienti inviati, dashboard reciprocità. Recupero +40% più veloce. Revenue ricorrente (€60/sessione × 12 sessioni = €720 post-chirurgia).' },
-              { q: 'Cos\'è VetBuddy Autopsy AI?', a: 'AI analizza foto/video necroscopia e genera report preliminare in 5 minuti (vs 2-3 settimane tradizionale). Identifica lesioni, suggerisce causa morte probabile. Se serve conferma: collegamento con patologo veterinario on-demand €150 vs €800 laboratorio esterno. Database 50k+ necropsie per training. Risparmio 60% costi + risultati 10x più veloci + closure emotivo proprietari immediato.' },
-              { q: 'Come funziona Smart Referral Revenue Share?', a: 'Ogni volta che invii paziente a specialista/laboratorio/fisioterapista tramite VetBuddy, guadagni 15-20% revenue share automaticamente. Esempio: invii 23 pazienti questo mese → guadagno tracciato €1.840. Win-win-win: specialista ha clienti qualificati, tu guadagni anche senza fare prestazione, proprietario ha servizio certificato. Marketplace con rating/recensioni. Nuovo revenue stream passivo €1-3k/mese per clinica.' },
-              { q: 'Cos\'è Veterinary Talent Marketplace?', a: 'LinkedIn per veterinari con skill verification. Cliniche pubblicano offerte lavoro (part-time, full-time, sostituzione ferie). Vet certificati si candidano con portfolio casi risolti + specializzazioni. Match score AI basato su skills + geografia + salary expectations. Processo hiring tracciato: application → colloquio → onboarding. Risolve problema #1 settore: 60% cliniche cerca personale da 6+ mesi. Risparmio €5-10k headhunter.' },
-              { q: 'Come funziona Pet Loss Grief Support?', a: 'Protocollo automatizzato post-eutanasia: email empatica giorno dopo, 1 settimana, 1 mese. Grief counselor veterinario disponibile per video-call (incluso). Memorial digitale: galleria foto pet + messaggi ricordo famiglia. Pianta albero in memoria (partnership 1treeplanted.org). Alert automatico quando proprietario è pronto per nuovo animale (8-12 mesi). Retention emotiva +25%, lifetime value proprietario protetto. Differenziatore etico enorme.' },
-              { q: 'Cos\'è VetBuddy Carbon Offset?', a: 'Calcolo automatico impronta carbonio clinica (consumo energia, rifiuti speciali, viaggi visite domiciliari). Certificazione "Carbon Neutral Vet Clinic" con badge ufficiale. Compensazione automatica mensile €30-50/mese tramite progetti verificati (riforestazione Amazzonia, energia rinnovabile). Marketing potentissimo: "Prima clinica veterinaria Carbon Neutral di Milano". Gen Z/Millennial scelgono business sostenibili. Dashboard impatto: "Hai compensato 12 tonnellate CO₂ = 600 alberi piantati".' },
-              { q: 'Come funziona Dynamic Appointment Pricing?', a: 'Prezzi dinamici basati su domanda real-time (come Uber surge pricing). Slot poco richiesti (lunedì mattina): sconto 20-30%. Slot alta domanda (sabato): prezzo standard o +10%. AI ottimizza pricing per massimizzare revenue + saturazione agenda. Gamification: "Prenota lunedì pomeriggio → risparmia €15 + priority check-in". Proprietari felici (sconto o scelta orario preferito). Clinica: +15-20% revenue totale + agenda sempre piena + zero slot vuoti sprecati.' },
-              { q: 'Cos\'è Veterinary Podcast & Webinar Platform?', a: 'Netflix dell\'educazione veterinaria. Vet esperti registrano podcast/webinar 20-30 min su casi clinici, tecniche chirurgiche, aggiornamenti scientifici. Accreditamento ECM automatico (partnership ordini veterinari). Revenue share: 70% creator, 30% VetBuddy. Proprietari possono ascoltare versione "pet owner friendly" per educazione salute animale. 50 crediti ECM/anno tracciati automaticamente. Formazione enjoyable durante tragitto casa-lavoro.' },
-              { q: 'Come funziona AI-Powered Medical Photography?', a: 'AI valuta qualità foto PRIMA di salvarle in cartella clinica. Suggerisce miglioramenti real-time: "Avvicina di 10cm", "Ruota 45° destra", "Usa flash per eliminare ombra". Auto-enhance automatico: correzione colore, contrasto, nitidezza. Template guidati per patologie: "Dermatite → 4 foto standard richieste". Annotazione automatica con frecce/cerchi su lesioni. Zero foto da rifare, documentazione perfetta sempre, diagnosi remote possibili.' },
-              { q: 'Cos\'è Veterinary Invoice Financing?', a: 'Buy Now Pay Later veterinario integrato (partnership Klarna/Scalapay). Proprietario può pagare interventi costosi in 3-12 rate, clinica riceve fattura completa immediatamente. Approvazione istantanea in 60 secondi (95% acceptance rate). Zero rischio clinica, fee 2-5% pagata da proprietario. 3 rate sempre senza interessi. Esempio: chirurgia €1.500 → proprietario paga €500/mese × 3. +30-40% acceptance rate chirurgie/cure costose. Zero animali rifiutati per motivi economici.' },
-              { q: 'Come funziona Smart Queue Management?', a: 'Sistema code virtuale come Poste Italiane. Proprietario fa check-in da app → riceve numero coda + tempo attesa stimato real-time. Può aspettare comodamente in auto/bar vicino. Notifica automatica: "Tra 5 minuti è il tuo turno". AI predice ritardi: "Emergenza in corso, +30 min attesa" → opzione reschedule automatico. Dashboard TV in sala d\'attesa con code + trivia pet educativi. Esperienza cliente luxury, -70% stress animali sala d\'attesa, clinica sembra super organizzata.' },
-              { q: 'Cos\'è Supply Chain Intelligence AI?', a: 'Gestione intelligente della catena di approvvigionamento veterinaria. AI analizza fornitori, prezzi, consegne, qualità e suggerisce ottimizzazioni automatiche. Alert scorte sotto minimo, ordini automatici, suggerimenti cambi fornitore per risparmiare. Riordini intelligenti basati su consumo storico e previsioni stagionali. Risparmio medio 15-20% sui costi di approvvigionamento.' },
-              { q: 'Come funziona Client LTV Predictor AI?', a: 'AI predice il Lifetime Value (valore totale) di ogni cliente nei prossimi 12-24 mesi. Analizza frequenza visite, spesa media, numero pet, tipologia servizi. Segmenta automaticamente clienti in VIP, High Value, Growing Potential, At Risk. Suggerisce azioni marketing mirate per massimizzare LTV: upsell, retention, win-back. Aumenta revenue per cliente del 25-35%.' },
-              { q: 'Cos\'è Vet-to-Vet Knowledge Marketplace?', a: 'Marketplace di conoscenze veterinarie tra colleghi. Pubblica e vendi casi clinici, protocolli chirurgici, webinar, ricerche. Oppure acquista contenuti di qualità da veterinari esperti. Revenue share automatico: 70% creatore, 30% marketplace. Rating e recensioni. Guadagna dalla tua expertise condividendo casi risolti. Democratizza l\'accesso alla formazione specialistica.' },
-              { q: 'Come funziona Smart Appointment Orchestration AI?', a: 'AI orchestrazione intelligente degli appuntamenti in tempo reale. Suggerisce automaticamente spostamenti, accorpamenti, buffer ottimali tra visite. Riduce tempi morti, massimizza utilizzo agenda, prevede ritardi e riorganizza automaticamente. Aumenta efficienza agenda +30%, riduce no-show -40%, aumenta revenue/ora del 25%. Esperienza cliente premium con tempi attesa minimi.' },
-              { q: 'Cos\'è Veterinary Crisis Communication AI?', a: 'Sistema automatizzato per gestire comunicazioni di emergenza. Esempi: focolaio malattia, richiamo prodotti contaminati, chiusura clinica, allerta meteo. AI identifica clienti coinvolti, genera messaggi personalizzati, invia automaticamente via email/SMS/WhatsApp, traccia conferme lettura. Template pronti per ogni tipo di crisi. Riduce tempo gestione crisi del 90% e aumenta tasso risposta al 95%.' },
-              { q: 'Come funziona Pet Nutrition AI Chef?', a: 'AI genera piani nutrizionali personalizzati per ogni pet. Analizza razza, età, peso, patologie, allergie, livello attività. Crea ricette casalinghe bilanciate o suggerisce cibo commerciale ottimale. Calcola automaticamente porzioni, calorie, proteine, grassi. Genera lista spesa automatica con ordini ricorrenti. Tracking peso con grafici, alert obesità. Previene patologie croniche e migliora compliance dieta +80%.' },
-              { q: 'Cos\'è Predictive Client Churn AI?', a: 'AI predice quali clienti stanno per abbandonare la clinica (churn). Analizza frequenza visite, feedback, sentiment, tempo dall\'ultima visita. Assegna score rischio 0-100% per ogni cliente. Suggerisce automaticamente azioni retention personalizzate: email sconto, chiamata personale, offerta speciale. Recupera clienti prima che se ne vadano. Riduce churn -35%, aumenta retention rate +15%.' },
-              { q: 'Come funziona Smart Surgery Scheduling AI?', a: 'Pianificazione intelligente delle chirurgie. AI ottimizza calendario sala operatoria considerando: complessità intervento, durata stimata, tempi prep/recovery, disponibilità anestesista/strumentista. Suggerisce buffer automatici, prevede conflitti risorse, massimizza utilizzo sale. Dashboard real-time con stati chirurgie. Aumenta numero chirurgie/settimana +25%, riduce ritardi -60%, ottimizza utilizzo sale operatorie +40%.' },
-              { q: 'Cos\'è Emergency Triage AI?', a: 'Sistema di triage automatico per emergenze veterinarie. AI analizza sintomi, parametri vitali, storia clinica e assegna priorità P1-P4 in 60 secondi. Protocolli standard internazionali. Riduce errori triage -90%, accelera presa in carico emergenze critiche, ottimizza code di attesa. Dashboard real-time con alert automatici per emergenze P1. Accuratezza AI 96.8%, validato su 50k+ casi emergenza.' },
-              { q: 'Come funziona Veterinary Franchise Builder?', a: 'Sistema completo per creare e gestire rete di cliniche veterinarie franchising. AI analizza 150+ città italiane e suggerisce top location per espansione (densità popolazione, reddito, competizione, domanda servizi). Dashboard consolidato multi-sede, KPI comparativi, standard di servizio unificati, trasferimento pazienti tra sedi. Strumenti business plan automatici, ROI forecasting, investimento richiesto. Cresci da 1 a 10+ sedi con sistema replicabile.' },
-              { q: 'Cos\'è Alert Pazienti Fragili & Cronici?', a: 'Sistema di monitoraggio continuo per pazienti che richiedono attenzione particolare. Categorie: Senior, Cronici, Allergici, In Terapia Continuativa, Post-Operatori, Con Documenti Critici. Badge visibili nella scheda animale, alert automatici in agenda prima della visita, task automatici per lo staff, promemoria follow-up personalizzati. Aumenta continuità di cura +40%, riduce dimenticanze a zero, migliora compliance terapie +35%. Valore percepito dal proprietario molto più alto.' },
+              { q: 'Cos\'è la Telemedicina Conforme FNOVI?', a: 'Video-consulti HD per follow-up su pazienti già visitati (NON prime visite - conforme FNOVI). Registrazione automatica, prescrizioni digitali post-consulto. Standard post-COVID.' },
+              { q: 'Come funzionano i Preventivi Online?', a: 'Crei un preventivo digitale per una procedura. VetBuddy genera un link sicuro che invii al proprietario. Il proprietario approva online con firma digitale. Una volta approvato, converti automaticamente il preventivo in fattura.' },
+              { q: 'Cos\'è lo Smart Visit Pack?', a: 'Un flusso visita unificato che combina Check-in Digitale → Questionario Pre-Visita → Flowboard Clinica → Dimissioni in un\'unica timeline. Vedi tutte le visite di oggi con stato real-time.' },
+              { q: 'Come funzionano Dimissioni & Follow-up?', a: 'Dopo ogni visita o chirurgia, crei un pacchetto dimissioni con istruzioni, terapie e farmaci. VetBuddy programma automaticamente follow-up telefonici 24h/48h dopo, con template di domande chiave.' },
+              { q: 'Cos\'è lo Stock Leggero Vaccini?', a: 'Un inventario semplificato SOLO per vaccini e materiali critici. Traccia quantità, lotti, fornitori, scadenze. Alert automatici per scorte sotto soglia o vaccini in scadenza 30/60 giorni.' },
+              { q: 'Come funziona l\'integrazione con le Assicurazioni Pet?', a: 'Integrazione diretta con UnipolSai, Allianz, Generali, AXA. Invio automatico documenti e fatture, tracking stato rimborso per il cliente. La clinica diventa partner convenzionato.' },
+              { q: 'VetBuddy Passport sostituisce la cartella clinica?', a: 'No. VetBuddy Passport organizza le informazioni essenziali dell\'animale per proprietario, clinica, emergenze e condivisioni. La cartella clinica resta gestita dalla clinica.' }
+              ])
             ].map((faq, i) => (
               <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-lg border px-4">
                 <AccordionTrigger className="text-left font-semibold text-gray-900 py-4">{faq.q}</AccordionTrigger>
@@ -949,19 +984,30 @@ function FullLandingPage({ onLogin }) {
               </AccordionItem>
             ))}
           </Accordion>
+          {/* Toggle Mostra tutte / meno */}
+          <div className="text-center mt-6">
+            <Button variant="outline" onClick={() => setShowAllFaqs(!showAllFaqs)} className="border-coral-300 text-coral-700 hover:bg-coral-50">
+              {showAllFaqs ? 'Mostra meno' : '📚 Mostra tutte le 30+ domande'}
+              <ChevronRight className={`ml-2 h-4 w-4 transition-transform ${showAllFaqs ? 'rotate-90' : ''}`} />
+            </Button>
+          </div>
         </div>
       </section>
+
 
       {/* ============================================================ */}
       {/* CTA FINALE */}
       {/* ============================================================ */}
       <section className="py-12 px-4 bg-gradient-to-r from-coral-500 to-orange-500">
         <div className="max-w-3xl mx-auto text-center text-white">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Pronto a ridurre le telefonate, recuperare i no-show e far crescere la tua clinica?</h2>
-          <p className="text-white/80 mb-6">Ogni mese vedi esattamente quanto tempo hai risparmiato, quanti no-show hai recuperato, quante recensioni hai ricevuto e quanto ROI hai generato. Con WhatsApp Business, AI Reception e programmi referral integrati.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button size="lg" className="bg-white text-coral-600 hover:bg-gray-100 px-8" onClick={() => scrollToSection('pilot')}>Candidati al Progetto pilota</Button>
-            <Button size="lg" className="bg-transparent border-2 border-white text-white hover:bg-white/10 px-8" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Registrati gratis</Button>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Costruisci il tuo ecosistema VetBuddy. Inizia gratis.</h2>
+          <p className="text-white/90 mb-6">
+            Cliniche, proprietari e laboratori. Tutti collegati. <strong>Provala gratis. Poi scegli il piano più adatto.</strong>
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap">
+            <Button size="lg" className="bg-white text-coral-600 hover:bg-gray-100 px-6" onClick={() => window.location.href = '/login?mode=register&role=clinic'}>Prova gratis (Clinica)</Button>
+            <Button size="lg" className="bg-white/15 backdrop-blur border-2 border-white text-white hover:bg-white/25 px-6" onClick={() => scrollToSection('pilot')}>Candidati al Pilot 90gg</Button>
+            <Button size="lg" className="bg-white/15 backdrop-blur border-2 border-white text-white hover:bg-white/25 px-6" onClick={() => window.location.href = '/login?mode=register&role=owner'}>Invita la tua clinica</Button>
           </div>
         </div>
       </section>
