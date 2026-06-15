@@ -728,15 +728,42 @@ function FullLandingPage({ onLogin }) {
       <section id="prezzi" className="py-16 px-4 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <Badge className="bg-coral-100 text-coral-700 mb-4">💰 Prezzi</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Scegli il piano adatto alla tua clinica</h2>
-            <p className="text-gray-600 mb-2">Scegli il piano in base alla dimensione della clinica e al livello di automazione che vuoi attivare.</p>
+            <Badge className="bg-coral-100 text-coral-700 mb-4">💰 Prezzi & Trial gratuito</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Trial gratuito per tutti.<br className="hidden md:block" /> Poi scegli il piano più adatto.</h2>
+            <p className="text-gray-600 mb-2">Cliniche, proprietari e laboratori: ogni attore può iniziare gratis senza carta di credito.</p>
             <p className="text-sm text-gray-500">Tutti i prezzi sono IVA esclusa. Abbonamento mensile. Nessun vincolo annuale obbligatorio. Puoi annullare prima del rinnovo successivo.</p>
           </div>
 
+          {/* Trial gratuito per i tre attori */}
+          <div className="bg-gradient-to-r from-emerald-50 via-coral-50 to-blue-50 border border-emerald-200 rounded-xl p-6 mb-8">
+            <div className="grid md:grid-cols-3 gap-4 text-center">
+              <div className="flex flex-col items-center gap-2">
+                <div className="h-10 w-10 bg-coral-100 rounded-full flex items-center justify-center">
+                  <Stethoscope className="h-5 w-5 text-coral-600" />
+                </div>
+                <p className="font-semibold text-gray-900">🎁 Cliniche</p>
+                <p className="text-xs text-gray-600">14 giorni gratis su Starter e Growth · Pilot 90gg gratis su Pro</p>
+              </div>
+              <div className="flex flex-col items-center gap-2 md:border-x md:border-emerald-200">
+                <div className="h-10 w-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                  <Heart className="h-5 w-5 text-emerald-600" />
+                </div>
+                <p className="font-semibold text-gray-900">💚 Proprietari</p>
+                <p className="text-xs text-gray-600">Gratis per sempre. Zero costi, zero limiti, zero carta di credito.</p>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <FlaskConical className="h-5 w-5 text-blue-600" />
+                </div>
+                <p className="font-semibold text-gray-900">🧪 Laboratori</p>
+                <p className="text-xs text-gray-600">Pilot 6 mesi gratis · poi €39/mese</p>
+              </div>
+            </div>
+          </div>
+
           {/* Value Proposition */}
-          <div className="bg-gradient-to-r from-coral-50 to-purple-50 border border-coral-200 rounded-xl p-6 mb-8 text-center">
-            <p className="text-gray-800 font-medium">
+          <div className="bg-gradient-to-r from-coral-50 to-purple-50 border border-coral-200 rounded-xl p-4 mb-8 text-center">
+            <p className="text-sm text-gray-800">
               💡 <strong>Se VetBuddy recupera anche pochi appuntamenti al mese o riduce ore di lavoro ripetitivo, il costo del piano può essere ampiamente compensato dal valore generato.</strong>
             </p>
           </div>
@@ -748,32 +775,40 @@ function FullLandingPage({ onLogin }) {
                 <h3 className="font-bold text-gray-900 text-lg mb-1">Starter</h3>
                 <p className="text-xs text-gray-500 mb-2">Per iniziare</p>
                 <p className="text-xs text-blue-600 font-medium mb-3">Veterinari freelance e professionisti singoli</p>
-                <div className="mb-4"><span className="text-3xl font-bold text-gray-900">€29</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <div className="mb-2"><span className="text-3xl font-bold text-gray-900">€29</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-4">
+                  <p className="text-xs font-semibold text-gray-700">🎁 14 giorni di prova gratuita</p>
+                  <p className="text-xs text-gray-500">Senza carta di credito</p>
+                </div>
                 <p className="text-xs text-gray-600 mb-4 italic">Per iniziare a ricevere prenotazioni online e ridurre le telefonate di base.</p>
                 <div className="space-y-2 text-sm flex-1">
                   {['1 sede', '1 utente', 'Profilo pubblico', 'Link prenotazione', 'Agenda base', 'Promemoria base', 'Passport base', 'Fino a 30 prenotazioni/mese'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500 flex-shrink-0" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
-                <Button variant="outline" className="w-full mt-6" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Inizia con Starter</Button>
+                <Button variant="outline" className="w-full mt-6" onClick={() => window.location.href = '/login?mode=register&role=clinic'}>Prova gratis Starter</Button>
               </CardContent>
             </Card>
 
-            {/* CRESCITA */}
+            {/* GROWTH */}
             <Card className="border-coral-300 ring-2 ring-coral-200 hover:shadow-lg transition relative flex flex-col">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2"><Badge className="bg-coral-500 text-white px-3">⭐ Consigliato</Badge></div>
               <CardContent className="p-6 flex flex-col flex-1">
-                <h3 className="font-bold text-coral-600 text-lg mb-1">Crescita</h3>
+                <h3 className="font-bold text-coral-600 text-lg mb-1">Growth</h3>
                 <p className="text-xs text-gray-500 mb-2">Piano consigliato</p>
                 <p className="text-xs text-coral-600 font-medium mb-3">Per cliniche piccole e medie</p>
-                <div className="mb-4"><span className="text-3xl font-bold text-coral-600">€69</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <div className="mb-2"><span className="text-3xl font-bold text-coral-600">€69</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 mb-4">
+                  <p className="text-xs font-semibold text-emerald-700">🎁 14 giorni di prova gratuita</p>
+                  <p className="text-xs text-emerald-600">Senza carta di credito</p>
+                </div>
                 <p className="text-xs text-gray-600 mb-4 italic">Il piano consigliato per ridurre telefonate, automatizzare promemoria e seguire meglio i clienti.</p>
                 <div className="space-y-2 text-sm flex-1">
-                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Passport completo', 'QR emergenza', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio', 'WhatsApp Business', 'Reception AI base', 'No-Show Recovery', 'Import/Export CSV', '🎁 Progetto pilota 90gg gratis'].map((f, i) => (
+                  {['Fino a 5 utenti', 'Prenotazioni illimitate', 'Agenda digitale', 'Promemoria automatici', 'Documenti e PDF', 'Passport completo', 'QR emergenza', 'Area proprietario', 'Casella messaggi', 'Cruscotto valore', 'Richieste laboratorio', 'WhatsApp Business', 'Reception AI base', 'No-Show Recovery', 'Import/Export CSV'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-500 flex-shrink-0" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
-                <Button className="w-full mt-6 bg-coral-500 hover:bg-coral-600 text-white" onClick={() => scrollToSection('pilot')}>Candidati al Pilota 90gg</Button>
+                <Button className="w-full mt-6 bg-coral-500 hover:bg-coral-600 text-white" onClick={() => window.location.href = '/login?mode=register&role=clinic'}>Prova gratis Growth</Button>
               </CardContent>
             </Card>
 
@@ -783,14 +818,18 @@ function FullLandingPage({ onLogin }) {
                 <h3 className="font-bold text-purple-700 text-lg mb-1">Pro</h3>
                 <p className="text-xs text-gray-500 mb-2">Per crescita avanzata</p>
                 <p className="text-xs text-purple-600 font-medium mb-3">Cliniche strutturate con team più grandi</p>
-                <div className="mb-4"><span className="text-3xl font-bold text-purple-700">€99</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <div className="mb-2"><span className="text-3xl font-bold text-purple-700">€99</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <div className="bg-purple-50 border border-purple-200 rounded-lg px-3 py-2 mb-4">
+                  <p className="text-xs font-semibold text-purple-700">🎁 Pilot 90 giorni gratis</p>
+                  <p className="text-xs text-purple-600">+ report ROI finale</p>
+                </div>
                 <p className="text-xs text-gray-600 mb-4 italic">Per cliniche che vogliono automazioni avanzate, piani salute, laboratori e assistente intelligente.</p>
                 <div className="space-y-2 text-sm flex-1">
-                  {['✅ Tutto il piano Crescita', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Passport + QR brandizzato', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente', 'Campagne clienti avanzate', 'Task manager staff', 'No-Show Recovery avanzato', 'Clienti dormienti', 'Alert pazienti critici'].map((f, i) => (
+                  {['✅ Tutto il piano Growth', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Passport + QR brandizzato', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente', 'Campagne clienti avanzate', 'Task manager staff', 'No-Show Recovery avanzato', 'Clienti dormienti', 'Alert pazienti critici'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className={`h-4 w-4 ${i === 0 ? 'text-purple-600' : 'text-green-500'} flex-shrink-0`} /><span className={`text-gray-700 ${i === 0 ? 'font-semibold' : ''}`}>{f}</span></div>
                   ))}
                 </div>
-                <Button variant="outline" className="w-full mt-6 border-purple-300 text-purple-700 hover:bg-purple-50" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Richiedi Demo Pro</Button>
+                <Button variant="outline" className="w-full mt-6 border-purple-300 text-purple-700 hover:bg-purple-50" onClick={() => scrollToSection('pilot')}>Candidati al Pilot Pro</Button>
               </CardContent>
             </Card>
 
@@ -800,15 +839,18 @@ function FullLandingPage({ onLogin }) {
                 <h3 className="font-bold text-indigo-700 text-lg mb-1">Laboratorio Partner</h3>
                 <p className="text-xs text-gray-500 mb-2">Per laboratori analisi</p>
                 <p className="text-xs text-indigo-600 font-medium mb-3">Ricevi richieste dalle cliniche</p>
-                <div className="mb-4"><span className="text-3xl font-bold text-indigo-700">€39</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
-                <p className="text-xs text-indigo-600 mb-3 font-bold">🎁 Gratis per 6 mesi</p>
+                <div className="mb-2"><span className="text-3xl font-bold text-indigo-700">€39</span><span className="text-gray-500 text-sm">/mese + IVA</span></div>
+                <div className="bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2 mb-4">
+                  <p className="text-xs font-semibold text-indigo-700">🎁 Pilot 6 mesi gratis</p>
+                  <p className="text-xs text-indigo-600">Senza carta di credito</p>
+                </div>
                 <p className="text-xs text-gray-600 mb-4 italic">Per ricevere richieste dalle cliniche, gestire referti e aumentare la visibilità nella rete VetBuddy.</p>
                 <div className="space-y-2 text-sm flex-1">
                   {['Pannello gestione richieste', 'Profilo vetrina laboratori', 'Listino prezzi indicativo', 'Gestione richieste', 'Caricamento referti PDF', 'Notifiche automatiche', 'Disponibilità ritiro', 'Storico richieste'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-indigo-500 flex-shrink-0" /><span className="text-gray-700">{f}</span></div>
                   ))}
                 </div>
-                <Button variant="outline" className="w-full mt-6 border-indigo-300 text-indigo-700 hover:bg-indigo-50" onClick={() => { setAuthMode('register'); setShowAuth(true); }}>Diventa Partner</Button>
+                <Button variant="outline" className="w-full mt-6 border-indigo-300 text-indigo-700 hover:bg-indigo-50" onClick={() => window.location.href = '/login?mode=register&role=lab'}>Diventa Partner</Button>
               </CardContent>
             </Card>
 
@@ -818,7 +860,11 @@ function FullLandingPage({ onLogin }) {
                 <h3 className="font-bold text-white text-lg mb-1">Enterprise</h3>
                 <p className="text-xs text-gray-400 mb-2">Su misura</p>
                 <p className="text-xs text-gray-300 font-medium mb-3">Per gruppi multi-sede e network</p>
-                <div className="mb-4"><span className="text-3xl font-bold text-white">Custom</span></div>
+                <div className="mb-2"><span className="text-3xl font-bold text-white">Custom</span></div>
+                <div className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 mb-4">
+                  <p className="text-xs font-semibold text-white">🤝 Onboarding dedicato</p>
+                  <p className="text-xs text-gray-300">Prezzi su preventivo</p>
+                </div>
                 <div className="space-y-2 text-sm flex-1">
                   {['Sedi illimitate', 'Utenti illimitati', 'Account manager dedicato', 'Onboarding personalizzato', 'API e integrazioni', 'SLA garantito', 'Reportistica centralizzata'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-coral-400" /><span className="text-gray-300">{f}</span></div>
@@ -840,7 +886,7 @@ function FullLandingPage({ onLogin }) {
           <div className="text-center mb-10">
             <Badge className="bg-coral-100 text-coral-700 mb-4">🏙️ Progetto pilota Milano</Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Progetto pilota Milano: 90 giorni per misurare il valore generato da VetBuddy nella tua clinica.</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Piano Crescita gratuito per 90 giorni. Nessun vincolo. Alla fine del progetto pilota ricevi un riepilogo con prenotazioni generate, telefonate evitate, promemoria inviati, tempo risparmiato e clienti riattivati.</p>
+            <p className="text-gray-600 max-w-2xl mx-auto">Piano Growth gratuito per 90 giorni. Nessun vincolo. Alla fine del progetto pilota ricevi un riepilogo con prenotazioni generate, telefonate evitate, promemoria inviati, tempo risparmiato e clienti riattivati.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-4">
