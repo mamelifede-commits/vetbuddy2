@@ -168,6 +168,9 @@ export const ownerTutorial = {
       tip: 'Tre attori, un solo ecosistema: tu, la tua clinica e i laboratori. Pi\u00F9 sono collegati, pi\u00F9 semplice la gestione della salute del tuo animale.'
     }
   ],
+
+  onboarding: {
+    title: 'PRIMI PASSI CONSIGLIATI PER PROPRIETARI',
     subtitle: 'Suggerimenti per sfruttare tutte le funzionalit\u00E0 della piattaforma.',
     first10: {
       title: 'Cosa fare nei primi 10 minuti',

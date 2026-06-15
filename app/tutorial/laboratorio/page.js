@@ -184,8 +184,9 @@ export default function TutorialLaboratorio() {
       )
     },
     {
-      icon: Send,
-      title: 'VetBuddy Connect — Invita le tue cliniche partner',
+      title: '7. VetBuddy Connect — Invita le tue cliniche partner',
+      icon: <Send className="h-5 w-5" />,
+      color: "indigo",
       content: (
         <div className="space-y-3">
           <p className="text-gray-700 leading-relaxed">
