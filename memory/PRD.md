@@ -170,3 +170,80 @@ TEST: 19/19 backend OK (E2E previsit, E2E consensi, hook prenotazione→modulo+l
 - Owner dashboard ("I miei animali") e Lab dashboard: OK.
 - NESSUN BUG CRITICO TROVATO. Zero errori console, zero pagine bianche.
 - BACKLOG residuo noto: variabile NEXT_PUBLIC_COMING_SOON=true da rimuovere manualmente dall'ambiente Vercel di produzione (www.vetbuddy.it mostra Coming Soon).
+
+
+## 🆕 Riposizionamento Ecosistema (Giugno 2026)
+
+### Nuovo Posizionamento
+VetBuddy non è solo una piattaforma per cliniche veterinarie: è **l'ecosistema operativo che collega cliniche, proprietari e laboratori**, riducendo telefonate, documenti dispersi, referti manuali, no-show e clienti persi.
+
+**Formula sintetica:** "Tre attori, un solo ecosistema"
+**Formula commerciale:** "VetBuddy non sostituisce il gestionale della clinica. Lo potenzia con uno strato operativo intelligente."
+
+### VetBuddy Connect (NUOVO MODULO)
+Modulo unificato per gli inviti reciproci tra cliniche, proprietari e laboratori.
+
+**Endpoints:**
+- `POST /api/connect/invite` — Universale con type (owner_to_clinic, clinic_to_owner, clinic_to_lab, lab_to_clinic)
+- `POST /api/connect/bulk-invite` — Invio massivo (max 200 destinatari)
+- `GET /api/connect/invitations` — Lista sent+received per utente
+- `GET /api/connect/invite/:token` — Verifica invito (pubblico)
+- `POST /api/connect/accept` — Accettazione invito
+- `POST /api/connect/revoke` — Revoca invito mittente
+- `POST /api/connect/resend` — Re-send + estende scadenza 7gg
+- `POST /api/connect/claim` — Rivendica profilo provvisorio
+- `GET /api/connect/stats` — KPI rete per dashboard
+- `GET /api/connect/completion-score` — Punteggio completamento ecosistema (per ruolo)
+
+**Collection MongoDB:**
+- `invitations` — Tracking inviti (token, type, status, expiresAt)
+- `provisional_profiles` — Profili provvisori (SOLO INTERNI, public:false)
+- `clinic_lab_connections` — Connessioni clinic↔lab attive
+
+**UI:**
+- `VetBuddyConnect.js` — Dashboard inviti unificata (riusabile in 3 ruoli)
+- `ConnectStatusCard.js` — Card KPI + punteggio + checklist (entry dashboard)
+- `/connect/accept/[token]/page.js` — Pagina pubblica accettazione
+
+### Prezzi Piani (AGGIORNATI)
+- **Starter €29/mese** — 14gg trial — Freelance e micro-cliniche
+- **Growth €69/mese** — 14gg trial — Consigliato per cliniche piccole/medie (NUOVO PIANO)
+- **Pro €99/mese** — 90gg Pilot — Cliniche strutturate con automazioni avanzate
+- **Laboratorio Partner €39/mese** — 180gg Pilot — Laboratori partner
+- **Enterprise** — Gruppi multi-sede
+
+**Proprietari**: Gratis per sempre.
+
+### Logica Prova Gratuita
+- Cliniche: Prova gratuita 14gg self-service (Starter/Growth) + Pilot 90gg strutturato (Pro)
+- Laboratori: Pilot gratuito 6 mesi
+- Proprietari: Sempre gratis
+
+### Onboarding Wizard (NUOVO)
+WelcomeScreen.js rifatto con step-per-ruolo:
+- **Clinica** (7 step): profilo, servizi, QR, inviti, lab, automazioni, valore
+- **Proprietario** (7 step): profilo, animale, Passport, invita clinica, prenota, promemoria, pet sitter
+- **Laboratorio** (7 step): profilo, listino, ritiro, inviti cliniche, richieste, referti, monitoraggio
+
+### Homepage Aggiornata
+- Hero: "Più prenotazioni. Meno telefonate. Tutto il tuo ecosistema veterinario collegato."
+- 4 CTA: Prova gratis / Pilot 90gg / Invita la tua clinica / Diventa lab partner
+- Sezione "Tre attori, un solo ecosistema" con 3 card colorate
+- Visualizzazione "Chi invita chi" (4 direzioni)
+- FAQ compattata: 8 top + toggle "Mostra tutte le 30+ domande"
+
+### Brochure A4 Aggiornata (/presentazione)
+- "Tre attori, un solo ecosistema" (sostituisce "Due ecosistemi")
+- 3 card colorate (Cliniche/Proprietari/Laboratori) con prezzi
+- Sezione "VetBuddy Connect - Chi invita chi" con 4 direzioni
+- Titolo prezzi: "Prova gratis. Poi scegli il piano più adatto."
+- CSS @media print fix con padding 12mm + h1/h2/h3 sizing per A4
+
+### Privacy & Permessi
+- ✅ Proprietario vede solo i propri animali
+- ✅ Clinica vede solo propri clienti
+- ✅ Lab vede solo proprie richieste
+- ✅ Profili provvisori: SOLO INTERNI (public:false) → no privacy/SEO risks
+- ✅ Token invito JWT monouso scadenza 7gg
+- ✅ Revoca invito disponibile
+
