@@ -466,9 +466,17 @@ export default function BrochurePage() {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3B — NUOVI MODULI OPERATIVI 2025
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Nuovi Moduli Operativi 2025</h2>
+        <p className="text-gray-500 text-sm mb-6">Task manager, campagne, CRM e altri strumenti operativi avanzati</p>
 
         {/* NUOVI MODULI OPERATIVI - PHASE 2 & 3 */}
-        <h3 className="text-xl font-black text-gray-900 mt-8 mb-4">🚀 Nuovi Moduli Operativi 2025</h3>
         <div className="grid grid-cols-2 gap-6 mb-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-slate-200">
             <div className="flex items-center gap-3 mb-3">
@@ -575,9 +583,17 @@ export default function BrochurePage() {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3C — MODULI MERCATO ITALIANO 2025
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🇮🇹 Moduli Mercato Italiano 2025</h2>
+        <p className="text-gray-500 text-sm mb-6">Fatturazione XML, ricette REV, microchip, network specialisti e piani benessere</p>
 
         {/* MODULI MERCATO ITALIANO */}
-        <h3 className="text-xl font-black text-gray-900 mt-8 mb-4">🇮🇹 Moduli Mercato Italiano 2025</h3>
         <div className="grid grid-cols-2 gap-6 mb-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
             <div className="flex items-center gap-3 mb-3">
@@ -654,9 +670,17 @@ export default function BrochurePage() {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3D — CONFORMITÀ E OPERATIVITÀ AVANZATA 2025
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🇮🇹 Conformità e Operatività Avanzata 2025</h2>
+        <p className="text-gray-500 text-sm mb-6">Consensi, denuncia malattie, assicurazioni, farmacovigilanza, certificati viaggio</p>
 
         {/* SECONDA WAVE MODULI ITALIANI */}
-        <h3 className="text-xl font-black text-gray-900 mt-8 mb-4">🇮🇹 Conformità e Operatività Avanzata 2025</h3>
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
             <div className="flex items-center gap-3 mb-3">
@@ -778,9 +802,17 @@ export default function BrochurePage() {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3E — FUNZIONALITÀ ENTERPRISE 2025
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Funzionalità Enterprise 2025</h2>
+        <p className="text-gray-500 text-sm mb-6">Multi-sede, app mobile, sala operatoria, contabilità, POS e analytics avanzati</p>
 
         {/* FUNZIONALITÀ ENTERPRISE */}
-        <h3 className="text-xl font-black text-gray-900 mt-8 mb-4">🚀 Funzionalità Enterprise 2025</h3>
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-blue-200">
             <div className="flex items-center gap-3 mb-3">
@@ -878,9 +910,17 @@ export default function BrochurePage() {
             <p className="text-gray-600 text-xs leading-relaxed">Piani alimentari custom AI. Tracking peso, alert obesità, prevenzione patologie.</p>
           </div>
         </div>
+      </div>
 
-        {/* INNOVATION 2025 */}
-        <h3 className="text-xl font-black text-gray-900 mt-8 mb-4">🚀 Innovation Lab 2025 - AI & IoT</h3>
+      {/* ====================================================================
+          PAGINA 3F — INNOVATION LAB 2025 (Parte 1)
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🚀 Innovation Lab 2025 — AI & IoT</h2>
+        <p className="text-gray-500 text-sm mb-6">Telemedicina, wearables, marketplace, AI diagnostico e moduli innovativi</p>
+
+        {/* INNOVATION 2025 - PARTE 1 */}
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-purple-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🤖</span></div><div><h3 className="font-black text-gray-900 text-sm">AI Diagnostico Assistant</h3><span className="bg-purple-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
@@ -918,6 +958,18 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center"><span className="text-2xl">❤️</span></div><div><h3 className="font-black text-gray-900 text-sm">Pet Adoption</h3><span className="bg-pink-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Innovation</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Canili/gattili. Prima visita gratis. Social responsibility + clienti.</p>
           </div>
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3G — GENIUS SUITE (Parte 1) — AI, Database, Diagnostica
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2025 — Parte 1</h2>
+        <p className="text-gray-500 text-sm mb-6">Super-AI multimodale, database farmaci, diagnostica visiva e monitoring remoto</p>
+
+        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-violet-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🧠</span></div><div><h3 className="font-black text-gray-900 text-sm">VetBuddy Brain</h3><span className="bg-violet-900 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Super-Assistente AI multimodale. Analizza testo, immagini, dati. Letteratura scientifica istantanea.</p>
@@ -962,6 +1014,18 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><span className="text-2xl">⚠️</span></div><div><h3 className="font-black text-gray-900 text-sm">Predictive Hospitalization AI</h3><span className="bg-red-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">AI prevede rischio ospedalizzazione 48-72h. Intervento preemptivo. Accuratezza 87%.</p>
           </div>
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3H — GENIUS SUITE (Parte 2) — Wellness, Marketing, Operations
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2025 — Parte 2</h2>
+        <p className="text-gray-500 text-sm mb-6">Mental wellness, litigation, behavior AI, dynamic pricing, podcast e photography</p>
+
+        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-pink-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center"><span className="text-2xl">❤️</span></div><div><h3 className="font-black text-gray-900 text-sm">Mental Wellness Hub</h3><span className="bg-pink-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Benessere psicologico veterinari. Burnout tracking, terapia h24. Retention +40%.</p>
@@ -1022,6 +1086,18 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center"><span className="text-2xl">📸</span></div><div><h3 className="font-black text-gray-900 text-sm">AI Photography</h3><span className="bg-cyan-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Valuta qualità foto. Suggerimenti real-time. Zero foto rifatte.</p>
           </div>
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3I — GENIUS SUITE (Parte 3) — Finance, Operations, AI Avanzata
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2025 — Parte 3</h2>
+        <p className="text-gray-500 text-sm mb-6">BNPL, smart queue, supply chain, LTV, knowledge marketplace e orchestration</p>
+
+        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-teal-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center"><span className="text-2xl">💳</span></div><div><h3 className="font-black text-gray-900 text-sm">Invoice Financing</h3><span className="bg-teal-700 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">BNPL Klarna. Proprietario rate, clinica subito. +35% acceptance.</p>
@@ -1046,6 +1122,18 @@ export default function BrochurePage() {
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center"><span className="text-2xl">⚡</span></div><div><h3 className="font-black text-gray-900 text-sm">Appointment Orchestration</h3><span className="bg-cyan-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">AI ottimizza agenda real-time. +32% efficienza, -45% no-show.</p>
           </div>
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 3L — GENIUS SUITE (Parte 4) + Dashboard ROI
+      ==================================================================== */}
+      <div className="brochure-page bg-gradient-to-br from-purple-50 to-blue-50 px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-2">🧠 Genius Suite 2025 — Parte 4</h2>
+        <p className="text-gray-500 text-sm mb-6">Emergency triage, churn predictor, nutrition AI, surgery scheduling, franchise builder</p>
+
+        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border-2 border-red-200">
             <div className="flex items-center gap-3 mb-3"><div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><span className="text-2xl">🚨</span></div><div><h3 className="font-black text-gray-900 text-sm">Crisis Communication</h3><span className="bg-red-800 text-white text-[10px] inline-block px-2 py-0.5 rounded">Genius</span></div></div>
             <p className="text-gray-600 text-xs leading-relaxed">Allerte automatiche focolai, richiami. Messaggi automatici +95%.</p>
@@ -1557,7 +1645,7 @@ export default function BrochurePage() {
           {/* Growth — Consigliato */}
           <div className="border-2 border-coral-400 rounded-2xl p-5 bg-coral-50/30 relative">
             <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-coral-500 text-white text-xs px-3 py-1 rounded-full font-bold whitespace-nowrap">⭐ Consigliato</div>
-            <p className="text-xs font-bold text-coral-500 uppercase tracking-wider mb-2 mt-1">Crescita (Growth)</p>
+            <p className="text-xs font-bold text-coral-500 uppercase tracking-wider mb-2 mt-1">Growth</p>
             <div className="mb-1"><span className="text-3xl font-black text-gray-900">€69</span><span className="text-sm text-gray-500 ml-1">/mese + IVA</span></div>
             <p className="text-xs text-gray-500 mb-3">Piano consigliato per cliniche piccole e medie.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
@@ -1576,7 +1664,7 @@ export default function BrochurePage() {
             <div className="mb-1"><span className="text-3xl font-black text-gray-800">€99</span><span className="text-sm text-gray-500 ml-1">/mese + IVA</span></div>
             <p className="text-xs text-gray-500 mb-3">Per cliniche strutturate.</p>
             <ul className="space-y-1.5 text-xs text-gray-700">
-              {['Tutto Crescita più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Passport + QR brandizzato', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente'].map((f, i) => (
+              {['Tutto Growth più:', 'Fino a 15 utenti', 'Automazioni avanzate', 'Piani salute', 'Programma fedeltà', 'Rete laboratori completa', 'Passport + QR brandizzato', 'Riepiloghi avanzati', 'Rendiconti mensili', 'Assistente intelligente'].map((f, i) => (
                 <li key={i} className={`flex items-center gap-1.5 ${i === 0 ? 'font-semibold' : ''}`}><Check className="w-3 h-3 text-green-500 flex-shrink-0" />{f}</li>
               ))}
             </ul>
@@ -1612,7 +1700,7 @@ export default function BrochurePage() {
       ==================================================================== */}
       <div className="brochure-page bg-white px-12 py-14">
         <PageHeader />
-        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-6">Domande frequenti</h2>
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-6">Domande frequenti (1/2)</h2>
         
         <div className="space-y-4">
           {[
@@ -1624,6 +1712,24 @@ export default function BrochurePage() {
             { q: 'Cos\'è il Pilot Success Kit?', a: 'Programma onboarding 90 giorni con checklist guidata (30/60/90 giorni), report automatici ai milestone, risorse stampabili (QR, flyer) e tracking KPI completo.' },
             { q: 'Posso importare ed esportare i miei dati?', a: 'Sì! VetBuddy include Import/Export CSV per proprietari, animali e appuntamenti. Importi con validazione automatica ed esporti quando vuoi. Zero lock-in.' },
             { q: 'Come viene calcolato il ROI?', a: 'Il cruscotto calcola: ore risparmiate × costo staff, prenotazioni online × valore visita, no-show recuperati × valore slot. ROI = (Valore generato - Costo) / Costo × 100. Vedi tutto in tempo reale.' },
+          ].map((item, i) => (
+            <div key={i} className="pb-3 border-b border-gray-100 last:border-0">
+              <p className="font-semibold text-gray-900 text-sm mb-1">{item.q}</p>
+              <p className="text-gray-500 text-xs leading-relaxed">{item.a}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ====================================================================
+          PAGINA 10B — DOMANDE FREQUENTI (Parte 2)
+      ==================================================================== */}
+      <div className="brochure-page bg-white px-12 py-14">
+        <PageHeader />
+        <h2 className="text-2xl font-black text-gray-900 mt-6 mb-6">Domande frequenti (2/2)</h2>
+        
+        <div className="space-y-4">
+          {[
             { q: 'VetBuddy emette la Ricetta Elettronica Veterinaria?', a: 'No. VetBuddy supporta preparazione, gestione e archiviazione. L\'emissione resta al veterinario abilitato con proprie credenziali.' },
             { q: 'I pagamenti dei clienti passano da VetBuddy?', a: 'No. I pagamenti delle visite restano gestiti dalla clinica. VetBuddy incassa solo l\'abbonamento piattaforma.' },
             { q: 'Il proprietario paga VetBuddy?', a: 'No. L\'area proprietario è gratuita per il proprietario dell\'animale.' },
