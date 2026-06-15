@@ -2405,3 +2405,53 @@ agent_communication:
   - agent: "main"
     message: "Iterazione 3 completata. Test backend totali: 75/75 ✅ (Connect 48 + completion-score 8 + Twilio 6 + Directory 6 + Morning Briefing 3 + regression 4). Nuove funzionalità: 1) Directory pubblica /directory con cliniche/lab verificati (no auth, filtri city/service/examType). 2) Morning Briefing arricchito in ClinicControlRoom — 11 metriche giornaliere con alert levels + dettagli espandibili (appuntamenti, consensi mancanti, referti fermi, inviti Connect pendenti, ecc.). 3) Tutorial aggiornati (inline + PDF) con prezzi nuovi e sezione VetBuddy Connect. 4) Link Directory aggiunto in nav homepage."
 
+
+
+backend:
+  - task: "Profilo pubblico laboratorio: GET /api/laboratorio/:slug"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/lab-profile.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "NUOVO endpoint GET /api/laboratorio/:slug (no auth). Ricerca per labProfile.slug o id. Verifica publishInDirectory !== false. Ritorna { id, name, city, address, phone, email, website, description, specializations, averageReportTime, pickupAvailable, pickupDays, photo, priceList (con turnaroundDays), verified:true }. Pagina pubblica `/laboratorio/[slug]/page.js` con hero card + tabs Info/Listino + CTA 'Iscrivi clinica'."
+      - working: true
+        agent: "testing"
+        comment: "3/3 TESTS PASSED ✅. Endpoint funziona, 404 su slug invalido, 404 su lab con publishInDirectory=false. Lab profile completo restituito."
+
+  - task: "Estensione Referral programma: ecosistema clinic↔lab + crediti accumulati"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/connect.js, /app/app/components/connect/VetBuddyConnect.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "ESTENSIONE referral. POST /api/connect/accept: quando invito clinic_to_lab/lab_to_clinic/clinic_to_owner/owner_to_clinic viene accettato, viene aggiunto un credit in users.referralCredits con { id, type, amount (€30 per network biz, €5 per owner), currency, reason, sourceInvitationId, status:'pending', createdAt, expiresAt (1 anno) }. Aggiornato anche users.referralStats.acceptedTotal. NUOVO endpoint GET /api/connect/referral-credits ritorna { credits, totals: {pending, available, redeemed, expired}, stats }. UI VetBuddyConnect.js: card '💰 Crediti Referral accumulati' mostrata solo se ne ha. BACKLOG: applicazione automatica crediti su prossimo billing Stripe (richiede webhook + logica)."
+      - working: true
+        agent: "testing"
+        comment: "3/3 TESTS PASSED ✅. End-to-end test: clinic invita lab → lab accetta → credit €30 pending registrato correttamente. GET /api/connect/referral-credits funziona, 401 senza auth. NOTA: tester ha corretto un syntax error che avevo introdotto in connect.js (return statement malformato in handleConnectGet)."
+
+frontend:
+  - task: "Pagina pubblica /laboratorio/[slug] + UI Crediti Referral in VetBuddyConnect + auto-open tab sharing in PetPassport"
+    implemented: true
+    working: "NA"
+    file: "/app/app/laboratorio/[slug]/page.js, /app/app/components/connect/VetBuddyConnect.js, /app/app/components/passport/PetPassport.js, /app/app/components/owner/PetProfile.js, /app/app/directory/page.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "NUOVA pagina pubblica /laboratorio/[slug] con hero, info specializzazioni/tempi/ritiro, listino prezzi raggruppato per categoria, CTA Iscrivi clinica. Directory page aggiornata per linkare profilo pubblico lab via `/laboratorio/<id>`. Card '💰 Crediti Referral' visibile in VetBuddyConnect quando user ha crediti pending/available. AUTO-OPEN TAB SHARING: PetPassport accetta prop initialTab, PetProfile lo inoltra. Quando bottone 'Condividi' in OwnerPassportCards è cliccato, OwnerDashboardLayout passa initialTab='share' che fa: PetProfile apre activeTab='passport', PetPassport apre activeTab='condivisioni' (sub-tab Passport)."
+
+agent_communication:
+  - agent: "main"
+    message: "Iterazione 4 (FASE FINALE BACKLOG) completata. Test backend totali: 86/86 ✅ (Connect 48 + completion-score 8 + Twilio 6 + Directory 6 + Morning Briefing 3 + Lab Profile pubblico 3 + Referral Credits 3 + regression 9). Nuove funzionalità: 1) Profilo pubblico laboratorio /laboratorio/[slug] con info, listino, CTA. 2) Estensione referral ecosistema: crediti €30 per network biz (clinic↔lab) e €5 per owner. UI nuova card 'Crediti Referral'. 3) Auto-open tab Sharing in PetPassport quando proprietario clicca 'Condividi' su pet card. 4) Directory linkata a profili lab pubblici. NOTA: Tester ha corretto syntax error introdotto in handleConnectGet (return malformato)."
+
