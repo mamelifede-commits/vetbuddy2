@@ -2331,3 +2331,53 @@ metadata:
   version: "2.1"
   test_sequence: 11
   run_ui: false
+
+
+backend:
+  - task: "Directory pubblica: GET /api/directory/clinics + /api/directory/labs (no auth, filtri city/service/examType)"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/connect.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "NUOVO 2 endpoint pubblici no-auth: GET /api/directory/clinics e /api/directory/labs. Solo profili 'verificati' (clinicSettings.clinicName + address/city per cliniche; labName + labProfile per lab; publishInDirectory !== false). Supportano query params: city (regex case-insensitive), service (per cliniche), examType (per lab da labPriceList). Ritorna lista con id, name, city, address, phone, photo, slug, verified:true. Pagina frontend `/directory/page.js` con search bar + tabs Cliniche/Lab + filtri. Link aggiunto in nav homepage."
+      - working: true
+        agent: "testing"
+        comment: "6/6 TESTS PASSED ✅ - Directory pubblica funziona perfettamente. Test: lista cliniche/lab no-auth, filtri city/service/examType. Trovati 6 lab verificati."
+
+  - task: "Morning Briefing arricchito: GET /api/clinic/morning-briefing (riepilogo operativo giornaliero per clinica)"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/modules/clinic.js, /app/app/components/clinic/MorningBriefingWidget.js, /app/app/components/clinic/ClinicControlRoom.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "NUOVO endpoint GET /api/clinic/morning-briefing (auth: clinic/staff). Aggrega 11 metriche del giorno: appointmentsToday, unconfirmedToday, consentsMissing (per chirurgie senza consenso firmato), staleLabReports (>3gg), pendingInvites (VetBuddy Connect), expiredInvites, previsitIncomplete, cancelledSlots, dormantClients (>30gg no apt), urgentTasks, unreadMessages. Details con top 5-10 record per categoria. NUOVO componente MorningBriefingWidget.js con 8 cards stats colorate (alert/warn/none levels) + sezione dettagli espandibile. Integrato in ClinicControlRoom subito dopo Setup Bar."
+      - working: true
+        agent: "testing"
+        comment: "3/3 TESTS PASSED ✅ - Morning Briefing funziona perfettamente. Auth check OK (403 owner, 401/403 no-auth). Tutti gli 11 campi summary presenti, 5 array details corretti."
+
+frontend:
+  - task: "Tutorial aggiornati + Directory page + Morning Briefing widget UI"
+    implemented: true
+    working: "NA"
+    file: "/app/app/tutorial/cliniche/page.js, /app/app/tutorial/proprietari/page.js, /app/app/tutorial/laboratorio/page.js, /app/app/api/tutorials/download/tutorial-content.js, /app/app/directory/page.js, /app/app/components/clinic/MorningBriefingWidget.js, /app/app/components/landing/FullLandingPage.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "TUTORIAL: aggiornati tutti 3 PDF + 3 pagine inline (cliniche/proprietari/laboratorio) con: prezzi nuovi (Starter €29/Growth €69/Pro €99/Lab €39), sezione 'VetBuddy Connect' (inviti reciproci + WhatsApp + tracking + profili provvisori), FAQ aggiornate. DIRECTORY: nuova pagina pubblica /directory con search bar (città + servizio/esame), tabs Cliniche/Lab, card con info verificate, CTA 'Invita la tua clinica' + 'Iscriviti' per ogni ruolo. Link 'Directory' aggiunto in nav homepage. MORNING BRIEFING: widget integrato in ClinicControlRoom (entry dashboard clinica) - mostra alert level (none/warn/alert) per ogni metrica, cards cliccabili che navigano alla sezione relativa, dettagli espandibili."
+
+agent_communication:
+  - agent: "main"
+    message: "Iterazione 3 completata. Test backend totali: 75/75 ✅ (Connect 48 + completion-score 8 + Twilio 6 + Directory 6 + Morning Briefing 3 + regression 4). Nuove funzionalità: 1) Directory pubblica /directory con cliniche/lab verificati (no auth, filtri city/service/examType). 2) Morning Briefing arricchito in ClinicControlRoom — 11 metriche giornaliere con alert levels + dettagli espandibili (appuntamenti, consensi mancanti, referti fermi, inviti Connect pendenti, ecc.). 3) Tutorial aggiornati (inline + PDF) con prezzi nuovi e sezione VetBuddy Connect. 4) Link Directory aggiunto in nav homepage."
+
