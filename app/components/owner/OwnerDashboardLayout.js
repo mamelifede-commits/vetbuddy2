@@ -12,7 +12,7 @@ import api from '@/app/lib/api';
 import {
   Calendar, CalendarDays, FileText, PawPrint, Gift, Star, MessageCircle, Newspaper, GraduationCap,
   MapPin, UserPlus, Menu, X, Receipt, Settings, CreditCard, LogOut, Bell, Inbox,
-  AlertCircle, AlertTriangle, BookOpen, Search, Stethoscope, Mail
+  AlertCircle, AlertTriangle, BookOpen, Search, Stethoscope, Mail, Users
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
@@ -28,6 +28,7 @@ const OwnerTutorialInline = dynamic(() => import('@/app/components/owner/OwnerTu
 const PetProfile = dynamic(() => import('@/app/components/owner/PetProfile'), { ssr: false });
 const FindClinic = dynamic(() => import('@/app/components/owner/FindClinic'), { ssr: false });
 const InviteClinic = dynamic(() => import('@/app/components/owner/InviteClinic'), { ssr: false });
+const VetBuddyConnect = dynamic(() => import('@/app/components/connect/VetBuddyConnect'), { ssr: false });
 const SubscriptionPlans = dynamic(() => import('@/app/components/shared/SubscriptionPlans'), { ssr: false });
 const OwnerPassportCards = dynamic(() => import('@/app/components/owner/OwnerPassportCards'), { ssr: false });
 const OwnerPets = dynamic(() => import('@/app/components/owner/OwnerPets'), { ssr: false });
@@ -262,6 +263,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
               <div className="border-t my-3"></div>
               <NavItem icon={Search} label="Trova clinica" value="findClinic" />
               <NavItem icon={Mail} label="Invita la tua clinica" value="inviteClinic" />
+              <NavItem icon={Users} label="VetBuddy Connect" value="vetbuddy-connect" />
               <NavItem icon={BookOpen} label="Tutorial" value="tutorial" />
               <NavItem icon={Settings} label="Profilo e Notifiche" value="profile" />
             </nav>
@@ -297,6 +299,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
           <div className="border-t my-3"></div>
           <NavItem icon={Search} label="Trova clinica" value="findClinic" />
           <NavItem icon={Mail} label="Invita la tua clinica" value="inviteClinic" />
+          <NavItem icon={Users} label="VetBuddy Connect" value="vetbuddy-connect" />
           <NavItem icon={BookOpen} label="Tutorial" value="tutorial" />
           <NavItem icon={Settings} label="Profilo e Notifiche" value="profile" />
         </nav>
@@ -335,6 +338,7 @@ function OwnerDashboard({ user, onLogout, emailAction, onClearEmailAction }) {
         {activeTab === 'petProfile' && selectedPetId && <PetProfile petId={selectedPetId} onBack={() => setActiveTab('pets')} onNavigate={setActiveTab} appointments={appointments} documents={documents} />}
         {activeTab === 'findClinic' && <FindClinic user={user} />}
         {activeTab === 'inviteClinic' && <InviteClinic user={user} />}
+        {activeTab === 'vetbuddy-connect' && <VetBuddyConnect user={user} onNavigate={setActiveTab} />}
         {activeTab === 'tutorial' && <OwnerTutorialInline />}
         {activeTab === 'profile' && <OwnerProfile user={user} onRefresh={loadData} />}
       </main>

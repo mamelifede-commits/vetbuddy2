@@ -106,55 +106,80 @@ function SubscriptionPlans({ user }) {
   const planConfigs = [
     {
       id: 'starter',
-      name: 'Starter Clinica',
-      price: 0,
+      name: 'Starter',
+      price: 29,
       icon: Sparkles,
-      color: 'violet',
+      color: 'gray',
       borderColor: 'border-gray-300',
       bgColor: 'bg-gray-50',
       buttonColor: 'bg-gray-700 hover:bg-gray-800',
       popular: false,
       forRole: 'clinic',
+      tagline: 'Per freelance e micro-cliniche',
       features: [
-        { text: '1 sede', included: true },
-        { text: '1 utente', included: true },
-        { text: 'Fino a 30 richieste/mese', included: true },
-        { text: 'Profilo pubblico', included: true },
-        { text: 'Link diretto di prenotazione', included: true },
+        { text: '1 sede, 1 utente', included: true },
+        { text: 'Profilo pubblico clinica', included: true },
+        { text: 'Link diretto e QR prenotazione', included: true },
         { text: 'Agenda base', included: true },
-        { text: 'Metriche avanzate', included: false },
-        { text: 'Automazioni', included: false },
-        { text: 'Video-consulti', included: false },
+        { text: 'Promemoria email automatici', included: true },
+        { text: 'Passport base', included: true },
+        { text: 'Fino a 50 richieste/mese', included: true },
+        { text: 'Promemoria WhatsApp', included: false },
+        { text: 'Automazioni avanzate', included: false },
+      ]
+    },
+    {
+      id: 'growth',
+      name: 'Growth',
+      price: 69,
+      icon: Sparkles,
+      color: 'emerald',
+      borderColor: 'border-emerald-400',
+      bgColor: 'bg-emerald-50',
+      buttonColor: 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600',
+      popular: true,
+      forRole: 'clinic',
+      tagline: 'Consigliato per cliniche piccole e medie',
+      features: [
+        { text: 'Fino a 3 utenti', included: true },
+        { text: 'Tutto Starter +', included: true },
+        { text: 'Promemoria WhatsApp', included: true },
+        { text: 'Lab Marketplace', included: true },
+        { text: 'Mini CRM clienti', included: true },
+        { text: 'Documenti e referti via email', included: true },
+        { text: 'Google Calendar sync', included: true },
+        { text: 'Campagne clienti dormienti', included: true },
+        { text: 'Richieste illimitate', included: true },
       ]
     },
     {
       id: 'pro',
-      name: 'Pro Clinica',
-      price: 79,
-      earlyAdopterPrice: 49,
+      name: 'Pro',
+      price: 99,
       icon: Crown,
       color: 'amber',
       borderColor: 'border-coral-400',
       bgColor: 'bg-coral-50',
       buttonColor: 'bg-gradient-to-r from-coral-500 to-orange-500 hover:from-coral-600 hover:to-orange-600',
-      popular: true,
+      popular: false,
       forRole: 'clinic',
+      tagline: 'Per cliniche strutturate',
       features: [
         { text: 'Fino a 10 staff', included: true },
-        { text: 'Prenotazioni online', included: true },
-        { text: 'Agenda digitale', included: true },
-        { text: 'Reminder email automatici', included: true },
-        { text: 'Documenti e PDF via email', included: true },
-        { text: 'Google Calendar sync', included: true },
-        { text: 'Report e analytics', included: true },
-        { text: 'Lab Marketplace', included: true },
+        { text: 'Tutto Growth +', included: true },
+        { text: 'Automazioni avanzate (40+)', included: true },
+        { text: 'Piani Salute', included: true },
+        { text: 'Assistente AI clinica', included: true },
+        { text: 'Cruscotto valore generato', included: true },
+        { text: 'Recupero no-show automatico', included: true },
+        { text: 'Network specialisti', included: true },
         { text: 'Supporto prioritario', included: true },
       ]
     },
     {
       id: 'lab_partner',
       name: 'Laboratorio Partner',
-      price: 29,
+      price: 39,
       icon: FlaskConical,
       color: 'blue',
       borderColor: 'border-blue-300',
@@ -162,13 +187,16 @@ function SubscriptionPlans({ user }) {
       buttonColor: 'bg-blue-600 hover:bg-blue-700',
       popular: false,
       forRole: 'lab',
+      tagline: 'Per laboratori che vogliono ricevere richieste digitali',
       features: [
         { text: 'Dashboard laboratorio', included: true },
         { text: 'Profilo nel marketplace', included: true },
         { text: 'Listino prezzi indicativo', included: true },
+        { text: 'Tempi medi referti', included: true },
+        { text: 'Disponibilità ritiro campioni', included: true },
         { text: 'Ricezione richieste da cliniche', included: true },
         { text: 'Upload referti PDF', included: true },
-        { text: 'Notifiche email', included: true },
+        { text: 'Invito cliniche partner', included: true },
         { text: 'Supporto dedicato', included: true },
       ]
     }
@@ -183,6 +211,21 @@ function SubscriptionPlans({ user }) {
 
   return (
     <div className="space-y-4">
+      {/* Banner: Prova gratis. Poi scegli il piano. */}
+      {!isActive && !paymentSuccess && (
+        <div className="bg-gradient-to-r from-emerald-50 via-blue-50 to-purple-50 border border-emerald-200 rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <Sparkles className="h-5 w-5 text-emerald-600" />
+            </div>
+            <div>
+              <p className="font-semibold text-gray-900">Prova gratis. Poi scegli il piano più adatto.</p>
+              <p className="text-sm text-gray-600">Puoi provare VetBuddy gratuitamente. Quando inizi a generare valore reale per la tua clinica, scegli il piano più adatto al tuo team.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {paymentSuccess && (
         <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
           <CheckCircle className="h-6 w-6 text-green-500" />
@@ -239,10 +282,13 @@ function SubscriptionPlans({ user }) {
                 </Badge>
               )}
               
-              <div className={`inline-flex items-center gap-2 ${plan.bgColor} rounded-lg px-3 py-1.5 w-fit mb-3 ${plan.popular ? 'mt-2' : ''}`}>
+              <div className={`inline-flex items-center gap-2 ${plan.bgColor} rounded-lg px-3 py-1.5 w-fit mb-2 ${plan.popular ? 'mt-2' : ''}`}>
                 <Icon className={`h-4 w-4 text-${plan.color}-600`} />
                 <span className={`text-sm font-semibold text-${plan.color}-700`}>{plan.name}</span>
               </div>
+              {plan.tagline && (
+                <p className="text-xs text-gray-500 mb-3 leading-snug">{plan.tagline}</p>
+              )}
               
               <div className="mb-3">
                 {plan.price === 0 ? (
@@ -259,21 +305,28 @@ function SubscriptionPlans({ user }) {
                 <p className="text-xs text-gray-400 mt-0.5">IVA esclusa</p>
               </div>
 
+              {plan.id === 'starter' && (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-4">
+                  <p className="text-xs font-semibold text-gray-700">🎁 14 giorni di prova gratuita</p>
+                  <p className="text-xs text-gray-600">Poi €29/mese + IVA</p>
+                </div>
+              )}
+              {plan.id === 'growth' && (
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 mb-4">
+                  <p className="text-xs font-semibold text-emerald-700">🎁 14 giorni di prova gratuita</p>
+                  <p className="text-xs text-emerald-600">Poi €69/mese + IVA</p>
+                </div>
+              )}
               {plan.id === 'pro' && (
                 <div className="bg-coral-50 border border-coral-200 rounded-lg px-3 py-2 mb-4">
-                  <p className="text-xs font-semibold text-coral-700">🎁 €0 per 90 giorni nel Pilot Milano</p>
-                  <p className="text-xs text-coral-600">Early adopter: €49/mese + IVA</p>
+                  <p className="text-xs font-semibold text-coral-700">🎁 Pilot 90 giorni gratis + report ROI</p>
+                  <p className="text-xs text-coral-600">Poi €99/mese + IVA</p>
                 </div>
               )}
               {plan.id === 'lab_partner' && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 mb-4">
-                  <p className="text-xs font-semibold text-blue-700">🎁 €0 per 6 mesi (o 50 richieste)</p>
-                  <p className="text-xs text-blue-600">Poi €29/mese + IVA</p>
-                </div>
-              )}
-              {plan.id === 'starter' && (
-                <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-4">
-                  <p className="text-xs font-semibold text-gray-600">Disponibile solo nel Pilot Milano</p>
+                  <p className="text-xs font-semibold text-blue-700">🎁 Pilot 6 mesi gratis</p>
+                  <p className="text-xs text-blue-600">Poi €39/mese + IVA</p>
                 </div>
               )}
               

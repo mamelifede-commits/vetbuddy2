@@ -25,10 +25,40 @@ export const STAFF_COLORS = [
 ];
 
 export const SUBSCRIPTION_PLANS = {
-  starter: { name: 'Starter Clinica', price: 0, description: 'Per veterinari freelance e micro-cliniche in fase di valutazione', features: ['1 sede', '1 utente', 'Fino a 30 richieste/mese', 'Profilo pubblico', 'Link diretto di prenotazione', 'Agenda base'] },
-  pro: { name: 'Pro Clinica', price: 79.00, earlyAdopterPrice: 49.00, trialDays: 90, description: 'Il piano principale per cliniche veterinarie — fino a 10 staff', features: ['Prenotazioni online', 'Agenda digitale', 'Reminder email automatici', 'Documenti e PDF via email', 'Google Calendar sync', 'Report e analytics', 'Lab Marketplace', 'Dashboard valore generato', 'Supporto prioritario'] },
-  lab_partner: { name: 'Laboratorio Partner', price: 29.00, trialDays: 180, description: 'Per laboratori di analisi veterinaria', features: ['Dashboard laboratorio', 'Profilo nel marketplace', 'Listino prezzi indicativo', 'Ricezione richieste da cliniche', 'Upload referti PDF', 'Notifiche email', 'Supporto dedicato'] },
-  enterprise: { name: 'Enterprise', price: 0, description: 'Per gruppi veterinari, cliniche multi-sede e network di laboratori', features: ['Multi-sede illimitate', 'Laboratori multipli', 'API dedicata', 'SLA garantito', 'Onboarding dedicato', 'Reportistica avanzata', 'Gestione centralizzata', 'Integrazioni personalizzate'] }
+  starter: {
+    name: 'Starter',
+    price: 29.00,
+    trialDays: 14,
+    description: 'Per freelance, veterinari singoli e micro-cliniche che vogliono iniziare con profilo pubblico, prenotazioni e promemoria base',
+    features: ['1 sede', '1 utente', 'Profilo pubblico clinica', 'Link diretto e QR di prenotazione', 'Agenda base', 'Promemoria email automatici', 'Passport base', 'Fino a 50 richieste/mese']
+  },
+  growth: {
+    name: 'Growth',
+    price: 69.00,
+    trialDays: 14,
+    description: 'Il piano consigliato per cliniche piccole e medie che vogliono ridurre telefonate, automatizzare promemoria e seguire meglio i clienti',
+    features: ['Fino a 3 utenti', 'Tutte le funzioni Starter', 'Promemoria WhatsApp', 'Lab Marketplace', 'Documenti e referti via email', 'Google Calendar sync', 'Report KPI base', 'Mini CRM clienti', 'Campagne clienti dormienti', 'Passport completo', 'Richieste illimitate']
+  },
+  pro: {
+    name: 'Pro',
+    price: 99.00,
+    trialDays: 90,
+    description: 'Per cliniche strutturate che vogliono automazioni avanzate, piani salute, campagne clienti, rete laboratori, assistente intelligente e cruscotto valore completo',
+    features: ['Fino a 10 staff', 'Tutte le funzioni Growth', 'Automazioni avanzate (40+)', 'Piani Salute', 'Assistente AI clinica', 'Cruscotto valore generato', 'Recupero no-show automatico', 'Campagne marketing avanzate', 'Network specialisti', 'Multi-sede limitata', 'Supporto prioritario']
+  },
+  lab_partner: {
+    name: 'Laboratorio Partner',
+    price: 39.00,
+    trialDays: 180,
+    description: 'Per laboratori che vogliono ricevere richieste digitali, caricare referti e comparire nella rete VetBuddy',
+    features: ['Dashboard laboratorio', 'Profilo nel marketplace', 'Listino prezzi indicativo', 'Tempi medi referti', 'Disponibilità ritiro campioni', 'Ricezione richieste da cliniche', 'Upload referti PDF', 'Notifiche email', 'Invito cliniche', 'Supporto dedicato']
+  },
+  enterprise: {
+    name: 'Enterprise',
+    price: 0,
+    description: 'Per gruppi veterinari, cliniche multi-sede e network di laboratori',
+    features: ['Multi-sede illimitate', 'Laboratori multipli', 'API dedicata', 'SLA garantito', 'Onboarding dedicato', 'Reportistica avanzata', 'Gestione centralizzata', 'Integrazioni personalizzate']
+  }
 };
 
 export const STARTER_AUTOMATIONS = [

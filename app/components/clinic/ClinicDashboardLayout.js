@@ -58,6 +58,7 @@ const ReceptionAI = dynamic(() => import('@/app/components/clinic/ReceptionAI'),
 const ReputationReferral = dynamic(() => import('@/app/components/clinic/ReputationReferral'), { ssr: false });
 const PilotSuccessKit = dynamic(() => import('@/app/components/clinic/PilotSuccessKit'), { ssr: false });
 const ImportExport = dynamic(() => import('@/app/components/clinic/ImportExport'), { ssr: false });
+const VetBuddyConnect = dynamic(() => import('@/app/components/connect/VetBuddyConnect'), { ssr: false });
 
 // Moduli Core
 const ConsensiDigitali = dynamic(() => import('@/app/components/clinic/ConsensiDigitali'), { ssr: false });
@@ -177,6 +178,7 @@ export default function ClinicDashboardLayout({ user, onLogout, emailAction, onC
     { icon: Bot, label: 'Reception AI', value: 'reception-ai' },
     { icon: CalendarX, label: 'No-Show Recovery', value: 'noshow-recovery' },
     { icon: Star, label: 'Crescita & Recensioni', value: 'reputation-referral' },
+    { icon: Users, label: 'VetBuddy Connect', value: 'vetbuddy-connect' },
     { icon: Rocket, label: 'Pilot Success Kit', value: 'pilot-kit' },
     { icon: Database, label: 'Import / Export', value: 'import-export' },
     'divider',
@@ -276,6 +278,7 @@ export default function ClinicDashboardLayout({ user, onLogout, emailAction, onC
         {activeTab === 'reception-ai' && <ReceptionAI user={user} onNavigate={setActiveTab} />}
         {activeTab === 'noshow-recovery' && <NoShowRecovery user={user} onNavigate={setActiveTab} />}
         {activeTab === 'reputation-referral' && <ReputationReferral user={user} onNavigate={setActiveTab} />}
+        {activeTab === 'vetbuddy-connect' && <VetBuddyConnect user={user} onNavigate={setActiveTab} />}
         {activeTab === 'pilot-kit' && <PilotSuccessKit user={user} onNavigate={setActiveTab} />}
         {activeTab === 'import-export' && <ImportExport user={user} onNavigate={setActiveTab} />}
         {activeTab === 'archive' && <ClinicArchive user={user} />}

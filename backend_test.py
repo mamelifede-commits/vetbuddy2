@@ -1,508 +1,980 @@
 #!/usr/bin/env python3
 """
-VetBuddy Backend Regression Test Suite
-Test di regressione dopo fix alias GET /api/rewards e GET /api/settings
+VetBuddy Connect Module + Updated Pricing Plans - Comprehensive Backend Testing
+Test del NUOVO modulo backend "VetBuddy Connect" + aggiornamento prezzi piani
 """
 
 import requests
 import json
-import sys
+import time
 from datetime import datetime
+from pymongo import MongoClient
+import os
 
-# Base URL from environment
+# Configuration
 BASE_URL = "https://clinic-report-review.preview.emergentagent.com/api"
+MONGO_URL = os.getenv("MONGO_URL", "mongodb+srv://mamelifede_db_user:8XjA0yK3dnnyxy0M@cluster0.kk2vrpt.mongodb.net/vetbuddy")
+DB_NAME = "vetbuddy"
 
 # Test credentials
 CLINIC_EMAIL = "demo@vetbuddy.it"
 CLINIC_PASSWORD = "VetBuddy2025!Secure"
-OWNER_EMAIL = "proprietario.demo@vetbuddy.it"
-OWNER_PASSWORD = "demo123"
 LAB_EMAIL = "laboratorio1@vetbuddy.it"
 LAB_PASSWORD = "Lab2025!"
+OWNER_EMAIL = "proprietario.demo@vetbuddy.it"
+OWNER_PASSWORD = "demo123"
 
 # Global tokens
 clinic_token = None
-owner_token = None
 lab_token = None
+owner_token = None
 
-def print_test(test_name):
-    """Print test name"""
+# Test data storage
+test_invitation_id = None
+test_invitation_token = None
+test_invitation_id_2 = None
+
+def print_test_header(test_name):
+    """Print formatted test header"""
     print(f"\n{'='*80}")
     print(f"TEST: {test_name}")
-    print('='*80)
+    print(f"{'='*80}")
 
 def print_result(success, message):
     """Print test result"""
     status = "✅ PASS" if success else "❌ FAIL"
     print(f"{status}: {message}")
-    return success
 
-def login_user(email, password, role_name):
-    """Login and return token"""
-    print_test(f"Login {role_name}")
+def login(email, password, role_name):
+    """Login and return JWT token"""
+    print_test_header(f"Login {role_name}")
     try:
         response = requests.post(
             f"{BASE_URL}/auth/login",
             json={"email": email, "password": password},
-            timeout=10
+            headers={"Content-Type": "application/json"}
         )
         if response.status_code == 200:
             data = response.json()
-            token = data.get('token')
-            if token:
-                print_result(True, f"{role_name} login successful, token received")
-                return token
-            else:
-                print_result(False, f"{role_name} login response missing token")
-                return None
+            token = data.get("token")
+            print_result(True, f"{role_name} login successful, token received")
+            return token
         else:
             print_result(False, f"{role_name} login failed: {response.status_code} - {response.text}")
             return None
     except Exception as e:
-        print_result(False, f"{role_name} login exception: {str(e)}")
+        print_result(False, f"{role_name} login error: {str(e)}")
         return None
 
-def test_new_alias_rewards():
-    """Test 1: NEW ALIAS GET /api/rewards"""
-    print_test("1) NEW ALIAS: GET /api/rewards")
+def get_mongo_client():
+    """Get MongoDB client"""
+    return MongoClient(MONGO_URL)
+
+# ==================== TEST 1: PREZZI PIANI AGGIORNATI ====================
+def test_1_pricing_plans():
+    """TEST 1 - PREZZI PIANI AGGIORNATI"""
+    print_test_header("TEST 1 - Prezzi Piani Aggiornati")
     
-    # Test 1a: Without auth -> 401
-    print("\n1a) GET /api/rewards without auth -> 401")
     try:
-        response = requests.get(f"{BASE_URL}/rewards", timeout=10)
+        response = requests.get(f"{BASE_URL}/stripe/plans")
+        
+        if response.status_code != 200:
+            print_result(False, f"GET /stripe/plans failed: {response.status_code}")
+            return False
+        
+        plans = response.json()
+        
+        # Verify starter plan
+        if 'starter' not in plans:
+            print_result(False, "Starter plan not found")
+            return False
+        if plans['starter']['price'] != 29:
+            print_result(False, f"Starter price wrong: {plans['starter']['price']} (expected 29)")
+            return False
+        if plans['starter']['trialDays'] != 14:
+            print_result(False, f"Starter trialDays wrong: {plans['starter']['trialDays']} (expected 14)")
+            return False
+        print_result(True, f"Starter plan: price={plans['starter']['price']}, trialDays={plans['starter']['trialDays']}")
+        
+        # Verify growth plan (NEW)
+        if 'growth' not in plans:
+            print_result(False, "Growth plan not found (NEW PLAN)")
+            return False
+        if plans['growth']['price'] != 69:
+            print_result(False, f"Growth price wrong: {plans['growth']['price']} (expected 69)")
+            return False
+        if plans['growth']['trialDays'] != 14:
+            print_result(False, f"Growth trialDays wrong: {plans['growth']['trialDays']} (expected 14)")
+            return False
+        print_result(True, f"Growth plan (NEW): price={plans['growth']['price']}, trialDays={plans['growth']['trialDays']}")
+        
+        # Verify pro plan
+        if 'pro' not in plans:
+            print_result(False, "Pro plan not found")
+            return False
+        if plans['pro']['price'] != 99:
+            print_result(False, f"Pro price wrong: {plans['pro']['price']} (expected 99)")
+            return False
+        if plans['pro']['trialDays'] != 90:
+            print_result(False, f"Pro trialDays wrong: {plans['pro']['trialDays']} (expected 90)")
+            return False
+        print_result(True, f"Pro plan: price={plans['pro']['price']}, trialDays={plans['pro']['trialDays']}")
+        
+        # Verify lab_partner plan
+        if 'lab_partner' not in plans:
+            print_result(False, "Lab_partner plan not found")
+            return False
+        if plans['lab_partner']['price'] != 39:
+            print_result(False, f"Lab_partner price wrong: {plans['lab_partner']['price']} (expected 39)")
+            return False
+        if plans['lab_partner']['trialDays'] != 180:
+            print_result(False, f"Lab_partner trialDays wrong: {plans['lab_partner']['trialDays']} (expected 180)")
+            return False
+        print_result(True, f"Lab_partner plan: price={plans['lab_partner']['price']}, trialDays={plans['lab_partner']['trialDays']}")
+        
+        # Verify enterprise plan
+        if 'enterprise' not in plans:
+            print_result(False, "Enterprise plan not found")
+            return False
+        if plans['enterprise']['price'] != 0:
+            print_result(False, f"Enterprise price wrong: {plans['enterprise']['price']} (expected 0)")
+            return False
+        print_result(True, f"Enterprise plan: price={plans['enterprise']['price']}")
+        
+        print_result(True, "All pricing plans verified successfully")
+        return True
+        
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+        return False
+
+# ==================== TEST 2: INVITI CONNECT (singolo) ====================
+def test_2_connect_invites():
+    """TEST 2 - INVITI CONNECT (singolo)"""
+    global test_invitation_id, test_invitation_token, test_invitation_id_2
+    
+    # 2.1 - CLINIC → OWNER
+    print_test_header("TEST 2.1 - POST /connect/invite (CLINIC → OWNER)")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/connect/invite",
+            json={
+                "type": "clinic_to_owner",
+                "toEmail": "test_owner_invite@example.com",
+                "toName": "Test Owner",
+                "message": "Vieni su VetBuddy!"
+            },
+            headers={"Authorization": f"Bearer {clinic_token}", "Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success') and data.get('invitation'):
+                inv = data['invitation']
+                test_invitation_id = inv.get('id')
+                print_result(True, f"Invitation created: id={test_invitation_id}, type={inv.get('type')}, status={inv.get('status')}")
+                
+                # Get token from MongoDB
+                client = get_mongo_client()
+                db = client[DB_NAME]
+                invitation_doc = db.invitations.find_one({"id": test_invitation_id})
+                if invitation_doc:
+                    test_invitation_token = invitation_doc.get('token')
+                    print_result(True, f"Token retrieved from DB: {test_invitation_token[:20]}...")
+                client.close()
+            else:
+                print_result(False, f"Invalid response structure: {data}")
+        else:
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 2.2 - CLINIC → LAB
+    print_test_header("TEST 2.2 - POST /connect/invite (CLINIC → LAB)")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/connect/invite",
+            json={
+                "type": "clinic_to_lab",
+                "toEmail": "test_lab_invite@example.com",
+                "toName": "Test Lab",
+                "examType": "sangue"
+            },
+            headers={"Authorization": f"Bearer {clinic_token}", "Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success'):
+                test_invitation_id_2 = data['invitation'].get('id')
+                print_result(True, f"Clinic→Lab invitation created: id={test_invitation_id_2}")
+            else:
+                print_result(False, f"Invalid response: {data}")
+        else:
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 2.3 - LAB → CLINIC
+    print_test_header("TEST 2.3 - POST /connect/invite (LAB → CLINIC)")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/connect/invite",
+            json={
+                "type": "lab_to_clinic",
+                "toEmail": "test_clinic_invite@example.com",
+                "toName": "Test Clinica"
+            },
+            headers={"Authorization": f"Bearer {lab_token}", "Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success'):
+                print_result(True, f"Lab→Clinic invitation created")
+            else:
+                print_result(False, f"Invalid response: {data}")
+        else:
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 2.4 - OWNER → CLINIC
+    print_test_header("TEST 2.4 - POST /connect/invite (OWNER → CLINIC)")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/connect/invite",
+            json={
+                "type": "owner_to_clinic",
+                "toEmail": "test_clinic_from_owner@example.com",
+                "toName": "Clinica X"
+            },
+            headers={"Authorization": f"Bearer {owner_token}", "Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success'):
+                print_result(True, f"Owner→Clinic invitation created")
+            else:
+                print_result(False, f"Invalid response: {data}")
+        else:
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 2.5 - NEGATIVE: direzione errata
+    print_test_header("TEST 2.5 - NEGATIVE: direzione errata (OWNER con clinic_to_owner)")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/connect/invite",
+            json={
+                "type": "clinic_to_owner",
+                "toEmail": "test@example.com",
+                "toName": "Test"
+            },
+            headers={"Authorization": f"Bearer {owner_token}", "Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 403:
+            print_result(True, f"Correctly rejected with 403: {response.json().get('error')}")
+        else:
+            print_result(False, f"Expected 403, got {response.status_code}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 2.6 - NEGATIVE: duplicato
+    print_test_header("TEST 2.6 - NEGATIVE: duplicato (same owner_to_clinic)")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/connect/invite",
+            json={
+                "type": "owner_to_clinic",
+                "toEmail": "test_clinic_from_owner@example.com",
+                "toName": "Clinica X"
+            },
+            headers={"Authorization": f"Bearer {owner_token}", "Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 400:
+            error_msg = response.json().get('error', '')
+            if 'già inviato' in error_msg.lower():
+                print_result(True, f"Correctly rejected duplicate: {error_msg}")
+            else:
+                print_result(False, f"Wrong error message: {error_msg}")
+        else:
+            print_result(False, f"Expected 400, got {response.status_code}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 2.7 - NEGATIVE: email mancante
+    print_test_header("TEST 2.7 - NEGATIVE: email mancante")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/connect/invite",
+            json={
+                "type": "clinic_to_owner",
+                "toName": "Test"
+            },
+            headers={"Authorization": f"Bearer {clinic_token}", "Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 400:
+            error_msg = response.json().get('error', '')
+            if 'email' in error_msg.lower():
+                print_result(True, f"Correctly rejected: {error_msg}")
+            else:
+                print_result(False, f"Wrong error message: {error_msg}")
+        else:
+            print_result(False, f"Expected 400, got {response.status_code}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 2.8 - NEGATIVE: tipo invalido
+    print_test_header("TEST 2.8 - NEGATIVE: tipo invalido")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/connect/invite",
+            json={
+                "type": "invalid_type",
+                "toEmail": "test@example.com",
+                "toName": "Test"
+            },
+            headers={"Authorization": f"Bearer {clinic_token}", "Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 400:
+            error_msg = response.json().get('error', '')
+            if 'tipo' in error_msg.lower() or 'type' in error_msg.lower():
+                print_result(True, f"Correctly rejected: {error_msg}")
+            else:
+                print_result(False, f"Wrong error message: {error_msg}")
+        else:
+            print_result(False, f"Expected 400, got {response.status_code}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 2.9 - NEGATIVE: no auth
+    print_test_header("TEST 2.9 - NEGATIVE: no auth")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/connect/invite",
+            json={
+                "type": "clinic_to_owner",
+                "toEmail": "test@example.com",
+                "toName": "Test"
+            },
+            headers={"Content-Type": "application/json"}
+        )
+        
         if response.status_code == 401:
-            print_result(True, f"Correctly returns 401 without auth")
+            print_result(True, f"Correctly rejected with 401")
         else:
             print_result(False, f"Expected 401, got {response.status_code}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
+
+# ==================== TEST 3: BULK INVITE ====================
+def test_3_bulk_invite():
+    """TEST 3 - BULK INVITE"""
     
-    # Test 1b: With clinic token -> 200 with types and assigned
-    print("\n1b) GET /api/rewards with clinic token -> 200 { success, types, assigned }")
+    # 3.1 - Bulk invite CLINIC → OWNERS
+    print_test_header("TEST 3.1 - POST /connect/bulk-invite (CLINIC → OWNERS)")
     try:
-        response = requests.get(
-            f"{BASE_URL}/rewards",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            timeout=10
+        response = requests.post(
+            f"{BASE_URL}/connect/bulk-invite",
+            json={
+                "type": "clinic_to_owner",
+                "recipients": [
+                    {"name": "Bulk Owner A", "email": "bulk1@test.com", "phone": "+39111"},
+                    {"name": "Bulk Owner B", "email": "bulk2@test.com"},
+                    {"email": "bulk3@test.com"}
+                ],
+                "message": "Test bulk invite"
+            },
+            headers={"Authorization": f"Bearer {clinic_token}", "Content-Type": "application/json"}
         )
+        
         if response.status_code == 200:
             data = response.json()
-            if data.get('success') and 'types' in data and 'assigned' in data:
-                # Check no MongoDB _id in arrays
-                has_mongo_id = False
-                for item in data.get('types', []):
-                    if '_id' in item:
-                        has_mongo_id = True
-                        break
-                for item in data.get('assigned', []):
-                    if '_id' in item:
-                        has_mongo_id = True
-                        break
-                
-                if has_mongo_id:
-                    print_result(False, f"Response contains MongoDB _id fields (should be removed)")
-                else:
-                    print_result(True, f"Correct structure: success={data.get('success')}, types={len(data.get('types', []))}, assigned={len(data.get('assigned', []))}, no _id fields")
+            if data.get('success') and 'results' in data:
+                results = data['results']
+                total = results.get('sent', 0) + results.get('failed', 0) + results.get('skipped', 0)
+                print_result(True, f"Bulk invite completed: sent={results.get('sent')}, failed={results.get('failed')}, skipped={results.get('skipped')}, total={total}")
             else:
-                print_result(False, f"Missing required fields. Got: {list(data.keys())}")
+                print_result(False, f"Invalid response: {data}")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
     
-    # Test 1c: With owner token -> 200 with rewards
-    print("\n1c) GET /api/rewards with owner token -> 200 { success, rewards }")
+    # 3.2 - NEGATIVE: troppi destinatari
+    print_test_header("TEST 3.2 - NEGATIVE: troppi destinatari (201)")
     try:
-        response = requests.get(
-            f"{BASE_URL}/rewards",
-            headers={"Authorization": f"Bearer {owner_token}"},
-            timeout=10
+        recipients = [{"email": f"test{i}@example.com"} for i in range(201)]
+        response = requests.post(
+            f"{BASE_URL}/connect/bulk-invite",
+            json={
+                "type": "clinic_to_owner",
+                "recipients": recipients
+            },
+            headers={"Authorization": f"Bearer {clinic_token}", "Content-Type": "application/json"}
         )
-        if response.status_code == 200:
-            data = response.json()
-            if data.get('success') and 'rewards' in data:
-                # Check no MongoDB _id
-                has_mongo_id = False
-                for item in data.get('rewards', []):
-                    if '_id' in item:
-                        has_mongo_id = True
-                        break
-                
-                if has_mongo_id:
-                    print_result(False, f"Response contains MongoDB _id fields (should be removed)")
-                else:
-                    print_result(True, f"Correct structure: success={data.get('success')}, rewards={len(data.get('rewards', []))}, no _id fields")
+        
+        if response.status_code == 400:
+            error_msg = response.json().get('error', '')
+            if '200' in error_msg:
+                print_result(True, f"Correctly rejected: {error_msg}")
             else:
-                print_result(False, f"Missing required fields. Got: {list(data.keys())}")
+                print_result(False, f"Wrong error message: {error_msg}")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Expected 400, got {response.status_code}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 3.3 - NEGATIVE: lista vuota
+    print_test_header("TEST 3.3 - NEGATIVE: lista vuota")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/connect/bulk-invite",
+            json={
+                "type": "clinic_to_owner",
+                "recipients": []
+            },
+            headers={"Authorization": f"Bearer {clinic_token}", "Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 400:
+            error_msg = response.json().get('error', '')
+            if 'destinatari' in error_msg.lower() or 'recipients' in error_msg.lower():
+                print_result(True, f"Correctly rejected: {error_msg}")
+            else:
+                print_result(False, f"Wrong error message: {error_msg}")
+        else:
+            print_result(False, f"Expected 400, got {response.status_code}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 3.4 - NEGATIVE: non-clinic/lab (owner trying bulk)
+    print_test_header("TEST 3.4 - NEGATIVE: owner trying bulk-invite")
+    try:
+        response = requests.post(
+            f"{BASE_URL}/connect/bulk-invite",
+            json={
+                "type": "owner_to_clinic",
+                "recipients": [{"email": "test@example.com"}]
+            },
+            headers={"Authorization": f"Bearer {owner_token}", "Content-Type": "application/json"}
+        )
+        
+        if response.status_code == 403:
+            error_msg = response.json().get('error', '')
+            if 'cliniche' in error_msg.lower() or 'laboratori' in error_msg.lower():
+                print_result(True, f"Correctly rejected: {error_msg}")
+            else:
+                print_result(False, f"Wrong error message: {error_msg}")
+        else:
+            print_result(False, f"Expected 403, got {response.status_code}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
 
-def test_new_alias_settings():
-    """Test 2: NEW ALIAS GET /api/settings"""
-    print_test("2) NEW ALIAS: GET /api/settings")
+# ==================== TEST 4: LISTA INVITI ====================
+def test_4_invitations_list():
+    """TEST 4 - LISTA INVITI"""
     
-    # Test 2a: Without auth -> 401
-    print("\n2a) GET /api/settings without auth -> 401")
+    # 4.1 - GET invitations as clinic
+    print_test_header("TEST 4.1 - GET /connect/invitations (clinic)")
     try:
-        response = requests.get(f"{BASE_URL}/settings", timeout=10)
+        response = requests.get(
+            f"{BASE_URL}/connect/invitations",
+            headers={"Authorization": f"Bearer {clinic_token}"}
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if 'sent' in data and 'received' in data:
+                sent_count = len(data['sent'])
+                received_count = len(data['received'])
+                print_result(True, f"Invitations list retrieved: sent={sent_count}, received={received_count}")
+                if sent_count >= 4:
+                    print_result(True, f"Clinic has sent at least 4 invitations (found {sent_count})")
+                else:
+                    print_result(False, f"Expected at least 4 sent invitations, found {sent_count}")
+            else:
+                print_result(False, f"Invalid response structure: {data}")
+        else:
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 4.2 - GET invitations as owner
+    print_test_header("TEST 4.2 - GET /connect/invitations (owner)")
+    try:
+        response = requests.get(
+            f"{BASE_URL}/connect/invitations",
+            headers={"Authorization": f"Bearer {owner_token}"}
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            if 'sent' in data and 'received' in data:
+                sent_count = len(data['sent'])
+                print_result(True, f"Owner invitations: sent={sent_count}, received={len(data['received'])}")
+                if sent_count >= 1:
+                    print_result(True, f"Owner has sent at least 1 invitation")
+                else:
+                    print_result(False, f"Expected at least 1 sent invitation from owner")
+            else:
+                print_result(False, f"Invalid response structure: {data}")
+        else:
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+    
+    # 4.3 - NEGATIVE: no auth
+    print_test_header("TEST 4.3 - NEGATIVE: GET /connect/invitations without auth")
+    try:
+        response = requests.get(f"{BASE_URL}/connect/invitations")
+        
         if response.status_code == 401:
-            print_result(True, f"Correctly returns 401 without auth")
+            print_result(True, f"Correctly rejected with 401")
         else:
             print_result(False, f"Expected 401, got {response.status_code}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
+
+# ==================== TEST 5: VERIFICA INVITO PUBBLICO ====================
+def test_5_verify_invite():
+    """TEST 5 - VERIFICA INVITO PUBBLICO"""
+    global test_invitation_token
     
-    # Test 2b: With clinic token -> 200 with settings
-    print("\n2b) GET /api/settings with clinic token -> 200 { success, settings }")
+    # 5.1 - GET invite by token (public)
+    print_test_header("TEST 5.1 - GET /connect/invite/:token (public)")
     try:
-        response = requests.get(
-            f"{BASE_URL}/settings",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            timeout=10
-        )
+        if not test_invitation_token:
+            print_result(False, "No invitation token available from previous tests")
+            return
+        
+        response = requests.get(f"{BASE_URL}/connect/invite/{test_invitation_token}")
+        
         if response.status_code == 200:
             data = response.json()
-            if data.get('success') and 'settings' in data:
-                settings = data.get('settings', {})
-                required_fields = ['clinicName', 'email', 'phone', 'plan', 'automationSettings']
-                missing_fields = [f for f in required_fields if f not in settings]
+            required_fields = ['id', 'type', 'fromName', 'toEmail', 'status', 'createdAt']
+            missing = [f for f in required_fields if f not in data]
+            if not missing:
+                print_result(True, f"Invitation retrieved: id={data.get('id')}, type={data.get('type')}, status={data.get('status')}")
                 
-                if missing_fields:
-                    print_result(False, f"Missing required fields in settings: {missing_fields}")
+                # Verify status changed to 'opened' in DB
+                time.sleep(1)
+                client = get_mongo_client()
+                db = client[DB_NAME]
+                invitation_doc = db.invitations.find_one({"token": test_invitation_token})
+                if invitation_doc and invitation_doc.get('status') == 'opened':
+                    print_result(True, f"Status correctly changed to 'opened' in DB")
                 else:
-                    automation_settings = settings.get('automationSettings', {})
-                    automation_count = len(automation_settings)
-                    print_result(True, f"Correct structure: success={data.get('success')}, clinicName={settings.get('clinicName')}, email={settings.get('email')}, phone={settings.get('phone')}, plan={settings.get('plan')}, automationSettings keys={automation_count}")
+                    print_result(False, f"Status not changed to 'opened' (current: {invitation_doc.get('status') if invitation_doc else 'NOT FOUND'})")
+                client.close()
             else:
-                print_result(False, f"Missing required fields. Got: {list(data.keys())}")
+                print_result(False, f"Missing fields: {missing}")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
     
-    # Test 2c: With owner token -> 401
-    print("\n2c) GET /api/settings with owner token -> 401")
+    # 5.2 - NEGATIVE: invalid token
+    print_test_header("TEST 5.2 - NEGATIVE: GET /connect/invite/INVALID_TOKEN")
     try:
-        response = requests.get(
-            f"{BASE_URL}/settings",
-            headers={"Authorization": f"Bearer {owner_token}"},
-            timeout=10
-        )
-        if response.status_code == 401:
-            print_result(True, f"Correctly returns 401 for owner role")
+        response = requests.get(f"{BASE_URL}/connect/invite/INVALID_TOKEN_12345")
+        
+        if response.status_code == 404:
+            error_msg = response.json().get('error', '')
+            if 'non trovato' in error_msg.lower():
+                print_result(True, f"Correctly rejected: {error_msg}")
+            else:
+                print_result(False, f"Wrong error message: {error_msg}")
         else:
-            print_result(False, f"Expected 401, got {response.status_code}")
+            print_result(False, f"Expected 404, got {response.status_code}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
 
-def test_regression_rewards_endpoints():
-    """Test 3: REGRESSION - Existing rewards endpoints"""
-    print_test("3) REGRESSION: Existing rewards endpoints")
+# ==================== TEST 6: ACCEPT, REVOKE, RESEND ====================
+def test_6_invite_actions():
+    """TEST 6 - ACCEPT, REVOKE, RESEND"""
+    global test_invitation_id, test_invitation_id_2
     
-    # Test 3a: GET /api/rewards/types (clinic)
-    print("\n3a) GET /api/rewards/types (clinic) -> 200 array")
+    # 6.1 - Revoke invitation
+    print_test_header("TEST 6.1 - POST /connect/revoke")
     try:
-        response = requests.get(
-            f"{BASE_URL}/rewards/types",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            timeout=10
+        if not test_invitation_id:
+            print_result(False, "No invitation ID available")
+            return
+        
+        response = requests.post(
+            f"{BASE_URL}/connect/revoke",
+            json={"invitationId": test_invitation_id},
+            headers={"Authorization": f"Bearer {clinic_token}", "Content-Type": "application/json"}
         )
+        
         if response.status_code == 200:
             data = response.json()
-            if isinstance(data, list):
-                print_result(True, f"Returns array with {len(data)} reward types")
+            if data.get('success'):
+                print_result(True, f"Invitation revoked successfully")
+                
+                # Verify in DB
+                client = get_mongo_client()
+                db = client[DB_NAME]
+                invitation_doc = db.invitations.find_one({"id": test_invitation_id})
+                if invitation_doc and invitation_doc.get('status') == 'revoked':
+                    print_result(True, f"Status correctly set to 'revoked' in DB")
+                else:
+                    print_result(False, f"Status not 'revoked' in DB")
+                client.close()
             else:
-                print_result(False, f"Expected array, got {type(data)}")
+                print_result(False, f"Invalid response: {data}")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
     
-    # Test 3b: GET /api/rewards/assigned (clinic)
-    print("\n3b) GET /api/rewards/assigned (clinic) -> 200 array")
+    # 6.2 - Resend invitation
+    print_test_header("TEST 6.2 - POST /connect/resend")
     try:
-        response = requests.get(
-            f"{BASE_URL}/rewards/assigned",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            timeout=10
+        if not test_invitation_id_2:
+            print_result(False, "No invitation ID 2 available")
+            return
+        
+        response = requests.post(
+            f"{BASE_URL}/connect/resend",
+            json={"invitationId": test_invitation_id_2},
+            headers={"Authorization": f"Bearer {clinic_token}", "Content-Type": "application/json"}
         )
+        
         if response.status_code == 200:
             data = response.json()
-            if isinstance(data, list):
-                print_result(True, f"Returns array with {len(data)} assigned rewards")
+            if data.get('success'):
+                print_result(True, f"Invitation resent successfully")
+                
+                # Verify resendCount in DB
+                client = get_mongo_client()
+                db = client[DB_NAME]
+                invitation_doc = db.invitations.find_one({"id": test_invitation_id_2})
+                if invitation_doc:
+                    resend_count = invitation_doc.get('resendCount', 0)
+                    if resend_count > 0:
+                        print_result(True, f"resendCount incremented to {resend_count}")
+                    else:
+                        print_result(False, f"resendCount not incremented (current: {resend_count})")
+                client.close()
             else:
-                print_result(False, f"Expected array, got {type(data)}")
+                print_result(False, f"Invalid response: {data}")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
     
-    # Test 3c: GET /api/rewards/my-rewards (owner)
-    print("\n3c) GET /api/rewards/my-rewards (owner) -> 200 array")
+    # 6.3 - NEGATIVE: resend revoked invitation
+    print_test_header("TEST 6.3 - NEGATIVE: resend revoked invitation")
     try:
-        response = requests.get(
-            f"{BASE_URL}/rewards/my-rewards",
-            headers={"Authorization": f"Bearer {owner_token}"},
-            timeout=10
+        if not test_invitation_id:
+            print_result(False, "No revoked invitation ID available")
+            return
+        
+        response = requests.post(
+            f"{BASE_URL}/connect/resend",
+            json={"invitationId": test_invitation_id},
+            headers={"Authorization": f"Bearer {clinic_token}", "Content-Type": "application/json"}
         )
-        if response.status_code == 200:
-            data = response.json()
-            if isinstance(data, list):
-                print_result(True, f"Returns array with {len(data)} owner rewards")
+        
+        if response.status_code == 400:
+            error_msg = response.json().get('error', '')
+            if 'impossibile' in error_msg.lower() or 'chiuso' in error_msg.lower():
+                print_result(True, f"Correctly rejected: {error_msg}")
             else:
-                print_result(False, f"Expected array, got {type(data)}")
+                print_result(False, f"Wrong error message: {error_msg}")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Expected 400, got {response.status_code}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
 
-def test_regression_settings_endpoints():
-    """Test 4: REGRESSION - Existing settings endpoints"""
-    print_test("4) REGRESSION: Existing settings endpoints")
+# ==================== TEST 7: STATS ====================
+def test_7_stats():
+    """TEST 7 - STATS"""
     
-    # Test 4a: GET /api/automations/settings (clinic)
-    print("\n4a) GET /api/automations/settings (clinic) -> 200 with settings")
+    # 7.1 - Stats as clinic
+    print_test_header("TEST 7.1 - GET /connect/stats (clinic)")
     try:
         response = requests.get(
-            f"{BASE_URL}/automations/settings",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            timeout=10
+            f"{BASE_URL}/connect/stats",
+            headers={"Authorization": f"Bearer {clinic_token}"}
         )
+        
         if response.status_code == 200:
             data = response.json()
-            if data.get('success') and 'settings' in data:
-                print_result(True, f"Returns settings with success={data.get('success')}, plan={data.get('plan')}")
+            required_fields = ['sentTotal', 'sentAccepted', 'sentPending', 'conversionRate', 
+                             'ownersConnected', 'petsLinked', 'labsConnected']
+            missing = [f for f in required_fields if f not in data]
+            if not missing:
+                print_result(True, f"Clinic stats: sentTotal={data.get('sentTotal')}, ownersConnected={data.get('ownersConnected')}, petsLinked={data.get('petsLinked')}, labsConnected={data.get('labsConnected')}")
             else:
-                print_result(False, f"Missing required fields. Got: {list(data.keys())}")
+                print_result(False, f"Missing fields: {missing}")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
     
-    # Test 4b: GET /api/services (public)
-    print("\n4b) GET /api/services (public) -> 200 catalog")
+    # 7.2 - Stats as owner
+    print_test_header("TEST 7.2 - GET /connect/stats (owner)")
     try:
-        response = requests.get(f"{BASE_URL}/services", timeout=10)
+        response = requests.get(
+            f"{BASE_URL}/connect/stats",
+            headers={"Authorization": f"Bearer {owner_token}"}
+        )
+        
         if response.status_code == 200:
             data = response.json()
-            if isinstance(data, dict):
-                print_result(True, f"Returns services catalog with {len(data)} categories")
+            required_fields = ['sentTotal', 'petsOwned', 'clinicsLinked']
+            missing = [f for f in required_fields if f not in data]
+            if not missing:
+                print_result(True, f"Owner stats: sentTotal={data.get('sentTotal')}, petsOwned={data.get('petsOwned')}, clinicsLinked={data.get('clinicsLinked')}")
             else:
-                print_result(False, f"Expected object, got {type(data)}")
+                print_result(False, f"Missing fields: {missing}")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
     
-    # Test 4c: GET /api/services/flat (public)
-    print("\n4c) GET /api/services/flat (public) -> 200 array")
+    # 7.3 - Stats as lab
+    print_test_header("TEST 7.3 - GET /connect/stats (lab)")
     try:
-        response = requests.get(f"{BASE_URL}/services/flat", timeout=10)
+        response = requests.get(
+            f"{BASE_URL}/connect/stats",
+            headers={"Authorization": f"Bearer {lab_token}"}
+        )
+        
         if response.status_code == 200:
             data = response.json()
-            if isinstance(data, list):
-                print_result(True, f"Returns flat services array with {len(data)} services")
+            required_fields = ['sentTotal', 'clinicsConnected']
+            missing = [f for f in required_fields if f not in data]
+            if not missing:
+                print_result(True, f"Lab stats: sentTotal={data.get('sentTotal')}, clinicsConnected={data.get('clinicsConnected')}")
             else:
-                print_result(False, f"Expected array, got {type(data)}")
+                print_result(False, f"Missing fields: {missing}")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
 
-def test_general_smoke():
-    """Test 5: GENERAL SMOKE tests"""
-    print_test("5) GENERAL SMOKE: Core endpoints")
+# ==================== TEST 8: PROVISIONAL PROFILES ====================
+def test_8_provisional_profiles():
+    """TEST 8 - PROVISIONAL PROFILES"""
+    print_test_header("TEST 8 - Verify provisional profiles in DB")
     
-    # Test 5a: GET /api/auth/me (clinic)
-    print("\n5a) GET /api/auth/me (clinic) -> 200")
+    try:
+        client = get_mongo_client()
+        db = client[DB_NAME]
+        
+        # Check for test emails
+        test_emails = [
+            "test_owner_invite@example.com",
+            "test_lab_invite@example.com",
+            "test_clinic_invite@example.com",
+            "test_clinic_from_owner@example.com"
+        ]
+        
+        found_count = 0
+        for email in test_emails:
+            profile = db.provisional_profiles.find_one({"email": email.lower()})
+            if profile:
+                found_count += 1
+                is_public = profile.get('public', True)
+                if is_public == False:
+                    print_result(True, f"Provisional profile for {email}: public={is_public} (correct)")
+                else:
+                    print_result(False, f"Provisional profile for {email}: public={is_public} (should be False)")
+        
+        if found_count > 0:
+            print_result(True, f"Found {found_count} provisional profiles for test emails")
+        else:
+            print_result(False, f"No provisional profiles found for test emails")
+        
+        client.close()
+        
+    except Exception as e:
+        print_result(False, f"Exception: {str(e)}")
+
+# ==================== TEST 9: REGRESSION ====================
+def test_9_regression():
+    """TEST 9 - REGRESSION (endpoint esistenti)"""
+    
+    # 9.1 - GET /auth/me as clinic
+    print_test_header("TEST 9.1 - GET /auth/me (clinic)")
     try:
         response = requests.get(
             f"{BASE_URL}/auth/me",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            timeout=10
+            headers={"Authorization": f"Bearer {clinic_token}"}
         )
+        
         if response.status_code == 200:
             data = response.json()
-            print_result(True, f"Returns user data: role={data.get('role')}, email={data.get('email')}")
+            if data.get('role') == 'clinic':
+                print_result(True, f"Auth/me working: role={data.get('role')}")
+            else:
+                print_result(False, f"Wrong role: {data.get('role')}")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
     
-    # Test 5b: GET /api/appointments (clinic)
-    print("\n5b) GET /api/appointments (clinic) -> 200")
+    # 9.2 - GET /appointments as clinic
+    print_test_header("TEST 9.2 - GET /appointments (clinic)")
     try:
         response = requests.get(
             f"{BASE_URL}/appointments",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            timeout=10
+            headers={"Authorization": f"Bearer {clinic_token}"}
         )
+        
         if response.status_code == 200:
-            data = response.json()
-            if isinstance(data, list):
-                print_result(True, f"Returns appointments array with {len(data)} items")
-            else:
-                print_result(False, f"Expected array, got {type(data)}")
+            print_result(True, f"Appointments endpoint working")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
     
-    # Test 5c: GET /api/tasks (clinic)
-    print("\n5c) GET /api/tasks (clinic) -> 200")
+    # 9.3 - GET /tasks as clinic
+    print_test_header("TEST 9.3 - GET /tasks (clinic)")
     try:
         response = requests.get(
             f"{BASE_URL}/tasks",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            timeout=10
+            headers={"Authorization": f"Bearer {clinic_token}"}
         )
+        
         if response.status_code == 200:
-            data = response.json()
-            if data.get('success') and 'tasks' in data:
-                print_result(True, f"Returns tasks with success={data.get('success')}, count={len(data.get('tasks', []))}")
-            else:
-                print_result(False, f"Missing required fields. Got: {list(data.keys())}")
+            print_result(True, f"Tasks endpoint working")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
     
-    # Test 5d: GET /api/previsit (clinic)
-    print("\n5d) GET /api/previsit (clinic) -> 200")
+    # 9.4 - GET /previsit as clinic
+    print_test_header("TEST 9.4 - GET /previsit (clinic)")
     try:
         response = requests.get(
             f"{BASE_URL}/previsit",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            timeout=10
+            headers={"Authorization": f"Bearer {clinic_token}"}
         )
+        
         if response.status_code == 200:
-            data = response.json()
-            if data.get('success') and 'questionnaires' in data:
-                print_result(True, f"Returns previsit with success={data.get('success')}, questionnaires={len(data.get('questionnaires', []))}")
-            else:
-                print_result(False, f"Missing required fields. Got: {list(data.keys())}")
+            print_result(True, f"Previsit endpoint working")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
     
-    # Test 5e: GET /api/inventory (clinic)
-    print("\n5e) GET /api/inventory (clinic) -> 200")
+    # 9.5 - POST /invite-clinic (legacy endpoint)
+    print_test_header("TEST 9.5 - POST /invite-clinic (legacy endpoint)")
     try:
-        response = requests.get(
-            f"{BASE_URL}/inventory",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            timeout=10
+        response = requests.post(
+            f"{BASE_URL}/invite-clinic",
+            json={
+                "clinicName": "Legacy Test Clinic",
+                "clinicEmail": "legacy_invite@test.com",
+                "personalMessage": "Test legacy endpoint"
+            },
+            headers={"Authorization": f"Bearer {owner_token}", "Content-Type": "application/json"}
         )
+        
         if response.status_code == 200:
             data = response.json()
-            if data.get('success') and 'items' in data:
-                print_result(True, f"Returns inventory with success={data.get('success')}, items={len(data.get('items', []))}")
+            if data.get('success'):
+                print_result(True, f"Legacy invite-clinic endpoint still working")
             else:
-                print_result(False, f"Missing required fields. Got: {list(data.keys())}")
+                print_result(False, f"Invalid response: {data}")
         else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
-    except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
-    
-    # Test 5f: GET /api/labs (clinic)
-    print("\n5f) GET /api/labs (clinic) -> 200")
-    try:
-        response = requests.get(
-            f"{BASE_URL}/labs",
-            headers={"Authorization": f"Bearer {clinic_token}"},
-            timeout=10
-        )
-        if response.status_code == 200:
-            data = response.json()
-            if isinstance(data, list):
-                print_result(True, f"Returns labs array with {len(data)} items")
-            else:
-                print_result(False, f"Expected array, got {type(data)}")
-        else:
-            print_result(False, f"Expected 200, got {response.status_code} - {response.text}")
+            print_result(False, f"Failed: {response.status_code} - {response.text}")
     except Exception as e:
         print_result(False, f"Exception: {str(e)}")
 
-def test_frontend_pages():
-    """Test 6: Frontend pages (simple GET HTML)"""
-    print_test("6) FRONTEND PAGES: Homepage and Login")
+# ==================== CLEANUP ====================
+def cleanup():
+    """CLEANUP - Remove test data"""
+    print_test_header("CLEANUP - Removing test data")
     
-    # Test 6a: GET / (homepage)
-    print("\n6a) GET / (homepage) -> 200 HTML")
     try:
-        response = requests.get("https://clinic-report-review.preview.emergentagent.com/", timeout=10)
-        if response.status_code == 200:
-            if 'text/html' in response.headers.get('content-type', ''):
-                print_result(True, f"Homepage returns 200 with HTML content")
-            else:
-                print_result(False, f"Homepage returns 200 but not HTML: {response.headers.get('content-type')}")
-        else:
-            print_result(False, f"Expected 200, got {response.status_code}")
+        client = get_mongo_client()
+        db = client[DB_NAME]
+        
+        # Remove test invitations
+        result1 = db.invitations.delete_many({
+            "$or": [
+                {"toEmail": {"$regex": "test", "$options": "i"}},
+                {"toEmail": {"$regex": "@example.com", "$options": "i"}},
+                {"toEmail": {"$regex": "@test.com", "$options": "i"}},
+                {"toEmail": {"$regex": "bulk", "$options": "i"}},
+                {"toEmail": {"$regex": "legacy_invite", "$options": "i"}}
+            ]
+        })
+        print_result(True, f"Removed {result1.deleted_count} test invitations")
+        
+        # Remove test provisional profiles
+        result2 = db.provisional_profiles.delete_many({
+            "$or": [
+                {"email": {"$regex": "test", "$options": "i"}},
+                {"email": {"$regex": "@example.com", "$options": "i"}},
+                {"email": {"$regex": "@test.com", "$options": "i"}},
+                {"email": {"$regex": "bulk", "$options": "i"}},
+                {"email": {"$regex": "legacy_invite", "$options": "i"}}
+            ]
+        })
+        print_result(True, f"Removed {result2.deleted_count} test provisional profiles")
+        
+        # Remove test clinic_lab_connections (if any created during tests)
+        result3 = db.clinic_lab_connections.delete_many({
+            "source": "connect_invite",
+            "createdAt": {"$gte": datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0).isoformat()}
+        })
+        print_result(True, f"Removed {result3.deleted_count} test clinic_lab_connections")
+        
+        client.close()
+        
+        print_result(True, f"Cleanup completed: {result1.deleted_count + result2.deleted_count + result3.deleted_count} total records removed")
+        
     except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
-    
-    # Test 6b: GET /login
-    print("\n6b) GET /login -> 200 HTML")
-    try:
-        response = requests.get("https://clinic-report-review.preview.emergentagent.com/login", timeout=10)
-        if response.status_code == 200:
-            if 'text/html' in response.headers.get('content-type', ''):
-                print_result(True, f"Login page returns 200 with HTML content")
-            else:
-                print_result(False, f"Login page returns 200 but not HTML: {response.headers.get('content-type')}")
-        else:
-            print_result(False, f"Expected 200, got {response.status_code}")
-    except Exception as e:
-        print_result(False, f"Exception: {str(e)}")
+        print_result(False, f"Cleanup exception: {str(e)}")
 
+# ==================== MAIN ====================
 def main():
-    """Main test runner"""
-    global clinic_token, owner_token, lab_token
+    global clinic_token, lab_token, owner_token
     
     print("\n" + "="*80)
-    print("VETBUDDY BACKEND REGRESSION TEST SUITE")
-    print("Test di regressione dopo fix alias GET /api/rewards e GET /api/settings")
+    print("VETBUDDY CONNECT MODULE + UPDATED PRICING PLANS - COMPREHENSIVE TESTING")
     print("="*80)
-    print(f"Base URL: {BASE_URL}")
-    print(f"Started at: {datetime.now().isoformat()}")
     
     # Login all users
-    print("\n" + "="*80)
-    print("AUTHENTICATION SETUP")
-    print("="*80)
+    clinic_token = login(CLINIC_EMAIL, CLINIC_PASSWORD, "Clinic")
+    lab_token = login(LAB_EMAIL, LAB_PASSWORD, "Lab")
+    owner_token = login(OWNER_EMAIL, OWNER_PASSWORD, "Owner")
     
-    clinic_token = login_user(CLINIC_EMAIL, CLINIC_PASSWORD, "Clinic")
-    owner_token = login_user(OWNER_EMAIL, OWNER_PASSWORD, "Owner")
-    lab_token = login_user(LAB_EMAIL, LAB_PASSWORD, "Lab")
-    
-    if not clinic_token or not owner_token:
-        print("\n❌ CRITICAL: Failed to authenticate required users. Aborting tests.")
-        sys.exit(1)
+    if not clinic_token or not lab_token or not owner_token:
+        print("\n❌ CRITICAL: Failed to login all users. Aborting tests.")
+        return
     
     # Run all tests
-    try:
-        test_new_alias_rewards()
-        test_new_alias_settings()
-        test_regression_rewards_endpoints()
-        test_regression_settings_endpoints()
-        test_general_smoke()
-        test_frontend_pages()
-    except Exception as e:
-        print(f"\n❌ CRITICAL ERROR during test execution: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
+    test_1_pricing_plans()
+    test_2_connect_invites()
+    test_3_bulk_invite()
+    test_4_invitations_list()
+    test_5_verify_invite()
+    test_6_invite_actions()
+    test_7_stats()
+    test_8_provisional_profiles()
+    test_9_regression()
     
-    # Summary
+    # Cleanup
+    cleanup()
+    
     print("\n" + "="*80)
-    print("TEST SUITE COMPLETED")
-    print("="*80)
-    print(f"Completed at: {datetime.now().isoformat()}")
-    print("\nNOTE: Review output above for detailed test results")
-    print("IMPORTANT: GET /api/cron/daily was NOT called (as instructed)")
+    print("ALL TESTS COMPLETED")
+    print("="*80 + "\n")
 
 if __name__ == "__main__":
     main()

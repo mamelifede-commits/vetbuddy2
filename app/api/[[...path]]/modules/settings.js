@@ -64,10 +64,10 @@ export async function handleSettingsGet(path, request) {
     const config = clinic?.automationConfig || {};
     const plan = clinic?.subscriptionPlan || 'starter';
     
-    // Starter: 5 automations, Pro: 21, Custom: all
+    // Starter: 5 base, Growth: 21, Pro: all 44, Custom: all
     const starterAllowed = ['appointmentReminders', 'bookingConfirmation', 'welcomeNewPet', 'petBirthday', 'appointmentConfirmation'];
-    const allowedAutomations = plan === 'custom' ? 'all' : plan === 'pro' ? 'all' : starterAllowed;
-    const automationsCount = plan === 'custom' ? 44 : plan === 'pro' ? 21 : 5;
+    const allowedAutomations = (plan === 'custom' || plan === 'enterprise') ? 'all' : (plan === 'pro') ? 'all' : (plan === 'growth') ? 'growth' : starterAllowed;
+    const automationsCount = (plan === 'custom' || plan === 'enterprise') ? 44 : plan === 'pro' ? 44 : plan === 'growth' ? 21 : 5;
 
     return NextResponse.json({ 
       success: true, 

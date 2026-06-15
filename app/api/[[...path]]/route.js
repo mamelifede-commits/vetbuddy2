@@ -20,6 +20,7 @@ import { handleAutopilotGet } from './modules/autopilot';
 import { handleFragilePatientsGet } from './modules/fragile-patients';
 import { handleEstimatesGet, handleEstimatesPost, handleEstimatesPut } from './modules/estimates';
 import { handleRoiDashboardGet } from './modules/roi-dashboard';
+import { handleConnectGet, handleConnectPost } from './modules/connect';
 
 // CORS preflight handler
 export async function OPTIONS() {
@@ -53,6 +54,7 @@ export async function GET(request, { params }) {
       handleRoiDashboardGet,
       handleAdminGet,
       handlePassportGet,
+      handleConnectGet,
     ];
 
     for (const handler of handlers) {
@@ -104,6 +106,7 @@ export async function POST(request, { params }) {
       handleEstimatesPost,   // estimates routes
       handleAdminPost,       // admin routes
       handlePassportPost,    // passport routes
+      handleConnectPost,     // VetBuddy Connect: invitations, claim, etc.
     ];
 
     for (const handler of handlers) {

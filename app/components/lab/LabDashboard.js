@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   Building2, CheckCircle, Clock, Euro, Eye, FileCheck, FileText, FlaskConical,
   Info, Link2, Loader2, LogOut, Menu, MousePointerClick, Package, PawPrint, Phone, Plus,
-  Receipt, RefreshCw, Save, Trash2, Upload, X, XCircle, MapPin, Edit
+  Receipt, RefreshCw, Save, Trash2, Upload, X, XCircle, MapPin, Edit, Settings, Zap, Users
 } from 'lucide-react';
 import api from '@/app/lib/api';
 import dynamic from 'next/dynamic';
@@ -21,6 +21,7 @@ const LabTutorialInline = dynamic(() => import('@/app/components/lab/LabTutorial
 const LabProfileEditor = dynamic(() => import('@/app/components/lab/LabProfileEditor'), { ssr: false });
 const LabInvoicesSection = dynamic(() => import('@/app/components/lab/LabInvoicesSection'), { ssr: false });
 const LabIntegrationTab = dynamic(() => import('@/app/components/lab/LabIntegrationTab'), { ssr: false });
+const VetBuddyConnect = dynamic(() => import('@/app/components/connect/VetBuddyConnect'), { ssr: false });
 
 const EXAM_TYPES_LIST = [
   { id: 'sangue', label: '🩸 Sangue' },
@@ -292,6 +293,7 @@ function LabDashboard({ user, onLogout }) {
   const menuItems = [
     { id: 'requests', label: 'Richieste', icon: FileText, badge: stats.pending },
     { id: 'connections', label: 'Cliniche', icon: Link2, badge: pendingConns.length },
+    { id: 'connect', label: 'VetBuddy Connect', icon: Users },
     { id: 'prices', label: 'Listino Prezzi', icon: Euro },
     { id: 'invoices', label: 'Fatture', icon: Receipt },
     { id: 'integration', label: 'Integrazione API', icon: Zap },
@@ -801,6 +803,11 @@ function LabDashboard({ user, onLogout }) {
         {/* INTEGRATION TAB */}
         {activeTab === 'integration' && (
           <LabIntegrationTab />
+        )}
+
+        {/* CONNECT TAB - VetBuddy Connect (invita cliniche) */}
+        {activeTab === 'connect' && (
+          <VetBuddyConnect user={user} />
         )}
 
         {/* SETTINGS TAB */}
