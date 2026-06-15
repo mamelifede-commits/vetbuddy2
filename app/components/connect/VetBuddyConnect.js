@@ -441,8 +441,9 @@ function VetBuddyConnect({ user, onNavigate }) {
             </div>
             {activeType && TYPE_CONFIG[activeType]?.fields?.includes('phone') && (
               <div>
-                <Label>Telefono</Label>
+                <Label>Telefono <span className="text-xs text-emerald-600">(WhatsApp + email automatici)</span></Label>
                 <Input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} placeholder="+39 ..." />
+                <p className="text-xs text-gray-500 mt-1">💬 Se inserisci il telefono, il destinatario riceverà anche un messaggio WhatsApp via Twilio.</p>
               </div>
             )}
             {activeType && TYPE_CONFIG[activeType]?.fields?.includes('city') && (

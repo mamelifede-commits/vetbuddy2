@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { getCollection } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { sendEmail } from '@/lib/email';
+import { sendWhatsApp, buildInviteWhatsAppText } from '@/lib/whatsapp';
 import { corsHeaders } from './constants';
 
 // ==================== HELPERS ====================
@@ -329,6 +330,19 @@ export async function handleConnectPost(path, request, body) {
         inviteLink, customSubject: null
       }));
       await invitations.updateOne({ id: invitation.id }, { $set: { emailSent: true, emailSentAt: new Date().toISOString() } });
+
+      // Send WhatsApp if phone provided
+      if (toPhone) {
+        const waText = buildInviteWhatsAppText({ type, fromName: invitation.fromName, inviteLink, message });
+        const waResult = await sendWhatsApp(toPhone, waText);
+        await invitations.updateOne({ id: invitation.id }, {
+          $set: {
+            whatsappSent: waResult.success,
+            whatsappSentAt: waResult.success ? new Date().toISOString() : null,
+            whatsappError: waResult.success ? null : waResult.error
+          }
+        });
+      }
     } catch (emailError) {
       console.error('[Connect] Error sending invitation email:', emailError);
       // Save anyway, mark email failed
@@ -427,6 +441,18 @@ export async function handleConnectPost(path, request, body) {
           inviteLink
         }));
         await invitations.updateOne({ id: invitation.id }, { $set: { emailSent: true, emailSentAt: new Date().toISOString() } });
+        // Send WhatsApp if phone provided
+        if (r.phone) {
+          const waText = buildInviteWhatsAppText({ type, fromName: invitation.fromName, inviteLink, message });
+          const waResult = await sendWhatsApp(r.phone, waText);
+          await invitations.updateOne({ id: invitation.id }, {
+            $set: {
+              whatsappSent: waResult.success,
+              whatsappSentAt: waResult.success ? new Date().toISOString() : null,
+              whatsappError: waResult.success ? null : waResult.error
+            }
+          });
+        }
         results.sent++;
         results.details.push({ email: emailLower, sent: true });
       } catch (e) {
@@ -574,6 +600,11 @@ export async function handleConnectPost(path, request, body) {
         type: invite.type, fromName: invite.fromName, toEmail: invite.toEmail,
         message: invite.message, inviteLink
       }));
+      // Also resend WhatsApp if phone available
+      if (invite.toPhone) {
+        const waText = buildInviteWhatsAppText({ type: invite.type, fromName: invite.fromName, inviteLink, message: invite.message });
+        await sendWhatsApp(invite.toPhone, waText).catch(() => null);
+      }
       await invitations.updateOne({ id: invite.id }, {
         $set: {
           lastResentAt: new Date().toISOString(),
